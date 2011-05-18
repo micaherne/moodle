@@ -39,4 +39,5 @@ $string['gradingungraded'] = '{$a} ungraded attempts';
 $string['gradinguser'] = 'Attempts for {$a}';
 $string['invalidattemptid'] = 'No such attempt ID exists';
 $string['invalidquestionid'] = 'Gradeable question with id {$a} not found';
+$string['pluginname'] = 'Grading';
 $string['questiontitle'] = 'Question {$a->number} : "{$a->name}" ({$a->openspan}{$a->gradedattempts}{$a->closespan} / {$a->totalattempts} attempts {$a->openspan}graded{$a->closespan}).';
