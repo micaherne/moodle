@@ -3552,6 +3552,9 @@ function assignment_get_types() {
 
     $standardassignments = array('upload','online','uploadsingle','offline');
     foreach ($standardassignments as $assignmenttype) {
+        if (!empty($CFG->{'assignment_hide_'.$assignmenttype})) {  // Not wanted
+            continue;
+        }
         $type = new stdClass();
         $type->modclass = MOD_CLASS_ACTIVITY;
         $type->type = "assignment&amp;type=$assignmenttype";
