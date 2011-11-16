@@ -29,7 +29,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/** Include config {@see config.php} */
+/** Include config {@link config.php} */
 require '../config.php';
 
 $PAGE->set_url('/lib/session-test.php');

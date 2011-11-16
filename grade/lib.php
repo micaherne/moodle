@@ -2267,47 +2267,47 @@ function grade_extend_settings($plugininfo, $courseid) {
  */
 abstract class grade_helper {
     /**
-     * Cached manage settings info {@see get_info_settings}
+     * Cached manage settings info {@link get_info_settings}
      * @var grade_plugin_info|false
      */
     protected static $managesetting = null;
     /**
-     * Cached grade report plugins {@see get_plugins_reports}
+     * Cached grade report plugins {@link get_plugins_reports}
      * @var array|false
      */
     protected static $gradereports = null;
     /**
-     * Cached grade report plugins preferences {@see get_info_scales}
+     * Cached grade report plugins preferences {@link get_info_scales}
      * @var array|false
      */
     protected static $gradereportpreferences = null;
     /**
-     * Cached scale info {@see get_info_scales}
+     * Cached scale info {@link get_info_scales}
      * @var grade_plugin_info|false
      */
     protected static $scaleinfo = null;
     /**
-     * Cached outcome info {@see get_info_outcomes}
+     * Cached outcome info {@link get_info_outcomes}
      * @var grade_plugin_info|false
      */
     protected static $outcomeinfo = null;
     /**
-     * Cached info on edit structure {@see get_info_edit_structure}
+     * Cached info on edit structure {@link get_info_edit_structure}
      * @var array|false
      */
     protected static $edittree = null;
     /**
-     * Cached leftter info {@see get_info_letters}
+     * Cached leftter info {@link get_info_letters}
      * @var grade_plugin_info|false
      */
     protected static $letterinfo = null;
     /**
-     * Cached grade import plugins {@see get_plugins_import}
+     * Cached grade import plugins {@link get_plugins_import}
      * @var array|false
      */
     protected static $importplugins = null;
     /**
-     * Cached grade export plugins {@see get_plugins_export}
+     * Cached grade export plugins {@link get_plugins_export}
      * @var array|false
      */
     protected static $exportplugins = null;

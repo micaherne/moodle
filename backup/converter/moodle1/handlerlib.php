@@ -331,7 +331,7 @@ class moodle1_root_handler extends moodle1_xml_handler {
         $this->xmlwriter->full_tag('name', $backupinfo['name']);
         $this->xmlwriter->full_tag('moodle_version', $backupinfo['moodle_version']);
         $this->xmlwriter->full_tag('moodle_release', $backupinfo['moodle_release']);
-        $this->xmlwriter->full_tag('backup_version', $CFG->backup_version); // {@see restore_prechecks_helper::execute_prechecks}
+        $this->xmlwriter->full_tag('backup_version', $CFG->backup_version); // {@link restore_prechecks_helper::execute_prechecks}
         $this->xmlwriter->full_tag('backup_release', $CFG->backup_release);
         $this->xmlwriter->full_tag('backup_date', $backupinfo['date']);
         // see the commit c0543b - all backups created in 1.9 and later declare the
@@ -342,7 +342,7 @@ class moodle1_root_handler extends moodle1_xml_handler {
             $this->xmlwriter->full_tag('mnet_remoteusers', false);
         }
         $this->xmlwriter->full_tag('original_wwwroot', $backupinfo['original_wwwroot']);
-        // {@see backup_general_helper::backup_is_samesite()}
+        // {@link backup_general_helper::backup_is_samesite()}
         if (isset($backupinfo['original_site_identifier_hash'])) {
             $this->xmlwriter->full_tag('original_site_identifier_hash', $backupinfo['original_site_identifier_hash']);
         }
@@ -1170,7 +1170,7 @@ class moodle1_question_bank_handler extends moodle1_xml_handler {
 
         $qtype = $data['qtype'];
 
-        // replay the upgrade step 2008050700 {@see question_fix_random_question_parents()}
+        // replay the upgrade step 2008050700 {@link question_fix_random_question_parents()}
         if ($qtype == 'random' and $data['parent'] <> $data['id']) {
             $data['parent'] = $data['id'];
         }

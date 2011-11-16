@@ -277,9 +277,9 @@ class workshop_random_allocator implements workshop_allocator {
      * If the submission has already been allocated, it is skipped. If the author is not found among
      * reviewers, the submission is not assigned.
      *
-     * @param array $authors grouped of {@see workshop::get_potential_authors()}
-     * @param array $reviewers grouped by {@see workshop::get_potential_reviewers()}
-     * @param array $assessments as returned by {@see workshop::get_all_assessments()}
+     * @param array $authors grouped of {@link workshop::get_potential_authors()}
+     * @param array $reviewers grouped by {@link workshop::get_potential_reviewers()}
+     * @param array $assessments as returned by {@link workshop::get_all_assessments()}
      * @return array of new allocations to be created, array of array(reviewerid => authorid)
      */
     protected function self_allocation($authors=array(), $reviewers=array(), $assessments=array()) {

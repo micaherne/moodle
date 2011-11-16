@@ -849,7 +849,7 @@ function mnet_fields_to_import(mnet_peer $peer) {
 }
 
 /**
- * helper for {@see mnet_fields_to_import} and {@mnet_fields_to_send}
+ * helper for {@link mnet_fields_to_import} and {@mnet_fields_to_send}
  *
  * @access private
  *

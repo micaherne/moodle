@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
 * base class for callers
 *
 * See http://docs.moodle.org/dev/Adding_a_Portfolio_Button_to_a_page
-* {@see also portfolio_module_caller_base}
+* {@link also portfolio_module_caller_base}
 */
 abstract class portfolio_caller_base {
 
@@ -290,8 +290,8 @@ abstract class portfolio_caller_base {
     /**
     * called before the portfolio plugin gets control
     * this function should copy all the files it wants to
-    * the temporary directory, using {@see copy_existing_file}
-    * or {@see write_new_file}
+    * the temporary directory, using {@link copy_existing_file}
+    * or {@link write_new_file}
     */
     public abstract function prepare_package();
 
@@ -499,7 +499,7 @@ abstract class portfolio_caller_base {
 * don't need to.
 *
 * See http://docs.moodle.org/dev/Adding_a_Portfolio_Button_to_a_page
-* {@see also portfolio_caller_base}
+* {@link also portfolio_caller_base}
 */
 abstract class portfolio_module_caller_base extends portfolio_caller_base {
 

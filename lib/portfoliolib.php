@@ -171,7 +171,7 @@ class portfolio_add_button {
     * @param array $formats if the calling code knows better than the static method on the calling class (base_supported_formats)
     *                       eg, if it's going to be a single file, or if you know it's HTML, you can pass it here instead
     *                       this is almost always the case so you should always use this.
-    *                       {@see portfolio_format_from_mimetype} for how to get the appropriate formats to pass here for uploaded files.
+    *                       {@link portfolio_format_from_mimetype} for how to get the appropriate formats to pass here for uploaded files.
     *                       or just call set_format_by_file instead
     */
     public function set_formats($formats=null) {
@@ -1166,7 +1166,7 @@ function portfolio_existing_exports($userid, $type=null) {
 
 /**
  * Return an array of existing exports by type for a given user.
- * This is much more lightweight than {@see existing_exports} because it only returns the types, rather than the whole serialised data
+ * This is much more lightweight than {@link existing_exports} because it only returns the types, rather than the whole serialised data
  * so can be used for checking availability of multiple plugins at the same time.
  */
 function portfolio_existing_exports_by_plugin($userid) {

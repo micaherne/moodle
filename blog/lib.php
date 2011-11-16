@@ -361,9 +361,9 @@ function blog_is_enabled_for_user() {
  * to blogs.
  *
  * It loads the following if applicable:
- * -  Module options {@see blog_get_options_for_module}
- * -  Course options {@see blog_get_options_for_course}
- * -  User specific options {@see blog_get_options_for_user}
+ * -  Module options {@link blog_get_options_for_module}
+ * -  Course options {@link blog_get_options_for_course}
+ * -  User specific options {@link blog_get_options_for_user}
  * -  General options (BLOG_LEVEL_GLOBAL)
  *
  * @param moodle_page $page The page to load for (normally $PAGE)

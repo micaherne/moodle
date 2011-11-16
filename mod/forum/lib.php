@@ -7555,7 +7555,7 @@ class forum_potential_subscriber_selector extends forum_subscriber_selector_base
      * Finds all potential users
      *
      * Potential users are determined by checking for users with a capability
-     * determined in {@see forum_get_potential_subscribers()}
+     * determined in {@link forum_get_potential_subscribers()}
      *
      * @param string $search
      * @return array

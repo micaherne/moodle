@@ -3572,7 +3572,7 @@ function move_category($category, $newparentcat) {
  * the section.
  *
  * By default (if callback is not defined) the method
- * {@see get_numeric_section_name} is called instead.
+ * {@link get_numeric_section_name} is called instead.
  *
  * @param stdClass $course The course to get the section name for
  * @param stdClass $section Section object from database
@@ -3634,7 +3634,7 @@ function course_format_uses_sections($format) {
  *
  * The returned object's property (boolean)capable indicates that
  * the course format supports Moodle course ajax features.
- * The property (array)testedbrowsers can be used as a parameter for {@see ajaxenabled()}.
+ * The property (array)testedbrowsers can be used as a parameter for {@link ajaxenabled()}.
  *
  * @param string $format
  * @return stdClass

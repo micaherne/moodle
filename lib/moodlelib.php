@@ -7092,10 +7092,10 @@ class emoticon_manager {
      * Helper method preparing the stdClass with the emoticon properties
      *
      * @param string|array $text or array of strings
-     * @param string $imagename to be used by {@see pix_emoticon}
+     * @param string $imagename to be used by {@link pix_emoticon}
      * @param string $altidentifier alternative string identifier, null for no alt
      * @param array $altcomponent where the alternative string is defined
-     * @param string $imagecomponent to be used by {@see pix_emoticon}
+     * @param string $imagecomponent to be used by {@link pix_emoticon}
      * @return stdClass
      */
     protected function prepare_emoticon_object($text, $imagename, $altidentifier = null, $altcomponent = 'core_pix', $imagecomponent = 'core') {
@@ -10262,7 +10262,7 @@ function get_mnet_remote_client() {
 
 /**
  * during the xmlrpc server code execution, this will be called
- * to setup the object returned by {@see get_mnet_remote_client}
+ * to setup the object returned by {@link get_mnet_remote_client}
  *
  * @param mnet_remote_client $client the client to set up
  */

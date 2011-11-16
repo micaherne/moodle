@@ -794,7 +794,7 @@ function workshop_get_recent_mod_activity(&$activities, &$index, $timestart, $co
 }
 
 /**
- * Print single activity item prepared by {@see workshop_get_recent_mod_activity()}
+ * Print single activity item prepared by {@link workshop_get_recent_mod_activity()}
  */
 function workshop_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
     global $CFG, $OUTPUT;

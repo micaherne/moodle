@@ -31,7 +31,7 @@ require_once($CFG->dirroot.'/lib/formslib.php');
 /**
  * Allocator settings form
  *
- * This is used by {@see workshop_random_allocator::ui()} to set up allocation parameters.
+ * This is used by {@link workshop_random_allocator::ui()} to set up allocation parameters.
  *
  * @copyright 2009 David Mudrak <david.mudrak@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

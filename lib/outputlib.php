@@ -744,7 +744,7 @@ class theme_config {
      * Given an array of file paths or a single file path loads the contents of
      * the CSS file, processes it then returns it in the same structure it was given.
      *
-     * Can be used recursively on the results of {@see css_files}
+     * Can be used recursively on the results of {@link css_files}
      *
      * @param array|string $file An array of file paths or a single file path
      * @param array $keys An array of previous array keys [recursive addition]

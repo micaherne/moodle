@@ -233,7 +233,7 @@ function enrol_check_plugins($user) {
  * The courses has to be visible and enrolments has to be active,
  * timestart and timeend restrictions are ignored.
  *
- * This function calls {@see enrol_get_shared_courses()} setting checkexistsonly
+ * This function calls {@link enrol_get_shared_courses()} setting checkexistsonly
  * to true.
  *
  * @param stdClass|int $user1

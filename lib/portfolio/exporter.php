@@ -33,10 +33,10 @@ defined('MOODLE_INTERNAL') || die();
 * and the communication between the caller and the portfolio plugin.
 * this is stored in the database between page requests in serialized base64 encoded form
 * also contains helper methods for the plugin and caller to use (at the end of the file)
-* {@see get_base_filearea} - where to write files to
-* {@see write_new_file} - write some content to a file in the export filearea
-* {@see copy_existing_file} - copy an existing file into the export filearea
-* {@see get_tempfiles} - return list of all files in the export filearea
+* {@link get_base_filearea} - where to write files to
+* {@link write_new_file} - write some content to a file in the export filearea
+* {@link copy_existing_file} - copy an existing file into the export filearea
+* {@link get_tempfiles} - return list of all files in the export filearea
 */
 class portfolio_exporter {
 
@@ -694,7 +694,7 @@ class portfolio_exporter {
     /**
     * helper function to create the beginnings of a file_record object
     * to create a new file in the portfolio_temporary working directory
-    * use {@see write_new_file} or {@see copy_existing_file} externally
+    * use {@link write_new_file} or {@link copy_existing_file} externally
     *
     * @param string $name filename of new record
     */

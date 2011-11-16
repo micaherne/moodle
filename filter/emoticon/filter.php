@@ -51,7 +51,7 @@ class filter_emoticon extends moodle_text_filter {
     public function filter($text, array $options = array()) {
 
         if (!isset($options['originalformat'])) {
-            // if the format is not specified, we are probably called by {@see format_string()}
+            // if the format is not specified, we are probably called by {@link format_string()}
             // in that case, it would be dangerous to replace text with the image because it could
             // be stripped. therefore, we do nothing
             return $text;

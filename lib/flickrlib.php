@@ -1094,7 +1094,7 @@ class phpFlickr {
      * Upload a photo from Moodle file pool to Flickr
      *
      * Optional meta information are title, description, tags, is_public, is_friend, is_family, safety_level,
-     * content_type and hidden {@see http://www.flickr.com/services/api/upload.api.html}
+     * content_type and hidden {@link http://www.flickr.com/services/api/upload.api.html}
      *
      * @param stored_file $photo stored in Moodle file pool
      * @param array $meta optional meta information

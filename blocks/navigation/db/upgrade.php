@@ -41,7 +41,7 @@
 /**
  * As of the implementation of this block and the general navigation code
  * in Moodle 2.0 the body of immediate upgrade work for this block and
- * settings is done in core upgrade {@see lib/db/upgrade.php}
+ * settings is done in core upgrade {@link lib/db/upgrade.php}
  *
  * There were several reasons that they were put there and not here, both becuase
  * the process for the two blocks was very similar and because the upgrade process

@@ -44,7 +44,7 @@ interface workshop_allocator {
      * This method is called soon after the allocator is constructed and before any output
      * is generated. Therefore it may process any data submitted and do other tasks.
      * It must not produce any output. The returned value is processed by
-     * {@see workshop_allocation_init_result} class and rendered.
+     * {@link workshop_allocation_init_result} class and rendered.
      *
      * @throws moodle_exception
      * @return void|string

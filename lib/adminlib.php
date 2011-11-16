@@ -3457,10 +3457,10 @@ class admin_setting_emoticons extends admin_setting {
     }
 
     /**
-     * Converts the array of emoticon objects provided by {@see emoticon_manager} into admin settings form data
+     * Converts the array of emoticon objects provided by {@link emoticon_manager} into admin settings form data
      *
      * @see self::process_form_data()
-     * @param array $emoticons array of emoticon objects as returned by {@see emoticon_manager}
+     * @param array $emoticons array of emoticon objects as returned by {@link emoticon_manager}
      * @return array of form fields and their values
      */
     protected function prepare_form_data(array $emoticons) {

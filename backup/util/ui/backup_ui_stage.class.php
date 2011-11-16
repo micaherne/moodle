@@ -20,7 +20,7 @@
  *
  * This file contains the classes required to manage the stages that make up the
  * backup user interface.
- * These will be primarily operated a {@see backup_ui} instance.
+ * These will be primarily operated a {@link backup_ui} instance.
  *
  * @package   moodlecore
  * @copyright 2010 Sam Hemelryk

@@ -57,7 +57,7 @@ class workshop_best_evaluation implements workshop_evaluation {
      * Calculates the grades for assessment and updates 'gradinggrade' fields in 'workshop_assessments' table
      *
      * This function relies on the grading strategy subplugin providing get_assessments_recordset() method.
-     * {@see self::process_assessments()} for the required structure of the recordset.
+     * {@link self::process_assessments()} for the required structure of the recordset.
      *
      * @param stdClass $settings       The settings for this round of evaluation
      * @param null|int|array $restrict If null, update all reviewers, otherwise update just grades for the given reviewers(s)
@@ -252,7 +252,7 @@ class workshop_best_evaluation implements workshop_evaluation {
      * Note: this heavily relies on PHP5 way of handling references in array of stdclasses. Hopefully
      * it will not change again soon.
      *
-     * @param array $assessments of stdclass as returned by {@see self::prepare_data_from_recordset()}
+     * @param array $assessments of stdclass as returned by {@link self::prepare_data_from_recordset()}
      * @param array $diminfo of stdclass
      * @return array of stdclass with the same structure as $assessments
      */

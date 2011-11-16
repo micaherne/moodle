@@ -903,13 +903,13 @@ class lesson extends lesson_base {
 
     /**
      * The id of the first page (where prevpageid = 0) gets set and retrieved by
-     * {@see get_firstpageid()} by directly calling <code>$lesson->firstpageid;</code>
+     * {@link get_firstpageid()} by directly calling <code>$lesson->firstpageid;</code>
      * @var int
      */
     protected $firstpageid = null;
     /**
      * The id of the last page (where nextpageid = 0) gets set and retrieved by
-     * {@see get_lastpageid()} by directly calling <code>$lesson->lastpageid;</code>
+     * {@link get_lastpageid()} by directly calling <code>$lesson->lastpageid;</code>
      * @var int
      */
     protected $lastpageid = null;
@@ -917,7 +917,7 @@ class lesson extends lesson_base {
      * An array used to cache the pages associated with this lesson after the first
      * time they have been loaded.
      * A note to developers: If you are going to be working with MORE than one or
-     * two pages from a lesson you should probably call {@see $lesson->load_all_pages()}
+     * two pages from a lesson you should probably call {@link $lesson->load_all_pages()}
      * in order to save excess database queries.
      * @var array An array of lesson_page objects
      */
@@ -931,7 +931,7 @@ class lesson extends lesson_base {
 
     /**
      * Simply generates a lesson object given an array/object of properties
-     * Overrides {@see lesson_base->create()}
+     * Overrides {@link lesson_base->create()}
      * @static
      * @param object|array $properties
      * @return lesson

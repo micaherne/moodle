@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
 * top level portfolio exception.
-* sometimes caught and rethrown as {@see portfolio_export_exception}
+* sometimes caught and rethrown as {@link portfolio_export_exception}
 */
 class portfolio_exception extends moodle_exception {}
 
@@ -83,13 +83,13 @@ class portfolio_export_exception extends portfolio_exception {
 
 /**
 * exception for callers to throw when they have a problem.
-* usually caught and rethrown as {@see portfolio_export_exception}
+* usually caught and rethrown as {@link portfolio_export_exception}
 */
 class portfolio_caller_exception extends portfolio_exception {}
 
 /**
 * exception for portfolio plugins to throw when they have a problem.
-* usually caught and rethrown as {@see portfolio_export_exception}
+* usually caught and rethrown as {@link portfolio_export_exception}
 */
 class portfolio_plugin_exception extends portfolio_exception {}
 

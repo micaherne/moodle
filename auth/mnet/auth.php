@@ -416,7 +416,7 @@ class auth_plugin_mnet extends auth_plugin_base {
 
     /**
      * creates (or updates) the mnet session once
-     * {@see confirm_mnet_session} and {@see complete_user_login} have both been called
+     * {@link confirm_mnet_session} and {@link complete_user_login} have both been called
      *
      * @param stdclass  $user the local user (must exist already
      * @param string    $token the jump/land token

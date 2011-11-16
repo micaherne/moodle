@@ -635,7 +635,7 @@ class workshop {
     /**
      * Prepares renderable submission component
      *
-     * @param stdClass $record required by {@see workshop_submission}
+     * @param stdClass $record required by {@link workshop_submission}
      * @param bool $showauthor show the author-related information
      * @return workshop_submission
      */
@@ -650,7 +650,7 @@ class workshop {
     /**
      * Prepares renderable submission summary component
      *
-     * @param stdClass $record required by {@see workshop_submission_summary}
+     * @param stdClass $record required by {@link workshop_submission_summary}
      * @param bool $showauthor show the author-related information
      * @return workshop_submission_summary
      */
@@ -665,7 +665,7 @@ class workshop {
     /**
      * Prepares renderable example submission component
      *
-     * @param stdClass $record required by {@see workshop_example_submission}
+     * @param stdClass $record required by {@link workshop_example_submission}
      * @return workshop_example_submission
      */
     public function prepare_example_submission(stdClass $record) {
@@ -1143,10 +1143,10 @@ class workshop {
     }
 
     /**
-     * Workshop wrapper around {@see add_to_log()}
+     * Workshop wrapper around {@link add_to_log()}
      *
      * @param string $action to be logged
-     * @param moodle_url $url absolute url as returned by {@see workshop::submission_url()} and friends
+     * @param moodle_url $url absolute url as returned by {@link workshop::submission_url()} and friends
      * @param mixed $info additional info, usually id in a table
      */
     public function log($action, moodle_url $url = null, $info = null) {
@@ -2049,7 +2049,7 @@ class workshop {
     }
 
     /**
-     * Converts absolute URL to relative URL needed by {@see add_to_log()}
+     * Converts absolute URL to relative URL needed by {@link add_to_log()}
      *
      * @param moodle_url $url absolute URL
      * @return string
@@ -2473,7 +2473,7 @@ class workshop_user_plan implements renderable {
  * Common base class for submissions and example submissions rendering
  *
  * Subclasses of this class convert raw submission record from
- * workshop_submissions table (as returned by {@see workshop::get_submission_by_id()}
+ * workshop_submissions table (as returned by {@link workshop::get_submission_by_id()}
  * for example) into renderable objects.
  */
 abstract class workshop_submission_base {
@@ -2672,7 +2672,7 @@ class workshop_example_submission extends workshop_example_submission_summary im
  * Common base class for assessments rendering
  *
  * Subclasses of this class convert raw assessment record from
- * workshop_assessments table (as returned by {@see workshop::get_assessment_by_id()}
+ * workshop_assessments table (as returned by {@link workshop::get_assessment_by_id()}
  * for example) into renderable objects.
  */
 abstract class workshop_assessment_base {
@@ -2904,7 +2904,7 @@ class workshop_allocation_init_result implements renderable {
      * in a array can have optional prefix or prefixes, using '::' as delimiter. Prefixes determine
      * the type of the message and may influence its visualisation.
      *
-     * @param mixed $result int|array returned by {@see workshop_allocator::init()}
+     * @param mixed $result int|array returned by {@link workshop_allocator::init()}
      * @param moodle_url to continue
      */
     public function __construct($result, moodle_url $continue) {
@@ -2948,7 +2948,7 @@ class workshop_allocation_init_result implements renderable {
  */
 class workshop_grading_report implements renderable {
 
-    /** @var stdClass returned by {@see workshop::prepare_grading_report_data()} */
+    /** @var stdClass returned by {@link workshop::prepare_grading_report_data()} */
     protected $data;
     /** @var stdClass rendering options */
     protected $options;
@@ -3041,7 +3041,7 @@ class workshop_feedback_author extends workshop_feedback implements renderable {
     /**
      * Extracts feedback from the given submission record
      *
-     * @param stdClass $submission record as returned by {@see self::get_submission_by_id()}
+     * @param stdClass $submission record as returned by {@link self::get_submission_by_id()}
      */
     public function __construct(stdClass $submission) {
 
@@ -3060,7 +3060,7 @@ class workshop_feedback_reviewer extends workshop_feedback implements renderable
     /**
      * Extracts feedback from the given assessment record
      *
-     * @param stdClass $assessment record as returned by eg {@see self::get_assessment_by_id()}
+     * @param stdClass $assessment record as returned by eg {@link self::get_assessment_by_id()}
      */
     public function __construct(stdClass $assessment) {
 

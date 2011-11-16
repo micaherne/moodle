@@ -805,7 +805,7 @@ class page_requirements_manager {
      *     alert(M.str.moodle.fullnamedisplay);
      *
      * To substitute the placeholder at client side, use M.util.get_string()
-     * function. It implements the same logic as {@see get_string()}:
+     * function. It implements the same logic as {@link get_string()}:
      *
      *     // require the string in PHP but keep {$a} as it is
      *     $PAGE->requires->string_for_js('fullnamedisplay', 'moodle');

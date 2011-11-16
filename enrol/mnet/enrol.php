@@ -121,7 +121,7 @@ class enrol_mnet_mnetservice_enrol {
      * it gets created here.
      *
      * @uses mnet_remote_client Callable via XML-RPC only
-     * @param array $userdata user details {@see mnet_fields_to_import()}
+     * @param array $userdata user details {@link mnet_fields_to_import()}
      * @param int $courseid our local course id
      * @return bool true if the enrolment has been successful, throws exception otherwise
      */
@@ -177,7 +177,7 @@ class enrol_mnet_mnetservice_enrol {
         }
 
         if ($instance === false) {
-            // this should not happen as the course was returned by {@see self::available_courses()}
+            // this should not happen as the course was returned by {@link self::available_courses()}
             throw new mnet_server_exception(5017, 'noenrolinstance', 'enrol_mnet');
         }
 
@@ -248,7 +248,7 @@ class enrol_mnet_mnetservice_enrol {
         }
 
         if ($instance === false) {
-            // this should not happen as the course was returned by {@see self::available_courses()}
+            // this should not happen as the course was returned by {@link self::available_courses()}
             throw new mnet_server_exception(5017, 'noenrolinstance', 'enrol_mnet');
         }
 

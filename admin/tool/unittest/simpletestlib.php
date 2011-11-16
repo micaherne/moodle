@@ -758,7 +758,7 @@ class UnitTestCaseUsingDatabase extends UnitTestCase {
      * creating it :-( No problem for other contexts.
      *
      * Altenatively one complete install can be done, like
-     * {@see accesslib_test::test_everything_in_accesslib} does, but that's
+     * {@link accesslib_test::test_everything_in_accesslib} does, but that's
      * to much for some tests not requiring all the roles/caps/friends
      * to be present.
      *

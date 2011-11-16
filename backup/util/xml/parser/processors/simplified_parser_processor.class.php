@@ -203,8 +203,8 @@ abstract class simplified_parser_processor extends progressive_parser_processor 
     /**
      * Adjust start/end til finding one match start/end path (included)
      *
-     * This will trigger all the pending {@see notify_path_start} and
-     * {@see notify_path_end} calls for one given path and action
+     * This will trigger all the pending {@link notify_path_start} and
+     * {@link notify_path_end} calls for one given path and action
      *
      * @param string path the path to look for as limit
      * @param string action the action to look for as limit

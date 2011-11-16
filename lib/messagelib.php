@@ -356,7 +356,7 @@ function message_set_default_message_preference($component, $messagename, $filep
 /**
  * Returns the active providers for the current user, based on capability
  *
- * This function has been deprecated please use {@see message_get_providers_for_user()} instead.
+ * This function has been deprecated please use {@link message_get_providers_for_user()} instead.
  *
  * @deprecated since 2.1
  * @todo Remove in 2.2

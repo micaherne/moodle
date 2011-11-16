@@ -525,7 +525,7 @@ class database_session extends session_stub {
     /**
      * Open session handler
      *
-     * {@see http://php.net/manual/en/function.session-set-save-handler.php}
+     * {@link http://php.net/manual/en/function.session-set-save-handler.php}
      *
      * @param string $save_path
      * @param string $session_name
@@ -538,7 +538,7 @@ class database_session extends session_stub {
     /**
      * Close session handler
      *
-     * {@see http://php.net/manual/en/function.session-set-save-handler.php}
+     * {@link http://php.net/manual/en/function.session-set-save-handler.php}
      *
      * @return bool success
      */
@@ -557,7 +557,7 @@ class database_session extends session_stub {
     /**
      * Read session handler
      *
-     * {@see http://php.net/manual/en/function.session-set-save-handler.php}
+     * {@link http://php.net/manual/en/function.session-set-save-handler.php}
      *
      * @param string $sid
      * @return string
@@ -657,7 +657,7 @@ class database_session extends session_stub {
     /**
      * Write session handler.
      *
-     * {@see http://php.net/manual/en/function.session-set-save-handler.php}
+     * {@link http://php.net/manual/en/function.session-set-save-handler.php}
      *
      * NOTE: Do not write to output or throw any exceptions!
      *       Hopefully the next page is going to display nice error or it recovers...
@@ -741,7 +741,7 @@ class database_session extends session_stub {
     /**
      * Destroy session handler
      *
-     * {@see http://php.net/manual/en/function.session-set-save-handler.php}
+     * {@link http://php.net/manual/en/function.session-set-save-handler.php}
      *
      * @param string $sid
      * @return bool success
@@ -764,7 +764,7 @@ class database_session extends session_stub {
     /**
      * GC session handler
      *
-     * {@see http://php.net/manual/en/function.session-set-save-handler.php}
+     * {@link http://php.net/manual/en/function.session-set-save-handler.php}
      *
      * @param int $ignored_maxlifetime moodle uses special timeout rules
      * @return bool success

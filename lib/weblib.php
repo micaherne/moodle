@@ -1521,7 +1521,7 @@ function purify_html($text, $options = array()) {
  * May contain HTML tags already
  *
  * Do not abuse this function. It is intended as lower level formatting feature used
- * by {@see format_text()} to convert FORMAT_MOODLE to HTML. You are supposed
+ * by {@link format_text()} to convert FORMAT_MOODLE to HTML. You are supposed
  * to call format_text() in most of cases.
  *
  * @param string $text The string to convert.

@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
 * the base class for portfolio plugins
 * all plugins must subclass this
-* either via {@see portfolio_plugin_pull_base} or {@see portfolio_plugin_push_base}
+* either via {@link portfolio_plugin_pull_base} or {@link portfolio_plugin_push_base}
 */
 abstract class portfolio_plugin_base {
 
@@ -183,7 +183,7 @@ abstract class portfolio_plugin_base {
     * does this plugin need any configuration by the administrator?
     *
     * if you override this to return true,
-    * you <b>must</b> implement {@see admin_config_form}
+    * you <b>must</b> implement {@link admin_config_form}
     */
     public static function has_admin_config() {
         return false;
@@ -193,7 +193,7 @@ abstract class portfolio_plugin_base {
     * can this plugin be configured by the user in their profile?
     *
     * if you override this to return true,
-    * you <b>must</b> implement {@see user_config_form}
+    * you <b>must</b> implement {@link user_config_form}
     */
     public function has_user_config() {
         return false;
@@ -203,7 +203,7 @@ abstract class portfolio_plugin_base {
     * does this plugin need configuration during export time?
     *
     * if you override this to return true,
-    * you <b>must</b> implement {@see export_config_form}
+    * you <b>must</b> implement {@link export_config_form}
     */
     public function has_export_config() {
         return false;
@@ -235,7 +235,7 @@ abstract class portfolio_plugin_base {
     * isn't actually controlled by the user
     * eg things that your subclasses want to keep in state
     * across the export.
-    * keys must be in {@see get_allowed_export_config}
+    * keys must be in {@link get_allowed_export_config}
     *
     * this is deliberately not final (see boxnet plugin)
     *
@@ -299,7 +299,7 @@ abstract class portfolio_plugin_base {
     * of its prepare_package function.
     * this function should read all the files from the portfolio
     * working file area and zip them and send them or whatever it wants.
-    * {@see get_tempfiles} to get the list of files.
+    * {@link get_tempfiles} to get the list of files.
     *
     */
     public abstract function prepare_package();
@@ -793,7 +793,7 @@ abstract class portfolio_plugin_pull_base extends portfolio_plugin_base {
     /**
     * the base part of the download file url to pull files from
     * your plugin might need to add &foo=bar on the end
-    * {@see verify_file_request_params}
+    * {@link verify_file_request_params}
     *
     * @return string the url
     */

@@ -433,7 +433,7 @@ abstract class moodleform {
 
     /**
      * Check that form data is valid.
-     * You should almost always use this, rather than {@see validate_defined_fields}
+     * You should almost always use this, rather than {@link validate_defined_fields}
      *
      * @staticvar bool $validated
      * @return bool true if form data valid
@@ -451,8 +451,8 @@ abstract class moodleform {
     /**
      * Validate the form.
      *
-     * You almost always want to call {@see is_validated} instead of this
-     * because it calls {@see definition_after_data} first, before validating the form,
+     * You almost always want to call {@link is_validated} instead of this
+     * because it calls {@link definition_after_data} first, before validating the form,
      * which is what you want in 99% of cases.
      *
      * This is provided as a separate function for those special cases where

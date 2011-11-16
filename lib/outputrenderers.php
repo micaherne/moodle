@@ -144,7 +144,7 @@ class renderer_base {
  */
 class plugin_renderer_base extends renderer_base {
     /**
-     * A reference to the current general renderer probably {@see core_renderer}
+     * A reference to the current general renderer probably {@link core_renderer}
      * @var renderer_base
      */
     protected $output;

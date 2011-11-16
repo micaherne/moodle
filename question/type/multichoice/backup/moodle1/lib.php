@@ -57,7 +57,7 @@ class moodle1_qtype_multichoice_handler extends moodle1_qtype_handler {
      * Converts the multichoice info and writes it into the question.xml
      *
      * @param array $multichoices the grouped structure
-     * @param int $oldquestiontextformat - {@see moodle1_question_bank_handler::process_question()}
+     * @param int $oldquestiontextformat - {@link moodle1_question_bank_handler::process_question()}
      */
     protected function write_multichoice(array $multichoices, $oldquestiontextformat) {
         global $CFG;

@@ -1691,7 +1691,7 @@ class js_writer {
 }
 
 /**
- * Holds all the information required to render a <table> by {@see core_renderer::table()}
+ * Holds all the information required to render a <table> by {@link core_renderer::table()}
  *
  * Example of usage:
  * $t = new html_table();
@@ -1726,8 +1726,8 @@ class html_table {
      * Example of usage:
      * $t->headspan = array(2,1);
      *
-     * In this example, {@see html_table:$data} is supposed to have three columns. For the first two columns,
-     * the same heading is used. Therefore, {@see html_table::$head} should consist of two items.
+     * In this example, {@link html_table:$data} is supposed to have three columns. For the first two columns,
+     * the same heading is used. Therefore, {@link html_table::$head} should consist of two items.
      */
     public $headspan;
     /**
