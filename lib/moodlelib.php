@@ -8602,7 +8602,9 @@ function upgrade_set_timeout($max_execution_time=300) {
         return;
     }
 
-    set_time_limit($max_execution_time);
+    if(!CLI_SCRIPT){ // MDL-31553
+        set_time_limit($max_execution_time);
+    }
     set_config('upgraderunning', $expected_end); // keep upgrade locked until this time
 }
 
