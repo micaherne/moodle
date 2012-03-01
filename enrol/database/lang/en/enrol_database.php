@@ -46,6 +46,7 @@ $string['ignorehiddencourses_desc'] = 'If enabled users will not be enrolled on 
 $string['localcoursefield'] = 'Local course field';
 $string['localrolefield'] = 'Local role field';
 $string['localuserfield'] = 'Local user field';
+$string['localcategoryfield'] = 'Local category field';
 $string['newcoursetable'] = 'Remote new courses table';
 $string['newcoursetable_desc'] = 'Specify of the name of the table that contains list of courses that should be created automatically. Empty means no courses are created.';
 $string['newcoursecategory'] = 'New course category id field';

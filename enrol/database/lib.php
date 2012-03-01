@@ -584,6 +584,8 @@ class enrol_database_plugin extends enrol_plugin {
         $shortname = strtolower($this->get_config('newcourseshortname'));
         $idnumber  = strtolower($this->get_config('newcourseidnumber'));
         $category  = strtolower($this->get_config('newcoursecategory'));
+        $localcategoryfield = $this->get_config('localcategoryfield');
+        
 
         $sqlfields = array($fullname, $shortname);
         if ($category) {
@@ -616,17 +618,25 @@ class enrol_database_plugin extends enrol_plugin {
                         }
                         continue;
                     }
-                    if ($category and !$DB->record_exists('course_categories', array('id'=>$fields[$category]))) {
+                    if ($category and !$DB->record_exists('course_categories', array($localcategoryfield=>$fields[$category]))) {
                         if ($verbose) {
                             mtrace('  error: invalid category id, can not create course: '.$fields[$shortname]);
                         }
                         continue;
                     }
+                    if($category) {
+                        if($localcategoryfield == 'id') {
+                            $categoryfieldvalue = $fields[$category];
+                        } else {
+                            $localcategory = $DB->get_record('course_categories', array($localcategoryfield=>$fields[$category]));
+                            $categoryfieldvalue = $localcategory->id;
+                        }
+                    }
                     $course = new stdClass();
                     $course->fullname  = $fields[$fullname];
                     $course->shortname = $fields[$shortname];
                     $course->idnumber  = $idnumber ? $fields[$idnumber] : NULL;
-                    $course->category  = $category ? $fields[$category] : NULL;
+                    $course->category  = $category ? $categoryfieldvalue : NULL;
                     $createcourses[] = $course;
                 }
             }
