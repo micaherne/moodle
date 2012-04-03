@@ -726,9 +726,28 @@ class enrol_database_plugin extends enrol_plugin {
                 $newcourse->idnumber  = $fields->idnumber;
                 $newcourse->category  = $fields->category ? $fields->category : $defaultcategory;
 
-                $c = create_course($newcourse);
-                if ($verbose) {
-                    mtrace("  creating course: $c->id, $c->fullname, $c->shortname, $c->idnumber, $c->category");
+                // Check that course hasn't been created since previous check - MDL-32178
+                if ($DB->record_exists('course', array('shortname'=>$fields->shortname))) {
+                    // already exists
+                    continue;
+                }
+                // allow empty idnumber but not duplicates
+                if ($fields->idnumber and $fields->idnumber !== '' and $fields->idnumber !== null and $DB->record_exists('course', array('idnumber'=>$fields->idnumber))) {
+                    if ($verbose) {
+                        mtrace('  error: duplicate idnumber, can not create course: '.$fields->shortname.' ['.$fields->idnumber.']');
+                    }
+                    continue;
+                }
+
+                try {
+                    $c = create_course($newcourse);
+                    if ($verbose) {
+                        mtrace("  creating course: $c->id, $c->fullname, $c->shortname, $c->idnumber, $c->category");
+                    }
+                } catch (Exception $e) {
+                    if ($verbose) {
+                        mtrace("  error creating course: $newcourse->fullname, $newcourse->shortname, $newcourse->idnumber");
+                    }
                 }
             }
 
