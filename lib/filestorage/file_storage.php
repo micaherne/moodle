@@ -564,7 +564,7 @@ class file_storage {
                  LEFT JOIN {files_reference} r
                            ON f.referencefileid = r.id
                      WHERE f.contextid = :contextid AND f.component = :component AND f.filearea = :filearea AND f.itemid = :itemid
-                           AND f.filepath = :filepath AND f.filename <> '.'
+                           AND ".$DB->sql_compare_string('f.filepath', ':filepath', true). " AND f.filename <> '.'
                            $orderby";
 
             $filerecords = $DB->get_records_sql($sql, $params);

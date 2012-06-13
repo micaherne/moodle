@@ -1164,6 +1164,23 @@ class mysqli_native_moodle_database extends moodle_database {
     public function sql_cast_char2real($fieldname, $text=false) {
         return ' CAST(' . $fieldname . ' AS DECIMAL) ';
     }
+    
+    /**
+     * Returns the SQL to be used to compare a character field with a string.
+     *
+     * Required because some databases (e.g. MySQL) do case-insensitive string comparisons by default.
+     *
+     * @param string $fieldname The name of the field we want to compare
+     * @param string $param Usually the bound query parameter (?, :named).
+     * @param bool $casesensitive Use case sensitive search when set to true (default).
+     */
+    public function sql_compare_string($fieldname, $param, $casesensitive = true) {
+        if ($casesensitive) {
+            return $fieldname . ' = ' . $param . ' COLLATE utf8_bin';
+        } else {
+            return $fieldname . ' = ' . $param;
+        }
+    }
 
     /**
      * Returns 'LIKE' part of a query.
@@ -1235,6 +1252,26 @@ class mysqli_native_moodle_database extends moodle_database {
      */
     public function sql_length($fieldname) {
         return ' CHAR_LENGTH(' . $fieldname . ')';
+    }
+    
+    /**
+     * Returns the proper substr() SQL text used to extract substrings from DB
+     * NOTE: this was originally returning only function name
+     *
+     * @param string $expr Some string field, no aggregates.
+     * @param mixed $start Integer or expression evaluating to integer (1 based value; first char has index 1)
+     * @param mixed $length Optional integer or expression evaluating to integer.
+     * @return string The sql substring extraction fragment.
+     */
+    public function sql_substr($expr, $start, $length=false) {
+        if (count(func_get_args()) < 2) {
+            throw new coding_exception('moodle_database::sql_substr() requires at least two parameters', 'Originally this function was only returning name of SQL substring function, it now requires all parameters.');
+        }
+        if ($length === false) {
+            return "SUBSTR($expr COLLATE utf8_bin, $start)";
+        } else {
+        return "SUBSTR($expr COLLATE utf8_bin, $start, $length)";
+        }
     }
 
     /**

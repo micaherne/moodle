@@ -1832,6 +1832,19 @@ abstract class moodle_database {
     public function sql_compare_text($fieldname, $numchars=32) {
         return $this->sql_order_by_text($fieldname, $numchars);
     }
+    
+    /**
+     * Returns the SQL to be used to compare a character field with a string. 
+     * 
+     * Required because some databases (e.g. MySQL) do case-insensitive string comparisons by default.
+     * 
+     * @param string $fieldname The name of the field we want to compare
+     * @param string $param Usually the bound query parameter (?, :named).
+     * @param bool $casesensitive Use case sensitive search when set to true (default).
+     */
+    public function sql_compare_string($fieldname, $param, $casesensitive = true) {
+        return $fieldname . ' = ' . $param;
+    }
 
     /**
      * Returns 'LIKE' part of a query.
