@@ -508,6 +508,8 @@ function calendar_get_upcoming($courses, $groups, $users, $daysinfuture, $maxeve
                         if (!$cm->uservisible) {
                             continue;
                         }
+                    } else {
+                        continue;
                     }
                 } else {
                     if (!$cm = get_coursemodule_from_instance($event->modulename, $event->instance)) {
