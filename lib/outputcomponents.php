@@ -384,12 +384,21 @@ class user_picture implements renderable {
             // Hash the users email address
             $md5 = md5(strtolower(trim($this->user->email)));
             // Build a gravatar URL with what we know.
+            
+            // Find the best default image URL we can (MDL-35669)
+            $absoluteimagepath = $page->theme->resolve_image_location('u/'.$filename, 'core');
+            if (strpos($absoluteimagepath, $CFG->dirroot) === 0) {
+                $gravatardefault = $CFG->wwwroot . substr($absoluteimagepath, strlen($CFG->dirroot));
+            } else {
+                $gravatardefault = $CFG->wwwroot . '/u/' . $filename . '.png';
+            }
+            
             // If the currently requested page is https then we'll return an
             // https gravatar page.
             if (strpos($CFG->httpswwwroot, 'https:') === 0) {
-                return new moodle_url("https://secure.gravatar.com/avatar/{$md5}", array('s' => $size, 'd' => $defaulturl->out(false)));
+                return new moodle_url("https://secure.gravatar.com/avatar/{$md5}", array('s' => $size, 'd' => $gravatardefault));
             } else {
-                return new moodle_url("http://www.gravatar.com/avatar/{$md5}", array('s' => $size, 'd' => $defaulturl->out(false)));
+                return new moodle_url("http://www.gravatar.com/avatar/{$md5}", array('s' => $size, 'd' => $gravatardefault));
             }
         }
 
