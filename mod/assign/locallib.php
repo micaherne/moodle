@@ -3733,13 +3733,18 @@ class assign {
                 return true;
             }
 
-
+            $emptysubmission = true;
             foreach ($this->submissionplugins as $plugin) {
                 if ($plugin->is_enabled()) {
                     if (!$plugin->save($submission, $data)) {
                         print_error($plugin->get_error());
                     }
+                    $emptysubmission &= $plugin->is_empty($submission);
                 }
+            }
+
+            if ($emptysubmission) {
+                return false;
             }
 
             $this->update_submission($submission, $USER->id, true, $this->get_instance()->teamsubmission);
