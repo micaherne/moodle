@@ -55,6 +55,10 @@ $string['manual:manage'] = 'Manage user enrolments';
 $string['manual:unenrol'] = 'Unenrol users from the course';
 $string['manual:unenrolself'] = 'Unenrol self from the course';
 $string['messageprovider:expiry_notification'] = 'Manual enrolment expiry notifications';
+$string['participationstatus'] = 'Status';
+$string['participationstatus_help'] = 'This is the status of the user\'s enrolment in the course. Suspending a user\'s enrolment prevents them from accessing the course.
+
+Note that if guest access is enabled for a course, suspending an enrolment alone has <b>no effect</b> and users are still able to access the course with the full permissions granted by their role.';
 $string['pluginname'] = 'Manual enrolments';
 $string['pluginname_desc'] = 'The manual enrolments plugin allows users to be enrolled manually via a link in the course administration settings, by a user with appropriate permissions such as a teacher. The plugin should normally be enabled, since certain other enrolment plugins, such as self enrolment, require it.';
 $string['status'] = 'Enable manual enrolments';

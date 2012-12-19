@@ -42,6 +42,7 @@ class enrol_manual_user_enrolment_form extends moodleform {
                          ENROL_USER_SUSPENDED => get_string('participationsuspended', 'enrol'));
         if (isset($options[$ue->status])) {
             $mform->addElement('select', 'status', get_string('participationstatus', 'enrol'), $options);
+            $mform->addHelpButton('status', 'participationstatus', 'enrol_manual');
         }
 
         $mform->addElement('date_time_selector', 'timestart', get_string('enroltimestart', 'enrol'), array('optional' => true));
