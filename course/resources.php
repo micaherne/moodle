@@ -84,7 +84,7 @@ foreach ($modinfo->cms as $cm) {
 
 // preload instances
 foreach ($resources as $modname=>$instances) {
-    $resources[$modname] = $DB->get_records_list($modname, 'id', $instances, 'id', 'id,name,intro,introformat,timemodified');
+    $resources[$modname] = $DB->get_records_list($modname, 'id', $instances, 'id');
 }
 
 if (!$cms) {
@@ -121,7 +121,11 @@ foreach ($cms as $cm) {
             $currentsection = $cm->sectionnum;
         }
     } else {
-        $printsection = '<span class="smallinfo">'.userdate($resource->timemodified)."</span>";
+        if (isset($resource->timemodified)) {
+            $printsection = '<span class="smallinfo">'.userdate($resource->timemodified)."</span>";
+        } else {
+            $printsection = '<span class="smallinfo">Unknown</span>';
+        }
     }
 
     $extra = empty($cm->extra) ? '' : $cm->extra;
@@ -132,10 +136,16 @@ foreach ($cms as $cm) {
     }
 
     $class = $cm->visible ? '' : 'class="dimmed"'; // hidden modules are dimmed
+
+    if (isset($cm->intro) && isset($cm->introformat)) {
+        $intro = format_module_intro('resource', $resource, $cm->id);
+    } else {
+        $intro = '';
+    }
     $table->data[] = array (
         $printsection,
         "<a $class $extra href=\"$CFG->wwwroot/mod/$cm->modname/view.php?id=$cm->id\">".$icon.format_string($resource->name)."</a>",
-        format_module_intro('resource', $resource, $cm->id));
+        $intro);
 }
 
 echo html_writer::table($table);
