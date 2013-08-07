@@ -2893,6 +2893,7 @@ function require_login($courseorid = null, $autologinguest = true, $cm = null, $
             if ($cm->course != $course->id) {
                 throw new coding_exception('course and cm parameters in require_login() call do not match!!');
             }
+            $PAGE->set_course($course);
             // Make sure we have a $cm from get_fast_modinfo as this contains activity access details.
             if (!($cm instanceof cm_info)) {
                 // Note: nearly all pages call get_fast_modinfo anyway and it does not make any
