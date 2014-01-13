@@ -261,6 +261,11 @@ $CFG->admin = 'admin';
 //      $CFG->mailprefix = 'mdl-'; // - is the separator for qmail
 //      $CFG->maildomain = 'youremaildomain.com';
 //
+// Make sure that all emails are sent using the noreplyaddress address as the
+// from address. This can be used to stop anti-spoofing controls in external
+// mail systems blocking emails.
+//      $CFG->emailonlyfromnoreplyaddress = true;
+//
 // Enable when setting up advanced reverse proxy load balancing configurations,
 // it may be also necessary to enable this when using port forwarding.
 //      $CFG->reverseproxy = true;

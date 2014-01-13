@@ -5727,8 +5727,16 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '', 
         $mail->From     = $CFG->noreplyaddress;
         $mail->FromName = $from;
     } else if ($usetrueaddress and $from->maildisplay) {
-        $mail->From     = $from->email;
-        $mail->FromName = fullname($from);
+        if (empty($CFG->emailonlyfromnoreplyaddress)) {
+            $mail->From     = $from->email;
+            $mail->FromName = fullname($from);
+        } else {
+            $mail->From     = $CFG->noreplyaddress;
+            $mail->FromName = fullname($from);
+            if (empty($replyto)) {
+                $tempreplyto[] = array($from->email, fullname($from));
+            }
+        }
     } else {
         $mail->From     = $CFG->noreplyaddress;
         $mail->FromName = fullname($from);
