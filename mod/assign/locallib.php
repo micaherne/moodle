@@ -4400,7 +4400,7 @@ class assign {
         global $CFG;
 
         $info = new stdClass();
-        if ($blindmarking) {
+        if ($blindmarking && ($userfrom->id != $userto->id)) {
             $info->username = get_string('participant', 'assign') . ' ' . $uniqueidforuser;
             $userfrom->firstname = get_string('participant', 'assign');
             $userfrom->lastname = $uniqueidforuser;
