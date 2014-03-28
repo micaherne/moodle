@@ -513,7 +513,7 @@ $cache = '.var_export($cache, true).';
      * @param string $fulldir
      * @return array
      */
-    protected static function fetch_plugins($plugintype, $fulldir) {
+    protected static function fetch_plugins($plugintype, $fulldir, $includeplugindir = true) {
         global $CFG;
 
         $fulldirs = (array)$fulldir;
@@ -546,6 +546,35 @@ $cache = '.var_export($cache, true).';
                     continue;
                 }
                 $result[$pluginname] = $fulldir.'/'.$pluginname;
+                unset($item);
+            }
+            unset($items);
+        }
+        
+        // Try the plugins directory
+        if ($includeplugindir) {
+            $plugindir = $CFG->dirroot.'/plugins';
+            $items = new \DirectoryIterator($plugindir);
+            foreach ($items as $item) {
+                if ($item->isDot() or !$item->isDir()) {
+                    continue;
+                }
+                $pluginname = $item->getFilename();
+                if (strpos($pluginname, $plugintype.'_') === 0) {
+                    $pluginname = substr($pluginname, strlen($plugintype) + 1);
+                } else {
+                    continue;
+                }
+                if ($plugintype === 'auth' and $pluginname === 'db') {
+                    // Special exception for this wrong plugin name.
+                } else if (isset(self::$ignoreddirs[$pluginname])) {
+                    continue;
+                }
+                if (!self::is_valid_plugin_name($plugintype, $pluginname)) {
+                    // Always ignore plugins with problematic names here.
+                    continue;
+                }
+                $result[$pluginname] = $plugindir.'/'.$plugintype. '_' . $pluginname;
                 unset($item);
             }
             unset($items);

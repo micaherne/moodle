@@ -78,11 +78,12 @@ function enrol_get_plugins($enabled) {
     $result = array();
 
     if ($enabled) {
+        $pluginsraw = core_component::get_plugin_list('enrol');
         // sorted by enabled plugin order
         $enabled = explode(',', $CFG->enrol_plugins_enabled);
         $plugins = array();
         foreach ($enabled as $plugin) {
-            $plugins[$plugin] = "$CFG->dirroot/enrol/$plugin";
+            $plugins[$plugin] = $pluginsraw[$plugin]; //"$CFG->dirroot/enrol/$plugin";
         }
     } else {
         // sorted alphabetically
@@ -1069,7 +1070,7 @@ function enrol_accessing_via_instance(stdClass $instance) {
  * All enrol plugins should be based on this class,
  * this is also the main source of documentation.
  */
-abstract class enrol_plugin {
+abstract class enrol_plugin extends core_plugin {
     protected $config = null;
 
     /**
