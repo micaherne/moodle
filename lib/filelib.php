@@ -4582,10 +4582,10 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null) {
     } else if (strpos($component, 'block_') === 0) {
         $blockname = substr($component, 6);
         // note: no more class methods in blocks please, that is ....
-        if (!file_exists("$CFG->dirroot/blocks/$blockname/lib.php")) {
+        if (!file_exists(block_find_rootdir($blockname)."/lib.php")) {
             send_file_not_found();
         }
-        require_once("$CFG->dirroot/blocks/$blockname/lib.php");
+        require_once(block_find_rootdir($blockname)."/lib.php");
 
         if ($context->contextlevel == CONTEXT_BLOCK) {
             $birecord = $DB->get_record('block_instances', array('id'=>$context->instanceid), '*',MUST_EXIST);

@@ -1659,6 +1659,23 @@ function block_instance($blockname, $instance = NULL, $page = NULL) {
 }
 
 /**
+ * Find the root directory in which a block plugin's code lives.
+ * 
+ * @param string $blockname the name of the block.
+ * @return string the root directory of the plugin
+ */
+function block_find_rootdir($blockname) {
+	global $CFG;
+
+	$info = core_plugin_manager::instance()->get_plugin_info('block_'.$blockname);
+	$rootdir = "$CFG->dirroot/blocks/$blockname";
+	if (!is_null($info)) {
+		$rootdir = $info->rootdir;
+	}
+	return $rootdir;
+}
+
+/**
  * Load the block class for a particular type of block.
  *
  * @param string $blockname the name of the block.
@@ -1677,7 +1694,7 @@ function block_load_class($blockname) {
         return true;
     }
 
-    $blockpath = $CFG->dirroot.'/blocks/'.$blockname.'/block_'.$blockname.'.php';
+    $blockpath = block_find_rootdir($blockname).'/block_'.$blockname.'.php';
 
     if (file_exists($blockpath)) {
         require_once($CFG->dirroot.'/blocks/moodleblock.class.php');

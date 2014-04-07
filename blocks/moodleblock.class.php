@@ -43,7 +43,7 @@ define('BLOCK_TYPE_TREE',    3);
  * @author Jon Papaioannou
  * @package core_block
  */
-class block_base {
+class block_base extends core_plugin {
 
     /**
      * Internal var for storing/caching translated strings

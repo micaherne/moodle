@@ -108,7 +108,9 @@
     $blocknames = array();
     foreach ($blocks as $blockid=>$block) {
         $blockname = $block->name;
-        if (file_exists("$CFG->dirroot/blocks/$blockname/block_$blockname.php")) {
+        $info = core_plugin_manager::instance()->get_plugin_info('block_'.$blockname);
+        $rootdir = block_find_rootdir($blockname);
+        if (file_exists($rootdir.'/block_$blockname.php')) {
             $blocknames[$blockid] = get_string('pluginname', 'block_'.$blockname);
         } else {
             $blocknames[$blockid] = $blockname;
@@ -121,7 +123,8 @@
         $blockname = $block->name;
         $dbversion = get_config('block_'.$block->name, 'version');
 
-        if (!file_exists("$CFG->dirroot/blocks/$blockname/block_$blockname.php")) {
+        $rootdir = block_find_rootdir($blockname);
+        if (file_exists($rootdir.'/block_$blockname.php')) {
             $blockobject  = false;
             $strblockname = '<span class="notifyproblem">'.$strblockname.' ('.get_string('missingfromdisk').')</span>';
             $plugin = new stdClass();
@@ -130,8 +133,8 @@
         } else {
             $plugin = new stdClass();
             $plugin->version = '???';
-            if (file_exists("$CFG->dirroot/blocks/$blockname/version.php")) {
-                include("$CFG->dirroot/blocks/$blockname/version.php");
+            if (file_exists($rootdir.'/version.php')) {
+                include($rootdir.'/version.php');
             }
 
             if (!$blockobject  = block_instance($block->name)) {

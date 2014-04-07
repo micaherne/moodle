@@ -5356,7 +5356,7 @@ class admin_page_manageblocks extends admin_externalpage {
         $found = false;
         if ($blocks = $DB->get_records('block')) {
             foreach ($blocks as $block) {
-                if (!file_exists("$CFG->dirroot/blocks/$block->name/")) {
+                if (!file_exists(block_find_rootdir($block->name))) {
                     continue;
                 }
                 if (strpos($block->name, $query) !== false) {

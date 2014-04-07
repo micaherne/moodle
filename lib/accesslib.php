@@ -7200,7 +7200,7 @@ class context_block extends context {
         if ($blockinstance = $DB->get_record('block_instances', array('id'=>$this->_instanceid))) {
             global $CFG;
             require_once("$CFG->dirroot/blocks/moodleblock.class.php");
-            require_once("$CFG->dirroot/blocks/$blockinstance->blockname/block_$blockinstance->blockname.php");
+            require_once(block_find_rootdir($blockinstance->blockname)."/block_$blockinstance->blockname.php");
             $blockname = "block_$blockinstance->blockname";
             if ($blockobject = new $blockname()) {
                 if ($withprefix){
