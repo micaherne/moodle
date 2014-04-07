@@ -108,7 +108,6 @@
     $blocknames = array();
     foreach ($blocks as $blockid=>$block) {
         $blockname = $block->name;
-        $info = core_plugin_manager::instance()->get_plugin_info('block_'.$blockname);
         $rootdir = block_find_rootdir($blockname);
         if (file_exists($rootdir.'/block_$blockname.php')) {
             $blocknames[$blockid] = get_string('pluginname', 'block_'.$blockname);
