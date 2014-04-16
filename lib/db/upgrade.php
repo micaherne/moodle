@@ -3628,5 +3628,10 @@ function xmldb_main_upgrade($oldversion) {
         upgrade_main_savepoint(true, 2014050100.00);
     }
 
+    if ($oldversion < 2014051200.00) {
+        set_config('emailonlyfromnoreplyaddress', 0);
+        upgrade_main_savepoint(true, 2014042900.01);
+    }
+
     return true;
 }
