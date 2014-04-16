@@ -73,8 +73,8 @@ class moodlelib_testcase extends advanced_testcase {
             '533' => array('iPad' => 'Mozilla/5.0 (iPad; U; CPU OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5'),
         ),
         'WebKit Android' => array(
-            '525' => array('G1 Phone' => 'Mozilla/5.0 (Linux; U; Android 1.1; en-gb; dream) AppleWebKit/525.10+ (KHTML, like Gecko) Version/3.0.4 Mobile Safari/523.12.2 – G1 Phone'),
-            '530' => array('Nexus' => 'Mozilla/5.0 (Linux; U; Android 2.1; en-us; Nexus One Build/ERD62) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17 –Nexus'),
+            '525' => array('G1 Phone' => 'Mozilla/5.0 (Linux; U; Android 1.1; en-gb; dream) AppleWebKit/525.10+ (KHTML, like Gecko) Version/3.0.4 Mobile Safari/523.12.2 â€“ G1 Phone'),
+            '530' => array('Nexus' => 'Mozilla/5.0 (Linux; U; Android 2.1; en-us; Nexus One Build/ERD62) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17 â€“Nexus'),
         ),
         'Chrome' => array(
             '8' => array('Mac OS X' => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_5; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/8.0.552.215 Safari/534.10'),
@@ -496,10 +496,10 @@ class moodlelib_testcase extends advanced_testcase {
         $this->assertEquals($object, fix_utf8($object));
 
         // valid utf8 string
-        $this->assertSame("žlutý koníček přeskočil potůček \n\t\r", fix_utf8("žlutý koníček přeskočil potůček \n\t\r\0"));
+        $this->assertSame("Å¾lutÃ½ konÃ­Ä�ek pÅ™eskoÄ�il potÅ¯Ä�ek \n\t\r", fix_utf8("Å¾lutÃ½ konÃ­Ä�ek pÅ™eskoÄ�il potÅ¯Ä�ek \n\t\r\0"));
 
         // invalid utf8 string
-        $this->assertSame('aš', fix_utf8('a'.chr(130).'š'), 'This fails with buggy iconv() when mbstring extenstion is not available as fallback.');
+        $this->assertSame('aÅ¡', fix_utf8('a'.chr(130).'Å¡'), 'This fails with buggy iconv() when mbstring extenstion is not available as fallback.');
     }
 
     function test_optional_param() {
@@ -819,7 +819,7 @@ class moodlelib_testcase extends advanced_testcase {
         $this->assertSame(clean_param('mod_something_xx', PARAM_COMPONENT), '');
         $this->assertSame(clean_param('auth_something__xx', PARAM_COMPONENT), '');
         $this->assertSame(clean_param('mod_Something', PARAM_COMPONENT), '');
-        $this->assertSame(clean_param('mod_somethíng', PARAM_COMPONENT), '');
+        $this->assertSame(clean_param('mod_somethÃ­ng', PARAM_COMPONENT), '');
         $this->assertSame(clean_param('auth_xx-yy', PARAM_COMPONENT), '');
         $this->assertSame(clean_param('_auth_xx', PARAM_COMPONENT), '');
         $this->assertSame(clean_param('a2uth_xx', PARAM_COMPONENT), '');
@@ -872,7 +872,7 @@ class moodlelib_testcase extends advanced_testcase {
         $this->assertSame(clean_param('2something', PARAM_AREA), '');
         $this->assertSame(clean_param('Something', PARAM_AREA), '');
         $this->assertSame(clean_param('some-thing', PARAM_AREA), '');
-        $this->assertSame(clean_param('somethííng', PARAM_AREA), '');
+        $this->assertSame(clean_param('somethÃ­Ã­ng', PARAM_AREA), '');
         $this->assertSame(clean_param('something.x', PARAM_AREA), '');
     }
 
@@ -981,10 +981,10 @@ class moodlelib_testcase extends advanced_testcase {
         $this->assertEquals(clean_param('john_doe', PARAM_USERNAME), 'john_doe');
         $this->assertEquals(clean_param('john@doe', PARAM_USERNAME), 'john@doe');
         $this->assertEquals(clean_param('john~doe', PARAM_USERNAME), 'johndoe');
-        $this->assertEquals(clean_param('john´doe', PARAM_USERNAME), 'johndoe');
+        $this->assertEquals(clean_param('johnÂ´doe', PARAM_USERNAME), 'johndoe');
         $this->assertEquals(clean_param('john#$%&() ', PARAM_USERNAME), 'john');
-        $this->assertEquals(clean_param('JOHNdóé ', PARAM_USERNAME), 'johnd');
-        $this->assertEquals(clean_param('john.,:;-_/|\ñÑ[]A_X-,D {} ~!@#$%^&*()_+ ?><[] ščřžžý ?ýá?ý??doe ', PARAM_USERNAME), 'john.-_a_x-d@_doe');
+        $this->assertEquals(clean_param('JOHNdÃ³Ã© ', PARAM_USERNAME), 'johnd');
+        $this->assertEquals(clean_param('john.,:;-_/|\Ã±Ã‘[]A_X-,D {} ~!@#$%^&*()_+ ?><[] Å¡Ä�Å™Å¾Å¾Ã½ ?Ã½Ã¡Âž?ÂžÃ½??Âšdoe ', PARAM_USERNAME), 'john.-_a_x-d@_doe');
 
 
         // Test success condition, if extendedusernamechars == ENABLE;
@@ -993,9 +993,9 @@ class moodlelib_testcase extends advanced_testcase {
         $this->assertEquals(clean_param('john@doe', PARAM_USERNAME), 'john@doe');
         $this->assertEquals(clean_param('john# $%&()+_^', PARAM_USERNAME), 'john#$%&()+_^');
         $this->assertEquals(clean_param('john~doe', PARAM_USERNAME), 'john~doe');
-        $this->assertEquals(clean_param('joHN´doe', PARAM_USERNAME), 'john´doe');
+        $this->assertEquals(clean_param('joHNÂ´doe', PARAM_USERNAME), 'johnÂ´doe');
         $this->assertEquals(clean_param('johnDOE', PARAM_USERNAME), 'johndoe');
-        $this->assertEquals(clean_param('johndóé ', PARAM_USERNAME), 'johndóé');
+        $this->assertEquals(clean_param('johndÃ³Ã© ', PARAM_USERNAME), 'johndÃ³Ã©');
 
         $CFG->extendedusernamechars = $currentstatus;
     }
@@ -1206,50 +1206,50 @@ class moodlelib_testcase extends advanced_testcase {
     function test_shorten_text_utf8_european() {
         // Text without tags.
         // ......123456789012345678901234567.
-        $text = "Žluťoučký koníček přeskočil";
+        $text = "Å½luÅ¥ouÄ�kÃ½ konÃ­Ä�ek pÅ™eskoÄ�il";
         $this->assertEquals($text, shorten_text($text)); // 30 chars by default.
-        $this->assertEquals("Žluťoučký koníče...", shorten_text($text, 19, true));
-        $this->assertEquals("Žluťoučký ...", shorten_text($text, 19, false));
+        $this->assertEquals("Å½luÅ¥ouÄ�kÃ½ konÃ­Ä�e...", shorten_text($text, 19, true));
+        $this->assertEquals("Å½luÅ¥ouÄ�kÃ½ ...", shorten_text($text, 19, false));
         // And try it with 2-less (that are, in bytes, the middle of a sequence).
-        $this->assertEquals("Žluťoučký koní...", shorten_text($text, 17, true));
-        $this->assertEquals("Žluťoučký ...", shorten_text($text, 17, false));
+        $this->assertEquals("Å½luÅ¥ouÄ�kÃ½ konÃ­...", shorten_text($text, 17, true));
+        $this->assertEquals("Å½luÅ¥ouÄ�kÃ½ ...", shorten_text($text, 17, false));
 
         // .........123456789012345678...901234567....89012345.
-        $text = "<p>Žluťoučký koníček <b>přeskočil</b> potůček</p>";
+        $text = "<p>Å½luÅ¥ouÄ�kÃ½ konÃ­Ä�ek <b>pÅ™eskoÄ�il</b> potÅ¯Ä�ek</p>";
         $this->assertEquals($text, shorten_text($text, 60));
-        $this->assertEquals("<p>Žluťoučký koníček ...</p>", shorten_text($text, 21));
-        $this->assertEquals("<p>Žluťoučký koníče...</p>", shorten_text($text, 19, true));
-        $this->assertEquals("<p>Žluťoučký ...</p>", shorten_text($text, 19, false));
+        $this->assertEquals("<p>Å½luÅ¥ouÄ�kÃ½ konÃ­Ä�ek ...</p>", shorten_text($text, 21));
+        $this->assertEquals("<p>Å½luÅ¥ouÄ�kÃ½ konÃ­Ä�e...</p>", shorten_text($text, 19, true));
+        $this->assertEquals("<p>Å½luÅ¥ouÄ�kÃ½ ...</p>", shorten_text($text, 19, false));
         // And try it with 2 fewer (that are, in bytes, the middle of a sequence).
-        $this->assertEquals("<p>Žluťoučký koní...</p>", shorten_text($text, 17, true));
-        $this->assertEquals("<p>Žluťoučký ...</p>", shorten_text($text, 17, false));
+        $this->assertEquals("<p>Å½luÅ¥ouÄ�kÃ½ konÃ­...</p>", shorten_text($text, 17, true));
+        $this->assertEquals("<p>Å½luÅ¥ouÄ�kÃ½ ...</p>", shorten_text($text, 17, false));
         // And try over one tag (start/end), it does proper text len.
-        $this->assertEquals("<p>Žluťoučký koníček <b>př...</b></p>", shorten_text($text, 23, true));
-        $this->assertEquals("<p>Žluťoučký koníček <b>přeskočil</b> pot...</p>", shorten_text($text, 34, true));
+        $this->assertEquals("<p>Å½luÅ¥ouÄ�kÃ½ konÃ­Ä�ek <b>pÅ™...</b></p>", shorten_text($text, 23, true));
+        $this->assertEquals("<p>Å½luÅ¥ouÄ�kÃ½ konÃ­Ä�ek <b>pÅ™eskoÄ�il</b> pot...</p>", shorten_text($text, 34, true));
         // And in the middle of one tag.
-        $this->assertEquals("<p>Žluťoučký koníček <b>přeskočil...</b></p>", shorten_text($text, 30, true));
+        $this->assertEquals("<p>Å½luÅ¥ouÄ�kÃ½ konÃ­Ä�ek <b>pÅ™eskoÄ�il...</b></p>", shorten_text($text, 30, true));
     }
 
     function test_shorten_text_utf8_oriental() {
         // Japanese
         // text without tags
         // ......123456789012345678901234.
-        $text = '言語設定言語設定abcdefghijkl';
+        $text = 'è¨€èªžè¨­å®šè¨€èªžè¨­å®šabcdefghijkl';
         $this->assertEquals($text, shorten_text($text)); // 30 chars by default
-        $this->assertEquals("言語設定言語...", shorten_text($text, 9, true));
-        $this->assertEquals("言語設定言語...", shorten_text($text, 9, false));
-        $this->assertEquals("言語設定言語設定ab...", shorten_text($text, 13, true));
-        $this->assertEquals("言語設定言語設定...", shorten_text($text, 13, false));
+        $this->assertEquals("è¨€èªžè¨­å®šè¨€èªž...", shorten_text($text, 9, true));
+        $this->assertEquals("è¨€èªžè¨­å®šè¨€èªž...", shorten_text($text, 9, false));
+        $this->assertEquals("è¨€èªžè¨­å®šè¨€èªžè¨­å®šab...", shorten_text($text, 13, true));
+        $this->assertEquals("è¨€èªžè¨­å®šè¨€èªžè¨­å®š...", shorten_text($text, 13, false));
 
         // Chinese
         // text without tags
         // ......123456789012345678901234.
-        $text = '简体中文简体中文abcdefghijkl';
+        $text = 'ç®€ä½“ä¸­æ–‡ç®€ä½“ä¸­æ–‡abcdefghijkl';
         $this->assertEquals($text, shorten_text($text)); // 30 chars by default
-        $this->assertEquals("简体中文简体...", shorten_text($text, 9, true));
-        $this->assertEquals("简体中文简体...", shorten_text($text, 9, false));
-        $this->assertEquals("简体中文简体中文ab...", shorten_text($text, 13, true));
-        $this->assertEquals("简体中文简体中文...", shorten_text($text, 13, false));
+        $this->assertEquals("ç®€ä½“ä¸­æ–‡ç®€ä½“...", shorten_text($text, 9, true));
+        $this->assertEquals("ç®€ä½“ä¸­æ–‡ç®€ä½“...", shorten_text($text, 9, false));
+        $this->assertEquals("ç®€ä½“ä¸­æ–‡ç®€ä½“ä¸­æ–‡ab...", shorten_text($text, 13, true));
+        $this->assertEquals("ç®€ä½“ä¸­æ–‡ç®€ä½“ä¸­æ–‡...", shorten_text($text, 13, false));
     }
 
     function test_shorten_text_multilang() {
@@ -2377,18 +2377,18 @@ class moodlelib_testcase extends advanced_testcase {
             // in format strings!
             array(
                 'tz' => 99,
-                'str' => 'Žluťoučký koníček %A',
-                'expected' => 'Žluťoučký koníček Saturday'
+                'str' => 'Å½luÅ¥ouÄ�kÃ½ konÃ­Ä�ek %A',
+                'expected' => 'Å½luÅ¥ouÄ�kÃ½ konÃ­Ä�ek Saturday'
             ),
             array(
                 'tz' => 99,
-                'str' => '言語設定言語 %A',
-                'expected' => '言語設定言語 Saturday'
+                'str' => 'è¨€èªžè¨­å®šè¨€èªž %A',
+                'expected' => 'è¨€èªžè¨­å®šè¨€èªž Saturday'
             ),
             array(
                 'tz' => 99,
-                'str' => '简体中文简体 %A',
-                'expected' => '简体中文简体 Saturday'
+                'str' => 'ç®€ä½“ä¸­æ–‡ç®€ä½“ %A',
+                'expected' => 'ç®€ä½“ä¸­æ–‡ç®€ä½“ Saturday'
             ),
         );
 
@@ -2581,7 +2581,7 @@ class moodlelib_testcase extends advanced_testcase {
                 'pw' => hash_internal_user_password('pw'),
                 'abc' => hash_internal_user_password('abc'),
                 'C0mP1eX_&}<?@*&%` |\"' => hash_internal_user_password('C0mP1eX_&}<?@*&%` |\"'),
-                'ĩńťėŕňăţĩōŋāĹ' => hash_internal_user_password('ĩńťėŕňăţĩōŋāĹ')
+                'Ä©Å„Å¥Ä—Å•ÅˆÄƒÅ£Ä©Å�Å‹Ä�Ä¹' => hash_internal_user_password('Ä©Å„Å¥Ä—Å•ÅˆÄƒÅ£Ä©Å�Å‹Ä�Ä¹')
             );
         } else {
             // Otherwise test bcrypt hashes.
@@ -2589,7 +2589,7 @@ class moodlelib_testcase extends advanced_testcase {
                 'pw' => '$2y$10$LOSDi5eaQJhutSRun.OVJ.ZSxQZabCMay7TO1KmzMkDMPvU40zGXK',
                 'abc' => '$2y$10$VWTOhVdsBbWwtdWNDRHSpewjd3aXBQlBQf5rBY/hVhw8hciarFhXa',
                 'C0mP1eX_&}<?@*&%` |\"' => '$2y$10$3PJf.q.9ywNJlsInPbqc8.IFeSsvXrGvQLKRFBIhVu1h1I3vpIry6',
-                'ĩńťėŕňăţĩōŋāĹ' => '$2y$10$3A2Y8WpfRAnP3czJiSv6N.6Xp0T8hW3QZz2hUCYhzyWr1kGP1yUve'
+                'Ä©Å„Å¥Ä—Å•ÅˆÄƒÅ£Ä©Å�Å‹Ä�Ä¹' => '$2y$10$3A2Y8WpfRAnP3czJiSv6N.6Xp0T8hW3QZz2hUCYhzyWr1kGP1yUve'
             );
         }
 
@@ -2608,7 +2608,7 @@ class moodlelib_testcase extends advanced_testcase {
      * Test function hash_internal_user_password().
      */
     public function test_hash_internal_user_password() {
-        $passwords = array('pw', 'abc123', 'C0mP1eX_&}<?@*&%` |\"', 'ĩńťėŕňăţĩōŋāĹ');
+        $passwords = array('pw', 'abc123', 'C0mP1eX_&}<?@*&%` |\"', 'Ä©Å„Å¥Ä—Å•ÅˆÄƒÅ£Ä©Å�Å‹Ä�Ä¹');
 
         // Check that some passwords that we convert to hashes can
         // be validated.
@@ -2699,5 +2699,24 @@ class moodlelib_testcase extends advanced_testcase {
         $this->assertSame($messagetext2, trim($result[1]->body));
         $this->assertSame($user2->email, $result[1]->to);
         $this->assertSame($user1->email, $result[1]->from);
+
+        // Test $CFG->emailonlyfromnoreplyaddress.
+        $CFG->emailonlyfromnoreplyaddress = true;
+        $this->assertNotEmpty($CFG->emailonlyfromnoreplyaddress);
+        $sink = $this->redirectEmails();
+        email_to_user($user1, $user2, $subject, $messagetext);
+        $this->assertDebuggingCalled('Unit tests must not send real emails! Use $this->redirectEmails()');
+
+        // Test $CFG->emailonlyfromnoreplyaddress.
+        $CFG->emailonlyfromnoreplyaddress = true;
+        $this->assertNotEmpty($CFG->emailonlyfromnoreplyaddress);
+        $sink = $this->redirectEmails();
+        email_to_user($user1, $user2, $subject, $messagetext);
+        unset_config('emailonlyfromnoreplyaddress');
+        email_to_user($user1, $user2, $subject, $messagetext);
+        $result = $sink->get_messages();
+        $this->assertEquals($CFG->noreplyaddress, $result[0]->from);
+        $this->assertNotEquals($CFG->noreplyaddress, $result[1]->from);
+        $sink->close();
     }
 }
