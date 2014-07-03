@@ -41,7 +41,7 @@ function user_create_user($user, $updatepassword = true) {
     }
 
     // Check username.
-    if ($user->username !== core_text::strtolower($user->username)) {
+    if ($user->username != core_text::strtolower($user->username)) {
         throw new moodle_exception('usernamelowercase');
     } else {
         if ($user->username !== clean_param($user->username, PARAM_USERNAME)) {
@@ -116,7 +116,7 @@ function user_update_user($user, $updatepassword = true) {
 
     //check username
     if (isset($user->username)) {
-        if ($user->username !== core_text::strtolower($user->username)) {
+        if ($user->username != core_text::strtolower($user->username)) {
             throw new moodle_exception('usernamelowercase');
         } else {
             if ($user->username !== clean_param($user->username, PARAM_USERNAME)) {
