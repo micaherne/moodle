@@ -362,7 +362,8 @@ class assign_submission_onlinetext extends assign_submission_plugin {
                     'content' => trim($text),
                     'cmid' => $this->assignment->get_course_module()->id,
                     'course' => $this->assignment->get_course()->id,
-                    'assignment' => $submission->assignment));
+                    'assignment' => $submission->assignment,
+                    'submission' => $submission));
             }
             if ($text != $shorttext) {
                 $wordcount = get_string('numwords', 'assignsubmission_onlinetext', count_words($text));
