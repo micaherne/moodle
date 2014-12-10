@@ -1161,10 +1161,10 @@ class mod_assign_renderer extends plugin_renderer_base {
             $filename = $file->get_filename();
             if ($CFG->enableplagiarism) {
                 require_once($CFG->libdir.'/plagiarismlib.php');
-                $plagiarismlinks = plagiarism_get_links(array('userid'=>$file->get_userid(),
-                                                             'file'=>$file,
-                                                             'cmid'=>$tree->cm->id,
-                                                             'course'=>$tree->course));
+                require_once($CFG->dirroot . '/plagiarism/lib.php');
+
+                $checkable = new plagiarism_checkable_file($file, $tree->course, $tree->cm->id);
+                $plagiarismlinks = plagiarism_get_links($checkable);
             } else {
                 $plagiarismlinks = '';
             }

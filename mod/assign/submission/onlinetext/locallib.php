@@ -357,12 +357,12 @@ class assign_submission_onlinetext extends assign_submission_plugin {
 
             if (!empty($CFG->enableplagiarism)) {
                 require_once($CFG->libdir . '/plagiarismlib.php');
+                require_once($CFG->dirroot . '/plagiarism/lib.php');
 
-                $plagiarismlinks .= plagiarism_get_links(array('userid' => $submission->userid,
-                    'content' => trim($text),
-                    'cmid' => $this->assignment->get_course_module()->id,
-                    'course' => $this->assignment->get_course()->id,
-                    'assignment' => $submission->assignment));
+                $checkable = new plagiarism_checkable_string(trim($text), $submission->userid, null, 'assignsubmission_onlinetext', 'submission_content',
+                        $submission->id, $this->assignment->get_course()->id, $this->assignment->get_course_module()->id);
+
+                $plagiarismlinks .= plagiarism_get_links($checkable);
             }
             if ($text != $shorttext) {
                 $wordcount = get_string('numwords', 'assignsubmission_onlinetext', count_words($text));

@@ -42,12 +42,12 @@ class plagiarism_plugin {
     }
 
     /**
-     * hook to allow plagiarism specific information to be displayed beside a submission 
-     * @param array  $linkarraycontains all relevant information for the plugin to generate a link
+     * hook to allow plagiarism specific information to be displayed beside a submission
+     * @param plagiarism_checkable $checkable a data object for plagiarism checking
      * @return string
-     * 
+     *
      */
-    public function get_links($linkarray) {
+    public function get_links(plagiarism_checkable $checkable) {
         return '';
     }
     /**
@@ -96,5 +96,164 @@ class plagiarism_plugin {
      *
      */
     public function plagiarism_cron() {
+    }
+}
+
+interface plagiarism_checkable {
+
+    public function get_user();
+
+    public function get_course();
+
+    public function get_cmid();
+
+    public function get_context();
+
+    public function get_component();
+
+    public function get_area();
+
+    public function get_itemid();
+
+    public function get_content();
+
+    public function get_content_type();
+
+}
+
+class plagiarism_checkable_file implements plagiarism_checkable, ArrayAccess  {
+
+    protected $file = null;
+    protected $course = null;
+    protected $cm = null;
+
+    public function __construct(stored_file $file, $course = null, $cmid = null) {
+        $this->file = $file;
+        $this->course = $course;
+        $this->cm = $cm;
+    }
+
+    public function get_user() {
+        return $this->file->get_userid();
+    }
+
+    public function get_course() {
+        return $this->course;
+    }
+
+    public function get_cmid() {
+        return $this->cmid;
+    }
+
+    public function get_context() {
+        return $this->file->get_contextid();
+    }
+
+    public function get_component()  {
+        return $this->file->get_component();
+    }
+
+    public function get_area() {
+        return $this->file->get_filearea();
+    }
+
+    public function get_itemid() {
+        return $this->file->get_itemid();
+    }
+
+    public function get_content() {
+        return $this->f->get_content();
+    }
+
+    public function get_content_type() {
+        return $this->file->get_mimetype();
+    }
+
+    /* Backwards compatibility stuff */
+    public function offsetExists($offset) {
+        return array_key_exists($offset, array('userid', 'content', 'cmid', 'course'));
+    }
+    public function offsetGet($offset) {
+        switch ($offset) {
+            case 'userid':
+                return $this->get_user();
+                break;
+            case 'content':
+                return $this->get_content();
+                break;
+            case 'cmid':
+                return $this->get_cmid();
+                break;
+            case 'course':
+                return $this->get_course();
+                break;
+            default:
+                return null;
+        }
+    }
+    public function offsetSet ($offset, $value) {
+        // Do nothing
+    }
+    public function offsetUnset($offset) {
+        // Do nothing
+    }
+}
+
+class plagiarism_checkable_string implements plagiarism_checkable {
+
+    protected $content = null;
+    protected $userid = null;
+    protected $contextid = null;
+    protected $component = null;
+    protected $area = null;
+    protected $itemid = null;
+    protected $course = null;
+    protected $cmid = null;
+
+    public function __construct($content, $userid, $contextid, $component, $area, $itemid, $course, $cmid) {
+        $this->content = $content;
+        $this->userid = $userid;
+        $this->contextid = $contextid;
+        $this->component = $component;
+        $this->area = $area;
+        $this->itemid = $itemid;
+        $this->course = $course;
+        $this->cmid = $cmid;
+    }
+
+    public function get_user() {
+        return $this->userid;
+    }
+
+    public function get_course() {
+        return $this->course;
+    }
+
+    public function get_cmid() {
+        return $this->cmid;
+    }
+
+    public function get_context() {
+        return $this->contextid;
+    }
+
+    public function get_component()  {
+        return $this->component;
+    }
+
+    public function get_area() {
+        return $this->area;
+    }
+
+    public function get_itemid() {
+        return $this->itemid;
+    }
+
+    public function get_content() {
+        return $this->content;
+    }
+
+    public function get_content_type() {
+        return 'text/plain';
     }
 }

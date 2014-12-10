@@ -37,7 +37,7 @@ if (!defined('MOODLE_INTERNAL')) {
  * @param object  $linkarray contains all relevant information for the plugin to generate a link
  * @return string - url to allow login/viewing of a similarity report
  */
-function plagiarism_get_links($linkarray) {
+function plagiarism_get_links(plagiarism_checkable $checkable) {
     global $CFG;
     if (empty($CFG->enableplagiarism)) {
         return '';
@@ -48,7 +48,7 @@ function plagiarism_get_links($linkarray) {
         require_once($dir.'/lib.php');
         $plagiarismclass = "plagiarism_plugin_$plugin";
         $plagiarismplugin = new $plagiarismclass;
-        $output .= $plagiarismplugin->get_links($linkarray);
+        $output .= $plagiarismplugin->get_links($checkable);
     }
     return $output;
 }
