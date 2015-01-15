@@ -1457,6 +1457,10 @@ function course_create_sections_if_missing($courseorid, $sections) {
             $cw->summaryformat = FORMAT_HTML;
             $cw->sequence = '';
             $id = $DB->insert_record("course_sections", $cw);
+
+            // Ensure the section context is created.
+            context_section::instance($id);
+
             $coursechanged = true;
         }
     }

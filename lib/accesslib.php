@@ -146,6 +146,8 @@ define('CONTEXT_USER', 30);
 define('CONTEXT_COURSECAT', 40);
 /** Course context level - one instances for each course */
 define('CONTEXT_COURSE', 50);
+/** Section context level - one instances for each section */
+define('CONTEXT_SECTION', 60);
 /** Course module context level - one instance for each course module */
 define('CONTEXT_MODULE', 70);
 /**
@@ -2993,6 +2995,7 @@ function get_component_string($component, $contextlevel) {
             case CONTEXT_USER:      return get_string('users');
             case CONTEXT_COURSECAT: return get_string('categories');
             case CONTEXT_COURSE:    return get_string('course');
+            case CONTEXT_SECTION:   return get_string('section');
             case CONTEXT_MODULE:    return get_string('activities');
             case CONTEXT_BLOCK:     return get_string('block');
             default:                print_error('unknowncontext');
@@ -5847,6 +5850,7 @@ class context_helper extends context {
             CONTEXT_USER      => 'context_user',
             CONTEXT_COURSECAT => 'context_coursecat',
             CONTEXT_COURSE    => 'context_course',
+            CONTEXT_SECTION   => 'context_section',
             CONTEXT_MODULE    => 'context_module',
             CONTEXT_BLOCK     => 'context_block',
         );
@@ -6952,6 +6956,198 @@ class context_course extends context {
     }
 }
 
+class context_section extends context {
+    /**
+     * Please use context_module::instance($cmid) if you need the instance of context.
+     * Alternatively if you know only the context id use context::instance_by_id($contextid)
+     *
+     * @param stdClass $record
+     */
+    protected function __construct(stdClass $record) {
+        parent::__construct($record);
+        if ($record->contextlevel != CONTEXT_SECTION) {
+            throw new coding_exception('Invalid $record->contextlevel in context_section constructor.');
+        }
+    }
+
+    /**
+     * Returns human readable context level name.
+     *
+     * @static
+     * @return string the human readable context level name.
+     */
+    public static function get_level_name() {
+        return get_string('section');
+    }
+
+    /**
+     * Returns human readable context identifier.
+     *
+     * @param boolean $withprefix whether to prefix the name of the context with the
+     *      module name, e.g. Forum, Glossary, etc.
+     * @param boolean $short does not apply to module context
+     * @return string the human readable context name.
+     */
+    public function get_context_name($withprefix = true, $short = false) {
+        global $DB;
+
+
+
+        $name = '';
+        if ($courseid = $DB->get_field('course_sections', 'course', array('id' => $this->_instanceid))) {
+            $name = "Test section";
+        }
+        return $name;
+    }
+
+    /**
+     * Returns the most relevant URL for this context.
+     *
+     * @return moodle_url
+     */
+    public function get_url() {
+        global $DB;
+
+        // TODO: Section URL??? (MA)
+
+        if ($modname = $DB->get_field_sql("SELECT md.name AS modname
+                                             FROM {course_modules} cm
+                                             JOIN {modules} md ON md.id = cm.module
+                                            WHERE cm.id = ?", array($this->_instanceid))) {
+                                            return new moodle_url('/mod/' . $modname . '/view.php', array('id'=>$this->_instanceid));
+        }
+
+        return new moodle_url('/');
+    }
+
+    /**
+     * Returns array of relevant context capability records.
+     *
+     * @return array
+     */
+    public function get_capabilities() {
+        global $DB, $CFG;
+
+        $sort = 'ORDER BY contextlevel,component,name';   // To group them sensibly for display
+
+        $params = array();
+        $sql = "SELECT *
+                  FROM {capabilities}
+                 WHERE contextlevel IN (".CONTEXT_COURSECAT.",".CONTEXT_COURSE.",".CONTEXT_SECTION.",".CONTEXT_MODULE.",".CONTEXT_BLOCK.")";
+
+        return $DB->get_records_sql($sql.' '.$sort, $params);
+    }
+
+    /**
+     * Is this context part of any course? If yes return course context.
+     *
+     * @param bool $strict true means throw exception if not found, false means return false if not found
+     * @return context_course context of the enclosing course, null if not found or exception
+     */
+    public function get_course_context($strict = true) {
+        return $this->get_parent_context();
+    }
+
+    /**
+     * Returns section context instance.
+     *
+     * @static
+     * @param int $instanceid
+     * @param int $strictness
+     * @return context_section context instance
+     */
+    public static function instance($instanceid, $strictness = MUST_EXIST) {
+        global $DB;
+
+
+        if ($context = context::cache_get(CONTEXT_SECTION, $instanceid)) {
+            return $context;
+        }
+
+        if (!$record = $DB->get_record('context', array('contextlevel'=>CONTEXT_SECTION, 'instanceid'=>$instanceid))) {
+            if ($cs = $DB->get_record('course_sections', array('id'=>$instanceid), 'id,course', $strictness)) {
+                $parentcontext = context_course::instance($cs->course);
+                $record = context::insert_context_record(CONTEXT_SECTION, $cs->id, $parentcontext->path);
+            }
+        }
+
+        print_r($record);
+
+        if ($record) {
+            $context = new context_section($record);
+            context::cache_add($context);
+            return $context;
+        }
+
+        return false;
+    }
+
+    /**
+     * Create missing context instances at section context level
+     * @static
+     */
+    protected static function create_level_instances() {
+        global $DB;
+
+        $sql = "INSERT INTO {context} (contextlevel, instanceid)
+        SELECT ".CONTEXT_SECTION.", cm.id
+        FROM {course_sections} cs
+        WHERE NOT EXISTS (SELECT 'x'
+        FROM {context} cx
+        WHERE cm.id = cx.instanceid AND cx.contextlevel=".CONTEXT_SECTION.")";
+        $DB->execute($sql);
+    }
+
+    /**
+     * Returns sql necessary for purging of stale context instances.
+     *
+     * @static
+     * @return string cleanup SQL
+     */
+    protected static function get_cleanup_sql() {
+        $sql = "
+                  SELECT c.*
+                    FROM {context} c
+         LEFT OUTER JOIN {course_sections} cs ON c.instanceid = cs.id
+                   WHERE cs.id IS NULL AND c.contextlevel = ".CONTEXT_SECTION."
+               ";
+
+        return $sql;
+    }
+
+    /**
+     * Rebuild context paths and depths at module context level.
+     *
+     * @static
+     * @param bool $force
+     */
+    protected static function build_paths($force) {
+        global $DB;
+
+        if ($force or $DB->record_exists_select('context', "contextlevel = ".CONTEXT_SECTION." AND (depth = 0 OR path IS NULL)")) {
+            if ($force) {
+                $ctxemptyclause = '';
+            } else {
+                $ctxemptyclause = "AND (ctx.path IS NULL OR ctx.depth = 0)";
+            }
+
+            $sql = "INSERT INTO {context_temp} (id, path, depth)
+             SELECT ctx.id, ".$DB->sql_concat('pctx.path', "'/'", 'ctx.id').", pctx.depth+1
+             FROM {context} ctx
+             JOIN {course_sections} cs ON (cs.id = ctx.instanceid AND ctx.contextlevel = ".CONTEXT_SECTION.")
+             JOIN {context} pctx ON (pctx.instanceid = cs.course AND pctx.contextlevel = ".CONTEXT_COURSE.")
+             WHERE pctx.path IS NOT NULL AND pctx.depth > 0
+             $ctxemptyclause";
+             $trans = $DB->start_delegated_transaction();
+             $DB->delete_records('context_temp');
+             $DB->execute($sql);
+             context::merge_context_temp_table();
+             $DB->delete_records('context_temp');
+             $trans->allow_commit();
+        }
+    }
+}
+
 
 /**
  * Course module context class
@@ -7178,7 +7374,8 @@ class context_module extends context {
                     SELECT ctx.id, ".$DB->sql_concat('pctx.path', "'/'", 'ctx.id').", pctx.depth+1
                       FROM {context} ctx
                       JOIN {course_modules} cm ON (cm.id = ctx.instanceid AND ctx.contextlevel = ".CONTEXT_MODULE.")
-                      JOIN {context} pctx ON (pctx.instanceid = cm.course AND pctx.contextlevel = ".CONTEXT_COURSE.")
+                      JOIN {course_sections} cs ON (cm.course = cs.course AND cm.section = cs.id)
+                      JOIN {context} pctx ON (pctx.instanceid = cs.id AND pctx.contextlevel = ".CONTEXT_SECTION.")
                      WHERE pctx.path IS NOT NULL AND pctx.depth > 0
                            $ctxemptyclause";
             $trans = $DB->start_delegated_transaction();
