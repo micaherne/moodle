@@ -7071,8 +7071,6 @@ class context_section extends context {
             }
         }
 
-        print_r($record);
-
         if ($record) {
             $context = new context_section($record);
             context::cache_add($context);
