@@ -104,6 +104,10 @@ switch ($context->contextlevel) {
             $PAGE->set_heading($course->fullname);
         }
         break;
+    case CONTEXT_SECTION:
+        $PAGE->set_heading($context->get_context_name(false));
+        $PAGE->set_cacheable(false);
+        break;
     case CONTEXT_MODULE:
         $PAGE->set_heading($context->get_context_name(false));
         $PAGE->set_cacheable(false);

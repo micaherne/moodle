@@ -226,6 +226,7 @@ abstract class format_section_renderer_base extends plugin_renderer_base {
         }
 
         $coursecontext = context_course::instance($course->id);
+        $sectioncontext = context_section::instance($section->id);
 
         if ($onsectionpage) {
             $baseurl = course_get_url($course, $section->section);
@@ -253,6 +254,17 @@ abstract class format_section_renderer_base extends plugin_renderer_base {
                     'class' => 'icon hide', 'alt' => $strshowfromothers)),
                     array('title' => $strshowfromothers, 'class' => 'editing_showhide'));
             }
+        }
+
+        $stroverridepermissions = "Override permissions";
+        if (has_capability('moodle/role:override', $sectioncontext)) {
+            /* require_capability('moodle/role:safeoverride', $sectioncontext);
+            $safeoverridesonly = true; */
+            $url = new moodle_url('/admin/roles/permissions.php', array('contextid' => $sectioncontext->id));
+            $controls[] = html_writer::link($url,
+                    html_writer::empty_tag('img', array('src' => $this->output->pix_url('i/permissions'),
+                            'class' => 'icon permissions', 'alt' => $stroverridepermissions)),
+                    array('title' => $stroverridepermissions, 'class' => 'editing_sectionpermissions'));
         }
 
         if (!$onsectionpage && has_capability('moodle/course:movesections', $coursecontext)) {

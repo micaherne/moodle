@@ -424,12 +424,14 @@ class core_course_renderer extends plugin_renderer_base {
      * @return string
      */
     function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = array()) {
-        global $CFG;
+        global $CFG, $DB;
 
         $vertical = !empty($displayoptions['inblock']);
 
+        $sectionrecord = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $section), 'id', MUST_EXIST);
+
         // check to see if user can add menus and there are modules to add
-        if (!has_capability('moodle/course:manageactivities', context_course::instance($course->id))
+        if (!has_capability('moodle/course:manageactivities', context_section::instance($sectionrecord->id))
                 || !$this->page->user_is_editing()
                 || !($modnames = get_module_types_names()) || empty($modnames)) {
             return '';
