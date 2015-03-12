@@ -733,10 +733,13 @@ function message_get_recent_conversations($user, $limitfrom=0, $limitto=100) {
     // was so large that it was difficult to be confident in its correctness.
     $uniquefield = $DB->sql_concat('message.useridfrom', "'-'", 'message.useridto');
     $sql = "SELECT $uniquefield, $userfields,
-                   message.id as mid, message.notification, message.smallmessage, message.fullmessage,
-                   message.fullmessagehtml, message.fullmessageformat, message.timecreated,
+                   message.id as mid, message.notification, smallmessagebody.messagetext as smallmessage, fullmessagebody.messagetext as fullmessage,
+                   fullmessagehtmlbody.messagetext as fullmessagehtml, message.fullmessageformat, message.timecreated,
                    contact.id as contactlistid, contact.blocked
               FROM {message_read} message
+         LEFT JOIN {message_bodies} fullmessagebody ON message.fullmessagehash = fullmessagebody.contenthash
+         LEFT JOIN {message_bodies} fullmessagehtmlbody ON message.fullmessagehtmlhash = fullmessagehtmlbody.contenthash
+         LEFT JOIN {message_bodies} smallmessagebody ON message.smallmessagehash = smallmessagebody.contenthash
               JOIN (
                         SELECT MAX(id) AS messageid,
                                matchedmessage.useridto,
@@ -816,9 +819,12 @@ function message_get_recent_notifications($user, $limitfrom=0, $limitto=100) {
     global $DB;
 
     $userfields = user_picture::fields('u', array('lastaccess'));
-    $sql = "SELECT mr.id AS message_read_id, $userfields, mr.notification, mr.smallmessage, mr.fullmessage, mr.fullmessagehtml, mr.fullmessageformat, mr.timecreated as timecreated, mr.contexturl, mr.contexturlname
+    $sql = "SELECT mr.id AS message_read_id, $userfields, mr.notification, mr.smallmessage, fullmessagebody.messagetext as fullmessage,
+                   fullmessagehtmlbody.messagetext as fullmessagehtml, mr.fullmessageformat, mr.timecreated as timecreated, mr.contexturl, mr.contexturlname
               FROM {message_read} mr
-                   JOIN {user} u ON u.id=mr.useridfrom
+              JOIN {user} u ON u.id=mr.useridfrom
+         LEFT JOIN {message_bodies} fullmessagebody ON mr.fullmessagehash = fullmessagebody.contenthash
+         LEFT JOIN {message_bodies} fullmessagehtmlbody ON mr.fullmessagehtmlhash = fullmessagebody.contenthash
              WHERE mr.useridto = :userid1 AND u.deleted = '0' AND mr.notification = :notification
              ORDER BY mr.timecreated DESC";
     $params = array('userid1' => $user->id, 'notification' => 1);
@@ -975,16 +981,16 @@ function message_format_message_text($message, $forcetexttohtml = false) {
 
     $format = $message->fullmessageformat;
 
-    if ($message->smallmessage !== '') {
+    if (!empty($message->smallmessage)) {
         if ($message->notification == 1) {
-            if ($message->fullmessagehtml !== '' or $message->fullmessage !== '') {
+            if (!empty($message->fullmessagehtml) or !empty($message->fullmessage)) {
                 $format = FORMAT_PLAIN;
             }
         }
         $messagetext = $message->smallmessage;
 
     } else if ($message->fullmessageformat == FORMAT_HTML) {
-        if ($message->fullmessagehtml !== '') {
+        if (!empty($message->fullmessagehtml)) {
             $messagetext = $message->fullmessagehtml;
         } else {
             $messagetext = $message->fullmessage;
@@ -992,7 +998,7 @@ function message_format_message_text($message, $forcetexttohtml = false) {
         }
 
     } else {
-        if ($message->fullmessage !== '') {
+        if (!empty($message->fullmessage)) {
             $messagetext = $message->fullmessage;
         } else {
             $messagetext = $message->fullmessagehtml;
@@ -1758,23 +1764,23 @@ function message_search($searchterms, $fromme=true, $tome=true, $courseid='none'
         if (substr($searchterm,0,1) == "+") {
             $searchterm = substr($searchterm,1);
             $searchterm = preg_quote($searchterm, '|');
-            $searchcond[] = "m.fullmessage $REGEXP :ss$i";
+            $searchcond[] = "fullmessagebody.messagetext $REGEXP :ss$i";
             $params['ss'.$i] = "(^|[^a-zA-Z0-9])$searchterm([^a-zA-Z0-9]|$)";
 
         } else if (substr($searchterm,0,1) == "-") {
             $searchterm = substr($searchterm,1);
             $searchterm = preg_quote($searchterm, '|');
-            $searchcond[] = "m.fullmessage $NOTREGEXP :ss$i";
+            $searchcond[] = "fullmessagebody.messagetext $NOTREGEXP :ss$i";
             $params['ss'.$i] = "(^|[^a-zA-Z0-9])$searchterm([^a-zA-Z0-9]|$)";
 
         } else {
-            $searchcond[] = $DB->sql_like("m.fullmessage", ":ss$i", false, true, $NOT);
+            $searchcond[] = $DB->sql_like("fullmessagebody.messagetext", ":ss$i", false, true, $NOT);
             $params['ss'.$i] = "%$searchterm%";
         }
     }
 
     if (empty($searchcond)) {
-        $searchcond = " ".$DB->sql_like('m.fullmessage', ':ss1', false);
+        $searchcond = " ".$DB->sql_like('fullmessagebody.messagetext', ':ss1', false);
         $params['ss1'] = "%";
     } else {
         $searchcond = implode(" AND ", $searchcond);
@@ -1790,11 +1796,17 @@ function message_search($searchterms, $fromme=true, $tome=true, $courseid='none'
     //    c.  Messages to and from user
 
     if ($courseid == SITEID) { // Admin is searching all messages.
-        $m_read   = $DB->get_records_sql("SELECT m.id, m.useridto, m.useridfrom, m.smallmessage, m.fullmessage, m.timecreated
+        $m_read   = $DB->get_records_sql("SELECT m.id, m.useridto, m.useridfrom, smallmessagebody.messagetext as smallmessage,
+                                                 fullmessagebody.messagetext as fullmessage, m.timecreated
                                             FROM {message_read} m
+                                       LEFT JOIN {message_bodies} fullmessagebody ON m.fullmessagehash = fullmessagebody.contenthash
+                                       LEFT JOIN {message_bodies} smallmessagebody ON m.smallmessagehash = smallmessagebody.contenthash
                                            WHERE $searchcond", $params, 0, MESSAGE_SEARCH_MAX_RESULTS);
-        $m_unread = $DB->get_records_sql("SELECT m.id, m.useridto, m.useridfrom, m.smallmessage, m.fullmessage, m.timecreated
+        $m_unread = $DB->get_records_sql("SELECT m.id, m.useridto, m.useridfrom, smallmessagebody.messagetext as smallmessage,
+                                                 fullmessagebody.messagetext as fullmessage, m.timecreated
                                             FROM {message} m
+                                       LEFT JOIN {message_bodies} fullmessagebody ON m.fullmessagehash = fullmessagebody.contenthash
+                                       LEFT JOIN {message_bodies} smallmessagebody ON m.smallmessagehash = smallmessagebody.contenthash
                                            WHERE $searchcond", $params, 0, MESSAGE_SEARCH_MAX_RESULTS);
 
     } else if ($courseid !== 'none') {
@@ -1818,11 +1830,17 @@ function message_search($searchterms, $fromme=true, $tome=true, $courseid='none'
             $params['userid'] = $userid;
         }
 
-        $m_read   = $DB->get_records_sql("SELECT m.id, m.useridto, m.useridfrom, m.smallmessage, m.fullmessage, m.timecreated
+        $m_read   = $DB->get_records_sql("SELECT m.id, m.useridto, m.useridfrom, smallmessagebody.messagetext as smallmessage,
+                                                 fullmessagebody.messagetext as fullmessage, m.timecreated
                                             FROM {message_read} m
+                                       LEFT JOIN {message_bodies} fullmessagebody ON m.fullmessagehash = fullmessagebody.contenthash
+                                       LEFT JOIN {message_bodies} smallmessagebody ON m.smallmessagehash = smallmessagebody.contenthash
                                            WHERE $searchcond", $params, 0, MESSAGE_SEARCH_MAX_RESULTS);
-        $m_unread = $DB->get_records_sql("SELECT m.id, m.useridto, m.useridfrom, m.smallmessage, m.fullmessage, m.timecreated
+        $m_unread = $DB->get_records_sql("SELECT m.id, m.useridto, m.useridfrom, smallmessagebody.messagetext as smallmessage,
+                                                 fullmessagebody.messagetext as fullmessage, m.timecreated
                                             FROM {message} m
+                                       LEFT JOIN {message_bodies} fullmessagebody ON m.fullmessagehash = fullmessagebody.contenthash
+                                       LEFT JOIN {message_bodies} smallmessagebody ON m.smallmessagehash = smallmessagebody.contenthash
                                            WHERE $searchcond", $params, 0, MESSAGE_SEARCH_MAX_RESULTS);
 
     }
@@ -1975,18 +1993,37 @@ function message_get_history($user1, $user2, $limitnum=0, $viewingnewmessages=fa
     //prevent notifications of your own actions appearing in your own message history
     $ownnotificationwhere = ' AND NOT (useridfrom=? AND notification=1)';
 
-    if ($messages_read = $DB->get_records_select('message_read', "((useridto = ? AND useridfrom = ?) OR
-                                                    (useridto = ? AND useridfrom = ?)) $notificationswhere $ownnotificationwhere",
+    $messagesreadsql = "SELECT mr.*, fullmessagebody.messagetext as fullmessage, fullmessagehtmlbody.messagetext as fullmessagehtml,
+                               smallmessagebody.messagetext as smallmessage
+                          FROM {message_read} mr
+                     LEFT JOIN {message_bodies} fullmessagebody ON mr.fullmessagehash = fullmessagebody.contenthash
+                     LEFT JOIN {message_bodies} fullmessagehtmlbody ON mr.fullmessagehtmlhash = fullmessagehtmlbody.contenthash
+                     LEFT JOIN {message_bodies} smallmessagebody ON mr.smallmessagehash = smallmessagebody.contenthash
+                         WHERE ((useridto = ? AND useridfrom = ?) OR
+                                (useridto = ? AND useridfrom = ?))
+                                $notificationswhere $ownnotificationwhere
+                      ORDER BY timecreated $sort";
+
+    $messagesnewsql = "SELECT m.*, fullmessagebody.messagetext as fullmessage, fullmessagehtmlbody.messagetext as fullmessagehtml,
+                              smallmessagebody.messagetext as smallmessage
+                         FROM {message} m
+                    LEFT JOIN {message_bodies} fullmessagebody ON m.fullmessagehash = fullmessagebody.contenthash
+                    LEFT JOIN {message_bodies} fullmessagehtmlbody ON m.fullmessagehtmlhash = fullmessagehtmlbody.contenthash
+                    LEFT JOIN {message_bodies} smallmessagebody ON m.smallmessagehash = smallmessagebody.contenthash
+                        WHERE ((useridto = ? AND useridfrom = ?) OR
+                               (useridto = ? AND useridfrom = ?)) $ownnotificationwhere
+                     ORDER BY timecreated $sort";
+
+    if ($messages_read = $DB->get_records_sql($messagesreadsql,
                                                     array($user1->id, $user2->id, $user2->id, $user1->id, $user1->id),
-                                                    "timecreated $sort", '*', 0, $limitnum)) {
+                                                    0, $limitnum)) {
         foreach ($messages_read as $message) {
             $messages[] = $message;
         }
     }
-    if ($messages_new =  $DB->get_records_select('message', "((useridto = ? AND useridfrom = ?) OR
-                                                    (useridto = ? AND useridfrom = ?)) $ownnotificationwhere",
+    if ($messages_new =  $DB->get_records_sql($messagesnewsql,
                                                     array($user1->id, $user2->id, $user2->id, $user1->id, $user1->id),
-                                                    "timecreated $sort", '*', 0, $limitnum)) {
+                                                    0, $limitnum)) {
         foreach ($messages_new as $message) {
             $messages[] = $message;
         }
@@ -2684,8 +2721,12 @@ function message_get_messages($useridto, $useridfrom = 0, $notifications = -1, $
         $params['notification'] = ($notifications) ? 1 : 0;
     }
 
-    $sql = "SELECT mr.*, $userfields
+    $sql = "SELECT mr.*, fullmessagebody.messagetext fullmessage, fullmessagebodyhtml.messagetext fullmessagehtml,
+                   smallmessagebody.messagetext smallmessage, $userfields
               FROM $messagetable mr
+         LEFT JOIN {message_bodies} fullmessagebody ON message.fullmessagehash = fullmessagebody.contenthash
+         LEFT JOIN {message_bodies} fullmessagehtmlbody ON message.fullmessagehtmlhash = fullmessagehtmlbody.contenthash
+         LEFT JOIN {message_bodies} smallmessagebody ON message.smallmessagehash = smallmessagebody.contenthash
                    $joinsql
              WHERE $usersql
                    $typesql

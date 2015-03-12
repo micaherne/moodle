@@ -128,6 +128,10 @@ function message_send($eventdata) {
     $savemessage->smallmessage      = $eventdata->smallmessage;
     $savemessage->notification      = $eventdata->notification;
 
+    $savemessage->fullmessagehash   = \core\message\manager::save_message_body($eventdata->fullmessage);
+    $savemessage->fullmessagehtmlhash = \core\message\manager::save_message_body($eventdata->fullmessagehtml);
+    $savemessage->smallmessagehash  = \core\message\manager::save_message_body($eventdata->smallmessage);
+
     if (!empty($eventdata->contexturl)) {
         $savemessage->contexturl = (string)$eventdata->contexturl;
     } else {

@@ -4223,5 +4223,111 @@ function xmldb_main_upgrade($oldversion) {
         upgrade_main_savepoint(true, 2015031100.00);
     }
 
+    if ($oldversion < 2015031300.01) {
+
+        // Define table message_bodies to be created.
+        $table = new xmldb_table('message_bodies');
+
+        // Adding fields to table message_bodies.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('contenthash', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('messagetext', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table message_bodies.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Adding indexes to table message_bodies.
+        $table->add_index('contenthash', XMLDB_INDEX_UNIQUE, array('contenthash'));
+
+        // Conditionally launch create table for message_bodies.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Add fields to message and message_read
+        $messagetables = array('message', 'message_read');
+
+        foreach ($messagetables as $table) {
+            $table = new xmldb_table($table);
+            $field = new xmldb_field('fullmessagehash', XMLDB_TYPE_CHAR, '40', null, null, null, null, 'fullmessage');
+
+            // Conditionally launch add field fullmessagehash.
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+
+            $field = new xmldb_field('fullmessagehtmlhash', XMLDB_TYPE_CHAR, '40', null, null, null, null, 'fullmessagehtml');
+
+            // Conditionally launch add field fullmessagehtmlhash.
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+
+            $field = new xmldb_field('smallmessagehash', XMLDB_TYPE_CHAR, '40', null, null, null, null, 'smallmessage');
+
+            // Conditionally launch add field smallmessagehash.
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+
+            $key = new xmldb_key('fullmessagehash', XMLDB_KEY_FOREIGN, array('fullmessagehash'), 'message_bodies', array('contenthash'));
+
+            // Launch add key fullmessagehash.
+            $dbman->add_key($table, $key);
+
+            $key = new xmldb_key('fullmessagehtmlhash', XMLDB_KEY_FOREIGN, array('fullmessagehtmlhash'), 'message_bodies', array('contenthash'));
+
+            // Launch add key fullmessagehtmlhash.
+            $dbman->add_key($table, $key);
+
+            $key = new xmldb_key('smallmessagehash', XMLDB_KEY_FOREIGN, array('smallmessagehash'), 'message_bodies', array('contenthash'));
+
+            // Launch add key smallmessagehash.
+            $dbman->add_key($table, $key);
+        }
+
+        // TODO: Move existing messages to new structure
+        foreach ($messagetables as $table) {
+            $messages = $DB->get_records($table);
+            foreach ($messages as $message) {
+                $fullmessagehash = \core\message\manager::save_message_body($message->fullmessage);
+                $fullmessagehtmlhash = \core\message\manager::save_message_body($message->fullmessagehtml);
+                $smallmessagehash = \core\message\manager::save_message_body($message->smallmessage);
+
+                $DB->set_field($table, 'fullmessagehash', $fullmessagehash, array('id' => $message->id));
+                $DB->set_field($table, 'fullmessagehtmlhash', $fullmessagehtmlhash, array('id' => $message->id));
+                $DB->set_field($table, 'smallmessagehash', $smallmessagehash, array('id' => $message->id));
+            }
+        }
+
+        // Remove fullmessage and fullmessagehtml fields from message and message_read
+         foreach ($messagetables as $table) {
+            $table = new xmldb_table($table);
+            $field = new xmldb_field('fullmessage');
+
+            // Conditionally launch drop field fullmessage.
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+
+            $field = new xmldb_field('fullmessagehtml');
+
+            // Conditionally launch drop field fullmessagehtml.
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+
+            $field = new xmldb_field('smallmessage');
+
+            // Conditionally launch drop field smallmessage.
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+        }
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2015031300.01);
+    }
+
     return true;
 }

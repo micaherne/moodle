@@ -71,8 +71,8 @@ class core_message_messagelib_testcase extends advanced_testcase {
         $record->useridfrom = $userfrom->id;
         $record->useridto = $userto->id;
         $record->subject = 'No subject';
-        $record->fullmessage = $message;
-        $record->smallmessage = $message;
+        $record->fullmessage = \core\message\manager::save_message_body($message);
+        $record->smallmessage = \core\message\manager::save_message_body($message);
         $record->timecreated = time();
 
         return $DB->insert_record('message', $record);

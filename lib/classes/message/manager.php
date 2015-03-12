@@ -89,6 +89,24 @@ class manager {
     }
 
     /**
+     * Save the message body to the database, if required.
+     *
+     * @param string $content the message text
+     * @return string the SHA1 hash of the message text
+     */
+    public static function save_message_body($content) {
+        global $DB;
+        $contenthash = sha1($content);
+        if (!$DB->record_exists('message_bodies', array('contenthash' => $contenthash))) {
+            $dataobject = new \stdClass();
+            $dataobject->contenthash = $contenthash;
+            $dataobject->messagetext = $content;
+            $DB->insert_record('message_bodies', $dataobject);
+        }
+        return $contenthash;
+    }
+
+    /**
      * Send message to message processors.
      *
      * @param \stdClass|\core\message\message $eventdata
