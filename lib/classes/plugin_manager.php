@@ -733,7 +733,10 @@ class core_plugin_manager {
                 return false;
             }
 
-            if ($requiredversion != ANY_VERSION and $otherplugin->versiondisk < $requiredversion) {
+
+            if (!core_versioning::satisfies($otherplugin->versiondisk, $requiredversion)) {
+                echo "{$otherplugin->versiondisk}, $requiredversion\n";
+            // if ($requiredversion != ANY_VERSION and $otherplugin->versiondisk < $requiredversion) {
                 return false;
             }
         }
@@ -879,7 +882,7 @@ class core_plugin_manager {
             $reqs->hasver = $otherplugin->versiondisk;
             $reqs->reqver = $requiredversion;
             // Check it has sufficient version.
-            if ($requiredversion == ANY_VERSION or $otherplugin->versiondisk >= $requiredversion) {
+            if (core_versioning::satisfies($otherplugin->versiondisk, $requiredversion)) {
                 $reqs->status = self::REQUIREMENT_STATUS_OK;
             } else {
                 $reqs->status = self::REQUIREMENT_STATUS_OUTDATED;
@@ -925,6 +928,10 @@ class core_plugin_manager {
 
         if (empty($info->version)) {
             // Plugin is known, but no suitable version was found.
+            return false;
+        }
+
+        if (!core_versioning::satisfies($info->version->version, $version)) {
             return false;
         }
 
