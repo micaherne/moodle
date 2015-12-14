@@ -1,7 +1,6 @@
 <?php
 
 require_once($CFG->libdir . '/composer/semver/src/Constraint/ConstraintInterface.php');
-require_once($CFG->libdir . '/composer/semver/src/Constraint/AbstractConstraint.php');
 require_once($CFG->libdir . '/composer/semver/src/Constraint/Constraint.php');
 require_once($CFG->libdir . '/composer/semver/src/Constraint/EmptyConstraint.php');
 require_once($CFG->libdir . '/composer/semver/src/Constraint/MultiConstraint.php');
