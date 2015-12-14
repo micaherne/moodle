@@ -735,7 +735,6 @@ class core_plugin_manager {
 
 
             if (!core_versioning::satisfies($otherplugin->versiondisk, $requiredversion)) {
-                echo "{$otherplugin->versiondisk}, $requiredversion\n";
             // if ($requiredversion != ANY_VERSION and $otherplugin->versiondisk < $requiredversion) {
                 return false;
             }
