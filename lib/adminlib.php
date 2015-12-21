@@ -5332,7 +5332,7 @@ class admin_setting_grade_profilereport extends admin_setting_configselect {
         if (is_array($this->choices)) {
             return true;
         }
-        $this->choices = array();
+        $this->choices = array('' => get_string('none'));
 
         global $CFG;
         require_once($CFG->libdir.'/gradelib.php');

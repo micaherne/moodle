@@ -589,7 +589,8 @@ class grade_report_grader extends grade_report {
         $rows = array();
 
         $showuserimage = $this->get_pref('showuserimage');
-        $canseeuserreport = has_capability('gradereport/'.$CFG->grade_profilereport.':view', $this->context);
+        $canseeuserreport = !empty($CFG->grade_profilereport) &&
+            has_capability('gradereport/' . $CFG->grade_profilereport . ':view', $this->context);
         $canseesingleview = has_all_capabilities(array('gradereport/singleview:view', 'moodle/grade:viewall',
             'moodle/grade:edit'), $this->context);
         $hasuserreportcell = $canseeuserreport || $canseesingleview;
