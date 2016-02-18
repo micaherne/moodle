@@ -281,8 +281,8 @@ class course_enrolment_manager {
             $params += $contextparams;
 
             // Role check condition.
-            $sql .= " AND (SELECT COUNT(1) FROM {role_assignments} ra WHERE ra.userid = u.id " .
-                    "AND ra.roleid = :roleid AND ra.contextid $contextsql) > 0";
+            $sql .= " AND EXISTS (SELECT 'x' FROM {role_assignments} ra WHERE ra.userid = u.id " .
+                    "AND ra.roleid = :roleid AND ra.contextid $contextsql)";
             $params['roleid'] = $this->rolefilter;
         }
 
