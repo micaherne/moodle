@@ -52,20 +52,23 @@ class core_requirejs {
 
         $module = str_replace('.js', '', $jsfilename);
 
-        $srcdir = $jsfileroot . '/amd/build';
+        $srcdirs = array($jsfileroot . '/amd/build');
         $minpart = '.min';
         if ($debug) {
-            $srcdir = $jsfileroot . '/amd/src';
+            $srcdirs = array($jsfileroot . '/amd/src', $jsfileroot . '/amd/lib');
             $minpart = '';
         }
 
-        $filename = $srcdir . '/' . $module . $minpart . '.js';
-        if (!file_exists($filename)) {
-            return array();
+        foreach ($srcdirs as $srcdir) {
+            $filename = $srcdir . '/' . $module . $minpart . '.js';
+            if (file_exists($filename)) {
+                $fullmodulename = $component . '/' . $module;
+                return array($fullmodulename => $filename);
+            }
         }
 
-        $fullmodulename = $component . '/' . $module;
-        return array($fullmodulename => $filename);
+        return array();
+
     }
 
     /**
@@ -104,24 +107,32 @@ class core_requirejs {
         }
 
         foreach ($jsdirs as $component => $dir) {
-            $srcdir = $dir . '/build';
+            $srcdirs = array($dir . '/build');
             if ($debug) {
-                $srcdir = $dir . '/src';
+                $srcdirs = array($dir . '/src', $dir . '/lib');
             }
-            $items = new RecursiveDirectoryIterator($srcdir);
-            foreach ($items as $item) {
-                $extension = $item->getExtension();
-                if ($extension === 'js') {
-                    $filename = str_replace('.min', '', $item->getBaseName('.js'));
-                    // We skip lazy loaded modules.
-                    if (strpos($filename, '-lazy') === false) {
-                        $modulename = $component . '/' . $filename;
-                        $jsfiles[$modulename] = $item->getRealPath();
-                    }
+            foreach ($srcdirs as $srcdir) {
+                if (!file_exists($srcdir)) {
+                    continue;
                 }
-                unset($item);
+                $items = new RecursiveDirectoryIterator($srcdir);
+                foreach ($items as $item) {
+                    $extension = $item->getExtension();
+                    if ($extension === 'js') {
+                        $filename = str_replace('.min', '', $item->getBaseName('.js'));
+                        // We skip lazy loaded modules.
+                        if (strpos($filename, '-lazy') === false) {
+                            $modulename = $component . '/' . $filename;
+                            if (!isset($jsfiles[$modulename])) {
+                                $jsfiles[$modulename] = $item->getRealPath();
+                            }
+                        }
+                    }
+                    unset($item);
+                }
+                unset($items);
             }
-            unset($items);
+
         }
 
         return $jsfiles;
