@@ -26,24 +26,30 @@
 module.exports = function(grunt) {
     var path = require('path'),
         tasks = {},
-        cwd = process.env.PWD || process.cwd();
+        root = null;
 
     // Windows users can't run grunt in a subdirectory, so allow them to set
     // the root by passing --root=path/to/dir.
     if (grunt.option('root')) {
-        var root = grunt.option('root');
+        root = grunt.option('root');
         if (grunt.file.exists(__dirname, root)) {
-            cwd = path.join(__dirname, root);
-            grunt.log.ok('Setting root to '+cwd);
+            grunt.log.ok('Setting root to '+ root);
         } else {
             grunt.fail.fatal('Setting root to '+root+' failed - path does not exist');
         }
+    } else {
+        if (typeof process.env.PWD !== 'undefined') {
+            root = path.relative(process.cwd(), process.env.PWD);
+        } else {
+            root = '';
+        }
     }
 
-    var inAMD = path.basename(cwd) == 'amd';
+    var inAMD = grunt.file.isMatch('**/amd', root);
+    var inYUI = grunt.file.isMatch('**/yui/*/*', root);
 
     // Globbing pattern for matching all AMD JS source files.
-    var amdSrc = [inAMD ? cwd + '/src/*.js' : '**/amd/src/*.js'];
+    var amdSrc = [inAMD ? root + '/src/*.js' : '**/amd/src/*.js'];
 
     /**
      * Function to generate the destination for the uglify task
@@ -58,7 +64,6 @@ module.exports = function(grunt) {
     var uglify_rename = function (destPath, srcPath) {
         destPath = srcPath.replace('src', 'build');
         destPath = destPath.replace('.js', '.min.js');
-        destPath = path.resolve(cwd, destPath);
         return destPath;
     };
 
@@ -93,7 +98,7 @@ module.exports = function(grunt) {
                 nospawn: true // We need not to spawn so config can be changed dynamically.
             },
             amd: {
-                files: ['**/amd/src/**/*.js'],
+                files: amdSrc,
                 tasks: ['amd']
             },
             bootstrapbase: {
@@ -108,7 +113,7 @@ module.exports = function(grunt) {
         shifter: {
             options: {
                 recursive: true,
-                paths: [cwd]
+                paths: [root]
             }
         }
     });
@@ -204,7 +209,7 @@ module.exports = function(grunt) {
 
     tasks.startup = function() {
         // Are we in a YUI directory?
-        if (path.basename(path.resolve(cwd, '../../')) == 'yui') {
+        if (inYUI) {
             grunt.task.run('shifter');
         // Are we in an AMD directory?
         } else if (inAMD) {
