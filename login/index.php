@@ -53,7 +53,7 @@ $PAGE->set_pagelayout('login');
 
 /// Initialize variables
 $errormsg = '';
-$errorcode = 0;
+$errorcode = AUTH_LOGIN_OK;
 
 // login page requested session test
 if ($testsession) {
@@ -68,7 +68,7 @@ if ($testsession) {
     } else {
         // TODO: try to find out what is the exact reason why sessions do not work
         $errormsg = get_string("cookiesnotenabled");
-        $errorcode = 1;
+        $errorcode = AUTH_LOGIN_NOUSER;
     }
 }
 
@@ -139,7 +139,7 @@ if ($frm and isset($frm->username)) {                             // Login WITH 
     if (is_enabled_auth('none') ) {
         if ($frm->username !== core_user::clean_field($frm->username, 'username')) {
             $errormsg = get_string('username').': '.get_string("invalidusername");
-            $errorcode = 2;
+            $errorcode = AUTH_LOGIN_SUSPENDED;
             $user = null;
         }
     }
@@ -253,7 +253,7 @@ if ($frm and isset($frm->username)) {                             // Login WITH 
                 $errormsg = get_string("unauthorisedlogin", "", $frm->username);
             } else {
                 $errormsg = get_string("invalidlogin");
-                $errorcode = 3;
+                $errorcode = AUTH_LOGIN_FAILED;
             }
         }
     }
@@ -262,7 +262,7 @@ if ($frm and isset($frm->username)) {                             // Login WITH 
 /// Detect problems with timedout sessions
 if ($session_has_timed_out and !data_submitted()) {
     $errormsg = get_string('sessionerroruser', 'error');
-    $errorcode = 4;
+    $errorcode = AUTH_LOGIN_LOCKOUT;
 }
 
 /// First, let's remember where the user was trying to get to before they got here
