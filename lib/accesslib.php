@@ -5364,7 +5364,10 @@ abstract class context extends stdClass implements IteratorAggregate {
                  WHERE ctx.path LIKE ?";
         $params = array($this->_path.'/%');
         $records = $DB->get_records_sql($sql, $params);
-
+if (!is_array($records)) {
+    echo $this->_path;
+    var_dump($records); exit;
+}
         $result = array();
         foreach ($records as $record) {
             $result[$record->id] = context::create_instance_from_record($record);

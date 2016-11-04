@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/moodle_database.php');
 require_once(__DIR__.'/pdo_moodle_recordset.php');
+require_once(__DIR__.'/pdo_moodle_temptables.php');
 
 /**
  * Experimental pdo database class
@@ -74,10 +75,13 @@ abstract class pdo_moodle_database extends moodle_database {
             $this->pdb->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
             $this->pdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->configure_dbconnection();
+
+            // Connection stabilised and configured, going to instantiate the temptables controller
+            $this->temptables = new pdo_moodle_temptables($this);
+
             return true;
         } catch (PDOException $ex) {
             throw new dml_connection_exception($ex->getMessage());
-            return false;
         }
     }
 
@@ -324,10 +328,10 @@ abstract class pdo_moodle_database extends moodle_database {
         global $CFG;
 
         $rs = $this->get_recordset_sql($sql, $params, $limitfrom, $limitnum);
-        if (!$rs->valid()) {
+        /* if (!$rs->valid()) {
             $rs->close(); // Not going to iterate (but exit), close rs
             return false;
-        }
+        } */
         $objects = array();
         foreach($rs as $value) {
             $key = reset($value);
@@ -532,14 +536,6 @@ abstract class pdo_moodle_database extends moodle_database {
         }
         $sql = "UPDATE {{$table}} SET $newfield $select";
         return $this->execute($sql, $params);
-    }
-
-    public function sql_concat() {
-        print_error('TODO');
-    }
-
-    public function sql_concat_join($separator="' '", $elements=array()) {
-        print_error('TODO');
     }
 
     protected function begin_transaction() {
