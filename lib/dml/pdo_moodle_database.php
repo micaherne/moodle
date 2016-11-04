@@ -137,7 +137,6 @@ abstract class pdo_moodle_database extends moodle_database {
      * @return array Array containing 'description' and 'version' info
      */
     public function get_server_info() {
-        $result = array();
         try {
             $result['description'] = $this->pdb->getAttribute(PDO::ATTR_SERVER_INFO);
         } catch(PDOException $ex) {}
@@ -541,9 +540,10 @@ abstract class pdo_moodle_database extends moodle_database {
     protected function begin_transaction() {
         $this->query_start('', NULL, SQL_QUERY_AUX);
         try {
-            $this->pdb->beginTransaction();
+            $result = $this->pdb->beginTransaction();
         } catch(PDOException $ex) {
             $this->lastError = $ex->getMessage();
+            $result = false;
         }
         $this->query_end($result);
     }
@@ -552,9 +552,10 @@ abstract class pdo_moodle_database extends moodle_database {
         $this->query_start('', NULL, SQL_QUERY_AUX);
 
         try {
-            $this->pdb->commit();
+            $result = $this->pdb->commit();
         } catch(PDOException $ex) {
             $this->lastError = $ex->getMessage();
+            $result = false;
         }
         $this->query_end($result);
     }
@@ -563,9 +564,10 @@ abstract class pdo_moodle_database extends moodle_database {
         $this->query_start('', NULL, SQL_QUERY_AUX);
 
         try {
-            $this->pdb->rollBack();
+            $result = $this->pdb->rollBack();
         } catch(PDOException $ex) {
             $this->lastError = $ex->getMessage();
+            $result = false;
         }
         $this->query_end($result);
     }
