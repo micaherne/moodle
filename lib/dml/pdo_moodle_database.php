@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/moodle_database.php');
 require_once(__DIR__.'/pdo_moodle_recordset.php');
+require_once(__DIR__.'/pdo_moodle_temptables.php');
 
 /**
  * Experimental pdo database class
@@ -74,6 +75,9 @@ abstract class pdo_moodle_database extends moodle_database {
             $this->pdb->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
             $this->pdb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->configure_dbconnection();
+
+            $this->temptables = new pdo_moodle_temptables($this);
+
             return true;
         } catch (PDOException $ex) {
             throw new dml_connection_exception($ex->getMessage());
@@ -136,7 +140,9 @@ abstract class pdo_moodle_database extends moodle_database {
         $result = array();
         try {
             $result['description'] = $this->pdb->getAttribute(PDO::ATTR_SERVER_INFO);
-        } catch(PDOException $ex) {}
+        } catch(PDOException $ex) {
+            $result['description'] = '';
+        }
         try {
             $result['version'] = $this->pdb->getAttribute(PDO::ATTR_SERVER_VERSION);
         } catch(PDOException $ex) {}
@@ -326,7 +332,7 @@ abstract class pdo_moodle_database extends moodle_database {
         $rs = $this->get_recordset_sql($sql, $params, $limitfrom, $limitnum);
         if (!$rs->valid()) {
             $rs->close(); // Not going to iterate (but exit), close rs
-            return false;
+            return array();
         }
         $objects = array();
         foreach($rs as $value) {
@@ -545,9 +551,10 @@ abstract class pdo_moodle_database extends moodle_database {
     protected function begin_transaction() {
         $this->query_start('', NULL, SQL_QUERY_AUX);
         try {
-            $this->pdb->beginTransaction();
+            $result = $this->pdb->beginTransaction();
         } catch(PDOException $ex) {
             $this->lastError = $ex->getMessage();
+            $result = false;
         }
         $this->query_end($result);
     }
@@ -556,9 +563,10 @@ abstract class pdo_moodle_database extends moodle_database {
         $this->query_start('', NULL, SQL_QUERY_AUX);
 
         try {
-            $this->pdb->commit();
+            $result = $this->pdb->commit();
         } catch(PDOException $ex) {
             $this->lastError = $ex->getMessage();
+            $result = false;
         }
         $this->query_end($result);
     }
@@ -567,9 +575,10 @@ abstract class pdo_moodle_database extends moodle_database {
         $this->query_start('', NULL, SQL_QUERY_AUX);
 
         try {
-            $this->pdb->rollBack();
+            $result = $this->pdb->rollBack();
         } catch(PDOException $ex) {
             $this->lastError = $ex->getMessage();
+            $result = false;
         }
         $this->query_end($result);
     }

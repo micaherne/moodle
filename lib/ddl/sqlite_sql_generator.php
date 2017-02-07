@@ -71,13 +71,6 @@ class sqlite_sql_generator extends sql_generator {
     public $rename_key_sql = null;
 
     /**
-     * Creates one new XMLDBmysql
-     */
-    public function __construct($mdb) {
-        parent::__construct($mdb);
-    }
-
-    /**
      * Reset a sequence to the id field of a table.
      *
      * @param xmldb_table|string $table name of table or the table object.
@@ -308,6 +301,16 @@ class sqlite_sql_generator extends sql_generator {
      */
     public function getCreateDefaultSQL($xmldb_table, $xmldb_field) {
         return $this->getAlterTableSchema($xmldb_table, $xmldb_field, $xmldb_field);
+    }
+
+    public function getCreateTempTableSQL($xmldb_table) {
+        // Do we know collation?
+        $collation = $this->mdb->get_dbcollation();
+        $this->temptables->add_temptable($xmldb_table->getName());
+
+        $sqlarr = parent::getCreateTableSQL($xmldb_table);
+
+        return $sqlarr;
     }
 
     /**
