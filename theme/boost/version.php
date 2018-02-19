@@ -27,3 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->version   = 2017111300;
 $plugin->requires  = 2017110800;
 $plugin->component = 'theme_boost';
+$plugin->dependencies = [
+    'tool_usertours' => ANY_VERSION
+];
