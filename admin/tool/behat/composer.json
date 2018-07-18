@@ -1,0 +1,5 @@
+{
+    "require-dev": {
+        "moodlehq/behat-extension": "3.36.0"
+    }
+}

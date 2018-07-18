@@ -26,9 +26,7 @@ CVS
 /.buildpath
 /.cache
 phpunit.xml
-# Composer support. Do not ignore composer.json, or composer.lock. These should be shipped by us.
-composer.phar
-/vendor/
+vendor/
 /behat.yml
 */yui/build/*/*-coverage.js
 /lib/yuilib/*/build/*/*-coverage.js
@@ -36,3 +34,13 @@ composer.phar
 /lib/yuilib/*/*/*-coverage.js
 atlassian-ide-plugin.xml
 /node_modules/
+
+# Composer support.
+# Do not ignore composer.json as this is shipped by us.
+# We do ignore the composer.lock file because this is updated by the recursive installation plugin, but do not ignore
+# the composer.lock files included in plugins.
+composer.phar
+/composer.lock
+# The composer.plugins.json contains the list of plugins which contain composer.json files.
+# It is created by the composer manager class.
+/composer.plugins.json

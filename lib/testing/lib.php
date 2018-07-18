@@ -179,68 +179,20 @@ function testing_error($errorcode, $text = '') {
  * @return void exit() if something goes wrong
  */
 function testing_update_composer_dependencies() {
-    // To restore the value after finishing.
-    $cwd = getcwd();
+    // Hard code a minimal configuration.
+    global $CFG;
+    $CFG = new stdClass();
+    $CFG->dirroot = dirname(dirname(__DIR__));
+    $CFG->libdir = "{$CFG->dirroot}/lib";
+    $CFG->admin = 'admin';
 
-    // Set some paths.
-    $dirroot = dirname(dirname(__DIR__));
-    $composerpath = $dirroot . DIRECTORY_SEPARATOR . 'composer.phar';
-    $composerurl = 'https://getcomposer.org/composer.phar';
+    defined('MOODLE_INTERNAL') || define('MOODLE_INTERNAL', true);
 
-    // Switch to Moodle's dirroot for easier path handling.
-    chdir($dirroot);
+    // Load the composer manager.
+    // We do not have autoloading capabilites.
+    require_once(dirname(__DIR__) . "/classes/composer/manager.php");
 
-    // Download or update composer.phar. Unfortunately we can't use the curl
-    // class in filelib.php as we're running within one of the test platforms.
-    if (!file_exists($composerpath)) {
-        $file = @fopen($composerpath, 'w');
-        if ($file === false) {
-            $errordetails = error_get_last();
-            $error = sprintf("Unable to create composer.phar\nPHP error: %s",
-                             $errordetails['message']);
-            testing_error(TESTING_EXITCODE_COMPOSER, $error);
-        }
-        $curl = curl_init();
-
-        curl_setopt($curl, CURLOPT_URL,  $composerurl);
-        curl_setopt($curl, CURLOPT_FILE, $file);
-        $result = curl_exec($curl);
-
-        $curlerrno = curl_errno($curl);
-        $curlerror = curl_error($curl);
-        $curlinfo = curl_getinfo($curl);
-
-        curl_close($curl);
-        fclose($file);
-
-        if (!$result) {
-            $error = sprintf("Unable to download composer.phar\ncURL error (%d): %s",
-                             $curlerrno, $curlerror);
-            testing_error(TESTING_EXITCODE_COMPOSER, $error);
-        } else if ($curlinfo['http_code'] === 404) {
-            if (file_exists($composerpath)) {
-                // Deleting the resource as it would contain HTML.
-                unlink($composerpath);
-            }
-            $error = sprintf("Unable to download composer.phar\n" .
-                                "404 http status code fetching $composerurl");
-            testing_error(TESTING_EXITCODE_COMPOSER, $error);
-        }
-    } else {
-        passthru("php composer.phar self-update", $code);
-        if ($code != 0) {
-            exit($code);
-        }
-    }
-
-    // Update composer dependencies.
-    passthru("php composer.phar install", $code);
-    if ($code != 0) {
-        exit($code);
-    }
-
-    // Return to our original location.
-    chdir($cwd);
+    return \core\composer\manager::install(true);
 }
 
 /**
