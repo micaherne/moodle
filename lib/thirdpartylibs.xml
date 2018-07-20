@@ -99,13 +99,6 @@
     <licenseversion>3.0</licenseversion>
   </library>
   <library>
-    <location>phpmailer</location>
-    <name>PHPMailer</name>
-    <license>LGPL</license>
-    <version>6.0.1</version>
-    <licenseversion>2.1</licenseversion>
-  </library>
-  <library>
     <location>simplepie</location>
     <name>SimplePie</name>
     <license>BSD</license>
