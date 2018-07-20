@@ -586,6 +586,7 @@ ini_set('include_path', $CFG->libdir.'/pear' . PATH_SEPARATOR . ini_get('include
 if (defined('COMPONENT_CLASSLOADER')) {
     spl_autoload_register(COMPONENT_CLASSLOADER);
 } else {
+    require_once($CFG->dirroot . '/vendor/autoload.php');
     spl_autoload_register('core_component::classloader');
 }
 

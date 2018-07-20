@@ -81,5 +81,7 @@ if (!empty($options['help'])) {
     exit(1);
 }
 
+\core\composer\manager::generate_autoload_json();
+
 // Run the composer update --locks, and install..
 \core\composer\manager::install(!empty($options['dev']));
