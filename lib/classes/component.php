@@ -107,6 +107,11 @@ class core_component {
     public static function classloader($classname) {
         self::init();
 
+        $composerautoload = dirname(dirname(__DIR__)) . '/vendor/autoload.php';
+        if (file_exists($composerautoload)) {
+            require_once($composerautoload);
+        }
+
         if (isset(self::$classmap[$classname])) {
             // Global $CFG is expected in included scripts.
             global $CFG;
