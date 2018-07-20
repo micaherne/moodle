@@ -77,6 +77,10 @@ if (!file_exists($configfile)) {
 // Include necessary libs
 require($configfile);
 
+// Load the composer manager and ensure that composer dependencies are installed.
+require_once($CFG->libdir.'/classes/composer/manager.php');
+\core\composer\manager::install();
+
 require_once($CFG->libdir.'/clilib.php');
 require_once($CFG->libdir.'/installlib.php');
 require_once($CFG->libdir.'/adminlib.php');

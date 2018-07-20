@@ -190,6 +190,10 @@ require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/componentlib.class.php');
 require_once($CFG->dirroot.'/cache/lib.php');
 
+// Load the composer manager and ensure that composer dependencies are installed.
+require_once($CFG->libdir.'/classes/composer/manager.php');
+\core\composer\manager::install();
+
 // Register our classloader, in theory somebody might want to replace it to load other hacked core classes.
 // Required because the database checks below lead to session interaction which is going to lead us to requiring autoloaded classes.
 if (defined('COMPONENT_CLASSLOADER')) {
