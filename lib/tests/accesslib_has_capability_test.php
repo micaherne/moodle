@@ -47,6 +47,9 @@ class accesslib_has_capability_testcase extends \advanced_testcase {
         global $DB;
 
         $this->resetAfterTest();
+
+        $this->skip_if_missing('block_online_users');
+
         set_config('contextlocking', 1);
 
         $generator = $this->getDataGenerator();
@@ -212,6 +215,9 @@ class accesslib_has_capability_testcase extends \advanced_testcase {
         global $DB;
 
         $this->resetAfterTest();
+
+        $this->skip_if_missing('block_online_users');
+
         set_config('contextlocking', 1);
         set_config('contextlockappliestoadmin', 0);
 
