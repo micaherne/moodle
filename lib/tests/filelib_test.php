@@ -631,6 +631,8 @@ class core_filelib_testcase extends advanced_testcase {
     public function test_prepare_draft_area() {
         global $USER, $DB;
 
+        $this->skip_if_missing('repository_user');
+
         $this->resetAfterTest(true);
 
         $generator = $this->getDataGenerator();
@@ -741,6 +743,8 @@ class core_filelib_testcase extends advanced_testcase {
      */
     public function test_delete_original_file_from_draft() {
         global $USER, $DB;
+
+        $this->skip_if_missing('repository_user');
 
         $this->resetAfterTest(true);
 

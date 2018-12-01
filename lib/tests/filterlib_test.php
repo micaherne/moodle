@@ -473,6 +473,9 @@ class core_filterlib_testcase extends advanced_testcase {
     }
 
     protected function setup_preload_activities_test() {
+
+        $this->skip_if_missing('mod_page');
+
         $this->syscontext = context_system::instance();
         $this->catcontext = context_coursecat::instance(1);
         $this->course = $this->getDataGenerator()->create_course(array('category'=>1));
@@ -607,6 +610,9 @@ class core_filterlib_testcase extends advanced_testcase {
     public function test_set() {
         global $CFG;
 
+        $this->skip_if_missing('filter_emailprotect');
+        $this->skip_if_missing('filter_tidy');
+
         $this->assertFileExists("$CFG->dirroot/filter/emailprotect"); // Any standard filter.
         $this->assertFileExists("$CFG->dirroot/filter/tidy");         // Any standard filter.
         $this->assertFileNotExists("$CFG->dirroot/filter/grgrggr");   // Any non-existent filter
@@ -632,6 +638,8 @@ class core_filterlib_testcase extends advanced_testcase {
     public function test_unset_to_empty() {
         global $CFG;
 
+        $this->skip_if_missing('filter_tidy');
+
         $this->assertFileExists("$CFG->dirroot/filter/tidy"); // Any standard filter.
 
         // Setup fixture.
@@ -646,6 +654,10 @@ class core_filterlib_testcase extends advanced_testcase {
 
     public function test_unset_multi() {
         global $CFG;
+
+        $this->skip_if_missing('filter_emailprotect');
+        $this->skip_if_missing('filter_tidy');
+        $this->skip_if_missing('filter_multilang');
 
         $this->assertFileExists("$CFG->dirroot/filter/emailprotect"); // Any standard filter.
         $this->assertFileExists("$CFG->dirroot/filter/tidy");         // Any standard filter.

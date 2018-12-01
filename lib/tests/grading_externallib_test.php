@@ -36,6 +36,8 @@ class core_grading_externallib_testcase extends externallib_advanced_testcase {
     public function test_get_definitions() {
         global $DB, $CFG, $USER;
 
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
         // Create a course and assignment.
         $coursedata['idnumber'] = 'idnumbercourse';
@@ -180,6 +182,8 @@ class core_grading_externallib_testcase extends externallib_advanced_testcase {
     public function test_get_gradingform_instances() {
         global $DB, $USER;
 
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
         // Create a course and assignment.
         $coursedata['idnumber'] = 'idnumbercourse';
@@ -307,6 +311,8 @@ class core_grading_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_save_definitions_rubric() {
         global $DB, $CFG, $USER;
+
+        $this->skip_if_missing('mod_assign');
 
         $this->resetAfterTest(true);
         // Create a course and assignment.
@@ -546,6 +552,8 @@ class core_grading_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_save_definitions_marking_guide() {
         global $DB, $CFG, $USER;
+
+        $this->skip_if_missing('mod_assign');
 
         $this->resetAfterTest(true);
         // Create a course and assignment.

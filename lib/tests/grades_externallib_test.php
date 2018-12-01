@@ -51,6 +51,8 @@ class core_grades_external_testcase extends externallib_advanced_testcase {
     protected function load_test_data($assignmentname, $student1rawgrade, $student2rawgrade) {
         global $DB;
 
+        $this->skip_if_missing('mod_assign');
+
         // Adds a course, a teacher, 2 students, an assignment and grades for the students.
         $course = $this->getDataGenerator()->create_course();
         $coursecontext = context_course::instance($course->id);

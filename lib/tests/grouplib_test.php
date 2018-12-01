@@ -563,6 +563,8 @@ class core_grouplib_testcase extends advanced_testcase {
     public function test_groups_group_visible() {
         global $CFG, $DB;
 
+        $this->skip_if_missing('mod_assign');
+
         $generator = $this->getDataGenerator();
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -746,6 +748,9 @@ class core_grouplib_testcase extends advanced_testcase {
 
     function test_groups_get_groupmode() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+
         $generator = $this->getDataGenerator();
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -1052,6 +1057,8 @@ class core_grouplib_testcase extends advanced_testcase {
      */
     public function test_groups_user_groups_visible() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_assign');
 
         $generator = $this->getDataGenerator();
         $this->resetAfterTest();
@@ -1578,6 +1585,9 @@ class core_grouplib_testcase extends advanced_testcase {
      * Tests for groups_get_activity_shared_group_members() method.
      */
     public function test_groups_get_activity_shared_group_members() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
         $generator = $this->getDataGenerator();
 

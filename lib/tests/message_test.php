@@ -132,6 +132,9 @@ class core_message_testcase extends advanced_testcase {
      */
     public function test_send_message() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('message_email');
+
         $this->preventResetByRollback();
         $this->resetAfterTest();
 

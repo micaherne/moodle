@@ -32,6 +32,8 @@ class core_gradelib_testcase extends advanced_testcase {
 
     public function test_grade_update_mod_grades() {
 
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
 
         // Create a broken module instance.

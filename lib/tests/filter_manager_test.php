@@ -52,6 +52,9 @@ class core_filter_manager_testcase extends advanced_testcase {
     }
 
     public function test_filter_normal() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         $this->assertRegExp('~^<p><img class="icon emoticon" alt="smile" title="smile" src="https://www.example.com/moodle/theme/image.php/_s/boost/core/1/s/smiley" /></p>$~',
@@ -59,6 +62,9 @@ class core_filter_manager_testcase extends advanced_testcase {
     }
 
     public function test_one_filter_disabled() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         $this->assertEquals('<p>:-)</p>',
@@ -66,6 +72,9 @@ class core_filter_manager_testcase extends advanced_testcase {
     }
 
     public function test_disabling_other_filter_does_not_break_it() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         $this->assertRegExp('~^<p><img class="icon emoticon" alt="smile" title="smile" src="https://www.example.com/moodle/theme/image.php/_s/boost/core/1/s/smiley" /></p>$~',
@@ -73,6 +82,10 @@ class core_filter_manager_testcase extends advanced_testcase {
     }
 
     public function test_one_filter_of_two_disabled() {
+
+        $this->skip_if_missing('filter_emoticon');
+        $this->skip_if_missing('filter_urltolink');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         filter_set_global_state('urltolink', TEXTFILTER_ON);

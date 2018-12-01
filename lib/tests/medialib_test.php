@@ -132,6 +132,12 @@ class core_medialib_testcase extends advanced_testcase {
      * Test for get_players
      */
     public function test_get_players() {
+
+        $this->skip_if_missing('media_youtube');
+        $this->skip_if_missing('media_html5audio');
+        $this->skip_if_missing('media_html5video');
+        $this->skip_if_missing('media_swf');
+
         // All players are initially disabled (except link, which you can't).
         $manager = core_media_manager::instance();
         $this->assertEmpty($this->get_players_test($manager));
@@ -161,6 +167,11 @@ class core_medialib_testcase extends advanced_testcase {
      * Test for can_embed_url
      */
     public function test_can_embed_url() {
+
+        $this->skip_if_missing('media_html5video');
+        $this->skip_if_missing('media_videojs');
+        $this->skip_if_missing('media_swf');
+
         // All players are initially disabled, so mp4 cannot be rendered.
         $url = new moodle_url('http://example.org/test.mp4');
         $manager = core_media_manager::instance();
@@ -192,6 +203,10 @@ class core_medialib_testcase extends advanced_testcase {
      * Checks multiple format/fallback support.
      */
     public function test_embed_url_fallbacks() {
+
+        $this->skip_if_missing('media_html5video');
+        $this->skip_if_missing('media_html5audio');
+        $this->skip_if_missing('media_swf');
 
         // Key strings in the embed code that identify with the media formats being tested.
         $swf = '</object>';
@@ -268,6 +283,9 @@ class core_medialib_testcase extends advanced_testcase {
      * Check SWF works including the special option required to enable it
      */
     public function test_embed_url_swf() {
+
+        $this->skip_if_missing('media_swf');
+
         \core\plugininfo\media::set_enabled_plugins('swf');
         $manager = core_media_manager::instance();
 
@@ -286,6 +304,8 @@ class core_medialib_testcase extends advanced_testcase {
      * Same as test_embed_url MP3 test, but for slash arguments.
      */
     public function test_slash_arguments() {
+
+        $this->skip_if_missing('media_html5audio');
 
         // Again we do not turn slasharguments actually on, because it has to
         // work regardless of the setting of that variable in case of handling
@@ -306,6 +326,9 @@ class core_medialib_testcase extends advanced_testcase {
      * Checks the EMBED_OR_BLANK option.
      */
     public function test_embed_or_blank() {
+
+        $this->skip_if_missing('media_html5audio');
+
         \core\plugininfo\media::set_enabled_plugins('html5audio');
         $manager = core_media_manager::instance();
         $this->pretend_to_be_firefox();
@@ -331,6 +354,8 @@ class core_medialib_testcase extends advanced_testcase {
      */
     public function test_embed_url_size() {
         global $CFG;
+
+        $this->skip_if_missing('media_html5video');
 
         // Technically this could break in every format and they handle size
         // in several different ways, but I'm too lazy to test it in every
@@ -363,6 +388,9 @@ class core_medialib_testcase extends advanced_testcase {
      * name support in html5video output.
      */
     public function test_embed_url_name() {
+
+        $this->skip_if_missing('media_html5video');
+
         // As for size this could break in every format but I'm only testing
         // html5video.
         \core\plugininfo\media::set_enabled_plugins('html5video');
@@ -419,6 +447,9 @@ class core_medialib_testcase extends advanced_testcase {
      * Test for embed_alternatives (with multiple urls)
      */
     public function test_embed_alternatives() {
+
+        $this->skip_if_missing('media_html5video');
+
         // Most aspects of this are same as single player so let's just try
         // a single typical / complicated scenario.
 
