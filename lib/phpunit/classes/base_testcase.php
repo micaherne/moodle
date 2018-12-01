@@ -571,4 +571,10 @@ abstract class base_testcase extends PHPUnit\Framework\TestCase {
     }
 
     // @codingStandardsIgnoreEnd
+
+    protected function skip_if_missing($component) {
+        if (is_null(\core_component::get_component_directory($component))) {
+            $this->markTestSkipped("Required component $component not found");
+        }
+    }
 }
