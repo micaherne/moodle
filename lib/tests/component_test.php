@@ -393,6 +393,8 @@ class core_component_testcase extends advanced_testcase {
     public function test_get_subtype_parent() {
         global $CFG;
 
+        $this->skip_if_missing('mod_assign');
+
         $this->assertNull(core_component::get_subtype_parent('mod'));
 
         // Any plugin with more subtypes is ok here.
@@ -404,6 +406,8 @@ class core_component_testcase extends advanced_testcase {
 
     public function test_get_subplugins() {
         global $CFG;
+
+        $this->skip_if_missing('mod_assign');
 
         // Any plugin with more subtypes is ok here.
         $this->assertFileExists("$CFG->dirroot/mod/assign/db/subplugins.php");
@@ -474,6 +478,11 @@ class core_component_testcase extends advanced_testcase {
     }
 
     public function test_get_component_classes_int_namespace() {
+
+        $this->skip_if_missing('auth_cas');
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('tool_mobile');
+        $this->skip_if_missing('tool_filetypes');
 
         // Unexisting.
         $this->assertCount(0, core_component::get_component_classes_in_namespace('core_unexistingcomponent', 'something'));
@@ -785,6 +794,10 @@ class core_component_testcase extends advanced_testcase {
      */
     public function test_get_component_list_contains_all_components() {
         global $CFG;
+
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('tool_usertours');
+
         $componentslist = \core_component::get_component_list();
 
         // We should have an entry for each plugin type, and one additional for 'core'.
@@ -811,6 +824,10 @@ class core_component_testcase extends advanced_testcase {
      */
     public function test_get_component_names() {
         global $CFG;
+
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('tool_usertours');
+
         $componentnames = \core_component::get_component_names();
 
         // We should have an entry for each plugin type.
