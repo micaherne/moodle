@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 class core_messagelib_testcase extends advanced_testcase {
 
     public function test_message_provider_disabled() {
+
+        $this->skip_if_missing('message_email');
+
         $this->resetAfterTest();
         $this->preventResetByRollback();
 
@@ -69,6 +72,9 @@ class core_messagelib_testcase extends advanced_testcase {
     }
     public function test_message_get_providers_for_user() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_quiz');
 
         $this->resetAfterTest();
 
@@ -122,6 +128,8 @@ class core_messagelib_testcase extends advanced_testcase {
 
     public function test_message_get_providers_for_user_more() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
 
         $this->resetAfterTest();
 
@@ -388,6 +396,10 @@ class core_messagelib_testcase extends advanced_testcase {
 
     public function test_send_message() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('message_email');
+        $this->skip_if_missing('message_popup');
+
         $this->preventResetByRollback();
         $this->resetAfterTest();
 
@@ -746,6 +758,9 @@ class core_messagelib_testcase extends advanced_testcase {
      */
     public function test_message_send_to_conversation_individual() {
         global $DB;
+
+        $this->skip_if_missing('message_email');
+
         $this->preventResetByRollback();
         $this->resetAfterTest();
 
@@ -899,6 +914,10 @@ class core_messagelib_testcase extends advanced_testcase {
      */
     public function test_send_message_to_conversation_group_with_buffering() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('message_email');
+        $this->skip_if_missing('message_popup');
+
         $this->preventResetByRollback();
         $this->resetAfterTest();
 
@@ -959,6 +978,8 @@ class core_messagelib_testcase extends advanced_testcase {
 
     public function test_rollback() {
         global $DB;
+
+        $this->skip_if_missing('message_email');
 
         $this->resetAfterTest();
         $this->preventResetByRollback();
@@ -1022,6 +1043,8 @@ class core_messagelib_testcase extends advanced_testcase {
     public function test_forced_rollback() {
         global $DB;
 
+        $this->skip_if_missing('message_email');
+
         $this->resetAfterTest();
         $this->preventResetByRollback();
         set_config('noemailever', 1);
@@ -1065,6 +1088,9 @@ class core_messagelib_testcase extends advanced_testcase {
 
     public function test_message_attachment_send() {
         global $CFG;
+
+        $this->skip_if_missing('message_email');
+
         $this->preventResetByRollback();
         $this->resetAfterTest();
 

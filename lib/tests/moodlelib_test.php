@@ -2755,6 +2755,9 @@ class core_moodlelib_testcase extends advanced_testcase {
      * the user table and fire event.
      */
     public function test_update_internal_user_password_no_cache() {
+
+        $this->skip_if_missing('auth_cas');
+
         $this->resetAfterTest();
 
         $user = $this->getDataGenerator()->create_user(array('auth' => 'cas'));
@@ -2770,6 +2773,9 @@ class core_moodlelib_testcase extends advanced_testcase {
      * says not to cache it.  Then it should update.
      */
     public function test_update_internal_user_password_update_no_cache() {
+
+        $this->skip_if_missing('auth_cas');
+
         $this->resetAfterTest();
 
         $user = $this->getDataGenerator()->create_user(array('password' => 'test'));

@@ -643,6 +643,9 @@ class core_user_testcase extends advanced_testcase {
      */
     public function test_get_property_choices() {
 
+        $this->skip_if_missing('theme_bootstrapbase');
+        $this->skip_if_missing('theme_clean');
+
         // Test against country property choices.
         $choices = core_user::get_property_choices('country');
         $this->assertArrayHasKey('AU', $choices);

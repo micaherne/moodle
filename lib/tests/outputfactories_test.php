@@ -36,10 +36,16 @@ class core_outputfactories_testcase extends advanced_testcase {
 
     public function test_nonautoloaded_classnames() {
         global $PAGE;
+
+        $this->skip_if_missing('mod_assign');
+
         $renderer = $PAGE->get_renderer('mod_assign');
     }
 
     public function test_autoloaded_classnames() {
+
+        $this->skip_if_missing('mod_assign');
+
         $testfactory = new test_output_factory();
         $component = 'mod_assign';
         $subtype = 'custom';

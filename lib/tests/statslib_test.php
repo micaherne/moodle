@@ -295,6 +295,8 @@ class core_statslib_testcase extends advanced_testcase {
     public function test_statslib_get_start_from() {
         global $CFG, $DB;
 
+        $this->skip_if_missing('logstore_standard');
+
         $dataset = $this->load_xml_data_file(__DIR__."/fixtures/statslib-test01.xml");
         $DB->delete_records('log');
 
@@ -427,6 +429,10 @@ class core_statslib_testcase extends advanced_testcase {
      *       defaults for a new Moodle 2.3 install.
      */
     public function test_statslib_get_action_names() {
+
+        // TODO: There are likely to be other mods contributing actions.
+        $this->skip_if_missing('mod_forum');
+
         $basepostactions = array (
             0 => 'add',
             1 => 'delete',
@@ -536,6 +542,9 @@ class core_statslib_testcase extends advanced_testcase {
      */
     public function test_statslib_temp_table_fill() {
         global $CFG, $DB, $USER;
+
+        $this->skip_if_missing('logstore_standard');
+        $this->skip_if_missing('tool_log');
 
         $dataset = $this->load_xml_data_file(__DIR__."/fixtures/statslib-test09.xml");
 

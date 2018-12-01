@@ -378,6 +378,9 @@ class core_moodle_page_testcase extends advanced_testcase {
     }
 
     public function test_set_cm() {
+
+        $this->skip_if_missing('mod_forum');
+
         // Setup fixture.
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
@@ -401,6 +404,9 @@ class core_moodle_page_testcase extends advanced_testcase {
     }
 
     public function test_setting_cm_sets_context() {
+
+        $this->skip_if_missing('mod_forum');
+
         // Setup fixture.
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
@@ -412,6 +418,9 @@ class core_moodle_page_testcase extends advanced_testcase {
     }
 
     public function test_activity_record_loaded_if_not_set() {
+
+        $this->skip_if_missing('mod_forum');
+
         // Setup fixture.
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
@@ -424,6 +433,9 @@ class core_moodle_page_testcase extends advanced_testcase {
     }
 
     public function test_set_activity_record() {
+
+        $this->skip_if_missing('mod_forum');
+
         // Setup fixture.
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
@@ -440,6 +452,9 @@ class core_moodle_page_testcase extends advanced_testcase {
      * @expectedException coding_exception
      */
     public function test_cannot_set_inconsistent_activity_record_course() {
+
+        $this->skip_if_missing('mod_forum');
+
         // Setup fixture.
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
@@ -454,6 +469,9 @@ class core_moodle_page_testcase extends advanced_testcase {
      * @expectedException coding_exception
      */
     public function test_cannot_set_inconsistent_activity_record_instance() {
+
+        $this->skip_if_missing('mod_forum');
+
         // Setup fixture.
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
@@ -465,6 +483,9 @@ class core_moodle_page_testcase extends advanced_testcase {
     }
 
     public function test_setting_cm_sets_course() {
+
+        $this->skip_if_missing('mod_forum');
+
         // Setup fixture.
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
@@ -476,6 +497,9 @@ class core_moodle_page_testcase extends advanced_testcase {
     }
 
     public function test_set_cm_with_course_and_activity_no_db() {
+
+        $this->skip_if_missing('mod_forum');
+
         // Setup fixture.
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
@@ -494,6 +518,9 @@ class core_moodle_page_testcase extends advanced_testcase {
      * @expectedException coding_exception
      */
     public function test_cannot_set_cm_with_inconsistent_course() {
+
+        $this->skip_if_missing('mod_forum');
+
         // Setup fixture.
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
@@ -504,6 +531,9 @@ class core_moodle_page_testcase extends advanced_testcase {
     }
 
     public function test_get_activity_name() {
+
+        $this->skip_if_missing('mod_forum');
+
         // Setup fixture.
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course'=>$course->id));
@@ -722,6 +752,11 @@ class core_moodle_page_testcase extends advanced_testcase {
      * @return array
      */
     public function get_user_theme_provider() {
+
+        $this->skip_if_missing('theme_boost');
+        $this->skip_if_missing('theme_clean');
+        $this->skip_if_missing('theme_more');
+
         return [
             'User not a member of any cohort' => [
                 'usertheme' => '',

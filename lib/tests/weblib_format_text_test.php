@@ -35,6 +35,9 @@ defined('MOODLE_INTERNAL') || die();
 class core_weblib_format_text_testcase extends advanced_testcase {
 
     public function test_format_text_format_html() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         $this->assertRegExp('~^<p><img class="icon emoticon" alt="smile" title="smile" ' .
@@ -43,6 +46,9 @@ class core_weblib_format_text_testcase extends advanced_testcase {
     }
 
     public function test_format_text_format_html_no_filters() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         $this->assertEquals('<p>:-)</p>',
@@ -50,6 +56,9 @@ class core_weblib_format_text_testcase extends advanced_testcase {
     }
 
     public function test_format_text_format_plain() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         // Note FORMAT_PLAIN does not filter ever, no matter we ask for filtering.
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
@@ -58,6 +67,9 @@ class core_weblib_format_text_testcase extends advanced_testcase {
     }
 
     public function test_format_text_format_plain_no_filters() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         $this->assertEquals(':-)',
@@ -65,6 +77,9 @@ class core_weblib_format_text_testcase extends advanced_testcase {
     }
 
     public function test_format_text_format_markdown() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         $this->assertRegExp('~^<p><em><img class="icon emoticon" alt="smile" title="smile" ' .
@@ -74,6 +89,9 @@ class core_weblib_format_text_testcase extends advanced_testcase {
     }
 
     public function test_format_text_format_markdown_nofilter() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         $this->assertEquals("<p><em>:-)</em></p>\n",
@@ -81,6 +99,9 @@ class core_weblib_format_text_testcase extends advanced_testcase {
     }
 
     public function test_format_text_format_moodle() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         $this->assertRegExp('~^<div class="text_to_html"><p>' .
@@ -90,6 +111,9 @@ class core_weblib_format_text_testcase extends advanced_testcase {
     }
 
     public function test_format_text_format_moodle_no_filters() {
+
+        $this->skip_if_missing('filter_emoticon');
+
         $this->resetAfterTest();
         filter_set_global_state('emoticon', TEXTFILTER_ON);
         $this->assertEquals('<div class="text_to_html"><p>:-)</p></div>',

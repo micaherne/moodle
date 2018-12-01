@@ -131,6 +131,9 @@ class core_plugin_manager_testcase extends advanced_testcase {
     }
 
     public function test_get_plugins() {
+
+        $this->skip_if_missing('mod_forum');
+
         $plugininfos1 = core_plugin_manager::instance()->get_plugins();
         foreach ($plugininfos1 as $type => $infos) {
             foreach ($infos as $name => $info) {
@@ -177,6 +180,8 @@ class core_plugin_manager_testcase extends advanced_testcase {
     public function test_get_subplugins_of_plugin() {
         global $CFG;
 
+        $this->skip_if_missing('editor_tinymce');
+
         // Any standard plugin with subplugins is suitable.
         $this->assertFileExists("$CFG->dirroot/lib/editor/tinymce", 'TinyMCE is not present.');
 
@@ -195,6 +200,8 @@ class core_plugin_manager_testcase extends advanced_testcase {
     public function test_get_parent_of_subplugin() {
         global $CFG;
 
+        $this->skip_if_missing('editor_tinymce');
+
         // Any standard plugin with subplugins is suitable.
         $this->assertFileExists("$CFG->dirroot/lib/editor/tinymce", 'TinyMCE is not present.');
 
@@ -204,6 +211,8 @@ class core_plugin_manager_testcase extends advanced_testcase {
 
     public function test_plugin_name() {
         global $CFG;
+
+        $this->skip_if_missing('editor_tinymce');
 
         // Any standard plugin is suitable.
         $this->assertFileExists("$CFG->dirroot/lib/editor/tinymce", 'TinyMCE is not present.');
@@ -225,6 +234,8 @@ class core_plugin_manager_testcase extends advanced_testcase {
     public function test_get_plugin_info() {
         global $CFG;
 
+        $this->skip_if_missing('editor_tinymce');
+
         // Any standard plugin is suitable.
         $this->assertFileExists("$CFG->dirroot/lib/editor/tinymce", 'TinyMCE is not present.');
 
@@ -234,6 +245,9 @@ class core_plugin_manager_testcase extends advanced_testcase {
 
     public function test_can_uninstall_plugin() {
         global $CFG;
+
+        $this->skip_if_missing('report_competency');
+        $this->skip_if_missing('tool_lp');
 
         // Any standard plugin that is required by some other standard plugin is ok.
         $this->assertFileExists("$CFG->dirroot/report/competency", 'competency report is not present');
@@ -245,6 +259,10 @@ class core_plugin_manager_testcase extends advanced_testcase {
 
     public function test_plugin_states() {
         global $CFG;
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         // Any standard plugin that is ok.

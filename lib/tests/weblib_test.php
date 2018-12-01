@@ -71,6 +71,8 @@ class core_weblib_testcase extends advanced_testcase {
     public function test_format_string_static_caching_with_filters() {
         global $CFG;
 
+        $this->skip_if_missing('filter_censor');
+
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $generator = $this->getDataGenerator();

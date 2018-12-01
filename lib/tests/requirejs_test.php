@@ -41,6 +41,8 @@ class core_requirejs_testcase extends advanced_testcase {
     public function test_requirejs() {
         global $CFG;
 
+        $this->skip_if_missing('mod_assign');
+
         // Find a core module.
         $result = core_requirejs::find_one_amd_module('core', 'templates', false);
         $expected = ['core/templates' => $CFG->dirroot . '/lib/amd/build/templates.min.js'];

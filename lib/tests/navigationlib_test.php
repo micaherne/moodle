@@ -307,6 +307,9 @@ class core_navigationlib_testcase extends advanced_testcase {
     }
 
     public function test_module_extends_navigation() {
+
+        $this->skip_if_missing('mod_data');
+
         $node = new exposed_global_navigation();
         // Create an initial tree structure to work with.
         $cat1 = $node->add('category 1', null, navigation_node::TYPE_CATEGORY, null, 'cat1');

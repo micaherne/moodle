@@ -36,6 +36,8 @@ class core_output_mustache_template_finder_testcase extends advanced_testcase {
     public function test_get_template_directories_for_component() {
         global $CFG;
 
+        $this->skip_if_missing('mod_assign');
+
         // Test a plugin.
         $dirs = mustache_template_finder::get_template_directories_for_component('mod_assign', 'clean');
 
@@ -83,6 +85,8 @@ class core_output_mustache_template_finder_testcase extends advanced_testcase {
     public function test_get_template_filepath() {
         global $CFG;
 
+        $this->skip_if_missing('theme_clean');
+
         $filename = mustache_template_finder::get_template_filepath('core/pix_icon', 'clean');
         $correct = $CFG->dirroot . '/lib/templates/pix_icon.mustache';
         $this->assertSame($correct, $filename);
@@ -92,6 +96,9 @@ class core_output_mustache_template_finder_testcase extends advanced_testcase {
      * @expectedException moodle_exception
      */
     public function test_invalid_get_template_filepath() {
+
+        $this->skip_if_missing('theme_clean');
+
         // Test something invalid.
         $dirs = mustache_template_finder::get_template_filepath('core/octopus', 'clean');
     }

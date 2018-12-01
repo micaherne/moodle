@@ -79,6 +79,8 @@ class core_upgradelib_testcase extends advanced_testcase {
     public function test_upgrade_extra_credit_weightoverride() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
 
         require_once($CFG->libdir . '/db/upgradelib.php');
@@ -348,6 +350,9 @@ class core_upgradelib_testcase extends advanced_testcase {
      */
     public function test_upgrade_course_letter_boundary() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
 
         require_once($CFG->libdir . '/db/upgradelib.php');
@@ -789,6 +794,10 @@ class core_upgradelib_testcase extends advanced_testcase {
     public function test_upgrade_find_theme_location() {
         global $CFG;
 
+        $this->skip_if_missing('theme_boost');
+        $this->skip_if_missing('theme_bootstrapbase');
+        $this->skip_if_missing('theme_clean');
+
         $this->resetAfterTest();
 
         $CFG->themedir = $this->create_testthemes();
@@ -806,6 +815,10 @@ class core_upgradelib_testcase extends advanced_testcase {
      */
     public function test_upgrade_theme_is_from_family() {
         global $CFG;
+
+        $this->skip_if_missing('theme_boost');
+        $this->skip_if_missing('theme_bootstrapbase');
+        $this->skip_if_missing('theme_clean');
 
         $this->resetAfterTest();
 

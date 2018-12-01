@@ -37,6 +37,8 @@ class core_modinfolib_testcase extends advanced_testcase {
     public function test_section_info_properties() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
         $oldcfgenableavailability = $CFG->enableavailability;
         $oldcfgenablecompletion = $CFG->enablecompletion;
@@ -104,6 +106,8 @@ class core_modinfolib_testcase extends advanced_testcase {
 
     public function test_cm_info_properties() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('mod_forum');
 
         $this->resetAfterTest();
         $oldcfgenableavailability = $CFG->enableavailability;
@@ -332,6 +336,10 @@ class core_modinfolib_testcase extends advanced_testcase {
     public function test_course_modinfo_properties() {
         global $USER, $DB;
 
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
+
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -416,6 +424,8 @@ class core_modinfolib_testcase extends advanced_testcase {
 
         $this->resetAfterTest();
 
+        $this->skip_if_missing('mod_assign');
+
         // Create a course and a mod_assign instance.
         $course = $this->getDataGenerator()->create_course();
         $assign = $this->getDataGenerator()->create_module('assign', array('course'=>$course->id));
@@ -471,6 +481,10 @@ class core_modinfolib_testcase extends advanced_testcase {
      */
     public function test_cm_info_get_course_module_record() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_book');
+        $this->skip_if_missing('mod_forum');
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -583,6 +597,8 @@ class core_modinfolib_testcase extends advanced_testcase {
     public function test_availability_property() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         // Create a course with two modules and three sections.
@@ -691,6 +707,9 @@ class core_modinfolib_testcase extends advanced_testcase {
      */
     public function test_create() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_page');
+
         $this->resetAfterTest();
 
         // Create a course and an activity.
@@ -750,6 +769,10 @@ class core_modinfolib_testcase extends advanced_testcase {
      */
     public function test_get_course_and_cm_from_cmid() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
+
         $this->resetAfterTest();
 
         // Create a course and an activity.
@@ -843,6 +866,9 @@ class core_modinfolib_testcase extends advanced_testcase {
      */
     public function test_get_course_and_cm_from_instance() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_page');
+
         $this->resetAfterTest();
 
         // Create a course and an activity.
