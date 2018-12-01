@@ -405,6 +405,8 @@ class core_grades_privacy_testcase extends provider_testcase {
     public function test_delete_data_for_all_users_in_context() {
         global $DB;
 
+        $this->skip_if_missing('mod_assign');
+
         $fs = new file_storage();
 
         $dg = $this->getDataGenerator();
@@ -644,6 +646,8 @@ class core_grades_privacy_testcase extends provider_testcase {
 
     public function test_delete_data_for_user() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
 
         $fs = new file_storage();
 
@@ -965,6 +969,9 @@ class core_grades_privacy_testcase extends provider_testcase {
     }
 
     public function test_export_data_for_user_about_grades_and_history() {
+
+        $this->skip_if_missing('mod_assign');
+
         $dg = $this->getDataGenerator();
 
         $c1 = $dg->create_course();

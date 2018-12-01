@@ -999,6 +999,9 @@ class core_files_file_storage_testcase extends advanced_testcase {
     }
 
     public function test_move_area_files_to_new_context() {
+
+        $this->skip_if_missing('mod_page');
+
         $this->resetAfterTest(true);
 
         // Create a course with a page resource.

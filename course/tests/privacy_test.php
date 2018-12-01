@@ -175,6 +175,8 @@ class core_course_privacy_testcase extends \core_privacy\tests\provider_testcase
     public function test_export_context_data_module_context_only() {
         $this->resetAfterTest();
 
+        $this->skip_if_missing('mod_assign');
+
         // Create a course and a single module.
         $course1 = $this->getDataGenerator()->create_course(['fullname' => 'Course 1', 'shortname' => 'C1']);
         $context1 = context_course::instance($course1->id);
@@ -203,6 +205,9 @@ class core_course_privacy_testcase extends \core_privacy\tests\provider_testcase
      * contextual information is present in the export.
      */
     public function test_export_context_data_course_and_module_contexts() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
 
         // Create a course and a single module.

@@ -69,6 +69,9 @@ class core_grade_reportlib_testcase extends advanced_testcase {
     public function test_blank_hidden_total_and_adjust_bounds() {
         global $DB;
 
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
 
         $student = $this->getDataGenerator()->create_user();

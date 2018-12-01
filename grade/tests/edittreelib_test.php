@@ -46,6 +46,8 @@ class core_grade_edittreelib_testcase extends advanced_testcase {
     public function test_grade_edit_tree_column_range_get_item_cell() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
 
         // Make some things we need.

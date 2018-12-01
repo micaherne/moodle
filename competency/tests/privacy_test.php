@@ -392,6 +392,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_get_contexts_for_userid_with_usermodified_for_module() {
+
+        $this->skip_if_missing('mod_choice');
+
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
         $c1 = $dg->create_course();
@@ -425,6 +428,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_get_users_in_context_with_usermodified_for_module() {
+
+        $this->skip_if_missing('mod_choice');
+
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
         $c1 = $dg->create_course();
@@ -1423,6 +1429,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_export_data_for_user_in_module_context_where_usermodified_matches() {
+
+        $this->skip_if_missing('mod_page');
+
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
 

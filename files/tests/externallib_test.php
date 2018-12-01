@@ -159,6 +159,8 @@ class core_files_externallib_testcase extends advanced_testcase {
     public function test_get_files() {
         global $USER, $DB;
 
+        $this->skip_if_missing('mod_data');
+
         $this->resetAfterTest();
 
         // Set the current user to be the administrator.

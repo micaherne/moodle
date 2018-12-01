@@ -264,6 +264,9 @@ class core_grading_privacy_testcase extends provider_testcase {
      */
     public function test_export_item_data() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('assign', ['course' => $course]);
@@ -309,6 +312,9 @@ class core_grading_privacy_testcase extends provider_testcase {
      */
     public function test_delete_instance_data() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('assign', ['course' => $course]);
@@ -368,6 +374,9 @@ class core_grading_privacy_testcase extends provider_testcase {
      */
     public function test_delete_data_for_instances() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('assign', ['course' => $course]);

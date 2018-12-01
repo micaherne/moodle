@@ -590,6 +590,8 @@ class core_group_externallib_testcase extends externallib_advanced_testcase {
     public function test_get_activity_allowed_groups() {
         global $DB;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
 
         $generator = self::getDataGenerator();
@@ -689,6 +691,8 @@ class core_group_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_get_activity_groupmode() {
         global $DB;
+
+        $this->skip_if_missing('mod_forum');
 
         $this->resetAfterTest(true);
 

@@ -33,6 +33,10 @@ require_once($CFG->dirroot.'/grade/querylib.php');
 class core_grade_querylib_testcase extends advanced_testcase {
 
     public function test_grade_get_gradable_activities() {
+
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
 
         $course = $this->getDataGenerator()->create_course();
@@ -52,6 +56,9 @@ class core_grade_querylib_testcase extends advanced_testcase {
     }
 
     public function test_grade_get_grade_items_for_activity() {
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
 
         $course = $this->getDataGenerator()->create_course();

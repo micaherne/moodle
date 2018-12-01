@@ -100,6 +100,8 @@ class core_tag_taglib_testcase extends advanced_testcase {
     public function test_add_tag_ordering_calculation() {
         global $DB;
 
+        $this->skip_if_missing('mod_book');
+
         $user1 = $this->getDataGenerator()->create_user();
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();

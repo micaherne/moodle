@@ -87,6 +87,9 @@ class random_question_loader_testcase extends advanced_testcase {
     }
 
     public function test_random_questions_not_returned() {
+
+        $this->skip_if_missing('mod_quiz');
+
         $this->resetAfterTest();
         $this->setAdminUser();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');

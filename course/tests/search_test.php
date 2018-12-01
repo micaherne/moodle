@@ -110,6 +110,8 @@ class course_search_testcase extends advanced_testcase {
     public function test_mycourses_indexing_contexts() {
         global $DB, $USER, $SITE;
 
+        $this->skip_if_missing('mod_forum');
+
         $searcharea = \core_search\manager::get_search_area($this->mycoursesareaid);
 
         // Create some courses in categories, and a forum.
@@ -252,6 +254,8 @@ class course_search_testcase extends advanced_testcase {
      */
     public function test_section_indexing() {
         global $DB, $USER;
+
+        $this->skip_if_missing('mod_forum');
 
         // Returns the instance as long as the area is supported.
         $searcharea = \core_search\manager::get_search_area($this->sectionareaid);

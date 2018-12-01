@@ -45,6 +45,9 @@ class core_rating_externallib_testcase extends externallib_advanced_testcase {
      */
     public function setUp() {
         global $DB;
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         $this->course = self::getDataGenerator()->create_course();

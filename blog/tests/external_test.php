@@ -46,6 +46,9 @@ class core_blog_external_testcase extends advanced_testcase {
 
     protected function setUp() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('mod_page');
+
         parent::setUp();
 
         $this->resetAfterTest();
@@ -382,6 +385,8 @@ class core_blog_external_testcase extends advanced_testcase {
      */
     public function test_get_entries_filtering_by_module() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_page');
 
         $DB->set_field('post', 'publishstate', 'site', array('id' => $this->postid));
 

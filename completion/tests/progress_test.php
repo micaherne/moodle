@@ -51,6 +51,10 @@ class core_completion_progress_testcase extends advanced_testcase {
     public function test_course_progress_percentage_with_just_activities() {
         global $DB;
 
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_forum');
+        
         // Add a course that supports completion.
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
 
@@ -89,6 +93,10 @@ class core_completion_progress_testcase extends advanced_testcase {
      */
     public function test_course_progress_percentage_with_activities_and_course() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_forum');
 
         // Add a course that supports completion.
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
@@ -142,6 +150,9 @@ class core_completion_progress_testcase extends advanced_testcase {
      * Tests that the course progress returns null when there are no activities that support it.
      */
     public function test_course_progress_no_activities_using_completion() {
+
+        $this->skip_if_missing('mod_assign');
+
         // Create a course that does support completion.
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
 

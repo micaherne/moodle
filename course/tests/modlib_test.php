@@ -82,6 +82,9 @@ class core_course_modlib_testcase extends advanced_testcase {
      */
     public function test_get_moduleinfo_data() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $course = self::getDataGenerator()->create_course();

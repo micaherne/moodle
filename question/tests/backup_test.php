@@ -102,6 +102,8 @@ class core_question_backup_testcase extends advanced_testcase {
     public function test_backup_question_tags() {
         global $DB;
 
+        $this->skip_if_missing('mod_quiz');
+
         $this->resetAfterTest();
         $this->setAdminUser();
 

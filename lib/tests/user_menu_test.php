@@ -79,6 +79,8 @@ test
     public function test_custom_user_menu($data, $entrycount, $dividercount) {
         global $CFG, $OUTPUT, $USER, $PAGE;
 
+        $this->skip_if_missing('theme_clean');
+
         // Must reset because of config and user modifications.
         $this->resetAfterTest(true);
 

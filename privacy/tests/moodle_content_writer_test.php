@@ -621,6 +621,8 @@ class moodle_content_writer_test extends advanced_testcase {
     public function test_export_user_preference_context_module($component, $key, $value, $desc) {
         global $DB;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
@@ -684,6 +686,8 @@ class moodle_content_writer_test extends advanced_testcase {
      */
     public function test_export_user_preference_context_block_multiple_instances() {
         $this->resetAfterTest();
+
+        $this->skip_if_missing('block_online_users');
 
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
@@ -1225,6 +1229,8 @@ class moodle_content_writer_test extends advanced_testcase {
 
     public function test_export_html_functions() {
         $this->resetAfterTest();
+
+        $this->skip_if_missing('mod_chat');
 
         $data = (object) ['key' => 'value'];
 

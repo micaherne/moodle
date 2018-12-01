@@ -65,6 +65,10 @@ class core_role_privacy_testcase extends provider_testcase {
     public function test_get_contexts_for_userid() {
         global $DB;
 
+        $this->skip_if_missing('block_online_users');
+        $this->skip_if_missing('mod_chat');
+        $this->skip_if_missing('mod_page');
+
         $this->resetAfterTest();
         $this->setAdminUser();
         $user = $this->getDataGenerator()->create_user();
@@ -114,6 +118,10 @@ class core_role_privacy_testcase extends provider_testcase {
      */
     public function test_export_user_data() {
         global $DB;
+
+        $this->skip_if_missing('block_online_users');
+        $this->skip_if_missing('mod_chat');
+        $this->skip_if_missing('mod_page');
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -243,6 +251,9 @@ class core_role_privacy_testcase extends provider_testcase {
     public function test_delete_data_for_all_users_in_context() {
         global $DB;
 
+        $this->skip_if_missing('block_online_users');
+        $this->skip_if_missing('mod_chat');
+
         $this->resetAfterTest();
         $this->setAdminUser();
         $user = $this->getDataGenerator()->create_user();
@@ -328,6 +339,9 @@ class core_role_privacy_testcase extends provider_testcase {
      */
     public function test_delete_data_for_user() {
         global $DB;
+
+        $this->skip_if_missing('block_online_users');
+        $this->skip_if_missing('mod_chat');
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -476,6 +490,9 @@ class core_role_privacy_testcase extends provider_testcase {
     public function test_get_users_in_context() {
         global $DB;
 
+        $this->skip_if_missing('block_online_users');
+        $this->skip_if_missing('mod_chat');
+
         $this->resetAfterTest();
 
         $component = 'core_role';
@@ -596,6 +613,9 @@ class core_role_privacy_testcase extends provider_testcase {
      */
     public function test_delete_data_for_users() {
         global $DB;
+
+        $this->skip_if_missing('mod_chat');
+        $this->skip_if_missing('block_online_users');
 
         $this->resetAfterTest();
 

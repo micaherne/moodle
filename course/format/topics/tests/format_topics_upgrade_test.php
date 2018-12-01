@@ -101,6 +101,8 @@ class format_topics_upgrade_testcase extends advanced_testcase {
     public function test_numsections_hide_non_empty() {
         global $DB;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
 
         $params = array('format' => 'topics', 'numsections' => 5, 'startdate' => 1445644800);

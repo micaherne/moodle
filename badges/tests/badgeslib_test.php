@@ -43,6 +43,9 @@ class core_badges_badgeslib_testcase extends advanced_testcase {
 
     protected function setUp() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
         $CFG->enablecompletion = true;
         $user = $this->getDataGenerator()->create_user();

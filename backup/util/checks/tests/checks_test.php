@@ -41,6 +41,9 @@ class backup_check_testcase extends advanced_testcase {
 
     protected function setUp() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('mod_page');
+
         parent::setUp();
 
         $this->resetAfterTest(true);

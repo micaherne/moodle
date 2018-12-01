@@ -41,6 +41,9 @@ class request_helper_test extends advanced_testcase {
      * Test that basic module data is returned.
      */
     public function test_get_context_data_context_module() {
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         // Setup.
@@ -78,6 +81,9 @@ class request_helper_test extends advanced_testcase {
      * Test that basic block data is returned.
      */
     public function test_get_context_data_context_block() {
+
+        $this->skip_if_missing('block_online_users');
+
         $this->resetAfterTest();
 
         // Setup.
@@ -98,6 +104,8 @@ class request_helper_test extends advanced_testcase {
      */
     public function test_get_context_data_context_module_completion() {
         $this->resetAfterTest();
+
+        $this->skip_if_missing('mod_assign');
 
         // Create a module and set completion.
         $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
@@ -130,6 +138,9 @@ class request_helper_test extends advanced_testcase {
      * Test that when there are no files to export for a course module context, nothing is exported.
      */
     public function test_export_context_files_context_module_no_files() {
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         // Setup.
@@ -172,6 +183,9 @@ class request_helper_test extends advanced_testcase {
      * Test that when there are files to export for a course context, the files are exported.
      */
     public function test_export_context_files_context_course_intro_files() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
 
         // Setup.

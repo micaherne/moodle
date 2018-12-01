@@ -306,6 +306,8 @@ class core_backup_privacy_provider_testcase extends \core_privacy\tests\provider
     public function test_get_users_in_context() {
         global $DB;
 
+        $this->skip_if_missing('mod_chat');
+
         $this->resetAfterTest();
 
         $component = 'core_backup';
@@ -395,6 +397,8 @@ class core_backup_privacy_provider_testcase extends \core_privacy\tests\provider
      */
     public function test_delete_data_for_users() {
         global $DB;
+
+        $this->skip_if_missing('mod_chat');
 
         $this->resetAfterTest();
 

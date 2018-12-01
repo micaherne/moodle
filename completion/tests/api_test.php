@@ -45,6 +45,8 @@ class core_completion_api_testcase extends advanced_testcase {
     public function test_update_completion_date_event() {
         global $CFG, $DB;
 
+        $this->skip_if_missing('mod_assign');
+
         $this->setAdminUser();
 
         // Create a course.
@@ -84,6 +86,8 @@ class core_completion_api_testcase extends advanced_testcase {
     public function test_update_completion_date_event_update() {
         global $CFG, $DB;
 
+        $this->skip_if_missing('mod_assign');
+
         $this->setAdminUser();
 
         // Create a course.
@@ -119,6 +123,8 @@ class core_completion_api_testcase extends advanced_testcase {
     public function test_update_completion_date_event_delete() {
         global $CFG, $DB;
 
+        $this->skip_if_missing('mod_assign');
+
         $this->setAdminUser();
 
         // Create a course.
@@ -142,6 +148,8 @@ class core_completion_api_testcase extends advanced_testcase {
     public function test_update_completion_date_event_completion_disabled() {
         global $CFG, $DB;
 
+        $this->skip_if_missing('mod_assign');
+
         $this->setAdminUser();
 
         // Create a course.
@@ -161,6 +169,8 @@ class core_completion_api_testcase extends advanced_testcase {
 
     public function test_update_completion_date_event_update_completion_disabled() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_assign');
 
         $this->setAdminUser();
 
@@ -199,6 +209,8 @@ class core_completion_api_testcase extends advanced_testcase {
 
     public function test_update_completion_date_event_delete_completion_disabled() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_assign');
 
         $this->setAdminUser();
 

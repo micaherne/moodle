@@ -40,6 +40,9 @@ class core_user_profilelib_testcase extends advanced_testcase {
      */
     public function test_get_custom_fields() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('profilefield_textarea');
+
         require_once($CFG->dirroot . '/user/profile/lib.php');
 
         $this->resetAfterTest();

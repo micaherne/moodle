@@ -712,6 +712,8 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
 
         global $DB;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $generatedcourses = array();
@@ -807,6 +809,12 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
      */
     private function prepare_get_course_contents_test() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_label');
+        $this->skip_if_missing('mod_page');
+        $this->skip_if_missing('mod_url');
 
         $CFG->allowstealth = 1; // Allow stealth activities.
         $CFG->enablecompletion = true;
@@ -1192,6 +1200,11 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
      * Test duplicate_course
      */
     public function test_duplicate_course() {
+
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
+
         $this->resetAfterTest(true);
 
         // Create one course with three modules.
@@ -1483,6 +1496,9 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
     public function test_delete_modules() {
         global $DB;
 
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_forum');
+
         // Ensure we reset the data after this test.
         $this->resetAfterTest(true);
 
@@ -1583,6 +1599,9 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
     public function test_import_course_empty() {
         global $USER;
 
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
+
         $this->resetAfterTest(true);
 
         $course1  = self::getDataGenerator()->create_course();
@@ -1629,6 +1648,10 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_import_course_filled() {
         global $USER;
+
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
+        $this->skip_if_missing('mod_quiz');
 
         $this->resetAfterTest(true);
 
@@ -1681,6 +1704,9 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
     public function test_import_course_blocksonly() {
         global $USER, $DB;
 
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('block_online_users');
+
         $this->resetAfterTest(true);
 
         // Add forum and page to course1.
@@ -1721,6 +1747,11 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_import_course_deletecontent() {
         global $USER;
+
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
+        $this->skip_if_missing('mod_quiz');
+
         $this->resetAfterTest(true);
 
         // Add forum and page to course1.
@@ -1821,6 +1852,8 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_get_course_module() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
 
         $this->resetAfterTest(true);
 
@@ -1935,6 +1968,8 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
     public function test_get_course_module_by_instance() {
         global $DB;
 
+        $this->skip_if_missing('mod_quiz');
+
         $this->resetAfterTest(true);
 
         $this->setAdminUser();
@@ -2006,6 +2041,8 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_get_activities_overview() {
         global $USER;
+
+        $this->skip_if_missing('mod_forum');
 
         $this->resetAfterTest();
         $course1 = self::getDataGenerator()->create_course();
@@ -2382,6 +2419,7 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
 
         $modules = array();
         foreach ($tocreate as $modname) {
+            $this->skip_if_missing('mod_' . $modname);
             $modules[$modname]['instance'] = $this->getDataGenerator()->create_module($modname, array('course' => $course->id));
             $modules[$modname]['cm'] = get_coursemodule_from_id(false, $modules[$modname]['instance']->cmid);
             $modules[$modname]['context'] = context_module::instance($modules[$modname]['instance']->cmid);

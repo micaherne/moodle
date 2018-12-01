@@ -143,6 +143,10 @@ class core_repository_generator_testcase extends advanced_testcase {
      */
     public function test_create_instance() {
         global $DB;
+
+        $this->skip_if_missing('block_online_users');
+        $this->skip_if_missing('repository_webdav');
+
         $this->resetAfterTest(true);
 
         $course = $this->getDataGenerator()->create_course();

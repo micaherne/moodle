@@ -155,6 +155,9 @@ class core_repositorylib_testcase extends advanced_testcase {
     }
 
     public function test_can_be_edited_by_user() {
+
+        $this->skip_if_missing('repository_flickr_public');
+
         $this->resetAfterTest(true);
 
         $syscontext = context_system::instance();
@@ -235,6 +238,13 @@ class core_repositorylib_testcase extends advanced_testcase {
     }
 
     public function test_check_capability() {
+
+        $this->skip_if_missing('block_online_users');
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('repository_dropbox');
+        $this->skip_if_missing('repository_flickr_public');
+        $this->skip_if_missing('repository_upload');
+
         $this->resetAfterTest(true);
 
         $syscontext = context_system::instance();
@@ -461,6 +471,10 @@ class core_repositorylib_testcase extends advanced_testcase {
     }
 
     function test_delete_all_for_context() {
+
+        $this->skip_if_missing('repository_filesystem');
+        $this->skip_if_missing('repository_flickr_public');
+
         global $DB;
         $this->resetAfterTest(true);
 

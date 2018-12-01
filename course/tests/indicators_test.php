@@ -86,6 +86,8 @@ class core_course_indicators_testcase extends advanced_testcase {
     public function test_completion_enabled() {
         global $DB;
 
+        $this->skip_if_missing('mod_data');
+
         $this->resetAfterTest(true);
 
         $course1 = $this->getDataGenerator()->create_course(array('enablecompletion' => 0));
@@ -153,6 +155,10 @@ class core_course_indicators_testcase extends advanced_testcase {
      */
     public function test_potential_cognitive() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
 
         $this->resetAfterTest(true);
 
@@ -238,6 +244,10 @@ class core_course_indicators_testcase extends advanced_testcase {
      */
     public function test_potential_social() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
 
         $this->resetAfterTest(true);
 

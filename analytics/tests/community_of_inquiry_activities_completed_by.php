@@ -54,6 +54,8 @@ class community_of_inquiry_activities_completed_by_testcase extends advanced_tes
      */
     public function test_get_activities_with_availability($availabilitylevel) {
 
+        $this->skip_if_missing('mod_forum');
+
         list($course, $stu1) = $this->setup_course();
 
         // Forum1 is ignored as section 0 does not count.
@@ -118,6 +120,8 @@ class community_of_inquiry_activities_completed_by_testcase extends advanced_tes
      */
     public function test_get_activities_with_weeks() {
 
+        $this->skip_if_missing('mod_forum');
+
         $startdate = gmmktime('0', '0', '0', 10, 24, 2015);
         $record = array(
             'format' => 'weeks',
@@ -160,6 +164,8 @@ class community_of_inquiry_activities_completed_by_testcase extends advanced_tes
      * @return void
      */
     public function test_get_activities_by_section() {
+
+        $this->skip_if_missing('mod_forum');
 
         // This makes debugging easier, sorry WA's +8 :).
         $this->setTimezone('UTC');
@@ -230,6 +236,15 @@ class community_of_inquiry_activities_completed_by_testcase extends advanced_tes
      * @return void
      */
     public function test_get_activities_with_specific_restrictions() {
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_choice');
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_feedback');
+        $this->skip_if_missing('mod_lesson');
+        $this->skip_if_missing('mod_quiz');
+        $this->skip_if_missing('mod_scorm');
+        $this->skip_if_missing('mod_workshop');
 
         list($course, $stu1) = $this->setup_course();
 

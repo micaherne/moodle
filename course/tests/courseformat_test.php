@@ -31,6 +31,9 @@ require_once($CFG->dirroot . '/course/tests/fixtures/format_theunittest.php');
 class core_course_courseformat_testcase extends advanced_testcase {
     public function test_available_hook() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
 
         // Generate a course with two sections (0 and 1) and two modules. Course format is set to 'theunittest'.

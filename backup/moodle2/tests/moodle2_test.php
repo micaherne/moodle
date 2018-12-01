@@ -45,6 +45,9 @@ class core_backup_moodle2_testcase extends advanced_testcase {
     public function test_backup_availability() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $CFG->enableavailability = true;
@@ -265,6 +268,9 @@ class core_backup_moodle2_testcase extends advanced_testcase {
     public function test_duplicate_availability() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $CFG->enableavailability = true;
@@ -332,6 +338,9 @@ class core_backup_moodle2_testcase extends advanced_testcase {
     public function test_restore_dates() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $CFG->enableavailability = true;
@@ -389,6 +398,8 @@ class core_backup_moodle2_testcase extends advanced_testcase {
      */
     public function test_restore_frontpage() {
         global $DB, $CFG, $USER;
+
+        $this->skip_if_missing('mod_forum');
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -873,6 +884,8 @@ class core_backup_moodle2_testcase extends advanced_testcase {
      */
     public function test_restore_search_index_requests() {
         global $DB, $CFG, $USER;
+
+        $this->skip_if_missing('mod_forum');
 
         $this->resetAfterTest(true);
         $this->setAdminUser();

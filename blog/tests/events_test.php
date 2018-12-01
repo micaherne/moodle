@@ -60,6 +60,9 @@ class core_blog_events_testcase extends advanced_testcase {
      */
     protected function setUp() {
         global $DB;
+
+        $this->skip_if_missing('mod_page');
+
         parent::setUp();
 
         $this->resetAfterTest();

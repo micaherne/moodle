@@ -234,6 +234,9 @@ class core_grade_grade_testcase extends grade_base_testcase {
 
     public function test_grade_grade_min_max() {
         global $CFG;
+
+        $this->skip_if_missing('mod_assign');
+
         $initialminmaxtouse = $CFG->grade_minmaxtouse;
 
         $this->setAdminUser();
@@ -435,6 +438,9 @@ class core_grade_grade_testcase extends grade_base_testcase {
      * Tests when a grade_grade has been deleted.
      */
     public function sub_test_grade_grade_deleted() {
+
+        $this->skip_if_missing('mod_assign');
+
         $dg = $this->getDataGenerator();
 
         // Create the data we need for the tests.

@@ -61,6 +61,10 @@ class file_browser_testcase extends advanced_testcase {
      */
     public function setUp() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_resource');
+
         $this->resetAfterTest();
 
         $this->setAdminUser();

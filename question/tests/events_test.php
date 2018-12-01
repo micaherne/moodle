@@ -42,6 +42,9 @@ class core_question_events_testcase extends advanced_testcase {
      * Test the question category created event.
      */
     public function test_question_category_created() {
+
+        $this->skip_if_missing('mod_quiz');
+
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
         $quiz = $this->getDataGenerator()->create_module('quiz', array('course' => $course->id));

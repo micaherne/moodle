@@ -47,6 +47,8 @@ class core_completion_externallib_testcase extends externallib_advanced_testcase
     public function test_update_activity_completion_status_manually() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('mod_data');
+
         $this->resetAfterTest(true);
 
         $CFG->enablecompletion = true;
@@ -93,6 +95,11 @@ class core_completion_externallib_testcase extends externallib_advanced_testcase
      */
     public function test_get_activities_completion_status() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
 
         $this->resetAfterTest(true);
 
@@ -237,6 +244,10 @@ class core_completion_externallib_testcase extends externallib_advanced_testcase
      */
     public function test_override_activity_completion_status() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
 
         // Create course with teacher and student enrolled.
@@ -300,6 +311,9 @@ class core_completion_externallib_testcase extends externallib_advanced_testcase
      */
     public function test_override_status_user_without_capability() {
         global $DB, $CFG;
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
 
         // Create course with teacher and student enrolled.
@@ -329,6 +343,11 @@ class core_completion_externallib_testcase extends externallib_advanced_testcase
      */
     public function test_get_course_completion_status() {
         global $DB, $CFG, $COMPLETION_CRITERIA_TYPES;
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_forum');
+
         require_once($CFG->dirroot.'/completion/criteria/completion_criteria_self.php');
         require_once($CFG->dirroot.'/completion/criteria/completion_criteria_date.php');
         require_once($CFG->dirroot.'/completion/criteria/completion_criteria_unenrol.php');

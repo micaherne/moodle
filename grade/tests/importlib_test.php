@@ -77,6 +77,9 @@ class core_grade_import_lib_test extends advanced_testcase {
      */
     public function test_grade_import_commit() {
         global $USER, $DB, $CFG;
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
 
         $importcode = get_new_importcode();

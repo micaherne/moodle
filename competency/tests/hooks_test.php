@@ -38,6 +38,9 @@ use core_competency\user_competency_course;
 class core_competency_hooks_testcase extends advanced_testcase {
 
     public function test_hook_course_deleted() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
@@ -85,6 +88,9 @@ class core_competency_hooks_testcase extends advanced_testcase {
     }
 
     public function test_hook_course_module_deleted() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
@@ -133,6 +139,9 @@ class core_competency_hooks_testcase extends advanced_testcase {
     }
 
     public function test_hook_course_reset_competency_ratings() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');

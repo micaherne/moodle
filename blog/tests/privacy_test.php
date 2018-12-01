@@ -52,6 +52,9 @@ class core_blog_privacy_testcase extends provider_testcase {
     }
 
     public function test_get_contexts_for_userid() {
+
+        $this->skip_if_missing('mod_page');
+
         $dg = $this->getDataGenerator();
         $c1 = $dg->create_course();
         $c2 = $dg->create_course();
@@ -133,6 +136,9 @@ class core_blog_privacy_testcase extends provider_testcase {
      * Test that user IDs are returned for a specificed course or module context.
      */
     public function test_get_users_in_context_course_and_module() {
+
+        $this->skip_if_missing('mod_page');
+
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
@@ -204,6 +210,8 @@ class core_blog_privacy_testcase extends provider_testcase {
 
     public function test_delete_data_for_user() {
         global $DB;
+
+        $this->skip_if_missing('mod_page');
 
         $dg = $this->getDataGenerator();
         $c1 = $dg->create_course();
@@ -373,6 +381,8 @@ class core_blog_privacy_testcase extends provider_testcase {
     public function test_delete_data_for_all_users_in_context() {
         global $DB;
 
+        $this->skip_if_missing('mod_page');
+
         $dg = $this->getDataGenerator();
         $c1 = $dg->create_course();
         $c2 = $dg->create_course();
@@ -509,6 +519,9 @@ class core_blog_privacy_testcase extends provider_testcase {
 
     public function test_export_data_for_user() {
         global $DB;
+
+        $this->skip_if_missing('mod_page');
+
         $dg = $this->getDataGenerator();
 
         $c1 = $dg->create_course();

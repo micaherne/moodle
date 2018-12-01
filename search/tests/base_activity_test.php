@@ -59,6 +59,9 @@ class search_base_activity_testcase extends advanced_testcase {
 
     public function setUp() {
         global $DB;
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
         set_config('enableglobalsearch', true);
 
@@ -341,6 +344,9 @@ class search_base_activity_testcase extends advanced_testcase {
      */
     public function test_get_contexts_to_reindex() {
         global $DB;
+
+        $this->skip_if_missing('mod_page');
+        $this->skip_if_missing('mod_url');
 
         $this->resetAfterTest();
 

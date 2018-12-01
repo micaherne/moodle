@@ -239,6 +239,9 @@ class core_course_restore_testcase extends advanced_testcase {
 
     public function test_restore_course_info_in_existing_course() {
         global $DB;
+
+        $this->skip_if_missing('mod_chat');
+
         $this->resetAfterTest();
         $dg = $this->getDataGenerator();
 
@@ -347,6 +350,9 @@ class core_course_restore_testcase extends advanced_testcase {
 
     public function test_restore_course_startdate_in_existing_course_without_permissions() {
         global $DB;
+
+        $this->skip_if_missing('mod_chat');
+
         $this->resetAfterTest();
         $dg = $this->getDataGenerator();
 

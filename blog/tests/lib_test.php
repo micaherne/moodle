@@ -43,6 +43,9 @@ class core_blog_lib_testcase extends advanced_testcase {
 
     protected function setUp() {
         global $DB;
+
+        $this->skip_if_missing('mod_page');
+
         parent::setUp();
 
         $this->resetAfterTest();
@@ -252,6 +255,9 @@ class core_blog_lib_testcase extends advanced_testcase {
     }
 
     public function test_blog_get_listing_module() {
+
+        $this->skip_if_missing('mod_page');
+
         $this->setAdminUser();
         $coursecontext = context_course::instance($this->courseid);
         $contextmodule = context_module::instance($this->cmid);

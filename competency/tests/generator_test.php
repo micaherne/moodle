@@ -236,6 +236,9 @@ class core_competency_generator_testcase extends advanced_testcase {
     }
 
     public function test_create_course_module_competency() {
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
 
         $lpg = $this->getDataGenerator()->get_plugin_generator('core_competency');

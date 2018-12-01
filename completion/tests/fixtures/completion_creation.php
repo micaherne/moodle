@@ -54,6 +54,8 @@ trait completion_creation {
     public function create_course_completion() {
         $this->resetAfterTest();
 
+        $this->skip_if_missing('mod_assign');
+
         $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
         $coursecontext = context_course::instance($course->id);
 

@@ -80,6 +80,12 @@ abstract class grade_base_testcase extends advanced_testcase {
     }
 
     private function load_modules() {
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
+        $this->skip_if_missing('mod_quiz');
+
         $this->activities[0] = $this->getDataGenerator()->create_module('assign', array('course'=>$this->course->id));
         $this->course_module[0] = get_coursemodule_from_instance('assign', $this->activities[0]->id);
 

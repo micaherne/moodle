@@ -189,6 +189,9 @@ class search_manager_testcase extends advanced_testcase {
     public function test_partial_indexing() {
         global $USER;
 
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_label');
+
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -372,6 +375,8 @@ class search_manager_testcase extends advanced_testcase {
     public function test_future_documents() {
         $this->resetAfterTest();
 
+        $this->skip_if_missing('mod_forum');
+
         // Create a course and a forum.
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
@@ -421,6 +426,9 @@ class search_manager_testcase extends advanced_testcase {
      */
     public function test_context_indexing() {
         global $USER;
+
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -522,6 +530,8 @@ class search_manager_testcase extends advanced_testcase {
      */
     public function test_search_user_accesses() {
         global $DB;
+
+        $this->skip_if_missing('mod_forum');
 
         $this->resetAfterTest();
 
@@ -654,6 +664,8 @@ class search_manager_testcase extends advanced_testcase {
     public function test_search_user_accesses_blocks() {
         global $DB;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -775,6 +787,8 @@ class search_manager_testcase extends advanced_testcase {
     public function test_search_user_accesses_allavailable() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         // Front page, including a forum.
@@ -855,6 +869,8 @@ class search_manager_testcase extends advanced_testcase {
      */
     public function test_search_user_accesses_groups() {
         global $DB;
+
+        $this->skip_if_missing('mod_forum');
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -971,6 +987,8 @@ class search_manager_testcase extends advanced_testcase {
     public function test_request_index() {
         global $DB;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         $course1 = $this->getDataGenerator()->create_course();
@@ -1079,6 +1097,8 @@ class search_manager_testcase extends advanced_testcase {
      */
     public function test_process_index_requests() {
         global $DB;
+
+        $this->skip_if_missing('mod_forum');
 
         $this->resetAfterTest();
 

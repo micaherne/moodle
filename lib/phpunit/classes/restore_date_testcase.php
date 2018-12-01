@@ -115,6 +115,8 @@ abstract class restore_date_testcase extends advanced_testcase {
      * @return array
      */
     protected function create_course_and_module($modulename, $record = []) {
+        $this->skip_if_missing('mod_' . $modulename);
+
         // Create a course with specific start date.
         $record = (array)$record;
         $generator = $this->getDataGenerator();

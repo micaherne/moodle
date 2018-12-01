@@ -187,6 +187,9 @@ class core_test_generator_testcase extends advanced_testcase {
     public function test_create_module() {
         global $CFG, $SITE, $DB;
 
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_data');
+
         $this->setAdminUser();
 
         if (!file_exists("$CFG->dirroot/mod/page/")) {

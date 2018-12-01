@@ -149,6 +149,8 @@ class core_filter_external_testcase extends externallib_advanced_testcase {
     public function test_get_available_in_context_module() {
         global $DB;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
         $this->setAdminUser();
 
