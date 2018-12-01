@@ -53,6 +53,8 @@ class core_completionlib_testcase extends advanced_testcase {
 
         $this->resetAfterTest();
 
+        $this->skip_if_missing('mod_forum');
+
         // Enable completion before creating modules, otherwise the completion data is not written in DB.
         $CFG->enablecompletion = true;
 
@@ -815,6 +817,10 @@ class core_completionlib_testcase extends advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
 
+        $this->skip_if_missing('mod_data');
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
+
         // Enable completion before creating modules, otherwise the completion data is not written in DB.
         $CFG->enablecompletion = true;
 
@@ -856,6 +862,8 @@ class core_completionlib_testcase extends advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
 
+        $this->skip_if_missing('mod_forum');
+
         // Enable completion before creating modules, otherwise the completion data is not written in DB.
         $CFG->enablecompletion = true;
 
@@ -879,6 +887,8 @@ class core_completionlib_testcase extends advanced_testcase {
      */
     public function test_course_module_completion_updated_event() {
         global $USER, $CFG;
+
+        $this->skip_if_missing('mod_forum');
 
         $this->setup_data();
 
