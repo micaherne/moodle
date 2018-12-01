@@ -524,6 +524,9 @@ class manager {
         $indicators = array();
         foreach ($coiindicators as $coiindicator) {
             $indicator = self::get_indicator($coiindicator);
+            if ($indicator == false) { 
+                continue;
+            }
             $indicators[$indicator->get_id()] = $indicator;
         }
         if (!\core_analytics\model::exists($target, $indicators)) {
