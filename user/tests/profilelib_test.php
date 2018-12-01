@@ -151,6 +151,10 @@ class core_user_profilelib_testcase extends advanced_testcase {
      */
     public function test_profile_has_required_custom_fields_set() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('profilefield_checkbox');
+        $this->skip_if_missing('profilefield_text');
+
         require_once($CFG->dirroot.'/mnet/lib.php');
 
         $this->resetAfterTest();
