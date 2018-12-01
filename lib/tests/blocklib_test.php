@@ -588,6 +588,9 @@ class core_blocklib_testcase extends advanced_testcase {
     public function test_create_all_block_instances() {
         global $CFG, $PAGE, $DB;
 
+        $this->skip_if_missing('theme_boost');
+        $this->skip_if_missing('theme_clean');
+
         $this->setAdminUser();
         $this->resetAfterTest();
         $regionname = 'side-pre';

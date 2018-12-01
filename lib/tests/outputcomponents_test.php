@@ -115,6 +115,8 @@ class core_outputcomponents_testcase extends advanced_testcase {
     public function test_get_url() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('theme_clean');
+
         $this->resetAfterTest();
 
         // Force SVG on so that we have predictable URL's.
