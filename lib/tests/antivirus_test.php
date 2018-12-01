@@ -47,6 +47,8 @@ class core_antivirus_testcase extends advanced_testcase {
     }
 
     public function test_manager_get_antivirus() {
+        $this->skip_if_missing('antivirus_clamav');
+
         // We are using clamav plugin in the test,
         // as the only plugin we know exists for sure.
         $antivirusviaget = \core\antivirus\manager::get_antivirus('clamav');
