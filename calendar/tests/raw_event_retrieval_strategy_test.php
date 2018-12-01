@@ -42,6 +42,9 @@ class core_calendar_raw_event_retrieval_strategy_testcase extends advanced_testc
     public function test_get_raw_events_with_disabled_module() {
         global $DB;
 
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_lesson');
+
         $this->resetAfterTest();
         $retrievalstrategy = new raw_event_retrieval_strategy();
         $generator = $this->getDataGenerator();
@@ -119,6 +122,9 @@ class core_calendar_raw_event_retrieval_strategy_testcase extends advanced_testc
      * Test retrieval strategy when there are overrides.
      */
     public function test_get_raw_event_strategy_with_overrides() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
 
         $retrievalstrategy = new raw_event_retrieval_strategy();

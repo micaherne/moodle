@@ -38,6 +38,9 @@ class core_calendar_cm_info_proxy_testcase extends advanced_testcase {
      * Test creating cm_info_std_proxy, using getter and setter.
      */
     public function test_proxy() {
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest(true);
 
         $course = $this->getDataGenerator()->create_course();

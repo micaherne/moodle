@@ -75,6 +75,9 @@ class core_calendar_container_testcase extends advanced_testcase {
      * @param \stdClass $dbrow Row from the "database".
      */
     public function test_event_factory_create_instance($dbrow) {
+
+        $this->skip_if_missing('mod_assign');
+
         $legacyevent = $this->create_event($dbrow);
         $factory = \core_calendar\local\event\container::get_event_factory();
         $course = $this->getDataGenerator()->create_course();
@@ -136,6 +139,9 @@ class core_calendar_container_testcase extends advanced_testcase {
      * @param \stdClass $dbrow Row from the "database".
      */
     public function test_event_factory_when_module_visibility_is_toggled_as_admin($dbrow) {
+
+        $this->skip_if_missing('mod_assign');
+
         $legacyevent = $this->create_event($dbrow);
         $factory = \core_calendar\local\event\container::get_event_factory();
         $course = $this->getDataGenerator()->create_course();
@@ -162,6 +168,9 @@ class core_calendar_container_testcase extends advanced_testcase {
      * @param \stdClass $dbrow Row from the "database".
      */
     public function test_event_factory_when_module_visibility_is_toggled_as_guest($dbrow) {
+
+        $this->skip_if_missing('mod_assign');
+
         $legacyevent = $this->create_event($dbrow);
         $factory = \core_calendar\local\event\container::get_event_factory();
         $course = $this->getDataGenerator()->create_course();
@@ -191,6 +200,9 @@ class core_calendar_container_testcase extends advanced_testcase {
      * @param \stdClass $dbrow Row from the "database".
      */
     public function test_event_factory_when_course_visibility_is_toggled_as_admin($dbrow) {
+
+        $this->skip_if_missing('mod_assign');
+
         $legacyevent = $this->create_event($dbrow);
         $factory = \core_calendar\local\event\container::get_event_factory();
 
@@ -216,6 +228,9 @@ class core_calendar_container_testcase extends advanced_testcase {
      * @param \stdClass $dbrow Row from the "database".
      */
     public function test_event_factory_when_course_visibility_is_toggled_as_student($dbrow) {
+
+        $this->skip_if_missing('mod_assign');
+
         $legacyevent = $this->create_event($dbrow);
         $factory = \core_calendar\local\event\container::get_event_factory();
 
@@ -325,6 +340,8 @@ class core_calendar_container_testcase extends advanced_testcase {
     public function test_event_factory_with_completion_related_event() {
         global $CFG;
 
+        $this->skip_if_missing('mod_assign');
+
         $CFG->enablecompletion = true;
 
         // Create the course we will be using.
@@ -376,6 +393,9 @@ class core_calendar_container_testcase extends advanced_testcase {
      * is enrolled in the course.
      */
     public function test_event_factory_unenrolled_user() {
+
+        $this->skip_if_missing('mod_lesson');
+
         $user = $this->getDataGenerator()->create_user();
         // Create the course we will be using.
         $course = $this->getDataGenerator()->create_course();

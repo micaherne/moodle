@@ -57,6 +57,9 @@ class core_calendar_privacy_testcase extends provider_testcase {
      * @throws coding_exception
      */
     public function test_get_contexts_for_userid() {
+
+        $this->skip_if_missing('mod_assign');
+
         // Create test user to create Calendar Events and Subscriptions.
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
@@ -130,6 +133,8 @@ class core_calendar_privacy_testcase extends provider_testcase {
      */
     public function test_export_user_data() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
 
         // Create test user to create Calendar Events and Subscriptions with.
         $user = $this->getDataGenerator()->create_user();
@@ -306,6 +311,8 @@ class core_calendar_privacy_testcase extends provider_testcase {
     public function test_delete_data_for_all_users_in_context() {
         global $DB;
 
+        $this->skip_if_missing('mod_assign');
+
         // Create test user to create Calendar Events and Subscriptions with.
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -434,6 +441,9 @@ class core_calendar_privacy_testcase extends provider_testcase {
      * Test that only users with a user context are fetched.
      */
     public function test_get_users_in_context() {
+
+        $this->skip_if_missing('mod_assign');
+
         $component = 'core_calendar';
 
         // Create user1 to create Calendar Events and Subscriptions.
@@ -556,6 +566,9 @@ class core_calendar_privacy_testcase extends provider_testcase {
      * Test that data for users in approved userlist is deleted.
      */
     public function test_delete_data_for_users() {
+
+        $this->skip_if_missing('mod_assign');
+
         $component = 'core_calendar';
 
         // Create user1 to create Calendar Events and Subscriptions.

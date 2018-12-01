@@ -264,6 +264,9 @@ class core_calendar_type_testcase extends advanced_testcase {
      * @param array $date the date variables
      */
     private function datetime_field_submission_test($type, $date) {
+
+        $this->skip_if_missing('profilefield_datetime');
+
         $this->set_calendar_type($type);
 
         // Get the data we are submitting for the form.

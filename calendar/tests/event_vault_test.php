@@ -429,6 +429,9 @@ class core_calendar_event_vault_testcase extends advanced_testcase {
      * - A user in both A and B should see both
      */
     public function test_get_action_events_by_timesort_with_identical_group_override_priorities() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
         $this->setAdminuser();
 
@@ -562,6 +565,9 @@ class core_calendar_event_vault_testcase extends advanced_testcase {
      * User 1 is suspended. User 2 is active.
      */
     public function test_get_action_events_by_timesort_with_suspended_user() {
+
+        $this->skip_if_missing('mod_lesson');
+
         $this->resetAfterTest();
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -1086,6 +1092,9 @@ class core_calendar_event_vault_testcase extends advanced_testcase {
      * - A user in both A and B should see both
      */
     public function test_get_action_events_by_course_with_identical_group_override_priorities() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
         $this->setAdminuser();
 

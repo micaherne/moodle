@@ -67,6 +67,9 @@ class core_calendar_events_related_objects_cache_testcase extends advanced_testc
      * for the given set of events in the cache.
      */
     public function test_get_module_instance_with_modules() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->setAdminUser();
         $mapper = container::get_event_mapper();
         $generator = $this->getDataGenerator();
@@ -109,6 +112,9 @@ class core_calendar_events_related_objects_cache_testcase extends advanced_testc
      * the cache should return null.
      */
     public function test_module_instance_unknown_event() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->setAdminUser();
         $mapper = container::get_event_mapper();
         $generator = $this->getDataGenerator();

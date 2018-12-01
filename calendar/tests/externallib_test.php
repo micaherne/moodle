@@ -291,6 +291,8 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
     public function test_get_calendar_events() {
         global $DB, $USER;
 
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
         set_config('calendar_adminseesall', 1);
         $this->setAdminUser();
@@ -630,6 +632,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * be returned.
      */
     public function test_get_calendar_action_events_by_timesort_after_time() {
+
+        $this->skip_if_missing('mod_assign');
+
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
@@ -690,6 +695,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * returned.
      */
     public function test_get_calendar_action_events_by_timesort_before_time() {
+
+        $this->skip_if_missing('mod_assign');
+
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
@@ -745,6 +753,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * Test retrieving event that was overridden for a user
      */
     public function test_get_calendar_events_override() {
+
+        $this->skip_if_missing('mod_assign');
+
         $user = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
         $teacher = $this->getDataGenerator()->create_user();
@@ -815,6 +826,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * returned.
      */
     public function test_get_calendar_action_events_by_timesort_time_range() {
+
+        $this->skip_if_missing('mod_assign');
+
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
@@ -875,6 +889,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * returned.
      */
     public function test_get_calendar_action_events_by_timesort_time_limit_offset() {
+
+        $this->skip_if_missing('mod_assign');
+
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
@@ -941,6 +958,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * Check that it is possible to restrict the calendar events to events where the user is not suspended in the course.
      */
     public function test_get_calendar_action_events_by_timesort_suspended_course() {
+
+        $this->skip_if_missing('mod_lesson');
+
         $this->resetAfterTest();
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -974,6 +994,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * be returned.
      */
     public function test_get_calendar_action_events_by_course_after_time() {
+
+        $this->skip_if_missing('mod_assign');
+
         $user = $this->getDataGenerator()->create_user();
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
@@ -1038,6 +1061,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * returned.
      */
     public function test_get_calendar_action_events_by_course_before_time() {
+
+        $this->skip_if_missing('mod_assign');
+
         $user = $this->getDataGenerator()->create_user();
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
@@ -1102,6 +1128,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * returned.
      */
     public function test_get_calendar_action_events_by_course_time_range() {
+
+        $this->skip_if_missing('mod_assign');
+
         $user = $this->getDataGenerator()->create_user();
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
@@ -1167,6 +1196,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * returned.
      */
     public function test_get_calendar_action_events_by_course_time_limit_offset() {
+
+        $this->skip_if_missing('mod_assign');
+
         $user = $this->getDataGenerator()->create_user();
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
@@ -1239,6 +1271,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * course you provided as long as the user is enrolled in the course.
      */
     public function test_get_action_events_by_courses() {
+
+        $this->skip_if_missing('mod_assign');
+
         $user = $this->getDataGenerator()->create_user();
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
@@ -1372,6 +1407,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * Test for deleting module events.
      */
     public function test_delete_calendar_events_for_modules() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest();
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
@@ -1475,6 +1513,9 @@ class core_calendar_externallib_testcase extends externallib_advanced_testcase {
      * A user should not be able to update a module event.
      */
     public function test_update_event_start_day_module_event() {
+
+        $this->skip_if_missing('mod_assign');
+
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();

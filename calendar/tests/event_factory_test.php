@@ -291,6 +291,9 @@ class core_calendar_event_factory_testcase extends advanced_testcase {
      * Test the factory's module cache.
      */
     public function test_module_cache() {
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $course = self::getDataGenerator()->create_course();

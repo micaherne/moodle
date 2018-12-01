@@ -46,6 +46,10 @@ class core_calendar_lib_testcase extends advanced_testcase {
      * Test that the get_events() function only returns activity events that are enabled.
      */
     public function test_get_events_with_disabled_module() {
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('mod_lesson');
+
         global $DB;
         $this->setAdminUser();
         $generator = $this->getDataGenerator();
@@ -233,6 +237,9 @@ class core_calendar_lib_testcase extends advanced_testcase {
      * Test for calendar_get_legacy_events() when there are user and group overrides.
      */
     public function test_get_legacy_events_with_overrides() {
+
+        $this->skip_if_missing('mod_assign');
+
         $generator = $this->getDataGenerator();
 
         $course = $generator->create_course();
