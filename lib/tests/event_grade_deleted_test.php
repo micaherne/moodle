@@ -42,6 +42,9 @@ class core_event_grade_deleted_testcase extends advanced_testcase {
      */
     public function test_event() {
         global $CFG;
+
+        $this->skip_if_missing('mod_quiz');
+
         require_once("$CFG->libdir/gradelib.php");
 
         $this->resetAfterTest();

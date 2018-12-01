@@ -88,6 +88,9 @@ class core_event_testcase extends advanced_testcase {
 
     public function test_event_properties_guessing() {
         global $USER;
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
@@ -865,6 +868,9 @@ class core_event_testcase extends advanced_testcase {
      * Test that all observer information is returned correctly.
      */
     public function test_get_all_observers() {
+
+        $this->skip_if_missing('mod_workshop');
+
         // Retrieve all observers.
         $observers = \core\event\manager::get_all_observers();
 
@@ -943,6 +949,8 @@ and nothing else.";
      * to things like all course module view events, all comment created events, etc.
      */
     public function test_observe_parent_event() {
+        $this->skip_if_missing('mod_feedback');
+
         $this->resetAfterTest();
 
         // Ensure this has been reset prior to using it.

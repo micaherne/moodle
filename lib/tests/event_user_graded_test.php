@@ -103,6 +103,8 @@ class core_event_user_graded_testcase extends advanced_testcase {
     public function test_event_is_triggered() {
         global $DB;
 
+        $this->skip_if_missing('mod_quiz');
+
         // Create the items we need to test with.
         $course = $this->getDataGenerator()->create_course();
         $user = $this->getDataGenerator()->create_user();

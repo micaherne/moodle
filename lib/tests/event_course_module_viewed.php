@@ -38,6 +38,8 @@ class core_event_course_module_viewed_testcase extends advanced_testcase {
      */
     public function test_event_attributes() {
 
+        $this->skip_if_missing('mod_feedback');
+
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
         $record = new stdClass();
