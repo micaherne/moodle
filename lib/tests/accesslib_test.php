@@ -162,6 +162,8 @@ class core_accesslib_testcase extends advanced_testcase {
 
         $this->resetAfterTest();
 
+        $this->skip_if_missing('mod_assign');
+
         // Generate data.
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
@@ -260,6 +262,9 @@ class core_accesslib_testcase extends advanced_testcase {
      */
     public function test_get_context_info_array() {
         $this->resetAfterTest();
+
+        $this->skip_if_missing('mod_page');
+        $this->skip_if_missing('block_online_users');
 
         $syscontext = context_system::instance();
         $user = $this->getDataGenerator()->create_user();
@@ -578,6 +583,9 @@ class core_accesslib_testcase extends advanced_testcase {
      */
     public function test_role_unassign_all() {
         global $DB;
+
+        $this->skip_if_missing('enrol_self');
+        $this->skip_if_missing('mod_page');
 
         $this->resetAfterTest();
 
@@ -2294,6 +2302,8 @@ class core_accesslib_testcase extends advanced_testcase {
 
         $this->resetAfterTest();
 
+        $this->skip_if_missing('enrol_self');
+
         $course = $this->getDataGenerator()->create_course();
         $context = context_course::instance($course->id);
         $student = $DB->get_record('role', array('shortname' => 'student'), '*', MUST_EXIST);
@@ -2550,6 +2560,9 @@ class core_accesslib_testcase extends advanced_testcase {
         global $USER, $SITE, $CFG, $DB, $ACCESSLIB_PRIVATE;
 
         $this->resetAfterTest();
+
+        $this->skip_if_missing('block_online_users');
+        $this->skip_if_missing('mod_page');
 
         $generator = $this->getDataGenerator();
 
@@ -3397,6 +3410,8 @@ class core_accesslib_testcase extends advanced_testcase {
 
         $this->resetAfterTest(true);
 
+        $this->skip_if_missing('mod_page');
+
         $froncontext = context_course::instance($SITE->id);
         $student = $DB->get_record('role', array('archetype'=>'student'));
         $teacher = $DB->get_record('role', array('archetype'=>'teacher'));
@@ -3480,6 +3495,9 @@ class core_accesslib_testcase extends advanced_testcase {
     public function test_reset_role_capabilities() {
         global $DB;
         $this->resetAfterTest(true);
+
+        $this->skip_if_missing('mod_forum');
+
         $generator = $this->getDataGenerator();
 
         // Create test course and user, enrol one in the other.
