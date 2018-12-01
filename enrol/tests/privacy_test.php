@@ -63,6 +63,8 @@ class core_enrol_privacy_testcase extends provider_testcase {
     public function test_export_user_data() {
         global $DB;
 
+        $this->skip_if_missing('enrol_self');
+
         $this->resetAfterTest();
         $user1 = $this->getDataGenerator()->create_user();
         $course1 = $this->getDataGenerator()->create_course();

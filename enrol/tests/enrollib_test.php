@@ -309,6 +309,8 @@ class core_enrollib_testcase extends advanced_testcase {
     public function test_enrol_get_shared_courses_different_methods() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('enrol_self');
+
         require_once($CFG->dirroot . '/enrol/self/externallib.php');
 
         $this->resetAfterTest();
@@ -450,6 +452,8 @@ class core_enrollib_testcase extends advanced_testcase {
      */
     public function test_instance_events() {
         global $DB;
+
+        $this->skip_if_missing('enrol_self');
 
         $this->resetAfterTest(true);
 
@@ -665,6 +669,8 @@ class core_enrollib_testcase extends advanced_testcase {
     public function test_enrol_get_my_courses_all_accessible() {
         global $DB, $CFG;
 
+        $this->skip_if_missing('enrol_guest');
+
         $this->resetAfterTest(true);
 
         // Create test user and 4 courses, two of which have guest access enabled.
@@ -813,6 +819,8 @@ class core_enrollib_testcase extends advanced_testcase {
      */
     public function test_count_enrolled_users() {
         global $DB;
+
+        $this->skip_if_missing('enrol_self');
 
         $this->resetAfterTest(true);
 

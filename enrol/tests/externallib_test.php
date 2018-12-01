@@ -514,6 +514,8 @@ class core_enrol_externallib_testcase extends externallib_advanced_testcase {
     public function test_get_course_enrolment_methods() {
         global $DB;
 
+        $this->skip_if_missing('enrol_self');
+
         $this->resetAfterTest(true);
 
         // Get enrolment plugins.
