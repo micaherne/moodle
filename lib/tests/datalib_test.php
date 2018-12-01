@@ -350,6 +350,9 @@ class core_datalib_testcase extends advanced_testcase {
     public function test_get_coursemodule_from_id() {
         global $CFG;
 
+        $this->skip_if_missing('mod_folder');
+        $this->skip_if_missing('mod_glossary');
+
         $this->resetAfterTest();
         $this->setAdminUser(); // Some generators have bogus access control.
 
@@ -416,6 +419,9 @@ class core_datalib_testcase extends advanced_testcase {
     public function test_get_coursemodule_from_instance() {
         global $CFG;
 
+        $this->skip_if_missing('mod_folder');
+        $this->skip_if_missing('mod_glossary');
+
         $this->resetAfterTest();
         $this->setAdminUser(); // Some generators have bogus access control.
 
@@ -479,6 +485,10 @@ class core_datalib_testcase extends advanced_testcase {
 
     public function test_get_coursemodules_in_course() {
         global $CFG;
+
+        $this->skip_if_missing('mod_folder');
+        $this->skip_if_missing('mod_glossary');
+        $this->skip_if_missing('mod_label');
 
         $this->resetAfterTest();
         $this->setAdminUser(); // Some generators have bogus access control.
@@ -549,6 +559,9 @@ class core_datalib_testcase extends advanced_testcase {
     public function test_get_all_instances_in_courses() {
         global $CFG;
 
+        $this->skip_if_missing('mod_folder');
+        $this->skip_if_missing('mod_glossary');
+
         $this->resetAfterTest();
         $this->setAdminUser(); // Some generators have bogus access control.
 
@@ -603,6 +616,9 @@ class core_datalib_testcase extends advanced_testcase {
 
     public function test_get_all_instances_in_course() {
         global $CFG;
+
+        $this->skip_if_missing('mod_folder');
+        $this->skip_if_missing('mod_glossary');
 
         $this->resetAfterTest();
         $this->setAdminUser(); // Some generators have bogus access control.
