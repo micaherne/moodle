@@ -320,6 +320,8 @@ class core_files_file_storage_testcase extends advanced_testcase {
     public function test_create_file_from_reference() {
         global $CFG, $DB;
 
+        $this->skip_if_missing('repository_user');
+
         $this->resetAfterTest();
         // Create user.
         $generator = $this->getDataGenerator();
@@ -404,6 +406,8 @@ class core_files_file_storage_testcase extends advanced_testcase {
      */
     public function test_create_file_from_reference_with_content_hash() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('repository_user');
 
         $this->resetAfterTest();
         // Create user.
@@ -647,6 +651,9 @@ class core_files_file_storage_testcase extends advanced_testcase {
     }
 
     public function test_get_external_files() {
+
+        $this->skip_if_missing('repository_user');
+
         $user = $this->setup_three_private_files();
         $fs = get_file_storage();
 
@@ -819,6 +826,9 @@ class core_files_file_storage_testcase extends advanced_testcase {
     }
 
     public function test_search_references() {
+
+        $this->skip_if_missing('repository_user');
+
         $user = $this->setup_three_private_files();
         $fs = get_file_storage();
         $repos = repository::get_instances(array('type'=>'user'));
@@ -1700,6 +1710,8 @@ class core_files_file_storage_testcase extends advanced_testcase {
      */
     public function test_delete_reference_one_symlink_does_not_rule_them_all() {
 
+        $this->skip_if_missing('repository_user');
+
         $this->resetAfterTest(true);
         $user = $this->setup_three_private_files();
         $fs = get_file_storage();
@@ -1761,6 +1773,9 @@ class core_files_file_storage_testcase extends advanced_testcase {
      * to true copies.
      */
     public function test_update_reference_internal() {
+
+        $this->skip_if_missing('repository_user');
+
         purge_all_caches();
         $this->resetAfterTest(true);
         $user = $this->setup_three_private_files();
