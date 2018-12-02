@@ -130,6 +130,8 @@ class core_exporter_testcase extends advanced_testcase {
     public function test_format_text() {
         global $PAGE;
 
+        $this->skip_if_missing('filter_urltolink');
+
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
         $syscontext = context_system::instance();
