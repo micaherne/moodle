@@ -116,6 +116,9 @@ class core_externallib_testcase extends advanced_testcase {
     }
 
     public function test_external_format_text() {
+
+        $this->skip_if_missing('filter_mathjax');
+
         $settings = external_settings::get_instance();
 
         $currentraw = $settings->get_raw();
@@ -201,6 +204,9 @@ class core_externallib_testcase extends advanced_testcase {
     }
 
     public function test_external_format_string() {
+
+        $this->skip_if_missing('filter_multilang');
+
         $this->resetAfterTest();
         $settings = external_settings::get_instance();
         $currentraw = $settings->get_raw();
@@ -622,6 +628,9 @@ class core_externallib_testcase extends advanced_testcase {
      */
     public function test_user_created_tokens_duration() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('tool_mobile');
+
         $this->resetAfterTest(true);
 
         $CFG->enablewebservices = 1;
