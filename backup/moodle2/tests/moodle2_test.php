@@ -120,6 +120,11 @@ class core_backup_moodle2_testcase extends advanced_testcase {
      */
     public function test_restore_legacy_availability() {
         global $DB, $USER, $CFG;
+
+        $this->skip_if_missing('mod_forum');
+        $this->skip_if_missing('mod_page');
+        $this->skip_if_missing('mod_quiz');
+
         require_once($CFG->dirroot . '/grade/querylib.php');
         require_once($CFG->libdir . '/completionlib.php');
 
@@ -571,6 +576,9 @@ class core_backup_moodle2_testcase extends advanced_testcase {
      */
     protected function prepare_for_enrolments_test($target, $additionalcaps = []) {
         global $CFG, $DB;
+
+        $this->skip_if_missing('enrol_self');
+
         $this->resetAfterTest(true);
 
         // Turn off file logging, otherwise it can't delete the file (Windows).
@@ -823,6 +831,9 @@ class core_backup_moodle2_testcase extends advanced_testcase {
      */
     public function test_block_instance_times_backup() {
         global $DB;
+
+        $this->skip_if_missing('block_html');
+
         $this->resetAfterTest();
 
         $this->setAdminUser();
@@ -975,6 +986,8 @@ class core_backup_moodle2_testcase extends advanced_testcase {
      */
     public function test_restore_question_category_34_35() {
         global $DB, $USER, $CFG;
+
+        $this->skip_if_missing('mod_quiz');
 
         $this->resetAfterTest(true);
         $this->setAdminUser();

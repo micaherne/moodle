@@ -49,6 +49,12 @@ class core_block_privacy_testcase extends provider_testcase {
     }
 
     public function test_get_contexts_for_userid() {
+
+        $this->skip_if_missing('block_login');
+        $this->skip_if_missing('block_mentees');
+        $this->skip_if_missing('block_myprofile');
+        $this->skip_if_missing('block_private_files');
+
         $dg = $this->getDataGenerator();
         $c1 = $dg->create_course();
         $c2 = $dg->create_course();
@@ -98,6 +104,9 @@ class core_block_privacy_testcase extends provider_testcase {
      */
     public function test_get_users_in_context() {
         global $DB;
+
+        $this->skip_if_missing('block_myprofile');
+
         $u1 = $this->getDataGenerator()->create_user();
         $u2 = $this->getDataGenerator()->create_user();
         $u3 = $this->getDataGenerator()->create_user();
@@ -126,6 +135,12 @@ class core_block_privacy_testcase extends provider_testcase {
 
     public function test_delete_data_for_user() {
         global $DB;
+
+        $this->skip_if_missing('block_login');
+        $this->skip_if_missing('block_mentees');
+        $this->skip_if_missing('block_myprofile');
+        $this->skip_if_missing('block_private_files');
+
         $dg = $this->getDataGenerator();
         $c1 = $dg->create_course();
         $c2 = $dg->create_course();
@@ -196,6 +211,12 @@ class core_block_privacy_testcase extends provider_testcase {
 
     public function test_delete_data_for_all_users_in_context() {
         global $DB;
+
+        $this->skip_if_missing('block_login');
+        $this->skip_if_missing('block_mentees');
+        $this->skip_if_missing('block_myprofile');
+        $this->skip_if_missing('block_private_files');
+
         $dg = $this->getDataGenerator();
         $c1 = $dg->create_course();
         $c2 = $dg->create_course();
@@ -302,6 +323,9 @@ class core_block_privacy_testcase extends provider_testcase {
      */
     public function test_delete_data_for_users() {
         global $DB;
+
+        $this->skip_if_missing('block_myprofile');
+
         $u1 = $this->getDataGenerator()->create_user();
         $u2 = $this->getDataGenerator()->create_user();
         $u3 = $this->getDataGenerator()->create_user();
@@ -340,6 +364,9 @@ class core_block_privacy_testcase extends provider_testcase {
 
     public function test_export_data_for_user() {
         global $DB;
+
+        $this->skip_if_missing('block_myprofile');
+
         $dg = $this->getDataGenerator();
         $c1 = $dg->create_course();
         $c2 = $dg->create_course();

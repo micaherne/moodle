@@ -54,6 +54,9 @@ class webservice_test extends advanced_testcase {
     public function test_init_service_class() {
         global $DB, $USER;
 
+        // webservice_dummy uses rest.
+        $this->skip_if_missing('webservice_rest');
+
         $this->resetAfterTest(true);
 
         // Set current user.

@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use PHPUnit\Framework\SkippedTestError;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -103,6 +105,8 @@ EOD;
      * @return component_generator_base or rather an instance of the appropriate subclass.
      */
     public function get_plugin_generator($component) {
+        global $CFG;
+
         list($type, $plugin) = core_component::normalize_component($component);
         $cleancomponent = $type . '_' . $plugin;
         if ($cleancomponent != $component) {
@@ -118,6 +122,10 @@ EOD;
         $dir = core_component::get_component_directory($component);
         $lib = $dir . '/tests/generator/lib.php';
         if (!$dir || !is_readable($lib)) {
+            if (!empty($CFG->phpunit_skiponmissing)) {
+                throw new SkippedTestError("Component {$component} does not support " .
+                    "generators yet. Missing tests/generator/lib.php.");
+            }
             throw new coding_exception("Component {$component} does not support " .
                     "generators yet. Missing tests/generator/lib.php.");
         }

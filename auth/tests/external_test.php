@@ -71,6 +71,8 @@ class core_auth_external_testcase extends externallib_advanced_testcase {
     public function test_confirm_user() {
         global $DB;
 
+        $this->skip_if_missing('auth_email');
+
         $username = 'pepe';
         $password = 'abcdefAª.ªª!!3';
         $firstname = 'Pepe';
@@ -137,6 +139,8 @@ class core_auth_external_testcase extends externallib_advanced_testcase {
     public function test_resend_confirmation_email() {
         global $DB;
 
+        $this->skip_if_missing('auth_email');
+
         $username = 'pepe';
         $password = 'abcdefAª.ªª!!3';
         $firstname = 'Pepe';
@@ -162,6 +166,8 @@ class core_auth_external_testcase extends externallib_advanced_testcase {
      */
     public function test_resend_confirmation_email_invalid_username() {
 
+        $this->skip_if_missing('auth_email');
+
         $username = 'pepe';
         $password = 'abcdefAª.ªª!!3';
         $firstname = 'Pepe';
@@ -184,6 +190,8 @@ class core_auth_external_testcase extends externallib_advanced_testcase {
      * Test resend_confirmation_email invalid password.
      */
     public function test_resend_confirmation_email_invalid_password() {
+
+        $this->skip_if_missing('auth_email');
 
         $username = 'pepe';
         $password = 'abcdefAª.ªª!!3';
@@ -208,6 +216,8 @@ class core_auth_external_testcase extends externallib_advanced_testcase {
      */
     public function test_resend_confirmation_email_already_confirmed_user() {
         global $DB;
+
+        $this->skip_if_missing('auth_email');
 
         $username = 'pepe';
         $password = 'abcdefAª.ªª!!3';

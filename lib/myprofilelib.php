@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot . '/user/profile/lib.php');
+
 /**
  * Defines core nodes for my profile navigation tree.
  *

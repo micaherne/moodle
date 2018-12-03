@@ -359,6 +359,8 @@ class core_test_generator_testcase extends advanced_testcase {
     public function test_enrol_user() {
         global $DB;
 
+        $this->skip_if_missing('enrol_self');
+
         $this->resetAfterTest();
 
         $selfplugin = enrol_get_plugin('self');

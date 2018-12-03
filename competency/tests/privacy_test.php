@@ -535,6 +535,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_get_contexts_for_userid_with_usermodified_for_competency_data() {
+
+        $this->skip_if_missing('tool_lp');
+
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
         $u0 = $dg->create_user();
@@ -613,6 +616,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_get_users_in_context_with_usermodified_for_competency_data() {
+
+        $this->skip_if_missing('tool_lp');
+
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
         $u0 = $dg->create_user();
@@ -760,6 +766,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_delete_data_for_user() {
+
+        $this->skip_if_missing('tool_lp');
+
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
 
@@ -933,6 +942,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_delete_data_for_user_with_other_user_context() {
+
+        $this->skip_if_missing('tool_lp');
+
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
 
@@ -1026,6 +1038,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_delete_data_for_users() {
+
+        $this->skip_if_missing('tool_lp');
+
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
 
@@ -1198,6 +1213,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_delete_data_for_users_with_other_user_context() {
+
+        $this->skip_if_missing('tool_lp');
+
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
 
@@ -1815,6 +1833,8 @@ class core_competency_privacy_testcase extends provider_testcase {
     public function test_export_data_for_user_with_related_learning_plans() {
         global $DB;
 
+        $this->skip_if_missing('tool_lp');
+
         $path = [
             get_string('competencies', 'core_competency'),
             get_string('privacy:path:relatedtome', 'core_competency'),
@@ -1991,6 +2011,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_export_data_for_user_with_related_competencies() {
+
+        $this->skip_if_missing('tool_lp');
+
         $path = [
             get_string('competencies', 'core_competency'),
             get_string('privacy:path:relatedtome', 'core_competency'),
@@ -2234,6 +2257,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_export_data_for_user_about_their_learning_plans() {
+
+        $this->skip_if_missing('tool_lp');
+
         $this->setAdminUser();
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
@@ -2397,6 +2423,9 @@ class core_competency_privacy_testcase extends provider_testcase {
     }
 
     public function test_export_data_for_user_about_their_competencies() {
+
+        $this->skip_if_missing('tool_lp');
+
         $dg = $this->getDataGenerator();
         $ccg = $dg->get_plugin_generator('core_competency');
         $path = [get_string('competencies', 'core_competency'), get_string('competencies', 'core_competency')];

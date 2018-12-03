@@ -68,6 +68,8 @@ class search_engine_testcase extends advanced_testcase {
     public function test_engine_caches() {
         global $DB;
 
+        $this->skip_if_missing('mod_forum');
+
         $engine = new \mock_search\engine();
 
         $course1 = self::getDataGenerator()->create_course();

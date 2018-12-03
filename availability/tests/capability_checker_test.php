@@ -39,6 +39,9 @@ class core_availability_capability_checker_testcase extends advanced_testcase {
      */
     public function test_capability_checker() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         // Create a course with teacher and student.

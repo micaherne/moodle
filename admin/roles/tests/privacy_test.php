@@ -401,6 +401,8 @@ class core_role_privacy_testcase extends provider_testcase {
     public function test_export_user_role_to_cohort() {
         global $DB;
 
+        $this->skip_if_missing('tool_cohortroles');
+
         $this->resetAfterTest();
         $this->setAdminUser();
         // Assign user roles to cohort.
@@ -454,6 +456,8 @@ class core_role_privacy_testcase extends provider_testcase {
      */
     public function test_delete_user_role_to_cohort() {
         global $DB;
+
+        $this->skip_if_missing('tool_cohortroles');
 
         $this->resetAfterTest();
         $this->setAdminUser();

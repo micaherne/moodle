@@ -38,6 +38,8 @@ class core_repositorylib_testcase extends advanced_testcase {
     public function test_install_repository() {
         global $CFG, $DB;
 
+        $this->skip_if_missing('repository_boxnet');
+
         $this->resetAfterTest(true);
 
         $syscontext = context_system::instance();

@@ -43,6 +43,8 @@ class core_recordset_walk_testcase extends advanced_testcase {
     public function test_no_data() {
         global $DB;
 
+        $this->skip_if_missing('mod_assign');
+
         $recordset = $DB->get_recordset('assign');
         $walker = new \core\dml\recordset_walk($recordset, array($this, 'simple_callback'));
         $this->assertFalse($walker->valid());

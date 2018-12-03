@@ -69,6 +69,8 @@ class search_manager_testcase extends advanced_testcase {
     public function test_search_areas() {
         global $CFG;
 
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         set_config('enableglobalsearch', true);
@@ -103,6 +105,8 @@ class search_manager_testcase extends advanced_testcase {
     }
 
     public function test_search_config() {
+
+        $this->skip_if_missing('mod_forum');
 
         $this->resetAfterTest();
 
@@ -163,6 +167,9 @@ class search_manager_testcase extends advanced_testcase {
      * Tests the get_last_indexing_duration method in the base area class.
      */
     public function test_get_last_indexing_duration() {
+
+        $this->skip_if_missing('mod_forum');
+
         $this->resetAfterTest();
 
         $search = testable_core_search::instance();
@@ -970,6 +977,8 @@ class search_manager_testcase extends advanced_testcase {
      * @return void
      */
     public function test_is_search_area() {
+
+        $this->skip_if_missing('mod_forum');
 
         $this->assertFalse(testable_core_search::is_search_area('\asd\asd'));
         $this->assertFalse(testable_core_search::is_search_area('\mod_forum\search\posta'));

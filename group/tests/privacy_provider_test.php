@@ -106,6 +106,9 @@ class core_group_privacy_provider_testcase extends provider_testcase {
      * Test for provider::export_groups() to export group memberships of a component.
      */
     public function test_export_groups_for_component() {
+
+        $this->skip_if_missing('enrol_self');
+
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
@@ -214,6 +217,8 @@ class core_group_privacy_provider_testcase extends provider_testcase {
      */
     public function test_delete_groups_for_all_users_for_component() {
         global $DB;
+
+        $this->skip_if_missing('enrol_self');
 
         $this->resetAfterTest();
 
@@ -413,6 +418,8 @@ class core_group_privacy_provider_testcase extends provider_testcase {
     public function test_delete_groups_for_user_for_component() {
         global $DB;
 
+        $this->skip_if_missing('enrol_self');
+
         $this->resetAfterTest();
 
         $course1 = $this->getDataGenerator()->create_course();
@@ -516,6 +523,8 @@ class core_group_privacy_provider_testcase extends provider_testcase {
      */
     public function test_delete_groups_for_users_for_component() {
         global $DB;
+
+        $this->skip_if_missing('enrol_self');
 
         $this->resetAfterTest();
 
@@ -727,6 +736,9 @@ class core_group_privacy_provider_testcase extends provider_testcase {
      * Test for provider::get_contexts_for_userid() when there are group memberships from other components.
      */
     public function test_get_contexts_for_userid_component() {
+
+        $this->skip_if_missing('enrol_meta');
+
         $this->resetAfterTest();
 
         $course1 = $this->getDataGenerator()->create_course();

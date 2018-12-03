@@ -160,6 +160,8 @@ class format_topics_testcase extends advanced_testcase {
     public function test_inplace_editable() {
         global $DB, $PAGE;
 
+        $this->skip_if_missing('format_weeks');
+
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course(array('numsections' => 5, 'format' => 'topics'),

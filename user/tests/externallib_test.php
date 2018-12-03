@@ -486,6 +486,8 @@ class core_user_externallib_testcase extends externallib_advanced_testcase {
     public function test_create_users() {
          global $USER, $CFG, $DB;
 
+         $this->skip_if_missing('editor_atto');
+
         $this->resetAfterTest(true);
 
         $user1 = array(
@@ -673,6 +675,8 @@ class core_user_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_update_users() {
         global $USER, $CFG, $DB;
+
+        $this->skip_if_missing('editor_atto');
 
         $this->resetAfterTest(true);
 
@@ -1103,6 +1107,10 @@ class core_user_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_set_user_preferences_save() {
         global $DB;
+
+        $this->skip_if_missing('editor_atto');
+        $this->skip_if_missing('editor_tinymce');
+
         $this->resetAfterTest(true);
 
         $user1 = self::getDataGenerator()->create_user();
@@ -1244,6 +1252,9 @@ class core_user_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_update_user_preferences_unset() {
         global $DB;
+
+        $this->skip_if_missing('editor_atto');
+
         $this->resetAfterTest(true);
 
         $user = self::getDataGenerator()->create_user();

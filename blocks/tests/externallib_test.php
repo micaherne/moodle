@@ -48,6 +48,8 @@ class core_block_externallib_testcase extends externallib_advanced_testcase {
     public function test_get_course_blocks() {
         global $DB, $FULLME;
 
+        $this->skip_if_missing('block_calendar_upcoming');
+
         $this->resetAfterTest(true);
 
         $user = $this->getDataGenerator()->create_user();
@@ -81,6 +83,8 @@ class core_block_externallib_testcase extends externallib_advanced_testcase {
     public function test_get_course_blocks_site_home() {
         global $DB, $FULLME;
 
+        $this->skip_if_missing('block_calendar_upcoming');
+
         $this->resetAfterTest(true);
 
         $user = $this->getDataGenerator()->create_user();
@@ -109,6 +113,14 @@ class core_block_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_get_course_blocks_overrides() {
         global $DB, $CFG, $FULLME;
+
+        $this->skip_if_missing('block_calendar_upcoming');
+        $this->skip_if_missing('block_course_list');
+        $this->skip_if_missing('block_participants');
+        $this->skip_if_missing('block_recent_activity');
+        $this->skip_if_missing('block_search_forums');
+        $this->skip_if_missing('block_navigation');
+        $this->skip_if_missing('block_settings');
 
         $this->resetAfterTest(true);
 
@@ -144,6 +156,8 @@ class core_block_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_get_course_blocks_contents() {
         global $DB, $FULLME;
+
+        $this->skip_if_missing('block_html');
 
         $this->resetAfterTest(true);
 
@@ -229,6 +243,10 @@ class core_block_externallib_testcase extends externallib_advanced_testcase {
         $alldefaultblocksordered = $DB->get_records_menu('block_instances',
             array('pagetypepattern' => 'my-index'), 'defaultregion, defaultweight ASC', 'id, blockname');
 
+        if (empty($alldefaultblocksordered)) {
+            $this->markTestSkipped("No blocks installed.");
+        }
+
         $this->setUser($user);
 
         // Check for the default blocks.
@@ -254,6 +272,9 @@ class core_block_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_get_dashboard_blocks_default_dashboard_including_sticky_block() {
         global $PAGE, $DB;
+
+        $this->skip_if_missing('block_myprofile');
+
         $this->resetAfterTest(true);
 
         $user = $this->getDataGenerator()->create_user();
@@ -297,6 +318,9 @@ class core_block_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_get_dashboard_blocks_custom_user_dashboard() {
         global $PAGE, $DB;
+
+        $this->skip_if_missing('block_myprofile');
+
         $this->resetAfterTest(true);
 
         $user = $this->getDataGenerator()->create_user();

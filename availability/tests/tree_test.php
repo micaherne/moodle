@@ -690,6 +690,10 @@ class tree_testcase extends \advanced_testcase {
      */
     public function test_unique_sql_parameter_behaviour() {
         global $DB;
+
+        $this->skip_if_missing('availability_group');
+        $this->skip_if_missing('availability_grouping');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
 
@@ -737,6 +741,10 @@ class tree_testcase extends \advanced_testcase {
      */
     public function test_get_user_list_sql() {
         global $DB;
+
+        $this->skip_if_missing('availability_date');
+        $this->skip_if_missing('availability_group');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
 

@@ -42,6 +42,9 @@ class enrol_manual_lib_testcase extends advanced_testcase {
         global $DB, $CFG;
         require_once($CFG->dirroot.'/enrol/manual/locallib.php');
 
+        $this->skip_if_missing('enrol_guest');
+        $this->skip_if_missing('enrol_self');
+
         $this->resetAfterTest();
 
         /** @var $manplugin enrol_manual_plugin */

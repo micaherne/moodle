@@ -4787,7 +4787,7 @@ class settings_navigation extends navigation_node {
             $profilenode = $dashboard->add(get_string('profile'), new moodle_url('/user/profile.php',
                     array('id' => $user->id)), self::TYPE_SETTING, null, 'myprofile');
 
-            if (!empty($CFG->navadduserpostslinks)) {
+            if (!empty($CFG->navadduserpostslinks) && \core_component::get_component_directory('mod_forum')) {
                 // Add nodes for forum posts and discussions if the user can view either or both
                 // There are no capability checks here as the content of the page is based
                 // purely on the forums the current user has access too.

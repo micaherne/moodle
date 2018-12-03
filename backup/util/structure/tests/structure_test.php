@@ -65,6 +65,8 @@ class backup_structure_testcase extends advanced_testcase {
     private function fill_records() {
         global $DB;
 
+        $this->skip_if_missing('mod_forum');
+
         // Create one forum
         $forum_data = (object)array('course' => 1, 'name' => 'Test forum', 'intro' => 'Intro forum');
         $this->forumid = $DB->insert_record('forum', $forum_data);

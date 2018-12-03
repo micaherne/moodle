@@ -39,6 +39,9 @@ require_once(__DIR__ . '/helpers.php');
  */
 class question_attempt_step_db_test extends data_loading_method_test_base {
     public function test_load_with_data() {
+
+        $this->skip_if_missing('qtype_description');
+
         $records = new question_test_recordset(array(
             array('attemptstepid', 'questionattemptid', 'sequencenumber', 'state', 'fraction', 'timecreated', 'userid', 'name', 'value', 'qtype', 'contextid'),
             array(             1,                   1,                0,  'todo',       null,    1256228502,       13,   null,    null, 'description', 1),
@@ -58,6 +61,9 @@ class question_attempt_step_db_test extends data_loading_method_test_base {
     }
 
     public function test_load_without_data() {
+
+        $this->skip_if_missing('qtype_description');
+
         $records = new question_test_recordset(array(
             array('attemptstepid', 'questionattemptid', 'sequencenumber', 'state', 'fraction', 'timecreated', 'userid', 'name', 'value', 'contextid'),
             array(             2,                   1,                1,  'complete',   null,    1256228505,       13,   null,    null, 1),
@@ -72,6 +78,9 @@ class question_attempt_step_db_test extends data_loading_method_test_base {
     }
 
     public function test_load_dont_be_too_greedy() {
+
+        $this->skip_if_missing('qtype_description');
+
         $records = new question_test_recordset(array(
             array('attemptstepid', 'questionattemptid', 'sequencenumber', 'state', 'fraction', 'timecreated', 'userid', 'name', 'value', 'contextid'),
             array(             1,                   1,                0,  'todo',       null,    1256228502,       13,    'x',  'right', 1),

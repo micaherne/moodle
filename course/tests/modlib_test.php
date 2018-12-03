@@ -36,6 +36,9 @@ class core_course_modlib_testcase extends advanced_testcase {
      */
     public function test_prepare_new_moduleinfo_data() {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+
         $this->resetAfterTest(true);
 
         $this->setAdminUser();

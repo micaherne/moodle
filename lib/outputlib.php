@@ -741,6 +741,9 @@ class theme_config {
 
         if ($this->name != 'bootstrapbase') {
             $baseconfig = theme_config::find_theme_config('bootstrapbase', $this->settings);
+            if (empty($baseconfig)) {
+                $baseconfig = $config;
+            }
         } else {
             $baseconfig = $config;
         }

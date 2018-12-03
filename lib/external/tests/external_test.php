@@ -183,6 +183,9 @@ class core_external_testcase extends externallib_advanced_testcase {
      * Test update_inplace_editable()
      */
     public function test_update_inplace_editable() {
+
+        $this->skip_if_missing('tool_log');
+
         $this->resetAfterTest(true);
 
         // Call service for component that does not have inplace_editable callback.

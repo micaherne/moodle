@@ -38,6 +38,11 @@ use core_competency\url;
  */
 class core_competency_event_testcase extends advanced_testcase {
 
+    protected function setUp() {
+        // \core_competency\url uses tool_lp\url_resolver.
+        $this->skip_if_missing('tool_lp');
+    }
+
     /**
      * Test the competency framework created event.
      *

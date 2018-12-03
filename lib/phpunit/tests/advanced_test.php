@@ -397,6 +397,10 @@ class core_phpunit_advanced_testcase extends advanced_testcase {
         // Get all processors first.
         $processors1 = get_message_processors();
 
+        if (empty($processors1)) {
+            $this->markTestSkipped("No message processors installed.");
+        }
+
         // Add a new message processor and get all processors again.
         $processor = new stdClass();
         $processor->name = 'test_processor';
@@ -417,6 +421,9 @@ class core_phpunit_advanced_testcase extends advanced_testcase {
     }
 
     public function test_message_redirection() {
+
+        $this->skip_if_missing('message_email');
+
         $this->preventResetByRollback(); // Messaging is not compatible with transactions...
         $this->resetAfterTest(false);
 

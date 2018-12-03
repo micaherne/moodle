@@ -68,6 +68,11 @@ class core_filter_external_testcase extends externallib_advanced_testcase {
 
         // Get all filters and disable them all globally.
         $allfilters = filter_get_all_installed();
+
+        if (empty($allfilters)) {
+            $this->markTestSkipped("No filters installed");
+        }
+
         foreach ($allfilters as $filter => $filtername) {
             filter_set_global_state($filter, TEXTFILTER_DISABLED);
         }
@@ -112,6 +117,11 @@ class core_filter_external_testcase extends externallib_advanced_testcase {
 
         // Get all filters and disable them all globally.
         $allfilters = filter_get_all_installed();
+
+        if (empty($allfilters)) {
+            $this->markTestSkipped("No filters installed");
+        }
+
         foreach ($allfilters as $filter => $filtername) {
             filter_set_global_state($filter, TEXTFILTER_DISABLED);
         }

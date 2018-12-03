@@ -46,6 +46,9 @@ class core_comment_privacy_testcase extends provider_testcase {
      * Check the exporting of comments for a user id in a context.
      */
     public function test_export_comments() {
+
+        $this->skip_if_missing('block_comments');
+
         $course = $this->getDataGenerator()->create_course();
         $context = context_course::instance($course->id);
 
@@ -419,6 +422,9 @@ class core_comment_privacy_testcase extends provider_testcase {
      * @return comment The comment object.
      */
     protected function get_comment_object($context, $course) {
+
+        $this->skip_if_missing('block_comments');
+
         // Comment on course page.
         $args = new stdClass;
         $args->context = $context;

@@ -24,6 +24,8 @@
  */
 
 
+use PHPUnit\Framework\SkippedTestError;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -223,6 +225,10 @@ class test_question_maker {
 
         $file = core_component::get_plugin_directory('qtype', $qtype) . '/tests/helper.php';
         if (!is_readable($file)) {
+            if (!empty($CFG->phpunit_skiponmissing)) {
+                throw new SkippedTestError('Question type ' . $qtype .
+                    ' does not have test helper code.');
+            }
             throw new coding_exception('Question type ' . $qtype .
                 ' does not have test helper code.');
         }

@@ -187,9 +187,11 @@ function completion_can_view_data($userid, $course = null) {
     // Check capabilities
     $personalcontext = context_user::instance($userid);
 
+    $reportcompletionviewexists = !empty(get_capability_info('report/completion:view'));
+
     if (has_capability('moodle/user:viewuseractivitiesreport', $personalcontext)) {
         return true;
-    } elseif (has_capability('report/completion:view', $personalcontext)) {
+    } elseif ($reportcompletionviewexists && has_capability('report/completion:view', $personalcontext)) {
         return true;
     }
 
@@ -199,7 +201,7 @@ function completion_can_view_data($userid, $course = null) {
         $coursecontext = context_system::instance();
     }
 
-    if (has_capability('report/completion:view', $coursecontext)) {
+    if ($reportcompletionviewexists && has_capability('report/completion:view', $coursecontext)) {
         return true;
     }
 

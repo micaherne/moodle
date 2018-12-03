@@ -3047,6 +3047,10 @@ class core_message_api_testcase extends core_message_messagelib_testcase {
      * Tests deleting a conversation.
      */
     public function test_get_all_message_preferences() {
+
+        $this->skip_if_missing('message_email');
+        $this->skip_if_missing('message_popup');
+
         $user = self::getDataGenerator()->create_user();
         $this->setUser($user);
 

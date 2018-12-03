@@ -54,6 +54,8 @@ class core_message_migrate_message_data_task_testcase extends advanced_testcase 
     public function test_migrating_messages() {
         global $DB;
 
+        $this->skip_if_missing('message_popup');
+
         // Create users to test with.
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -339,6 +341,9 @@ class core_message_migrate_message_data_task_testcase extends advanced_testcase 
     private function create_legacy_message_or_notification($useridfrom, $useridto, $timecreated = null,
             $notification = false, $timeread = null, $format = FORMAT_PLAIN) {
         global $DB;
+
+        $this->skip_if_missing('mod_assign');
+        $this->skip_if_missing('message_popup');
 
         $tabledata = new \stdClass();
 

@@ -28,6 +28,8 @@
  */
 
 
+use PHPUnit\Framework\SkippedTestError;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../type/questiontypebase.php');
@@ -232,6 +234,9 @@ abstract class question_bank {
         }
         $file = $CFG->dirroot . '/question/type/' . $qtypename . '/question.php';
         if (!is_readable($file)) {
+            if (!empty($CFG->phpunit_skiponmissing)) {
+                throw new SkippedTestError('Unknown question type (no definition) ' . $qtypename);
+            }
             throw new coding_exception('Unknown question type (no definition) ' . $qtypename);
         }
         include_once($file);

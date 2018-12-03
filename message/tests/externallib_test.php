@@ -1302,6 +1302,9 @@ class core_message_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_get_messages() {
         global $CFG, $DB;
+
+        $this->skip_if_missing('mod_feedback');
+
         $this->resetAfterTest(true);
 
         $this->preventResetByRollback();
@@ -1930,6 +1933,10 @@ class core_message_externallib_testcase extends externallib_advanced_testcase {
      * Test get_user_notification_preferences
      */
     public function test_get_user_notification_preferences() {
+
+        $this->skip_if_missing('message_email');
+        $this->skip_if_missing('message_popup');
+
         $this->resetAfterTest(true);
 
         $user = self::getDataGenerator()->create_user();
@@ -4787,6 +4794,9 @@ class core_message_externallib_testcase extends externallib_advanced_testcase {
      * Test get message processor.
      */
     public function test_get_message_processor() {
+
+        $this->skip_if_missing('message_popup');
+
         $this->resetAfterTest(true);
 
         // Create a user.
@@ -4809,6 +4819,9 @@ class core_message_externallib_testcase extends externallib_advanced_testcase {
      * Test get_user_notification_preferences
      */
     public function test_get_user_message_preferences() {
+
+        $this->skip_if_missing('message_email');
+
         $this->resetAfterTest(true);
 
         $user = self::getDataGenerator()->create_user();

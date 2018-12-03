@@ -39,6 +39,9 @@ require_once(__DIR__ . '/../lib.php');
 class question_engine_test extends advanced_testcase {
 
     public function test_load_behaviour_class() {
+
+        $this->skip_if_missing('qbehaviour_deferredfeedback');
+
         // Exercise SUT
         question_engine::load_behaviour_class('deferredfeedback');
         // Verify
@@ -54,6 +57,12 @@ class question_engine_test extends advanced_testcase {
     }
 
     public function test_get_behaviour_unused_display_options() {
+
+        $this->skip_if_missing('qbehaviour_deferredcbm');
+        $this->skip_if_missing('qbehaviour_deferredfeedback');
+        $this->skip_if_missing('qbehaviour_interactive');
+        $this->skip_if_missing('qbehaviour_manualgraded');
+
         $this->assertEquals(array(), question_engine::get_behaviour_unused_display_options('interactive'));
         $this->assertEquals(array('correctness', 'marks', 'specificfeedback', 'generalfeedback', 'rightanswer'),
                 question_engine::get_behaviour_unused_display_options('deferredfeedback'));
@@ -64,6 +73,10 @@ class question_engine_test extends advanced_testcase {
     }
 
     public function test_can_questions_finish_during_the_attempt() {
+
+        $this->skip_if_missing('qbehaviour_deferredfeedback');
+        $this->skip_if_missing('qbehaviour_interactive');
+
         $this->assertFalse(question_engine::can_questions_finish_during_the_attempt('deferredfeedback'));
         $this->assertTrue(question_engine::can_questions_finish_during_the_attempt('interactive'));
     }

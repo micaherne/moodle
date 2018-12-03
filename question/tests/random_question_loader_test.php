@@ -51,6 +51,9 @@ class random_question_loader_testcase extends advanced_testcase {
     }
 
     public function test_descriptions_not_returned() {
+
+        $this->skip_if_missing('qtype_description');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
@@ -63,6 +66,9 @@ class random_question_loader_testcase extends advanced_testcase {
 
     public function test_hidden_questions_not_returned() {
         global $DB;
+
+        $this->skip_if_missing('qtype_shortanswer');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
@@ -75,6 +81,9 @@ class random_question_loader_testcase extends advanced_testcase {
     }
 
     public function test_cloze_subquestions_not_returned() {
+
+        $this->skip_if_missing('qtype_multianswer');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
@@ -104,6 +113,9 @@ class random_question_loader_testcase extends advanced_testcase {
     }
 
     public function test_one_question_category_returns_that_q_then_null() {
+
+        $this->skip_if_missing('qtype_shortanswer');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
@@ -116,6 +128,9 @@ class random_question_loader_testcase extends advanced_testcase {
     }
 
     public function test_two_question_category_returns_both_then_null() {
+
+        $this->skip_if_missing('qtype_shortanswer');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
@@ -134,6 +149,9 @@ class random_question_loader_testcase extends advanced_testcase {
     }
 
     public function test_nested_categories() {
+
+        $this->skip_if_missing('qtype_shortanswer');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
@@ -150,6 +168,9 @@ class random_question_loader_testcase extends advanced_testcase {
     }
 
     public function test_used_question_not_returned_until_later() {
+
+        $this->skip_if_missing('qtype_shortanswer');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
@@ -157,13 +178,17 @@ class random_question_loader_testcase extends advanced_testcase {
         $question1 = $generator->create_question('shortanswer', null, array('category' => $cat->id));
         $question2 = $generator->create_question('shortanswer', null, array('category' => $cat->id));
         $loader = new \core_question\bank\random_question_loader(new qubaid_list(array()),
-                array($question2->id => 2));
+            array($question2->id => 2));
 
         $this->assertEquals($question1->id, $loader->get_next_question_id($cat->id, 0));
         $this->assertNull($loader->get_next_question_id($cat->id, 0));
     }
 
     public function test_previously_used_question_not_returned_until_later() {
+
+        $this->skip_if_missing('qtype_shortanswer');
+        $this->skip_if_missing('qbehaviour_deferredfeedback');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
@@ -197,6 +222,9 @@ class random_question_loader_testcase extends advanced_testcase {
     }
 
     public function test_descriptions_not_available() {
+
+        $this->skip_if_missing('qtype_description');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
@@ -209,6 +237,9 @@ class random_question_loader_testcase extends advanced_testcase {
     }
 
     public function test_existing_question_is_available_but_then_marked_used() {
+
+        $this->skip_if_missing('qtype_shortanswer');
+
         $this->resetAfterTest();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
 

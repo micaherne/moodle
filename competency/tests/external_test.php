@@ -204,6 +204,9 @@ class core_competency_external_testcase extends externallib_advanced_testcase {
     }
 
     protected function create_plan($number, $userid, $templateid, $status, $duedate) {
+
+        $this->skip_if_missing('tool_lp');
+
         $plan = array(
             'name' => 'name' . $number,
             'description' => 'description' . $number,
@@ -1522,6 +1525,9 @@ class core_competency_external_testcase extends externallib_advanced_testcase {
     }
 
     public function test_list_plan_competencies() {
+
+        $this->skip_if_missing('tool_lp');
+
         $this->setUser($this->creator);
 
         $dg = $this->getDataGenerator();

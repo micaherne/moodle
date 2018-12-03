@@ -93,6 +93,9 @@ class question_usage_db_test extends data_loading_method_test_base {
     }
 
     public function test_load_data_no_steps() {
+
+        $this->skip_if_missing('qtype_missingtype');
+
         // The code had a bug where if one question_attempt had no steps,
         // load_from_records got stuck in an infinite loop. This test is to
         // verify that no longer happens.

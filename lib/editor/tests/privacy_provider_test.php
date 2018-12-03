@@ -53,6 +53,9 @@ class core_editor_privacy_provider_testcase extends \core_privacy\tests\provider
      */
     public function test_editor_atto() {
         global $USER;
+
+        $this->skip_if_missing('editor_atto');
+
         $this->resetAfterTest();
         $this->setAdminUser();
 

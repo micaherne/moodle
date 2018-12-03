@@ -39,6 +39,8 @@ class core_competency_course_competency_testcase extends advanced_testcase {
     public function test_get_courses_with_competency_and_user() {
         global $CFG, $DB;
 
+        $this->skip_if_missing('enrol_flatfile');
+
         $this->resetAfterTest(true);
         $dg = $this->getDataGenerator();
         $lpg = $dg->get_plugin_generator('core_competency');

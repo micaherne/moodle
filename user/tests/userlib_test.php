@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
+require_once($CFG->libdir . '/authlib.php');
 require_once($CFG->dirroot.'/user/lib.php');
 
 /**
@@ -79,6 +80,9 @@ class core_userliblib_testcase extends advanced_testcase {
      */
     public function test_user_update_user() {
         global $DB;
+
+        $this->skip_if_missing('auth_shibboleth');
+        $this->skip_if_missing('theme_clean');
 
         $this->resetAfterTest();
 
@@ -159,6 +163,9 @@ class core_userliblib_testcase extends advanced_testcase {
      */
     public function test_create_users() {
         global $DB;
+
+        $this->skip_if_missing('auth_shibboleth');
+        $this->skip_if_missing('theme_clean');
 
         $this->resetAfterTest();
 

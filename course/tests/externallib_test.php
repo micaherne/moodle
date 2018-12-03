@@ -54,6 +54,8 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
 
         global $DB;
 
+        $this->skip_if_missing('theme_bootstrapbase');
+
         $this->resetAfterTest(true);
 
         // Set the required capabilities by the external function
@@ -401,6 +403,8 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_create_courses() {
         global $DB;
+
+        $this->skip_if_missing('theme_bootstrapbase');
 
         $this->resetAfterTest(true);
 
@@ -2788,6 +2792,8 @@ class core_course_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_get_recent_courses() {
         global $USER, $DB;
+
+        $this->skip_if_missing('enrol_guest');
 
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();

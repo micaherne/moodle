@@ -432,6 +432,9 @@ class core_course_category_testcase extends advanced_testcase {
      * Test a categories ability to resort courses.
      */
     public function test_resort_courses() {
+
+        $this->skip_if_missing('filter_multilang');
+
         $this->resetAfterTest(true);
         $generator = $this->getDataGenerator();
         $category = $generator->create_category();

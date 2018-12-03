@@ -1549,7 +1549,7 @@ function get_log_manager($forcereload = false) {
 
     if (!class_exists($classname)) {
         if (!empty($classname)) {
-            debugging("Cannot find log manager class '$classname'.", DEBUG_DEVELOPER);
+            // debugging("Cannot find log manager class '$classname'.", DEBUG_DEVELOPER);
         }
         $classname = '\core\log\dummy_manager';
     }

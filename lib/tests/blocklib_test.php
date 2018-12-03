@@ -674,6 +674,8 @@ class core_blocklib_testcase extends advanced_testcase {
     public function test_block_instance_times() {
         global $DB;
 
+        $this->skip_if_missing('block_html');
+
         $this->purge_blocks();
 
         // Set up fixture.

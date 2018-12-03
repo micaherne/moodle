@@ -54,6 +54,8 @@ class core_rating_testcase extends advanced_testcase {
     public function test_get_ratings_sql() {
         global $DB;
 
+        $this->skip_if_missing('mod_forum');
+
         // We load 3 items. Each is rated twice. For simplicity itemid == user id of the item owner.
         $ctxid = context_system::instance()->id;
         $ratings = array(

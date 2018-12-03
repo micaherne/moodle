@@ -912,6 +912,9 @@ EOF;
      * Tests the get_mimetype_description function.
      */
     public function test_get_mimetype_description() {
+
+        $this->skip_if_missing('filter_multilang');
+
         $this->resetAfterTest();
 
         // Test example type (.doc).

@@ -367,6 +367,9 @@ class core_files_conversion_testcase extends advanced_testcase {
      * Ensure that get_converter_instance returns an instance when a valid converter is set.
      */
     public function test_get_converter_instance_valid_set() {
+
+        $this->skip_if_missing('fileconverter_unoconv');
+
         $conversion = new conversion(0, (object) [
             'converter' => \fileconverter_unoconv\converter::class,
         ]);

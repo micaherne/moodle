@@ -37,6 +37,9 @@ require_once($CFG->dirroot . '/group/lib.php');
 class core_group_lib_testcase extends advanced_testcase {
 
     public function test_member_added_event() {
+
+        $this->skip_if_missing('mod_workshop');
+
         $this->resetAfterTest();
 
         $this->setAdminUser();

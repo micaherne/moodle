@@ -157,6 +157,9 @@ class core_login_lib_testcase extends advanced_testcase {
     }
 
     public function test_core_login_process_password_reset_disabled_auth() {
+
+        $this->skip_if_missing('auth_oauth2');
+
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user(array('auth' => 'oauth2'));
 
@@ -175,6 +178,8 @@ class core_login_lib_testcase extends advanced_testcase {
 
     public function test_core_login_process_password_reset_auth_not_supporting_email_reset() {
         global $CFG;
+
+        $this->skip_if_missing('auth_mnet');
 
         $this->resetAfterTest();
         $CFG->auth = $CFG->auth . ',mnet';

@@ -44,6 +44,14 @@ class core_availability_component_testcase extends advanced_testcase {
      * Tests the plugininfo class is present and working.
      */
     public function test_plugin_info() {
+
+        $this->skip_if_missing('availability_completion');
+        $this->skip_if_missing('availability_date');
+        $this->skip_if_missing('availability_grade');
+        $this->skip_if_missing('availability_group');
+        $this->skip_if_missing('availability_grouping');
+        $this->skip_if_missing('availability_profile');
+
         // This code will throw debugging information if the plugininfo class
         // is missing. Unfortunately it doesn't actually cause the test to
         // fail, but it's obvious when running test at least.

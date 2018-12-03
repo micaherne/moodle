@@ -115,6 +115,9 @@ class question_attempt_db_test extends data_loading_method_test_base {
     }
 
     public function test_load_missing_question() {
+
+        $this->skip_if_missing('qtype_missingtype');
+
         $records = new question_test_recordset(array(
             array('questionattemptid', 'contextid', 'questionusageid', 'slot',
                                    'behaviour', 'questionid', 'variant', 'maxmark', 'minfraction', 'maxfraction', 'flagged',

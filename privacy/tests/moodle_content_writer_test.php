@@ -659,6 +659,11 @@ class moodle_content_writer_test extends advanced_testcase {
         global $DB;
 
         $blocks = $DB->get_records('block_instances');
+
+        if (empty($blocks)) {
+            $this->markTestSkipped("No blocks installed");
+        }
+
         $block = reset($blocks);
 
         $context = \context_block::instance($block->id);

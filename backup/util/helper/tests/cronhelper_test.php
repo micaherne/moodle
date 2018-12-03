@@ -327,6 +327,10 @@ class backup_cron_helper_testcase extends advanced_testcase {
      * Test {@link backup_cron_automated_helper::is_course_modified}.
      */
     public function test_is_course_modified() {
+
+        $this->skip_if_missing('logstore_standard');
+        $this->skip_if_missing('tool_log');
+
         $this->resetAfterTest();
         $this->preventResetByRollback();
 

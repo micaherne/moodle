@@ -40,6 +40,8 @@ class core_cohort_externallib_testcase extends externallib_advanced_testcase {
     public function test_create_cohorts() {
         global $USER, $CFG, $DB;
 
+        $this->skip_if_missing('theme_clean');
+
         $this->resetAfterTest(true);
 
         set_config('allowcohortthemes', 1);
@@ -173,6 +175,8 @@ class core_cohort_externallib_testcase extends externallib_advanced_testcase {
     public function test_get_cohorts() {
         global $USER, $CFG;
 
+        $this->skip_if_missing('theme_clean');
+
         $this->resetAfterTest(true);
 
         set_config('allowcohortthemes', 1);
@@ -237,6 +241,8 @@ class core_cohort_externallib_testcase extends externallib_advanced_testcase {
      */
     public function test_update_cohorts() {
         global $USER, $CFG, $DB;
+
+        $this->skip_if_missing('theme_clean');
 
         $this->resetAfterTest(true);
 
