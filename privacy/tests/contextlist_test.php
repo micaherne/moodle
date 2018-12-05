@@ -138,6 +138,10 @@ class contextlist_test extends advanced_testcase {
                 'SELECT DISTINCT contextid FROM {foo}',
                 'contextid',
             ],
+            'with_distinct_bracketed' => [
+                'SELECT DISTINCT (contextid) FROM {foo}',
+                'contextid'
+            ],
             'with_dot' => [
                 'SELECT cx.id FROM {foo} JOIN {context} cx ON blahblahblah',
                 'id',
