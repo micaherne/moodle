@@ -70,11 +70,13 @@ class sqlite_sql_generator extends sql_generator {
     /** @var string SQL sentence to rename one key 'TABLENAME', 'OLDKEYNAME' and 'NEWKEYNAME' are dynamically replaced.*/
     public $rename_key_sql = null;
 
+    protected $temptables;
+
     /**
      * Creates one new XMLDBmysql
      */
-    public function __construct($mdb) {
-        parent::__construct($mdb);
+    public function __construct($mdb, $temptables = null) {
+        parent::__construct($mdb, $temptables);
     }
 
     /**
@@ -459,5 +461,19 @@ class sqlite_sql_generator extends sql_generator {
         // do not use php addslashes() because it depends on PHP quote settings!
         $s = str_replace("'",  "''", $s);
         return $s;
+    }
+
+    public function getCreateTempTableSQL($xmldb_table) {
+        $sqlarr = parent::getCreateTableSQL($xmldb_table);
+
+        // Let's inject the extra MySQL tweaks.
+        foreach ($sqlarr as $i=>$sql) {
+            if (strpos($sql, 'CREATE TABLE ') === 0) {
+                // We do not want the engine hack included in create table SQL.
+                $sqlarr[$i] = preg_replace('/^CREATE TABLE (.*)/s', 'CREATE TEMPORARY TABLE $1', $sql);
+            }
+        }
+
+        return $sqlarr;
     }
 }
