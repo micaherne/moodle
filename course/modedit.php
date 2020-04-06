@@ -130,7 +130,8 @@ if (!empty($type)) { //TODO: hopefully will be removed in 2.0
 $PAGE->set_pagetype($pagepath);
 $PAGE->set_pagelayout('admin');
 
-$modmoodleform = "$CFG->dirroot/mod/$module->name/mod_form.php";
+$componentdir = \core_component::get_component_directory('mod_' . $module->name);
+$modmoodleform = "{$componentdir}/mod_form.php";
 if (file_exists($modmoodleform)) {
     require_once($modmoodleform);
 } else {
