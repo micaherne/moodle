@@ -658,7 +658,8 @@ function update_moduleinfo($cm, $moduleinfo, $course, $mform = null) {
  */
 function include_modulelib($modulename) {
     global $CFG;
-    $modlib = "$CFG->dirroot/mod/$modulename/lib.php";
+    $componentdir = \core_component::get_component_directory('mod_' . $modulename);
+    $modlib = "{$componentdir}/lib.php";
     if (file_exists($modlib)) {
         include_once($modlib);
     } else {
