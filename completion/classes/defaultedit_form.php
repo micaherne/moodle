@@ -69,7 +69,8 @@ class core_completion_defaultedit_form extends core_completion_edit_base_form {
         $modname = $modnames[0];
         $course = $this->course;
 
-        $modmoodleform = "$CFG->dirroot/mod/$modname/mod_form.php";
+        $componentdir = \core_component::get_component_directory('mod_' . $modname);
+        $modmoodleform = "{$componentdir}/mod_form.php";
         if (file_exists($modmoodleform)) {
             require_once($modmoodleform);
         } else {
