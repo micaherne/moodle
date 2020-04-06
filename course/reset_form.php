@@ -88,7 +88,8 @@ class course_reset_form extends moodleform {
         if ($allmods = $DB->get_records('modules') ) {
             foreach ($allmods as $mod) {
                 $modname = $mod->name;
-                $modfile = $CFG->dirroot."/mod/$modname/lib.php";
+                $componentdir = \core_component::get_component_directory('mod_' . $modname);
+                $modfile = "{$componentdir}/lib.php";
                 $mod_reset_course_form_definition = $modname.'_reset_course_form_definition';
                 $mod_reset__userdata = $modname.'_reset_userdata';
                 if (file_exists($modfile)) {
@@ -142,7 +143,8 @@ class course_reset_form extends moodleform {
         if ($allmods = $DB->get_records('modules') ) {
             foreach ($allmods as $mod) {
                 $modname = $mod->name;
-                $modfile = $CFG->dirroot."/mod/$modname/lib.php";
+                $componentdir = \core_component::get_component_directory('mod_' . $modname);
+                $modfile = "{$componentdir}/lib.php";
                 $mod_reset_course_form_defaults = $modname.'_reset_course_form_defaults';
                 if (file_exists($modfile)) {
                     @include_once($modfile);
