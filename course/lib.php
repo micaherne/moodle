@@ -1027,7 +1027,8 @@ function course_delete_module($cmid, $async = false) {
     $modulename = $DB->get_field('modules', 'name', array('id' => $cm->module), MUST_EXIST);
 
     // Get the file location of the delete_instance function for this module.
-    $modlib = "$CFG->dirroot/mod/$modulename/lib.php";
+    $componentdir = \core_component::get_component_directory('mod_' . $modulename);
+    $modlib = "{$componentdir}/lib.php";
 
     // Include the file required to call the delete_instance function for this module.
     if (file_exists($modlib)) {
