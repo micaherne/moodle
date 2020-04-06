@@ -60,7 +60,8 @@ if ($dataformat) {
     if ($extrafields = $DB->get_records('user_info_field')) {
         foreach ($extrafields as $n => $field) {
             $fields['profile_field_'.$field->shortname] = 'profile_field_'.$field->shortname;
-            require_once($CFG->dirroot.'/user/profile/field/'.$field->datatype.'/field.class.php');
+            $componentdir = \core_component::get_component_directory('profilefield_' . $field->datatype);
+            require_once($componentdir .'/field.class.php');
         }
     }
 
