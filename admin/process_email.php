@@ -55,7 +55,8 @@ if ($modid == '0') { // special
 }
 else {
     $modname = $DB->get_field("modules", "name", array("id"=>$modid));
-    include_once('mod/'.$modname.'/lib.php');
+    $componentdir = \core_component::get_component_directory('mod_' . $modname);
+    include_once($componentdir . '/lib.php');
 }
 $function = $modname.'_process_email';
 
