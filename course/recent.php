@@ -153,7 +153,8 @@ foreach ($sections as $sectionnum => $section) {
             continue;
         }
 
-        $libfile = "$CFG->dirroot/mod/$cm->modname/lib.php";
+        $componentdir = \core_component::get_component_directory('mod_' . $cm->modname);
+        $libfile = "{$componentdir}/lib.php";
 
         if (file_exists($libfile)) {
             require_once($libfile);
