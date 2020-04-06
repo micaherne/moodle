@@ -133,8 +133,10 @@
     // Preload course format renderer before output starts.
     // This is a little hacky but necessary since
     // format.php is not included until after output starts
-    if (file_exists($CFG->dirroot.'/course/format/'.$course->format.'/renderer.php')) {
-        require_once($CFG->dirroot.'/course/format/'.$course->format.'/renderer.php');
+    $componentdir = \core_component::get_component_directory('format_' . $course->format);
+    $rendererfile = "{$componentdir}/renderer.php";
+    if (file_exists($rendererfile)) {
+        require_once($rendererfile);
         if (class_exists('format_'.$course->format.'_renderer')) {
             // call get_renderer only if renderer is defined in format plugin
             // otherwise an exception would be thrown
@@ -287,7 +289,7 @@
     $displaysection = $section;
 
     // Include the actual course format.
-    require($CFG->dirroot .'/course/format/'. $course->format .'/format.php');
+    require($componentdir .'/format.php');
     // Content wrapper end.
 
     echo html_writer::end_tag('div');
