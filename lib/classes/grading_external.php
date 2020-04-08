@@ -255,7 +255,8 @@ class core_grading_external extends external_api {
         $definition['usermodified']      = new external_value(PARAM_INT, 'user who modified definition');
         $definition['timecopied']        = new external_value(PARAM_INT, 'time copied', VALUE_OPTIONAL);
         foreach (self::get_grading_methods() as $method) {
-            require_once($CFG->dirroot.'/grade/grading/form/'.$method.'/lib.php');
+            $componentdir = \core_component::get_component_directory('gradingform_' . $method);
+            require_once($componentdir.'/lib.php');
             $details  = call_user_func('gradingform_'.$method.'_controller::get_external_definition_details');
             if ($details != null) {
                 $items = array();
@@ -415,7 +416,8 @@ class core_grading_external extends external_api {
         $instance['feedbackformat']    = new external_format_value('feedback', VALUE_OPTIONAL);
         $instance['timemodified']      = new external_value(PARAM_INT, 'modified time');
         foreach (self::get_grading_methods() as $method) {
-            require_once($CFG->dirroot.'/grade/grading/form/'.$method.'/lib.php');
+            $componentdir = \core_component::get_component_directory('gradingform_' . $method);
+            require_once($componentdir.'/lib.php');
             $details  = call_user_func('gradingform_'.$method.'_controller::get_external_instance_filling_details');
             if ($details != null) {
                 $items = array();
@@ -527,7 +529,8 @@ class core_grading_external extends external_api {
         $definitionobject->description_editor = array('text' => $text, 'format' => $format);
 
         require_once("$CFG->libdir/filelib.php");
-        require_once($CFG->dirroot.'/grade/grading/form/'.$method.'/lib.php');
+        $componentdir = \core_component::get_component_directory('gradingform_' . $method);
+        require_once($componentdir.'/lib.php');
         $details  = call_user_func('gradingform_'.$method.'_controller::get_external_definition_details');
         $methodarray = array();
         foreach (array_keys($details) as $definitionkey) {
