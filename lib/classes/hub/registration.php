@@ -193,9 +193,9 @@ class registration {
         if (!empty($CFG->enablewebservices) && !empty($CFG->enablemobilewebservice)) {
             $siteinfo['mobileservicesenabled'] = 1;
             $siteinfo['registereduserdevices'] = $DB->count_records('user_devices');
-            $airnotifierextpath = $CFG->dirroot . '/message/output/airnotifier/externallib.php';
-            if (file_exists($airnotifierextpath)) { // Maybe some one uninstalled the plugin.
-                require_once($airnotifierextpath);
+            $componentdir = \core_component::get_component_directory('message_airnotifier');
+            if (!empty($componentdir) && file_exists($componentdir . '/externallib.php')) { // Maybe some one uninstalled the plugin.
+                require_once($componentdir . '/externallib.php');
                 $siteinfo['mobilenotificationsenabled'] = \message_airnotifier_external::is_system_configured();
                 $siteinfo['registeredactiveuserdevices'] = $DB->count_records('message_airnotifier_devices', array('enable' => 1));
             }
