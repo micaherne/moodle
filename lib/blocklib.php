@@ -1640,7 +1640,8 @@ class block_manager {
         $output = $editpage->get_renderer('core');
         $OUTPUT = $output;
 
-        $formfile = $CFG->dirroot . '/blocks/' . $block->name() . '/edit_form.php';
+        $componentdir = \core_component::get_component_directory('block_' . $block->name());
+        $formfile = $componentdir . '/edit_form.php';
         if (is_readable($formfile)) {
             require_once($formfile);
             $classname = 'block_' . $block->name() . '_edit_form';
@@ -2012,7 +2013,8 @@ function block_load_class($blockname) {
         return true;
     }
 
-    $blockpath = $CFG->dirroot.'/blocks/'.$blockname.'/block_'.$blockname.'.php';
+    $componentdir = \core_component::get_component_directory('block_' . $blockname);
+    $blockpath = $componentdir.'/block_'.$blockname.'.php';
 
     if (file_exists($blockpath)) {
         require_once($CFG->dirroot.'/blocks/moodleblock.class.php');
