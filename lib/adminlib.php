@@ -6347,7 +6347,8 @@ class admin_page_manageblocks extends admin_externalpage {
         $found = false;
         if ($blocks = $DB->get_records('block')) {
             foreach ($blocks as $block) {
-                if (!file_exists("$CFG->dirroot/blocks/$block->name/")) {
+                $componentdir = \core_component::get_component_directory('block_' . $block->name);
+                if (!file_exists($componentdir)) {
                     continue;
                 }
                 if (strpos($block->name, $query) !== false) {
@@ -6845,7 +6846,8 @@ class admin_setting_manageauths extends admin_setting {
             }
 
             // settings link
-            if (file_exists($CFG->dirroot.'/auth/'.$auth.'/settings.php')) {
+            $componentdir = \core_component::get_component_directory('auth_' . $auth);
+            if (file_exists($componentdir.'/settings.php')) {
                 $settings = "<a href=\"settings.php?section=authsetting$auth\">{$txt->settings}</a>";
             } else if (file_exists($CFG->dirroot.'/auth/'.$auth.'/config.html')) {
                 $settings = "<a href=\"auth_config.php?auth=$auth\">{$txt->settings}</a>";
@@ -9878,8 +9880,8 @@ class admin_setting_managewebserviceprotocols extends admin_setting {
             $name = get_string('pluginname', 'webservice_'.$protocol);
 
             $plugin = new stdClass();
-            if (file_exists($CFG->dirroot.'/webservice/'.$protocol.'/version.php')) {
-                include($CFG->dirroot.'/webservice/'.$protocol.'/version.php');
+            if (file_exists($location.'/version.php')) {
+                include($location.'/version.php');
             }
             $version = isset($plugin->version) ? $plugin->version : '';
 
