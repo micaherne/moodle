@@ -81,7 +81,8 @@ class legacy_plugin_cron_task extends scheduled_task {
         mtrace("Starting activity modules");
         if ($mods = $DB->get_records_select("modules", "cron > 0 AND ((? - lastcron) > cron) AND visible = 1", array($timenow))) {
             foreach ($mods as $mod) {
-                $libfile = "$CFG->dirroot/mod/$mod->name/lib.php";
+                $componentdir = \core_component::get_component_directory('mod_' . $mod->name);
+                $libfile = "{$componentdir}/lib.php";
                 if (file_exists($libfile)) {
                     include_once($libfile);
                     $cronfunction = $mod->name."_cron";
@@ -111,7 +112,11 @@ class legacy_plugin_cron_task extends scheduled_task {
             // We will need the base class.
             require_once($CFG->dirroot.'/blocks/moodleblock.class.php');
             foreach ($blocks as $block) {
-                $blockfile = $CFG->dirroot.'/blocks/'.$block->name.'/block_'.$block->name.'.php';
+                $componentdir = \core_component::get_component_directory('block_' . $block->name);
+                if (!$componentdir) {
+                    continue;
+                }
+                $blockfile = $componentdir.'/block_'.$block->name.'.php';
                 if (file_exists($blockfile)) {
                     require_once($blockfile);
                     $classname = '\\block_'.$block->name;
