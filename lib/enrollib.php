@@ -149,7 +149,7 @@ function enrol_get_plugin($name) {
         return null;
     }
 
-    $location = "$CFG->dirroot/enrol/$name";
+    $location = \core_component::get_component_directory("enrol_$name");
 
     $class = "enrol_{$name}_plugin";
     if (!class_exists($class)) {
@@ -2660,7 +2660,8 @@ abstract class enrol_plugin {
         global $CFG;
 
         $name = $this->get_name();
-        $versionfile = "$CFG->dirroot/enrol/$name/version.php";
+        $componentdir = \core_component::get_component_directory('enrol_' . $name);
+        $versionfile = "$componentdir/version.php";
         $plugin = new stdClass();
         include($versionfile);
         if (empty($plugin->cron)) {
