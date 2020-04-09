@@ -145,7 +145,11 @@ class filter_manager {
      */
     protected function make_filter_object($filtername, $context, $localconfig) {
         global $CFG;
-        $path = $CFG->dirroot .'/filter/'. $filtername .'/filter.php';
+        $componentdir = \core_component::get_component_directory('filter_' . $filtername);
+        if (!$componentdir) {
+            return null;
+        }
+        $path = $componentdir .'/filter.php';
         if (!is_readable($path)) {
             return null;
         }
