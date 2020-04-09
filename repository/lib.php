@@ -1164,7 +1164,12 @@ abstract class repository implements cacheable_object {
         global $CFG;
 
         //check that the plugin exists
-        $typedirectory = $CFG->dirroot . '/repository/'. $plugin . '/lib.php';
+        $plugindir = core_component::get_plugin_directory('repository', $plugin);
+        if (!$plugindir) {
+            return false;
+        }
+
+        $typedirectory = $plugindir . '/lib.php';
         if (!file_exists($typedirectory)) {
             //throw new repository_exception('invalidplugin', 'repository');
             return false;
