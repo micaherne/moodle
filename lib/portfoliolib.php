@@ -786,7 +786,8 @@ function portfolio_instance($instanceid, $record=null) {
         }
     }
     require_once($CFG->libdir . '/portfolio/plugin.php');
-    require_once($CFG->dirroot . '/portfolio/'. $instance->plugin . '/lib.php');
+    $componentdir = \core_component::get_component_directory('portfolio_' . $instance->plugin);
+    require_once($componentdir . '/lib.php');
     $classname = 'portfolio_plugin_' . $instance->plugin;
     return new $classname($instanceid, $instance);
 }
@@ -822,7 +823,8 @@ function portfolio_static_function($plugin, $function) {
     }
 
     require_once($CFG->libdir . '/portfolio/plugin.php');
-    require_once($CFG->dirroot . '/portfolio/' . $plugin .  '/lib.php');
+    $componentdir = \core_component::get_component_directory('portfolio_' . $plugin);
+    require_once($componentdir .  '/lib.php');
     return call_user_func_array(array('portfolio_plugin_' . $plugin, $function), $args);
 }
 
