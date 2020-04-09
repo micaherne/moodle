@@ -1311,7 +1311,8 @@ function stats_get_action_names($str) {
     $function = 'stats_get_'.$str.'_actions';
     $actions = $function();
     foreach ($mods as $mod) {
-        $file = $CFG->dirroot.'/mod/'.$mod->name.'/lib.php';
+        $componentdir = \core_component::get_component_directory('mod_' . $mod->name);
+        $file = $componentdir.'/lib.php';
         if (!is_readable($file)) {
             continue;
         }
