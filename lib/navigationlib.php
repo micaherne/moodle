@@ -2268,14 +2268,18 @@ class global_navigation extends navigation_node {
         }
         $activity->nodetype = navigation_node::NODETYPE_LEAF;
         $activity->make_active();
-        $file = $CFG->dirroot.'/mod/'.$cm->modname.'/lib.php';
-        $function = $cm->modname.'_extend_navigation';
+        $componentdir = \core_component::get_component_directory('mod_' . $cm->modname);
 
-        if (file_exists($file)) {
-            require_once($file);
-            if (function_exists($function)) {
-                $activtyrecord = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
-                $function($activity, $course, $activtyrecord, $cm);
+        if ($componentdir) {
+            $file = $componentdir.'/lib.php';
+            $function = $cm->modname.'_extend_navigation';
+
+            if (file_exists($file)) {
+                require_once($file);
+                if (function_exists($function)) {
+                    $activtyrecord = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
+                    $function($activity, $course, $activtyrecord, $cm);
+                }
             }
         }
 
@@ -2574,11 +2578,14 @@ class global_navigation extends navigation_node {
         static $extendingmodules = array();
         if (!array_key_exists($modname, $extendingmodules)) {
             $extendingmodules[$modname] = false;
-            $file = $CFG->dirroot.'/mod/'.$modname.'/lib.php';
-            if (file_exists($file)) {
-                $function = $modname.'_extend_navigation';
-                require_once($file);
-                $extendingmodules[$modname] = (function_exists($function));
+            $componentdir = \core_component::get_component_directory('mod_' . $modname);
+            if ($componentdir) {
+                $file = $componentdir . '/lib.php';
+                if (file_exists($file)) {
+                    $function = $modname . '_extend_navigation';
+                    require_once($file);
+                    $extendingmodules[$modname] = (function_exists($function));
+                }
             }
         }
         return $extendingmodules[$modname];
@@ -4461,7 +4468,7 @@ class settings_navigation extends navigation_node {
                     new pix_icon('i/stats', ''));
             $coursereports = core_component::get_plugin_list('coursereport');
             foreach ($coursereports as $report => $dir) {
-                $libfile = $CFG->dirroot.'/course/report/'.$report.'/lib.php';
+                $libfile = $dir.'/lib.php';
                 if (file_exists($libfile)) {
                     require_once($libfile);
                     $reportfunction = $report.'_report_extend_navigation';
