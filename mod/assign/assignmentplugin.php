@@ -306,7 +306,7 @@ abstract class assign_plugin {
     public final function has_admin_settings() {
         global $CFG;
 
-        $pluginroot = $CFG->dirroot . '/mod/assign/' . substr($this->get_subtype(), strlen('assign')) . '/' . $this->get_type();
+        $pluginroot = \core_component::get_plugin_directory($this->get_subtype(), $this->get_type());
         $settingsfile = $pluginroot . '/settings.php';
         return file_exists($settingsfile);
     }
