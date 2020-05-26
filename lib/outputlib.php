@@ -149,11 +149,10 @@ function theme_get_config_file_path($themename) {
     global $CFG;
 
     $plugindir = \core_component::get_plugin_directory('theme', $themename);
-    if (!is_null($plugindir) && file_exists("{$plugindir}/config.php")) {
+    if (file_exists("{$plugindir}/config.php")) {
         return "{$plugindir}/config.php";
     } else if (!empty($CFG->themedir) and file_exists("{$CFG->themedir}/{$themename}/config.php")) {
         return "{$CFG->themedir}/{$themename}/config.php";
-    } else {
         return null;
     }
 }
