@@ -2898,11 +2898,11 @@ class course_request {
     /**
      * Returns the requested property
      *
-     * @param string $key
+     * @param string $name
      * @return mixed
      */
-    public function __get($key) {
-        return $this->properties->$key;
+    public function __get(string $name): mixed {
+        return $this->properties->$name;
     }
 
     /**
@@ -2910,11 +2910,11 @@ class course_request {
      *
      * This is required because we define the __get method
      *
-     * @param mixed $key
+     * @param mixed $name
      * @return bool True is it not empty, false otherwise
      */
-    public function __isset($key) {
-        return (!empty($this->properties->$key));
+    public function __isset(string $name): bool {
+        return (!empty($this->properties->$name));
     }
 
     /**

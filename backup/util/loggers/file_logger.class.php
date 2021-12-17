@@ -56,7 +56,7 @@ class file_logger extends base_logger {
         }
     }
 
-    public function __sleep() {
+    public function __sleep(): array {
         if (is_resource($this->fhandle)) {
             // Blindy close the file handler before serialization.
             @fclose($this->fhandle);
@@ -65,7 +65,7 @@ class file_logger extends base_logger {
         return array('level', 'showdate', 'showlevel', 'next', 'fullpath');
     }
 
-    public function __wakeup() {
+    public function __wakeup(): void {
         if ($this->level > backup::LOG_NONE) { // Only create the file if we are going to log something
             if (! $this->fhandle = fopen($this->fullpath, 'a')) {
                 throw new base_logger_exception('error_opening_file', $this->fullpath);

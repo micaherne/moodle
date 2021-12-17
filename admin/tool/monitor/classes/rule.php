@@ -167,16 +167,16 @@ class rule {
     /**
      * Magic get method.
      *
-     * @param string $prop property to get.
+     * @param string $name property to get.
      *
      * @return mixed
      * @throws \coding_exception
      */
-    public function __get($prop) {
-        if (property_exists($this->rule, $prop)) {
-            return $this->rule->$prop;
+    public function __get(string $name): mixed {
+        if (property_exists($this->rule, $name)) {
+            return $this->rule->$name;
         }
-        throw new \coding_exception('Property "' . $prop . '" doesn\'t exist');
+        throw new \coding_exception('Property "' . $name . '" doesn\'t exist');
     }
 
     /**

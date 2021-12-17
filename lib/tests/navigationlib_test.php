@@ -614,14 +614,14 @@ class exposed_global_navigation extends global_navigation {
         parent::__construct($page);
         $this->cache = new navigation_cache('unittest_nav');
     }
-    public function __call($method, $arguments) {
-        if (strpos($method, $this->exposedkey) !== false) {
-            $method = substr($method, strlen($this->exposedkey));
+    public function __call(string $name, array $arguments): mixed {
+        if (strpos($name, $this->exposedkey) !== false) {
+            $name = substr($name, strlen($this->exposedkey));
         }
-        if (method_exists($this, $method)) {
-            return call_user_func_array(array($this, $method), $arguments);
+        if (method_exists($this, $name)) {
+            return call_user_func_array(array($this, $name), $arguments);
         }
-        throw new coding_exception('You have attempted to access a method that does not exist for the given object '.$method, DEBUG_DEVELOPER);
+        throw new coding_exception('You have attempted to access a method that does not exist for the given object '.$name, DEBUG_DEVELOPER);
     }
     public function set_initialised() {
         $this->initialised = true;
@@ -668,14 +668,14 @@ class exposed_navbar extends navbar {
         parent::__construct($page);
         $this->cache = new navigation_cache('unittest_nav');
     }
-    public function __call($method, $arguments) {
-        if (strpos($method, $this->exposedkey) !== false) {
-            $method = substr($method, strlen($this->exposedkey));
+    public function __call(string $name, array $arguments): mixed {
+        if (strpos($name, $this->exposedkey) !== false) {
+            $name = substr($name, strlen($this->exposedkey));
         }
-        if (method_exists($this, $method)) {
-            return call_user_func_array(array($this, $method), $arguments);
+        if (method_exists($this, $name)) {
+            return call_user_func_array(array($this, $name), $arguments);
         }
-        throw new coding_exception('You have attempted to access a method that does not exist for the given object '.$method, DEBUG_DEVELOPER);
+        throw new coding_exception('You have attempted to access a method that does not exist for the given object '.$name, DEBUG_DEVELOPER);
     }
 }
 
@@ -696,13 +696,13 @@ class exposed_settings_navigation extends settings_navigation {
         parent::__construct($PAGE);
         $this->cache = new navigation_cache('unittest_nav');
     }
-    public function __call($method, $arguments) {
-        if (strpos($method, $this->exposedkey) !== false) {
-            $method = substr($method, strlen($this->exposedkey));
+    public function __call(string $name, array $arguments): mixed {
+        if (strpos($name, $this->exposedkey) !== false) {
+            $name = substr($name, strlen($this->exposedkey));
         }
-        if (method_exists($this, $method)) {
-            return call_user_func_array(array($this, $method), $arguments);
+        if (method_exists($this, $name)) {
+            return call_user_func_array(array($this, $name), $arguments);
         }
-        throw new coding_exception('You have attempted to access a method that does not exist for the given object '.$method, DEBUG_DEVELOPER);
+        throw new coding_exception('You have attempted to access a method that does not exist for the given object '.$name, DEBUG_DEVELOPER);
     }
 }

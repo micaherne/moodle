@@ -116,7 +116,7 @@ class tagindex implements templatable {
      * @param string $name
      * @param mixed $value
      */
-    public function __set($name, $value) {
+    public function __set(string $name, mixed $value): void {
         $this->record->$name = $value;
     }
 
@@ -126,7 +126,7 @@ class tagindex implements templatable {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         return $this->record->$name;
     }
 
@@ -136,7 +136,7 @@ class tagindex implements templatable {
      * @param string $name
      * @return bool
      */
-    public function __isset($name) {
+    public function __isset(string $name): bool {
         return isset($this->record->$name);
     }
 

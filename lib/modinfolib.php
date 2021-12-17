@@ -139,7 +139,7 @@ class course_modinfo {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         if (isset(self::$standardproperties[$name])) {
             $method = self::$standardproperties[$name];
             return $this->$method();

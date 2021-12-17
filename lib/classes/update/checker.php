@@ -56,7 +56,7 @@ class checker {
     /**
      * Sorry, this is singleton
      */
-    protected function __clone() {
+    protected function __clone(): void {
     }
 
     /**

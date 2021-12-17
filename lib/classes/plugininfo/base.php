@@ -198,7 +198,7 @@ abstract class base {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         switch ($name) {
             case 'component': return $this->type . '_' . $this->name;
 

@@ -278,19 +278,19 @@ class portfolio_format_leap2a_entry {
      * Override __set to do proper dispatching for different things.
      * Only allows the optional and required leap2a entry fields to be set
      *
-     * @param string $field property's name
+     * @param string $name property's name
      * @param mixed $value property's value
      * @return mixed
      */
-    public function __set($field, $value) {
+    public function __set(string $name, mixed $value): void {
         // detect the case where content is being set to be a file directly
-        if ($field == 'content' && $value instanceof stored_file) {
+        if ($name == 'content' && $value instanceof stored_file) {
             throw new portfolio_format_leap2a_exception('leap2a_filecontent', 'portfolio');
         }
-        if (in_array($field, $this->requiredfields) || in_array($field, $this->optionalfields)) {
-            return $this->{$field} = $value;
+        if (in_array($name, $this->requiredfields) || in_array($name, $this->optionalfields)) {
+            $this->{$name} = $value;
         }
-        throw new portfolio_format_leap2a_exception('leap2a_invalidentryfield', 'portfolio', '', $field);
+        throw new portfolio_format_leap2a_exception('leap2a_invalidentryfield', 'portfolio', '', $name);
     }
 
 
@@ -530,4 +530,3 @@ class portfolio_format_leap2a_file extends portfolio_format_leap2a_entry {
         $entry->appendChild($link);
     }
 }
-

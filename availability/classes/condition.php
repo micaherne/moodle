@@ -95,7 +95,7 @@ abstract class condition extends tree_node {
      *
      * @return string Text representation of condition
      */
-    public function __toString() {
+    public function __toString(): string {
         return '{' . $this->get_type() . ':' . $this->get_debug_string() . '}';
     }
 

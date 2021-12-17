@@ -87,7 +87,7 @@ class OAuthConsumer {
         $this->callback_url = $callback_url;
     }
 
-    function __toString() {
+    public function __toString(): string {
         return "OAuthConsumer[key=$this->key,secret=$this->secret]";
     }
 }
@@ -117,7 +117,7 @@ class OAuthToken {
         OAuthUtil::urlencode_rfc3986($this->secret);
     }
 
-    function __toString() {
+    public function __toString(): string {
         return $this->to_string();
     }
 }
@@ -510,7 +510,7 @@ class OAuthRequest {
         return $out;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return $this->to_url();
     }
 

@@ -905,7 +905,7 @@ class moodle_page {
      * @return mixed
      * @throws coding_exception
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         $getmethod = 'magic_get_' . $name;
         if (method_exists($this, $getmethod)) {
             return $this->$getmethod();
@@ -927,7 +927,7 @@ class moodle_page {
      * @return void Throws exception if field not defined in page class
      * @throws coding_exception
      */
-    public function __set($name, $value) {
+    public function __set(string $name, mixed $value): void {
         if (method_exists($this, 'set_' . $name)) {
             throw new coding_exception('Invalid attempt to modify page object', "Use \$PAGE->set_$name() instead.");
         } else {

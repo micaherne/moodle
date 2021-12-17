@@ -490,18 +490,18 @@ class plugin_renderer_base extends renderer_base {
      * Magic method used to pass calls otherwise meant for the standard renderer
      * to it to ensure we don't go causing unnecessary grief.
      *
-     * @param string $method
+     * @param string $name
      * @param array $arguments
      * @return mixed
      */
-    public function __call($method, $arguments) {
-        if (method_exists('renderer_base', $method)) {
-            throw new coding_exception('Protected method called against '.get_class($this).' :: '.$method);
+    public function __call(string $name, array $arguments): mixed {
+        if (method_exists('renderer_base', $name)) {
+            throw new coding_exception('Protected method called against '.get_class($this).' :: '.$name);
         }
-        if (method_exists($this->output, $method)) {
-            return call_user_func_array(array($this->output, $method), $arguments);
+        if (method_exists($this->output, $name)) {
+            return call_user_func_array(array($this->output, $name), $arguments);
         } else {
-            throw new coding_exception('Unknown method called against '.get_class($this).' :: '.$method);
+            throw new coding_exception('Unknown method called against '.get_class($this).' :: '.$name);
         }
     }
 }

@@ -571,7 +571,7 @@ class navigation_node implements renderable {
     /**
      * Resets the page specific information on this node if it is being unserialised.
      */
-    public function __wakeup(){
+    public function __wakeup(): void {
         $this->forceopen = false;
         $this->isactive = false;
         $this->remove_class('active_tree_node');
@@ -5793,25 +5793,25 @@ class navigation_cache {
     /**
      * Magic Method to retrieve something by simply calling using = cache->key
      *
-     * @param mixed $key The identifier for the information you want out again
+     * @param mixed $name The identifier for the information you want out again
      * @return void|mixed Either void or what ever was put in
      */
-    public function __get($key) {
-        if (!$this->cached($key)) {
+    public function __get(string $name): mixed {
+        if (!$this->cached($name)) {
             return;
         }
-        $information = $this->session[$key][self::CACHEVALUE];
+        $information = $this->session[$name][self::CACHEVALUE];
         return unserialize($information);
     }
 
     /**
      * Magic method that simply uses {@link set();} to store something in the cache
      *
-     * @param string|int $key
-     * @param mixed $information
+     * @param string|int $name
+     * @param mixed $value
      */
-    public function __set($key, $information) {
-        $this->set($key, $information);
+    public function __set(string $name, mixed $value): void {
+        $this->set($name, $value);
     }
 
     /**

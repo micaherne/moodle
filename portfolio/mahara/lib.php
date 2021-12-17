@@ -54,7 +54,7 @@ class portfolio_plugin_mahara extends portfolio_plugin_pull_base {
         $this->mnet = get_mnet_environment();
     }
 
-    public function __wakeup() {
+    public function __wakeup(): void {
         $this->mnet = get_mnet_environment();
     }
 
@@ -385,5 +385,3 @@ class portfolio_plugin_mahara extends portfolio_plugin_pull_base {
         }
     }
 }
-
-

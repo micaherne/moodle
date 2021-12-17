@@ -375,7 +375,7 @@ class pkg_static_resources {
      */
     private static $instance = null;
 
-    private function __clone() {
+    private function __clone(): void {
     }
 
     private function __construct() {
@@ -432,7 +432,7 @@ class pkg_resource_dependencies {
      */
     private static $instance = null;
 
-    private function __clone() {
+    private function __clone(): void {
     }
     private function __construct() {
     }

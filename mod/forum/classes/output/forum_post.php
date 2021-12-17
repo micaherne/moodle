@@ -244,23 +244,23 @@ class forum_post implements \renderable, \templatable {
     /**
      * Magically sets a property against this object.
      *
-     * @param string $key
+     * @param string $name
      * @param mixed $value
      */
-    public function __set($key, $value) {
+    public function __set(string $name, mixed $value): void {
         // First attempt to use the setter function.
-        $methodname = 'set_' . $key;
+        $methodname = 'set_' . $name;
         if (method_exists($this, $methodname)) {
-            return $this->{$methodname}($value);
+            $this->{$methodname}($value);
         }
 
         // Fall back to the writable keys list.
-        if (isset($this->writablekeys[$key]) && $this->writablekeys[$key]) {
-            return $this->{$key} = $value;
+        if (isset($this->writablekeys[$name]) && $this->writablekeys[$name]) {
+            $this->{$name} = $value;
         }
 
         // Throw an error rather than fail silently.
-        throw new \coding_exception('Tried to set unknown property "' . $key . '"');
+        throw new \coding_exception('Tried to set unknown property "' . $name . '"');
     }
 
     /**

@@ -121,7 +121,7 @@ class core_course_category implements renderable, cacheable_object, IteratorAggr
      * @param string $name
      * @param mixed $value
      */
-    public function __set($name, $value) {
+    public function __set(string $name, mixed $value): void {
         debugging('Can not change core_course_category instance properties!', DEBUG_DEVELOPER);
     }
 
@@ -131,7 +131,7 @@ class core_course_category implements renderable, cacheable_object, IteratorAggr
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         global $DB;
         if (array_key_exists($name, self::$coursecatfields)) {
             if ($this->$name === false) {
@@ -155,7 +155,7 @@ class core_course_category implements renderable, cacheable_object, IteratorAggr
      * @param string $name
      * @return bool
      */
-    public function __isset($name) {
+    public function __isset(string $name): bool {
         if (array_key_exists($name, self::$coursecatfields)) {
             return isset($this->$name);
         }
@@ -167,7 +167,7 @@ class core_course_category implements renderable, cacheable_object, IteratorAggr
      *
      * @param string $name
      */
-    public function __unset($name) {
+    public function __unset(string $name): void {
         debugging('Can not unset core_course_category instance properties!', DEBUG_DEVELOPER);
     }
 

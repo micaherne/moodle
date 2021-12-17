@@ -266,14 +266,14 @@ class calendar_event {
      * Attempts to call a set_$key method if one exists otherwise falls back
      * to simply set the property.
      *
-     * @param string $key property name
+     * @param string $name property name
      * @param mixed $value value of the property
      */
-    public function __set($key, $value) {
-        if (method_exists($this, 'set_'.$key)) {
-            $this->{'set_'.$key}($value);
+    public function __set(string $name, mixed $value): void {
+        if (method_exists($this, 'set_'.$name)) {
+            $this->{'set_'.$name}($value);
         }
-        $this->properties->{$key} = $value;
+        $this->properties->{$name} = $value;
     }
 
     /**
@@ -282,18 +282,18 @@ class calendar_event {
      * Attempts to call a get_$key method to return the property and ralls over
      * to return the raw property.
      *
-     * @param string $key property name
+     * @param string $name property name
      * @return mixed property value
      * @throws \coding_exception
      */
-    public function __get($key) {
-        if (method_exists($this, 'get_'.$key)) {
-            return $this->{'get_'.$key}();
+    public function __get(string $name): mixed {
+        if (method_exists($this, 'get_'.$name)) {
+            return $this->{'get_'.$name}();
         }
-        if (!property_exists($this->properties, $key)) {
+        if (!property_exists($this->properties, $name)) {
             throw new \coding_exception('Undefined property requested');
         }
-        return $this->properties->{$key};
+        return $this->properties->{$name};
     }
 
     /**
@@ -302,11 +302,11 @@ class calendar_event {
      * PHP needs an isset magic method if you use the get magic method and
      * still want empty calls to work.
      *
-     * @param string $key $key property name
-     * @return bool|mixed property value, false if property is not exist
+     * @param string $name $key property name
+     * @return bool property value, false if property is not exist
      */
-    public function __isset($key) {
-        return !empty($this->properties->{$key});
+    public function __isset(string $name): bool {
+        return !empty($this->properties->{$name});
     }
 
     /**

@@ -262,12 +262,11 @@ class data_portfolio_caller extends portfolio_module_caller_base {
 
     /**
      * @global object
-     * @return bool|void
      */
-    public function __wakeup() {
+    public function __wakeup(): void {
         global $CFG;
         if (empty($CFG)) {
-            return true; // too early yet
+            return; // too early yet
         }
         foreach ($this->fieldtypes as $key => $field) {
             require_once($CFG->dirroot . '/mod/data/field/' . $field .'/field.class.php');

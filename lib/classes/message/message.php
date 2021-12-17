@@ -256,52 +256,52 @@ class message {
     /**
      * Magic getter method.
      *
-     * @param string $prop name of property to get.
+     * @param string $name name of property to get.
      *
      * @return mixed
      * @throws \coding_exception
      */
-    public function __get($prop) {
-        if (in_array($prop, $this->properties)) {
-            return $this->$prop;
+    public function __get(string $name): mixed {
+        if (in_array($name, $this->properties)) {
+            return $this->$name;
         }
-        throw new \coding_exception("Invalid property $prop specified");
+        throw new \coding_exception("Invalid property $name specified");
     }
 
     /**
      * Magic setter method.
      *
-     * @param string $prop name of property to set.
+     * @param string $name name of property to set.
      * @param mixed $value value to assign to the property.
      *
      * @return mixed
      * @throws \coding_exception
      */
-    public function __set($prop, $value) {
+    public function __set(string $name, mixed $value): void {
 
         // Custom data must be JSON encoded always.
-        if ($prop == 'customdata') {
-            return $this->set_customdata($value);
+        if ($name == 'customdata') {
+            $this->set_customdata($value);
         }
 
-        if (in_array($prop, $this->properties)) {
-            return $this->$prop = $value;
+        if (in_array($name, $this->properties)) {
+            $this->$name = $value;
         }
-        throw new \coding_exception("Invalid property $prop specified");
+        throw new \coding_exception("Invalid property $name specified");
     }
 
     /**
      * Magic method to check if property is set.
      *
-     * @param string $prop name of property to check.
+     * @param string $name name of property to check.
      * @return bool
      * @throws \coding_exception
      */
-    public function __isset($prop) {
-        if (in_array($prop, $this->properties)) {
-            return isset($this->$prop);
+    public function __isset(string $name): bool {
+        if (in_array($name, $this->properties)) {
+            return isset($this->$name);
         }
-        throw new \coding_exception("Invalid property $prop specified");
+        throw new \coding_exception("Invalid property $name specified");
     }
 
     /**

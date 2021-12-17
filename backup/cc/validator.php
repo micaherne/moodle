@@ -28,7 +28,7 @@ final class error_messages {
      */
     private static $instance = null;
     private function __construct(){}
-    private function __clone(){}
+    private function __clone(): void {}
     /**
      * @return error_messages
      */
@@ -98,7 +98,7 @@ final class error_messages {
      * Casting to string method
      * @return string
      */
-    public function __toString() {
+    public function __toString(): string {
         return $this->to_string(false);
     }
 
@@ -261,4 +261,3 @@ class weblink_validator extends cc_validate_type {
         parent::__construct(self::weblink_validator11, $location);
     }
 }
-

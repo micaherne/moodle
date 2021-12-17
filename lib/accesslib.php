@@ -5145,7 +5145,7 @@ abstract class context extends stdClass implements IteratorAggregate {
      * @param string $name
      * @param mixed $value
      */
-    public function __set($name, $value) {
+    public function __set(string $name, mixed $value): void {
         debugging('Can not change context instance properties!');
     }
 
@@ -5154,7 +5154,7 @@ abstract class context extends stdClass implements IteratorAggregate {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         switch ($name) {
             case 'id':
                 return $this->_id;
@@ -5180,7 +5180,7 @@ abstract class context extends stdClass implements IteratorAggregate {
      * @param string $name
      * @return bool
      */
-    public function __isset($name) {
+    public function __isset(string $name): bool {
         switch ($name) {
             case 'id':
                 return isset($this->_id);
@@ -5204,7 +5204,7 @@ abstract class context extends stdClass implements IteratorAggregate {
      * All properties are read only, sorry.
      * @param string $name
      */
-    public function __unset($name) {
+    public function __unset(string $name): void {
         debugging('Can not unset context instance properties!');
     }
 

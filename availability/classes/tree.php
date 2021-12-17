@@ -93,7 +93,7 @@ class tree extends tree_node {
      *
      * @return string Text representation of tree
      */
-    public function __toString() {
+    public function __toString(): string {
         $result = '';
         if ($this->root && is_null($this->showchildren)) {
             $result .= $this->show ? '+' : '-';

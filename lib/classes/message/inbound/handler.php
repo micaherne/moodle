@@ -79,22 +79,22 @@ abstract class handler {
     /**
      * Magic getter to fetch the specified key.
      *
-     * @param string $key The name of the key to retrieve
+     * @param string $name The name of the key to retrieve
      */
-    public function __get($key) {
+    public function __get(string $name): mixed {
         // Some properties have logic behind them.
-        $getter = 'get_' . $key;
+        $getter = 'get_' . $name;
         if (method_exists($this, $getter)) {
             return $this->$getter();
         }
 
         // Check for a commonly accessibly property.
-        if (isset($this->accessibleproperties[$key])) {
-            return $this->$key;
+        if (isset($this->accessibleproperties[$name])) {
+            return $this->$name;
         }
 
         // Unknown property - bail.
-        throw new \coding_exception('unknown_property ' . $key);
+        throw new \coding_exception('unknown_property ' . $name);
     }
 
     /**

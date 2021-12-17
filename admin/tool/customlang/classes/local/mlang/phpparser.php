@@ -49,7 +49,7 @@ class phpparser {
     /**
      * Prevent from cloning the instance
      */
-    public function __clone() {
+    public function __clone(): void {
         throw new coding_exception('Cloning os singleton is not allowed');
     }
 

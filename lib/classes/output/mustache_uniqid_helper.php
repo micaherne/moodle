@@ -43,7 +43,7 @@ class mustache_uniqid_helper {
      *
      * @return string random id.
      */
-    public function __toString() {
+    public function __toString(): string {
         if ($this->uniqid === null) {
             $this->uniqid = \html_writer::random_id(uniqid());
         }

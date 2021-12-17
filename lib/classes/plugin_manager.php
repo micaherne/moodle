@@ -106,7 +106,7 @@ class core_plugin_manager {
     /**
      * Sorry, this is singleton
      */
-    protected function __clone() {
+    protected function __clone(): void {
     }
 
     /**

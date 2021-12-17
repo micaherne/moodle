@@ -45,8 +45,7 @@ abstract class attribute_format {
      * Convert this to an element and then to a string
      * @return string
      */
-    public function __toString() {
+    public function __toString(): string {
         return $this->determine_format()->html();
     }
 }
-

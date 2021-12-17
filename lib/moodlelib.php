@@ -10642,20 +10642,20 @@ class lang_string {
      *
      * @return string
      */
-    public function __toString() {
+    public function __toString(): string {
         return $this->get_string();
     }
 
     /**
      * Magic __set_state method used for var_export
      *
-     * @param array $array
+     * @param array $properties
      * @return self
      */
-    public static function __set_state(array $array): self {
-        $tmp = new lang_string($array['identifier'], $array['component'], $array['a'], $array['lang']);
-        $tmp->string = $array['string'];
-        $tmp->forcedstring = $array['forcedstring'];
+    public static function __set_state(array $properties): self {
+        $tmp = new lang_string($properties['identifier'], $properties['component'], $properties['a'], $properties['lang']);
+        $tmp->string = $properties['string'];
+        $tmp->forcedstring = $properties['forcedstring'];
         return $tmp;
     }
 
@@ -10664,9 +10664,9 @@ class lang_string {
      * string properties... the string cannot be regenerated so we need to ensure
      * it is generated for this.
      *
-     * @return string
+     * @return string[]
      */
-    public function __sleep() {
+    public function __sleep(): array {
         $this->get_string();
         $this->forcedstring = true;
         return array('forcedstring', 'string', 'lang');

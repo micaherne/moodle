@@ -1954,15 +1954,15 @@ class bootstrap_renderer {
 
     /**
      * Constructor - to be used by core code only.
-     * @param string $method The method to call
+     * @param string $name The method to call
      * @param array $arguments Arguments to pass to the method being called
      * @return string
      */
-    public function __call($method, $arguments) {
+    public function __call(string $name, array $arguments): mixed {
         global $OUTPUT, $PAGE;
 
         $recursing = false;
-        if ($method == 'notification') {
+        if ($name == 'notification') {
             // Catch infinite recursion caused by debugging output during print_header.
             $backtrace = debug_backtrace();
             array_shift($backtrace);
@@ -1977,19 +1977,19 @@ class bootstrap_renderer {
 
         // If lib/outputlib.php has been loaded, call it.
         if (!empty($PAGE) && !$recursing) {
-            if (array_key_exists($method, $earlymethods)) {
+            if (array_key_exists($name, $earlymethods)) {
                 //prevent PAGE->context warnings - exceptions might appear before we set any context
                 $PAGE->set_context(null);
             }
             $PAGE->initialise_theme_and_output();
-            return call_user_func_array(array($OUTPUT, $method), $arguments);
+            return call_user_func_array(array($OUTPUT, $name), $arguments);
         }
 
         $this->initialising = true;
 
         // Too soon to initialise $OUTPUT, provide a couple of key methods.
-        if (array_key_exists($method, $earlymethods)) {
-            return call_user_func_array(array('bootstrap_renderer', $earlymethods[$method]), $arguments);
+        if (array_key_exists($name, $earlymethods)) {
+            return call_user_func_array(array('bootstrap_renderer', $earlymethods[$name]), $arguments);
         }
 
         throw new coding_exception('Attempt to start output before enough information is known to initialise the theme.');

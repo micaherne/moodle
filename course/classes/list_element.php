@@ -278,7 +278,7 @@ class core_course_list_element implements IteratorAggregate {
      * @param string $name
      * @return bool
      */
-    public function __isset($name) {
+    public function __isset(string $name): bool {
         return isset($this->record->$name);
     }
 
@@ -290,7 +290,7 @@ class core_course_list_element implements IteratorAggregate {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         global $DB;
         if (property_exists($this->record, $name)) {
             return $this->record->$name;
@@ -314,7 +314,7 @@ class core_course_list_element implements IteratorAggregate {
      *
      * @param string $name
      */
-    public function __unset($name) {
+    public function __unset(string $name): void {
         debugging('Can not unset '.get_class($this).' instance properties!');
     }
 
@@ -324,7 +324,7 @@ class core_course_list_element implements IteratorAggregate {
      * @param string $name
      * @param mixed $value
      */
-    public function __set($name, $value) {
+    public function __set(string $name, mixed $value): void {
         debugging('Can not change '.get_class($this).' instance properties!');
     }
 

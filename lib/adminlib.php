@@ -1101,12 +1101,12 @@ class admin_category implements parentable_part_of_admin_tree, linkable_settings
     /**
      * Magically gets a property from this object.
      *
-     * @param $property
+     * @param $name
      * @return part_of_admin_tree[]
      * @throws coding_exception
      */
-    public function __get($property) {
-        if ($property === 'children') {
+    public function __get(string $name): mixed {
+        if ($name === 'children') {
             return $this->get_children();
         }
         throw new coding_exception('Invalid property requested.');
@@ -1115,12 +1115,12 @@ class admin_category implements parentable_part_of_admin_tree, linkable_settings
     /**
      * Magically sets a property against this object.
      *
-     * @param string $property
+     * @param string $name
      * @param mixed $value
      * @throws coding_exception
      */
-    public function __set($property, $value) {
-        if ($property === 'children') {
+    public function __set(string $name, mixed $value): void {
+        if ($name === 'children') {
             $this->sorted = false;
             $this->children = $value;
         } else {
@@ -1131,12 +1131,12 @@ class admin_category implements parentable_part_of_admin_tree, linkable_settings
     /**
      * Checks if an inaccessible property is set.
      *
-     * @param string $property
+     * @param string $name
      * @return bool
      * @throws coding_exception
      */
-    public function __isset($property) {
-        if ($property === 'children') {
+    public function __isset(string $name): bool {
+        if ($name === 'children') {
             return isset($this->children);
         }
         throw new coding_exception('Invalid property requested.');

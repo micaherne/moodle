@@ -80,23 +80,23 @@ class database_column_info {
      * @param mixed $value ignored.
      * @throws coding_exception You are not allowed to set data on database_column_info
      */
-    public function __set($name, $value) {
+    public function __set(string $name, mixed $value): void {
         throw new coding_exception('database_column_info is a ready only object to allow for faster caching.');
     }
 
     /**
      * Magic get function.
      *
-     * @param string $variablename variable name to return the value of.
+     * @param string $name variable name to return the value of.
      * @return mixed The variable contents.
      *
      * @throws coding_exception You cannot request a variable that is not allowed.
      */
-    public function __get($variablename) {
-        if (isset($this->data[$variablename]) || array_key_exists($variablename, $this->data)) {
-            return $this->data[$variablename];
+    public function __get(string $name): mixed {
+        if (isset($this->data[$name]) || array_key_exists($name, $this->data)) {
+            return $this->data[$name];
         }
-        throw new coding_exception('Asked for a variable that is not available . ('.$variablename.').');
+        throw new coding_exception('Asked for a variable that is not available . ('.$name.').');
     }
 
     /**

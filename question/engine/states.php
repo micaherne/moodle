@@ -106,7 +106,7 @@ abstract class question_state {
     /**
      * @return string convert this state to a string.
      */
-    public function __toString() {
+    public function __toString(): string {
         return substr(get_class($this), 15);
     }
 

@@ -1422,7 +1422,7 @@ class cache_application extends cache implements cache_loader_with_locking {
     /**
      * Fixes the instance up after a clone.
      */
-    public function __clone() {
+    public function __clone(): void {
         // Force a new idenfitier.
         $this->lockidentifier = null;
     }

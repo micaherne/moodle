@@ -100,7 +100,7 @@ class mod extends base {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         if ($name === 'visible') {
             debugging('This is now an instance of plugininfo_mod, please use $module->is_enabled() instead of $module->visible', DEBUG_DEVELOPER);
             return ($this->is_enabled() !== false);

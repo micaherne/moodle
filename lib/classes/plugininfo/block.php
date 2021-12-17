@@ -73,7 +73,7 @@ class block extends base {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         if ($name === 'visible') {
             debugging('This is now an instance of plugininfo_block, please use $block->is_enabled() instead of $block->visible', DEBUG_DEVELOPER);
             return ($this->is_enabled() !== false);

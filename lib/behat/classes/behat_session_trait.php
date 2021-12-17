@@ -281,7 +281,7 @@ trait behat_session_trait {
      * @param mixed $arguments
      * @return NodeElement
      */
-    public function __call($name, $arguments) {
+    public function __call(string $name, array $arguments): mixed {
         if (substr($name, 0, 5) === 'find_') {
             return call_user_func_array([$this, 'find'], array_merge(
                 [substr($name, 5)],

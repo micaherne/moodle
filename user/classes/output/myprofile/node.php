@@ -106,15 +106,15 @@ class node implements \renderable {
     /**
      * Magic get method.
      *
-     * @param string $prop property to get.
+     * @param string $name property to get.
      *
      * @return mixed
      * @throws \coding_exception
      */
-    public function __get($prop) {
-        if (in_array($prop, $this->properties)) {
-            return $this->$prop;
+    public function __get(string $name): mixed {
+        if (in_array($name, $this->properties)) {
+            return $this->$name;
         }
-        throw new \coding_exception('Property "' . $prop . '" doesn\'t exist');
+        throw new \coding_exception('Property "' . $name . '" doesn\'t exist');
     }
 }

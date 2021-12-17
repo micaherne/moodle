@@ -1436,14 +1436,14 @@ class mod_quiz_view_object {
     /** @var bool $quizhasquestions whether the quiz has any questions. */
     public $quizhasquestions;
 
-    public function __get($field) {
-        switch ($field) {
+    public function __get(string $name): mixed {
+        switch ($name) {
             case 'startattemptwarning':
                 debugging('startattemptwarning has been deprecated. It is now always blank.');
                 return '';
 
             default:
-                debugging('Unknown property ' . $field);
+                debugging('Unknown property ' . $name);
                 return null;
         }
     }

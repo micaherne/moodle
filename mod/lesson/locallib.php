@@ -3722,14 +3722,14 @@ abstract class lesson_base {
      * Attempts to call a set_$key method if one exists otherwise falls back
      * to simply set the property
      *
-     * @param string $key
+     * @param string $name
      * @param mixed $value
      */
-    public function __set($key, $value) {
-        if (method_exists($this, 'set_'.$key)) {
-            $this->{'set_'.$key}($value);
+    public function __set(string $name, mixed $value): void {
+        if (method_exists($this, 'set_'.$name)) {
+            $this->{'set_'.$name}($value);
         }
-        $this->properties->{$key} = $value;
+        $this->properties->{$name} = $value;
     }
 
     /**
@@ -3738,29 +3738,29 @@ abstract class lesson_base {
      * Attempts to call a get_$key method to return the property and ralls over
      * to return the raw property
      *
-     * @param str $key
+     * @param string $name
      * @return mixed
      */
-    public function __get($key) {
-        if (method_exists($this, 'get_'.$key)) {
-            return $this->{'get_'.$key}();
+    public function __get(string $name): mixed {
+        if (method_exists($this, 'get_'.$name)) {
+            return $this->{'get_'.$name}();
         }
-        return $this->properties->{$key};
+        return $this->properties->{$name};
     }
 
     /**
      * Stupid PHP needs an isset magic method if you use the get magic method and
      * still want empty calls to work.... blah ~!
      *
-     * @param string $key
+     * @param string $name
      * @return bool
      */
-    public function __isset($key) {
-        if (method_exists($this, 'get_'.$key)) {
-            $val = $this->{'get_'.$key}();
+    public function __isset(string $name): bool {
+        if (method_exists($this, 'get_'.$name)) {
+            $val = $this->{'get_'.$name}();
             return !empty($val);
         }
-        return !empty($this->properties->{$key});
+        return !empty($this->properties->{$name});
     }
 
     //NOTE: E_STRICT does not allow to change function signature!

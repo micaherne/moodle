@@ -938,7 +938,7 @@ abstract class base implements \IteratorAggregate {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         if ($name === 'level') {
             debugging('level property is deprecated, use edulevel property instead', DEBUG_DEVELOPER);
             return $this->data['edulevel'];
@@ -961,7 +961,7 @@ abstract class base implements \IteratorAggregate {
      *
      * @throws \coding_exception
      */
-    public function __set($name, $value) {
+    public function __set(string $name, mixed $value): void {
         throw new \coding_exception('Event properties must not be modified.');
     }
 
@@ -971,7 +971,7 @@ abstract class base implements \IteratorAggregate {
      * @param string $name
      * @return bool
      */
-    public function __isset($name) {
+    public function __isset(string $name): bool {
         if ($name === 'level') {
             debugging('level property is deprecated, use edulevel property instead', DEBUG_DEVELOPER);
             return isset($this->data['edulevel']);

@@ -6059,7 +6059,7 @@ class moodle_database_for_testing extends moodle_database {
  * Dumb test class with toString() returning 1.
  */
 class dml_test_object_one {
-    public function __toString() {
-        return 1;
+    public function __toString(): string {
+        return "1";
     }
 }

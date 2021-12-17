@@ -54,25 +54,25 @@ class subscription {
     /**
      * Magic get method.
      *
-     * @param string $prop property to get.
+     * @param string $name property to get.
      * @return mixed
      * @throws \coding_exception
      */
-    public function __get($prop) {
-        if (isset($this->subscription->$prop)) {
-            return $this->subscription->$prop;
+    public function __get(string $name): mixed {
+        if (isset($this->subscription->$name)) {
+            return $this->subscription->$name;
         }
-        throw new \coding_exception('Property "' . $prop . '" doesn\'t exist');
+        throw new \coding_exception('Property "' . $name . '" doesn\'t exist');
     }
 
     /**
      * Magic isset method.
      *
-     * @param string $prop the property to get.
+     * @param string $name the property to get.
      * @return bool true if the property is set, false otherwise.
      */
-    public function __isset($prop) {
-        return property_exists($this->subscription, $prop);
+    public function __isset(string $name): bool {
+        return property_exists($this->subscription, $name);
     }
 
     /**

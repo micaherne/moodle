@@ -113,8 +113,8 @@ class webdav_client {
             $this->oauthtoken = $oauthtoken;
         }
     }
-    public function __set($key, $value) {
-        $property = '_' . $key;
+    public function __set(string $name, mixed $value): void {
+        $property = '_' . $name;
         $this->$property = $value;
     }
 

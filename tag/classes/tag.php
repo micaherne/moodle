@@ -92,7 +92,7 @@ class core_tag_tag {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
         return $this->record->$name;
     }
 
@@ -102,7 +102,7 @@ class core_tag_tag {
      * @param string $name
      * @return bool
      */
-    public function __isset($name) {
+    public function __isset(string $name): bool {
         return isset($this->record->$name);
     }
 

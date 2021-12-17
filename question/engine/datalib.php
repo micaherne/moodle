@@ -1728,7 +1728,7 @@ class question_file_saver implements question_response_files {
         return $text;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return $this->value;
     }
 
@@ -1798,7 +1798,7 @@ class question_file_loader implements question_response_files {
         $this->contextid = $contextid;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return $this->value;
     }
 
