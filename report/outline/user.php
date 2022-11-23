@@ -135,7 +135,7 @@ foreach ($sections as $i => $section) {
                     }
 
                     $instance = $DB->get_record("$mod->modname", array("id"=>$mod->instance));
-                    $libfile = "$CFG->dirroot/mod/$mod->modname/lib.php";
+                    $libfile = \core_component::get_component_path("mod_{$mod->modname}", "lib.php");
 
                     if (file_exists($libfile)) {
                         require_once($libfile);

@@ -1028,6 +1028,25 @@ $cache = '.var_export($cache, true).';
         return array($type, $plugin);
     }
 
+    public static function get_component_path($component, $relativepath) {
+        $dir = self::get_component_directory($component);
+        if (is_null($dir)) {
+            if (strpos($component, '_') === false) {
+                return null;
+            }
+            list($type, $name) = self::normalize_component($component);
+            $typedir = self::$plugintypes[$type] ?? null;
+            if (is_null($typedir)) {
+                return null;
+            }
+            $dir = $typedir . '/' . $name;
+        }
+        if (strlen($relativepath) === 0) {
+            return $dir;
+        }
+        return $dir . '/' . ltrim($relativepath, '/');
+    }
+
     /**
      * Return exact absolute path to a plugin directory.
      *

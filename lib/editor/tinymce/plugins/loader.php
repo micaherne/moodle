@@ -49,7 +49,7 @@ list($junk, $tinymceplugin, $version, $innerpath) = $matches;
 // except for the difference between '-1' and anything else.
 
 // Check the file exists.
-$pluginfolder = $CFG->dirroot . '/lib/editor/tinymce/plugins/' . $tinymceplugin;
+$pluginfolder = \core_component::get_component_path("tinymce_{$tinymceplugin}", "");
 $file = $pluginfolder . '/tinymce' .$innerpath;
 if (!file_exists($file)) {
     throw new \moodle_exception('filenotfound');

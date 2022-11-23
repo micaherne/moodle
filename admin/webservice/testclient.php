@@ -118,7 +118,7 @@ if ($mform->is_cancelled()) {
     $functioninfo = external_api::external_function_info($function);
 
     // first load lib of selected protocol
-    require_once("$CFG->dirroot/webservice/$protocol/locallib.php");
+    require_once(\core_component::get_component_path("webservice_{$protocol}", "locallib.php"));
 
     $testclientclass = "webservice_{$protocol}_test_client";
     if (!class_exists($testclientclass)) {

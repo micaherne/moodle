@@ -1229,7 +1229,7 @@ function clean_param($param, $type) {
             $param = clean_param($param, PARAM_PLUGIN);
             if (empty($param)) {
                 return '';
-            } else if (file_exists("$CFG->dirroot/theme/$param/config.php")) {
+            } else if (file_exists(\core_component::get_component_path("theme_{$param}", "config.php"))) {
                 return $param;
             } else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/$param/config.php")) {
                 return $param;
@@ -3783,8 +3783,8 @@ function order_in_string($values, $stringformat) {
 function exists_auth_plugin($auth) {
     global $CFG;
 
-    if (file_exists("{$CFG->dirroot}/auth/$auth/auth.php")) {
-        return is_readable("{$CFG->dirroot}/auth/$auth/auth.php");
+    if (file_exists(\core_component::get_component_path("auth_{$auth}", "auth.php"))) {
+        return is_readable(\core_component::get_component_path("auth_{$auth}", "auth.php"));
     }
     return false;
 }
@@ -3820,7 +3820,7 @@ function get_auth_plugin($auth) {
     }
 
     // Return auth plugin instance.
-    require_once("{$CFG->dirroot}/auth/$auth/auth.php");
+    require_once(\core_component::get_component_path("auth_{$auth}", "auth.php"));
     $class = "auth_plugin_$auth";
     return new $class;
 }
@@ -5418,7 +5418,7 @@ function remove_course_contents($courseid, $showfeedback = true, array $options 
  */
 function shift_course_mod_dates($modname, $fields, $timeshift, $courseid, $modid = 0) {
     global $CFG, $DB;
-    include_once($CFG->dirroot.'/mod/'.$modname.'/lib.php');
+    include_once(\core_component::get_component_path("mod_{$modname}", "lib.php"));
 
     $return = true;
     $params = array($timeshift, $courseid);
@@ -5673,7 +5673,7 @@ function reset_course_userdata($data) {
     if ($allmods = $DB->get_records('modules') ) {
         foreach ($allmods as $mod) {
             $modname = $mod->name;
-            $modfile = $CFG->dirroot.'/mod/'. $modname.'/lib.php';
+            $modfile = \core_component::get_component_path("mod_{$modname}", "lib.php");
             $moddeleteuserdata = $modname.'_reset_userdata';   // Function to delete user data.
             if (file_exists($modfile)) {
                 if (!$DB->count_records($modname, array('course' => $data->courseid))) {
@@ -8188,8 +8188,8 @@ function plugin_supports($type, $name, $feature, $default = null) {
     if ($type === 'mod') {
         // We need this special case because we support subplugins in modules,
         // otherwise it would end up in infinite loop.
-        if (file_exists("$CFG->dirroot/mod/$name/lib.php")) {
-            include_once("$CFG->dirroot/mod/$name/lib.php");
+        if (file_exists(\core_component::get_component_path("mod_{$name}", "lib.php"))) {
+            include_once(\core_component::get_component_path("mod_{$name}", "lib.php"));
             $function = $component.'_supports';
             if (!function_exists($function)) {
                 // Legacy non-frankenstyle function name.

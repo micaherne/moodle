@@ -49,7 +49,7 @@ function scorm_report_list($context) {
         }
 
         // Legacy style of naming classes.
-        $pluginfile = $CFG->dirroot.'/mod/scorm/report/'.$reportname.'/report.php';
+        $pluginfile = \core_component::get_component_path("scormreport_{$reportname}", "report.php");
         if (is_readable($pluginfile)) {
             debugging("Please use autoloaded classnames for your plugin. Refer MDL-46469 for details", DEBUG_DEVELOPER);
             include_once($pluginfile);

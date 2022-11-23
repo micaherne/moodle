@@ -75,7 +75,7 @@ class lesson_import_form extends moodleform {
             return $errors;
         }
 
-        $formatfile = $CFG->dirroot.'/question/format/'.$data['format'].'/format.php';
+        $formatfile = \core_component::get_component_path("qformat_{$data['format']}", "format.php");
         if (!is_readable($formatfile)) {
             throw new moodle_exception('formatnotfound', 'lesson', '', $data['format']);
         }

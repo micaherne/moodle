@@ -214,7 +214,7 @@ class courselib_test extends advanced_testcase {
         $this->setAdminUser();
 
         // Warnings: you'll need to change this line if ever you come to test a module not following Moodle standard.
-        require_once($CFG->dirroot.'/mod/'. $modulename .'/lib.php');
+        require_once(\core_component::get_component_path("mod_{$modulename}", "lib.php"));
 
         // Enable avaibility.
         // If not enabled all conditional fields will be ignored.
@@ -490,7 +490,7 @@ class courselib_test extends advanced_testcase {
         $this->setAdminUser();
 
         // Warnings: you'll need to change this line if ever you come to test a module not following Moodle standard.
-        require_once($CFG->dirroot.'/mod/'. $modulename .'/lib.php');
+        require_once(\core_component::get_component_path("mod_{$modulename}", "lib.php"));
 
         // Enable avaibility.
         // If not enabled all conditional fields will be ignored.

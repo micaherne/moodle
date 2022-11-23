@@ -270,7 +270,7 @@ abstract class question_behaviour_attempt_updater {
                     $this, $this->question, $this->logger, $this->qeupdater);
         }
 
-        $path = $CFG->dirroot . '/question/type/' . $this->question->qtype . '/db/upgradelib.php';
+        $path = \core_component::get_component_path("qtype_{$this->question->qtype}", "db/upgradelib.php");
         if (!is_readable($path)) {
             throw new coding_exception("Question type {$this->question->qtype}
                     is missing important code (the file {$path})

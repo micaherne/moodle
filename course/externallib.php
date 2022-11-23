@@ -139,11 +139,11 @@ class core_course_external extends external_api {
 
         if ($course->id != SITEID) {
             // Check course format exist.
-            if (!file_exists($CFG->dirroot . '/course/format/' . $course->format . '/lib.php')) {
+            if (!file_exists(\core_component::get_component_path("format_{$course->format}", "lib.php"))) {
                 throw new moodle_exception('cannotgetcoursecontents', 'webservice', '', null,
                                             get_string('courseformatnotfound', 'error', $course->format));
             } else {
-                require_once($CFG->dirroot . '/course/format/' . $course->format . '/lib.php');
+                require_once(\core_component::get_component_path("format_{$course->format}", "lib.php"));
             }
         }
 
@@ -321,7 +321,7 @@ class core_course_external extends external_api {
                             $baseurl = 'webservice/pluginfile.php';
 
                             // Call $modulename_export_contents (each module callback take care about checking the capabilities).
-                            require_once($CFG->dirroot . '/mod/' . $cm->modname . '/lib.php');
+                            require_once(\core_component::get_component_path("mod_{$cm->modname}", "lib.php"));
                             $getcontentfunction = $cm->modname.'_export_contents';
                             if (function_exists($getcontentfunction)) {
                                 $contents = $getcontentfunction($cm, $baseurl);

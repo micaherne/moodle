@@ -46,7 +46,7 @@ class profile_field_form extends dynamic_form {
 
         // Everything else is dependant on the data type.
         $datatype = $this->get_field_record()->datatype;
-        require_once($CFG->dirroot.'/user/profile/field/'.$datatype.'/define.class.php');
+        require_once(\core_component::get_component_path("profilefield_{$datatype}", "define.class.php"));
         $newfield = 'profile_define_'.$datatype;
         $this->field = new $newfield();
 

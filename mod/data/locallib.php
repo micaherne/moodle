@@ -270,7 +270,7 @@ class data_portfolio_caller extends portfolio_module_caller_base {
             return true; // too early yet
         }
         foreach ($this->fieldtypes as $key => $field) {
-            $filepath = $CFG->dirroot . '/mod/data/field/' . $field .'/field.class.php';
+            $filepath = \core_component::get_component_path("datafield_{$field}", "field.class.php");
             if (!file_exists($filepath)) {
                 continue;
             }
@@ -978,7 +978,7 @@ function data_get_tag_title_field($dataid) {
         if ($field->addtemplateposition === false) {
             continue;
         }
-        $filepath = $CFG->dirroot . '/mod/data/field/' . $field->type . '/field.class.php';
+        $filepath = \core_component::get_component_path("datafield_{$field->type}", "field.class.php");
         if (!file_exists($filepath)) {
             continue;
         }
@@ -1021,7 +1021,7 @@ function data_get_tag_title_for_entry($field, $entry) {
     if (!isset($field->type)) {
         return null;
     }
-    $filepath = $CFG->dirroot . '/mod/data/field/' . $field->type . '/field.class.php';
+    $filepath = \core_component::get_component_path("datafield_{$field->type}", "field.class.php");
     if (!file_exists($filepath)) {
         return null;
     }

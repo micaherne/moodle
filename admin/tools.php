@@ -78,7 +78,7 @@ foreach ($plugins as $plugin => $name) {
     }
 
     if (!isset($versions[$plugin])) {
-        if (file_exists("$CFG->dirroot/$CFG->admin/tool/$plugin/version.php")) {
+        if (file_exists(\core_component::get_component_path("tool_{$plugin}", "version.php"))) {
             // not installed yet
             $version = '?';
         } else {
@@ -87,7 +87,7 @@ foreach ($plugins as $plugin => $name) {
         }
     } else {
         $version = $versions[$plugin];
-        if (file_exists("$CFG->dirroot/$CFG->admin/tool/$plugin")) {
+        if (file_exists(\core_component::get_component_path("tool_{$plugin}", ""))) {
             $version = $versions[$plugin];
         } else {
             // somebody removed plugin without uninstall

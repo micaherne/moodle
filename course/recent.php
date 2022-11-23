@@ -102,7 +102,7 @@ if ($param->modid === 'all') {
 
 } else if (strpos($param->modid, 'mod/') === 0) {
     $modname = substr($param->modid, strlen('mod/'));
-    if (array_key_exists($modname, $modnames) and file_exists("$CFG->dirroot/mod/$modname/lib.php")) {
+    if (array_key_exists($modname, $modnames) and file_exists(\core_component::get_component_path("mod_{$modname}", "lib.php"))) {
         $filter = $modname;
     }
 
@@ -153,7 +153,7 @@ foreach ($sections as $sectionnum => $section) {
             continue;
         }
 
-        $libfile = "$CFG->dirroot/mod/$cm->modname/lib.php";
+        $libfile = \core_component::get_component_path("mod_{$cm->modname}", "lib.php");
 
         if (file_exists($libfile)) {
             require_once($libfile);

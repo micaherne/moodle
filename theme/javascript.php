@@ -55,7 +55,7 @@ if ($type !== 'head' and $type !== 'footer') {
     die('Theme was not found, sorry.');
 }
 
-if (file_exists("$CFG->dirroot/theme/$themename/config.php")) {
+if (file_exists(\core_component::get_component_path("theme_{$themename}", "config.php"))) {
     // exists
 } else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/$themename/config.php")) {
     // exists

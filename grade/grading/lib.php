@@ -524,7 +524,7 @@ class grading_manager {
             $this->areacache = $DB->get_record('grading_areas', array('id' => $areaid), '*', MUST_EXIST);
         }
 
-        require_once($CFG->dirroot.'/grade/grading/form/'.$method.'/lib.php');
+        require_once(\core_component::get_component_path("gradingform_{$method}", "lib.php"));
         $classname = 'gradingform_'.$method.'_controller';
 
         return new $classname($this->context, $this->component, $this->area, $this->areacache->id);

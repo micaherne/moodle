@@ -272,7 +272,7 @@ class administration_display_helper extends \core_cache\administration_helper {
      */
     public function get_store_configuration_from_data(\stdClass $data): array {
         global $CFG;
-        $file = $CFG->dirroot.'/cache/stores/'.$data->plugin.'/lib.php';
+        $file = \core_component::get_component_path("cachestore_{$data->plugin}", "lib.php");
         if (!file_exists($file)) {
             throw new \coding_exception('Invalid cache plugin provided. '.$file);
         }
@@ -347,7 +347,7 @@ class administration_display_helper extends \core_cache\administration_helper {
      */
     public function get_lock_configuration_from_data(string $plugin, \stdClass $data): array {
         global $CFG;
-        $file = $CFG->dirroot.'/cache/locks/'.$plugin.'/lib.php';
+        $file = \core_component::get_component_path("cachelock_{$plugin}", "lib.php");
         if (!file_exists($file)) {
             throw new \coding_exception('Invalid cache plugin provided. '.$file);
         }

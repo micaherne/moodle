@@ -1872,7 +1872,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
         $advancedgradingdata = array();
         $methods = array_keys(grading_manager::available_methods(false));
         foreach ($methods as $method) {
-            require_once($CFG->dirroot.'/grade/grading/form/'.$method.'/lib.php');
+            require_once(\core_component::get_component_path("gradingform_{$method}", "lib.php"));
             $details  = call_user_func('gradingform_'.$method.'_controller::get_external_instance_filling_details');
             if (!empty($details)) {
                 $items = array();
@@ -2008,7 +2008,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
         $advancedgradingdata = array();
         $methods = array_keys(grading_manager::available_methods(false));
         foreach ($methods as $method) {
-            require_once($CFG->dirroot.'/grade/grading/form/'.$method.'/lib.php');
+            require_once(\core_component::get_component_path("gradingform_{$method}", "lib.php"));
             $details  = call_user_func('gradingform_'.$method.'_controller::get_external_instance_filling_details');
             if (!empty($details)) {
                 $items = array();

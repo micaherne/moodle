@@ -96,8 +96,8 @@
             $uninstall = html_writer::link($uninstallurl, $struninstall);
         }
 
-        if (file_exists("$CFG->dirroot/mod/$module->name/settings.php") ||
-                file_exists("$CFG->dirroot/mod/$module->name/settingstree.php")) {
+        if (file_exists(\core_component::get_component_path("mod_{$module->name}", "settings.php")) ||
+                file_exists(\core_component::get_component_path("mod_{$module->name}", "settingstree.php"))) {
             $settings = "<a href=\"settings.php?section=modsetting$module->name\">$strsettings</a>";
         } else {
             $settings = "";

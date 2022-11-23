@@ -401,7 +401,7 @@ function get_module_types_names($plural = false, $resetcache = false) {
         $modnames = array(0 => array(), 1 => array());
         if ($allmods = $DB->get_records("modules")) {
             foreach ($allmods as $mod) {
-                if (file_exists("$CFG->dirroot/mod/$mod->name/lib.php") && $mod->visible) {
+                if (file_exists(\core_component::get_component_path("mod_{$mod->name}", "lib.php")) && $mod->visible) {
                     $modnames[0][$mod->name] = get_string("modulename", "$mod->name", null, true);
                     $modnames[1][$mod->name] = get_string("modulenameplural", "$mod->name", null, true);
                 }
@@ -869,7 +869,7 @@ function course_delete_module($cmid, $async = false) {
     $modulename = $DB->get_field('modules', 'name', array('id' => $cm->module), MUST_EXIST);
 
     // Get the file location of the delete_instance function for this module.
-    $modlib = "$CFG->dirroot/mod/$modulename/lib.php";
+    $modlib = \core_component::get_component_path("mod_{$modulename}", "lib.php");
 
     // Include the file required to call the delete_instance function for this module.
     if (file_exists($modlib)) {
@@ -1002,7 +1002,7 @@ function course_module_flag_for_async_deletion($cmid) {
     $modulename = $DB->get_field('modules', 'name', array('id' => $cm->module), MUST_EXIST);
 
     // Get the file location of the delete_instance function for this module.
-    $modlib = "$CFG->dirroot/mod/$modulename/lib.php";
+    $modlib = \core_component::get_component_path("mod_{$modulename}", "lib.php");
 
     // Include the file required to call the delete_instance function for this module.
     if (file_exists($modlib)) {

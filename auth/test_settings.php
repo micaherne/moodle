@@ -28,7 +28,7 @@ require_once("$CFG->libdir/adminlib.php");
 $auth = optional_param('auth', '', PARAM_RAW);
 if (!core_component::is_valid_plugin_name('auth', $auth)) {
     $auth = '';
-} else if (!file_exists("$CFG->dirroot/auth/$auth/auth.php")) {
+} else if (!file_exists(\core_component::get_component_path("auth_{$auth}", "auth.php"))) {
     $auth = '';
 }
 

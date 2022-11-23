@@ -84,7 +84,7 @@ if (!is_readable("report/$mode/report.php")) {
 }
 
 // Open the selected quiz report and display it.
-$file = $CFG->dirroot . '/mod/quiz/report/' . $mode . '/report.php';
+$file = \core_component::get_component_path("quiz_{$mode}", "report.php");
 if (is_readable($file)) {
     include_once($file);
 }

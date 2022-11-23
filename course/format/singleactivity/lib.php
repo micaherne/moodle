@@ -369,7 +369,7 @@ class format_singleactivity extends core_courseformat\base {
         if (!course_allowed_module($this->get_course(), $modname)) {
             return false;
         }
-        $libfile = "$CFG->dirroot/mod/$modname/lib.php";
+        $libfile = \core_component::get_component_path("mod_{$modname}", "lib.php");
         if (!file_exists($libfile)) {
             return null;
         }

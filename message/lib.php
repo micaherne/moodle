@@ -477,7 +477,7 @@ function get_message_processor($type) {
     // code is called during install after installing each messaging plugin, and
     // get_message_processors caches the list of installed plugins.
 
-    $processorfile = $CFG->dirroot . "/message/output/{$type}/message_output_{$type}.php";
+    $processorfile = \core_component::get_component_path("message_{$type}", "message_output_{$type}.php");
     if (!is_readable($processorfile)) {
         throw new coding_exception('Unknown message processor type ' . $type);
     }

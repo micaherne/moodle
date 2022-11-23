@@ -58,7 +58,7 @@ if ($component === 'core') {
     if (!empty($CFG->themedir)) {
         $componentdir = "$CFG->themedir/$component";
     } else {
-        $componentdir = "$CFG->dirroot/theme/$component";
+        $componentdir = \core_component::get_component_path("theme_{$component}", "");
     }
 
 } else {
