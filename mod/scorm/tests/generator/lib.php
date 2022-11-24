@@ -74,7 +74,7 @@ class mod_scorm_generator extends testing_module_generator {
             $record['packagefilepath'] = $CFG->dirroot.'/mod/scorm/tests/packages/singlescobasic.zip';
         }
         if (strpos($record['packagefilepath'], $CFG->dirroot) !== 0) {
-            $record['packagefilepath'] = "{$CFG->dirroot}/{$record['packagefilepath']}";
+            $record['packagefilepath'] = \core_component::get_path_from_relative($record['packagefilepath']);
         }
 
         // The 'packagefile' value corresponds to the draft file area ID. If not specified, create from packagefilepath.

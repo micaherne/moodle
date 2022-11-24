@@ -51,7 +51,7 @@ if ($slashargument = min_get_slash_argument()) {
 $jsfiles = array();
 $files = explode(',', $file);
 foreach ($files as $fsfile) {
-    $jsfile = realpath($CFG->dirroot.$fsfile);
+    $jsfile = realpath(\core_component::get_path_from_relative($fsfile));
     if ($jsfile === false) {
         // does not exist
         continue;
@@ -60,7 +60,7 @@ foreach ($files as $fsfile) {
         // Some shared hosting sites serve files directly from '/',
         // this is NOT supported, but at least allow JS when showing
         // errors and warnings.
-    } else if (strpos($jsfile, $CFG->dirroot . DIRECTORY_SEPARATOR) !== 0) {
+    } else if (strpos($jsfile, \core_component::get_path_from_relative(\DIRECTORY_SEPARATOR)) !== 0) {
         // hackers - not in dirroot
         continue;
     }

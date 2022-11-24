@@ -81,7 +81,7 @@ exit(0);
 function core_admin_svgtool_ie9fix($file) {
     global $CFG;
 
-    if (strpos($file, $CFG->dirroot.DIRECTORY_SEPARATOR) === 0) {
+    if (strpos($file, \core_component::get_path_from_relative(\DIRECTORY_SEPARATOR)) === 0) {
         $relfile = substr($file, strlen($CFG->dirroot));
     } else {
         $relfile = $file;
@@ -118,7 +118,7 @@ function core_admin_svgtool_ie9fix($file) {
 function core_admin_svgtool_noaspectratio($file) {
     global $CFG;
 
-    if (strpos($file, $CFG->dirroot.DIRECTORY_SEPARATOR) === 0) {
+    if (strpos($file, \core_component::get_path_from_relative(\DIRECTORY_SEPARATOR)) === 0) {
         $relfile = substr($file, strlen($CFG->dirroot));
     } else {
         $relfile = $file;

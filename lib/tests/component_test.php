@@ -126,7 +126,7 @@ class component_test extends advanced_testcase {
                 $this->assertNull($realsubsystems[$subsystem]);
                 continue;
             }
-            $this->assertSame($fulldir, $CFG->dirroot.'/'.$realsubsystems[$subsystem]);
+            $this->assertSame($fulldir, \core_component::get_path_from_relative($realsubsystems[$subsystem]));
         }
     }
 
@@ -154,7 +154,7 @@ class component_test extends advanced_testcase {
         $this->assertDebuggingCalled();
 
         foreach ($plugintypes as $plugintype => $fulldir) {
-            $this->assertSame($fulldir, $CFG->dirroot.'/'.$realplugintypes[$plugintype]);
+            $this->assertSame($fulldir, \core_component::get_path_from_relative($realplugintypes[$plugintype]));
         }
     }
 

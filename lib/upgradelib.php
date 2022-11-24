@@ -616,7 +616,7 @@ function upgrade_stale_php_files_present(): bool {
     ];
 
     foreach ($someexamplesofremovedfiles as $file) {
-        if (file_exists($CFG->dirroot.$file)) {
+        if (file_exists(\core_component::get_path_from_relative($file))) {
             return true;
         }
     }

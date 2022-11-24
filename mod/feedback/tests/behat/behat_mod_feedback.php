@@ -138,7 +138,7 @@ class behat_mod_feedback extends behat_base {
             $exception
         );
 
-        $this->compare_exports(file_get_contents($CFG->dirroot . '/' . $filename), $result);
+        $this->compare_exports(file_get_contents(\core_component::get_path_from_relative($filename)), $result);
     }
 
     /**

@@ -54,7 +54,7 @@ unset($options['class']);
 $name = $options['name'];
 unset($options['name']);
 if (isset($options['file'])) {
-    require_once($CFG->dirroot . '/' . $options['file']);
+    require_once(\core_component::get_path_from_relative($options['file']));
     unset($options['file']);
 }
 $userselector = new $classname($name, $options);

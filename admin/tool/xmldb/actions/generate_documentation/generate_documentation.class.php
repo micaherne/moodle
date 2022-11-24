@@ -65,7 +65,7 @@ class generate_documentation extends XMLDBAction {
 
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core_component::get_path_from_relative($dirpath);
         $path = $dirpath.'/install.xml';
         if(!file_exists($path) || !is_readable($path)) {
             return false;

@@ -57,7 +57,7 @@ class add_persistent_mandatory extends XMLDBAction {
         global $CFG, $XMLDB, $OUTPUT;
 
         $dir = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dir;
+        $dirpath = \core_component::get_path_from_relative($dir);
 
         if (empty($XMLDB->dbdirs)) {
             return false;

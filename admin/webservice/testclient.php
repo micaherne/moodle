@@ -50,9 +50,9 @@ $allfunctions = $DB->get_records('external_functions', array(), 'name ASC');
 $functions = array();
 foreach ($allfunctions as $f) {
     $finfo = external_api::external_function_info($f);
-    if (!empty($finfo->testclientpath) and file_exists($CFG->dirroot.'/'.$finfo->testclientpath)) {
+    if (!empty($finfo->testclientpath) and file_exists(\core_component::get_path_from_relative($finfo->testclientpath))) {
         //some plugins may want to have own test client forms
-        include_once($CFG->dirroot.'/'.$finfo->testclientpath);
+        include_once(\core_component::get_path_from_relative($finfo->testclientpath));
     }
     $class = $f->name.'_testclient_form';
     if (class_exists($class)) {

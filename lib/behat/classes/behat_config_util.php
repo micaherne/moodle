@@ -247,7 +247,7 @@ class behat_config_util {
 
         // Fix directory path.
         $featurepath = testing_cli_fix_directory_separator($featurepath);
-        $dirroot = testing_cli_fix_directory_separator($CFG->dirroot . DIRECTORY_SEPARATOR);
+        $dirroot = testing_cli_fix_directory_separator(\core_component::get_path_from_relative(\DIRECTORY_SEPARATOR));
 
         $key = basename($featurepath, '.feature');
 

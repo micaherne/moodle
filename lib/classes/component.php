@@ -206,7 +206,7 @@ class core_component {
             // No, move to the next prefix.
             return false;
         }
-        $path = $CFG->dirroot . '/' . $path;
+        $path = \core_component::get_path_from_relative($path);
 
         // Get the relative class name.
         $relativeclass = substr($class, $len);
@@ -1028,6 +1028,13 @@ $cache = '.var_export($cache, true).';
         return array($type, $plugin);
     }
 
+    /**
+     * Get the file path within a component directory.
+     *
+     * @param $component
+     * @param $relativepath
+     * @return string|null
+     */
     public static function get_component_path($component, $relativepath) {
         $dir = self::get_component_directory($component);
         if (is_null($dir)) {
@@ -1045,6 +1052,19 @@ $cache = '.var_export($cache, true).';
             return $dir;
         }
         return $dir . '/' . ltrim($relativepath, '/');
+    }
+
+    /**
+     * Get the path to a file / directory given the standard Moodle path from wwwroot.
+     *
+     * @param $relativepath
+     * @return string
+     */
+    public static function get_path_from_relative($relativepath) {
+        global $CFG;
+
+        // TODO: Make this work if paths are moved.
+        return $CFG->dirroot . '/' . ltrim($relativepath, '/\\');
     }
 
     /**

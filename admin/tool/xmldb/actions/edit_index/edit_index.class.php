@@ -68,7 +68,7 @@ class edit_index extends XMLDBAction {
         // Do the job, setting result as needed
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core_component::get_path_from_relative($dirpath);
 
         // Get the correct dirs
         if (!empty($XMLDB->dbdirs)) {

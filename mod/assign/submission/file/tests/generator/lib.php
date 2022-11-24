@@ -47,7 +47,7 @@ class assignsubmission_file_generator extends assignsubmission_subplugin_generat
             foreach ($files as $filepath) {
                 // All paths are relative to $CFG->dirroot.
                 $filepath = trim($filepath);
-                $filepath = "{$CFG->dirroot}/{$filepath}";
+                $filepath = \core_component::get_path_from_relative($filepath);
                 $filename = basename($filepath);
 
                 $fs->create_file_from_pathname((object) [

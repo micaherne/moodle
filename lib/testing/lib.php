@@ -58,7 +58,7 @@ function testing_cli_argument_path($moodlepath) {
         $cwd = substr($cwd, -1);
     }
 
-    $path = realpath($CFG->dirroot.$moodlepath);
+    $path = realpath(\core_component::get_path_from_relative($moodlepath));
 
     // We need standrad directory seperator for path and cwd, so it can be compared.
     $cwd = testing_cli_fix_directory_separator($cwd);

@@ -7971,7 +7971,7 @@ function get_list_of_plugins($directory='mod', $exclude='', $basedir='') {
     $plugins = array();
 
     if (empty($basedir)) {
-        $basedir = $CFG->dirroot .'/'. $directory;
+        $basedir = \core_component::get_path_from_relative($directory);
 
     } else {
         $basedir = $basedir .'/'. $directory;

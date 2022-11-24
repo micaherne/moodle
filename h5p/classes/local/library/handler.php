@@ -95,10 +95,10 @@ abstract class handler {
         $classes = static::get_class_list();
 
         if (isset($classes[$classname])) {
-            if (file_exists($CFG->dirroot . static::get_h5p_core_library_base($classes[$classname]))) {
-                require_once($CFG->dirroot . static::get_h5p_core_library_base($classes[$classname]));
+            if (file_exists(\core_component::get_path_from_relative(static::get_h5p_core_library_base($classes[$classname])))) {
+                require_once(\core_component::get_path_from_relative(static::get_h5p_core_library_base($classes[$classname])));
             } else {
-                require_once($CFG->dirroot . static::get_h5p_editor_library_base($classes[$classname]));
+                require_once(\core_component::get_path_from_relative(static::get_h5p_editor_library_base($classes[$classname])));
             }
         }
     }

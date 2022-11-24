@@ -56,7 +56,7 @@ class mod_h5pactivity_generator extends testing_module_generator {
         if (!isset($record->packagefilepath)) {
             $record->packagefilepath = $CFG->dirroot.'/h5p/tests/fixtures/h5ptest.zip';
         } else if (strpos($record->packagefilepath, $CFG->dirroot) !== 0) {
-            $record->packagefilepath = "{$CFG->dirroot}/{$record->packagefilepath}";
+            $record->packagefilepath = \core_component::get_path_from_relative($record->packagefilepath);
         }
         if (!isset($record->grade)) {
             $record->grade = 100;
