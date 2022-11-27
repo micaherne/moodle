@@ -111,6 +111,8 @@ class core_component {
         'PhpXmlRpc' => 'lib/phpxmlrpc',
     );
 
+    protected static $componentloader = null;
+
     /**
      * Class loader for Frankenstyle named classes in standard locations.
      * Frankenstyle namespaces are supported.
@@ -219,6 +221,19 @@ class core_component {
         return $file;
     }
 
+    protected static function get_component_loader() {
+        if (is_null(self::$componentloader)) {
+            if (function_exists('moodle_get_component_loader')) {
+                self::$componentloader = moodle_get_component_loader();
+            } else {
+                self::$componentloader = false;
+            }
+        }
+        if (self::$componentloader === false) {
+            return null;
+        }
+        return self::$componentloader;
+    }
 
     /**
      * Initialise caches, always call before accessing self:: caches.
@@ -625,6 +640,14 @@ $cache = '.var_export($cache, true).';
                 unset($item);
             }
             unset($items);
+        }
+
+        if ($componentloader = self::get_component_loader()) {
+            $extraplugins = $componentloader->fetch_plugins($plugintype);
+            // Overwrite built-in plugins with externally loaded ones.
+            foreach ($extraplugins as $name => $dir) {
+                $result[$name] = $dir;
+            }
         }
 
         ksort($result);
@@ -1036,6 +1059,12 @@ $cache = '.var_export($cache, true).';
      * @return string|null
      */
     public static function get_component_path($component, $relativepath) {
+        global $CFG;
+
+        if (is_null($component)) {
+            return $CFG->dirroot . '/' . ltrim($relativepath, '/');
+        }
+
         $dir = self::get_component_directory($component);
         if (is_null($dir)) {
             if (strpos($component, '_') === false) {
