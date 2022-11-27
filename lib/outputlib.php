@@ -2459,7 +2459,7 @@ class theme_config {
 
         debugging('Can not find layout file for: ' . $pagelayout);
         // fallback to standard normal layout
-        return "$CFG->dirroot/theme/base/layout/general.php";
+        return \core_component::get_component_path("theme_base", "layout/general.php");
     }
 
     /**

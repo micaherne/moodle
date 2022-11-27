@@ -17,26 +17,26 @@
 namespace core_course;
 
 use advanced_testcase;
-use backup_controller;
 use backup;
+use backup_controller;
 use blog_entry;
 use cache;
 use calendar_event;
 use coding_exception;
 use comment;
-use completion_criteria_date;
 use completion_completion;
+use completion_criteria_date;
 use context_course;
+use context_coursecat;
 use context_module;
 use context_system;
-use context_coursecat;
 use core_completion_external;
+use core_course_category;
 use core_external;
 use core_tag_index_builder;
 use core_tag_tag;
 use course_capability_assignment;
 use course_request;
-use core_course_category;
 use enrol_imsenterprise\imsenterprise_test;
 use external_api;
 use grade_item;
@@ -72,7 +72,7 @@ class courselib_test extends advanced_testcase {
         global $CFG;
 
         require_once($CFG->dirroot . '/course/tests/fixtures/course_capability_assignment.php');
-        require_once($CFG->dirroot . '/enrol/imsenterprise/tests/imsenterprise_test.php');
+        require_once(\core_component::get_component_path("enrol_imsenterprise", "tests/imsenterprise_test.php"));
     }
 
     /**
@@ -3755,7 +3755,7 @@ class courselib_test extends advanced_testcase {
 
     public function test_course_check_module_updates_since() {
         global $CFG, $DB, $USER;
-        require_once($CFG->dirroot . '/mod/glossary/lib.php');
+        require_once(\core_component::get_component_path("mod_glossary", "lib.php"));
         require_once($CFG->dirroot . '/rating/lib.php');
         require_once($CFG->dirroot . '/comment/lib.php');
 
@@ -5116,7 +5116,7 @@ class courselib_test extends advanced_testcase {
      */
     public function get_course_filter_courses_by_customfield_test_cases() {
         global $CFG;
-        require_once($CFG->dirroot.'/blocks/myoverview/lib.php');
+        require_once(\core_component::get_component_path("block_myoverview", "lib.php"));
         $coursedata = [
             [
                 'shortname' => 'C1',

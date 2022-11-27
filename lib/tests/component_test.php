@@ -396,7 +396,7 @@ class component_test extends advanced_testcase {
         $this->assertNull(core_component::get_subtype_parent('mod'));
 
         // Any plugin with more subtypes is ok here.
-        $this->assertFileExists("$CFG->dirroot/mod/assign/db/subplugins.json");
+        $this->assertFileExists(\core_component::get_component_path("mod_assign", "db/subplugins.json"));
         $this->assertSame('mod_assign', core_component::get_subtype_parent('assignsubmission'));
         $this->assertSame('mod_assign', core_component::get_subtype_parent('assignfeedback'));
         $this->assertNull(core_component::get_subtype_parent('assignxxxxx'));
@@ -406,7 +406,7 @@ class component_test extends advanced_testcase {
         global $CFG;
 
         // Any plugin with more subtypes is ok here.
-        $this->assertFileExists("$CFG->dirroot/mod/assign/db/subplugins.json");
+        $this->assertFileExists(\core_component::get_component_path("mod_assign", "db/subplugins.json"));
 
         $subplugins = core_component::get_subplugins('mod_assign');
         $this->assertSame(array('assignsubmission', 'assignfeedback'), array_keys($subplugins));
@@ -419,7 +419,7 @@ class component_test extends advanced_testcase {
 
         // Any plugin without subtypes is ok here.
         $this->assertFileExists("$CFG->dirroot/mod/choice");
-        $this->assertFileDoesNotExist("$CFG->dirroot/mod/choice/db/subplugins.json");
+        $this->assertFileDoesNotExist(\core_component::get_component_path("mod_choice", "db/subplugins.json"));
 
         $this->assertNull(core_component::get_subplugins('mod_choice'));
 

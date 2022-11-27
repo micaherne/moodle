@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/repository/lib.php');
-require_once($CFG->dirroot.'/repository/upload/lib.php');
+require_once(\core_component::get_component_path("repository_upload", "lib.php"));
 require_once($CFG->dirroot.'/course/lib.php');
 
 /**

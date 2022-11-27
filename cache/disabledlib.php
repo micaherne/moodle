@@ -473,9 +473,9 @@ class cache_config_disabled extends cache_config_writer {
         // HACK ALERT.
         // We probably need to come up with a better way to create the default stores, or at least ensure 100% that the
         // default store plugins are protected from deletion.
-        require_once($CFG->dirroot.'/cache/stores/file/lib.php');
-        require_once($CFG->dirroot.'/cache/stores/session/lib.php');
-        require_once($CFG->dirroot.'/cache/stores/static/lib.php');
+        require_once(\core_component::get_component_path("cachestore_file", "lib.php"));
+        require_once(\core_component::get_component_path("cachestore_session", "lib.php"));
+        require_once(\core_component::get_component_path("cachestore_static", "lib.php"));
 
         $writer = new self;
         $writer->configstores = array(

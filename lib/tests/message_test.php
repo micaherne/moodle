@@ -131,8 +131,8 @@ class message_test extends \advanced_testcase {
         set_config('allowedemaildomains', 'example.com');
 
         // Test basic email processor.
-        $this->assertFileExists("$CFG->dirroot/message/output/email/version.php");
-        $this->assertFileExists("$CFG->dirroot/message/output/popup/version.php");
+        $this->assertFileExists(\core_component::get_component_path("message_email", "version.php"));
+        $this->assertFileExists(\core_component::get_component_path("message_popup", "version.php"));
 
         $DB->set_field_select('message_processors', 'enabled', 0, "name <> 'email'");
         set_user_preference('message_provider_moodle_instantmessage_enabled', 'email', $user2);
@@ -228,8 +228,8 @@ class message_test extends \advanced_testcase {
         set_config('emailsubjectprefix', '[Prefix Text]');
 
         // Test basic email processor.
-        $this->assertFileExists("$CFG->dirroot/message/output/email/version.php");
-        $this->assertFileExists("$CFG->dirroot/message/output/popup/version.php");
+        $this->assertFileExists(\core_component::get_component_path("message_email", "version.php"));
+        $this->assertFileExists(\core_component::get_component_path("message_popup", "version.php"));
 
         $DB->set_field_select('message_processors', 'enabled', 0, "name <> 'email'");
         set_user_preference('message_provider_moodle_instantmessage_enabled', 'email', $user2);

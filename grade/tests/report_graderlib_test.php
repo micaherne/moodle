@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot.'/grade/lib.php');
-require_once($CFG->dirroot.'/grade/report/grader/lib.php');
+require_once(\core_component::get_component_path("gradereport_grader", "lib.php"));
 
 /**
  * Tests grade_report_grader (the grader report)

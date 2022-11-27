@@ -19,7 +19,6 @@ namespace core;
 use admin_category;
 use admin_externalpage;
 use admin_root;
-use admin_settingpage;
 use admin_setting_configdirectory;
 use admin_setting_configduration;
 use admin_setting_configexecutable;
@@ -27,6 +26,7 @@ use admin_setting_configfile;
 use admin_setting_configmixedhostiplist;
 use admin_setting_configpasswordunmask;
 use admin_setting_configtext;
+use admin_settingpage;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -172,7 +172,7 @@ class admintree_test extends \advanced_testcase {
         $this->assertMatchesRegularExpression('/class="text-danger"/', $result);
 
         // Check for a file which is not executable.
-        $result = $executable->output_html($CFG->dirroot . '/filter/tex/readme_moodle.txt');
+        $result = $executable->output_html(\core_component::get_component_path("filter_tex", "readme_moodle.txt"));
         $this->assertMatchesRegularExpression('/class="text-danger"/', $result);
 
         // Check for an executable file.

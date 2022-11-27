@@ -330,7 +330,7 @@ class statslib_test extends \advanced_testcase {
         // New log stores.
         $this->preventResetByRollback();
 
-        $this->assertFileExists("$CFG->dirroot/$CFG->admin/tool/log/store/standard/version.php");
+        $this->assertFileExists(\core_component::get_component_path("logstore_standard", "version.php"));
         set_config('enabled_stores', 'logstore_standard', 'tool_log');
         set_config('buffersize', 0, 'logstore_standard');
         set_config('logguests', 1, 'logstore_standard');
@@ -591,7 +591,7 @@ class statslib_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->assertFileExists("$CFG->dirroot/$CFG->admin/tool/log/store/standard/version.php");
+        $this->assertFileExists(\core_component::get_component_path("logstore_standard", "version.php"));
         set_config('enabled_stores', 'logstore_standard', 'tool_log');
         set_config('buffersize', 0, 'logstore_standard');
         set_config('logguests', 1, 'logstore_standard');

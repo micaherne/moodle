@@ -459,9 +459,9 @@ class cache_config_writer extends cache_config {
     protected static function get_default_stores() {
         global $CFG;
 
-        require_once($CFG->dirroot.'/cache/stores/file/lib.php');
-        require_once($CFG->dirroot.'/cache/stores/session/lib.php');
-        require_once($CFG->dirroot.'/cache/stores/static/lib.php');
+        require_once(\core_component::get_component_path("cachestore_file", "lib.php"));
+        require_once(\core_component::get_component_path("cachestore_session", "lib.php"));
+        require_once(\core_component::get_component_path("cachestore_static", "lib.php"));
 
         return array(
             'default_application' => array(

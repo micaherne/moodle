@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/course/format/topics/lib.php');
+require_once(\core_component::get_component_path("format_topics", "lib.php"));
 
 /**
  * Fixture course format with one option.

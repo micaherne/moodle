@@ -1738,7 +1738,7 @@ function upgrade_language_pack($lang = null) {
         return;
     }
 
-    if (!file_exists("$CFG->dirroot/$CFG->admin/tool/langimport/lib.php")) {
+    if (!file_exists(\core_component::get_component_path("tool_langimport", "lib.php"))) {
         // weird, somebody uninstalled the import utility
         return;
     }
@@ -1759,7 +1759,7 @@ function upgrade_language_pack($lang = null) {
 
     upgrade_started(false);
 
-    require_once("$CFG->dirroot/$CFG->admin/tool/langimport/lib.php");
+    require_once(\core_component::get_component_path("tool_langimport", "lib.php"));
     tool_langimport_preupgrade_update($lang);
 
     get_string_manager()->reset_caches();
