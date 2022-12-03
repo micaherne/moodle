@@ -1092,7 +1092,12 @@ $cache = '.var_export($cache, true).';
     public static function get_path_from_relative($relativepath) {
         global $CFG;
 
-        // TODO: Make this work if paths are moved.
+        if ($loader = self::get_component_loader()) {
+            if (!is_null($pathfromloader = $loader->get_path_from_relative($relativepath))) {
+                return $pathfromloader;
+            }
+        }
+
         return $CFG->dirroot . '/' . ltrim($relativepath, '/\\');
     }
 
