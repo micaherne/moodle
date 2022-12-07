@@ -72,7 +72,7 @@ class edit_table_save extends XMLDBAction {
 
         // Get parameters
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core_component::get_path_from_relative($dirpath);
 
         $tableparam = strtolower(required_param('table', PARAM_PATH));
         $name = substr(trim(strtolower(required_param('name', PARAM_PATH))),0,xmldb_table::NAME_MAX_LENGTH);

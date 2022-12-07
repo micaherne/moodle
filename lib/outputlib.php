@@ -148,8 +148,8 @@ function theme_set_sub_revision_for_theme($themename, $revision) {
 function theme_get_config_file_path($themename) {
     global $CFG;
 
-    if (file_exists("{$CFG->dirroot}/theme/{$themename}/config.php")) {
-        return "{$CFG->dirroot}/theme/{$themename}/config.php";
+    if (file_exists(\core_component::get_component_path("theme_{$themename}", "config.php"))) {
+        return \core_component::get_component_path("theme_{$themename}", "config.php");
     } else if (!empty($CFG->themedir) and file_exists("{$CFG->themedir}/{$themename}/config.php")) {
         return "{$CFG->themedir}/{$themename}/config.php";
     } else {
@@ -2385,8 +2385,8 @@ class theme_config {
     private static function find_theme_location($themename) {
         global $CFG;
 
-        if (file_exists("$CFG->dirroot/theme/$themename/config.php")) {
-            $dir = "$CFG->dirroot/theme/$themename";
+        if (file_exists(\core_component::get_component_path("theme_{$themename}", "config.php"))) {
+            $dir = \core_component::get_component_path("theme_{$themename}", "");
 
         } else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/$themename/config.php")) {
             $dir = "$CFG->themedir/$themename";
@@ -2470,7 +2470,7 @@ class theme_config {
 
         debugging('Can not find layout file for: ' . $pagelayout);
         // fallback to standard normal layout
-        return "$CFG->dirroot/theme/base/layout/general.php";
+        return \core_component::get_component_path("theme_base", "layout/general.php");
     }
 
     /**

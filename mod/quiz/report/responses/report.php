@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport.php');
+require_once(\core_component::get_component_path("mod_quiz", "report/attemptsreport.php"));
 require_once($CFG->dirroot . '/mod/quiz/report/responses/responses_options.php');
 require_once($CFG->dirroot . '/mod/quiz/report/responses/responses_form.php');
 require_once($CFG->dirroot . '/mod/quiz/report/responses/last_responses_table.php');

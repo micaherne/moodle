@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport.php');
+require_once(\core_component::get_component_path("mod_quiz", "report/attemptsreport.php"));
 
 /**
  * Makes some protected methods of quiz_attempts_report public to facilitate testing.

@@ -38,7 +38,7 @@ class gradebookservices_test extends \advanced_testcase {
      */
     public function test_lti_add_coupled_lineitem() {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core_component::get_component_path("mod_lti", "locallib.php"));
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -76,7 +76,7 @@ class gradebookservices_test extends \advanced_testcase {
      */
     public function test_lti_add_coupled_lineitem_default_subreview() {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core_component::get_component_path("mod_lti", "locallib.php"));
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -129,7 +129,7 @@ class gradebookservices_test extends \advanced_testcase {
      */
     public function test_get_launch_parameters_coupled() {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core_component::get_component_path("mod_lti", "locallib.php"));
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -163,7 +163,7 @@ class gradebookservices_test extends \advanced_testcase {
      */
     public function test_get_launch_parameters_coupled_subreview_override() {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core_component::get_component_path("mod_lti", "locallib.php"));
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -194,7 +194,7 @@ class gradebookservices_test extends \advanced_testcase {
      */
     public function test_get_launch_parameters_coupled_subreview_override_default() {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core_component::get_component_path("mod_lti", "locallib.php"));
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -225,7 +225,7 @@ class gradebookservices_test extends \advanced_testcase {
      */
     public function test_get_launch_parameters_decoupled() {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core_component::get_component_path("mod_lti", "locallib.php"));
 
         $this->resetAfterTest();
         $this->setAdminUser();

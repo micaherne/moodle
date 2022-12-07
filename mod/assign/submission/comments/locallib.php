@@ -25,7 +25,7 @@
  defined('MOODLE_INTERNAL') || die();
 
  require_once($CFG->dirroot . '/comment/lib.php');
- require_once($CFG->dirroot . '/mod/assign/submissionplugin.php');
+ require_once(\core_component::get_component_path("mod_assign", "submissionplugin.php"));
 
 /**
  * Library class for comment submission plugin extending submission plugin base class

@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $pageno = optional_param('p', 0, PARAM_INT);
 
-require_once($CFG->dirroot.'/mod/forum/lib.php');
+require_once(\core_component::get_component_path("mod_forum", "lib.php"));
 
 $forum = forum_get_course_forum($course->id, 'social');
 if (empty($forum)) {

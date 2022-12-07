@@ -145,7 +145,7 @@ class filter_manager {
      */
     protected function make_filter_object($filtername, $context, $localconfig) {
         global $CFG;
-        $path = $CFG->dirroot .'/filter/'. $filtername .'/filter.php';
+        $path = \core_component::get_component_path("filter_{$filtername}", "filter.php");
         if (!is_readable($path)) {
             return null;
         }
@@ -1269,11 +1269,11 @@ function filter_delete_all_for_context($contextid) {
  */
 function filter_has_global_settings($filter) {
     global $CFG;
-    $settingspath = $CFG->dirroot . '/filter/' . $filter . '/settings.php';
+    $settingspath = \core_component::get_component_path("filter_{$filter}", "settings.php");
     if (is_readable($settingspath)) {
         return true;
     }
-    $settingspath = $CFG->dirroot . '/filter/' . $filter . '/filtersettings.php';
+    $settingspath = \core_component::get_component_path("filter_{$filter}", "filtersettings.php");
     return is_readable($settingspath);
 }
 
@@ -1285,7 +1285,7 @@ function filter_has_global_settings($filter) {
  */
 function filter_has_local_settings($filter) {
     global $CFG;
-    $settingspath = $CFG->dirroot . '/filter/' . $filter . '/filterlocalsettings.php';
+    $settingspath = \core_component::get_component_path("filter_{$filter}", "filterlocalsettings.php");
     return is_readable($settingspath);
 }
 

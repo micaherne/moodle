@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 \MoodleQuickForm::registerElementType('framework_autocomplete',
-    $CFG->dirroot . '/admin/tool/lp/classes/form/framework_autocomplete.php',
+    \core_component::get_component_path("tool_lp", "classes/form/framework_autocomplete.php"),
     '\\tool_lp\\form\\framework_autocomplete');
 
 /**

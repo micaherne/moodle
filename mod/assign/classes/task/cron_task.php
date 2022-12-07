@@ -49,7 +49,7 @@ class cron_task extends \core\task\scheduled_task {
             $disabled = get_config('assignsubmission_' . $name, 'disabled');
             if (!$disabled) {
                 $class = 'assign_submission_' . $name;
-                require_once($CFG->dirroot . '/mod/assign/submission/' . $name . '/locallib.php');
+                require_once(\core_component::get_component_path("assignsubmission_{$name}", "locallib.php"));
                 $class::cron();
             }
         }
@@ -59,7 +59,7 @@ class cron_task extends \core\task\scheduled_task {
             $disabled = get_config('assignfeedback_' . $name, 'disabled');
             if (!$disabled) {
                 $class = 'assign_feedback_' . $name;
-                require_once($CFG->dirroot . '/mod/assign/feedback/' . $name . '/locallib.php');
+                require_once(\core_component::get_component_path("assignfeedback_{$name}", "locallib.php"));
                 $class::cron();
             }
         }

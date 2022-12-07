@@ -444,7 +444,7 @@ class provider implements
         // Use the Moodle XML Data format.
         // It is the only lossless format that we support.
         $format = "xml";
-        require_once($CFG->dirroot . "/question/format/{$format}/format.php");
+        require_once(\core_component::get_component_path("qformat_{$format}", "format.php"));
 
         // THe export system needs questions in a particular format.
         // The easiest way to fetch these is with get_questions_category() which takes the details of a question

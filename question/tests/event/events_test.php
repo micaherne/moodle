@@ -206,9 +206,9 @@ class events_test extends \advanced_testcase {
     public function test_question_updated() {
 
         global $CFG;
-        require_once($CFG->dirroot . '/question/type/description/questiontype.php');
+        require_once(\core_component::get_component_path("qtype_description", "questiontype.php"));
         require_once($CFG->dirroot . '/question/type/edit_question_form.php');
-        require_once($CFG->dirroot . '/question/type/description/edit_description_form.php');
+        require_once(\core_component::get_component_path("qtype_description", "edit_description_form.php"));
 
         $this->setAdminUser();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');

@@ -1769,7 +1769,7 @@ function question_pluginfile($course, $context, $component, $filearea, $args, $f
         // Load parent class for import/export.
         require_once($CFG->dirroot . '/question/format.php');
         require_once($CFG->dirroot . '/question/editlib.php');
-        require_once($CFG->dirroot . '/question/format/' . $format . '/format.php');
+        require_once(\core_component::get_component_path("qformat_{$format}", "format.php"));
 
         $classname = 'qformat_' . $format;
         if (!class_exists($classname)) {

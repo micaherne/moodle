@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once(\core_component::get_component_path("mod_lti", "locallib.php"));
 
 /**
  * Provides the information to backup gradebookservices lineitems

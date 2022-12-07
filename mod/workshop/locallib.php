@@ -1556,7 +1556,7 @@ class workshop {
         global $CFG;    // because we require other libs here
 
         if (is_null($this->strategyinstance)) {
-            $strategylib = __DIR__ . '/form/' . $this->strategy . '/lib.php';
+            $strategylib = \core_component::get_component_path("workshopform_{$this->strategy}", "lib.php");
             if (is_readable($strategylib)) {
                 require_once($strategylib);
             } else {
@@ -1581,7 +1581,7 @@ class workshop {
     public function set_grading_evaluation_method($method) {
         global $DB;
 
-        $evaluationlib = __DIR__ . '/eval/' . $method . '/lib.php';
+        $evaluationlib = \core_component::get_component_path("workshopeval_{$method}", "lib.php");
 
         if (is_readable($evaluationlib)) {
             $this->evaluationinstance = null;
@@ -1605,13 +1605,13 @@ class workshop {
             if (empty($this->evaluation)) {
                 $this->evaluation = 'best';
             }
-            $evaluationlib = __DIR__ . '/eval/' . $this->evaluation . '/lib.php';
+            $evaluationlib = \core_component::get_component_path("workshopeval_{$this->evaluation}", "lib.php");
             if (is_readable($evaluationlib)) {
                 require_once($evaluationlib);
             } else {
                 // Fall back in case the subplugin is not available.
                 $this->evaluation = 'best';
-                $evaluationlib = __DIR__ . '/eval/' . $this->evaluation . '/lib.php';
+                $evaluationlib = \core_component::get_component_path("workshopeval_{$this->evaluation}", "lib.php");
                 if (is_readable($evaluationlib)) {
                     require_once($evaluationlib);
                 } else {
@@ -1637,7 +1637,7 @@ class workshop {
     public function allocator_instance($method) {
         global $CFG;    // because we require other libs here
 
-        $allocationlib = __DIR__ . '/allocation/' . $method . '/lib.php';
+        $allocationlib = \core_component::get_component_path("workshopallocation_{$method}", "lib.php");
         if (is_readable($allocationlib)) {
             require_once($allocationlib);
         } else {

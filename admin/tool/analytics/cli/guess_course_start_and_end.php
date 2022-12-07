@@ -28,7 +28,7 @@ require_once(__DIR__ . '/../../../../config.php');
 require_once($CFG->libdir.'/clilib.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/course/format/weeks/lib.php');
+require_once(\core_component::get_component_path("format_weeks", "lib.php"));
 
 $help = "Guesses course start and end dates based on activity logs.
 

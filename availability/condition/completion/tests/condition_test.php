@@ -177,7 +177,7 @@ class condition_test extends \advanced_testcase {
      */
     public function test_usage() {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
         $this->resetAfterTest();
 
         // Create course with completion turned on.
@@ -392,7 +392,7 @@ class condition_test extends \advanced_testcase {
     public function test_previous_activity(int $grade, int $condition, string $mark, string $activity,
             bool $result, bool $resultnot, string $description): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
         $this->resetAfterTest();
 
         // Create course with completion turned on.
@@ -572,7 +572,7 @@ class condition_test extends \advanced_testcase {
     public function test_section_previous_activity(int $condition, bool $mark, string $section,
                 bool $result, bool $resultnot, string $description): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
         $this->resetAfterTest();
 
         // Create course with completion turned on.

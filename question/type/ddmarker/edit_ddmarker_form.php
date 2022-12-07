@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/question/type/ddimageortext/edit_ddtoimage_form_base.php');
+require_once(\core_component::get_component_path("qtype_ddimageortext", "edit_ddtoimage_form_base.php"));
 require_once($CFG->dirroot.'/question/type/ddmarker/shapes.php');
 
 define('QTYPE_DDMARKER_ALLOWED_TAGS_IN_MARKER', '<br><i><em><b><strong><sup><sub><u><span>');

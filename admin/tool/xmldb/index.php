@@ -78,13 +78,13 @@ if (file_exists($actionpath) && is_readable($actionpath)) {
                     // If the js exists, load it
                     if ($action) {
                         $script = $CFG->admin . '/tool/xmldb/actions/' . $action . '/' . $action . '.js';
-                        $file = $CFG->dirroot . '/' . $script;
+                        $file = \core_component::get_path_from_relative($script);
                         if (file_exists($file) && is_readable($file)) {
                             $PAGE->requires->js('/'.$script);
                         } else if ($postaction) {
                             // Try to load the postaction javascript if exists
                             $script = $CFG->admin . '/tool/xmldb/actions/' . $postaction . '/' . $postaction . '.js';
-                            $file = $CFG->dirroot . '/' . $script;
+                            $file = \core_component::get_path_from_relative($script);
                             if (file_exists($file) && is_readable($file)) {
                                 $PAGE->requires->js('/'.$script);
                             }

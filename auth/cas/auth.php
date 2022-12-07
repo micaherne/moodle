@@ -28,7 +28,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/auth/ldap/auth.php');
+require_once(\core_component::get_component_path("auth_ldap", "auth.php"));
 require_once($CFG->dirroot.'/auth/cas/CAS/vendor/autoload.php');
 require_once($CFG->dirroot.'/auth/cas/CAS/vendor/apereo/phpcas/source/CAS.php');
 

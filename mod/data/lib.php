@@ -421,7 +421,7 @@ class data_field_base {     // Base class for Database Field Types (see field/*/
 
         echo $OUTPUT->heading($this->name(), 3);
 
-        $filepath = $CFG->dirroot.'/mod/data/field/'.$this->type.'/mod.html';
+        $filepath = \core_component::get_component_path("datafield_{$this->type}", "mod.html");
 
         if (!file_exists($filepath)) {
             throw new \moodle_exception(get_string('missingfieldtype', 'data', (object)['name' => $this->field->name]));
@@ -931,7 +931,7 @@ function data_get_field_from_id($fieldid, $data){
 function data_get_field_new($type, $data) {
     global $CFG;
 
-    $filepath = $CFG->dirroot.'/mod/data/field/'.$type.'/field.class.php';
+    $filepath = \core_component::get_component_path("datafield_{$type}", "field.class.php");
     // It should never access this method if the subfield class doesn't exist.
     if (!file_exists($filepath)) {
         throw new \moodle_exception('invalidfieldtype', 'data');
@@ -958,7 +958,7 @@ function data_get_field($field, $data, $cm=null) {
     if (!isset($field->type)) {
         return new data_field_base($field);
     }
-    $filepath = $CFG->dirroot.'/mod/data/field/'.$field->type.'/field.class.php';
+    $filepath = \core_component::get_component_path("datafield_{$field->type}", "field.class.php");
     if (!file_exists($filepath)) {
         return new data_field_base($field);
     }
@@ -2680,7 +2680,7 @@ function data_preset_path($course, $userid, $shortname) {
     if ($userid > 0 && ($userid == $USER->id || has_capability('mod/data:viewalluserpresets', $context))) {
         $path = $CFG->dataroot.'/data/preset/'.$userid.'/'.$shortname;
     } else if ($userid == 0) {
-        $path = $CFG->dirroot.'/mod/data/preset/'.$shortname;
+        $path = \core_component::get_component_path("datapreset_{$shortname}", "");
     } else if ($userid < 0) {
         $path = $CFG->tempdir.'/data/'.-$userid.'/'.$shortname;
     }
@@ -2995,7 +2995,7 @@ function data_import_csv($cm, $data, &$csvdata, $encoding, $fielddelimiter) {
                     unset($fieldnames[$id]); // To ensure the user provided content fields remain in the array once flipped.
                 } else {
                     $field = $rawfields[$name];
-                    $filepath = "$CFG->dirroot/mod/data/field/$field->type/field.class.php";
+                    $filepath = \core_component::get_component_path("datafield_{$field->type}", "field.class.php");
                     if (!file_exists($filepath)) {
                         $errorfield .= "'$name' ";
                         continue;

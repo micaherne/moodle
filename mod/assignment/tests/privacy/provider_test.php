@@ -664,7 +664,7 @@ class provider_test extends provider_testcase {
         $context = \context_module::instance($assignment->cmid);
 
         $fs = get_file_storage();
-        $sourcefile = $CFG->dirroot . '/mod/assign/feedback/editpdf/tests/fixtures/submission.pdf';
+        $sourcefile = \core_component::get_component_path("assignfeedback_editpdf", "tests/fixtures/submission.pdf");
 
         for ($f = 1; $f <= $numfiles; $f++) {
             $pdfsubmission = (object)array(

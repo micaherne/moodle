@@ -67,7 +67,7 @@ class create_xml_file extends XMLDBAction {
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
         $plugintype = $this->get_plugin_type($dirpath);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core_component::get_path_from_relative($dirpath);
         $file = $dirpath . '/install.xml';
 
         // Some variables
@@ -117,7 +117,7 @@ class create_xml_file extends XMLDBAction {
      */
     function get_plugin_type($dirpath) {
         global $CFG;
-        $dirpath = $CFG->dirroot.$dirpath;
+        $dirpath = \core_component::get_path_from_relative($dirpath);
         // Reverse order so that we get subplugin matches.
         $plugintypes = array_reverse(core_component::get_plugin_types());
         foreach ($plugintypes as $plugintype => $pluginbasedir) {

@@ -36,7 +36,7 @@ try {
     $attemptnumber = required_param('attemptnumber', PARAM_INT);
 
     // Retrieve the assignments.
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
     $cm = get_coursemodule_from_instance('assign', $assignmentid, 0, false, MUST_EXIST);
     $context = context_module::instance($cm->id);
     $assignment = new assign($context, null, null);

@@ -506,7 +506,7 @@ class behat_core_generator extends behat_generator_base {
     protected function process_customlang($data) {
         global $CFG, $DB, $USER;
 
-        require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/customlang/locallib.php');
+        require_once(\core_component::get_component_path("tool_customlang", "locallib.php"));
         require_once($CFG->libdir . '/adminlib.php');
 
         if (empty($data['component'])) {
@@ -1009,7 +1009,7 @@ class behat_core_generator extends behat_generator_base {
                     'filename' => $filename,
                     'filepath' => '/'
                 );
-                $fs->create_file_from_pathname($filerecord, $CFG->dirroot . $data['filepath']);
+                $fs->create_file_from_pathname($filerecord, \core_component::get_path_from_relative($data['filepath']));
             }
         } else {
             throw new Exception('The specified "' . $data['contenttype'] . '" contenttype does not exist');

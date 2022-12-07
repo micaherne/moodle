@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/../assessment_form.php');    // parent class definition
+require_once(\core_component::get_component_path("mod_workshop", "form/assessment_form.php"));    // parent class definition
 
 /**
  * Class representing a form for assessing submissions by accumulative grading strategy

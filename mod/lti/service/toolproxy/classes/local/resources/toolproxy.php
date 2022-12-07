@@ -28,8 +28,8 @@ namespace ltiservice_toolproxy\local\resources;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/lti/OAuth.php');
-require_once($CFG->dirroot . '/mod/lti/TrivialStore.php');
+require_once(\core_component::get_component_path("mod_lti", "OAuth.php"));
+require_once(\core_component::get_component_path("mod_lti", "TrivialStore.php"));
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
 use moodle\mod\lti as lti;

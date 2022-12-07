@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/multichoice/questiontype.php');
-require_once($CFG->dirroot . '/question/type/calculated/questiontype.php');
+require_once(\core_component::get_component_path("qtype_multichoice", "questiontype.php"));
+require_once(\core_component::get_component_path("qtype_calculated", "questiontype.php"));
 
 
 /**

@@ -430,7 +430,7 @@ class editor {
         // Add translations.
         $languagescript = "language/{$language}.js";
 
-        if (!file_exists("{$CFG->dirroot}" . autoloader::get_h5p_editor_library_base($languagescript))) {
+        if (!file_exists(\core_component::get_path_from_relative(\core_h5p\local\library\autoloader::get_h5p_editor_library_base($languagescript)))) {
             $languagescript = 'language/en.js';
         }
 
@@ -438,7 +438,7 @@ class editor {
         // If the strings exist, they will override the existing ones in the JS file.
 
         // Get existing strings from current JS language file.
-        $langcontent = file_get_contents("{$CFG->dirroot}" . autoloader::get_h5p_editor_library_base($languagescript));
+        $langcontent = file_get_contents(\core_component::get_path_from_relative(\core_h5p\local\library\autoloader::get_h5p_editor_library_base($languagescript)));
 
         // Get only the content between { } (for instance, ; at the end of the file has to be removed).
         $langcontent = substr($langcontent, 0, strpos($langcontent, '}', -0) + 1);

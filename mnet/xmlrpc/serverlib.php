@@ -343,7 +343,7 @@ function mnet_server_dispatch($payload) {
             }
 
             // The call stack holds the path to any include file
-            $includefile = $CFG->dirroot.'/'.$filename;
+            $includefile = \core_component::get_path_from_relative($filename);
 
             $response = mnet_server_invoke_dangerous_method($includefile, $functionname, $method, $payload);
             echo $response;
@@ -501,8 +501,8 @@ function mnet_server_invoke_plugin_method($method, $callstack, $rpcrecord, $payl
  */
 function mnet_server_invoke_dangerous_method($includefile, $methodname, $method, $payload) {
 
-    if (file_exists($CFG->dirroot . $includefile)) {
-        require_once $CFG->dirroot . $includefile;
+    if (file_exists(\core_component::get_path_from_relative($includefile))) {
+        require_once \core_component::get_path_from_relative($includefile);
         // $callprefix matches the rpc convention
         // of not having a leading slash
         $callprefix = preg_replace('!^/!', '', $includefile);
@@ -617,10 +617,10 @@ function mnet_setup_dummy_method($method, $callstack, $rpcrecord) {
     if ($providedpath != $path . '/' . $rpcrecord->filename) {
         throw new mnet_server_exception(705, "nosuchfile");
     }
-    if (!file_exists($CFG->dirroot . '/' . $providedpath)) {
+    if (!file_exists(\core_component::get_path_from_relative($providedpath))) {
         throw new mnet_server_exception(705, "nosuchfile");
     }
-    require_once($CFG->dirroot . '/' . $providedpath);
+    require_once(\core_component::get_path_from_relative($providedpath));
     if (!empty($rpcrecord->classname)) {
         if (!class_exists($rpcrecord->classname)) {
             throw new mnet_server_exception(708, 'nosuchclass');

@@ -395,7 +395,7 @@ abstract class editor_tinymce_plugin {
         global $CFG;
 
         $plugin = new stdClass;
-        require($CFG->dirroot . '/lib/editor/tinymce/plugins/' . $this->plugin . '/version.php');
+        require(\core_component::get_component_path("tinymce_{$this->plugin}", "version.php"));
         return $plugin->version;
     }
 

@@ -729,7 +729,7 @@ class page_requirements_manager {
             }
             if (debugging()) {
                 // Check file existence only when in debug mode.
-                if (!file_exists($CFG->dirroot . strtok($url, '?'))) {
+                if (!file_exists(\core_component::get_path_from_relative(\strtok($url, '?')))) {
                     throw new coding_exception('Attempt to require a JavaScript file that does not exist.', $url);
                 }
             }
@@ -1922,7 +1922,7 @@ class YUI_config {
 
         // Attempt to get the metadata from the cache.
         $keyname = 'configfn_' . $file;
-        $fullpath = $CFG->dirroot . '/' . $file;
+        $fullpath = \core_component::get_path_from_relative($file);
         if (!isset($CFG->jsrev) || $CFG->jsrev == -1) {
             $cache->delete($keyname);
             $configfn = file_get_contents($fullpath);

@@ -776,7 +776,7 @@ class pdf extends TcpdfFpdi {
     public static function get_error_image($errorimagefolder, $pageno) {
         global $CFG;
 
-        $errorfile = $CFG->dirroot . self::BLANK_PDF;
+        $errorfile = \core_component::get_path_from_relative(self::BLANK_PDF);
         if (!file_exists($errorfile)) {
             throw new \coding_exception("Blank PDF not found", "File path" . $errorfile);
         }

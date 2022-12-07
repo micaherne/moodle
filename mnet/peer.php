@@ -146,8 +146,8 @@ class mnet_peer {
         // TODO: Expires each PHP session individually
         $sessions = $DB->get_records('mnet_session', array('mnethostid'=>$this->id));
 
-        if (count($sessions) > 0 && file_exists($CFG->dirroot.'/auth/mnet/auth.php')) {
-            require_once($CFG->dirroot.'/auth/mnet/auth.php');
+        if (count($sessions) > 0 && file_exists(\core_component::get_component_path("auth_mnet", "auth.php"))) {
+            require_once(\core_component::get_component_path("auth_mnet", "auth.php"));
             $auth = new auth_plugin_mnet();
             $auth->end_local_sessions($sessions);
         }

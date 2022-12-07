@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_assignfeedback_comments_install() {
     global $CFG;
 
-    require_once($CFG->dirroot . '/mod/assign/adminlib.php');
+    require_once(\core_component::get_component_path("mod_assign", "adminlib.php"));
 
     // Set the correct initial order for the plugins.
     $pluginmanager = new assign_plugin_manager('assignfeedback');

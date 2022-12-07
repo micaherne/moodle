@@ -65,7 +65,7 @@ class delete_field extends XMLDBAction {
 
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core_component::get_path_from_relative($dirpath);
         $tableparam = required_param('table', PARAM_CLEAN);
         $fieldparam = required_param('field', PARAM_CLEAN);
 

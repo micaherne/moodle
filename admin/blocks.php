@@ -96,7 +96,7 @@
     $blocknames = array();
     foreach ($blocks as $blockid=>$block) {
         $blockname = $block->name;
-        if (file_exists("$CFG->dirroot/blocks/$blockname/block_$blockname.php")) {
+        if (file_exists(\core_component::get_component_path("block_{$blockname}", "block_{$blockname}.php"))) {
             $blocknames[$blockid] = get_string('pluginname', 'block_'.$blockname);
         } else {
             $blocknames[$blockid] = $blockname;
@@ -109,7 +109,7 @@
         $blockname = $block->name;
         $dbversion = get_config('block_'.$block->name, 'version');
 
-        if (!file_exists("$CFG->dirroot/blocks/$blockname/block_$blockname.php")) {
+        if (!file_exists(\core_component::get_component_path("block_{$blockname}", "block_{$blockname}.php"))) {
             $blockobject  = false;
             $strblockname = '<span class="notifyproblem">'.$strblockname.' ('.get_string('missingfromdisk').')</span>';
             $plugin = new stdClass();
@@ -118,8 +118,8 @@
         } else {
             $plugin = new stdClass();
             $plugin->version = '???';
-            if (file_exists("$CFG->dirroot/blocks/$blockname/version.php")) {
-                include("$CFG->dirroot/blocks/$blockname/version.php");
+            if (file_exists(\core_component::get_component_path("block_{$blockname}", "version.php"))) {
+                include(\core_component::get_component_path("block_{$blockname}", "version.php"));
             }
 
             if (!$blockobject  = block_instance($block->name)) {
@@ -142,7 +142,7 @@
                 $settings = '<a href="' . $blocksettings->url .  '">' . get_string('settings') . '</a>';
             } else if ($blocksettings instanceof admin_settingpage) {
                 $settings = '<a href="'.$CFG->wwwroot.'/'.$CFG->admin.'/settings.php?section=blocksetting'.$block->name.'">'.$strsettings.'</a>';
-            } else if (!file_exists($CFG->dirroot.'/blocks/'.$block->name.'/settings.php')) {
+            } else if (!file_exists(\core_component::get_component_path("block_{$block->name}", "settings.php"))) {
                 // If the block's settings node was not found, we check that the block really provides the settings.php file.
                 // Note that blocks can inject their settings to other nodes in the admin tree without using the default locations.
                 // This can be done by assigning null to $setting in settings.php and it is a valid case.

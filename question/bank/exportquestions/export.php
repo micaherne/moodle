@@ -61,7 +61,7 @@ $exportform = new export_form($thispageurl,
 
 if ($fromform = $exportform->get_data()) {
     $thiscontext = $contexts->lowest();
-    if (!is_readable($CFG->dirroot . "/question/format/{$fromform->format}/format.php")) {
+    if (!is_readable(\core_component::get_component_path("qformat_{$fromform->format}", "format.php"))) {
         throw new moodle_exception('unknowformat', '', '', $fromform->format);
     }
     $withcategories = 'nocategories';

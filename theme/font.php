@@ -90,7 +90,7 @@ if (preg_match('/^[a-z0-9_-]+\.woff2$/i', $font, $matches)) {
     font_not_found();
 }
 
-if (file_exists("$CFG->dirroot/theme/$themename/config.php")) {
+if (file_exists(\core_component::get_component_path("theme_{$themename}", "config.php"))) {
     // Normal theme exists.
 } else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/$themename/config.php")) {
     // Theme exists in alternative location.

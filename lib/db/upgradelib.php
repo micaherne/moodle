@@ -1109,12 +1109,12 @@ function upgrade_calendar_override_events_fix(stdClass $info, bool $output = tru
     global $CFG, $DB;
 
     include_once($CFG->dirroot. '/course/lib.php');
-    include_once($CFG->dirroot. '/mod/assign/lib.php');
-    include_once($CFG->dirroot. '/mod/assign/locallib.php');
-    include_once($CFG->dirroot. '/mod/lesson/lib.php');
-    include_once($CFG->dirroot. '/mod/lesson/locallib.php');
-    include_once($CFG->dirroot. '/mod/quiz/lib.php');
-    include_once($CFG->dirroot. '/mod/quiz/locallib.php');
+    include_once(\core_component::get_component_path("mod_assign", "lib.php"));
+    include_once(\core_component::get_component_path("mod_assign", "locallib.php"));
+    include_once(\core_component::get_component_path("mod_lesson", "lib.php"));
+    include_once(\core_component::get_component_path("mod_lesson", "locallib.php"));
+    include_once(\core_component::get_component_path("mod_quiz", "lib.php"));
+    include_once(\core_component::get_component_path("mod_quiz", "locallib.php"));
 
     $return = false; // Let's assume the function is going to finish by default.
     $status = "Finished!"; // To decide the message to be presented on return.

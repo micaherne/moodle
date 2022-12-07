@@ -108,7 +108,7 @@ function enrol_get_plugins($enabled) {
         $enabled = explode(',', $CFG->enrol_plugins_enabled);
         $plugins = array();
         foreach ($enabled as $plugin) {
-            $plugins[$plugin] = "$CFG->dirroot/enrol/$plugin";
+            $plugins[$plugin] = \core_component::get_component_path("enrol_{$plugin}", "");
         }
     } else {
         // sorted alphabetically
@@ -149,7 +149,7 @@ function enrol_get_plugin($name) {
         return null;
     }
 
-    $location = "$CFG->dirroot/enrol/$name";
+    $location = \core_component::get_component_path("enrol_{$name}", "");
 
     $class = "enrol_{$name}_plugin";
     if (!class_exists($class)) {
@@ -186,7 +186,7 @@ function enrol_get_instances($courseid, $enabled) {
             unset($result[$key]);
             continue;
         }
-        if (!file_exists("$CFG->dirroot/enrol/$instance->enrol/lib.php")) {
+        if (!file_exists(\core_component::get_component_path("enrol_{$instance->enrol}", "lib.php"))) {
             // broken plugin
             unset($result[$key]);
             continue;
@@ -2429,7 +2429,7 @@ abstract class enrol_plugin {
             return NULL;
         }
 
-        if (!file_exists("$CFG->dirroot/enrol/$name/unenrolself.php")) {
+        if (!file_exists(\core_component::get_component_path("enrol_{$name}", "unenrolself.php"))) {
             return NULL;
         }
 
@@ -2742,7 +2742,7 @@ abstract class enrol_plugin {
         global $CFG;
 
         $name = $this->get_name();
-        $versionfile = "$CFG->dirroot/enrol/$name/version.php";
+        $versionfile = \core_component::get_component_path("enrol_{$name}", "version.php");
         $plugin = new stdClass();
         include($versionfile);
         if (empty($plugin->cron)) {

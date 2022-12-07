@@ -50,8 +50,8 @@ $repository = $DB->get_record_sql($sql, array($repo_id), '*', MUST_EXIST);
 
 $type = $repository->type;
 
-if (file_exists($CFG->dirroot.'/repository/'.$type.'/lib.php')) {
-    require_once($CFG->dirroot.'/repository/'.$type.'/lib.php');
+if (file_exists(\core_component::get_component_path("repository_{$type}", "lib.php"))) {
+    require_once(\core_component::get_component_path("repository_{$type}", "lib.php"));
     $classname = 'repository_' . $type;
     $repo = new $classname($repo_id, $repository->contextid, array('type'=>$type));
 } else {

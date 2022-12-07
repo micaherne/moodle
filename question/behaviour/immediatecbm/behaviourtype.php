@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../deferredcbm/behaviourtype.php');
+require_once(\core_component::get_component_path("qbehaviour_deferredcbm", "behaviourtype.php"));
 
 
 /**

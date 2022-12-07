@@ -18,7 +18,7 @@
 // A lot of this initial stuff is copied from mod/data/view.php
 
 require_once('../../../../config.php');
-require_once('../../lib.php');
+require_once(\core_component::get_component_path("mod_data", "lib.php"));
 
 // Optional params: row id "rid" - if set then export just one, otherwise export all
 

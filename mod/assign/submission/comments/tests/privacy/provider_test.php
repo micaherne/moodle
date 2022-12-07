@@ -26,7 +26,7 @@ namespace assignsubmission_comments\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/tests/privacy/provider_test.php');
+require_once(\core_component::get_component_path("mod_assign", "tests/privacy/provider_test.php"));
 
 use mod_assign\privacy\useridlist;
 

@@ -225,7 +225,7 @@ function useredit_update_trackforums($user, $usernew) {
         return;
     }
     if ((!isset($user->trackforums) || ($usernew->trackforums != $user->trackforums)) and !$usernew->trackforums) {
-        require_once($CFG->dirroot.'/mod/forum/lib.php');
+        require_once(\core_component::get_component_path("mod_forum", "lib.php"));
         forum_tp_delete_read_records($usernew->id);
     }
 }

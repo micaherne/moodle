@@ -72,7 +72,7 @@ class courselib_test extends advanced_testcase {
         global $CFG;
 
         require_once($CFG->dirroot . '/course/tests/fixtures/course_capability_assignment.php');
-        require_once($CFG->dirroot . '/enrol/imsenterprise/tests/imsenterprise_test.php');
+        require_once(\core_component::get_component_path("enrol_imsenterprise", "tests/imsenterprise_test.php"));
     }
 
     /**
@@ -214,7 +214,7 @@ class courselib_test extends advanced_testcase {
         $this->setAdminUser();
 
         // Warnings: you'll need to change this line if ever you come to test a module not following Moodle standard.
-        require_once($CFG->dirroot.'/mod/'. $modulename .'/lib.php');
+        require_once(\core_component::get_component_path("mod_{$modulename}", "lib.php"));
 
         // Enable avaibility.
         // If not enabled all conditional fields will be ignored.
@@ -490,7 +490,7 @@ class courselib_test extends advanced_testcase {
         $this->setAdminUser();
 
         // Warnings: you'll need to change this line if ever you come to test a module not following Moodle standard.
-        require_once($CFG->dirroot.'/mod/'. $modulename .'/lib.php');
+        require_once(\core_component::get_component_path("mod_{$modulename}", "lib.php"));
 
         // Enable avaibility.
         // If not enabled all conditional fields will be ignored.
@@ -3755,7 +3755,7 @@ class courselib_test extends advanced_testcase {
 
     public function test_course_check_module_updates_since() {
         global $CFG, $DB, $USER;
-        require_once($CFG->dirroot . '/mod/glossary/lib.php');
+        require_once(\core_component::get_component_path("mod_glossary", "lib.php"));
         require_once($CFG->dirroot . '/rating/lib.php');
         require_once($CFG->dirroot . '/comment/lib.php');
 
@@ -5116,7 +5116,7 @@ class courselib_test extends advanced_testcase {
      */
     public function get_course_filter_courses_by_customfield_test_cases() {
         global $CFG;
-        require_once($CFG->dirroot.'/blocks/myoverview/lib.php');
+        require_once(\core_component::get_component_path("block_myoverview", "lib.php"));
         $coursedata = [
             [
                 'shortname' => 'C1',

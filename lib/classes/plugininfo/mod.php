@@ -37,6 +37,7 @@ class mod extends base {
      */
     public static function get_enabled_plugins() {
         global $DB;
+
         return $DB->get_records_menu('modules', array('visible'=>1), 'name ASC', 'name, name AS val');
     }
 

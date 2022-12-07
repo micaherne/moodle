@@ -26,7 +26,7 @@
 
 require(__DIR__.'/../../../../config.php');
 require_once(__DIR__.'/locallib.php');
-require_once($CFG->dirroot.'/mod/book/locallib.php');
+require_once(\core_component::get_component_path("mod_book", "locallib.php"));
 require_once($CFG->libdir.'/filelib.php');
 
 $id = required_param('id', PARAM_INT);           // Course Module ID

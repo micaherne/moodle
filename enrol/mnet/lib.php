@@ -71,7 +71,7 @@ class enrol_mnet_plugin extends enrol_plugin {
      */
     public function can_add_instance($courseid) {
         global $CFG, $DB;
-        require_once($CFG->dirroot.'/mnet/service/enrol/locallib.php');
+        require_once(\core_component::get_component_path("mnetservice_enrol", "locallib.php"));
 
         $service = mnetservice_enrol::get_instance();
         if (!$service->is_available()) {
@@ -118,7 +118,7 @@ class enrol_mnet_plugin extends enrol_plugin {
      */
     protected function get_valid_hosts_options() {
         global $CFG;
-        require_once($CFG->dirroot.'/mnet/service/enrol/locallib.php');
+        require_once(\core_component::get_component_path("mnetservice_enrol", "locallib.php"));
 
         $service = mnetservice_enrol::get_instance();
 

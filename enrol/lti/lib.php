@@ -287,7 +287,7 @@ class enrol_lti_plugin extends enrol_plugin {
 
         if (!$legacy) {
             global $CFG;
-            require_once($CFG->dirroot . '/auth/lti/auth.php');
+            require_once(\core_component::get_component_path("auth_lti", "auth.php"));
             $authmodes = [
                 auth_plugin_lti::PROVISIONING_MODE_AUTO_ONLY => get_string('provisioningmodeauto', 'auth_lti'),
                 auth_plugin_lti::PROVISIONING_MODE_PROMPT_NEW_EXISTING => get_string('provisioningmodenewexisting', 'auth_lti'),

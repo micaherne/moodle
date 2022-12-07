@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once(__DIR__ . '/../../../engine/tests/helpers.php');
-require_once(__DIR__ . '/../../../behaviour/deferredfeedback/behaviour.php');
+require_once(\core_component::get_component_path("qbehaviour_deferredfeedback", "behaviour.php"));
 require_once(__DIR__ . '/../question.php');
 require_once($CFG->dirroot . '/question/type/missingtype/questiontype.php');
 

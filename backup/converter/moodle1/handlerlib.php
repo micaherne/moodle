@@ -636,7 +636,7 @@ class moodle1_info_handler extends moodle1_handler {
 
         // keep only such modules that seem to have the support for moodle1 implemented
         $modname = $this->currentmod['name'];
-        if (file_exists($CFG->dirroot.'/mod/'.$modname.'/backup/moodle1/lib.php')) {
+        if (file_exists(\core_component::get_component_path("mod_{$modname}", "backup/moodle1/lib.php"))) {
             $this->converter->set_stash('modinfo_'.$modname, $this->currentmod);
             $this->modnames[] = $modname;
         } else {
@@ -861,7 +861,7 @@ class moodle1_course_outline_handler extends moodle1_xml_handler {
         // whenever we can but that might not be accurate for some modules.
         // also there might be problem with modules that are not present at the target
         // host...
-        $versionfile = $CFG->dirroot.'/mod/'.$data['modulename'].'/version.php';
+        $versionfile = \core_component::get_component_path("mod_{$data['modulename']}", "version.php");
         if (file_exists($versionfile)) {
             $plugin = new stdClass();
             $plugin->version = null;

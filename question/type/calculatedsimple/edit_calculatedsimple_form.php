@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/calculated/edit_calculated_form.php');
+require_once(\core_component::get_component_path("qtype_calculated", "edit_calculated_form.php"));
 
 
 /**

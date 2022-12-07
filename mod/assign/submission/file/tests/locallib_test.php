@@ -28,7 +28,7 @@ use mod_assign_test_generator;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(\core_component::get_component_path("mod_assign", "tests/generator.php"));
 
 /**
  * Unit tests for mod/assign/submission/file/locallib.php

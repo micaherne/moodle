@@ -10,7 +10,7 @@
     }
 
     require_once($CFG->libdir.'/filelib.php');
-    require_once($CFG->dirroot.'/filter/tex/lib.php');
+    require_once(\core_component::get_component_path("filter_tex", "lib.php"));
 
     $action = optional_param('action', '', PARAM_ALPHANUM);
     $algebra = optional_param('algebra', '', PARAM_RAW);

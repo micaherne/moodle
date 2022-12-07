@@ -190,7 +190,7 @@ class cache_config {
                 debugging('Invalid cache store in config. Not an available plugin.', DEBUG_DEVELOPER);
                 continue;
             }
-            $file = $CFG->dirroot.'/cache/stores/'.$plugin.'/lib.php';
+            $file = \core_component::get_component_path("cachestore_{$plugin}", "lib.php");
             if (!class_exists($class) && file_exists($file)) {
                 require_once($file);
             }

@@ -483,7 +483,7 @@ class cache_definition {
         if (!is_null($overrideclass)) {
             if (!is_null($overrideclassfile)) {
                 if (strpos($overrideclassfile, $CFG->dirroot) !== 0) {
-                    $overrideclassfile = $CFG->dirroot.'/'.$overrideclassfile;
+                    $overrideclassfile = \core_component::get_path_from_relative($overrideclassfile);
                 }
                 if (strpos($overrideclassfile, '../') !== false) {
                     throw new coding_exception('No path craziness allowed within override class file path.');
@@ -506,7 +506,7 @@ class cache_definition {
         if (!is_null($datasource)) {
             if (!is_null($datasourcefile)) {
                 if (strpos($datasourcefile, $CFG->dirroot) !== 0) {
-                    $datasourcefile = $CFG->dirroot.'/'.$datasourcefile;
+                    $datasourcefile = \core_component::get_path_from_relative($datasourcefile);
                 }
                 if (strpos($datasourcefile, '../') !== false) {
                     throw new coding_exception('No path craziness allowed within data source file path.');

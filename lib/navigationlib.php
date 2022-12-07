@@ -2417,7 +2417,7 @@ class global_navigation extends navigation_node {
         }
         $activity->nodetype = navigation_node::NODETYPE_LEAF;
         $activity->make_active();
-        $file = $CFG->dirroot.'/mod/'.$cm->modname.'/lib.php';
+        $file = \core_component::get_component_path("mod_{$cm->modname}", "lib.php");
         $function = $cm->modname.'_extend_navigation';
 
         if (file_exists($file)) {
@@ -2723,7 +2723,7 @@ class global_navigation extends navigation_node {
         static $extendingmodules = array();
         if (!array_key_exists($modname, $extendingmodules)) {
             $extendingmodules[$modname] = false;
-            $file = $CFG->dirroot.'/mod/'.$modname.'/lib.php';
+            $file = \core_component::get_component_path("mod_{$modname}", "lib.php");
             if (file_exists($file)) {
                 $function = $modname.'_extend_navigation';
                 require_once($file);
@@ -4651,7 +4651,7 @@ class settings_navigation extends navigation_node {
                 self::TYPE_CONTAINER, null, 'coursereports', new pix_icon('i/stats', ''));
             $coursereports = core_component::get_plugin_list('coursereport');
             foreach ($coursereports as $report => $dir) {
-                $libfile = $CFG->dirroot.'/course/report/'.$report.'/lib.php';
+                $libfile = \core_component::get_component_path("coursereport_{$report}", "lib.php");
                 if (file_exists($libfile)) {
                     require_once($libfile);
                     $reportfunction = $report.'_report_extend_navigation';
@@ -4806,7 +4806,7 @@ class settings_navigation extends navigation_node {
             $this->page->set_cm($cm, $this->page->course);
         }
 
-        $file = $CFG->dirroot.'/mod/'.$this->page->activityname.'/lib.php';
+        $file = \core_component::get_component_path("mod_{$this->page->activityname}", "lib.php");
         if (file_exists($file)) {
             require_once($file);
         }
@@ -5627,7 +5627,7 @@ class settings_navigation extends navigation_node {
                     new pix_icon('i/stats', ''));
             $coursereports = core_component::get_plugin_list('coursereport');
             foreach ($coursereports as $report=>$dir) {
-                $libfile = $CFG->dirroot.'/course/report/'.$report.'/lib.php';
+                $libfile = \core_component::get_component_path("coursereport_{$report}", "lib.php");
                 if (file_exists($libfile)) {
                     require_once($libfile);
                     $reportfunction = $report.'_report_extend_navigation';

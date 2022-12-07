@@ -81,7 +81,7 @@ class edit_field_save extends XMLDBAction {
 
         // Get parameters
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core_component::get_path_from_relative($dirpath);
 
         $tableparam = strtolower(required_param('table', PARAM_PATH));
         $fieldparam = strtolower(required_param('field', PARAM_PATH));

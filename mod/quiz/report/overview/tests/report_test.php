@@ -29,13 +29,13 @@ use quiz_overview_table;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/default.php');
+require_once(\core_component::get_component_path("mod_quiz", "locallib.php"));
+require_once(\core_component::get_component_path("mod_quiz", "report/reportlib.php"));
+require_once(\core_component::get_component_path("mod_quiz", "report/default.php"));
 require_once($CFG->dirroot . '/mod/quiz/report/overview/report.php');
 require_once($CFG->dirroot . '/mod/quiz/report/overview/overview_form.php');
 require_once($CFG->dirroot . '/mod/quiz/report/overview/tests/helpers.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once(\core_component::get_component_path("mod_quiz", "tests/quiz_question_helper_test_trait.php"));
 
 
 /**

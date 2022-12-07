@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/calculated/tests/helper.php');
+require_once(\core_component::get_component_path("qtype_calculated", "tests/helper.php"));
 
 
 /**

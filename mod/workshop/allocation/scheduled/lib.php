@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../lib.php');            // interface definition
-require_once(__DIR__ . '/../../locallib.php');    // workshop internal API
-require_once(__DIR__ . '/../random/lib.php');     // random allocator
+require_once(\core_component::get_component_path("mod_workshop", "allocation/lib.php"));            // interface definition
+require_once(\core_component::get_component_path("mod_workshop", "locallib.php"));    // workshop internal API
+require_once(\core_component::get_component_path("workshopallocation_random", "lib.php"));     // random allocator
 require_once(__DIR__ . '/settings_form.php');     // our settings form
 
 /**

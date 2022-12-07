@@ -75,14 +75,14 @@ class mustache_template_finder {
         }
 
         // First check the theme.
-        $dirs[] = $CFG->dirroot . '/theme/' . $themename . '/templates/' . $component . '/';
+        $dirs[] = \core_component::get_component_path("theme_{$themename}", "templates/{$component}/");
         if (isset($CFG->themedir)) {
             $dirs[] = $CFG->themedir . '/' . $themename . '/templates/' . $component . '/';
         }
         // Now check the parent themes.
         // Search each of the parent themes second.
         foreach ($parents as $parent) {
-            $dirs[] = $CFG->dirroot . '/theme/' . $parent . '/templates/' . $component . '/';
+            $dirs[] = \core_component::get_component_path("theme_{$parent}", "templates/{$component}/");
             if (isset($CFG->themedir)) {
                 $dirs[] = $CFG->themedir . '/' . $parent . '/templates/' . $component . '/';
             }

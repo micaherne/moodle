@@ -38,7 +38,7 @@ $sheet     = optional_param('sheet', '', PARAM_SAFEDIR);
 $usesvg    = optional_param('svg', 1, PARAM_BOOL);
 $rtl       = optional_param('rtl', false, PARAM_BOOL);
 
-if (file_exists("$CFG->dirroot/theme/$themename/config.php")) {
+if (file_exists(\core_component::get_component_path("theme_{$themename}", "config.php"))) {
     // The theme exists in standard location - ok.
 } else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/$themename/config.php")) {
     // Alternative theme location contains this theme - ok.

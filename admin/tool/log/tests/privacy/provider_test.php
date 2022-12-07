@@ -35,7 +35,7 @@ use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
 use tool_log\privacy\provider;
 
-require_once($CFG->dirroot . '/admin/tool/log/store/standard/tests/fixtures/event.php');
+require_once(\core_component::get_component_path("logstore_standard", "tests/fixtures/event.php"));
 
 /**
  * Data provider testcase class.

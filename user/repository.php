@@ -75,7 +75,7 @@ $table->data = array();
 
 foreach ($instances as $i) {
     $path = '/repository/'.$i->type.'/settings.php';
-    $settings = file_exists($CFG->dirroot.$path);
+    $settings = file_exists(\core_component::get_path_from_relative($path));
     $table->data[] = array($i->name, $i->type,
         $settings ? '<a href="'.$CFG->wwwroot.$path.'">'
             .get_string('settings', 'repository').'</a>' : '');

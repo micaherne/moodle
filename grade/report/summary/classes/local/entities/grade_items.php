@@ -137,7 +137,7 @@ class grade_items extends base {
                     $instances = $modinfo->get_instances();
                     $cm = $instances[$row->itemmodule][$row->iteminstance];
 
-                    if (file_exists($CFG->dirroot . '/mod/' . $row->itemmodule . '/grade.php')) {
+                    if (file_exists(\core_component::get_component_path("mod_{$row->itemmodule}", "grade.php"))) {
                         $args = ['id' => $cm->id, 'itemnumber' => $row->itemnumber];
                         $url = new \moodle_url('/mod/' . $row->itemmodule . '/grade.php', $args);
                     } else {

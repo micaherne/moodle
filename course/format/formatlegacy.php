@@ -236,7 +236,7 @@ class format_legacy extends core_courseformat\base {
      */
     public function get_default_blocks() {
         global $CFG;
-        $formatconfig = $CFG->dirroot.'/course/format/'.$this->format.'/config.php';
+        $formatconfig = \core_component::get_component_path("format_{$this->format}", "config.php");
         $format = array(); // initialize array in external file
         if (is_readable($formatconfig)) {
             include($formatconfig);

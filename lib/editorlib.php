@@ -120,7 +120,7 @@ function editors_get_enabled() {
 function get_texteditor($editorname) {
     global $CFG;
 
-    $libfile = "$CFG->libdir/editor/$editorname/lib.php";
+    $libfile = \core_component::get_component_path("editor_{$editorname}", "lib.php");
     if (!file_exists($libfile)) {
         return false;
     }

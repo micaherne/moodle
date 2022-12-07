@@ -790,7 +790,7 @@ class sync_members_test extends \lti_advantage_testcase {
      */
     public function member_sync_data_provider(): array {
         global $CFG;
-        require_once($CFG->dirroot . '/auth/lti/auth.php');
+        require_once(\core_component::get_component_path("auth_lti", "auth.php"));
         return [
             'Migrated tool, user ids changed, new and existing users present in sync' => [
                 'legacy_data' => [

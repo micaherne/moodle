@@ -564,7 +564,7 @@ function profile_edit_category($id, $redirect) {
 function profile_save_field(stdClass $data, array $editors): void {
     global $CFG;
 
-    require_once($CFG->dirroot.'/user/profile/field/'.$data->datatype.'/define.class.php');
+    require_once(\core_component::get_component_path("profilefield_{$data->datatype}", "define.class.php"));
     $newfield = 'profile_define_'.$data->datatype;
     /** @var profile_define_base $formfield */
     $formfield = new $newfield();

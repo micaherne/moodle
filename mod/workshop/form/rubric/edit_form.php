@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../edit_form.php');    // parent class definition
+require_once(\core_component::get_component_path("mod_workshop", "form/edit_form.php"));    // parent class definition
 
 /**
  * Class for editing rubric grading strategy forms.

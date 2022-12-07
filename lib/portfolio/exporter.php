@@ -688,7 +688,7 @@ class portfolio_exporter {
         }
         $exporter = unserialize(base64_decode($data->data));
         if ($exporter->instancefile) {
-            require_once($CFG->dirroot . '/' . $exporter->instancefile);
+            require_once(\core_component::get_path_from_relative($exporter->instancefile));
         }
         if (!empty($exporter->callerfile)) {
             portfolio_include_callback_file($exporter->callerfile);

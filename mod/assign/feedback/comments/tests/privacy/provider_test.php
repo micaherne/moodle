@@ -26,8 +26,8 @@ namespace assignfeedback_comments\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
-require_once($CFG->dirroot . '/mod/assign/tests/privacy/provider_test.php');
+require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
+require_once(\core_component::get_component_path("mod_assign", "tests/privacy/provider_test.php"));
 
 /**
  * Unit tests for mod/assign/feedback/comments/classes/privacy/

@@ -247,7 +247,7 @@ abstract class question_engine {
         if (isset(self::$loadedbehaviours[$behaviour])) {
             return;
         }
-        $file = $CFG->dirroot . '/question/behaviour/' . $behaviour . '/behaviour.php';
+        $file = \core_component::get_component_path("qbehaviour_{$behaviour}", "behaviour.php");
         if (!is_readable($file)) {
             throw new coding_exception('Unknown question behaviour ' . $behaviour);
         }
@@ -305,7 +305,7 @@ abstract class question_engine {
         if (isset(self::$behaviourtypes[$behaviour])) {
             return;
         }
-        $file = $CFG->dirroot . '/question/behaviour/' . $behaviour . '/behaviourtype.php';
+        $file = \core_component::get_component_path("qbehaviour_{$behaviour}", "behaviourtype.php");
         if (!is_readable($file)) {
             debugging('Question behaviour ' . $behaviour .
                     ' is missing the behaviourtype.php file.', DEBUG_DEVELOPER);

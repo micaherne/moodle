@@ -201,7 +201,7 @@ final class portfolio_admin_form extends moodleform {
         // let the plugin add the fields they want (either statically or not)
         if (portfolio_static_function($this->plugin, 'has_admin_config')) {
             require_once($CFG->libdir . '/portfolio/plugin.php');
-            require_once($CFG->dirroot . '/portfolio/' . $this->plugin .  '/lib.php');
+            require_once(\core_component::get_component_path("portfolio_{$this->plugin}", "lib.php"));
             $classname = 'portfolio_plugin_' . $this->plugin;
             $classname::admin_config_form($mform);
         }

@@ -37,7 +37,7 @@ $allmodules = $DB->get_records('modules', array('visible'=>1));
 $availableresources = array();
 foreach ($allmodules as $key=>$module) {
     $modname = $module->name;
-    $libfile = "$CFG->dirroot/mod/$modname/lib.php";
+    $libfile = \core_component::get_component_path("mod_{$modname}", "lib.php");
     if (!file_exists($libfile)) {
         continue;
     }

@@ -65,7 +65,7 @@ class delete_key extends XMLDBAction {
 
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core_component::get_path_from_relative($dirpath);
         $tableparam = required_param('table', PARAM_PATH);
         $keyparam = required_param('key', PARAM_PATH);
 

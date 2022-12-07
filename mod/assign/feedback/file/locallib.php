@@ -453,7 +453,7 @@ class assign_feedback_file extends assign_feedback_plugin {
 
         require_capability('mod/assign:grade', $this->assignment->get_context());
         require_once($CFG->dirroot . '/mod/assign/feedback/file/batchuploadfilesform.php');
-        require_once($CFG->dirroot . '/mod/assign/renderable.php');
+        require_once(\core_component::get_component_path("mod_assign", "renderable.php"));
 
         $formparams = array('cm'=>$this->assignment->get_course_module()->id,
                             'users'=>$users,

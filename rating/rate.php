@@ -103,7 +103,7 @@ if (!empty($cm) && $context->contextlevel == CONTEXT_MODULE) {
     $modinstance = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
     $modinstance->cmidnumber = $cm->id; // MDL-12961.
     $functionname = $cm->modname.'_update_grades';
-    require_once($CFG->dirroot."/mod/{$cm->modname}/lib.php");
+    require_once(\core_component::get_component_path("mod_{$cm->modname}", "lib.php"));
     if (function_exists($functionname)) {
         $functionname($modinstance, $rateduserid);
     }

@@ -25,7 +25,7 @@
  */
 
 
-require_once($CFG->dirroot . '/question/type/shortanswer/renderer.php');
+require_once(\core_component::get_component_path("qtype_shortanswer", "renderer.php"));
 
 
 /**

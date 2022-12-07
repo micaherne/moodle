@@ -65,7 +65,7 @@ class cron_task extends \core\task\scheduled_task {
 
         mtrace('... executing scheduled allocation in ' . count($workshops) . ' workshop(s) ... ', '');
 
-        require_once($CFG->dirroot . '/mod/workshop/locallib.php');
+        require_once(\core_component::get_component_path("mod_workshop", "locallib.php"));
 
         foreach ($workshops as $workshop) {
             $cm = get_coursemodule_from_instance('workshop', $workshop->id, $workshop->course, false, MUST_EXIST);

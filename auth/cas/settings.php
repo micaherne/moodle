@@ -32,8 +32,8 @@ if ($ADMIN->fulltree) {
         $settings->add(new admin_setting_heading('auth_casnotinstalled', '', $OUTPUT->render($notify)));
     } else {
         // We use a couple of custom admin settings since we need to massage the data before it is inserted into the DB.
-        require_once($CFG->dirroot.'/auth/ldap/classes/admin_setting_special_lowercase_configtext.php');
-        require_once($CFG->dirroot.'/auth/ldap/classes/admin_setting_special_contexts_configtext.php');
+        require_once(\core_component::get_component_path("auth_ldap", "classes/admin_setting_special_lowercase_configtext.php"));
+        require_once(\core_component::get_component_path("auth_ldap", "classes/admin_setting_special_contexts_configtext.php"));
 
         // Include needed files.
         require_once($CFG->dirroot.'/auth/cas/auth.php');

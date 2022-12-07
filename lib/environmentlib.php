@@ -724,7 +724,7 @@ function environment_custom_checks($version, $env_select) {
             $function = $check['@']['function'];
             $file = null;
             if (isset($check['@']['file'])) {
-                $file = $CFG->dirroot . '/' . $check['@']['file'];
+                $file = \core_component::get_path_from_relative($check['@']['file']);
                 if (is_readable($file)) {
                     include_once($file);
                 }

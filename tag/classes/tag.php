@@ -1427,7 +1427,7 @@ class core_tag_tag {
         global $CFG;
         if (!empty($tagarea->callback)) {
             if (!empty($tagarea->callbackfile)) {
-                require_once($CFG->dirroot . '/' . ltrim($tagarea->callbackfile, '/'));
+                require_once(\core_component::get_path_from_relative(\ltrim($tagarea->callbackfile, '/')));
             }
             $callback = $tagarea->callback;
             return call_user_func_array($callback, [$this, $exclusivemode, $fromctx, $ctx, $rec, $page]);
