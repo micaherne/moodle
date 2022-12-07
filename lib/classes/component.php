@@ -113,6 +113,8 @@ class core_component {
         'PhpXmlRpc' => 'lib/phpxmlrpc',
     );
 
+    protected static $componentloader = null;
+
     /**
      * Class loader for Frankenstyle named classes in standard locations.
      * Frankenstyle namespaces are supported.
@@ -640,6 +642,14 @@ $cache = '.var_export($cache, true).';
                 unset($item);
             }
             unset($items);
+        }
+
+        if ($componentloader = self::get_component_loader()) {
+            $extraplugins = $componentloader->fetch_plugins($plugintype);
+            // Overwrite built-in plugins with externally loaded ones.
+            foreach ($extraplugins as $name => $dir) {
+                $result[$name] = $dir;
+            }
         }
 
         ksort($result);
@@ -1332,5 +1342,82 @@ $cache = '.var_export($cache, true).';
      */
     public static function get_core_api_names(): array {
         return array_keys(self::get_core_apis());
+    }
+
+    protected static function get_component_loader() {
+        if (is_null(self::$componentloader)) {
+            if (function_exists('moodle_get_component_loader')) {
+                self::$componentloader = moodle_get_component_loader(self::class);
+            } else {
+                self::$componentloader = false;
+            }
+        }
+        if (self::$componentloader === false) {
+            return null;
+        }
+        return self::$componentloader;
+    }
+
+    /**
+     * Get the path to a file / directory given the standard Moodle path from wwwroot.
+     *
+     * @param $relativepath
+     * @return string
+     */
+    public static function get_path_from_relative($relativepath) {
+        global $CFG;
+
+        if ($relativepath === '') {
+            return $CFG->dirroot;
+        }
+
+        if ($loader = self::get_component_loader()) {
+            if (!is_null($pathfromloader = $loader->get_path_from_relative($relativepath))) {
+                return $pathfromloader;
+            }
+        }
+
+        return $CFG->dirroot . '/' . ltrim($relativepath, '/\\');
+    }
+
+    /**
+     * Get the file path within a component directory.
+     *
+     * @param $component
+     * @param $relativepath
+     * @return string|null
+     */
+    public static function get_component_path($component, $relativepath) {
+        global $CFG;
+
+        if (is_null($component)) {
+            return $CFG->dirroot . '/' . \ltrim($relativepath, '/');
+        }
+
+        if (is_null(self::$plugintypes)) {
+            if ($loader = self::get_component_loader()) {
+                if ($path = $loader->get_component_path($component, $relativepath)) {
+                    return $path;
+                }
+            }
+            return $CFG->dirroot . '/' . \ltrim($relativepath, '/');
+        }
+
+        $dir = self::get_component_directory($component);
+        if (is_null($dir)) {
+            if (strpos($component, '_') === false) {
+                return null;
+            }
+            list($type, $name) = self::normalize_component($component);
+            $typedir = self::$plugintypes[$type] ?? null;
+            if (is_null($typedir)) {
+                return null;
+            }
+            $dir = $typedir . '/' . $name;
+        }
+        if (strlen($relativepath) === 0) {
+            return $dir;
+        }
+        return $dir . '/' . ltrim($relativepath, '/');
     }
 }
