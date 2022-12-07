@@ -543,7 +543,11 @@ class phpunit_util extends testing_util {
                     continue;
                 }
 
-                $dir = substr($plugindir, strlen($CFG->dirroot) + 1);
+                if (strpos($plugindir, $CFG->dirroot) === 0) {
+                    $dir = substr($plugindir, strlen($CFG->dirroot) + 1);
+                } else {
+                    $dir = $plugindir;
+                }
                 $testdir = "{$dir}/tests";
                 $component = "{$type}_{$plug}";
 
