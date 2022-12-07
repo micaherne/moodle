@@ -241,7 +241,7 @@ class xmldb_structure extends xmldb_object {
                 $normalisedpath = substr_replace($this->path, "$CFG->admin/", 0, strlen($needle));
             }
         }
-        $structurepath = realpath($CFG->dirroot . DIRECTORY_SEPARATOR . $normalisedpath . DIRECTORY_SEPARATOR . $filename);
+        $structurepath = realpath(\core_component::get_path_from_relative($normalisedpath . '/' . $filename));
         if ($filepath !== $structurepath) {
             $relativepath = dirname(str_replace(realpath($CFG->dirroot) . DIRECTORY_SEPARATOR, '', $filepath));
             $this->errormsg = 'PATH attribute does not match file directory: ' . $relativepath;
