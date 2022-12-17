@@ -26,7 +26,7 @@ namespace assignsubmission_comments\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
 
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\metadata\provider as metadataprovider;

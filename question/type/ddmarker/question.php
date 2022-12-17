@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/ddimageortext/questionbase.php');
+require_once(\core_component::get_component_path("qtype_ddimageortext", "questionbase.php"));
 require_once($CFG->dirroot . '/question/type/ddmarker/shapes.php');
 
 

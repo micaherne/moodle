@@ -88,7 +88,7 @@ class badgeslib_test extends advanced_testcase {
         $this->assertNotEmpty($studentrole);
 
         // Get manual enrolment plugin and enrol user.
-        require_once($CFG->dirroot.'/enrol/manual/locallib.php');
+        require_once(\core_component::get_component_path("enrol_manual", "locallib.php"));
         $manplugin = enrol_get_plugin('manual');
         $maninstance = $DB->get_record('enrol', array('courseid' => $this->course->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $manplugin->enrol_user($maninstance, $this->user->id, $studentrole->id);

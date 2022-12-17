@@ -41,7 +41,7 @@ defined('MOODLE_INTERNAL') || die();
 function quiz_statistics_question_preview_pluginfile($previewcontext, $questionid,
         $filecontext, $filecomponent, $filearea, $args, $forcedownload, $options = array()) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(\core_component::get_component_path("mod_quiz", "locallib.php"));
 
     list($context, $course, $cm) = get_context_info_array($previewcontext->id);
     require_login($course, false, $cm);

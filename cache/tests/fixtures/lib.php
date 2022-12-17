@@ -65,7 +65,7 @@ class cache_config_testing extends cache_config_writer {
         $appdefine = defined('TEST_CACHE_USING_APPLICATION_STORE') ? TEST_CACHE_USING_APPLICATION_STORE : false;
         if ($appdefine !== false && preg_match('/^[a-zA-Z][a-zA-Z0-9_]+$/', $appdefine)) {
             $expectedstore = $appdefine;
-            $file = $CFG->dirroot.'/cache/stores/'.$appdefine.'/lib.php';
+            $file = \core_component::get_component_path("cachestore_{$appdefine}", "lib.php");
             $class = 'cachestore_'.$appdefine;
             if (file_exists($file)) {
                 require_once($file);

@@ -98,7 +98,7 @@ if (!file_exists($docspage)) {
 }
 
 echo $OUTPUT->header();
-if (!file_exists($CFG->dirroot . $docsdir)) {
+if (!file_exists(\core_component::get_path_from_relative($docsdir))) {
     echo $OUTPUT->render_from_template('tool_componentlibrary/rundocs', (object) []);
     exit(0);
 }

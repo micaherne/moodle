@@ -33,7 +33,7 @@ function xmldb_assignsubmission_onlinetext_install() {
     global $CFG;
 
     // Set the correct initial order for the plugins.
-    require_once($CFG->dirroot . '/mod/assign/adminlib.php');
+    require_once(\core_component::get_component_path("mod_assign", "adminlib.php"));
     $pluginmanager = new assign_plugin_manager('assignsubmission');
 
     $pluginmanager->move_plugin('onlinetext', 'up');

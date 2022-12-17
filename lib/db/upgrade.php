@@ -860,7 +860,7 @@ function xmldb_main_upgrade($oldversion) {
     }
 
     if ($oldversion < 2021052500.84) {
-        require_once($CFG->dirroot . '/user/profile/field/social/upgradelib.php');
+        require_once(\core_component::get_component_path("profilefield_social", "upgradelib.php"));
         $table = new xmldb_table('user');
         $tablecolumns = ['icq', 'skype', 'aim', 'yahoo', 'msn', 'url'];
 
@@ -993,7 +993,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021090200.01) {
         // Remove qformat_webct (unless it has manually been added back).
-        if (!file_exists($CFG->dirroot . '/question/format/webct/format.php')) {
+        if (!file_exists(\core_component::get_component_path("qformat_webct", "format.php"))) {
             unset_all_config_for_plugin('qformat_webct');
         }
 
@@ -1003,7 +1003,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021091100.01) {
         // If message_jabber is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/message/output/jabber/message_output_jabber.php')) {
+        if (!file_exists(\core_component::get_component_path("message_jabber", "message_output_jabber.php"))) {
             // Remove Jabber from the notification plugins list.
             $DB->delete_records('message_processors', ['name' => 'jabber']);
 
@@ -1072,7 +1072,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021091700.02) {
         // If portfolio_picasa is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/portfolio/picasa/version.php')) {
+        if (!file_exists(\core_component::get_component_path("portfolio_picasa", "version.php"))) {
             $instance = $DB->get_record('portfolio_instance', ['plugin' => 'picasa']);
             if (!empty($instance)) {
                 // Remove all records from portfolio_instance_config.
@@ -1096,7 +1096,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021091700.03) {
         // If repository_picasa is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/repository/picasa/version.php')) {
+        if (!file_exists(\core_component::get_component_path("repository_picasa", "version.php"))) {
             $instance = $DB->get_record('repository', ['type' => 'picasa']);
             if (!empty($instance)) {
                 // Remove all records from repository_instance_config table.
@@ -1119,7 +1119,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021091700.04) {
         // Remove media_swf (unless it has manually been added back).
-        if (!file_exists($CFG->dirroot . '/media/player/swf/classes/plugin.php')) {
+        if (!file_exists(\core_component::get_component_path("media_swf", "classes/plugin.php"))) {
             unset_all_config_for_plugin('media_swf');
         }
 
@@ -1128,7 +1128,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021092400.01) {
         // If tool_health is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/admin/tool/health/version.php')) {
+        if (!file_exists(\core_component::get_component_path("tool_health", "version.php"))) {
             // Clean config.
             unset_all_config_for_plugin('tool_health');
         }
@@ -1139,7 +1139,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021092400.03) {
         // Remove repository_picasa configuration (unless it has manually been added back).
-        if (!file_exists($CFG->dirroot . '/repository/picasa/version.php')) {
+        if (!file_exists(\core_component::get_component_path("repository_picasa", "version.php"))) {
             unset_all_config_for_plugin('repository_picasa');
         }
 
@@ -1148,7 +1148,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021100300.01) {
         // Remove repository_skydrive (unless it has manually been added back).
-        if (!file_exists($CFG->dirroot . '/repository/skydrive/lib.php')) {
+        if (!file_exists(\core_component::get_component_path("repository_skydrive", "lib.php"))) {
             unset_all_config_for_plugin('repository_skydrive');
         }
 
@@ -1158,7 +1158,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021100300.02) {
         // Remove filter_censor (unless it has manually been added back).
-        if (!file_exists($CFG->dirroot . '/filter/censor/filter.php')) {
+        if (!file_exists(\core_component::get_component_path("filter_censor", "filter.php"))) {
             unset_all_config_for_plugin('filter_censor');
         }
 
@@ -1168,7 +1168,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021100600.01) {
         // Remove qformat_examview (unless it has manually been added back).
-        if (!file_exists($CFG->dirroot . '/question/format/examview/format.php')) {
+        if (!file_exists(\core_component::get_component_path("qformat_examview", "format.php"))) {
             unset_all_config_for_plugin('qformat_examview');
         }
 
@@ -1296,7 +1296,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021102600.01) {
         // Remove block_quiz_results (unless it has manually been added back).
-        if (!file_exists($CFG->dirroot . '/blocks/quiz_result/block_quiz_results.php')) {
+        if (!file_exists(\core_component::get_component_path("block_quiz_result", "block_quiz_results.php"))) {
             // Delete instances.
             $instances = $DB->get_records_list('block_instances', 'blockname', ['quiz_results']);
             $instanceids = array_keys($instances);
@@ -1326,7 +1326,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2021102900.02) {
         // If portfolio_boxnet is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/portfolio/boxnet/version.php')) {
+        if (!file_exists(\core_component::get_component_path("portfolio_boxnet", "version.php"))) {
             $instance = $DB->get_record('portfolio_instance', ['plugin' => 'boxnet']);
             if (!empty($instance)) {
                 // Remove all records from portfolio_instance_config.
@@ -1346,7 +1346,7 @@ function xmldb_main_upgrade($oldversion) {
         }
 
         // If repository_boxnet is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/repository/boxnet/version.php')) {
+        if (!file_exists(\core_component::get_component_path("repository_boxnet", "version.php"))) {
             $instance = $DB->get_record('repository', ['type' => 'boxnet']);
             if (!empty($instance)) {
                 // Remove all records from repository_instance_config table.
@@ -3014,7 +3014,7 @@ privatefiles,moodle|/user/files.php';
     if ($oldversion < 2022110600.00) {
         // If webservice_xmlrpc isn't any longer installed, remove its configuration,
         // capabilities and presence in other settings.
-        if (!file_exists($CFG->dirroot . '/webservice/xmlrpc/version.php')) {
+        if (!file_exists(\core_component::get_component_path("webservice_xmlrpc", "version.php"))) {
             // No DB structures to delete in this plugin.
 
             // Remove capabilities.

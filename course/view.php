@@ -269,7 +269,7 @@
     include_course_ajax($course, $modnamesused);
 
     // Include the actual course format.
-    require($CFG->dirroot .'/course/format/'. $course->format .'/format.php');
+    require(\core_component::get_component_path("format_{$course->format}", "format.php"));
     // Content wrapper end.
 
     echo html_writer::end_tag('div');

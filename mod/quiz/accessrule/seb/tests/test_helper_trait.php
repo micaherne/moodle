@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . "/mod/quiz/accessrule/seb/rule.php"); // Include plugin rule class.
-require_once($CFG->dirroot . "/mod/quiz/mod_form.php"); // Include plugin rule class.
+require_once(\core_component::get_component_path("mod_quiz", "mod_form.php")); // Include plugin rule class.
 
 /**
  * A test helper trait. It has some common helper methods.

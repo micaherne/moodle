@@ -6453,7 +6453,7 @@ class admin_page_managemods extends admin_externalpage {
         $found = false;
         if ($modules = $DB->get_records('modules')) {
             foreach ($modules as $module) {
-                if (!file_exists("$CFG->dirroot/mod/$module->name/lib.php")) {
+                if (!file_exists(\core_component::get_component_path("mod_{$module->name}", "lib.php"))) {
                     continue;
                 }
                 if (strpos($module->name, $query) !== false) {
@@ -6734,7 +6734,7 @@ class admin_page_manageblocks extends admin_externalpage {
         $found = false;
         if ($blocks = $DB->get_records('block')) {
             foreach ($blocks as $block) {
-                if (!file_exists("$CFG->dirroot/blocks/$block->name/")) {
+                if (!file_exists(\core_component::get_component_path("block_{$block->name}", "/"))) {
                     continue;
                 }
                 if (strpos($block->name, $query) !== false) {
@@ -7206,9 +7206,9 @@ class admin_setting_manageauths extends admin_setting {
             }
 
             // settings link
-            if (file_exists($CFG->dirroot.'/auth/'.$auth.'/settings.php')) {
+            if (file_exists(\core_component::get_component_path("auth_{$auth}", "settings.php"))) {
                 $settings = "<a href=\"settings.php?section=authsetting$auth\">{$txt->settings}</a>";
-            } else if (file_exists($CFG->dirroot.'/auth/'.$auth.'/config.html')) {
+            } else if (file_exists(\core_component::get_component_path("auth_{$auth}", "config.html"))) {
                 $settings = "<a href=\"auth_config.php?auth=$auth\">{$txt->settings}</a>";
             } else {
                 $settings = '';
@@ -7392,7 +7392,7 @@ class admin_setting_manageeditors extends admin_setting {
             }
 
             // settings link
-            if (file_exists($CFG->dirroot.'/lib/editor/'.$editor.'/settings.php')) {
+            if (file_exists(\core_component::get_component_path("editor_{$editor}", "settings.php"))) {
                 $eurl = new moodle_url('/admin/settings.php', array('section'=>'editorsettings'.$editor));
                 $settings = "<a href='$eurl'>{$txt->settings}</a>";
             } else {
@@ -7573,7 +7573,7 @@ class admin_setting_manageantiviruses extends admin_setting {
             }
 
             // Settings link.
-            if (file_exists($CFG->dirroot.'/lib/antivirus/'.$antivirus.'/settings.php')) {
+            if (file_exists(\core_component::get_component_path("antivirus_{$antivirus}", "settings.php"))) {
                 $eurl = new moodle_url('/admin/settings.php', array('section' => 'antivirussettings'.$antivirus));
                 $settings = html_writer::link($eurl, $txt->settings);
             } else {
@@ -10331,8 +10331,8 @@ class admin_setting_managewebserviceprotocols extends admin_setting {
             $name = get_string('pluginname', 'webservice_'.$protocol);
 
             $plugin = new stdClass();
-            if (file_exists($CFG->dirroot.'/webservice/'.$protocol.'/version.php')) {
-                include($CFG->dirroot.'/webservice/'.$protocol.'/version.php');
+            if (file_exists(\core_component::get_component_path("webservice_{$protocol}", "version.php"))) {
+                include(\core_component::get_component_path("webservice_{$protocol}", "version.php"));
             }
             $version = isset($plugin->version) ? $plugin->version : '';
 
@@ -10348,7 +10348,7 @@ class admin_setting_managewebserviceprotocols extends admin_setting {
             }
 
             // settings link
-            if (file_exists($CFG->dirroot.'/webservice/'.$protocol.'/settings.php')) {
+            if (file_exists(\core_component::get_component_path("webservice_{$protocol}", "settings.php"))) {
                 $settings = "<a href=\"settings.php?section=webservicesetting$protocol\">$strsettings</a>";
             } else {
                 $settings = '';
@@ -10909,7 +10909,7 @@ class admin_setting_configmultiselect_modules extends admin_setting_configmultis
         $records = $DB->get_records('modules', array('visible'=>1), 'name');
         foreach ($records as $record) {
             // Exclude modules if the code doesn't exist
-            if (file_exists("$CFG->dirroot/mod/$record->name/lib.php")) {
+            if (file_exists(\core_component::get_component_path("mod_{$record->name}", "lib.php"))) {
                 // Also exclude system modules (if specified)
                 if (!($this->excludesystem &&
                         plugin_supports('mod', $record->name, FEATURE_MOD_ARCHETYPE) ===

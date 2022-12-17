@@ -143,7 +143,7 @@ $PAGE->set_pagelayout('admin');
 $PAGE->add_body_class('limitedwidth');
 
 
-$modmoodleform = "$CFG->dirroot/mod/$module->name/mod_form.php";
+$modmoodleform = \core_component::get_component_path("mod_{$module->name}", "mod_form.php");
 if (file_exists($modmoodleform)) {
     require_once($modmoodleform);
 } else {

@@ -527,7 +527,7 @@ class course_modinfo {
 
             // Skip modules which don't exist
             if (!array_key_exists($mod->mod, $modexists)) {
-                $modexists[$mod->mod] = file_exists("$CFG->dirroot/mod/$mod->mod/lib.php");
+                $modexists[$mod->mod] = file_exists(\core_component::get_component_path("mod_{$mod->mod}", "lib.php"));
             }
             if (!$modexists[$mod->mod]) {
                 continue;
@@ -848,11 +848,11 @@ class course_modinfo {
                         $modname = $mods[$cmid]->mod;
                         $functionname = $modname . "_get_coursemodule_info";
 
-                        if (!file_exists("$CFG->dirroot/mod/$modname/lib.php")) {
+                        if (!file_exists(\core_component::get_component_path("mod_{$modname}", "lib.php"))) {
                             continue;
                         }
 
-                        include_once("$CFG->dirroot/mod/$modname/lib.php");
+                        include_once(\core_component::get_component_path("mod_{$modname}", "lib.php"));
 
                         if ($hasfunction = function_exists($functionname)) {
                             if ($info = $functionname($rawmods[$cmid])) {
@@ -2446,7 +2446,7 @@ class cm_info implements IteratorAggregate {
      */
     private function call_mod_function($type) {
         global $CFG;
-        $libfile = $CFG->dirroot . '/mod/' . $this->modname . '/lib.php';
+        $libfile = \core_component::get_component_path("mod_{$this->modname}", "lib.php");
         if (file_exists($libfile)) {
             include_once($libfile);
             $function = 'mod_' . $this->modname . '_' . $type;

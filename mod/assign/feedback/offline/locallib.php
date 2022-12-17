@@ -335,7 +335,7 @@ class assign_feedback_offline extends assign_feedback_plugin {
         global $CFG;
 
         require_capability('mod/assign:grade', $this->assignment->get_context());
-        require_once($CFG->dirroot . '/mod/assign/gradingtable.php');
+        require_once(\core_component::get_component_path("mod_assign", "gradingtable.php"));
 
         $groupmode = groups_get_activity_groupmode($this->assignment->get_course_module());
         // All users.

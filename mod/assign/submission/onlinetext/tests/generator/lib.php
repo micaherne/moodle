@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once("{$CFG->dirroot}/mod/assign/tests/generator/assignsubmission_subplugin_generator.php");
+require_once(\core_component::get_component_path("mod_assign", "tests/generator/assignsubmission_subplugin_generator.php"));
 
 /**
  * Online Text assignment submission subplugin data generator.

@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/match/renderer.php');
+require_once(\core_component::get_component_path("qtype_match", "renderer.php"));
 
 /**
  * Generates the output for randomsamatch questions.

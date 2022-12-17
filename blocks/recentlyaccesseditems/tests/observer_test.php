@@ -19,7 +19,7 @@ namespace block_recentlyaccesseditems;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(\core_component::get_component_path("mod_assign", "tests/generator.php"));
 
 /**
  * Block Recently accessed items observer tests.

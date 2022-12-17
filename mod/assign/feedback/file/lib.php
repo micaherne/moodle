@@ -48,7 +48,7 @@ function assignfeedback_file_pluginfile($course,
         return false;
     }
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
 
     require_login($course, false, $cm);
     $itemid = (int)array_shift($args);

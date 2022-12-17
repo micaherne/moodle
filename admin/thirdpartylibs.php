@@ -55,7 +55,7 @@ foreach ($files as $component => $xmlpath) {
     foreach ($xml as $lib) {
         $base = realpath(dirname($xmlpath));
         $location = substr($base, strlen($CFG->dirroot)).'/'.$lib->location;
-        if (is_dir($CFG->dirroot.$location)) {
+        if (is_dir(\core_component::get_path_from_relative($location))) {
             $location .= '/';
         }
         $version = '';

@@ -22,9 +22,9 @@ use quiz_attempt;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/tests/attempt_walkthrough_from_csv_test.php');
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+require_once(\core_component::get_component_path("mod_quiz", "tests/attempt_walkthrough_from_csv_test.php"));
+require_once(\core_component::get_component_path("quiz_statistics", "report.php"));
+require_once(\core_component::get_component_path("mod_quiz", "report/reportlib.php"));
 
 /**
  * Quiz attempt walk through using data from csv file.

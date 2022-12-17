@@ -81,7 +81,7 @@ class external_api {
             if (empty($function->classpath)) {
                 $function->classpath = core_component::get_component_directory($function->component).'/externallib.php';
             } else {
-                $function->classpath = $CFG->dirroot.'/'.$function->classpath;
+                $function->classpath = \core_component::get_path_from_relative($function->classpath);
             }
             if (!file_exists($function->classpath)) {
                 throw new coding_exception('Cannot find file ' . $function->classpath .

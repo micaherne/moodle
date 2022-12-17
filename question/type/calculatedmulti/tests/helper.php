@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/question/type/calculatedmulti/question.php');
-require_once($CFG->dirroot . '/question/type/calculated/tests/helper.php');
+require_once(\core_component::get_component_path("qtype_calculated", "tests/helper.php"));
 
 /**
  * Test helper class for the calculated multiple-choice question type.

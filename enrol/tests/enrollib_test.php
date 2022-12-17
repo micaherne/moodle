@@ -572,7 +572,7 @@ class enrollib_test extends advanced_testcase {
     public function test_enrol_get_shared_courses_different_methods() {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/enrol/self/externallib.php');
+        require_once(\core_component::get_component_path("enrol_self", "externallib.php"));
 
         $this->resetAfterTest();
 

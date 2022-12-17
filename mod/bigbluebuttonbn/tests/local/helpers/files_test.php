@@ -69,7 +69,7 @@ class files_test extends \advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
 
-        list($user, $bbactivity) = $this->create_user_and_activity($CFG->dirroot . self::PRESENTATION_FILEPATH);
+        list($user, $bbactivity) = $this->create_user_and_activity(\core_component::get_path_from_relative(self::PRESENTATION_FILEPATH));
         $this->setUser($user);
         $instance = instance::get_from_instanceid($bbactivity->id);
         $cm = $instance->get_cm();
@@ -105,7 +105,7 @@ class files_test extends \advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
 
-        list($user, $bbactivity) = $this->create_user_and_activity($CFG->dirroot . self::PRESENTATION_FILEPATH);
+        list($user, $bbactivity) = $this->create_user_and_activity(\core_component::get_path_from_relative(self::PRESENTATION_FILEPATH));
         $this->setUser($user);
         $CFG->bigbluebuttonbn_preuploadpresentation_editable = true;
         $instance = instance::get_from_instanceid($bbactivity->id);
@@ -134,7 +134,7 @@ class files_test extends \advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
 
-        list($user, $bbactivity) = $this->create_user_and_activity($CFG->dirroot . self::PRESENTATION_FILEPATH);
+        list($user, $bbactivity) = $this->create_user_and_activity(\core_component::get_path_from_relative(self::PRESENTATION_FILEPATH));
         $this->setUser($user);
         $CFG->bigbluebuttonbn_preuploadpresentation_editable = true;
         $instance = instance::get_from_instanceid($bbactivity->id);

@@ -230,7 +230,7 @@ abstract class question_bank {
         if (isset(self::$loadedqdefs[$qtypename])) {
             return;
         }
-        $file = $CFG->dirroot . '/question/type/' . $qtypename . '/question.php';
+        $file = \core_component::get_component_path("qtype_{$qtypename}", "question.php");
         if (!is_readable($file)) {
             throw new coding_exception('Unknown question type (no definition) ' . $qtypename);
         }

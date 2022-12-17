@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
 
 /**
  * Serves assignment feedback and other files.

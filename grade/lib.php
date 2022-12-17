@@ -1610,7 +1610,7 @@ class grade_structure {
         }
 
         if (!array_key_exists($itemmodule, $hasgradephp)) {
-            if (file_exists($CFG->dirroot . '/mod/' . $itemmodule . '/grade.php')) {
+            if (file_exists(\core_component::get_component_path("mod_{$itemmodule}", "grade.php"))) {
                 $hasgradephp[$itemmodule] = true;
             } else {
                 $hasgradephp[$itemmodule] = false;
@@ -1660,7 +1660,7 @@ class grade_structure {
         }
 
         if (!array_key_exists($item->itemmodule, $hasgradephp)) {
-            if (file_exists($CFG->dirroot . '/mod/' . $item->itemmodule . '/grade.php')) {
+            if (file_exists(\core_component::get_component_path("mod_{$item->itemmodule}", "grade.php"))) {
                 $hasgradephp[$item->itemmodule] = true;
             } else {
                 $hasgradephp[$item->itemmodule] = false;

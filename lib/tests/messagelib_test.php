@@ -402,8 +402,8 @@ class messagelib_test extends \advanced_testcase {
         set_config('allowedemaildomains', 'example.com');
 
         // Test basic email redirection.
-        $this->assertFileExists("$CFG->dirroot/message/output/email/version.php");
-        $this->assertFileExists("$CFG->dirroot/message/output/popup/version.php");
+        $this->assertFileExists(\core_component::get_component_path("message_email", "version.php"));
+        $this->assertFileExists(\core_component::get_component_path("message_popup", "version.php"));
 
         $DB->set_field_select('message_processors', 'enabled', 0, "name <> 'email' AND name <> 'popup'");
         get_message_processors(true, true);
@@ -1006,8 +1006,8 @@ class messagelib_test extends \advanced_testcase {
         );
 
         // Test basic email redirection.
-        $this->assertFileExists("$CFG->dirroot/message/output/email/version.php");
-        $this->assertFileExists("$CFG->dirroot/message/output/popup/version.php");
+        $this->assertFileExists(\core_component::get_component_path("message_email", "version.php"));
+        $this->assertFileExists(\core_component::get_component_path("message_popup", "version.php"));
 
         $DB->set_field_select('message_processors', 'enabled', 0, "name <> 'email' AND name <> 'popup'");
         get_message_processors(true, true);

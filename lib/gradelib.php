@@ -1397,7 +1397,7 @@ function grade_grab_course_grades($courseid, $modname=null, $userid=0) {
 function grade_update_mod_grades($modinstance, $userid=0) {
     global $CFG, $DB;
 
-    $fullmod = $CFG->dirroot.'/mod/'.$modinstance->modname;
+    $fullmod = \core_component::get_component_path("mod_{$modinstance->modname}", "");
     if (!file_exists($fullmod.'/lib.php')) {
         debugging('missing lib.php file in module ' . $modinstance->modname);
         return false;

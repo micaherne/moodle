@@ -36,7 +36,7 @@ class questiontext_test extends area_test_base {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once(\core_component::get_component_path("mod_quiz", "locallib.php"));
     }
 
     /**

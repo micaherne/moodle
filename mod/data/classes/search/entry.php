@@ -360,7 +360,7 @@ class entry extends \core_search\base_mod {
 
         $fieldtype = trim($fieldtype);
 
-        $fieldpath = $CFG->dirroot . '/mod/data/field/' . $fieldtype . '/field.class.php';
+        $fieldpath = \core_component::get_component_path("datafield_{$fieldtype}", "field.class.php");
         if (!file_exists($fieldpath)) {
             return null;
         }

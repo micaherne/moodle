@@ -381,7 +381,7 @@ if ($hassiteconfig) {
     $ADMIN->add('portfoliosettings', new admin_externalpage('portfoliocontroller', new lang_string('manageportfolios', 'portfolio'), $url, 'moodle/site:config', true));
 
     foreach (portfolio_instances(false, false) as $portfolio) {
-        require_once($CFG->dirroot . '/portfolio/' . $portfolio->get('plugin') . '/lib.php');
+        require_once(\core_component::get_component_path("portfolio_{$portfolio->get('plugin')}", "lib.php"));
         $classname = 'portfolio_plugin_' . $portfolio->get('plugin');
         $ADMIN->add(
             'portfoliosettings',
@@ -536,7 +536,7 @@ $ADMIN->add('reports', new admin_externalpage('comments', new lang_string('comme
 if ($hassiteconfig) {
     $pages = array();
     foreach (core_component::get_plugin_list('coursereport') as $report => $path) {
-        $file = $CFG->dirroot . '/course/report/' . $report . '/settings.php';
+        $file = \core_component::get_component_path("coursereport_{$report}", "settings.php");
         if (file_exists($file)) {
             $settings = new admin_settingpage('coursereport' . $report,
                     new lang_string('pluginname', 'coursereport_' . $report), 'moodle/site:config');

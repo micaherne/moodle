@@ -26,7 +26,7 @@ namespace assignsubmission_file\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/tests/privacy/provider_test.php');
+require_once(\core_component::get_component_path("mod_assign", "tests/privacy/provider_test.php"));
 
 /**
  * Unit tests for mod/assign/submission/file/classes/privacy/
@@ -60,7 +60,7 @@ class provider_test extends \mod_assign\privacy\provider_test {
             'filepath' => '/',
             'filename' => $filename
         );
-        $sourcefile = $CFG->dirroot.'/mod/assign/feedback/editpdf/tests/fixtures/submission.pdf';
+        $sourcefile = \core_component::get_component_path("assignfeedback_editpdf", "tests/fixtures/submission.pdf");
         $fi = $fs->create_file_from_pathname($pdfsubmission, $sourcefile);
 
         $data = new \stdClass();

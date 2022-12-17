@@ -507,7 +507,7 @@ class cache_factory {
 
         if (!isset($this->lockplugins[$type])) {
             $pluginname = substr($type, 10);
-            $file = $CFG->dirroot."/cache/locks/{$pluginname}/lib.php";
+            $file = \core_component::get_component_path("cachelock_{$pluginname}", "lib.php");
             if (file_exists($file) && is_readable($file)) {
                 require_once($file);
             }

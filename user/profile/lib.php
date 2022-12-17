@@ -615,7 +615,7 @@ function profile_get_user_fields_with_data(int $userid): array {
     $fields = $DB->get_records_sql($sql, ['userid' => $userid]);
     $data = [];
     foreach ($fields as $field) {
-        require_once($CFG->dirroot . '/user/profile/field/' . $field->datatype . '/field.class.php');
+        require_once(\core_component::get_component_path("profilefield_{$field->datatype}", "field.class.php"));
         $classname = 'profile_field_' . $field->datatype;
         $field->hasuserdata = !empty($field->hasuserdata);
         /** @var profile_field_base $fieldobject */

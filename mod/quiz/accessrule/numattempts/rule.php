@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
+require_once(\core_component::get_component_path("mod_quiz", "accessrule/accessrulebase.php"));
 
 
 /**

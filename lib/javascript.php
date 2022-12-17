@@ -51,7 +51,7 @@ if ($slashargument = min_get_slash_argument()) {
 $jsfiles = array();
 $files = explode(',', $file);
 foreach ($files as $fsfile) {
-    $jsfile = realpath($CFG->dirroot.$fsfile);
+    $jsfile = realpath(\core_component::get_path_from_relative($fsfile));
     if ($jsfile === false) {
         // does not exist
         continue;

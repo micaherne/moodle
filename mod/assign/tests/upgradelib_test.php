@@ -21,7 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 require_once($CFG->dirroot . '/mod/assign/upgradelib.php');
-require_once($CFG->dirroot . '/mod/assignment/lib.php');
+require_once(\core_component::get_component_path("mod_assignment", "lib.php"));
 
 /**
  * Unit tests for (some of) mod/assign/upgradelib.php.

@@ -37,7 +37,7 @@ class lineitem_test extends \advanced_testcase {
      */
     public function test_execute_put_nosubreview() {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core_component::get_component_path("mod_lti", "locallib.php"));
         $this->resetAfterTest();
         $this->setAdminUser();
         $resourceid = 'test-resource-id';
@@ -81,7 +81,7 @@ class lineitem_test extends \advanced_testcase {
      */
     public function test_execute_put_withsubreview() {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core_component::get_component_path("mod_lti", "locallib.php"));
         $this->resetAfterTest();
         $this->setAdminUser();
         $resourceid = 'test-resource-id';
@@ -132,7 +132,7 @@ class lineitem_test extends \advanced_testcase {
      */
     public function test_execute_put_addsubreview() {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core_component::get_component_path("mod_lti", "locallib.php"));
         $this->resetAfterTest();
         $this->setAdminUser();
         $resourceid = 'test-resource-id';

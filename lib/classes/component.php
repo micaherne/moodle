@@ -210,7 +210,7 @@ class core_component {
             // No, move to the next prefix.
             return false;
         }
-        $path = $CFG->dirroot . '/' . $path;
+        $path = \core_component::get_path_from_relative($path);
 
         // Get the relative class name.
         $relativeclass = substr($class, $len);
@@ -458,7 +458,7 @@ $cache = '.var_export($cache, true).';
                 }
             }
 
-            $info[$subsystem] = empty($path) ? null : "{$CFG->dirroot}/{$path}";
+            $info[$subsystem] = empty($path) ? null : \core_component::get_path_from_relative($path);
         }
 
         return $info;
@@ -485,7 +485,7 @@ $cache = '.var_export($cache, true).';
             if ($CFG->admin !== 'admin' && strpos($path, 'admin/') === 0) {
                 $path = $CFG->admin . substr($path, 5);
             }
-            $types[$plugintype] = "{$CFG->dirroot}/{$path}";
+            $types[$plugintype] = \core_component::get_path_from_relative($path);
         }
 
         $parents = array();
@@ -590,11 +590,11 @@ $cache = '.var_export($cache, true).';
             if ($CFG->admin !== 'admin' and strpos($dir, 'admin/') === 0) {
                 $dir = preg_replace('|^admin/|', "$CFG->admin/", $dir);
             }
-            if (!is_dir("$CFG->dirroot/$dir")) {
+            if (!is_dir(\core_component::get_path_from_relative($dir))) {
                 error_log("Invalid subtype directory '$dir' detected in '$ownerdir'.");
                 continue;
             }
-            $types[$subtype] = "$CFG->dirroot/$dir";
+            $types[$subtype] = \core_component::get_path_from_relative($dir);
         }
 
         return $types;
@@ -1377,7 +1377,7 @@ $cache = '.var_export($cache, true).';
             }
         }
 
-        return $CFG->dirroot . '/' . ltrim($relativepath, '/\\');
+        return \core_component::get_path_from_relative(\ltrim($relativepath, '/\'));
     }
 
     /**

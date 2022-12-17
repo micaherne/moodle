@@ -57,7 +57,7 @@ function assignsubmission_file_pluginfile($course,
     $userid = $record->userid;
     $groupid = $record->groupid;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
 
     $assign = new assign($context, $cm, $course);
 

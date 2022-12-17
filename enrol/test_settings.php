@@ -28,7 +28,7 @@ require_once("$CFG->libdir/adminlib.php");
 $enrol = optional_param('enrol', '', PARAM_RAW);
 if (!core_component::is_valid_plugin_name('enrol', $enrol)) {
     $enrol = '';
-} else if (!file_exists("$CFG->dirroot/enrol/$enrol/lib.php")) {
+} else if (!file_exists(\core_component::get_component_path("enrol_{$enrol}", "lib.php"))) {
     $enrol = '';
 }
 

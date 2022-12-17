@@ -83,7 +83,7 @@ if ($forfilter) {
         throw new \moodle_exception('filterdoesnothavelocalconfig', 'error', $forfilter);
     }
     require_once($CFG->dirroot . '/filter/local_settings_form.php');
-    require_once($CFG->dirroot . '/filter/' . $forfilter . '/filterlocalsettings.php');
+    require_once(\core_component::get_component_path("filter_{$forfilter}", "filterlocalsettings.php"));
     $formname = $forfilter . '_filter_local_settings_form';
     $settingsform = new $formname($CFG->wwwroot . '/filter/manage.php', $forfilter, $context);
     if ($settingsform->is_cancelled()) {

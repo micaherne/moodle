@@ -272,7 +272,7 @@ class profile_manager {
         global $CFG;
 
         require_once($CFG->dirroot . '/user/profile/definelib.php');
-        require_once($CFG->dirroot . '/user/profile/field/text/define.class.php');
+        require_once(\core_component::get_component_path("profilefield_text", "define.class.php"));
 
         // Add our moodlenet profile field.
         $profileclass = new \profile_define_text();

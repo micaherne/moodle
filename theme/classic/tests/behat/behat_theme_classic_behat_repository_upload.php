@@ -25,7 +25,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../../repository/upload/tests/behat/behat_repository_upload.php');
+require_once(\core_component::get_component_path("repository_upload", "tests/behat/behat_repository_upload.php"));
 
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
 

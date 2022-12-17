@@ -65,7 +65,7 @@ class store_test extends \advanced_testcase {
      * @return \cachestore_static Store
      */
     protected static function create_static_store(): \cachestore_static {
-        require_once(__DIR__ . '/../stores/static/lib.php');
+        require_once(\core_component::get_component_path("cachestore_static", "lib.php"));
         $store = new \cachestore_static('frog');
         $definition = \cache_definition::load('zombie', [
                 'mode' => \cache_store::MODE_REQUEST,

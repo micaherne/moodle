@@ -261,7 +261,7 @@ function report_stats_report($course, $report, $mode, $user, $roleid, $time) {
                     $table->head[] = $param->line2;
                 }
             }
-            if (!file_exists($CFG->dirroot.'/report/log/index.php')) {
+            if (!file_exists(\core_component::get_component_path("report_log", "index.php"))) {
                 // bad luck, we can not link other report
             } else if (empty($param->crosstab)) {
                 foreach  ($stats as $stat) {

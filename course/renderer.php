@@ -2210,7 +2210,7 @@ class core_course_renderer extends plugin_renderer_base {
      */
     protected function frontpage_news($forum) {
         global $CFG, $SITE, $SESSION, $USER;
-        require_once($CFG->dirroot .'/mod/forum/lib.php');
+        require_once(\core_component::get_component_path("mod_forum", "lib.php"));
 
         $output = '';
 
@@ -2292,7 +2292,7 @@ class core_course_renderer extends plugin_renderer_base {
                 case FRONTPAGENEWS:
                     if ($SITE->newsitems) {
                         // Print forums only when needed.
-                        require_once($CFG->dirroot .'/mod/forum/lib.php');
+                        require_once(\core_component::get_component_path("mod_forum", "lib.php"));
                         if (($newsforum = forum_get_course_forum($SITE->id, 'news')) &&
                                 ($forumcontents = $this->frontpage_news($newsforum))) {
                             $newsforumcm = get_fast_modinfo($SITE)->instances['forum'][$newsforum->id];

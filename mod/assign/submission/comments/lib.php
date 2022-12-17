@@ -42,7 +42,7 @@ function assignsubmission_comments_comment_validate(stdClass $options) {
     }
     $context = $options->context;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
     static $assignment = null;
     if (is_null($assignment) || $assignment->get_context() != $context) {
         $assignment = new assign($context, null, null);
@@ -73,7 +73,7 @@ function assignsubmission_comments_comment_permissions(stdClass $options) {
     }
     $context = $options->context;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
     static $assignment = null;
     if (is_null($assignment) || $assignment->get_context() != $context) {
         $assignment = new assign($context, null, null);
@@ -118,7 +118,7 @@ function assignsubmission_comments_comment_display($comments, $options) {
     $cm = $options->cm;
     $course = $options->courseid;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(\core_component::get_component_path("mod_assign", "locallib.php"));
     $assignment = new assign($context, $cm, $course);
 
     if ($assignment->get_instance()->id != $submission->assignment) {

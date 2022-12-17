@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 use mod_quiz\local\reports\report_base;
 use core_question\statistics\questions\all_calculated_for_qubaid_condition;
 
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+require_once(\core_component::get_component_path("mod_quiz", "report/reportlib.php"));
 require_once($CFG->dirroot . '/mod/quiz/report/statistics/statistics_form.php');
 require_once($CFG->dirroot . '/mod/quiz/report/statistics/statistics_table.php');
 require_once($CFG->dirroot . '/mod/quiz/report/statistics/statistics_question_table.php');

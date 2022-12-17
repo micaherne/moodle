@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/mod/assign/feedbackplugin.php');
-require_once($CFG->dirroot . '/mod/assign/feedback/comments/locallib.php');
+require_once(\core_component::get_component_path("assignfeedback_comments", "locallib.php"));
 
 /**
  * Unit tests for the assignment feedback subplugins API's privacy legacy_polyfill.

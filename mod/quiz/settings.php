@@ -297,7 +297,7 @@ if (empty($reportsbyname) && empty($rulesbyname)) {
 
         $settings = new admin_settingpage('modsettingsquizcat'.$reportname,
                 $strreportname, 'moodle/site:config', $module->is_enabled() === false);
-        include($CFG->dirroot . "/mod/quiz/report/$reportname/settings.php");
+        include(\core_component::get_component_path("quiz_{$reportname}", "settings.php"));
         if (!empty($settings)) {
             $ADMIN->add('modsettingsquizcat', $settings);
         }
@@ -307,7 +307,7 @@ if (empty($reportsbyname) && empty($rulesbyname)) {
     foreach ($rulesbyname as $strrulename => $rule) {
         $settings = new admin_settingpage('modsettingsquizcat' . $rule,
                 $strrulename, 'moodle/site:config', $module->is_enabled() === false);
-        include($CFG->dirroot . "/mod/quiz/accessrule/$rule/settings.php");
+        include(\core_component::get_component_path("quizaccess_{$rule}", "settings.php"));
         if (!empty($settings)) {
             $ADMIN->add('modsettingsquizcat', $settings);
         }

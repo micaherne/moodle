@@ -188,7 +188,7 @@ class theme_config_test extends advanced_testcase {
 
         $this->resetAfterTest();
         $theme = theme_config::load('boost');
-        $editorscss = $CFG->dirroot.'/theme/boost/scss/editor.scss';
+        $editorscss = \core_component::get_component_path("theme_boost", "scss/editor.scss");
 
         $this->assertTrue(file_exists($editorscss));
         $compiler = new core_scss();
@@ -207,7 +207,7 @@ class theme_config_test extends advanced_testcase {
 
         $this->resetAfterTest();
         $theme = theme_config::load('classic');
-        $editorscss = $CFG->dirroot.'/theme/boost/scss/editor.scss';
+        $editorscss = \core_component::get_component_path("theme_boost", "scss/editor.scss");
 
         $this->assertTrue(file_exists($editorscss));
         $compiler = new core_scss();

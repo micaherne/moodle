@@ -7334,7 +7334,7 @@ class context_module extends context {
 
         $subcaps = array();
 
-        $modulepath = "{$CFG->dirroot}/mod/{$module->name}";
+        $modulepath = \core_component::get_component_path("mod_{$module->name}", "");
         if (file_exists("{$modulepath}/db/subplugins.json")) {
             $subplugins = (array) json_decode(file_get_contents("{$modulepath}/db/subplugins.json"))->plugintypes;
         } else if (file_exists("{$modulepath}/db/subplugins.php")) {
@@ -7567,7 +7567,7 @@ class context_block extends context {
         if ($blockinstance = $DB->get_record('block_instances', array('id'=>$this->_instanceid))) {
             global $CFG;
             require_once("$CFG->dirroot/blocks/moodleblock.class.php");
-            require_once("$CFG->dirroot/blocks/$blockinstance->blockname/block_$blockinstance->blockname.php");
+            require_once(\core_component::get_component_path("block_{$blockinstance->blockname}", "block_{$blockinstance->blockname}.php"));
             $blockname = "block_$blockinstance->blockname";
             if ($blockobject = new $blockname()) {
                 if ($withprefix){

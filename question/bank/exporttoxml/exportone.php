@@ -25,7 +25,7 @@
 
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/format/xml/format.php');
+require_once(\core_component::get_component_path("qformat_xml", "format.php"));
 
 // Get the parameters from the URL.
 $questionid = required_param('id', PARAM_INT);

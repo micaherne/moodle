@@ -372,7 +372,7 @@ class cc2moodle {
         $sheet_course_blocks_block = static::loadsheet(SHEET_COURSE_BLOCKS_BLOCK);
         $node_course_blocks_block = '';
 
-        $format_config = $CFG->dirroot . '/course/format/weeks/config.php';
+        $format_config = \core_component::get_component_path("format_weeks", "config.php");
 
         if (@is_file($format_config) && is_readable($format_config)) {
             require ($format_config);
