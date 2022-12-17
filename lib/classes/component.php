@@ -1395,7 +1395,12 @@ $cache = '.var_export($cache, true).';
         }
 
         if (is_null(self::$plugintypes)) {
-            throw new Exception("core_component is not initialised");
+            if ($loader = self::get_component_loader()) {
+                if ($path = $loader->get_component_path($component, $relativepath)) {
+                    return $path;
+                }
+            }
+            return $CFG->dirroot . '/' . \ltrim($relativepath, '/');
         }
 
         $dir = self::get_component_directory($component);
