@@ -24,9 +24,11 @@
  */
 namespace mod_assign;
 
+use mod_assign_generator;
 use mod_assign_grade_form;
 use mod_assign_test_generator;
 use mod_assign_testable_assign;
+use DateTimeImmutable;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -4611,4 +4613,62 @@ Anchor link 2:<a title=\"bananas\" href=\"../logo-240x60.gif\">Link text</a>
         $this->AssertTrue($assign->is_userid_filtered($student1->id));
         $this->AssertTrue($assign->is_userid_filtered($student2->id));
     }
+
+    /**
+     * Test the save_user_extension() method.
+     *
+     * @covers \assign::save_user_extension
+     */
+    public function test_save_user_extension(): void {
+        $jan1st2025 = (new DateTimeImmutable('2025-01-01'))->getTimestamp();
+        $jan1st2030 = (new DateTimeImmutable('2030-01-01'))->getTimestamp();
+        $jan1st2037 = (new DateTimeImmutable('2037-01-01'))->getTimestamp();
+
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        /** @var \mod_assign_generator $assigngenerator */
+        $assigngenerator = $generator->get_plugin_generator('mod_assign');
+
+        $course = $generator->create_course();
+
+        $user1 = $generator->create_and_enrol($course);
+        $user2 = $generator->create_and_enrol($course);
+        $generator->enrol_user($user2->id, $course->id, 'editingteacher');
+
+        $this->setUser($user2);
+
+        // Test the standard case where there are no overrides.
+        $assign1 = $this->create_instance($course, ['duedate' => $jan1st2025]);
+        $assign1->testable_save_user_extension($user1->id, $jan1st2030);
+
+        $flags1 = $assign1->get_user_flags($user1->id, false);
+
+        $this->assertNotEquals(false, $flags1);
+        $this->assertEquals($jan1st2030, $flags1->extensionduedate);
+
+        // Test the case where there is an override.
+        $assign2 = $this->create_instance($course, ['duedate' => $jan1st2037]);
+
+        // Give the student an override to before the default due date.
+        $assigngenerator->create_override(
+            [
+                'assignid' => $assign2->get_instance()->id,
+                'userid' => $user1->id,
+                'duedate' => $jan1st2025,
+            ]
+        );
+
+        $assign2->testable_save_user_extension($user1->id, $jan1st2030);
+
+        $flags1 = $assign2->get_user_flags($user1->id, false);
+
+        $this->assertNotEquals(false, $flags1);
+        $this->assertEquals($jan1st2030, $flags1->extensionduedate);
+
+        // User should not get an extension if their due date is after the extension date.
+        $assign2->testable_save_user_extension($user2->id, $jan1st2030);
+        $flags2 = $assign2->get_user_flags($user2->id, false);
+        $this->assertEquals(false, $flags2);
+    }
+
 }

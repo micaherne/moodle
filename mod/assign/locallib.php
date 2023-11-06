@@ -6879,13 +6879,15 @@ class assign {
             return false;
         }
 
-        if ($this->get_instance()->duedate && $extensionduedate) {
-            if ($this->get_instance()->duedate > $extensionduedate) {
+        $this->update_effective_access($userid);
+
+        if ($this->get_instance($userid)->duedate && $extensionduedate) {
+            if ($this->get_instance($userid)->duedate > $extensionduedate) {
                 return false;
             }
         }
-        if ($this->get_instance()->allowsubmissionsfromdate && $extensionduedate) {
-            if ($this->get_instance()->allowsubmissionsfromdate > $extensionduedate) {
+        if ($this->get_instance($userid)->allowsubmissionsfromdate && $extensionduedate) {
+            if ($this->get_instance($userid)->allowsubmissionsfromdate > $extensionduedate) {
                 return false;
             }
         }
