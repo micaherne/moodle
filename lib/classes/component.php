@@ -769,12 +769,18 @@ $cache = ' . var_export($cache, true) . ';
                 // Not a php file.
                 continue;
             }
+
+            $contents = file_get_contents("$fulldir/$filename");
             if ($namespace === '') {
                 // Legacy long frankenstyle class name.
-                self::$classmap[$component . '_' . $classname] = "$fulldir/$filename";
+                if (str_contains($contents, $component . '_' . $classname)) {
+                    self::$classmap[$component . '_' . $classname] = "$fulldir/$filename";
+                }
             }
             // New namespaced classes.
-            self::$classmap[$component . $namespace . '\\' . $classname] = "$fulldir/$filename";
+            if (str_contains($contents, $component . $namespace) && str_contains($contents, $classname)) {
+                self::$classmap[$component . $namespace . '\\' . $classname] = "$fulldir/$filename";
+            }
         }
         unset($item);
         unset($items);
