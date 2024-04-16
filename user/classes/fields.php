@@ -555,9 +555,7 @@ class fields {
         // Add a space to the end of the joins list; this means it can be appended directly into
         // any existing query without worrying about whether the developer has remembered to add
         // whitespace after it.
-        if ($joins) {
-            $joins .= ' ';
-        }
+        $joins .= ' ';
 
         // Optionally remove the leading comma.
         if (!$leadingcomma) {
