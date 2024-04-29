@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
  * A script to embed vimeo videos via the site (so vimeo privacy restrictions by domain will work in the mobile app).
  *

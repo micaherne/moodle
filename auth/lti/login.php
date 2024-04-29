@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Page allowing a platform user, identified by their {iss, sub} tuple, to be bound to a new or existing Moodle account.
  *
