@@ -1,0 +1,10 @@
+issueNumber: MDL-81837
+notes:
+  core:
+    - message: >
+        The MySQL database class now supports accent / case sensitive collations
+        (e.g. utf8mb4_0900_as_cs).
+
+        Only those with an equivalent accent / case insensitive collation (e.g.
+        utf8mb4_0900_ai_ci) are supported.
+      type: improved
