@@ -1,6 +1,11 @@
 This files describes API changes in core libraries and APIs,
 information provided here is intended especially for developers.
 
+=== 4.5 ===
+
+* The MySQL database class now supports accent / case sensitive collations (e.g. utf8mb4_0900_as_cs). Only those with
+  an equivalent accent / case insensitive collation (e.g. utf8mb4_0900_ai_ci) are supported.
+
 === 4.4 ===
 
 * New modinfo methods related to delegated sections (sections controlled by a component):
