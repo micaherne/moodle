@@ -1820,6 +1820,18 @@ class mysqli_native_moodle_database extends moodle_database {
     public function sql_equal($fieldname, $param, $casesensitive = true, $accentsensitive = true, $notequal = false) {
         $equalop = $notequal ? '<>' : '=';
 
+        if (str_ends_with($this->get_dbcollation(), '_as_cs')) {
+            if ($casesensitive) {
+                // Current MySQL versions do not support case sensitive and accent insensitive.
+                return "$fieldname $equalop $param";
+            } else if ($accentsensitive) {
+                return "LOWER($fieldname) $equalop LOWER($param)";
+            } else {
+                $collation = substr($this->get_dbcollation(), 0, -5) . 'ai_ci';
+                return "$fieldname COLLATE $collation $equalop $param";
+            }
+        }
+
         $collationinfo = explode('_', $this->get_dbcollation());
         $bincollate = reset($collationinfo) . '_bin';
 
@@ -1860,6 +1872,19 @@ class mysqli_native_moodle_database extends moodle_database {
             debugging('Potential SQL injection detected, sql_like() expects bound parameters (? or :named)');
         }
         $escapechar = $this->mysqli->real_escape_string($escapechar); // prevents problems with C-style escapes of enclosing '\'
+
+        if (str_ends_with($this->get_dbcollation(), '_as_cs')) {
+            $like = $notlike ? 'NOT LIKE' : 'LIKE';
+            if ($casesensitive) {
+                // Current MySQL versions do not support case sensitive and accent insensitive.
+                return "$fieldname $like $param ESCAPE '$escapechar'";
+            } else if ($accentsensitive) {
+                return "LOWER($fieldname) $like LOWER($param) ESCAPE '$escapechar'";
+            } else {
+                $collation = substr($this->get_dbcollation(), 0, -5) . 'ai_ci';
+                return "$fieldname $like $param COLLATE $collation ESCAPE '$escapechar'";
+            }
+        }
 
         $collationinfo = explode('_', $this->get_dbcollation());
         $bincollate = reset($collationinfo) . '_bin';
@@ -1958,6 +1983,16 @@ class mysqli_native_moodle_database extends moodle_database {
      * @return string or empty if not supported
      */
     public function sql_regex($positivematch = true, $casesensitive = false) {
+
+        if (str_ends_with($this->get_dbcollation(), '_as_cs')) {
+            if ($casesensitive) {
+                return ($positivematch ? 'REGEXP' : 'NOT REGEXP');
+            } else {
+                $collation = substr($this->get_dbcollation(), 0, -5) . 'ai_ci';
+                return 'COLLATE ' . $collation . ' ' . ($positivematch ? ' REGEXP' : ' NOT REGEXP');
+            }
+        }
+
         $collation = '';
         if ($casesensitive) {
             if (substr($this->get_dbcollation(), -4) !== '_bin') {
