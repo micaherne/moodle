@@ -2,7 +2,7 @@ issueNumber: MDL-82287
 notes:
   core:
     - message: >
-        The following methods have been formally deprecated:
+        The following functions have been formally deprecated:
 
 
         - `get_core_subsystems`
@@ -22,11 +22,11 @@ notes:
         - `get_context_instance`
 
 
-        Note: These methods have been deprecated for a long time, but previously
+        Note: These functions have been deprecated for a long time, but previously
         did not emit any deprecation notice.
       type: deprecated
     - message: >
-        The following methods have been finally deprecated and will now throw an
+        The following functions have been finally deprecated and will now throw an
         exception if called:
 
 
