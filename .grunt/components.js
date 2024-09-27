@@ -44,10 +44,10 @@ const fetchComponentData = () => {
         componentData.standardComponents = {};
 
         // Fetch the component definiitions from the distributed JSON file.
-        const components = JSON.parse(fs.readFileSync(`${gruntFilePath}/lib/components.json`));
-        const pluginData = JSON.parse(fs.readFileSync(`${gruntFilePath}/lib/plugins.json`));
+        const components = JSON.parse(fs.readFileSync(`${gruntFilePath}/public/lib/components.json`));
+        const pluginData = JSON.parse(fs.readFileSync(`${gruntFilePath}/public/lib/plugins.json`));
 
-        componentData.pluginTypes = components.plugintypes;
+        componentData.pluginTypes = Object.fromEntries(Object.entries(components.plugintypes).map(([name,path]) => ([name, `public/${path}`])))
 
         const standardPlugins = Object.entries(pluginData.standard).map(
             ([pluginType, pluginNames]) => {
@@ -56,18 +56,18 @@ const fetchComponentData = () => {
         ).reduce((acc, val) => acc.concat(val), []);
 
         // Build the list of moodle subsystems.
-        componentData.subsystems.lib = 'core';
-        componentData.pathList.push(process.cwd() + path.sep + 'lib');
+        componentData.subsystems['public/lib'] = 'core';
+        componentData.pathList.push(`${process.cwd()}/public/lib`);
         for (const [component, thisPath] of Object.entries(components.subsystems)) {
             if (thisPath) {
                 // Prefix "core_" to the front of the subsystems.
-                componentData.subsystems[thisPath] = `core_${component}`;
-                componentData.pathList.push(process.cwd() + path.sep + thisPath);
+                componentData.subsystems[`public/${thisPath}`] = `core_${component}`;
+                componentData.pathList.push(`${process.cwd()}/public/${thisPath}`);
             }
         }
 
         // The list of components includes the list of subsystems.
-        componentData.components = {...componentData.subsystems};
+        componentData.components = Object.fromEntries(Object.entries(componentData.subsystems).map(([path, name]) => ([path, name])))
 
         const subpluginAdder = (subpluginType, subpluginTypePath) => {
             glob.sync(`${subpluginTypePath}/*/version.php`).forEach(versionPath => {
@@ -83,11 +83,11 @@ const fetchComponentData = () => {
         // Go through each of the plugintypes.
         Object.entries(components.plugintypes).forEach(([pluginType, pluginTypePath]) => {
             // We don't allow any code in this place..?
-            glob.sync(`${pluginTypePath}/*/version.php`).forEach(versionPath => {
+            glob.sync(`public/${pluginTypePath}/*/version.php`).forEach(versionPath => {
                 const componentPath = fs.realpathSync(path.dirname(versionPath));
                 const componentName = path.basename(componentPath);
                 const frankenstyleName = `${pluginType}_${componentName}`;
-                componentData.components[`${pluginTypePath}/${componentName}`] = frankenstyleName;
+                componentData.components[`public/${pluginTypePath}/${componentName}`] = frankenstyleName;
                 componentData.pathList.push(componentPath);
 
                 // Look for any subplugins.
@@ -104,7 +104,7 @@ const fetchComponentData = () => {
                         });
                     } else if (subpluginList.plugintypes) {
                         Object.entries(subpluginList.plugintypes).forEach(([subpluginType, subpluginTypePath]) => {
-                            subpluginAdder(subpluginType, subpluginTypePath);
+                            subpluginAdder(subpluginType, `public/${subpluginTypePath}`);
                         });
                     }
                 }
