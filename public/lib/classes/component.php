@@ -628,7 +628,7 @@ $cache = ' . var_export($cache, true) . ';
                 }
             }
 
-            $info[$subsystem] = empty($path) ? null : "{$CFG->dirroot}/{$path}";
+            $info[$subsystem] = empty($path) ? null : "{$CFG->root}/{$path}";
         }
 
         return $info;
@@ -655,7 +655,7 @@ $cache = ' . var_export($cache, true) . ';
             if ($CFG->admin !== 'admin' && strpos($path, 'admin/') === 0) {
                 $path = $CFG->admin . substr($path, 5);
             }
-            $types[$plugintype] = "{$CFG->dirroot}/{$path}";
+            $types[$plugintype] = "{$CFG->root}/{$path}";
         }
 
         $parents = [];
@@ -724,7 +724,7 @@ $cache = ' . var_export($cache, true) . ';
      */
     protected static function fetch_component_source(string $key) {
         if (null === self::$componentsource) {
-            self::$componentsource = (array) json_decode(file_get_contents(__DIR__ . '/../components.json'));
+            self::$componentsource = (array) json_decode(file_get_contents(dirname(__DIR__, 3) . '/lib/components.json'));
         }
 
         return (array) self::$componentsource[$key];

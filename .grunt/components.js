@@ -44,8 +44,8 @@ const fetchComponentData = () => {
         componentData.standardComponents = {};
 
         // Fetch the component definiitions from the distributed JSON file.
-        const components = JSON.parse(fs.readFileSync(`${gruntFilePath}/public/lib/components.json`));
-        const pluginData = JSON.parse(fs.readFileSync(`${gruntFilePath}/public/lib/plugins.json`));
+        const components = JSON.parse(fs.readFileSync(`${gruntFilePath}/lib/components.json`));
+        const pluginData = JSON.parse(fs.readFileSync(`${gruntFilePath}/lib/plugins.json`));
 
         componentData.pluginTypes = Object.fromEntries(Object.entries(components.plugintypes).map(([name,path]) => ([name, `public/${path}`])))
 
