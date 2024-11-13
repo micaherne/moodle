@@ -1423,8 +1423,8 @@ final class component_test extends \advanced_testcase {
                 'exampleplugin' => [
                     'db' => [
                         'subplugins.json' => json_encode([
-                            'plugintypes' => [
-                                'exampleplugina' => 'plugintype/exampleplugin/apples',
+                            'subplugintypes' => [
+                                'exampleplugina' => 'apples',
                             ],
                         ]),
                         'subplugins.php' => '',
@@ -1450,15 +1450,8 @@ final class component_test extends \advanced_testcase {
      * with a json file equivalent.
      *
      * Note: The content of the php file is irreleevant and we no longer use it anyway.
-     *
-     * @dataProvider invalid_subplugins_json_provider
-     * @param string[] Errors to expect in the exception message
-     * @param array[] The contents of the subplugins.json file
      */
-    public function test_fetch_subtypes_json_invalid_values(
-        array $expectedwarnings,
-        array $plugintypesdir,
-    ): void {
+    public function test_fetch_subtypes_plugintypes_only(): void {
         global $CFG;
 
         $this->resetAfterTest();
@@ -1467,11 +1460,61 @@ final class component_test extends \advanced_testcase {
                 'exampleplugin' => [
                     'db' => [
                         'subplugins.json' => json_encode([
-                            'plugintypes' => $plugintypesdir,
+                            'plugintypes' => [
+                                'exampleplugina' => 'plugintype/exampleplugin/apples',
+                            ],
                         ]),
                         'subplugins.php' => '',
                     ],
                     'apples' => [],
+                ],
+            ],
+        ]);
+
+        $CFG->dirroot = $vfileroot->url();
+        $pluginroot = $vfileroot->getChild('plugintype/exampleplugin');
+
+        $logdir = make_request_directory();
+        $logfile = "{$logdir}/error.log";
+        ini_set('error_log', $logfile);
+
+        $rcm = new \ReflectionMethod(\core\component::class, 'fetch_subtypes');
+        $subplugins = $rcm->invoke(null, $pluginroot->url());
+
+        $this->assertEquals([
+            'exampleplugina' => $pluginroot->getChild('apples')->url(),
+        ], $subplugins);
+
+        $warnings = file_get_contents($logfile);
+        $this->assertMatchesRegularExpression('/No subplugintypes defined in .*subplugins.json/', $warnings);
+    }
+
+    /**
+     * Test that fetching of subtype data does not throw an exception when a subplugins.php is present
+     * with a json file equivalent.
+     *
+     * Note: The content of the php file is irreleevant and we no longer use it anyway.
+     *
+     * @dataProvider invalid_subplugins_json_provider
+     * @param string[] $expectedwarnings Errors to expect in the exception message
+     * @param array[] $json The contents of the subplugins.json file
+     */
+    public function test_fetch_subtypes_json_invalid_values(
+        array $expectedwarnings,
+        array $json,
+    ): void {
+        global $CFG;
+
+        $this->resetAfterTest();
+        $vfileroot = \org\bovigo\vfs\vfsStream::setup('root', null, [
+            'plugintype' => [
+                'exampleplugin' => [
+                    'db' => [
+                        'subplugins.json' => json_encode($json),
+                        'subplugins.php' => '',
+                    ],
+                    'apples' => [],
+                    'pears' => [],
                 ],
             ],
         ]);
@@ -1503,8 +1546,10 @@ final class component_test extends \advanced_testcase {
                 'expectedwarnings' => [
                     "/Invalid subtype .*APPLES.*detected.*invalid characters present/",
                 ],
-                'plugintypesdir' => [
-                    'APPLES' => 'plugintype/exampleplugin/APPLES',
+                'json' => [
+                    'subplugintypes' => [
+                        'APPLES' => 'plugintype/exampleplugin/apples',
+                    ],
                 ],
             ],
 
@@ -1512,8 +1557,10 @@ final class component_test extends \advanced_testcase {
                 'expectedwarnings' => [
                     "/Invalid subtype .*editor.*detected.*duplicates core subsystem/",
                 ],
-                'plugintypesdir' => [
-                    'editor' => 'plugintype/exampleplugin/apples',
+                'json' => [
+                    'subplugintypes' => [
+                        'editor' => 'apples',
+                    ],
                 ],
             ],
 
@@ -1521,8 +1568,64 @@ final class component_test extends \advanced_testcase {
                 'expectedwarnings' => [
                     "/Invalid subtype directory/",
                 ],
-                'plugintypesdir' => [
-                    'exampleapples' => 'plugintype/exampleplugin/pears',
+                'json' => [
+                    'subplugintypes' => [
+                        'exampleapples' => 'berries',
+                    ],
+                ],
+            ],
+
+            'More subplugintypes than plugintypes' => [
+                'expectedwarnings' => [
+                    "/Subplugintypes and plugintypes are not in sync/",
+                ],
+                'json' => [
+                    'subplugintypes' => [
+                        'apples' => 'pears',
+                    ],
+                    'plugintypes' => [],
+                ],
+            ],
+
+            'More plugintypes than subplugintypes' => [
+                'expectedwarnings' => [
+                    "/Subplugintypes and plugintypes are not in sync /",
+                ],
+                'json' => [
+                    'subplugintypes' => [
+                        'apples' => 'apples',
+                    ],
+                    'plugintypes' => [
+                        'apples' => 'plugintype/exampleplugin/apples',
+                        'pears' => 'plugintype/exampleplugin/pears',
+                    ],
+                ],
+            ],
+
+            'subplugintype not defined in plugintype' => [
+                'expectedwarnings' => [
+                    "/Subplugintypes and plugintypes are not in sync for 'apples'/",
+                ],
+                'json' => [
+                    'subplugintypes' => [
+                        'apples' => 'apples',
+                    ],
+                    'plugintypes' => [
+                        'pears' => 'plugintype/exampleplugin/pears',
+                    ],
+                ],
+            ],
+            'subplugintype does not match plugintype' => [
+                'expectedwarnings' => [
+                    "/Subplugintypes and plugintypes are not in sync for 'apples'/",
+                ],
+                'json' => [
+                    'subplugintypes' => [
+                        'apples' => 'apples',
+                    ],
+                    'plugintypes' => [
+                        'apples' => 'plugintype/exampleplugin/pears',
+                    ],
                 ],
             ],
         ];
