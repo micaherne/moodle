@@ -2468,6 +2468,60 @@ class file_storage {
     }
 
     /**
+     * Replace the content of an existing file with that from a given real file.
+     *
+     * @param stored_file $file The file to replace
+     * @param string $filepath The path to the file on disk
+     *
+     * @return stored_file The new file
+     *
+     * @throws moodle_exception
+     */
+    public function replace_file_from_file(stored_file $file, string $filepath): stored_file {
+        global $DB;
+
+        $tx = $DB->start_delegated_transaction();
+        try {
+            $filerecord = $DB->get_record('files', ['id' => $file->get_id()], '*', MUST_EXIST);
+            $file->delete();
+            $newfile = $this->create_file_from_pathname($filerecord, $filepath);
+        } catch (file_exception $e) {
+            $tx->rollback($e);
+        }
+
+        $tx->allow_commit();
+
+        return $newfile;
+    }
+
+    /**
+     * Replace the content of an existing file with a given string.
+     *
+     * @param stored_file $file The file to replace
+     * @param string $content The new content
+     *
+     * @return stored_file The new file
+     *
+     * @throws moodle_exception
+     */
+    public function replace_file_from_string(stored_file $file, string $content): stored_file {
+        global $DB;
+
+        $tx = $DB->start_delegated_transaction();
+        try {
+            $filerecord = $DB->get_record('files', ['id' => $file->get_id()], '*', MUST_EXIST);
+            $file->delete();
+            $newfile = $this->create_file_from_string($filerecord, $content);
+        } catch (file_exception $e) {
+            $tx->rollback($e);
+        }
+
+        $tx->allow_commit();
+
+        return $newfile;
+    }
+
+    /**
      * Calculate and return the contenthash of the supplied file.
      *
      * @param   string $filepath The path to the file on disk

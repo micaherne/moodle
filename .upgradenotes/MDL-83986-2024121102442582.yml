@@ -1,0 +1,11 @@
+issueNumber: MDL-83986
+notes:
+  core_files:
+    - message: >
+        The file_storage class now has two methods to enable updating the
+        content of a file:
+
+        - `replace_file_from_file()`
+
+        - `replace_file_from_string()`
+      type: improved
