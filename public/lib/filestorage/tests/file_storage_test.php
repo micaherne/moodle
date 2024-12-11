@@ -2367,6 +2367,46 @@ final class file_storage_test extends \advanced_testcase {
             $file->get_contenthash(),
         );
     }
+
+    /**
+     * Tests the replace_file_from_file method.
+     *
+     * @covers \file_storage::replace_file_from_file
+     *
+     * @return void
+     */
+    public function test_replace_file_from_file(): void {
+        $this->resetAfterTest(true);
+        $fs = get_file_storage();
+
+        $record = $this->generate_file_record();
+
+        $file1 = $fs->create_file_from_string($record, 'text contents');
+        $newfile1 = $fs->replace_file_from_file($file1, __DIR__ . '/fixtures/test.txt');
+
+        $this->assertEquals('test', $newfile1->get_content());
+        $this->assertEquals($file1->get_timecreated(), $newfile1->get_timecreated());
+    }
+
+    /**
+     * Tests the replace_file_from_string method.
+     *
+     * @covers \file_storage::replace_file_from_string
+     *
+     * @return void
+     */
+    public function test_replace_file_from_string(): void {
+        $this->resetAfterTest(true);
+        $fs = get_file_storage();
+
+        $record = $this->generate_file_record();
+
+        $file1 = $fs->create_file_from_string($record, 'text contents');
+        $newfile1 = $fs->replace_file_from_string($file1, 'new text contents');
+
+        $this->assertEquals('new text contents', $newfile1->get_content());
+        $this->assertEquals($file1->get_timecreated(), $newfile1->get_timecreated());
+    }
 }
 
 class test_stored_file_inspection extends stored_file {
