@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace core_filters;
+namespace core_filters\form;
 
 use core\context;
 use moodleform;
