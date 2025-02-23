@@ -102,7 +102,7 @@ if (file_exists($distrolibfile)) {
 }
 
 // Nothing to do if config.php exists
-$configfile = __DIR__.'/../../config.php';
+$configfile = dirname(__DIR__, 3).'/config.php';
 if (file_exists($configfile)) {
     require($configfile);
     require_once($CFG->libdir.'/clilib.php');
@@ -157,6 +157,7 @@ global $CFG;
 $CFG = new stdClass();
 $CFG->lang                 = 'en';
 $CFG->dirroot              = dirname(dirname(__DIR__));
+$CFG->root                 = dirname(__DIR__, 3);
 $CFG->libdir               = "$CFG->dirroot/lib";
 $CFG->wwwroot              = "http://localhost";
 $CFG->httpswwwroot         = $CFG->wwwroot;
