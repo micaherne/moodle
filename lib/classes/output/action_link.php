@@ -29,7 +29,7 @@ use stdClass;
  * @package core
  * @category output
  */
-class action_link implements renderable {
+class action_link implements renderable, templatable {
     /**
      * @var moodle_url Href url
      */
