@@ -35,7 +35,7 @@ use mod_forum\local\vaults\post as post_vault;
 use mod_forum\local\vaults\post_attachment as post_attachment_vault;
 use mod_forum\local\vaults\post_read_receipt_collection as post_read_receipt_collection_vault;
 use file_storage;
-use moodle_database;
+use core\dml\moodle_database;
 
 /**
  * Vault factory.

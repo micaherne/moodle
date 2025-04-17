@@ -14,6 +14,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+use core\dml\moodle_database;
 
 /**
  * comment_manager is helper class to manage moodle comments in admin page (Reports->Comments)

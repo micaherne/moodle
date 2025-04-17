@@ -25,6 +25,9 @@
  **/
 
 /** Make sure this isn't being directly accessed */
+
+use core\dml\moodle_database;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** Include the files that are required by this module */

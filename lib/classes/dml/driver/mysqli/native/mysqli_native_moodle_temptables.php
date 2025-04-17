@@ -24,9 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace core\dml\driver\mysqli\native;
 
-require_once(__DIR__.'/moodle_temptables.php');
+use core\dml\moodle_temptables;
+
+defined('MOODLE_INTERNAL') || die();
 
 class mysqli_native_moodle_temptables extends moodle_temptables {
     // I love these classes :-P

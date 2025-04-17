@@ -575,7 +575,7 @@ class provider implements
      * Helper function to return the Calendar Events for a given user and context list.
      *
      * @param approved_contextlist $contextlist
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      * @throws \coding_exception
      * @throws \dml_exception
      */
@@ -642,7 +642,7 @@ class provider implements
      * Helper function to return the Calendar Subscriptions for a given user and context list.
      *
      * @param approved_contextlist $contextlist
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      * @throws \coding_exception
      * @throws \dml_exception
      */

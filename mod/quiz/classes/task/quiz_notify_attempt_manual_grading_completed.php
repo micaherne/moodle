@@ -21,7 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 use context_module;
 use core_user;
 use mod_quiz\quiz_attempt;
-use moodle_recordset;
+use core\dml\moodle_recordset;
 use question_display_options;
 use mod_quiz\question\display_options;
 

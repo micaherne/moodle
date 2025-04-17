@@ -62,7 +62,7 @@ class database {
     /**
      * Generates unique parameter name that must be used in generated SQL
      *
-     * When passing the returned value to {@see \moodle_database::get_in_or_equal} it's recommended to define the suffix
+     * When passing the returned value to {@see \core\dml\moodle_database::get_in_or_equal} it's recommended to define the suffix
      *
      * @param string $suffix Optional string to append to parameter name
      * @return string

@@ -24,6 +24,9 @@
  */
 
 
+use core\dml\moodle_database;
+use core\dml\moodle_recordset;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;

@@ -22,12 +22,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace core\dml\driver\pgsql\native;
 
-require_once(__DIR__.'/moodle_database.php');
-require_once(__DIR__.'/moodle_read_replica_trait.php');
-require_once(__DIR__.'/pgsql_native_moodle_recordset.php');
-require_once(__DIR__.'/pgsql_native_moodle_temptables.php');
+use coding_exception;
+use core\dml\database_column_info;
+use core\dml\moodle_database;
+use core\dml\moodle_read_replica_trait;
+use core\dml\moodle_recordset;
+use ddl_change_structure_exception;
+use dml_connection_exception;
+use dml_exception;
+use dml_sessionwait_exception;
+use moodle_exception;
+use core\dml\driver\pgsql\native\pgsql_native_moodle_recordset;
+use core\dml\driver\pgsql\native\pgsql_native_moodle_temptables;
+use stdClass;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Native pgsql class representing moodle database interface.
@@ -58,8 +69,8 @@ class pgsql_native_moodle_database extends moodle_database {
     /** @var array $dbhcursor keep track of open cursors */
     private $dbhcursor = [];
 
-    /** @var resource|PgSql\Connection|null $pgsql database resource */
-    protected $pgsql     = null;
+    /** @var resource|\PgSql\Connection|null $pgsql database resource */
+    protected $pgsql = null;
 
     protected $last_error_reporting; // To handle pgsql driver default verbosity
 
@@ -141,7 +152,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * @throws moodle_exception
      * @throws dml_connection_exception if error
      */
-    public function raw_connect(string $dbhost, string $dbuser, string $dbpass, string $dbname, $prefix, ?array $dboptions=null): bool {
+    public function raw_connect(string $dbhost, string $dbuser, string $dbpass, string $dbname, $prefix, ?array $dboptions = null): bool {
         if ($prefix == '' and !$this->external) {
             //Enforce prefixes for everybody but mysql
             throw new dml_exception('prefixcannotbeempty', $this->get_dbfamily());
@@ -162,11 +173,11 @@ class pgsql_native_moodle_database extends moodle_database {
             $connection = "user='$this->dbuser' password='$pass' dbname='$this->dbname'";
             if (strpos($this->dboptions['dbsocket'], '/') !== false) {
                 // A directory was specified as the socket location.
-                $connection .= " host='".$this->dboptions['dbsocket']."'";
+                $connection .= " host='" . $this->dboptions['dbsocket'] . "'";
             }
             if (!empty($this->dboptions['dbport'])) {
                 // A port as specified, add it to the connection as it's used as part of the socket path.
-                $connection .= " port ='".$this->dboptions['dbport']."'";
+                $connection .= " port ='" . $this->dboptions['dbport'] . "'";
             }
         } else {
             $this->dboptions['dbsocket'] = '';
@@ -176,13 +187,13 @@ class pgsql_native_moodle_database extends moodle_database {
             } else if (empty($this->dboptions['dbport'])) {
                 $port = "port ='5432'";
             } else {
-                $port = "port ='".$this->dboptions['dbport']."'";
+                $port = "port ='" . $this->dboptions['dbport'] . "'";
             }
             $connection = "host='$this->dbhost' $port user='$this->dbuser' password='$pass' dbname='$this->dbname'";
         }
 
         if (!empty($this->dboptions['connecttimeout'])) {
-            $connection .= " connect_timeout=".$this->dboptions['connecttimeout'];
+            $connection .= " connect_timeout=" . $this->dboptions['connecttimeout'];
         }
 
         if (empty($this->dboptions['dbhandlesoptions'])) {
@@ -340,7 +351,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * @param mixed $extrainfo driver specific extra information
      * @return void
      */
-    protected function query_start($sql, ?array $params, $type, $extrainfo=null) {
+    protected function query_start($sql, ?array $params, $type, $extrainfo = null) {
         $this->read_replica_query_start($sql, $params, $type, $extrainfo);
         // pgsql driver tends to send debug to output, we do not need that.
         $this->last_error_reporting = error_reporting(0);
@@ -357,11 +368,11 @@ class pgsql_native_moodle_database extends moodle_database {
         try {
             $this->read_replica_query_end($result);
             if ($this->savepointpresent &&
-                    !in_array(
-                        $this->last_type,
-                        [SQL_QUERY_AUX, SQL_QUERY_AUX_READONLY, SQL_QUERY_SELECT],
-                        true
-                    )) {
+                !in_array(
+                    $this->last_type,
+                    [SQL_QUERY_AUX, SQL_QUERY_AUX_READONLY, SQL_QUERY_SELECT],
+                    true
+                )) {
                 $res = @pg_query($this->pgsql, "RELEASE SAVEPOINT moodle_pg_savepoint; SAVEPOINT moodle_pg_savepoint");
                 if ($res) {
                     pg_free_result($res);
@@ -415,7 +426,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * @param bool $usecache if true, returns list of cached tables.
      * @return array of table names in lowercase and without prefix
      */
-    public function get_tables($usecache=true) {
+    public function get_tables($usecache = true) {
         if ($usecache and $this->tables !== null) {
             return $this->tables;
         }
@@ -459,13 +470,13 @@ class pgsql_native_moodle_database extends moodle_database {
      * @param bool $equal True means we want to equate to the constructed expression, false means we don't want to equate to it.
      * @param mixed $onemptyitems This defines the behavior when the array of items provided is empty. Defaults to false,
      *              meaning throw exceptions. Other values will become part of the returned SQL fragment.
-     * @throws coding_exception | dml_exception
      * @return array A list containing the constructed sql fragment and an array of parameters.
+     * @throws coding_exception | dml_exception
      */
-    public function get_in_or_equal($items, $type=SQL_PARAMS_QM, $prefix='param', $equal=true, $onemptyitems=false): array {
+    public function get_in_or_equal($items, $type = SQL_PARAMS_QM, $prefix = 'param', $equal = true, $onemptyitems = false): array {
         // We only interfere if number of items in expression exceeds 16 bit value.
         if (!is_array($items) || count($items) < 65535) {
-            return parent::get_in_or_equal($items, $type, $prefix,  $equal, $onemptyitems);
+            return parent::get_in_or_equal($items, $type, $prefix, $equal, $onemptyitems);
         }
 
         // Determine the type from the first value. We don't need to be very smart here,
@@ -477,9 +488,9 @@ class pgsql_native_moodle_database extends moodle_database {
 
         if ($type == SQL_PARAMS_QM) {
             if ($equal) {
-                $sql = 'IN (VALUES ('.implode('),(', array_fill(0, count($items), '?'.$cast)).'))';
+                $sql = 'IN (VALUES (' . implode('),(', array_fill(0, count($items), '?' . $cast)) . '))';
             } else {
-                $sql = 'NOT IN (VALUES ('.implode('),(', array_fill(0, count($items), '?'.$cast)).'))';
+                $sql = 'NOT IN (VALUES (' . implode('),(', array_fill(0, count($items), '?' . $cast)) . '))';
             }
             $params = array_values($items);
         } else if ($type == SQL_PARAMS_NAMED) {
@@ -489,14 +500,14 @@ class pgsql_native_moodle_database extends moodle_database {
             $params = [];
             $sql = [];
             foreach ($items as $item) {
-                $param = $prefix.$this->inorequaluniqueindex++;
+                $param = $prefix . $this->inorequaluniqueindex++;
                 $params[$param] = $item;
-                $sql[] = ':'.$param.$cast;
+                $sql[] = ':' . $param . $cast;
             }
             if ($equal) {
-                $sql = 'IN (VALUES ('.implode('),(', $sql).'))';
+                $sql = 'IN (VALUES (' . implode('),(', $sql) . '))';
             } else {
-                $sql = 'NOT IN (VALUES ('.implode('),(', $sql).'))';
+                $sql = 'NOT IN (VALUES (' . implode('),(', $sql) . '))';
             }
         } else {
             throw new dml_exception('typenotimplement');
@@ -511,7 +522,7 @@ class pgsql_native_moodle_database extends moodle_database {
      */
     public function get_indexes($table) {
         $indexes = array();
-        $tablename = $this->prefix.$table;
+        $tablename = $this->prefix . $table;
 
         $sql = "SELECT i.*
                   FROM pg_catalog.pg_indexes i
@@ -527,14 +538,14 @@ class pgsql_native_moodle_database extends moodle_database {
             while ($row = pg_fetch_assoc($result)) {
                 // The index definition could be generated schema-qualifying the target table name
                 // for safety, depending on the pgsql version (CVE-2018-1058).
-                if (!preg_match('/CREATE (|UNIQUE )INDEX ([^\s]+) ON (|'.$row['schemaname'].'\.)'.$tablename.' USING ([^\s]+) \(([^\)]+)\)/i', $row['indexdef'], $matches)) {
+                if (!preg_match('/CREATE (|UNIQUE )INDEX ([^\s]+) ON (|' . $row['schemaname'] . '\.)' . $tablename . ' USING ([^\s]+) \(([^\)]+)\)/i', $row['indexdef'], $matches)) {
                     continue;
                 }
                 if ($matches[5] === 'id') {
                     continue;
                 }
                 $columns = explode(',', $matches[5]);
-                foreach ($columns as $k=>$column) {
+                foreach ($columns as $k => $column) {
                     $column = trim($column);
                     if ($pos = strpos($column, ' ')) {
                         // index type is separated by space
@@ -542,8 +553,8 @@ class pgsql_native_moodle_database extends moodle_database {
                     }
                     $columns[$k] = $this->trim_quotes($column);
                 }
-                $indexes[$row['indexname']] = array('unique'=>!empty($matches[1]),
-                                              'columns'=>$columns);
+                $indexes[$row['indexname']] = array('unique' => !empty($matches[1]),
+                    'columns' => $columns);
             }
             pg_free_result($result);
         }
@@ -559,7 +570,7 @@ class pgsql_native_moodle_database extends moodle_database {
     protected function fetch_columns(string $table): array {
         $structure = array();
 
-        $tablename = $this->prefix.$table;
+        $tablename = $this->prefix . $table;
 
         $sql = "SELECT a.attnum, a.attname AS field, t.typname AS type, a.attlen, a.atttypmod, a.attnotnull, a.atthasdef,
                        CASE WHEN a.atthasdef THEN pg_catalog.pg_get_expr(d.adbin, d.adrelid) ELSE '' END AS adsrc
@@ -586,12 +597,12 @@ class pgsql_native_moodle_database extends moodle_database {
             $matches = null;
 
             if ($rawcolumn->type === 'varchar') {
-                $info->type          = 'varchar';
-                $info->meta_type     = 'C';
-                $info->max_length    = $rawcolumn->atttypmod - 4;
-                $info->scale         = null;
-                $info->not_null      = ($rawcolumn->attnotnull === 't');
-                $info->has_default   = ($rawcolumn->atthasdef === 't');
+                $info->type = 'varchar';
+                $info->meta_type = 'C';
+                $info->max_length = $rawcolumn->atttypmod - 4;
+                $info->scale = null;
+                $info->not_null = ($rawcolumn->attnotnull === 't');
+                $info->has_default = ($rawcolumn->atthasdef === 't');
                 if ($info->has_default) {
                     $parts = explode('::', $rawcolumn->adsrc);
                     if (count($parts) > 1) {
@@ -603,26 +614,26 @@ class pgsql_native_moodle_database extends moodle_database {
                 } else {
                     $info->default_value = null;
                 }
-                $info->primary_key   = false;
-                $info->binary        = false;
-                $info->unsigned      = null;
-                $info->auto_increment= false;
-                $info->unique        = null;
+                $info->primary_key = false;
+                $info->binary = false;
+                $info->unsigned = null;
+                $info->auto_increment = false;
+                $info->unique = null;
 
             } else if (preg_match('/int(\d)/i', $rawcolumn->type, $matches)) {
                 $info->type = 'int';
                 if (strpos($rawcolumn->adsrc ?? '', 'nextval') === 0) {
-                    $info->primary_key   = true;
-                    $info->meta_type     = 'R';
-                    $info->unique        = true;
-                    $info->auto_increment= true;
-                    $info->has_default   = false;
+                    $info->primary_key = true;
+                    $info->meta_type = 'R';
+                    $info->unique = true;
+                    $info->auto_increment = true;
+                    $info->has_default = false;
                 } else {
-                    $info->primary_key   = false;
-                    $info->meta_type     = 'I';
-                    $info->unique        = null;
-                    $info->auto_increment= false;
-                    $info->has_default   = ($rawcolumn->atthasdef === 't');
+                    $info->primary_key = false;
+                    $info->meta_type = 'I';
+                    $info->unique = null;
+                    $info->auto_increment = false;
+                    $info->has_default = ($rawcolumn->atthasdef === 't');
                 }
                 // Return number of decimals, not bytes here.
                 if ($matches[1] >= 8) {
@@ -636,8 +647,8 @@ class pgsql_native_moodle_database extends moodle_database {
                 } else {
                     $info->max_length = 0;
                 }
-                $info->scale         = null;
-                $info->not_null      = ($rawcolumn->attnotnull === 't');
+                $info->scale = null;
+                $info->not_null = ($rawcolumn->attnotnull === 't');
                 if ($info->has_default) {
                     // PG 9.5+ uses ::<TYPE> syntax for some defaults.
                     $parts = explode('::', $rawcolumn->adsrc);
@@ -650,19 +661,19 @@ class pgsql_native_moodle_database extends moodle_database {
                 } else {
                     $info->default_value = null;
                 }
-                $info->binary        = false;
-                $info->unsigned      = false;
+                $info->binary = false;
+                $info->unsigned = false;
 
             } else if ($rawcolumn->type === 'numeric') {
                 $info->type = $rawcolumn->type;
-                $info->meta_type     = 'N';
-                $info->primary_key   = false;
-                $info->binary        = false;
-                $info->unsigned      = null;
-                $info->auto_increment= false;
-                $info->unique        = null;
-                $info->not_null      = ($rawcolumn->attnotnull === 't');
-                $info->has_default   = ($rawcolumn->atthasdef === 't');
+                $info->meta_type = 'N';
+                $info->primary_key = false;
+                $info->binary = false;
+                $info->unsigned = null;
+                $info->auto_increment = false;
+                $info->unique = null;
+                $info->not_null = ($rawcolumn->attnotnull === 't');
+                $info->has_default = ($rawcolumn->atthasdef === 't');
                 if ($info->has_default) {
                     // PG 9.5+ uses ::<TYPE> syntax for some defaults.
                     $parts = explode('::', $rawcolumn->adsrc);
@@ -675,19 +686,19 @@ class pgsql_native_moodle_database extends moodle_database {
                 } else {
                     $info->default_value = null;
                 }
-                $info->max_length    = $rawcolumn->atttypmod >> 16;
-                $info->scale         = ($rawcolumn->atttypmod & 0xFFFF) - 4;
+                $info->max_length = $rawcolumn->atttypmod >> 16;
+                $info->scale = ($rawcolumn->atttypmod & 0xFFFF) - 4;
 
             } else if (preg_match('/float(\d)/i', $rawcolumn->type, $matches)) {
                 $info->type = 'float';
-                $info->meta_type     = 'N';
-                $info->primary_key   = false;
-                $info->binary        = false;
-                $info->unsigned      = null;
-                $info->auto_increment= false;
-                $info->unique        = null;
-                $info->not_null      = ($rawcolumn->attnotnull === 't');
-                $info->has_default   = ($rawcolumn->atthasdef === 't');
+                $info->meta_type = 'N';
+                $info->primary_key = false;
+                $info->binary = false;
+                $info->unsigned = null;
+                $info->auto_increment = false;
+                $info->unique = null;
+                $info->not_null = ($rawcolumn->attnotnull === 't');
+                $info->has_default = ($rawcolumn->atthasdef === 't');
                 if ($info->has_default) {
                     // PG 9.5+ uses ::<TYPE> syntax for some defaults.
                     $parts = explode('::', $rawcolumn->adsrc);
@@ -704,20 +715,20 @@ class pgsql_native_moodle_database extends moodle_database {
                 if ($matches[1] == 8) {
                     // total 15 digits
                     $info->max_length = 8;
-                    $info->scale      = 7;
+                    $info->scale = 7;
                 } else {
                     // total 6 digits
                     $info->max_length = 4;
-                    $info->scale      = 2;
+                    $info->scale = 2;
                 }
 
             } else if ($rawcolumn->type === 'text') {
-                $info->type          = $rawcolumn->type;
-                $info->meta_type     = 'X';
-                $info->max_length    = -1;
-                $info->scale         = null;
-                $info->not_null      = ($rawcolumn->attnotnull === 't');
-                $info->has_default   = ($rawcolumn->atthasdef === 't');
+                $info->type = $rawcolumn->type;
+                $info->meta_type = 'X';
+                $info->max_length = -1;
+                $info->scale = null;
+                $info->not_null = ($rawcolumn->attnotnull === 't');
+                $info->has_default = ($rawcolumn->atthasdef === 't');
                 if ($info->has_default) {
                     $parts = explode('::', $rawcolumn->adsrc);
                     if (count($parts) > 1) {
@@ -729,25 +740,25 @@ class pgsql_native_moodle_database extends moodle_database {
                 } else {
                     $info->default_value = null;
                 }
-                $info->primary_key   = false;
-                $info->binary        = false;
-                $info->unsigned      = null;
-                $info->auto_increment= false;
-                $info->unique        = null;
+                $info->primary_key = false;
+                $info->binary = false;
+                $info->unsigned = null;
+                $info->auto_increment = false;
+                $info->unique = null;
 
             } else if ($rawcolumn->type === 'bytea') {
-                $info->type          = $rawcolumn->type;
-                $info->meta_type     = 'B';
-                $info->max_length    = -1;
-                $info->scale         = null;
-                $info->not_null      = ($rawcolumn->attnotnull === 't');
-                $info->has_default   = false;
+                $info->type = $rawcolumn->type;
+                $info->meta_type = 'B';
+                $info->max_length = -1;
+                $info->scale = null;
+                $info->not_null = ($rawcolumn->attnotnull === 't');
+                $info->has_default = false;
                 $info->default_value = null;
-                $info->primary_key   = false;
-                $info->binary        = true;
-                $info->unsigned      = null;
-                $info->auto_increment= false;
-                $info->unique        = null;
+                $info->primary_key = false;
+                $info->binary = true;
+                $info->unsigned = null;
+                $info->auto_increment = false;
+                $info->unique = null;
 
             }
 
@@ -851,7 +862,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * @return bool true
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
-    public function execute($sql, ?array $params=null) {
+    public function execute($sql, ?array $params = null) {
         list($sql, $params, $type) = $this->fix_sql_params($sql, $params);
 
         if (strpos($sql, ';') !== false) {
@@ -874,16 +885,16 @@ class pgsql_native_moodle_database extends moodle_database {
      * small datasets use get_records_sql - it leads to simpler code.
      *
      * The return type is like:
-     * @see function get_recordset.
-     *
      * @param string $sql the SQL select query to execute.
      * @param array $params array of sql parameters
      * @param int $limitfrom return a subset of records, starting at this point (optional, required if $limitnum is set).
      * @param int $limitnum return a subset comprising this many records (optional, required if $limitfrom is set).
      * @return moodle_recordset instance
      * @throws dml_exception A DML specific exception is thrown for any errors.
+     * @see function get_recordset.
+     *
      */
-    public function get_recordset_sql($sql, ?array $params=null, $limitfrom=0, $limitnum=0) {
+    public function get_recordset_sql($sql, ?array $params = null, $limitfrom = 0, $limitnum = 0) {
 
         list($limitfrom, $limitnum) = $this->normalise_limit_from_num($limitfrom, $limitnum);
 
@@ -989,7 +1000,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * to get the list of field types which it statically caches only for a single request.
      * This wraps it in a cache keyed by oid to avoid these DB calls on every request.
      *
-     * @param resource|PgSql\Result $result
+     * @param resource|\PgSql\Result $result
      * @param int $fieldnumber
      * @return string Field type
      */
@@ -1017,8 +1028,6 @@ class pgsql_native_moodle_database extends moodle_database {
      * Get a number of records as an array of objects using a SQL statement.
      *
      * Return value is like:
-     * @see function get_records.
-     *
      * @param string $sql the SQL select query to execute. The first column of this SELECT statement
      *   must be a unique value (usually the 'id' field), as it will be used as the key of the
      *   returned array.
@@ -1027,6 +1036,8 @@ class pgsql_native_moodle_database extends moodle_database {
      * @param int $limitnum return a subset comprising this many records (optional, required if $limitfrom is set).
      * @return array of objects, or empty array if no records were found
      * @throws dml_exception A DML specific exception is thrown for any errors.
+     * @see function get_records.
+     *
      */
     public function get_records_sql($sql, ?array $params = null, $limitfrom = 0, $limitnum = 0) {
         list($limitfrom, $limitnum) = $this->normalise_limit_from_num($limitfrom, $limitnum);
@@ -1065,7 +1076,7 @@ class pgsql_native_moodle_database extends moodle_database {
                 $colname = key($row);
                 debugging("Did you remember to make the first column something unique in your call to get_records? Duplicate value '$id' found in column '$colname'.", DEBUG_DEVELOPER);
             }
-            $return[$id] = (object) $row;
+            $return[$id] = (object)$row;
         }
 
         return $return;
@@ -1079,7 +1090,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * @return array of values
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
-    public function get_fieldset_sql($sql, ?array $params=null) {
+    public function get_fieldset_sql($sql, ?array $params = null) {
         list($sql, $params, $type) = $this->fix_sql_params($sql, $params);
 
         $this->query_start($sql, $params, SQL_QUERY_SELECT);
@@ -1109,7 +1120,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * @return bool|int true or new id
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
-    public function insert_record_raw($table, $params, $returnid=true, $bulk=false, $customsequence=false) {
+    public function insert_record_raw($table, $params, $returnid = true, $bulk = false, $customsequence = false) {
         if (!is_array($params)) {
             $params = (array)$params;
         }
@@ -1139,7 +1150,7 @@ class pgsql_native_moodle_database extends moodle_database {
         $i = 1;
         foreach ($params as $value) {
             $this->detect_objects($value);
-            $values[] = "\$".$i++;
+            $values[] = "\$" . $i++;
         }
         $values = implode(',', $values);
 
@@ -1173,7 +1184,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * @return bool|int true or new id
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
-    public function insert_record($table, $dataobject, $returnid=true, $bulk=false) {
+    public function insert_record($table, $dataobject, $returnid = true, $bulk = false) {
         $dataobject = (array)$dataobject;
 
         $columns = $this->get_columns($table);
@@ -1183,7 +1194,7 @@ class pgsql_native_moodle_database extends moodle_database {
 
         $cleaned = array();
 
-        foreach ($dataobject as $field=>$value) {
+        foreach ($dataobject as $field => $value) {
             if ($field === 'id') {
                 continue;
             }
@@ -1207,14 +1218,14 @@ class pgsql_native_moodle_database extends moodle_database {
      * This method is intended for inserting of large number of small objects,
      * do not use for huge objects with text or binary fields.
      *
-     * @since Moodle 2.7
-     *
-     * @param string $table  The database table to be inserted into
+     * @param string $table The database table to be inserted into
      * @param array|Traversable $dataobjects list of objects to be inserted, must be compatible with foreach
      * @return void does not return new record ids
      *
      * @throws coding_exception if data objects have different structure
      * @throws dml_exception A DML specific exception is thrown for any errors.
+     * @since Moodle 2.7
+     *
      */
     public function insert_records($table, $dataobjects) {
         if (!is_array($dataobjects) and !($dataobjects instanceof Traversable)) {
@@ -1277,12 +1288,12 @@ class pgsql_native_moodle_database extends moodle_database {
             $vals = array();
             foreach ($columns as $field => $column) {
                 $params[] = $this->normalise_value($column, $dataobject[$field]);
-                $vals[] = "\$".$i++;
+                $vals[] = "\$" . $i++;
             }
-            $values[] = '('.implode(',', $vals).')';
+            $values[] = '(' . implode(',', $vals) . ')';
         }
 
-        $fieldssql = '('.implode(',', array_keys($columns)).')';
+        $fieldssql = '(' . implode(',', array_keys($columns)) . ')';
         $valuessql = implode(',', $values);
 
         $sql = "INSERT INTO {$this->prefix}$table $fieldssql VALUES $valuessql";
@@ -1307,7 +1318,7 @@ class pgsql_native_moodle_database extends moodle_database {
         $columns = $this->get_columns($table);
         $cleaned = array();
 
-        foreach ($dataobject as $field=>$value) {
+        foreach ($dataobject as $field => $value) {
             $this->detect_objects($value);
             if (!isset($columns[$field])) {
                 continue;
@@ -1327,7 +1338,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * @return bool true
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
-    public function update_record_raw($table, $params, $bulk=false) {
+    public function update_record_raw($table, $params, $bulk = false) {
         $params = (array)$params;
 
         if (!isset($params['id'])) {
@@ -1343,15 +1354,15 @@ class pgsql_native_moodle_database extends moodle_database {
         $i = 1;
 
         $sets = array();
-        foreach ($params as $field=>$value) {
+        foreach ($params as $field => $value) {
             $this->detect_objects($value);
-            $sets[] = "$field = \$".$i++;
+            $sets[] = "$field = \$" . $i++;
         }
 
         $params[] = $id; // last ? in WHERE condition
 
         $sets = implode(',', $sets);
-        $sql = "UPDATE {$this->prefix}$table SET $sets WHERE id=\$".$i;
+        $sql = "UPDATE {$this->prefix}$table SET $sets WHERE id=\$" . $i;
 
         $this->query_start($sql, $params, SQL_QUERY_UPDATE);
         $result = pg_query_params($this->pgsql, $sql, $params);
@@ -1375,13 +1386,13 @@ class pgsql_native_moodle_database extends moodle_database {
      * @return bool true
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
-    public function update_record($table, $dataobject, $bulk=false) {
+    public function update_record($table, $dataobject, $bulk = false) {
         $dataobject = (array)$dataobject;
 
         $columns = $this->get_columns($table);
         $cleaned = array();
 
-        foreach ($dataobject as $field=>$value) {
+        foreach ($dataobject as $field => $value) {
             if (!isset($columns[$field])) {
                 continue;
             }
@@ -1405,7 +1416,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * @return bool true
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
-    public function set_field_select($table, $newfield, $newvalue, $select, ?array $params=null) {
+    public function set_field_select($table, $newfield, $newvalue, $select, ?array $params = null) {
 
         if ($select) {
             $select = "WHERE $select";
@@ -1414,7 +1425,7 @@ class pgsql_native_moodle_database extends moodle_database {
             $params = array();
         }
         list($select, $params, $type) = $this->fix_sql_params($select, $params);
-        $i = count($params)+1;
+        $i = count($params) + 1;
 
         // Get column metadata
         $columns = $this->get_columns($table);
@@ -1444,7 +1455,7 @@ class pgsql_native_moodle_database extends moodle_database {
      * @return bool true
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
-    public function delete_records_select($table, $select, ?array $params=null) {
+    public function delete_records_select($table, $select, ?array $params = null) {
         if ($select) {
             $select = "WHERE $select";
         }
@@ -1500,11 +1511,11 @@ class pgsql_native_moodle_database extends moodle_database {
         return "CAST({$field} AS VARCHAR)";
     }
 
-    public function sql_cast_char2int($fieldname, $text=false) {
+    public function sql_cast_char2int($fieldname, $text = false) {
         return ' CAST(' . $fieldname . ' AS INT) ';
     }
 
-    public function sql_cast_char2real($fieldname, $text=false) {
+    public function sql_cast_char2real($fieldname, $text = false) {
         return " $fieldname::real ";
     }
 
@@ -1518,8 +1529,8 @@ class pgsql_native_moodle_database extends moodle_database {
         return " '' || $s ";
     }
 
-    public function sql_concat_join($separator="' '", $elements=array()) {
-        for ($n=count($elements)-1; $n > 0 ; $n--) {
+    public function sql_concat_join($separator = "' '", $elements = array()) {
+        for ($n = count($elements) - 1; $n > 0; $n--) {
             array_splice($elements, $n, 0, $separator);
         }
         $s = implode(' || ', $elements);
@@ -1570,8 +1581,8 @@ class pgsql_native_moodle_database extends moodle_database {
     /**
      * Does this driver support tool_replace?
      *
-     * @since Moodle 2.6.1
      * @return bool
+     * @since Moodle 2.6.1
      */
     public function replace_all_text_supported() {
         return true;

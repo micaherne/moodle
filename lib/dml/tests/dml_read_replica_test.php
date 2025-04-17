@@ -38,7 +38,7 @@ require_once(__DIR__.'/../../tests/fixtures/event_fixtures.php');
  * @category   dml
  * @copyright  2018 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \moodle_read_replica_trait
+ * @covers     \core\dml\moodle_read_replica_trait
  */
 final class dml_read_replica_test extends \database_driver_testcase {
 

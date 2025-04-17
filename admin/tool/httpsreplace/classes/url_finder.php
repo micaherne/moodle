@@ -24,7 +24,7 @@
 
 namespace tool_httpsreplace;
 
-use database_column_info;
+use core\dml\database_column_info;
 use progress_bar;
 
 defined('MOODLE_INTERNAL') || die();

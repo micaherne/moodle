@@ -26,7 +26,7 @@ use core_table\local\filter\integer_filter;
 use core_table\local\filter\string_filter;
 use core_user\table\participants_filterset;
 use core_user\table\participants_search;
-use moodle_recordset;
+use core\dml\moodle_recordset;
 use stdClass;
 
 /**

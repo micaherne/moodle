@@ -113,7 +113,7 @@ class di {
             \core\hook\manager::class => $hookmanager,
 
             // The database.
-            \moodle_database::class => function(): \moodle_database {
+            dml\moodle_database::class => function(): dml\moodle_database {
                 global $DB;
 
                 return $DB;

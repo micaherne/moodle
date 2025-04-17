@@ -22,7 +22,7 @@ use context_helper;
 use context_module;
 use context_system;
 use context_user;
-use moodle_recordset;
+use core\dml\moodle_recordset;
 use core_competency\api;
 use core_competency\competency;
 use core_competency\competency_framework;

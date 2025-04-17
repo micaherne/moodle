@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\dml\database_column_info;
+use core\dml\driver\mysqli\native\mysqli_native_moodle_database;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/ddl/sql_generator.php');

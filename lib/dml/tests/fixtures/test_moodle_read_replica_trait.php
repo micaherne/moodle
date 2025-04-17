@@ -59,7 +59,7 @@ trait test_moodle_read_replica_trait {
         $this->dbhreadonly = $ro;
         $this->set_db_handle($this->dbhwrite);
 
-        $this->temptables = new \moodle_temptables($this);
+        $this->temptables = new dml\moodle_temptables($this);
     }
 
     /**

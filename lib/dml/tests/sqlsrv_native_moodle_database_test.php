@@ -25,12 +25,11 @@
 
 namespace core;
 
-use sqlsrv_native_moodle_database;
+use core\dml\driver\sqlsrv\native\sqlsrv_native_moodle_database;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/lib/dml/sqlsrv_native_moodle_database.php');
 
 /**
  * Test case for sqlsrv dml support.
@@ -248,7 +247,7 @@ EOT
         $this->assertSame($expectedmainquery, $mainquery);
 
         // The has_query_order_by static method is protected. Use Reflection to call the method.
-        $method = new \ReflectionMethod('sqlsrv_native_moodle_database', 'has_query_order_by');
+        $method = new \ReflectionMethod('core\dml\driver\sqlsrv\native\sqlsrv_native_moodle_database', 'has_query_order_by');
         $result = $method->invoke(null, $sql);
         $this->assertSame($expectedresult, $result);
     }

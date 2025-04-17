@@ -63,7 +63,7 @@ final class step_test extends \advanced_testcase {
     public function mock_database() {
         global $DB;
 
-        $DB = $this->getMockBuilder('moodle_database')
+        $DB = $this->getMockBuilder('core\dml\moodle_database')
             ->getMock();
 
         return $DB;

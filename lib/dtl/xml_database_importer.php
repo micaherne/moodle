@@ -60,7 +60,7 @@ abstract class xml_database_importer extends database_importer {
      */
     protected function tag_open($parser, $tag, $attributes) {
         switch ($tag) {
-            case 'moodle_database' :
+            case 'core\dml\moodle_database' :
                 if (empty($attributes['version']) || empty($attributes['timestamp'])) {
                     throw new dbtransfer_exception('malformedxmlexception');
                 }
@@ -108,7 +108,7 @@ abstract class xml_database_importer extends database_importer {
      */
     protected function tag_close($parser, $tag) {
         switch ($tag) {
-            case 'moodle_database' :
+            case 'core\dml\moodle_database' :
                 $this->finish_database_import();
                 break;
 

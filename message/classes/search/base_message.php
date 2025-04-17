@@ -138,7 +138,7 @@ abstract class base_message extends \core_search\base {
      * @param int $modifiedfrom Modified from date
      * @param \context|null $context Context or null
      * @param string $userfield Name of user field (from or to) being considered
-     * @return \moodle_recordset|null Recordset or null if no results possible
+     * @return \core\dml\moodle_recordset|null Recordset or null if no results possible
      * @throws \coding_exception If context invalid
      */
     protected function get_document_recordset_helper($modifiedfrom, ?\context $context,

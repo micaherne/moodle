@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\dml\database_column_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 

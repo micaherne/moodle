@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace core\dml;
+use coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -43,16 +46,16 @@ defined('MOODLE_INTERNAL') || die();
  *  integer - number of digits
  *  float - digits left from floating point
  *  boolean - 1
- * @property-read int    $max_length size of the database field, eg how much data can you put in there.
+ * @property-read int $max_length size of the database field, eg how much data can you put in there.
  *
- * @property-read int    $scale Scale of field, decimal points (float), null otherwise.
- * @property-read bool   $not_null true if the field is set to NOT NULL.
- * @property-read bool   $primary_key true if the field is the primary key. (usually 'id').
- * @property-read bool   $auto_increment True if field is autoincrementing or sequence.
- * @property-read bool   $binary True if the field is binary.
- * @property-read bool   $has_default True if the default value is defined.
+ * @property-read int $scale Scale of field, decimal points (float), null otherwise.
+ * @property-read bool $not_null true if the field is set to NOT NULL.
+ * @property-read bool $primary_key true if the field is the primary key. (usually 'id').
+ * @property-read bool $auto_increment True if field is autoincrementing or sequence.
+ * @property-read bool $binary True if the field is binary.
+ * @property-read bool $has_default True if the default value is defined.
  * @property-read string $default_value The default value (if defined).
- * @property-read bool   $unique True if the field values are unique, false if not.
+ * @property-read bool $unique True if the field values are unique, false if not.
  *
  * Standardised one character column type, uppercased and enumerated as follows:
  * R - counter (integer primary key)
@@ -96,7 +99,7 @@ class database_column_info {
         if (isset($this->data[$variablename]) || array_key_exists($variablename, $this->data)) {
             return $this->data[$variablename];
         }
-        throw new coding_exception('Asked for a variable that is not available . ('.$variablename.').');
+        throw new coding_exception('Asked for a variable that is not available . (' . $variablename . ').');
     }
 
     /**
@@ -117,8 +120,8 @@ class database_column_info {
     public function __construct($data) {
         // Initialize all the allowed variables to null so the array key exists.
         $validelements = array('name', 'type', 'max_length', 'scale', 'not_null', 'primary_key',
-                               'auto_increment', 'binary', 'has_default',  'default_value',
-                               'unique', 'meta_type');
+            'auto_increment', 'binary', 'has_default', 'default_value',
+            'unique', 'meta_type');
         foreach ($validelements as $element) {
             if (isset($data->$element)) {
                 $this->data[$element] = $data->$element;
@@ -129,14 +132,14 @@ class database_column_info {
 
         switch ($this->data['meta_type']) {
             case 'R': // normalise counters (usually 'id')
-                $this->data['binary']         = false;
-                $this->data['has_default']    = false;
-                $this->data['default_value']  = null;
-                $this->data['unique']         = true;
+                $this->data['binary'] = false;
+                $this->data['has_default'] = false;
+                $this->data['default_value'] = null;
+                $this->data['unique'] = true;
                 break;
             case 'C':
                 $this->data['auto_increment'] = false;
-                $this->data['binary']         = false;
+                $this->data['binary'] = false;
                 break;
         }
     }

@@ -37,6 +37,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace core\dml;
+
+use circular;
+use core\dml\moodle_database;
+use prefix;
+use simple;
+use xmldb_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 class moodle_temptables {
@@ -53,8 +61,8 @@ class moodle_temptables {
      * @param moodle_database $mdb An instance of moodle_database.
      */
     public function __construct($mdb) {
-        $this->mdb        = $mdb;
-        $this->prefix     = $mdb->get_prefix();
+        $this->mdb = $mdb;
+        $this->prefix = $mdb->get_prefix();
         $this->temptables = array();
     }
 
@@ -137,7 +145,7 @@ class moodle_temptables {
         if ($temptables = $this->get_temptables()) {
             error_log('Potential coding error - existing temptables found when disposing database. Must be dropped!');
             foreach ($temptables as $temptable) {
-                 $this->mdb->get_manager()->drop_table(new xmldb_table($temptable));
+                $this->mdb->get_manager()->drop_table(new xmldb_table($temptable));
             }
         }
         $this->mdb = null;

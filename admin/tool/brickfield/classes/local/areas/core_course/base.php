@@ -35,11 +35,11 @@ abstract class base extends area_base {
     /**
      * Find recordset of the relevant areas.
      * @param \core\event\base $event
-     * @return \moodle_recordset|null
+     * @return \core\dml\moodle_recordset|null
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function find_relevant_areas(\core\event\base $event): ?\moodle_recordset {
+    public function find_relevant_areas(\core\event\base $event): ?\core\dml\moodle_recordset {
         if ($event instanceof course_created) {
             return $this->find_fields_in_course_table(['courseid' => $event->courseid]);
         } else if ($event instanceof course_restored) {
@@ -53,11 +53,11 @@ abstract class base extends area_base {
     /**
      * Find recordset of the course areas.
      * @param int $courseid
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function find_course_areas(int $courseid): ?\moodle_recordset {
+    public function find_course_areas(int $courseid): ?\core\dml\moodle_recordset {
         return $this->find_fields_in_course_table(['courseid' => $courseid]);
     }
 
@@ -65,7 +65,7 @@ abstract class base extends area_base {
      * Return an array of area objects that contain content at the site and system levels only.
      * @return mixed
      */
-    public function find_system_areas(): ?\moodle_recordset {
+    public function find_system_areas(): ?\core\dml\moodle_recordset {
         return null;
     }
 
@@ -73,11 +73,11 @@ abstract class base extends area_base {
      * Helper method that can be used by the classes that define a field in the 'course' table
      *
      * @param array $params
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    protected function find_fields_in_course_table(array $params = []): \moodle_recordset {
+    protected function find_fields_in_course_table(array $params = []): \core\dml\moodle_recordset {
         global $DB;
         $where = [];
 

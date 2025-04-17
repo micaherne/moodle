@@ -2,6 +2,8 @@
 
 global $CFG;
 
+use core\dml\moodle_recordset;
+
 require_once("../../config.php");
 require_once("lib.php");
 

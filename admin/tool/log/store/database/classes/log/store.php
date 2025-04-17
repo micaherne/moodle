@@ -32,7 +32,7 @@ class store implements \tool_log\log\writer, \core\log\sql_reader {
         dispose as helper_dispose;
     }
 
-    /** @var \moodle_database $extdb */
+    /** @var \core\dml\moodle_database $extdb */
     protected $extdb;
 
     /** @var bool $logguests true if logging guest access */
@@ -79,7 +79,7 @@ class store implements \tool_log\log\writer, \core\log\sql_reader {
         }
         list($dblibrary, $dbtype) = explode('/', $dbdriver);
 
-        if (!$db = \moodle_database::get_driver_instance($dbtype, $dblibrary, true)) {
+        if (!$db = \core\dml\moodle_database::get_driver_instance($dbtype, $dblibrary, true)) {
             debugging("Unknown driver $dblibrary/$dbtype", DEBUG_DEVELOPER);
             $this->extdb = false;
             return false;
@@ -296,7 +296,7 @@ class store implements \tool_log\log\writer, \core\log\sql_reader {
     /**
      * Get the external database object.
      *
-     * @return \moodle_database $extdb
+     * @return \core\dml\moodle_database $extdb
      */
     public function get_extdb() {
         if (!$this->init()) {

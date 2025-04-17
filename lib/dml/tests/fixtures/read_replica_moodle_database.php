@@ -28,7 +28,6 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/test_moodle_database.php');
-require_once(__DIR__.'/../../moodle_read_replica_trait.php');
 
 /**
  * Database driver test class with moodle_read_replica_trait
@@ -39,7 +38,7 @@ require_once(__DIR__.'/../../moodle_read_replica_trait.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class read_replica_moodle_database extends test_moodle_database {
-    use \moodle_read_replica_trait;
+    use dml\moodle_read_replica_trait;
 
     /** @var string */
     protected $handle;

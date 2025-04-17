@@ -45,6 +45,9 @@
  * @global object $CFG
  * @name $CFG
  */
+
+use core\dml\moodle_database;
+
 global $CFG; // this should be done much earlier in config.php before creating new $CFG instance
 
 if (!isset($CFG)) {

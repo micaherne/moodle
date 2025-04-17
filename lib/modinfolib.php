@@ -32,6 +32,7 @@ if (!defined('MAX_MODINFO_CACHE_SIZE')) {
     define('MAX_MODINFO_CACHE_SIZE', 10);
 }
 
+use core\dml\moodle_database;
 use core_courseformat\output\activitybadge;
 use core_courseformat\sectiondelegate;
 use core_courseformat\sectiondelegatemodule;

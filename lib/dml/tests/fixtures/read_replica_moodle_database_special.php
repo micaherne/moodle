@@ -97,7 +97,7 @@ class read_replica_moodle_database_special extends read_replica_moodle_database 
  * @copyright  2018 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class read_replica_moodle_recordset_special extends \moodle_recordset {
+class read_replica_moodle_recordset_special extends dml\moodle_recordset {
     /**
      * Iterator interface
      * @return void

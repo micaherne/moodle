@@ -27,7 +27,7 @@ namespace mod_forum\local\vaults;
 defined('MOODLE_INTERNAL') || die();
 
 use mod_forum\local\factories\entity as entity_factory;
-use moodle_database;
+use core\dml\moodle_database;
 
 /**
  * Abstract class for loading records from the DB.

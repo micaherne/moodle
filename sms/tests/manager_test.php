@@ -146,7 +146,7 @@ final class manager_test extends \advanced_testcase {
             config: $config,
         );
 
-        $db = \core\di::get(\moodle_database::class);
+        $db = \core\di::get(\core\dml\moodle_database::class);
         $db->set_field('sms_gateways', 'gateway', 'uninstalled', ['id' => $uninstalledgateway->id]);
 
         $instances = $manager->get_gateway_instances();
@@ -526,7 +526,7 @@ final class manager_test extends \advanced_testcase {
     }
 
     public function test_get_messages(): void {
-        $db = $this->createStub(\moodle_database::class);
+        $db = $this->createStub(\core\dml\moodle_database::class);
         $db->method('get_records')->willReturn([
             (object) [
                 'id' => 1,
@@ -541,7 +541,7 @@ final class manager_test extends \advanced_testcase {
                 'timecreated' => time(),
             ],
         ]);
-        \core\di::set(\moodle_database::class, $db);
+        \core\di::set(\core\dml\moodle_database::class, $db);
 
         $manager = \core\di::get(\core_sms\manager::class);
         $result = $manager->get_messages();

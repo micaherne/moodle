@@ -49,7 +49,7 @@ class section extends \core_search\base {
      *
      * @param int $modifiedfrom timestamp
      * @param \context|null $context Restriction context
-     * @return \moodle_recordset|null Recordset or null if no change possible
+     * @return \core\dml\moodle_recordset|null Recordset or null if no change possible
      */
     public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
         global $DB;

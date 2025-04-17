@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\dml\moodle_database;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** True/False question type */

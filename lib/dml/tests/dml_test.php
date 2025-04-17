@@ -28,8 +28,8 @@ namespace core;
 use dml_exception;
 use dml_missing_record_exception;
 use dml_multiple_records_exception;
-use moodle_database;
-use moodle_transaction;
+use core\dml\moodle_database;
+use core\dml\moodle_transaction;
 use xmldb_key;
 use xmldb_table;
 
@@ -42,7 +42,7 @@ defined('MOODLE_INTERNAL') || die();
  * @category   test
  * @copyright  2008 Nicolas Connault
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers \moodle_database
+ * @covers \core\dml\moodle_database
  */
 final class dml_test extends \database_driver_testcase {
 
@@ -487,7 +487,7 @@ final class dml_test extends \database_driver_testcase {
         $DB = $this->tdb;
 
         require_once($CFG->dirroot . '/lib/dml/tests/fixtures/test_dml_sql_debugging_fixture.php');
-        $databasemock = $this->getMockBuilder(\moodle_database::class)->getMock();
+        $databasemock = $this->getMockBuilder(dml\moodle_database::class)->getMock();
         $fixture = new \test_dml_sql_debugging_fixture($databasemock);
 
         $sql = "SELECT * FROM {users}";
@@ -1006,7 +1006,7 @@ EOD;
 
         // Standard recordset iteration.
         $rs = $DB->get_recordset($tablename);
-        $this->assertInstanceOf('moodle_recordset', $rs);
+        $this->assertInstanceOf('core\dml\moodle_recordset', $rs);
         reset($data);
         foreach ($rs as $record) {
             $data_record = current($data);
@@ -1019,7 +1019,7 @@ EOD;
 
         // Iterator style usage.
         $rs = $DB->get_recordset($tablename);
-        $this->assertInstanceOf('moodle_recordset', $rs);
+        $this->assertInstanceOf('core\dml\moodle_recordset', $rs);
         reset($data);
         while ($rs->valid()) {
             $record = $rs->current();
@@ -1034,7 +1034,7 @@ EOD;
 
         // Make sure rewind is ignored.
         $rs = $DB->get_recordset($tablename);
-        $this->assertInstanceOf('moodle_recordset', $rs);
+        $this->assertInstanceOf('core\dml\moodle_recordset', $rs);
         reset($data);
         $i = 0;
         foreach ($rs as $record) {
@@ -6122,7 +6122,7 @@ EOD;
     }
 
     /**
-     * Mock the methods used by {@see \mysqli_native_moodle_database::get_server_info()}.
+     * Mock the methods used by {@see \core\dml\driver\mysqli\native\mysqli_native_moodle_database::get_server_info()}.
      *
      * Mocking allows to test it without the need of an actual MySQL-ish running DB server.
      *
@@ -6130,8 +6130,8 @@ EOD;
      * @param string $versionfromdb A string representing the result of VERSION function.
      * @param bool $cfgversionfromdb A boolean representing !empty($CFG->dboptions['versionfromdb']).
      * @param string $expecteddbversion A string representing the expected DB version.
-     * @see \mysqli_native_moodle_database::get_server_info()
-     * @covers \mysqli_native_moodle_database::get_server_info
+     * @see \core\dml\driver\mysqli\native\mysqli_native_moodle_database::get_server_info()
+     * @covers \core\dml\driver\mysqli\native\mysqli_native_moodle_database::get_server_info
      * @dataProvider get_server_info_mysql_provider
      */
     public function test_get_server_info_mysql(
@@ -6148,7 +6148,7 @@ EOD;
             'get_version_from_db',
             'should_db_version_be_read_from_db',
         ];
-        $mysqlinativemoodledatabase = $this->getMockBuilder('\mysqli_native_moodle_database')
+        $mysqlinativemoodledatabase = $this->getMockBuilder('\core\dml\driver\mysqli\native\mysqli_native_moodle_database')
             ->onlyMethods($methods)
             ->getMock();
         $mysqlinativemoodledatabase->method('get_mysqli_server_info')->willReturn($mysqliserverinfo);
@@ -6161,7 +6161,7 @@ EOD;
     }
 
     /**
-     * Data provider to test {@see \mysqli_native_moodle_database::get_server_info} when mocking
+     * Data provider to test {@see \core\dml\driver\mysqli\native\mysqli_native_moodle_database::get_server_info} when mocking
      * the results of a connection to the DB server.
      *
      * The set of the data is represented by the following array items:
@@ -6171,7 +6171,7 @@ EOD;
      * - a string representing the expected DB version
      *
      * @return array[]
-     * @see \mysqli_native_moodle_database::get_server_info
+     * @see \core\dml\driver\mysqli\native\mysqli_native_moodle_database::get_server_info
      */
     public static function get_server_info_mysql_provider(): array {
         return [
@@ -6245,9 +6245,9 @@ EOD;
     }
 
     /**
-     * Test {@see \mysqli_native_moodle_database::get_server_info()} with the actual DB Server.
-     * @see \mysqli_native_moodle_database::get_server_info
-     * @covers \mysqli_native_moodle_database::get_server_info
+     * Test {@see \core\dml\driver\mysqli\native\mysqli_native_moodle_database::get_server_info()} with the actual DB Server.
+     * @see \core\dml\driver\mysqli\native\mysqli_native_moodle_database::get_server_info
+     * @covers \core\dml\driver\mysqli\native\mysqli_native_moodle_database::get_server_info
      */
     public function test_get_server_info_dbfamily_mysql(): void {
         $DB = $this->tdb;
@@ -6261,7 +6261,7 @@ EOD;
         }
         // By default, DB Server version is read from the PHP client.
         $this->assertTrue(empty($cfg->dboptions['versionfromdb']));
-        $rc = new \ReflectionClass(\mysqli_native_moodle_database::class);
+        $rc = new \ReflectionClass(dml\driver\mysql\native\mysqli_native_moodle_database::class);
         $rcm = $rc->getMethod('should_db_version_be_read_from_db');
         $this->assertFalse($rcm->invokeArgs($DB, []));
 
@@ -6294,9 +6294,9 @@ EOD;
     /**
      * Test the COUNT() window function with the actual DB Server.
      *
-     * @covers \moodle_database::get_counted_recordset_sql()
-     * @covers \moodle_database::get_counted_records_sql()
-     * @covers \moodle_database::generate_fullcount_sql()
+     * @covers \core\dml\moodle_database::get_counted_recordset_sql()
+     * @covers \core\dml\moodle_database::get_counted_records_sql()
+     * @covers \core\dml\moodle_database::generate_fullcount_sql()
      * @return void
      */
     public function test_count_window_function(): void {

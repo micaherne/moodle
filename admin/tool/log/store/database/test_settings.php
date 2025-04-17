@@ -42,7 +42,7 @@ if (empty($dbtable)) {
 
 $dbdriver = get_config('logstore_database', 'dbdriver');
 list($dblibrary, $dbtype) = explode('/', $dbdriver);
-if (!$db = \moodle_database::get_driver_instance($dbtype, $dblibrary, true)) {
+if (!$db = \core\dml\moodle_database::get_driver_instance($dbtype, $dblibrary, true)) {
     echo $OUTPUT->notification("Unknown driver $dblibrary/$dbtype", "notifyproblem");
     die();
 }

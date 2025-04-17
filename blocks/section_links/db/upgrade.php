@@ -37,6 +37,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\dml\moodle_database;
+
 /**
  * Upgrade code for the section links block.
  *

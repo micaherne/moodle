@@ -18,7 +18,7 @@ namespace core;
 
 use ReflectionClass;
 use mysqli;
-use moodle_database, mysqli_native_moodle_database;
+use core\dml\moodle_database, core\dml\driver\mysqli\native\mysqli_native_moodle_database;
 use moodle_exception;
 
 /**
@@ -28,7 +28,7 @@ use moodle_exception;
  * @category test
  * @copyright 2023 Catalyst IT
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers  \mysqli_native_moodle_database
+ * @covers  \core\dml\driver\mysqli\native\mysqli_native_moodle_database
  */
 final class mysqli_native_moodle_database_test extends \advanced_testcase {
 

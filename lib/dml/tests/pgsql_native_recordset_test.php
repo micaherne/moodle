@@ -23,10 +23,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\dml\driver\pgsql\native\pgsql_native_moodle_database;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/lib/dml/pgsql_native_moodle_database.php');
 
 /**
  * Test specific features of the Postgres dml support relating to recordsets.
@@ -64,7 +65,7 @@ final class pgsql_native_recordset_test extends basic_testcase {
 
         // To make testing easier, create a database with the same dboptions as the real one,
         // but a low number for the cursor size.
-        $this->specialdb = \moodle_database::get_driver_instance('pgsql', 'native', true);
+        $this->specialdb = \core\dml\moodle_database::get_driver_instance('pgsql', 'native', true);
         $dboptions = $CFG->dboptions;
         $dboptions['fetchbuffersize'] = $fetchbuffersize;
         $this->specialdb->connect($CFG->dbhost, $CFG->dbuser, $CFG->dbpass, $CFG->dbname,

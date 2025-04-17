@@ -512,7 +512,7 @@ final class file_system_test extends \advanced_testcase {
         $filecontent = 'example content';
         $contenthash = \file_storage::hash_from_string($filecontent);
 
-        $DB = $this->getMockBuilder(\moodle_database::class)
+        $DB = $this->getMockBuilder(dml\moodle_database::class)
             ->onlyMethods(['record_exists'])
             ->getMockForAbstractClass();
         $DB->method('record_exists')->willReturn(true);
@@ -535,7 +535,7 @@ final class file_system_test extends \advanced_testcase {
         $filecontent = 'example content';
         $contenthash = \file_storage::hash_from_string($filecontent);
 
-        $DB = $this->getMockBuilder(\moodle_database::class)
+        $DB = $this->getMockBuilder(dml\moodle_database::class)
             ->onlyMethods(['record_exists'])
             ->getMockForAbstractClass();
         $DB->method('record_exists')->willReturn(false);

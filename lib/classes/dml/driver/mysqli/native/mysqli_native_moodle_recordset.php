@@ -22,9 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace core\dml\driver\mysqli\native;
 
-require_once(__DIR__.'/moodle_recordset.php');
+use core\dml\moodle_recordset;
+use stdClass;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Mysqli specific moodle recordset class
@@ -40,7 +43,7 @@ class mysqli_native_moodle_recordset extends moodle_recordset {
     protected $current;
 
     public function __construct($result) {
-        $this->result  = $result;
+        $this->result = $result;
         $this->current = $this->fetch_next();
     }
 
@@ -87,7 +90,7 @@ class mysqli_native_moodle_recordset extends moodle_recordset {
     public function close() {
         if ($this->result) {
             $this->result->close();
-            $this->result  = null;
+            $this->result = null;
         }
         $this->current = null;
     }

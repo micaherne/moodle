@@ -24,7 +24,7 @@
 namespace message_email\task;
 
 use core\task\scheduled_task;
-use moodle_recordset;
+use core\dml\moodle_recordset;
 
 defined('MOODLE_INTERNAL') || die();
 

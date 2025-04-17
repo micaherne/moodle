@@ -40,14 +40,14 @@ final class quiz_statistics_report_test extends \advanced_testcase {
     /**
      * Secondary database connection for creating locks.
      *
-     * @var \moodle_database|null
+     * @var \core\dml\moodle_database|null
      */
-    protected static ?\moodle_database $lockdb;
+    protected static ?\core\dml\moodle_database $lockdb;
 
     /**
      * Lock factory using the secondary database connection.
      *
-     * @var \moodle_database|null
+     * @var \core\dml\moodle_database|null
      */
     protected static ?\core\lock\lock_factory $lockfactory;
 
@@ -60,7 +60,7 @@ final class quiz_statistics_report_test extends \advanced_testcase {
     public function setUp(): void {
         global $CFG;
         parent::setUp();
-        self::$lockdb = \moodle_database::get_driver_instance($CFG->dbtype, $CFG->dblibrary);
+        self::$lockdb = \core\dml\moodle_database::get_driver_instance($CFG->dbtype, $CFG->dblibrary);
         self::$lockdb->connect($CFG->dbhost, $CFG->dbuser, $CFG->dbpass, $CFG->dbname, $CFG->prefix, $CFG->dboptions);
 
         $lockfactoryclass = \core\lock\lock_config::get_lock_factory_class();

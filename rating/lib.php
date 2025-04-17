@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\dml\moodle_database;
+
 define('RATING_UNSET_RATING', -999);
 
 define ('RATING_AGGREGATE_NONE', 0); // No ratings.

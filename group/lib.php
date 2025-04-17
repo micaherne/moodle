@@ -28,6 +28,8 @@
  * require_once $CFG->dirroot.'/group/lib.php' must be used
  */
 
+use core\dml\moodle_recordset;
+
 /**
  * Adds a specified user to a group
  *

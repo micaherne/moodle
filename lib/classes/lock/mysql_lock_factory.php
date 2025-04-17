@@ -31,7 +31,7 @@ class mysql_lock_factory implements lock_factory {
     /** @var string $dbprefix - used as a namespace for these types of locks */
     protected $dbprefix = '';
 
-    /** @var \moodle_database $db Hold a reference to the global $DB */
+    /** @var \core\dml\moodle_database $db Hold a reference to the global $DB */
     protected $db;
 
     /** @var array $openlocks - List of held locks - used by auto-release */

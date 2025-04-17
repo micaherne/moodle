@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace core\dml;
+
+use core\dml\moodle_database;
+use dml_transaction_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -32,9 +37,9 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class moodle_transaction {
-    /** @var array The debug_backtrace() returned array.*/
+    /** @var array The debug_backtrace() returned array. */
     private $start_backtrace;
-    /**@var moodle_database The moodle_database instance.*/
+    /**@var moodle_database The moodle_database instance. */
     private $database = null;
 
     /**

@@ -24,9 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v2 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace core\dml\driver\sqlsrv\native;
 
-require_once(__DIR__.'/moodle_temptables.php');
+use core\dml\moodle_temptables;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * This class is not specific to the SQL Server Native Driver but rather

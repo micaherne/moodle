@@ -47,7 +47,7 @@ defined('MOODLE_INTERNAL') || die();
 class recordset_walk implements \Iterator {
 
     /**
-     * @var \moodle_recordset The recordset.
+     * @var \core\dml\moodle_recordset The recordset.
      */
     protected $recordset;
 
@@ -64,11 +64,11 @@ class recordset_walk implements \Iterator {
     /**
      * Create a new iterator applying the callback to each record.
      *
-     * @param \moodle_recordset $recordset Recordset to iterate.
+     * @param \core\dml\moodle_recordset $recordset Recordset to iterate.
      * @param callable $callback Apply this function to each record. If using a method, it should be public.
      * @param mixed $callbackextra An extra single parameter to pass to the callback. Use a container to pass multiple values.
      */
-    public function __construct(\moodle_recordset $recordset, callable $callback, $callbackextra = null) {
+    public function __construct(\core\dml\moodle_recordset $recordset, callable $callback, $callbackextra = null) {
         $this->recordset = $recordset;
         $this->callback = $callback;
         $this->callbackextra = $callbackextra;

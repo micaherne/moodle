@@ -140,9 +140,9 @@ class provider implements
      * Export all autosave records in the recordset, and close the recordset when finished.
      *
      * @param   stdClass   $user The user whose data is to be exported
-     * @param   \moodle_recordset $autosaves The recordset containing the data to export
+     * @param   \core\dml\moodle_recordset $autosaves The recordset containing the data to export
      */
-    protected static function export_autosaves(stdClass $user, \moodle_recordset $autosaves) {
+    protected static function export_autosaves(stdClass $user, \core\dml\moodle_recordset $autosaves) {
         foreach ($autosaves as $autosave) {
             $context = \context::instance_by_id($autosave->contextid);
             $subcontext = [

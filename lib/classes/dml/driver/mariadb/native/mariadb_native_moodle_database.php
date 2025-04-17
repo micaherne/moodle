@@ -22,12 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace core\dml\driver\mariadb\native;
 
-require_once(__DIR__.'/moodle_database.php');
-require_once(__DIR__.'/mysqli_native_moodle_database.php');
-require_once(__DIR__.'/mysqli_native_moodle_recordset.php');
-require_once(__DIR__.'/mysqli_native_moodle_temptables.php');
+use core\dml\driver\mysqli\native\mysqli_native_moodle_database;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Native MariaDB class representing moodle database interface.

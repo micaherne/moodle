@@ -791,9 +791,9 @@ class view {
     /**
      * Load the questions we need to display.
      *
-     * @return \moodle_recordset questionid => data about each question.
+     * @return \core\dml\moodle_recordset questionid => data about each question.
      */
-    protected function load_page_questions(): \moodle_recordset {
+    protected function load_page_questions(): \core\dml\moodle_recordset {
         global $DB;
 
         // Load the questions based on the page we are on.

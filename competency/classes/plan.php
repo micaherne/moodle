@@ -548,7 +548,7 @@ class plan extends persistent {
     /**
      * Get the recordset of the plans that are due, incomplete and not draft.
      *
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      */
     public static function get_recordset_for_due_and_incomplete() {
         global $DB;

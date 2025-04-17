@@ -26,7 +26,7 @@ namespace core_external;
  * @covers      \core_external\util
  */
 final class util_test extends \advanced_testcase {
-    /** @var \moodle_database The database connection */
+    /** @var \core\dml\moodle_database The database connection */
     protected $db;
 
     /**
@@ -170,7 +170,7 @@ final class util_test extends \advanced_testcase {
         global $CFG, $DB;
 
         $this->db = $DB;
-        $DB = $this->getMockBuilder('moodle_database')->getMock();
+        $DB = $this->getMockBuilder('core\dml\moodle_database')->getMock();
 
         $content = base64_encode("Let us create a nice simple file.");
         $timemodified = 102030405;

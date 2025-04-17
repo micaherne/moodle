@@ -29,10 +29,10 @@ abstract class area_test_base extends \advanced_testcase {
 
     /**
      * Create and return an array from a recordset. Recordset is destroyed.
-     * @param \moodle_recordset $rs
+     * @param \core\dml\moodle_recordset $rs
      * @return array
      */
-    public function array_from_recordset(\moodle_recordset $rs): array {
+    public function array_from_recordset(\core\dml\moodle_recordset $rs): array {
         $records = [];
         foreach ($rs as $record) {
             $records[] = $record;
@@ -44,7 +44,7 @@ abstract class area_test_base extends \advanced_testcase {
 
     /**
      * Test for specified component information present in area recordset. Recordset cannot be reused.
-     * @param \moodle_recordset $areasrs
+     * @param \core\dml\moodle_recordset $areasrs
      * @param string $component
      * @param int $contextid
      * @param int $itemid
@@ -52,8 +52,8 @@ abstract class area_test_base extends \advanced_testcase {
      * @param int|null $categoryid
      * @return void
      */
-    public function assert_area_in_recordset(\moodle_recordset $areasrs, string $component, int $contextid, int $itemid,
-                                             ?int $courseid, ?int $categoryid): void {
+    public function assert_area_in_recordset(\core\dml\moodle_recordset $areasrs, string $component, int $contextid, int $itemid,
+                                             ?int                       $courseid, ?int $categoryid): void {
         $this->assert_area_in_array(
             $this->array_from_recordset($areasrs),
             $component,

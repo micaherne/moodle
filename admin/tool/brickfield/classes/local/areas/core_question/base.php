@@ -35,9 +35,9 @@ abstract class base extends area_base {
      * Find recordset of the relevant areas.
      *
      * @param \core\event\base $event
-     * @return \moodle_recordset|null
+     * @return \core\dml\moodle_recordset|null
      */
-    public function find_relevant_areas(\core\event\base $event): ?\moodle_recordset {
+    public function find_relevant_areas(\core\event\base $event): ?\core\dml\moodle_recordset {
         global $DB;
         if (($event instanceof question_created) || ($event instanceof question_updated)) {
             $sql = "SELECT {$this->get_type()} AS type,
@@ -68,9 +68,9 @@ abstract class base extends area_base {
      * Find recordset of the course areas.
      *
      * @param int $courseid
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      */
-    public function find_course_areas(int $courseid): ?\moodle_recordset {
+    public function find_course_areas(int $courseid): ?\core\dml\moodle_recordset {
         global $DB;
         $coursecontext = \context_course::instance($courseid);
         $param = [
@@ -105,12 +105,12 @@ abstract class base extends area_base {
      * Return an array of area objects that contain content at the site and system levels only. This would be question content from
      * question categories at the system context only.
      *
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      * @deprecated since Moodle 5.0.
      * @todo MDL-82413 Final deprecation in Moodle 6.0.
      */
     #[\core\attribute\deprecated(null, since: '5.0', reason: 'This method should not be used', mdl: 'MDL-71378')]
-    public function find_system_areas(): ?\moodle_recordset {
+    public function find_system_areas(): ?\core\dml\moodle_recordset {
         \core\deprecation::emit_deprecation_if_present([self::class, __FUNCTION__]);
         global $DB;
         $params = [

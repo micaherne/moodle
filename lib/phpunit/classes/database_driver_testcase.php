@@ -1,4 +1,6 @@
 <?php
+
+use core\dml\moodle_database;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
 // This file is part of Moodle - http://moodle.org/

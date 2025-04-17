@@ -30,7 +30,7 @@ class database extends handler implements SessionHandlerInterface {
     /** @var int $record session record */
     protected $recordid = null;
 
-    /** @var \moodle_database $database session database */
+    /** @var \core\dml\moodle_database $database session database */
     protected $database = null;
 
     /** @var bool $failed session read/init failed, do not write back to DB */

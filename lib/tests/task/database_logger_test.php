@@ -27,7 +27,7 @@ namespace core\task;
 final class database_logger_test extends \advanced_testcase {
 
     /**
-     * @var \moodle_database The original database prior to mocking
+     * @var \core\dml\moodle_database The original database prior to mocking
      */
     protected $DB;
 
@@ -487,7 +487,7 @@ final class database_logger_test extends \advanced_testcase {
     protected function mock_database() {
         global $DB;
 
-        $DB = $this->getMockBuilder(\moodle_database::class)
+        $DB = $this->getMockBuilder(\core\dml\moodle_database::class)
             ->getMock();
 
         $DB->method('get_record')

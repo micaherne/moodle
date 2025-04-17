@@ -42,7 +42,7 @@ class postgres_lock_factory implements lock_factory {
     /** @var array $lockidcache - static cache for string -> int conversions required for pg advisory locks. */
     protected static $lockidcache = array();
 
-    /** @var \moodle_database $db Hold a reference to the global $DB */
+    /** @var \core\dml\moodle_database $db Hold a reference to the global $DB */
     protected $db;
 
     /** @var string $type Used to prefix lock keys */

@@ -26,7 +26,7 @@ namespace mod_forum\local\vaults\preprocessors;
 
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_database;
+use core\dml\moodle_database;
 use core\dml\table as dml_table;
 
 /**

@@ -24,9 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace core\dml\driver\pgsql\native;
 
-require_once(__DIR__.'/moodle_temptables.php');
+use core\dml\moodle_temptables;
+
+defined('MOODLE_INTERNAL') || die();
 
 class pgsql_native_moodle_temptables extends moodle_temptables {
     /**
@@ -38,7 +40,7 @@ class pgsql_native_moodle_temptables extends moodle_temptables {
     public function update_stats() {
         $temptables = $this->get_temptables();
         foreach ($temptables as $temptablename) {
-            $this->mdb->execute("ANALYZE {".$temptablename."}");
+            $this->mdb->execute("ANALYZE {" . $temptablename . "}");
         }
     }
 }

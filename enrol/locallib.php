@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\dml\moodle_database;
 use core_user\fields;
 
 defined('MOODLE_INTERNAL') || die();

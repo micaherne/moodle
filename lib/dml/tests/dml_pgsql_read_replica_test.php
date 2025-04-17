@@ -25,7 +25,7 @@
 
 namespace core;
 
-use moodle_database;
+use core\dml\moodle_database;
 use xmldb_table;
 
 defined('MOODLE_INTERNAL') || die();
@@ -39,7 +39,7 @@ require_once(__DIR__.'/fixtures/read_replica_moodle_database_mock_pgsql.php');
  * @category   dml
  * @copyright  2018 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \pgsql_native_moodle_database
+ * @covers     \core\dml\driver\pgsql\native\pgsql_native_moodle_database
  */
 final class dml_pgsql_read_replica_test extends \advanced_testcase {
     /**

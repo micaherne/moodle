@@ -36,11 +36,11 @@ defined('MOODLE_INTERNAL') || die();
 class test_dml_sql_debugging_fixture {
     /**
      * Constructor
-     * @param \moodle_database $db The database handle to use for this fixture
+     * @param \core\dml\moodle_database $db The database handle to use for this fixture
      */
     public function __construct(
-        /** @var \moodle_database The database handle to use for this fixture */
-        private \moodle_database $db,
+        /** @var \core\dml\moodle_database The database handle to use for this fixture */
+        private \core\dml\moodle_database $db,
     ) {
     }
 

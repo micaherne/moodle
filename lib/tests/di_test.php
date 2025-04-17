@@ -141,7 +141,7 @@ final class di_test extends \advanced_testcase {
     public function test_fetch_moodle_database(): void {
         global $DB;
 
-        $this->assertEquals($DB, di::get(\moodle_database::class));
+        $this->assertEquals($DB, di::get(dml\moodle_database::class));
     }
 
     /**

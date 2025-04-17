@@ -1409,9 +1409,9 @@ class model {
      * Returns the actions executed by users on the predictions.
      *
      * @param  \context|null $context
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      */
-    public function get_prediction_actions(?\context $context): \moodle_recordset {
+    public function get_prediction_actions(?\context $context): \core\dml\moodle_recordset {
         global $DB;
 
         $sql = "SELECT apa.id, apa.predictionid, apa.userid, apa.actionname, apa.timecreated,

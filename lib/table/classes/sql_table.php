@@ -17,7 +17,7 @@
 namespace core_table;
 
 use flexible_table;
-use moodle_recordset;
+use core\dml\moodle_recordset;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();

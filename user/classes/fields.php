@@ -569,7 +569,7 @@ class fields {
     }
 
     /**
-     * Similar to {@see \moodle_database::sql_fullname} except it returns all user name fields as defined by site config, in a
+     * Similar to {@see \core\dml\moodle_database::sql_fullname} except it returns all user name fields as defined by site config, in a
      * single select statement suitable for inclusion in a query/filter for a users fullname, e.g.
      *
      * [$select, $params] = fields::get_sql_fullname('u');

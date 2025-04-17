@@ -22,10 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v2 or later
  */
 
+namespace core\dml\driver\sqlsrv\native;
+
+use core\dml\moodle_recordset;
+use stdClass;
+
 defined('MOODLE_INTERNAL') || die();
-
-require_once(__DIR__.'/moodle_recordset.php');
-
 class sqlsrv_native_moodle_recordset extends moodle_recordset {
 
     protected $rsrc;
@@ -38,9 +40,9 @@ class sqlsrv_native_moodle_recordset extends moodle_recordset {
     protected $db;
 
     public function __construct($rsrc, sqlsrv_native_moodle_database $db) {
-        $this->rsrc    = $rsrc;
+        $this->rsrc = $rsrc;
         $this->current = $this->fetch_next();
-        $this->db      = $db;
+        $this->db = $db;
     }
 
     /**
@@ -61,7 +63,7 @@ class sqlsrv_native_moodle_recordset extends moodle_recordset {
         raise_memory_limit('2G');
         $this->buffer = array();
 
-        while($next = $this->fetch_next()) {
+        while ($next = $this->fetch_next()) {
             $this->buffer[] = $next;
         }
     }
@@ -97,7 +99,7 @@ class sqlsrv_native_moodle_recordset extends moodle_recordset {
         unset($row['sqlsrvrownumber']);
         $row = array_change_key_case($row, CASE_LOWER);
         // Moodle expects everything from DB as strings.
-        foreach ($row as $k=>$v) {
+        foreach ($row as $k => $v) {
             if (is_null($v)) {
                 continue;
             }
@@ -140,10 +142,10 @@ class sqlsrv_native_moodle_recordset extends moodle_recordset {
                 // We need to make sure that the statement resource is in the correct type before freeing it.
                 sqlsrv_free_stmt($this->rsrc);
             }
-            $this->rsrc  = null;
+            $this->rsrc = null;
         }
         $this->current = null;
-        $this->buffer  = null;
+        $this->buffer = null;
         $this->unregister();
     }
 }

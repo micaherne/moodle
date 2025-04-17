@@ -267,7 +267,7 @@ abstract class base {
      * haven't been updated, or where the context parameter is not required.
      *
      * @param int $modifiedfrom
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      */
     public function get_recordset_by_timestamp($modifiedfrom = 0) {
         $result = $this->get_document_recordset($modifiedfrom);
@@ -311,7 +311,7 @@ abstract class base {
      *
      * @param int $modifiedfrom Return only records modified after this date
      * @param \context|null $context Context (null means no context restriction)
-     * @return \moodle_recordset|null|false Recordset / null if no results / false if not supported
+     * @return \core\dml\moodle_recordset|null|false Recordset / null if no results / false if not supported
      * @since Moodle 3.4
      */
     public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {

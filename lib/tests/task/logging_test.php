@@ -39,7 +39,7 @@ require_once(__DIR__ . '/../fixtures/task_fixtures.php');
 final class logging_test extends \advanced_testcase {
 
     /**
-     * @var \moodle_database The original database prior to mocking
+     * @var \core\dml\moodle_database The original database prior to mocking
      */
     protected $DB;
 
@@ -500,7 +500,7 @@ final class logging_test extends \advanced_testcase {
         // Store the old Database for restoration in reset.
         $this->DB = $DB;
 
-        $DB = $this->getMockBuilder(\moodle_database::class)
+        $DB = $this->getMockBuilder(\core\dml\moodle_database::class)
             ->getMock();
 
         $DB->method('get_record')

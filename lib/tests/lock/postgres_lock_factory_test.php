@@ -32,7 +32,7 @@ final class postgres_lock_factory_test extends \advanced_testcase {
         global $DB;
         parent::setUp();
         // Skip tests if not using Postgres.
-        if (!($DB instanceof \pgsql_native_moodle_database)) {
+        if (!($DB instanceof \core\dml\driver\pgsql\native\pgsql_native_moodle_database)) {
             $this->markTestSkipped('Postgres-only test');
         }
     }

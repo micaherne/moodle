@@ -22,9 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace core\dml\driver\pgsql\native;
 
-require_once(__DIR__.'/moodle_recordset.php');
+use coding_exception;
+use core\dml\moodle_recordset;
+use stdClass;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * pgsql specific moodle recordset class
@@ -35,9 +39,9 @@ require_once(__DIR__.'/moodle_recordset.php');
  */
 class pgsql_native_moodle_recordset extends moodle_recordset {
 
-    /** @var PgSql\Result|resource|null */
+    /** @var \PgSql\Result|resource|null */
     protected $result;
-    /** @var current row as array.*/
+    /** @var current row as array. */
     protected $current;
     protected $blobs = array();
 
@@ -55,7 +59,7 @@ class pgsql_native_moodle_recordset extends moodle_recordset {
      *
      * When using cursors, $result will be null initially.
      *
-     * @param resource|PgSql\Result|null $result A pg_query() result object to create a recordset from.
+     * @param resource|\PgSql\Result|null $result A pg_query() result object to create a recordset from.
      * @param pgsql_native_moodle_database $db Database object (only required when using cursors)
      * @param string $cursorname Name of cursor or '' if none
      */
@@ -159,10 +163,10 @@ class pgsql_native_moodle_recordset extends moodle_recordset {
     public function close() {
         if ($this->result) {
             pg_free_result($this->result);
-            $this->result  = null;
+            $this->result = null;
         }
         $this->current = null;
-        $this->blobs   = null;
+        $this->blobs = null;
 
         // If using cursors, close the cursor.
         if ($this->cursorname) {

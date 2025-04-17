@@ -22,11 +22,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v2 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace core\dml\driver\sqlsrv\native;
 
-require_once(__DIR__.'/moodle_database.php');
-require_once(__DIR__.'/sqlsrv_native_moodle_recordset.php');
-require_once(__DIR__.'/sqlsrv_native_moodle_temptables.php');
+use coding_exception;
+use core\dml\database_column_info;
+use core\dml\moodle_database;
+use core\dml\moodle_recordset;
+use ddl_change_structure_exception;
+use dml_connection_exception;
+use dml_exception;
+use dml_sessionwait_exception;
+use sqlsrv_resource;
+use stdClass;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Native sqlsrv class representing moodle database interface.
@@ -80,7 +89,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
      *              note this has effect to decide if prefix checks must be performed or no
      * @param bool true means external database used
      */
-    public function __construct($external=false) {
+    public function __construct($external = false) {
         parent::__construct($external);
     }
 
@@ -187,7 +196,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
      * @return bool true
      * @throws dml_connection_exception if error
      */
-    public function connect($dbhost, $dbuser, $dbpass, $dbname, $prefix, ?array $dboptions=null) {
+    public function connect($dbhost, $dbuser, $dbpass, $dbname, $prefix, ?array $dboptions = null) {
         if ($prefix == '' and !$this->external) {
             // Enforce prefixes for everybody but mysql.
             throw new dml_exception('prefixcannotbeempty', $this->get_dbfamily());
@@ -365,7 +374,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
                 if ($this->temptables->is_temptable($name)) {
                     $sql = str_replace($match, $this->temptables->get_correct_name($name), $sql);
                 } else {
-                    $sql = str_replace($match, $this->prefix.$name, $sql);
+                    $sql = str_replace($match, $this->prefix . $name, $sql);
                 }
             }
         }
@@ -392,9 +401,9 @@ class sqlsrv_native_moodle_database extends moodle_database {
             $errorMessage = '';
 
             foreach ($retErrors as $arrError) {
-                $errorMessage .= "SQLState: ".$arrError['SQLSTATE']."<br>\n";
-                $errorMessage .= "Error Code: ".$arrError['code']."<br>\n";
-                $errorMessage .= "Message: ".$arrError['message']."<br>\n";
+                $errorMessage .= "SQLState: " . $arrError['SQLSTATE'] . "<br>\n";
+                $errorMessage .= "Error Code: " . $arrError['code'] . "<br>\n";
+                $errorMessage .= "Message: " . $arrError['message'] . "<br>\n";
             }
         }
 
@@ -453,7 +462,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
         if ($usecache and $this->tables !== null) {
             return $this->tables;
         }
-        $this->tables = array ();
+        $this->tables = array();
         $prefix = str_replace('_', '\\_', $this->prefix);
         $sql = "SELECT table_name
                   FROM INFORMATION_SCHEMA.TABLES
@@ -488,8 +497,8 @@ class sqlsrv_native_moodle_database extends moodle_database {
      * @return array of arrays
      */
     public function get_indexes($table) {
-        $indexes = array ();
-        $tablename = $this->prefix.$table;
+        $indexes = array();
+        $tablename = $this->prefix . $table;
 
         // Indexes aren't covered by information_schema metatables, so we need to
         // go to sys ones. Skipping primary key indexes on purpose.
@@ -508,19 +517,18 @@ class sqlsrv_native_moodle_database extends moodle_database {
         if ($result) {
             $lastindex = '';
             $unique = false;
-            $columns = array ();
+            $columns = array();
 
             while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
-                if ($lastindex and $lastindex != $row['index_name'])
-                    { // Save lastindex to $indexes and reset info
+                if ($lastindex and $lastindex != $row['index_name']) { // Save lastindex to $indexes and reset info
                     $indexes[$lastindex] = array
-                     (
-                      'unique' => $unique,
-                      'columns' => $columns
-                     );
+                    (
+                        'unique' => $unique,
+                        'columns' => $columns
+                    );
 
                     $unique = false;
-                    $columns = array ();
+                    $columns = array();
                 }
                 $lastindex = $row['index_name'];
                 $unique = empty($row['is_unique']) ? false : true;
@@ -529,10 +537,10 @@ class sqlsrv_native_moodle_database extends moodle_database {
 
             if ($lastindex) { // Add the last one if exists
                 $indexes[$lastindex] = array
-                 (
-                  'unique' => $unique,
-                  'columns' => $columns
-                 );
+                (
+                    'unique' => $unique,
+                    'columns' => $columns
+                );
             }
 
             $this->free_result($result);
@@ -559,7 +567,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
                            columnproperty(object_id(quotename(table_schema) + '.' + quotename(table_name)), column_name, 'IsIdentity') AS auto_increment,
                            column_default AS default_value
                       FROM INFORMATION_SCHEMA.COLUMNS
-                     WHERE table_name = '{".$table."}'
+                     WHERE table_name = '{" . $table . "}'
                   ORDER BY ordinal_position";
         } else { // temp table, get metadata from tempdb schema
             $sql = "SELECT column_name AS name,
@@ -570,11 +578,11 @@ class sqlsrv_native_moodle_database extends moodle_database {
                            is_nullable AS is_nullable,
                            columnproperty(object_id(quotename(table_schema) + '.' + quotename(table_name)), column_name, 'IsIdentity') AS auto_increment,
                            column_default AS default_value
-                      FROM tempdb.INFORMATION_SCHEMA.COLUMNS ".
-            // check this statement
-            // JOIN tempdb..sysobjects ON name = table_name
-            // WHERE id = object_id('tempdb..{".$table."}')
-                    "WHERE table_name LIKE '{".$table."}__________%'
+                      FROM tempdb.INFORMATION_SCHEMA.COLUMNS " .
+                // check this statement
+                // JOIN tempdb..sysobjects ON name = table_name
+                // WHERE id = object_id('tempdb..{".$table."}')
+                "WHERE table_name LIKE '{" . $table . "}__________%'
                   ORDER BY ordinal_position";
         }
 
@@ -585,7 +593,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
         $this->query_end($result);
 
         if (!$result) {
-            return array ();
+            return array();
         }
 
         while ($rawcolumn = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
@@ -654,8 +662,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
             $value = (int)$value;
         }                                                    // And continue processing because text columns with numeric info need special handling below
 
-        if ($column->meta_type == 'B')
-            { // BLOBs need to be properly "packed", but can be inserted directly if so.
+        if ($column->meta_type == 'B') { // BLOBs need to be properly "packed", but can be inserted directly if so.
             if (!is_null($value)) {               // If value not null, unpack it to unquoted hexadecimal byte-string format
                 $value = unpack('H*hex', $value); // we leave it as array, so emulate_bound_params() can detect it
             }                                                // easily and "bind" the param ok.
@@ -697,45 +704,45 @@ class sqlsrv_native_moodle_database extends moodle_database {
         $type = null;
 
         switch (strtoupper($sqlsrv_type)) {
-          case 'BIT':
-           $type = 'L';
-           break;
+            case 'BIT':
+                $type = 'L';
+                break;
 
-          case 'INT':
-          case 'SMALLINT':
-          case 'INTEGER':
-          case 'BIGINT':
-           $type = 'I';
-           break;
+            case 'INT':
+            case 'SMALLINT':
+            case 'INTEGER':
+            case 'BIGINT':
+                $type = 'I';
+                break;
 
-          case 'DECIMAL':
-          case 'REAL':
-          case 'FLOAT':
-           $type = 'N';
-           break;
+            case 'DECIMAL':
+            case 'REAL':
+            case 'FLOAT':
+                $type = 'N';
+                break;
 
-          case 'VARCHAR':
-          case 'NVARCHAR':
-           $type = 'C';
-           break;
+            case 'VARCHAR':
+            case 'NVARCHAR':
+                $type = 'C';
+                break;
 
-          case 'TEXT':
-          case 'NTEXT':
-          case 'VARCHAR(MAX)':
-          case 'NVARCHAR(MAX)':
-           $type = 'X';
-           break;
+            case 'TEXT':
+            case 'NTEXT':
+            case 'VARCHAR(MAX)':
+            case 'NVARCHAR(MAX)':
+                $type = 'X';
+                break;
 
-          case 'IMAGE':
-          case 'VARBINARY':
-          case 'VARBINARY(MAX)':
-           $type = 'B';
-           break;
+            case 'IMAGE':
+            case 'VARBINARY':
+            case 'VARBINARY(MAX)':
+                $type = 'B';
+                break;
 
-          case 'DATETIME':
-           $type = 'D';
-           break;
-         }
+            case 'DATETIME':
+                $type = 'D';
+                break;
+        }
 
         if (!$type) {
             throw new dml_exception('invalidsqlsrvnativetype', $sqlsrv_type);
@@ -793,7 +800,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
             if (is_bool($param)) {
                 $return .= (int)$param;
             } else if (is_array($param) && isset($param['hex'])) { // detect hex binary, bind it specially
-                $return .= '0x'.$param['hex'];
+                $return .= '0x' . $param['hex'];
             } else if (is_array($param) && isset($param['numstr'])) { // detect numerical strings that *must not*
                 $return .= "N'{$param['numstr']}'";                   // be converted back to number params, but bound as strings
             } else if (is_null($param)) {
@@ -862,14 +869,14 @@ class sqlsrv_native_moodle_database extends moodle_database {
      * small datasets use get_records_sql - it leads to simpler code.
      *
      * The return type is like:
-     * @see function get_recordset.
-     *
      * @param string $sql the SQL select query to execute.
      * @param array $params array of sql parameters
      * @param int $limitfrom return a subset of records, starting at this point (optional, required if $limitnum is set).
      * @param int $limitnum return a subset comprising this many records (optional, required if $limitfrom is set).
      * @return moodle_recordset instance
      * @throws dml_exception A DML specific exception is thrown for any errors.
+     * @see function get_recordset.
+     *
      */
     public function get_recordset_sql($sql, ?array $params = null, $limitfrom = 0, $limitnum = 0) {
 
@@ -884,7 +891,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
                         $fetch = PHP_INT_MAX;
                     }
                     $sql = preg_replace('/^([\s(])*SELECT([\s]+(DISTINCT|ALL))?(?!\s*TOP\s*\()/i',
-                                        "\\1SELECT\\2 TOP $fetch", $sql);
+                        "\\1SELECT\\2 TOP $fetch", $sql);
                 }
             } else {
                 $needscrollable = false; // Using supported fetch/offset, no need to scroll anymore.
@@ -895,10 +902,10 @@ class sqlsrv_native_moodle_database extends moodle_database {
                     $sql .= " ORDER BY 1";
                 }
 
-                $sql .= " OFFSET ".$limitfrom." ROWS ";
+                $sql .= " OFFSET " . $limitfrom . " ROWS ";
 
                 if ($limitnum > 0) {
-                    $sql .= " FETCH NEXT ".$limitnum." ROWS ONLY";
+                    $sql .= " FETCH NEXT " . $limitnum . " ROWS ONLY";
                 }
             }
         }
@@ -921,7 +928,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
      * @return string The SQL, with WITH (NOLOCK) added to all temp tables
      */
     protected function add_no_lock_to_temp_tables($sql) {
-        return preg_replace_callback('/(\{([a-z][a-z0-9_]*)\})(\s+(\w+))?/', function($matches) {
+        return preg_replace_callback('/(\{([a-z][a-z0-9_]*)\})(\s+(\w+))?/', function ($matches) {
             $table = $matches[1]; // With the braces, so we can put it back in the query.
             $name = $matches[2]; // Without the braces, so we can check if it's a temptable.
             $tail = isset($matches[3]) ? $matches[3] : ''; // Catch the next word afterwards so that we can check if it's an alias.
@@ -956,8 +963,8 @@ class sqlsrv_native_moodle_database extends moodle_database {
 
     /**
      * Do not use outside of recordset class.
-     * @internal
      * @param sqlsrv_native_moodle_recordset $rs
+     * @internal
      */
     public function recordset_closed(sqlsrv_native_moodle_recordset $rs) {
         if ($key = array_search($rs, $this->recordsets, true)) {
@@ -969,8 +976,6 @@ class sqlsrv_native_moodle_database extends moodle_database {
      * Get a number of records as an array of objects using a SQL statement.
      *
      * Return value is like:
-     * @see function get_records.
-     *
      * @param string $sql the SQL select query to execute. The first column of this SELECT statement
      *   must be a unique value (usually the 'id' field), as it will be used as the key of the
      *   returned array.
@@ -979,6 +984,8 @@ class sqlsrv_native_moodle_database extends moodle_database {
      * @param int $limitnum return a subset comprising this many records (optional, required if $limitfrom is set).
      * @return array of objects, or empty array if no records were found
      * @throws dml_exception A DML specific exception is thrown for any errors.
+     * @see function get_records.
+     *
      */
     public function get_records_sql($sql, ?array $params = null, $limitfrom = 0, $limitnum = 0) {
 
@@ -1013,7 +1020,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
 
         $rs = $this->get_recordset_sql($sql, $params);
 
-        $results = array ();
+        $results = array();
 
         foreach ($rs as $row) {
             $rowarray = (array)$row;
@@ -1034,7 +1041,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
      * @return bool|int true or new id
      * @throws dml_exception A DML specific exception is thrown for any errors.
      */
-    public function insert_record_raw($table, $params, $returnid=true, $bulk=false, $customsequence=false) {
+    public function insert_record_raw($table, $params, $returnid = true, $bulk = false, $customsequence = false) {
         if (!is_array($params)) {
             $params = (array)$params;
         }
@@ -1055,7 +1062,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
             // Disable IDENTITY column before inserting record with id, only if the
             // column is identity, from meta information.
             if ($isidentity) {
-                $sql = 'SET IDENTITY_INSERT {'.$table.'} ON'; // Yes, it' ON!!
+                $sql = 'SET IDENTITY_INSERT {' . $table . '} ON'; // Yes, it' ON!!
                 $this->do_query($sql, null, SQL_QUERY_AUX);
             }
 
@@ -1076,7 +1083,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
             // Enable IDENTITY column after inserting record with id, only if the
             // column is identity, from meta information.
             if ($isidentity) {
-                $sql = 'SET IDENTITY_INSERT {'.$table.'} OFF'; // Yes, it' OFF!!
+                $sql = 'SET IDENTITY_INSERT {' . $table . '} OFF'; // Yes, it' OFF!!
                 $this->do_query($sql, null, SQL_QUERY_AUX);
             }
         }
@@ -1142,7 +1149,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
             throw new dml_exception('ddltablenotexist', $table);
         }
 
-        $cleaned = array ();
+        $cleaned = array();
 
         foreach ($dataobject as $field => $value) {
             if ($field === 'id') {
@@ -1173,7 +1180,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
         }
 
         $columns = $this->get_columns($table);
-        $cleaned = array ();
+        $cleaned = array();
 
         foreach ($dataobject as $field => $value) {
             if (!isset($columns[$field])) {
@@ -1209,7 +1216,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
             throw new coding_exception('moodle_database::update_record_raw() no fields found.');
         }
 
-        $sets = array ();
+        $sets = array();
 
         foreach ($params as $field => $value) {
             $sets[] = "$field = ?";
@@ -1218,7 +1225,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
         $params[] = $id; // last ? in WHERE condition
 
         $sets = implode(',', $sets);
-        $sql = "UPDATE {".$table."} SET $sets WHERE id = ?";
+        $sql = "UPDATE {" . $table . "} SET $sets WHERE id = ?";
 
         $this->do_query($sql, $params, SQL_QUERY_UPDATE);
 
@@ -1243,7 +1250,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
         $dataobject = (array)$dataobject;
 
         $columns = $this->get_columns($table);
-        $cleaned = array ();
+        $cleaned = array();
 
         foreach ($dataobject as $field => $value) {
             if (!isset($columns[$field])) {
@@ -1273,7 +1280,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
         }
 
         if (is_null($params)) {
-            $params = array ();
+            $params = array();
         }
 
         // convert params to ? types
@@ -1291,7 +1298,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
             $newfield = "$newfield = ?";
             array_unshift($params, $newvalue);
         }
-        $sql = "UPDATE {".$table."} SET $newfield $select";
+        $sql = "UPDATE {" . $table . "} SET $newfield $select";
 
         $this->do_query($sql, $params, SQL_QUERY_UPDATE);
 
@@ -1312,7 +1319,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
             $select = "WHERE $select";
         }
 
-        $sql = "DELETE FROM {".$table."} $select";
+        $sql = "DELETE FROM {" . $table . "} $select";
 
         // we use SQL_QUERY_UPDATE because we do not know what is in general SQL, delete constant would not be accurate
         $this->do_query($sql, $params, SQL_QUERY_UPDATE);
@@ -1339,7 +1346,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
         }
     }
 
-    public function sql_cast_char2real($fieldname, $text=false) {
+    public function sql_cast_char2real($fieldname, $text = false) {
         if (!$text) {
             return ' CAST(' . $fieldname . ' AS REAL) ';
         } else {
@@ -1348,7 +1355,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
     }
 
     public function sql_ceil($fieldname) {
-        return ' CEILING('.$fieldname.')';
+        return ' CEILING(' . $fieldname . ')';
     }
 
     protected function get_collation() {
@@ -1461,7 +1468,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
         return " $s ";
     }
 
-    public function sql_concat_join($separator = "' '", $elements = array ()) {
+    public function sql_concat_join($separator = "' '", $elements = array()) {
         for ($n = count($elements) - 1; $n > 0; $n--) {
             array_splice($elements, $n, 0, $separator);
         }
@@ -1483,7 +1490,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
 
     public function sql_isempty($tablename, $fieldname, $nullablefield, $textfield) {
         if ($textfield) {
-            return ' ('.$this->sql_compare_text($fieldname)." = '') ";
+            return ' (' . $this->sql_compare_text($fieldname) . " = '') ";
         } else {
             return " ($fieldname = '') ";
         }
@@ -1495,7 +1502,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
      * @return string the piece of SQL code to be used in the statement.
      */
     public function sql_length($fieldname) {
-        return ' LEN('.$fieldname.')';
+        return ' LEN(' . $fieldname . ')';
     }
 
     public function sql_order_by_text($fieldname, $numchars = 32) {
@@ -1534,8 +1541,8 @@ class sqlsrv_native_moodle_database extends moodle_database {
     /**
      * Does this driver support tool_replace?
      *
-     * @since Moodle 2.6.1
      * @return bool
+     * @since Moodle 2.6.1
      */
     public function replace_all_text_supported() {
         return true;
@@ -1559,7 +1566,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
 
         $timeoutmilli = $timeout * 1000;
 
-        $fullname = $this->dbname.'-'.$this->prefix.'-session-'.$rowid;
+        $fullname = $this->dbname . '-' . $this->prefix . '-session-' . $rowid;
         // While this may work using proper {call sp_...} calls + binding +
         // executing + consuming recordsets, the solution used for the mssql
         // driver is working perfectly, so 100% mimic-ing that code.
@@ -1596,7 +1603,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
 
         parent::release_session_lock($rowid);
 
-        $fullname = $this->dbname.'-'.$this->prefix.'-session-'.$rowid;
+        $fullname = $this->dbname . '-' . $this->prefix . '-session-' . $rowid;
         $sql = "sp_releaseapplock '$fullname', 'Session'";
         $this->query_start($sql, null, SQL_QUERY_AUX);
         $result = sqlsrv_query($this->sqlsrv, $sql);

@@ -64,7 +64,7 @@ final class tour_test extends \advanced_testcase {
     public function mock_database() {
         global $DB;
 
-        $DB = $this->getMockBuilder(\moodle_database::class)
+        $DB = $this->getMockBuilder(\core\dml\moodle_database::class)
             ->getMock();
 
         return $DB;

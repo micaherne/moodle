@@ -62,7 +62,7 @@ abstract class base_activity extends base_mod {
      *
      * @param \context|null $context Context
      * @param int $modifiedfrom Return only records modified after this date
-     * @return \moodle_recordset|null Recordset, or null if no possible activities in given context
+     * @return \core\dml\moodle_recordset|null Recordset, or null if no possible activities in given context
      */
     public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
         global $DB;

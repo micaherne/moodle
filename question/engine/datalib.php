@@ -42,6 +42,8 @@
  */
 
 
+use core\dml\moodle_database;
+
 defined('MOODLE_INTERNAL') || die();
 
 

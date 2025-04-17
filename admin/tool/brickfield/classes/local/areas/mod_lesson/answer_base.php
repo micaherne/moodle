@@ -38,11 +38,11 @@ abstract class answer_base extends area_base {
     /**
      * Find recordset of the relevant areas.
      * @param \core\event\base $event
-     * @return \moodle_recordset|null
+     * @return \core\dml\moodle_recordset|null
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function find_relevant_areas(\core\event\base $event): ?\moodle_recordset {
+    public function find_relevant_areas(\core\event\base $event): ?\core\dml\moodle_recordset {
         if ($event->eventname == '\mod_lesson\event\page_created' || $event->eventname == '\mod_lesson\event\page_updated') {
             if ($event->component === 'mod_lesson') {
                 return $this->find_areas(['itemid' => $event->objectid]);
@@ -54,22 +54,22 @@ abstract class answer_base extends area_base {
     /**
      * Find recordset of the course areas.
      * @param int $courseid
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function find_course_areas(int $courseid): ?\moodle_recordset {
+    public function find_course_areas(int $courseid): ?\core\dml\moodle_recordset {
         return $this->find_areas(['courseid' => $courseid]);
     }
 
     /**
      * Find recordset of areas.
      * @param array $params
-     * @return \moodle_recordset
+     * @return \core\dml\moodle_recordset
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    protected function find_areas(array $params = []): \moodle_recordset {
+    protected function find_areas(array $params = []): \core\dml\moodle_recordset {
         global $DB;
 
         $where = [];

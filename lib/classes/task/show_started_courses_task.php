@@ -73,11 +73,11 @@ class show_started_courses_task extends scheduled_task {
     /**
      * Make course visible or hidden if the start date has become due.
      *
-     * @param \moodle_recordset $courses
+     * @param \core\dml\moodle_recordset $courses
      * @param int $visibility The given courses will be set to this visibility
      * @return void
      */
-    private function update_courses_visibility(\moodle_recordset $courses, int $visibility): void {
+    private function update_courses_visibility(\core\dml\moodle_recordset $courses, int $visibility): void {
         global $DB;
 
         mtrace("\n  There are courses to change visibility...");

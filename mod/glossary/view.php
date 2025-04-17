@@ -1,6 +1,8 @@
 <?php
 
 /// This page prints a particular instance of glossary
+use core\dml\moodle_recordset;
+
 require_once("../../config.php");
 require_once("lib.php");
 require_once($CFG->libdir . '/completionlib.php');

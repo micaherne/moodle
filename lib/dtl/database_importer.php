@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\dml\moodle_database;
+use core\dml\moodle_transaction;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**

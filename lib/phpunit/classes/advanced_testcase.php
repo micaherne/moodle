@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 use core\di;
+use core\dml\moodle_transaction;
 use core\hook;
 use core\http_client;
 use GuzzleHttp\Handler\MockHandler;

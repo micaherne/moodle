@@ -53,9 +53,9 @@ class helper {
     /**
      * Returns course details in an array ready to be printed.
      *
-     * @global \moodle_database $DB
      * @param \core_course_list_element $course
      * @return array
+     *@global \core\dml\moodle_database $DB
      */
     public static function get_course_detail_array(\core_course_list_element $course) {
         global $DB;
@@ -575,9 +575,9 @@ class helper {
     /**
      * Resorts the courses within a category moving the given course up by one.
      *
-     * @global \moodle_database $DB
      * @param int|\stdClass $courserecordorid
      * @return bool
+     *@global \core\dml\moodle_database $DB
      */
     public static function action_course_change_sortorder_up_one_by_record($courserecordorid) {
         if (is_int($courserecordorid)) {
@@ -591,9 +591,9 @@ class helper {
     /**
      * Resorts the courses within a category moving the given course down by one.
      *
-     * @global \moodle_database $DB
      * @param int|\stdClass $courserecordorid
      * @return bool
+     *@global \core\dml\moodle_database $DB
      */
     public static function action_course_change_sortorder_down_one_by_record($courserecordorid) {
         if (is_int($courserecordorid)) {
@@ -655,9 +655,9 @@ class helper {
     /**
      * Makes a course visible given a course id or a database record.
      *
-     * @global \moodle_database $DB
      * @param int|\stdClass $courserecordorid
      * @return bool
+     *@global \core\dml\moodle_database $DB
      */
     public static function action_course_show_by_record($courserecordorid) {
         if (is_int($courserecordorid)) {
@@ -670,9 +670,9 @@ class helper {
     /**
      * Makes a course hidden given a course id or a database record.
      *
-     * @global \moodle_database $DB
      * @param int|\stdClass $courserecordorid
      * @return bool
+     *@global \core\dml\moodle_database $DB
      */
     public static function action_course_hide_by_record($courserecordorid) {
         if (is_int($courserecordorid)) {

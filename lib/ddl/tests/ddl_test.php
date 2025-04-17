@@ -16,8 +16,8 @@
 
 namespace core;
 
-use database_column_info;
-use moodle_database;
+use core\dml\database_column_info;
+use core\dml\moodle_database;
 use sql_generator;
 use xmldb_field;
 use xmldb_index;
@@ -1883,7 +1883,7 @@ final class ddl_test extends \database_driver_testcase {
 
         $dbman->drop_table($table0);
 
-        $rc = new \ReflectionClass('moodle_database');
+        $rc = new \ReflectionClass('core\dml\moodle_database');
         $rcm = $rc->getMethod('get_temp_tables_cache');
         $metacachetemp = $rcm->invokeArgs($DB, []);
 
@@ -1893,7 +1893,7 @@ final class ddl_test extends \database_driver_testcase {
         // Data of test_table1 should be intact.
         $this->assertEquals(true, $metacachetemp->has('test_table1'));
 
-        $rc = new \ReflectionClass('moodle_database');
+        $rc = new \ReflectionClass('core\dml\moodle_database');
         $rcm = $rc->getMethod('get_metacache');
         $metacache = $rcm->invokeArgs($DB, []);
 

@@ -30,11 +30,11 @@ class manager {
     /**
      * Create a new SMS manager.
      *
-     * @param \moodle_database $db
+     * @param \core\dml\moodle_database $db
      */
     public function __construct(
-        /** @var \moodle_database The database instance */
-        protected readonly \moodle_database $db,
+        /** @var \core\dml\moodle_database The database instance */
+        protected readonly \core\dml\moodle_database $db,
     ) {
     }
 

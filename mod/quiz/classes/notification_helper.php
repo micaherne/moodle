@@ -34,9 +34,9 @@ class notification_helper {
     /**
      * Get all quizzes that have an approaching open date (includes users and groups with open date overrides).
      *
-     * @return \moodle_recordset Returns the matching quiz records.
+     * @return \core\dml\moodle_recordset Returns the matching quiz records.
      */
-    public static function get_quizzes_within_date_range(): \moodle_recordset {
+    public static function get_quizzes_within_date_range(): \core\dml\moodle_recordset {
         global $DB;
 
         $timenow = self::get_time_now();

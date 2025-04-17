@@ -104,7 +104,7 @@ abstract class base_block extends base {
      *
      * @param int $modifiedfrom Return only records modified after this date
      * @param \context|null $context Context to find blocks within
-     * @return false|\moodle_recordset|null
+     * @return false|\core\dml\moodle_recordset|null
      */
     public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
         global $DB;

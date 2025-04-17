@@ -26,7 +26,7 @@
 namespace core;
 
 use stdClass, ReflectionClass;
-use moodle_database, pgsql_native_moodle_database;
+use core\dml\moodle_database, core\dml\driver\pgsql\native\pgsql_native_moodle_database;
 use xmldb_table;
 use moodle_exception;
 use PHPUnit\Framework\Attributes\WithoutErrorHandler;
@@ -38,18 +38,9 @@ use PHPUnit\Framework\Attributes\WithoutErrorHandler;
  * @category test
  * @copyright 2020 Ruslan Kabalin
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers  \pgsql_native_moodle_database
+ * @covers  \core\dml\driver\pgsql\native\pgsql_native_moodle_database
  */
 final class pgsql_native_moodle_database_test extends \advanced_testcase {
-
-    /**
-     * Setup before class.
-     */
-    public static function setUpBeforeClass(): void {
-        global $CFG;
-        require_once($CFG->libdir.'/dml/pgsql_native_moodle_database.php');
-        parent::setUpBeforeClass();
-    }
 
     /**
      * Set up.

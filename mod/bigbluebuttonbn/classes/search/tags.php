@@ -43,7 +43,7 @@ class tags extends \core_search\base_activity {
      * BBB instances.
      * @param int $modifiedfrom
      * @param \context|null $context
-     * @return \moodle_recordset|null
+     * @return \core\dml\moodle_recordset|null
      */
     public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
         global $DB;

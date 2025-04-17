@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
 class backup_logstore_database_nested_element extends backup_nested_element {
 
     /**
-     * @var \moodle_database $sourcedb
+     * @var \core\dml\moodle_database $sourcedb
      */
     protected $sourcedb;
 
@@ -80,7 +80,7 @@ class backup_logstore_database_nested_element extends backup_nested_element {
     /**
      * Set the database we want to use.
      *
-     * @param \moodle_database $db
+     * @param \core\dml\moodle_database $db
      */
     public function set_source_db($db) {
         $this->sourcedb = $db;
@@ -89,7 +89,7 @@ class backup_logstore_database_nested_element extends backup_nested_element {
     /**
      * Get the database we want to use.
      *
-     * @return \moodle_database $db
+     * @return \core\dml\moodle_database $db
      */
     public function get_source_db() {
         return $this->sourcedb;

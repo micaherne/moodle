@@ -65,9 +65,9 @@ class notification_helper {
     /**
      * Get all assignments that have an approaching due date (includes users and groups with due date overrides).
      *
-     * @return \moodle_recordset Returns the matching assignment records.
+     * @return \core\dml\moodle_recordset Returns the matching assignment records.
      */
-    public static function get_due_soon_assignments(): \moodle_recordset {
+    public static function get_due_soon_assignments(): \core\dml\moodle_recordset {
         global $DB;
 
         $timenow = self::get_time_now();
@@ -101,9 +101,9 @@ class notification_helper {
      * We don't want to get every single overdue assignment ever.
      * We just want the ones within the specified window.
      *
-     * @return \moodle_recordset Returns the matching assignment records.
+     * @return \core\dml\moodle_recordset Returns the matching assignment records.
      */
-    public static function get_overdue_assignments(): \moodle_recordset {
+    public static function get_overdue_assignments(): \core\dml\moodle_recordset {
         global $DB;
 
         $timenow = self::get_time_now();
@@ -142,9 +142,9 @@ class notification_helper {
     /**
      * Get all assignments that are due in 7 days (includes users and groups with due date overrides).
      *
-     * @return \moodle_recordset Returns the matching assignment records.
+     * @return \core\dml\moodle_recordset Returns the matching assignment records.
      */
-    public static function get_due_digest_assignments(): \moodle_recordset {
+    public static function get_due_digest_assignments(): \core\dml\moodle_recordset {
         global $DB;
 
         $futuretime = self::get_future_time(self::INTERVAL_DUE_DIGEST);
@@ -176,9 +176,9 @@ class notification_helper {
      * Get all assignments for a user that are due in 7 days (includes users and groups with due date overrides).
      *
      * @param int $userid The user id.
-     * @return \moodle_recordset Returns the matching assignment records.
+     * @return \core\dml\moodle_recordset Returns the matching assignment records.
      */
-    public static function get_due_digest_assignments_for_user(int $userid): \moodle_recordset {
+    public static function get_due_digest_assignments_for_user(int $userid): \core\dml\moodle_recordset {
         global $DB;
 
         $futuretime = self::get_future_time(self::INTERVAL_DUE_DIGEST);

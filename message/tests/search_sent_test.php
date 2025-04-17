@@ -178,7 +178,7 @@ final class search_sent_test extends \advanced_testcase {
      * @param moodle_recordset $rs Recordset to convert (and close)
      * @return array Array of IDs from records indexed by number (0, 1, 2, ...)
      */
-    public static function recordset_to_subjects(\moodle_recordset $rs) {
+    public static function recordset_to_subjects(\core\dml\moodle_recordset $rs) {
         $results = [];
         foreach ($rs as $rec) {
             $results[] = $rec->subject;
