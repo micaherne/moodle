@@ -103,7 +103,8 @@ foreach ($plugins as $plugin => $name) {
         }
     } else {
         $version = $versions[$plugin];
-        if (file_exists("$CFG->dirroot/report/$plugin")) {
+        $reportdir = \core\component::get_plugin_directory('report', $plugin);
+        if ($reportdir !== null && file_exists($reportdir)) {
             $version = $versions[$plugin];
         } else {
             // somebody removed plugin without uninstall
