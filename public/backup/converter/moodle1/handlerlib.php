@@ -636,7 +636,8 @@ class moodle1_info_handler extends moodle1_handler {
 
         // keep only such modules that seem to have the support for moodle1 implemented
         $modname = $this->currentmod['name'];
-        if (file_exists($CFG->dirroot.'/mod/'.$modname.'/backup/moodle1/lib.php')) {
+        $moddir = \core_component::get_plugin_directory('mod', $modname);
+        if ($moddir && file_exists($moddir . '/backup/moodle1/lib.php')) {
             $this->converter->set_stash('modinfo_'.$modname, $this->currentmod);
             $this->modnames[] = $modname;
         } else {
