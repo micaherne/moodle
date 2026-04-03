@@ -1482,7 +1482,8 @@ class grade_structure {
         }
 
         if (!array_key_exists($item->itemmodule, $hasgradephp)) {
-            if (file_exists($CFG->dirroot . '/mod/' . $item->itemmodule . '/grade.php')) {
+            $moddir = \core_component::get_plugin_directory('mod', $item->itemmodule);
+            if ($moddir && file_exists($moddir . '/grade.php')) {
                 $hasgradephp[$item->itemmodule] = true;
             } else {
                 $hasgradephp[$item->itemmodule] = false;
@@ -1815,7 +1816,8 @@ class grade_structure {
                 // Do not add link if activity is not visible to the current user.
                 if ($cm->uservisible) {
                     if (!array_key_exists($itemmodule, $hasgradephp)) {
-                        if (file_exists($CFG->dirroot . '/mod/' . $itemmodule . '/grade.php')) {
+                        $moddir = \core_component::get_plugin_directory('mod', $itemmodule);
+                        if ($moddir && file_exists($moddir . '/grade.php')) {
                             $hasgradephp[$itemmodule] = true;
                         } else {
                             $hasgradephp[$itemmodule] = false;
