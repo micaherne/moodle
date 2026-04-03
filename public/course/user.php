@@ -190,12 +190,14 @@ switch ($mode) {
             echo $OUTPUT->heading(get_string('grades', 'moodle'), 2, 'main mt-4 mb-4');
         }
 
-        if (empty($CFG->grade_profilereport) or !file_exists($CFG->dirroot.'/grade/report/'.$CFG->grade_profilereport.'/lib.php')) {
+        $gradereportdir = empty($CFG->grade_profilereport) ? null : \core_component::get_plugin_directory('gradereport', $CFG->grade_profilereport);
+        if (!$gradereportdir || !file_exists($gradereportdir . '/lib.php')) {
             $CFG->grade_profilereport = 'user';
+            $gradereportdir = \core_component::get_plugin_directory('gradereport', 'user');
         }
         require_once $CFG->libdir.'/gradelib.php';
         require_once $CFG->dirroot.'/grade/lib.php';
-        require_once $CFG->dirroot.'/grade/report/'.$CFG->grade_profilereport.'/lib.php';
+        require_once $gradereportdir . '/lib.php';
 
         // User must be able to view this grade report.
         if (!$viewasuser) {
