@@ -102,7 +102,8 @@ if ($param->modid === 'all') {
 
 } else if (strpos($param->modid, 'mod/') === 0) {
     $modname = substr($param->modid, strlen('mod/'));
-    if (array_key_exists($modname, $modnames) and file_exists("$CFG->dirroot/mod/$modname/lib.php")) {
+    $moddir = \core_component::get_plugin_directory('mod', $modname);
+    if (array_key_exists($modname, $modnames) && $moddir && file_exists($moddir . '/lib.php')) {
         $filter = $modname;
     }
 
