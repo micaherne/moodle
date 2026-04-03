@@ -131,8 +131,9 @@ class filter_manager {
             return new $filterclass($context, $localconfig);
         }
 
-        $path = $CFG->dirroot . '/filter/' . $filtername . '/filter.php';
-        if (!is_readable($path)) {
+        $filterdir = \core_component::get_plugin_directory('filter', $filtername);
+        $path = $filterdir ? $filterdir . '/filter.php' : null;
+        if (!$path || !is_readable($path)) {
             return null;
         }
         include_once($path);
