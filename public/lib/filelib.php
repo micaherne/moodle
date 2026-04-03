@@ -5253,10 +5253,11 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
         }
     } else if (strpos($component, 'mod_') === 0) {
         $modname = substr($component, 4);
-        if (!file_exists("$CFG->dirroot/mod/$modname/lib.php")) {
+        $moddir = \core_component::get_plugin_directory('mod', $modname);
+        if (!$moddir || !file_exists("$moddir/lib.php")) {
             send_file_not_found();
         }
-        require_once("$CFG->dirroot/mod/$modname/lib.php");
+        require_once("$moddir/lib.php");
 
         if ($context->contextlevel == CONTEXT_MODULE) {
             if ($cm->modname !== $modname) {
@@ -5309,10 +5310,11 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
     } else if (strpos($component, 'block_') === 0) {
         $blockname = substr($component, 6);
         // note: no more class methods in blocks please, that is ....
-        if (!file_exists("$CFG->dirroot/blocks/$blockname/lib.php")) {
+        $blockdir = \core_component::get_plugin_directory('block', $blockname);
+        if (!$blockdir || !file_exists("$blockdir/lib.php")) {
             send_file_not_found();
         }
-        require_once("$CFG->dirroot/blocks/$blockname/lib.php");
+        require_once("$blockdir/lib.php");
 
         if ($context->contextlevel == CONTEXT_BLOCK) {
             $birecord = $DB->get_record('block_instances', array('id'=>$context->instanceid), '*',MUST_EXIST);
