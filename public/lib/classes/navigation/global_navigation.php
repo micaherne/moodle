@@ -1405,10 +1405,11 @@ class global_navigation extends navigation_node {
         }
         $activity->nodetype = navigation_node::NODETYPE_LEAF;
         $activity->make_active();
-        $file = $CFG->dirroot . '/mod/' . $cm->modname . '/lib.php';
+        $moddir = \core_component::get_plugin_directory('mod', $cm->modname);
+        $file = $moddir ? $moddir . '/lib.php' : null;
         $function = $cm->modname . '_extend_navigation';
 
-        if (file_exists($file)) {
+        if ($file && file_exists($file)) {
             require_once($file);
             if (function_exists($function)) {
                 $activtyrecord = $DB->get_record($cm->modname, ['id' => $cm->instance], '*', MUST_EXIST);
@@ -1722,8 +1723,9 @@ class global_navigation extends navigation_node {
         static $extendingmodules = [];
         if (!array_key_exists($modname, $extendingmodules)) {
             $extendingmodules[$modname] = false;
-            $file = $CFG->dirroot . '/mod/' . $modname . '/lib.php';
-            if (file_exists($file)) {
+            $moddir = \core_component::get_plugin_directory('mod', $modname);
+            $file = $moddir ? $moddir . '/lib.php' : null;
+            if ($file && file_exists($file)) {
                 $function = $modname . '_extend_navigation';
                 require_once($file);
                 $extendingmodules[$modname] = (function_exists($function));
