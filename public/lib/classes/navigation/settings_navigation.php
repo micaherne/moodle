@@ -710,8 +710,9 @@ class settings_navigation extends navigation_node {
             $this->page->set_cm($cm, $this->page->course);
         }
 
-        $file = $CFG->dirroot . '/mod/' . $this->page->activityname . '/lib.php';
-        if (file_exists($file)) {
+        $moddir = \core_component::get_plugin_directory('mod', $this->page->activityname);
+        $file = $moddir ? $moddir . '/lib.php' : null;
+        if ($file && file_exists($file)) {
             require_once($file);
         }
 
