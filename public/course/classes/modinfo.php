@@ -697,7 +697,8 @@ class modinfo {
 
             // Skip modules which don't exist.
             if (!array_key_exists($mod->mod, $modexists)) {
-                $modexists[$mod->mod] = file_exists("$CFG->dirroot/mod/$mod->mod/lib.php");
+                $moddir = \core_component::get_plugin_directory('mod', $mod->mod);
+                $modexists[$mod->mod] = $moddir && file_exists($moddir . '/lib.php');
             }
             if (!$modexists[$mod->mod]) {
                 continue;
