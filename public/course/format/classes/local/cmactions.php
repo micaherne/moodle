@@ -612,10 +612,11 @@ class cmactions extends baseactions {
         global $CFG;
 
         // Get the file location of the delete_instance function for this module.
-        $modlib = "$CFG->dirroot/mod/$modulename/lib.php";
+        $moddir = \core_component::get_plugin_directory('mod', $modulename);
+        $modlib = $moddir ? $moddir . '/lib.php' : null;
 
         // Include the file required to call the delete_instance function for this module.
-        if (file_exists($modlib)) {
+        if ($modlib && file_exists($modlib)) {
             require_once($modlib);
         } else {
             throw new \moodle_exception(
