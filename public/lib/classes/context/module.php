@@ -169,7 +169,7 @@ class module extends context {
 
         $subcaps = array();
 
-        $modulepath = "{$CFG->dirroot}/mod/{$module->name}";
+        $modulepath = \core_component::get_plugin_directory('mod', $module->name);
         $subplugins = \core\component::get_subplugins("mod_{$module->name}");
 
         if (!empty($subplugins)) {
@@ -180,9 +180,9 @@ class module extends context {
             }
         }
 
-        $modfile = "{$modulepath}/lib.php";
+        $modfile = $modulepath ? "{$modulepath}/lib.php" : null;
         $extracaps = array();
-        if (file_exists($modfile)) {
+        if ($modfile && file_exists($modfile)) {
             include_once($modfile);
             $modfunction = $module->name.'_get_extra_capabilities';
             if (function_exists($modfunction)) {
