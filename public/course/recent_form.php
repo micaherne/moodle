@@ -120,8 +120,9 @@ class recent_form extends moodleform {
         }
 
         foreach ($modsused as $modname=>$unused) {
-            $libfile = "$CFG->dirroot/mod/$modname/lib.php";
-            if (!file_exists($libfile)) {
+            $moddir = \core_component::get_plugin_directory('mod', $modname);
+            $libfile = $moddir ? $moddir . '/lib.php' : null;
+            if (!$libfile || !file_exists($libfile)) {
                 unset($modsused[$modname]);
                 continue;
             }
