@@ -252,8 +252,8 @@ class format_singleactivity extends core_courseformat\base implements core_cours
         if (!course_allowed_module($this->get_course(), $modname)) {
             return false;
         }
-        $libfile = "$CFG->dirroot/mod/$modname/lib.php";
-        if (!file_exists($libfile)) {
+        $moddir = \core_component::get_plugin_directory('mod', $modname);
+        if (!$moddir || !file_exists($moddir . '/lib.php')) {
             return false;
         }
         return true;
