@@ -1729,8 +1729,9 @@ class block_manager {
         global $CFG;
         require_once("$CFG->dirroot/blocks/moodleblock.class.php");
         $blockname = clean_param($blockname, PARAM_PLUGIN);
-        $formfile = $CFG->dirroot . '/blocks/' . $blockname . '/edit_form.php';
-        if (is_readable($formfile)) {
+        $blockdir = \core_component::get_plugin_directory('block', $blockname);
+        $formfile = $blockdir ? $blockdir . '/edit_form.php' : null;
+        if ($formfile && is_readable($formfile)) {
             require_once($CFG->dirroot . '/blocks/edit_form.php');
             require_once($formfile);
             $classname = 'block_' . $blockname . '_edit_form';
@@ -2216,9 +2217,10 @@ function block_load_class($blockname) {
         return true;
     }
 
-    $blockpath = $CFG->dirroot.'/blocks/'.$blockname.'/block_'.$blockname.'.php';
+    $blockdir = \core_component::get_plugin_directory('block', $blockname);
+    $blockpath = $blockdir ? $blockdir . '/block_' . $blockname . '.php' : null;
 
-    if (file_exists($blockpath)) {
+    if ($blockpath && file_exists($blockpath)) {
         require_once($CFG->dirroot.'/blocks/moodleblock.class.php');
         include_once($blockpath);
     }else{
