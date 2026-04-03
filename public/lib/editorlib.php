@@ -120,8 +120,9 @@ function editors_get_enabled() {
 function get_texteditor($editorname) {
     global $CFG;
 
-    $libfile = "$CFG->libdir/editor/$editorname/lib.php";
-    if (!file_exists($libfile)) {
+    $editordir = \core_component::get_plugin_directory('editor', $editorname);
+    $libfile = $editordir ? $editordir . '/lib.php' : null;
+    if (!$libfile || !file_exists($libfile)) {
         return false;
     }
     require_once($libfile);
