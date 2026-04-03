@@ -832,7 +832,8 @@ abstract class grade_report {
 
         $itemtypes = $DB->get_records_sql($sql, ['courseid1' => $this->courseid, 'courseid2' => $this->courseid]);
         foreach ($itemtypes as $itemtype => $value) {
-            if (file_exists("$CFG->dirroot/mod/$itemtype/lib.php")) {
+            $moddir = \core_component::get_plugin_directory('mod', $itemtype);
+            if ($moddir && file_exists($moddir . '/lib.php')) {
                 $modnames[$itemtype] = get_string("modulename", $itemtype, null, true);
             } else if ($itemtype == 'manual') {
                 $modnames[$itemtype] = get_string('manualitem', 'grades', null, true);
