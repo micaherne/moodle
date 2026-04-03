@@ -236,9 +236,10 @@ class format_legacy extends core_courseformat\base {
      */
     public function get_default_blocks() {
         global $CFG;
-        $formatconfig = $CFG->dirroot.'/course/format/'.$this->format.'/config.php';
+        $formatdir = \core_component::get_plugin_directory('format', $this->format);
+        $formatconfig = $formatdir ? $formatdir . '/config.php' : null;
         $format = array(); // initialize array in external file
-        if (is_readable($formatconfig)) {
+        if ($formatconfig && is_readable($formatconfig)) {
             include($formatconfig);
         }
         if (!empty($format['defaultblocks'])) {
