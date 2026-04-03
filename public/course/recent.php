@@ -154,9 +154,10 @@ foreach ($sections as $sectionnum => $section) {
             continue;
         }
 
-        $libfile = "$CFG->dirroot/mod/$cm->modname/lib.php";
+        $moddir = \core_component::get_plugin_directory('mod', $cm->modname);
+        $libfile = $moddir ? $moddir . '/lib.php' : null;
 
-        if (file_exists($libfile)) {
+        if ($libfile && file_exists($libfile)) {
             require_once($libfile);
             $get_recent_mod_activity = $cm->modname."_get_recent_mod_activity";
 
