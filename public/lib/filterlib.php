@@ -801,13 +801,14 @@ function filter_delete_all_for_context($contextid) {
  * @return boolean Whether there should be a 'Settings' link on the config page.
  */
 function filter_has_global_settings($filter) {
-    global $CFG;
-    $settingspath = $CFG->dirroot . '/filter/' . $filter . '/settings.php';
-    if (is_readable($settingspath)) {
+    $filterdir = \core_component::get_plugin_directory('filter', $filter);
+    if (!$filterdir) {
+        return false;
+    }
+    if (is_readable($filterdir . '/settings.php')) {
         return true;
     }
-    $settingspath = $CFG->dirroot . '/filter/' . $filter . '/filtersettings.php';
-    return is_readable($settingspath);
+    return is_readable($filterdir . '/filtersettings.php');
 }
 
 /**
@@ -817,9 +818,11 @@ function filter_has_global_settings($filter) {
  * @return boolean Whether there should be a 'Settings' link on the manage filters in context page.
  */
 function filter_has_local_settings($filter) {
-    global $CFG;
-    $settingspath = $CFG->dirroot . '/filter/' . $filter . '/filterlocalsettings.php';
-    return is_readable($settingspath);
+    $filterdir = \core_component::get_plugin_directory('filter', $filter);
+    if (!$filterdir) {
+        return false;
+    }
+    return is_readable($filterdir . '/filterlocalsettings.php');
 }
 
 /**
@@ -1147,6 +1150,7 @@ function filter_add_javascript($text) {
     <script type=\"text/javascript\">
     <!--
         function openpopup(url,name,options,fullscreen) {
+          global $CFG;
           fullurl = \"".$CFG->wwwroot."\" + url;
           windowobj = window.open(fullurl,name,options);
           if (fullscreen) {
