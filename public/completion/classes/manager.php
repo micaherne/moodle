@@ -246,8 +246,9 @@ class manager {
         $course = get_course($this->courseid);
         $availablemodules = [];
         foreach ($data->modules as $module) {
-            $libfile = "$CFG->dirroot/mod/$module->name/lib.php";
-            if (!file_exists($libfile)) {
+            $moddir = \core_component::get_plugin_directory('mod', $module->name);
+            $libfile = $moddir ? $moddir . '/lib.php' : null;
+            if (!$libfile || !file_exists($libfile)) {
                 continue;
             }
             if (!plugin_supports('mod', $module->name, FEATURE_MODEDIT_DEFAULT_COMPLETION, true)) {
