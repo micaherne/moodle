@@ -1686,8 +1686,9 @@ class cm_info implements IteratorAggregate {
      */
     private function call_mod_function($type) {
         global $CFG;
-        $libfile = $CFG->dirroot . '/mod/' . $this->modname . '/lib.php';
-        if (file_exists($libfile)) {
+        $moddir = \core_component::get_plugin_directory('mod', $this->modname);
+        $libfile = $moddir ? $moddir . '/lib.php' : null;
+        if ($libfile && file_exists($libfile)) {
             include_once($libfile);
             $function = 'mod_' . $this->modname . '_' . $type;
             if (function_exists($function)) {
