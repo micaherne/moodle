@@ -1106,11 +1106,12 @@ class modinfo {
                         $modname = $mods[$cmid]->mod;
                         $functionname = $modname . "_get_coursemodule_info";
 
-                        if (!file_exists("$CFG->dirroot/mod/$modname/lib.php")) {
+                        $moddir = \core_component::get_plugin_directory('mod', $modname);
+                        if (!$moddir || !file_exists($moddir . '/lib.php')) {
                             continue;
                         }
 
-                        include_once("$CFG->dirroot/mod/$modname/lib.php");
+                        include_once($moddir . '/lib.php');
 
                         if ($hasfunction = function_exists($functionname)) {
                             if ($info = $functionname($rawmods[$cmid])) {
