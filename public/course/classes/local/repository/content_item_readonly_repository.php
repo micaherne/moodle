@@ -160,7 +160,8 @@ class content_item_readonly_repository implements content_item_readonly_reposito
         // Now, generate the content_items.
         foreach ($modules as $modid => $mod) {
             // Exclude modules if the code doesn't exist.
-            if (!file_exists("$CFG->dirroot/mod/$mod->name/lib.php")) {
+            $moddir = \core_component::get_plugin_directory('mod', $mod->name);
+            if (!$moddir || !file_exists($moddir . '/lib.php')) {
                 continue;
             }
             // Create the content item for the module itself.
@@ -232,7 +233,8 @@ class content_item_readonly_repository implements content_item_readonly_reposito
         // Now, generate the content_items.
         foreach ($modules as $modid => $mod) {
             // Exclude modules if the code doesn't exist.
-            if (!file_exists("$CFG->dirroot/mod/$mod->name/lib.php")) {
+            $moddir = \core_component::get_plugin_directory('mod', $mod->name);
+            if (!$moddir || !file_exists($moddir . '/lib.php')) {
                 continue;
             }
             // Create the content item for the module itself.
