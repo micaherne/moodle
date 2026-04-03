@@ -161,8 +161,9 @@ class restore_questions_parser_processor extends grouped_parser_processor {
     protected static function get_qtype_restore(string $qtype): ?restore_qtype_plugin {
         global $CFG;
         $step = new restore_quiz_activity_structure_step('questions', 'question.xml');
-        $filepath = "{$CFG->dirroot}/question/type/{$qtype}/backup/moodle2/restore_qtype_{$qtype}_plugin.class.php";
-        if (!file_exists($filepath)) {
+        $qtypedir = \core_component::get_plugin_directory('qtype', $qtype);
+        $filepath = $qtypedir ? $qtypedir . "/backup/moodle2/restore_qtype_{$qtype}_plugin.class.php" : null;
+        if (!$filepath || !file_exists($filepath)) {
             return null;
         }
         require_once($filepath);
