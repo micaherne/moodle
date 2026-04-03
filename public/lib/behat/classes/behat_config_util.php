@@ -1108,10 +1108,12 @@ class behat_config_util {
         $overridebehatclassname = "behat_theme_{$themename}_behat_{$selectortype}_selectors";
 
         if ($includeclass) {
-            $themeoverrideselector = $CFG->dirroot . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR . $themename .
-                self::get_behat_tests_path() . DIRECTORY_SEPARATOR . $overridebehatclassname . '.php';
+            $themedir = \core_component::get_plugin_directory('theme', $themename);
+            $themeoverrideselector = $themedir
+                ? $themedir . self::get_behat_tests_path() . DIRECTORY_SEPARATOR . $overridebehatclassname . '.php'
+                : null;
 
-            if (file_exists($themeoverrideselector)) {
+            if ($themeoverrideselector && file_exists($themeoverrideselector)) {
                 require_once($themeoverrideselector);
             }
         }
