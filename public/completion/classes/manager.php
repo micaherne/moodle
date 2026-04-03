@@ -620,8 +620,9 @@ class manager {
     ): ?\moodleform_mod {
         global $CFG, $PAGE;
 
-        $modmoodleform = "$CFG->dirroot/mod/$modname/mod_form.php";
-        if (file_exists($modmoodleform)) {
+        $moddir = \core_component::get_plugin_directory('mod', $modname);
+        $modmoodleform = $moddir ? $moddir . '/mod_form.php' : null;
+        if ($modmoodleform && file_exists($modmoodleform)) {
             require_once($modmoodleform);
         } else {
             throw new \moodle_exception('noformdesc');
