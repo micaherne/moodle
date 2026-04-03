@@ -917,7 +917,7 @@ function course_module_calendar_event_update_process($instance, $cm): void {
 
     // We need to call *_refresh_events() first because some modules delete 'old' events at the end of the code which
     // will remove the completion events.
-    include_once("$CFG->dirroot/mod/$cm->modname/lib.php");
+    include_once(\core_component::get_plugin_directory('mod', $cm->modname) . '/lib.php');
     $refresheventsfunction = $cm->modname . '_refresh_events';
     if (function_exists($refresheventsfunction)) {
         call_user_func($refresheventsfunction, $cm->course, $instance, $cm);
