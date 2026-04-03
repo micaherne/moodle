@@ -181,9 +181,10 @@ class course_reset_form extends moodleform {
         if ($allmods = $DB->get_records('modules') ) {
             foreach ($allmods as $mod) {
                 $modname = $mod->name;
-                $modfile = $CFG->dirroot."/mod/$modname/lib.php";
+                $moddir = \core_component::get_plugin_directory('mod', $modname);
+                $modfile = $moddir ? $moddir . '/lib.php' : null;
                 $modresetcourseformdefaults = $modname.'_reset_course_form_defaults';
-                if (file_exists($modfile)) {
+                if ($modfile && file_exists($modfile)) {
                     @include_once($modfile);
                     if (function_exists($modresetcourseformdefaults)) {
                         if ($moddefs = $modresetcourseformdefaults($COURSE)) {
