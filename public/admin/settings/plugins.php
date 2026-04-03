@@ -394,7 +394,7 @@ if ($hassiteconfig) {
     $ADMIN->add('portfoliosettings', new admin_externalpage('portfoliocontroller', new lang_string('manageportfolios', 'portfolio'), $url, 'moodle/site:config', true));
 
     foreach (portfolio_instances(false, false) as $portfolio) {
-        require_once($CFG->dirroot . '/portfolio/' . $portfolio->get('plugin') . '/lib.php');
+        require_once(\core\component::get_plugin_directory('portfolio', $portfolio->get('plugin')) . '/lib.php');
         $classname = 'portfolio_plugin_' . $portfolio->get('plugin');
         $ADMIN->add(
             'portfoliosettings',
