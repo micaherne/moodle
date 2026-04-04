@@ -90,8 +90,7 @@ final class profilelib_test extends \advanced_testcase {
         require_once($CFG->dirroot . '/user/profile/definelib.php');
         $datatypes = profile_list_datatypes();
         foreach ($datatypes as $datatype => $datatypename) {
-            require_once($CFG->dirroot . '/user/profile/field/' .
-                $datatype . '/field.class.php');
+            require_once(\core_component::get_plugin_directory('profilefield', $datatype) . '/field.class.php');
             $newfield = 'profile_field_' . $datatype;
             $formfield = new $newfield();
             $this->assertNotNull($formfield);

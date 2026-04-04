@@ -624,8 +624,7 @@ class profile_field_base {
  */
 function profile_get_user_field(string $type, int $fieldid = 0, int $userid = 0, ?stdClass $fielddata = null): profile_field_base {
     global $CFG;
-
-    require_once("{$CFG->dirroot}/user/profile/field/{$type}/field.class.php");
+    require_once(\core_component::get_plugin_directory('profilefield', $type) . '/field.class.php');
 
     // Return instance of profile field type.
     $profilefieldtype = "profile_field_{$type}";
