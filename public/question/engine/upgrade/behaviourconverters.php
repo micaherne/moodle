@@ -272,11 +272,11 @@ abstract class question_behaviour_attempt_updater {
                     $this, $this->question, $this->logger, $this->qeupdater);
         }
 
-        $path = $CFG->dirroot . '/question/type/' . $this->question->qtype . '/db/upgradelib.php';
-        if (!is_readable($path)) {
+        $qtypedir = \core_component::get_plugin_directory('qtype', $this->question->qtype);
+        $path = $qtypedir ? "{$qtypedir}/db/upgradelib.php" : null;
+        if (!$path || !is_readable($path)) {
             throw new coding_exception("Question type {$this->question->qtype}
-                    is missing important code (the file {$path})
-                    required to run the upgrade to the new question engine.");
+                    is missing important code required to run the upgrade to the new question engine.");
         }
         include_once($path);
         $class = 'qtype_' . $this->question->qtype . '_qe2_attempt_updater';
