@@ -98,7 +98,7 @@ function report_participation_get_action_sql($action, $modname) {
 
     $viewnames = array();
     $postnames = array();
-    include_once($CFG->dirroot.'/mod/' . $modname . '/lib.php');
+    include_once(\core_component::get_plugin_directory('mod', $modname) . '/lib.php');
 
     $viewfun = $modname.'_get_view_actions';
     $postfun = $modname.'_get_post_actions';

@@ -73,9 +73,10 @@ class hierarchicalactivities extends coursestructure {
         global $CFG, $DB;
 
         $instance = $DB->get_record($mod->modname, ['id' => $mod->instance]);
-        $libfile = "$CFG->dirroot/mod/$mod->modname/lib.php";
+        $moddir = \core_component::get_plugin_directory('mod', $mod->modname);
+        $libfile = $moddir ? "{$moddir}/lib.php" : null;
 
-        if (!file_exists($libfile)) {
+        if (!$libfile || !file_exists($libfile)) {
             return;
         }
 
