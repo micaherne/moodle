@@ -411,13 +411,13 @@ function get_message_providers() {
  */
 function get_message_processor($type) {
     global $CFG;
-
-    // Note, we cannot use the get_message_processors function here, becaues this
+    // Note, we cannot use the get_message_processors function here, because this
     // code is called during install after installing each messaging plugin, and
     // get_message_processors caches the list of installed plugins.
 
-    $processorfile = $CFG->dirroot . "/message/output/{$type}/message_output_{$type}.php";
-    if (!is_readable($processorfile)) {
+    $processordir = \core_component::get_plugin_directory('message', $type);
+    $processorfile = $processordir ? "{$processordir}/message_output_{$type}.php" : null;
+    if (!$processorfile || !is_readable($processorfile)) {
         throw new coding_exception('Unknown message processor type ' . $type);
     }
 

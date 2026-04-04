@@ -1734,9 +1734,9 @@ class api {
      */
     public static function get_processed_processor_object(\stdClass $processor) {
         global $CFG;
-
-        $processorfile = $CFG->dirroot. '/message/output/'.$processor->name.'/message_output_'.$processor->name.'.php';
-        if (is_readable($processorfile)) {
+        $processordir = \core_component::get_plugin_directory('message', $processor->name);
+        $processorfile = $processordir ? "{$processordir}/message_output_{$processor->name}.php" : null;
+        if ($processorfile && is_readable($processorfile)) {
             include_once($processorfile);
             $processclass = 'message_output_' . $processor->name;
             if (class_exists($processclass)) {
@@ -1747,7 +1747,7 @@ class api {
                     $processor->configured = 1;
                 }
                 $processor->hassettings = 0;
-                if (is_readable($CFG->dirroot.'/message/output/'.$processor->name.'/settings.php')) {
+                if ($processordir && is_readable("{$processordir}/settings.php")) {
                     $processor->hassettings = 1;
                 }
                 $processor->available = 1;
