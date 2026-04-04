@@ -3265,10 +3265,9 @@ function order_in_string($values, $stringformat) {
  * @return boolean Whether the plugin is available.
  */
 function exists_auth_plugin($auth) {
-    global $CFG;
-
-    if (file_exists("{$CFG->dirroot}/auth/$auth/auth.php")) {
-        return is_readable("{$CFG->dirroot}/auth/$auth/auth.php");
+    $authdir = \core_component::get_plugin_directory('auth', $auth);
+    if ($authdir && file_exists("{$authdir}/auth.php")) {
+        return is_readable("{$authdir}/auth.php");
     }
     return false;
 }
@@ -3304,7 +3303,7 @@ function get_auth_plugin($auth) {
     }
 
     // Return auth plugin instance.
-    require_once("{$CFG->dirroot}/auth/$auth/auth.php");
+    require_once(\core_component::get_plugin_directory('auth', $auth) . '/auth.php');
     $class = "auth_plugin_$auth";
     return new $class;
 }
@@ -5067,7 +5066,7 @@ function remove_course_contents($courseid, $showfeedback = true, ?array $options
  */
 function shift_course_mod_dates($modname, $fields, $timeshift, $courseid, $modid = 0) {
     global $CFG, $DB;
-    include_once($CFG->dirroot.'/mod/'.$modname.'/lib.php');
+    include_once(\core_component::get_plugin_directory('mod', $modname) . '/lib.php');
 
     $return = true;
     $params = array($timeshift, $courseid);
@@ -5409,9 +5408,10 @@ function reset_course_userdata($data, ?\core_course\exception\reset_timeout $tim
         $progress->start_progress(get_string('activities'), count($allmods));
         foreach ($allmods as $mod) {
             $modname = $mod->name;
-            $modfile = $CFG->dirroot.'/mod/'. $modname.'/lib.php';
+            $moddir = \core_component::get_plugin_directory('mod', $modname);
+            $modfile = $moddir ? $moddir . '/lib.php' : null;
             $moddeleteuserdata = $modname.'_reset_userdata';   // Function to delete user data.
-            if (file_exists($modfile)) {
+            if ($modfile && file_exists($modfile)) {
                 if (!$DB->count_records($modname, array('course' => $data->courseid))) {
                     continue; // Skip mods with no instances.
                 }
@@ -7736,8 +7736,9 @@ function plugin_supports($type, $name, $feature, $default = null) {
     if ($type === 'mod') {
         // We need this special case because we support subplugins in modules,
         // otherwise it would end up in infinite loop.
-        if (file_exists("$CFG->dirroot/mod/$name/lib.php")) {
-            include_once("$CFG->dirroot/mod/$name/lib.php");
+        $moddir = \core_component::get_plugin_directory('mod', $name);
+        if ($moddir && file_exists("$moddir/lib.php")) {
+            include_once("$moddir/lib.php");
             $function = $component.'_supports';
             if (!function_exists($function)) {
                 // Legacy non-frankenstyle function name.
