@@ -92,8 +92,9 @@ if ($form = $importform->get_data()) {
         throw new moodle_exception('uploadproblem');
     }
 
-    $formatfile = $CFG->dirroot . '/question/format/' . $form->format . '/format.php';
-    if (!is_readable($formatfile)) {
+    $formatdir = \core_component::get_plugin_directory('qformat', $form->format);
+    $formatfile = $formatdir ? "{$formatdir}/format.php" : null;
+    if (!$formatfile || !is_readable($formatfile)) {
         throw new moodle_exception('formatnotfound', 'question', '', $form->format);
     }
 
