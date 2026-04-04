@@ -202,9 +202,9 @@ class question_type {
             $contexts, $formeditable) {
         global $CFG;
         require_once($CFG->dirroot . '/question/type/edit_question_form.php');
-        $definitionfile = $CFG->dirroot . '/question/type/' . $this->name() .
-                '/edit_' . $this->name() . '_form.php';
-        if (!is_readable($definitionfile) || !is_file($definitionfile)) {
+        $qtypedir = \core_component::get_plugin_directory('qtype', $this->name());
+        $definitionfile = $qtypedir ? "{$qtypedir}/edit_{$this->name()}_form.php" : null;
+        if (!$definitionfile || !is_readable($definitionfile) || !is_file($definitionfile)) {
             throw new coding_exception($this->plugin_name() .
                     ' is missing the definition of its editing formin file ' .
                     $definitionfile . '.');
@@ -223,8 +223,7 @@ class question_type {
      * @return string the full path of the folder this plugin's files live in.
      */
     public function plugin_dir() {
-        global $CFG;
-        return $CFG->dirroot . '/question/type/' . $this->name();
+        return \core_component::get_plugin_directory('qtype', $this->name());
     }
 
     /**
