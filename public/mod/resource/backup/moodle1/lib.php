@@ -115,7 +115,10 @@ class moodle1_mod_resource_handler extends moodle1_mod_handler {
             $plugin = new stdClass();
             $plugin->version = null;
             $module = $plugin;
-            include $CFG->dirroot.'/mod/'.$successor->get_modname().'/version.php';
+            $successordir = \core_component::get_plugin_directory('mod', $successor->get_modname());
+            if ($successordir) {
+                include "{$successordir}/version.php";
+            }
             $cminfo['version'] = $plugin->version;
 
             // stash the new course module information for this successor
