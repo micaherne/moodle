@@ -59,12 +59,11 @@ class manager {
      * @param stdClass $instance activity instance object.
      */
     public function __construct(cm_info $cm, stdClass $instance) {
-        global $CFG;
         $this->cm = $cm;
         $this->instance = $instance;
         $this->context = context_module::instance($cm->id);
         $this->instance->cmidnumber = $cm->idnumber;
-        $this->path = $CFG->dirroot . '/mod/' . self::MODULE;
+        $this->path = \core_component::get_plugin_directory('mod', self::MODULE);
     }
 
     /**
