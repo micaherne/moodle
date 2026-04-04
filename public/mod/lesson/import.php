@@ -77,8 +77,9 @@ if ($data = $mform->get_data()) {
     }
 
     $formatclass = 'qformat_'.$data->format;
-    $formatclassfile = $CFG->dirroot.'/question/format/'.$data->format.'/format.php';
-    if (!is_readable($formatclassfile)) {
+    $formatdir = \core_component::get_plugin_directory('qformat', $data->format);
+    $formatclassfile = $formatdir ? "{$formatdir}/format.php" : null;
+    if (!$formatclassfile || !is_readable($formatclassfile)) {
         throw new \moodle_exception('unknowformat', '', '', $data->format);
     }
     require_once($formatclassfile);

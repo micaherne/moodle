@@ -63,7 +63,6 @@ class lesson_import_form extends moodleform {
      */
     protected function validate_uploaded_file($data, $errors) {
         global $CFG;
-
         if (empty($data['questionfile'])) {
             $errors['questionfile'] = get_string('required');
             return $errors;
@@ -75,8 +74,9 @@ class lesson_import_form extends moodleform {
             return $errors;
         }
 
-        $formatfile = $CFG->dirroot.'/question/format/'.$data['format'].'/format.php';
-        if (!is_readable($formatfile)) {
+        $formatdir = \core_component::get_plugin_directory('qformat', $data['format']);
+        $formatfile = $formatdir ? "{$formatdir}/format.php" : null;
+        if (!$formatfile || !is_readable($formatfile)) {
             throw new moodle_exception('formatnotfound', 'lesson', '', $data['format']);
         }
 
