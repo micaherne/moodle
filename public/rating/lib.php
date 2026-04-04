@@ -1138,7 +1138,7 @@ class rating_manager {
             if ($modinstance) {
                 $modinstance->cmidnumber = $cm->idnumber;
                 $functionname = $cm->modname.'_update_grades';
-                require_once($CFG->dirroot."/mod/{$cm->modname}/lib.php");
+                require_once(\core_component::get_plugin_directory('mod', $cm->modname) . '/lib.php');
                 if (function_exists($functionname)) {
                     $functionname($modinstance, $rateduserid);
                 }
