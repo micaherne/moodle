@@ -149,7 +149,7 @@ final class grading_external_test extends \core_external\tests\externallib_testc
         $this->assertEquals($USER->id, $definition['usercreated']);
 
         require_once("$CFG->dirroot/grade/grading/lib.php");
-        require_once($CFG->dirroot.'/grade/grading/form/'.$rubricdefinition['method'].'/lib.php');
+        require_once(\core_component::get_plugin_directory('gradingform', $rubricdefinition['method']) . '/lib.php');
 
         $gradingmanager = get_grading_manager($areaid);
 
