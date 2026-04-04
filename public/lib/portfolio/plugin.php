@@ -421,7 +421,7 @@ abstract class portfolio_plugin_base {
      * @return object subclass of portfolio_plugin_base
      */
     public static function create_instance($plugin, $name, $config) {
-        global $DB, $CFG;
+        global $DB;
         $new = (object)array(
             'plugin' => $plugin,
             'name'   => $name,
@@ -433,7 +433,7 @@ abstract class portfolio_plugin_base {
             }
         }
         $newid = $DB->insert_record('portfolio_instance', $new);
-        require_once($CFG->dirroot . '/portfolio/' . $plugin . '/lib.php');
+        require_once(\core_component::get_plugin_directory('portfolio', $plugin) . '/lib.php');
         $classname = 'portfolio_plugin_'  . $plugin;
         $obj = new $classname($newid);
         $obj->set_config($config);

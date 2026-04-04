@@ -775,7 +775,7 @@ function portfolio_format_object($name) {
  * @return object of portfolio_plugin_XXX
  */
 function portfolio_instance($instanceid, $record=null) {
-    global $DB, $CFG;
+    global $CFG, $DB;
 
     if ($record) {
         $instance  = $record;
@@ -785,7 +785,7 @@ function portfolio_instance($instanceid, $record=null) {
         }
     }
     require_once($CFG->libdir . '/portfolio/plugin.php');
-    require_once($CFG->dirroot . '/portfolio/'. $instance->plugin . '/lib.php');
+    require_once(\core_component::get_plugin_directory('portfolio', $instance->plugin) . '/lib.php');
     $classname = 'portfolio_plugin_' . $instance->plugin;
     return new $classname($instanceid, $instance);
 }
@@ -821,7 +821,7 @@ function portfolio_static_function($plugin, $function) {
     }
 
     require_once($CFG->libdir . '/portfolio/plugin.php');
-    require_once($CFG->dirroot . '/portfolio/' . $plugin .  '/lib.php');
+    require_once(\core_component::get_plugin_directory('portfolio', $plugin) . '/lib.php');
     return call_user_func_array(array('portfolio_plugin_' . $plugin, $function), $args);
 }
 
