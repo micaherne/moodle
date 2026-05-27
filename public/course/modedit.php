@@ -143,9 +143,9 @@ $PAGE->set_pagelayout('admin');
 $PAGE->add_body_class('limitedwidth');
 
 
-$modmoodleform = "$CFG->dirroot/mod/$module->name/mod_form.php";
-if (file_exists($modmoodleform)) {
-    require_once($modmoodleform);
+$moddir = \core_component::get_plugin_directory('mod', $module->name);
+if ($moddir && file_exists("$moddir/mod_form.php")) {
+    require_once("$moddir/mod_form.php");
 } else {
     throw new \moodle_exception('noformdesc');
 }
