@@ -391,7 +391,11 @@ echo html_writer::start_tag('div', $containerattributes);
 $displaysection = $section;
 
 // Include the actual course format.
-require($CFG->dirroot .'/course/format/'. $course->format .'/format.php');
+$formatdir = \core_component::get_plugin_directory('format', $course->format);
+if ($formatdir === null) {
+    throw new \coding_exception("Plugin not installed: format_{$course->format}");
+}
+require("$formatdir/format.php");
 // Content wrapper end.
 
 echo html_writer::end_tag('div');
