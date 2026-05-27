@@ -108,7 +108,10 @@ function enrol_get_plugins($enabled) {
         $enabled = explode(',', $CFG->enrol_plugins_enabled);
         $plugins = array();
         foreach ($enabled as $plugin) {
-            $plugins[$plugin] = "$CFG->dirroot/enrol/$plugin";
+            $plugindir = \core_component::get_plugin_directory('enrol', $plugin);
+            if ($plugindir !== null) {
+                $plugins[$plugin] = $plugindir;
+            }
         }
     } else {
         // sorted alphabetically
@@ -140,8 +143,6 @@ function enrol_get_plugins($enabled) {
  * @return ?enrol_plugin
  */
 function enrol_get_plugin($name) {
-    global $CFG;
-
     $name = clean_param($name, PARAM_PLUGIN);
 
     if (empty($name)) {
@@ -149,7 +150,7 @@ function enrol_get_plugin($name) {
         return null;
     }
 
-    $location = "$CFG->dirroot/enrol/$name";
+    $location = \core_component::get_plugin_directory('enrol', $name);
 
     $class = "enrol_{$name}_plugin";
     if (!class_exists($class)) {
@@ -186,7 +187,8 @@ function enrol_get_instances($courseid, $enabled) {
             unset($result[$key]);
             continue;
         }
-        if (!file_exists("$CFG->dirroot/enrol/$instance->enrol/lib.php")) {
+        $enroldir = \core_component::get_plugin_directory('enrol', $instance->enrol);
+        if (!$enroldir || !file_exists("$enroldir/lib.php")) {
             // broken plugin
             unset($result[$key]);
             continue;
@@ -2504,7 +2506,8 @@ abstract class enrol_plugin {
             return NULL;
         }
 
-        if (!file_exists("$CFG->dirroot/enrol/$name/unenrolself.php")) {
+        $enroldir = \core_component::get_plugin_directory('enrol', $name);
+        if (!$enroldir || !file_exists("$enroldir/unenrolself.php")) {
             return NULL;
         }
 
@@ -2863,10 +2866,8 @@ abstract class enrol_plugin {
      * @return bool
      */
     public function is_cron_required() {
-        global $CFG;
-
         $name = $this->get_name();
-        $versionfile = "$CFG->dirroot/enrol/$name/version.php";
+        $versionfile = \core_component::get_plugin_directory('enrol', $name) . '/version.php';
         $plugin = new stdClass();
         include($versionfile);
         if (empty($plugin->cron)) {
