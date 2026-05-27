@@ -157,8 +157,9 @@ function theme_set_sub_revision_for_theme($themename, $revision) {
 function theme_get_config_file_path($themename) {
     global $CFG;
 
-    if (file_exists("{$CFG->dirroot}/theme/{$themename}/config.php")) {
-        return "{$CFG->dirroot}/theme/{$themename}/config.php";
+    $themedir = \core_component::get_plugin_directory('theme', $themename);
+    if ($themedir && file_exists("$themedir/config.php")) {
+        return "$themedir/config.php";
     } else if (!empty($CFG->themedir) && file_exists("{$CFG->themedir}/{$themename}/config.php")) {
         return "{$CFG->themedir}/{$themename}/config.php";
     } else {
