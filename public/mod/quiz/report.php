@@ -70,9 +70,9 @@ if (!is_readable("report/$mode/report.php")) {
 }
 
 // Open the selected quiz report and display it.
-$file = $CFG->dirroot . '/mod/quiz/report/' . $mode . '/report.php';
-if (is_readable($file)) {
-    include_once($file);
+$quizreportdir = \core_component::get_plugin_directory('quiz', $mode);
+if ($quizreportdir && is_readable("$quizreportdir/report.php")) {
+    include_once("$quizreportdir/report.php");
 }
 $reportclassname = 'quiz_' . $mode . '_report';
 if (!class_exists($reportclassname)) {
