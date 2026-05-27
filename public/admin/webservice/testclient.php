@@ -117,7 +117,11 @@ if ($mform->is_cancelled()) {
     $functioninfo = \core_external\external_api::external_function_info($function);
 
     // first load lib of selected protocol
-    require_once("$CFG->dirroot/webservice/$protocol/locallib.php");
+    $protocoldir = \core_component::get_plugin_directory('webservice', $protocol);
+    if ($protocoldir === null) {
+        throw new \coding_exception('Unknown webservice protocol: ' . $protocol);
+    }
+    require_once($protocoldir . '/locallib.php');
 
     $testclientclass = "webservice_{$protocol}_test_client";
     if (!class_exists($testclientclass)) {
