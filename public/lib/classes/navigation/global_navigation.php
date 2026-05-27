@@ -1409,11 +1409,11 @@ class global_navigation extends navigation_node {
         }
         $activity->nodetype = navigation_node::NODETYPE_LEAF;
         $activity->make_active();
-        $file = $CFG->dirroot . '/mod/' . $cm->modname . '/lib.php';
+        $moddir = \core_component::get_plugin_directory('mod', $cm->modname);
         $function = $cm->modname . '_extend_navigation';
 
-        if (file_exists($file)) {
-            require_once($file);
+        if ($moddir && file_exists("$moddir/lib.php")) {
+            require_once("$moddir/lib.php");
             if (function_exists($function)) {
                 $activtyrecord = $DB->get_record($cm->modname, ['id' => $cm->instance], '*', MUST_EXIST);
                 $function($activity, $course, $activtyrecord, $cm);
@@ -1722,14 +1722,13 @@ class global_navigation extends navigation_node {
      * @return bool
      */
     public static function module_extends_navigation($modname) {
-        global $CFG;
         static $extendingmodules = [];
         if (!array_key_exists($modname, $extendingmodules)) {
             $extendingmodules[$modname] = false;
-            $file = $CFG->dirroot . '/mod/' . $modname . '/lib.php';
-            if (file_exists($file)) {
+            $moddir = \core_component::get_plugin_directory('mod', $modname);
+            if ($moddir && file_exists("$moddir/lib.php")) {
                 $function = $modname . '_extend_navigation';
-                require_once($file);
+                require_once("$moddir/lib.php");
                 $extendingmodules[$modname] = (function_exists($function));
             }
         }
