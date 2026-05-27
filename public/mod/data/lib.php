@@ -427,14 +427,15 @@ class data_field_base {     // Base class for Database Field Types (see field/*/
 
         echo $OUTPUT->heading($this->name(), 3);
 
-        $filepath = $CFG->dirroot . '/mod/data/field/' . $this->type . '/mod.html';
+        $fielddir = \core_component::get_plugin_directory('datafield', $this->type);
+        $filepath = $fielddir ? "$fielddir/mod.html" : null;
         $templatename = 'datafield_' . $this->type . '/' . $this->type;
 
         try {
             $templatefilepath = \core\output\mustache_template_finder::get_template_filepath($templatename);
             $templatefileexists = true;
         } catch (moodle_exception $e) {
-            if (!file_exists($filepath)) {
+            if (!$filepath || !file_exists($filepath)) {
                 // Neither file exists.
                 throw new \moodle_exception(get_string('missingfieldtype', 'data', (object)['name' => $this->field->name]));
             }
@@ -1045,15 +1046,13 @@ function data_get_field_from_id($fieldid, $data){
  * @return object
  */
 function data_get_field_new($type, $data) {
-    global $CFG;
-
     $type = clean_param($type, PARAM_ALPHA);
-    $filepath = $CFG->dirroot.'/mod/data/field/'.$type.'/field.class.php';
+    $fielddir = \core_component::get_plugin_directory('datafield', $type);
     // It should never access this method if the subfield class doesn't exist.
-    if (!file_exists($filepath)) {
+    if (!$fielddir || !file_exists("$fielddir/field.class.php")) {
         throw new \moodle_exception('invalidfieldtype', 'data');
     }
-    require_once($filepath);
+    require_once("$fielddir/field.class.php");
     $newfield = 'data_field_'.$type;
     $newfield = new $newfield(0, $data);
     return $newfield;
@@ -1071,16 +1070,15 @@ function data_get_field_new($type, $data) {
  * @return data_field_base the field object instance or data_field_base if unkown type
  */
 function data_get_field(stdClass $field, stdClass $data, ?stdClass $cm=null): data_field_base {
-    global $CFG;
     if (!isset($field->type)) {
         return new data_field_base($field);
     }
     $field->type = clean_param($field->type, PARAM_ALPHA);
-    $filepath = $CFG->dirroot.'/mod/data/field/'.$field->type.'/field.class.php';
-    if (!file_exists($filepath)) {
+    $fielddir = \core_component::get_plugin_directory('datafield', $field->type);
+    if (!$fielddir || !file_exists("$fielddir/field.class.php")) {
         return new data_field_base($field);
     }
-    require_once($filepath);
+    require_once("$fielddir/field.class.php");
     $newfield = 'data_field_'.$field->type;
     $newfield = new $newfield($field, $data, $cm);
     return $newfield;
@@ -2331,7 +2329,8 @@ function data_preset_path($course, $userid, $shortname) {
     if ($userid > 0 && ($userid == $USER->id || has_capability('mod/data:viewalluserpresets', $context))) {
         $path = $CFG->dataroot.'/data/preset/'.$userid.'/'.$shortname;
     } else if ($userid == 0) {
-        $path = $CFG->dirroot.'/mod/data/preset/'.$shortname;
+        $moddir = \core_component::get_plugin_directory('mod', 'data');
+        $path = $moddir ? "$moddir/preset/$shortname" : null;
     } else if ($userid < 0) {
         $path = $CFG->tempdir.'/data/'.-$userid.'/'.$shortname;
     }
