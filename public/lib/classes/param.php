@@ -1272,7 +1272,9 @@ enum param: string {
         $param = clean_param($param, PARAM_PLUGIN);
         if (empty($param)) {
             return '';
-        } else if (file_exists("$CFG->dirroot/theme/$param/config.php")) {
+        }
+        $themedir = \core_component::get_plugin_directory('theme', $param);
+        if ($themedir && file_exists("$themedir/config.php")) {
             return $param;
         } else if (!empty($CFG->themedir) && file_exists("$CFG->themedir/$param/config.php")) {
             return $param;
