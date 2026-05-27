@@ -103,7 +103,11 @@ if (!empty($cm) && $context->contextlevel == CONTEXT_MODULE) {
     $modinstance = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
     $modinstance->cmidnumber = $cm->idnumber;
     $functionname = $cm->modname.'_update_grades';
-    require_once($CFG->dirroot."/mod/{$cm->modname}/lib.php");
+    $moddir = \core_component::get_plugin_directory('mod', $cm->modname);
+    if ($moddir === null) {
+        throw new \coding_exception("Plugin not installed: mod_{$cm->modname}");
+    }
+    require_once($moddir . '/lib.php');
     if (function_exists($functionname)) {
         $functionname($modinstance, $rateduserid);
     }
