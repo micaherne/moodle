@@ -401,12 +401,13 @@ function course_integrity_check($courseid, $rawmods = null, $sections = null, $f
  */
 function get_module_types_names($plural = false, $resetcache = false) {
     static $modnames = null;
-    global $DB, $CFG;
+    global $DB;
     if ($modnames === null || empty($modnames[0]) || $resetcache) {
         $modnames = array(0 => array(), 1 => array());
         if ($allmods = $DB->get_records("modules")) {
             foreach ($allmods as $mod) {
-                if (file_exists("$CFG->dirroot/mod/$mod->name/lib.php") && $mod->visible) {
+                $moddir = \core_component::get_plugin_directory('mod', $mod->name);
+                if ($moddir && file_exists("$moddir/lib.php") && $mod->visible) {
                     $modnames[0][$mod->name] = get_string("modulename", "$mod->name", null, true);
                     $modnames[1][$mod->name] = get_string("modulenameplural", "$mod->name", null, true);
                 }
@@ -912,11 +913,12 @@ function course_module_bulk_update_calendar_events($modulename, $courseid = 0) {
  * @since  Moodle 3.3.4
  */
 function course_module_calendar_event_update_process($instance, $cm): void {
-    global $CFG;
-
     // We need to call *_refresh_events() first because some modules delete 'old' events at the end of the code which
     // will remove the completion events.
-    include_once("$CFG->dirroot/mod/$cm->modname/lib.php");
+    $moddir = \core_component::get_plugin_directory('mod', $cm->modname);
+    if ($moddir !== null) {
+        include_once("$moddir/lib.php");
+    }
     $refresheventsfunction = $cm->modname . '_refresh_events';
     if (function_exists($refresheventsfunction)) {
         call_user_func($refresheventsfunction, $cm->course, $instance, $cm);
