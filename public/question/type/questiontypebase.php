@@ -224,6 +224,10 @@ class question_type {
      */
     public function plugin_dir() {
         global $CFG;
+        $dir = \core_component::get_plugin_directory('qtype', $this->name());
+        if ($dir !== null) {
+            return $dir;
+        }
         return $CFG->dirroot . '/question/type/' . $this->name();
     }
 
