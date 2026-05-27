@@ -830,12 +830,11 @@ function update_moduleinfo($cm, $moduleinfo, $course, $mform = null) {
  * @throws moodle_exception if lib.php file for the module does not exist
  */
 function include_modulelib($modulename): void {
-    global $CFG;
-    $modlib = "$CFG->dirroot/mod/$modulename/lib.php";
-    if (file_exists($modlib)) {
-        include_once($modlib);
+    $moddir = \core_component::get_plugin_directory('mod', $modulename);
+    if ($moddir && file_exists("$moddir/lib.php")) {
+        include_once("$moddir/lib.php");
     } else {
-        throw new moodle_exception('modulemissingcode', '', '', $modlib);
+        throw new moodle_exception('modulemissingcode', '', '', $moddir ? "$moddir/lib.php" : "mod/$modulename/lib.php");
     }
 }
 
