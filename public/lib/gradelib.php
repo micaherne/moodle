@@ -1438,14 +1438,14 @@ function grade_grab_course_grades($courseid, $modname=null, $userid=0) {
  * @return bool True if success
  */
 function grade_update_mod_grades($modinstance, $userid=0) {
-    global $CFG, $DB;
+    global $DB;
 
-    $fullmod = $CFG->dirroot.'/mod/'.$modinstance->modname;
-    if (!file_exists($fullmod.'/lib.php')) {
+    $moddir = \core_component::get_plugin_directory('mod', $modinstance->modname);
+    if (!$moddir || !file_exists("$moddir/lib.php")) {
         debugging('missing lib.php file in module ' . $modinstance->modname);
         return false;
     }
-    include_once($fullmod.'/lib.php');
+    include_once("$moddir/lib.php");
 
     $updateitemfunc   = $modinstance->modname.'_grade_item_update';
     $updategradesfunc = $modinstance->modname.'_update_grades';
