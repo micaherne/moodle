@@ -263,11 +263,11 @@ class data_portfolio_caller extends portfolio_module_caller_base {
             return true; // too early yet
         }
         foreach ($this->fieldtypes as $key => $field) {
-            $filepath = $CFG->dirroot . '/mod/data/field/' . $field .'/field.class.php';
-            if (!file_exists($filepath)) {
+            $fielddir = \core_component::get_plugin_directory('datafield', $field);
+            if (!$fielddir || !file_exists("$fielddir/field.class.php")) {
                 continue;
             }
-            require_once($filepath);
+            require_once("$fielddir/field.class.php");
             $this->fields[$key] = unserialize(serialize($this->fields[$key]));
         }
     }
@@ -956,7 +956,7 @@ function mod_data_get_tagged_records($tag, $exclusivemode = false, $fromctx = 0,
  * @return stdClass The field data from the 'data_fields' table as well as it's priority
  */
 function data_get_tag_title_field($dataid) {
-    global $DB, $CFG;
+    global $DB;
 
     $validfieldtypes = array('text', 'textarea', 'menu', 'radiobutton', 'checkbox', 'multimenu', 'url');
     $fields = $DB->get_records('data_fields', ['dataid' => $dataid]);
@@ -977,11 +977,11 @@ function data_get_tag_title_field($dataid) {
             continue;
         }
         $field->type = clean_param($field->type, PARAM_ALPHA);
-        $filepath = $CFG->dirroot . '/mod/data/field/' . $field->type . '/field.class.php';
-        if (!file_exists($filepath)) {
+        $fielddir = \core_component::get_plugin_directory('datafield', $field->type);
+        if (!$fielddir || !file_exists("$fielddir/field.class.php")) {
             continue;
         }
-        require_once($filepath);
+        require_once("$fielddir/field.class.php");
         $classname = 'data_field_' . $field->type;
         $field->priority = $classname::get_priority();
         $filteredfields[] = $field;
@@ -1015,17 +1015,17 @@ function data_get_tag_title_field($dataid) {
  * @return string|null It will return the title of the entry or null if the field type is not available.
  */
 function data_get_tag_title_for_entry($field, $entry) {
-    global $CFG, $DB;
+    global $DB;
 
     if (!isset($field->type)) {
         return null;
     }
     $field->type = clean_param($field->type, PARAM_ALPHA);
-    $filepath = $CFG->dirroot . '/mod/data/field/' . $field->type . '/field.class.php';
-    if (!file_exists($filepath)) {
+    $fielddir = \core_component::get_plugin_directory('datafield', $field->type);
+    if (!$fielddir || !file_exists("$fielddir/field.class.php")) {
         return null;
     }
-    require_once($filepath);
+    require_once("$fielddir/field.class.php");
 
     $classname = 'data_field_' . $field->type;
     $sql = "SELECT dc.*
