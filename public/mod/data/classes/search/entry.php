@@ -374,16 +374,14 @@ class entry extends \core_search\base_mod {
      * @return string|null It will return the class name or null if the field type is not available.
      */
     protected function get_field_class_name(string $fieldtype): ?string {
-        global $CFG;
-
         $fieldtype = trim($fieldtype);
 
-        $fieldpath = $CFG->dirroot . '/mod/data/field/' . $fieldtype . '/field.class.php';
-        if (!file_exists($fieldpath)) {
+        $fielddir = \core_component::get_plugin_directory('datafield', $fieldtype);
+        if (!$fielddir || !file_exists("$fielddir/field.class.php")) {
             return null;
         }
 
-        require_once($fieldpath);
+        require_once("$fielddir/field.class.php");
         return 'data_field_' . $fieldtype;
     }
 
