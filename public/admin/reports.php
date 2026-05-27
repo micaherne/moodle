@@ -93,8 +93,9 @@ foreach ($plugins as $plugin => $name) {
         $supportedstores = get_string('nosupportedlogstore', 'admin');;
     }
 
+    $reportdir = \core_component::get_plugin_directory('report', $plugin);
     if (!isset($versions[$plugin])) {
-        if (file_exists("$CFG->dirroot/report/$plugin/version.php")) {
+        if ($reportdir && file_exists("$reportdir/version.php")) {
             // not installed yet
             $version = '?';
         } else {
@@ -103,7 +104,7 @@ foreach ($plugins as $plugin => $name) {
         }
     } else {
         $version = $versions[$plugin];
-        if (file_exists("$CFG->dirroot/report/$plugin")) {
+        if ($reportdir) {
             $version = $versions[$plugin];
         } else {
             // somebody removed plugin without uninstall
