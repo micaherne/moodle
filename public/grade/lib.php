@@ -1461,7 +1461,6 @@ class grade_structure {
      * @return moodle_url|null URL or null if unable to construct it
      */
     public function get_grade_analysis_url(grade_grade $grade) {
-        global $CFG;
         /** @var array static cache of the grade.php file existence flags */
         static $hasgradephp = array();
 
@@ -1482,11 +1481,8 @@ class grade_structure {
         }
 
         if (!array_key_exists($item->itemmodule, $hasgradephp)) {
-            if (file_exists($CFG->dirroot . '/mod/' . $item->itemmodule . '/grade.php')) {
-                $hasgradephp[$item->itemmodule] = true;
-            } else {
-                $hasgradephp[$item->itemmodule] = false;
-            }
+            $moddir = \core_component::get_plugin_directory('mod', $item->itemmodule);
+            $hasgradephp[$item->itemmodule] = $moddir && file_exists("{$moddir}/grade.php");
         }
 
         if (!$hasgradephp[$item->itemmodule]) {
@@ -1793,8 +1789,6 @@ class grade_structure {
      * @return string|null
      */
     public function get_advanced_grading_link(array $element, object $gpr): ?string {
-        global $CFG;
-
         /** @var array static cache of the grade.php file existence flags */
         static $hasgradephp = [];
 
@@ -1815,11 +1809,8 @@ class grade_structure {
                 // Do not add link if activity is not visible to the current user.
                 if ($cm->uservisible) {
                     if (!array_key_exists($itemmodule, $hasgradephp)) {
-                        if (file_exists($CFG->dirroot . '/mod/' . $itemmodule . '/grade.php')) {
-                            $hasgradephp[$itemmodule] = true;
-                        } else {
-                            $hasgradephp[$itemmodule] = false;
-                        }
+                        $moddir = \core_component::get_plugin_directory('mod', $itemmodule);
+                        $hasgradephp[$itemmodule] = $moddir && file_exists("{$moddir}/grade.php");
                     }
 
                     // If module has grade.php, add link to that.
