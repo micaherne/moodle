@@ -609,14 +609,10 @@ class cmactions extends baseactions {
      * @throws \moodle_exception
      */
     private function check_deletion(stdClass $cm, string $modulename) {
-        global $CFG;
-
-        // Get the file location of the delete_instance function for this module.
-        $modlib = "$CFG->dirroot/mod/$modulename/lib.php";
-
         // Include the file required to call the delete_instance function for this module.
-        if (file_exists($modlib)) {
-            require_once($modlib);
+        $moddir = \core_component::get_plugin_directory('mod', $modulename);
+        if ($moddir && file_exists("$moddir/lib.php")) {
+            require_once("$moddir/lib.php");
         } else {
             throw new \moodle_exception(
                 errorcode: 'cannotdeletemodulemissinglib',
