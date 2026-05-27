@@ -6683,7 +6683,8 @@ class admin_page_managemods extends admin_externalpage {
         $found = false;
         if ($modules = $DB->get_records('modules')) {
             foreach ($modules as $module) {
-                if (!file_exists("$CFG->dirroot/mod/$module->name/lib.php")) {
+                $moddir = \core_component::get_plugin_directory('mod', $module->name);
+                if (!$moddir || !file_exists("$moddir/lib.php")) {
                     continue;
                 }
                 if (strpos($module->name, $query) !== false) {
@@ -6969,7 +6970,7 @@ class admin_page_manageblocks extends admin_externalpage {
         $found = false;
         if ($blocks = $DB->get_records('block')) {
             foreach ($blocks as $block) {
-                if (!file_exists("$CFG->dirroot/blocks/$block->name/")) {
+                if (!\core_component::get_plugin_directory('block', $block->name)) {
                     continue;
                 }
                 if (strpos($block->name, $query) !== false) {
@@ -7459,9 +7460,10 @@ class admin_setting_manageauths extends admin_setting {
             }
 
             // settings link
-            if (file_exists($CFG->dirroot.'/auth/'.$auth.'/settings.php')) {
+            $authdir = \core_component::get_plugin_directory('auth', $auth);
+            if ($authdir && file_exists($authdir.'/settings.php')) {
                 $settings = "<a href=\"settings.php?section=authsetting$auth\">{$txt->settings}</a>";
-            } else if (file_exists($CFG->dirroot.'/auth/'.$auth.'/config.html')) {
+            } else if ($authdir && file_exists($authdir.'/config.html')) {
                 throw new \coding_exception('config.html is no longer supported, please use settings.php instead.');
             } else {
                 $settings = '';
@@ -7650,7 +7652,8 @@ class admin_setting_manageantiviruses extends admin_setting {
             }
 
             // Settings link.
-            if (file_exists($CFG->dirroot.'/lib/antivirus/'.$antivirus.'/settings.php')) {
+            $antivirusdir = \core_component::get_plugin_directory('antivirus', $antivirus);
+            if ($antivirusdir && file_exists($antivirusdir.'/settings.php')) {
                 $eurl = new moodle_url('/admin/settings.php', array('section' => 'antivirussettings'.$antivirus));
                 $settings = html_writer::link($eurl, $txt->settings);
             } else {
@@ -10469,8 +10472,9 @@ class admin_setting_managewebserviceprotocols extends admin_setting {
             $name = get_string('pluginname', 'webservice_'.$protocol);
 
             $plugin = new stdClass();
-            if (file_exists($CFG->dirroot.'/webservice/'.$protocol.'/version.php')) {
-                include($CFG->dirroot.'/webservice/'.$protocol.'/version.php');
+            $wsdir = \core_component::get_plugin_directory('webservice', $protocol);
+            if ($wsdir && file_exists($wsdir.'/version.php')) {
+                include($wsdir.'/version.php');
             }
             $version = isset($plugin->version) ? $plugin->version : '';
 
@@ -10486,7 +10490,7 @@ class admin_setting_managewebserviceprotocols extends admin_setting {
             }
 
             // settings link
-            if (file_exists($CFG->dirroot.'/webservice/'.$protocol.'/settings.php')) {
+            if ($wsdir && file_exists($wsdir.'/settings.php')) {
                 $settings = "<a href=\"settings.php?section=webservicesetting$protocol\">$strsettings</a>";
             } else {
                 $settings = '';
@@ -10877,7 +10881,8 @@ class admin_setting_configmultiselect_modules extends admin_setting_configmultis
         $records = $DB->get_records('modules', array('visible'=>1), 'name');
         foreach ($records as $record) {
             // Exclude modules if the code doesn't exist
-            if (file_exists("$CFG->dirroot/mod/$record->name/lib.php")) {
+            $moddir = \core_component::get_plugin_directory('mod', $record->name);
+            if ($moddir && file_exists("$moddir/lib.php")) {
                 // Also exclude system modules (if specified)
                 if (!($this->excludesystem &&
                         plugin_supports('mod', $record->name, FEATURE_MOD_ARCHETYPE) ===
