@@ -28,8 +28,11 @@ require_once("$CFG->libdir/adminlib.php");
 $enrol = optional_param('enrol', '', PARAM_RAW);
 if (!core_component::is_valid_plugin_name('enrol', $enrol)) {
     $enrol = '';
-} else if (!file_exists("$CFG->dirroot/enrol/$enrol/lib.php")) {
-    $enrol = '';
+} else {
+    $enroldir = \core_component::get_plugin_directory('enrol', $enrol);
+    if (!$enroldir || !file_exists("$enroldir/lib.php")) {
+        $enrol = '';
+    }
 }
 
 navigation_node::override_active_url(new moodle_url('/admin/settings.php', array('section'=>'manageenrols')));
