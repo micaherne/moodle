@@ -55,11 +55,7 @@ if ($component === 'core') {
     $componentdir = "$CFG->dirroot/lib";
 
 } else if (strpos($component, 'theme_')) {
-    if (!empty($CFG->themedir)) {
-        $componentdir = "$CFG->themedir/$component";
-    } else {
-        $componentdir = "$CFG->dirroot/theme/$component";
-    }
+    $componentdir = \core_component::get_component_directory($component);
 
 } else {
     $componentdir = core_component::get_component_directory($component);
