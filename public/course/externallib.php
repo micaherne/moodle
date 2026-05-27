@@ -339,7 +339,11 @@ class core_course_external extends external_api {
                             $baseurl = 'webservice/pluginfile.php';
 
                             // Call $modulename_export_contents (each module callback take care about checking the capabilities).
-                            require_once($CFG->dirroot . '/mod/' . $cm->modname . '/lib.php');
+                            $moddir = \core_component::get_plugin_directory('mod', $cm->modname);
+                            if ($moddir === null) {
+                                throw new \coding_exception("Plugin not installed: mod_{$cm->modname}");
+                            }
+                            require_once("$moddir/lib.php");
                             $getcontentfunction = $cm->modname.'_export_contents';
                             if (function_exists($getcontentfunction)) {
                                 $contents = $getcontentfunction($cm, $baseurl);
