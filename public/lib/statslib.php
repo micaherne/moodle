@@ -1306,17 +1306,17 @@ function stats_get_post_actions() {
 }
 
 function stats_get_action_names($str) {
-    global $CFG, $DB;
+    global $DB;
 
     $mods = $DB->get_records('modules');
     $function = 'stats_get_'.$str.'_actions';
     $actions = $function();
     foreach ($mods as $mod) {
-        $file = $CFG->dirroot.'/mod/'.$mod->name.'/lib.php';
-        if (!is_readable($file)) {
+        $moddir = \core_component::get_plugin_directory('mod', $mod->name);
+        if (!$moddir || !is_readable("$moddir/lib.php")) {
             continue;
         }
-        require_once($file);
+        require_once("$moddir/lib.php");
         $function = $mod->name.'_get_'.$str.'_actions';
         if (function_exists($function)) {
             $mod_actions = $function();
