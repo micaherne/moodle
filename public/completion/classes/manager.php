@@ -246,8 +246,8 @@ class manager {
         $course = get_course($this->courseid);
         $availablemodules = [];
         foreach ($data->modules as $module) {
-            $libfile = "$CFG->dirroot/mod/$module->name/lib.php";
-            if (!file_exists($libfile)) {
+            $moddir = \core_component::get_plugin_directory('mod', $module->name);
+            if (!$moddir || !file_exists($moddir . '/lib.php')) {
                 continue;
             }
             if (!plugin_supports('mod', $module->name, FEATURE_MODEDIT_DEFAULT_COMPLETION, true)) {
@@ -617,10 +617,11 @@ class manager {
             ?cm_info $cm = null,
             string $suffix = ''
     ): ?\moodleform_mod {
-        global $CFG, $PAGE;
+        global $CFG, $PAGE; // $CFG needed in scope for mod_form.php files included below.
 
-        $modmoodleform = "$CFG->dirroot/mod/$modname/mod_form.php";
-        if (file_exists($modmoodleform)) {
+        $moddir = \core_component::get_plugin_directory('mod', $modname);
+        $modmoodleform = $moddir ? $moddir . '/mod_form.php' : null;
+        if ($modmoodleform && file_exists($modmoodleform)) {
             require_once($modmoodleform);
         } else {
             throw new \moodle_exception('noformdesc');
