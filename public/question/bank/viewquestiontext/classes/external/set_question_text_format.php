@@ -24,7 +24,7 @@ use qbank_viewquestiontext\output\question_text_format;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 /**
  * External function for setting the question text format.

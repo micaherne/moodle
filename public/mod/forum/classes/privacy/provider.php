@@ -37,7 +37,7 @@ use tool_dataprivacy\context_instance;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/grade/grading/lib.php');
+require_once(\core\component::component_path('core_grading', 'lib.php'));
 
 /**
  * Implementation of the privacy subsystem plugin provider for the forum activity module.

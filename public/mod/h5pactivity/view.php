@@ -28,7 +28,7 @@ use core_h5p\player;
 use core_h5p\helper;
 
 require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $id = required_param('id', PARAM_INT);
 

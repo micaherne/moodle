@@ -16,7 +16,7 @@
 
 declare(strict_types=1);
 
-require_once(__DIR__  . '/behat_form_field.php');
+require_once(__DIR__ . '/behat_form_field.php');
 
 use \Behat\Mink\Element\NodeElement;
 

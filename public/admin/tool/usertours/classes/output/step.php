@@ -26,7 +26,7 @@ namespace tool_usertours\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . "/filelib.php");
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 use tool_usertours\helper;
 use tool_usertours\step as stepsource;

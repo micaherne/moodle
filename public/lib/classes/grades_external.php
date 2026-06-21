@@ -32,9 +32,9 @@ use core_external\external_warnings;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("$CFG->libdir/gradelib.php");
-require_once("$CFG->dirroot/grade/edit/tree/lib.php");
-require_once("$CFG->dirroot/grade/querylib.php");
+require_once(__DIR__ . '/../gradelib.php');
+require_once(\core\component::component_path('core_grades', 'edit/tree/lib.php'));
+require_once(\core\component::component_path('core_grades', 'querylib.php'));
 
 /**
  * core grades functions

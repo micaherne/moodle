@@ -24,10 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/moodle_database.php');
-require_once(__DIR__.'/moodle_read_replica_trait.php');
-require_once(__DIR__.'/pgsql_native_moodle_recordset.php');
-require_once(__DIR__.'/pgsql_native_moodle_temptables.php');
+require_once(__DIR__ . '/moodle_database.php');
+require_once(__DIR__ . '/moodle_read_replica_trait.php');
+require_once(__DIR__ . '/pgsql_native_moodle_recordset.php');
+require_once(__DIR__ . '/pgsql_native_moodle_temptables.php');
 
 /**
  * Native pgsql class representing moodle database interface.

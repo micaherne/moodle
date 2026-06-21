@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/multianswer/question.php');
+require_once(__DIR__ . '/../question.php');
 
 
 /**

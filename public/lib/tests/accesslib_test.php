@@ -2042,7 +2042,7 @@ final class accesslib_test extends advanced_testcase {
         $mockedcomponent = new ReflectionClass(core_component::class);
         $mockedplugins = $mockedcomponent->getProperty('plugins');
         $plugins = $mockedplugins->getValue();
-        $plugins['fake'] = [$pluginname => "{$CFG->dirroot}/lib/tests/fixtures/fakeplugins/$pluginname"];
+        $plugins['fake'] = [$pluginname => __DIR__ . "/fixtures/fakeplugins/{$pluginname}"];
         $mockedplugins->setValue(null, $plugins);
         update_capabilities('fake_access');
         $this->resetDebugging(); // We have debugging messages here that we need to get rid of.
@@ -5306,8 +5306,8 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         global $CFG;
-        $this->add_mocked_plugintype('fake', "{$CFG->dirroot}/lib/tests/fixtures/fakeplugins/fake", true);
-        $this->add_mocked_plugin('fake', 'fullfeatured', "{$CFG->dirroot}/lib/tests/fixtures/fakeplugins/fake/fullfeatured");
+        $this->add_mocked_plugintype('fake', __DIR__ . '/fixtures/fakeplugins/fake', true);
+        $this->add_mocked_plugin('fake', 'fullfeatured', __DIR__ . '/fixtures/fakeplugins/fake/fullfeatured');
         update_capabilities('fake_fullfeatured');
 
         $this->assertTrue(\core_component::is_deprecated_plugin_type('fake'));

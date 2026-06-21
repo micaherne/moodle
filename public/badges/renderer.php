@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/badgeslib.php');
-require_once($CFG->libdir . '/tablelib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * Standard HTML output renderer for badges
@@ -626,7 +626,7 @@ class core_badges_renderer extends plugin_renderer_base {
      */
     protected function helper_search_form($search) {
         global $CFG;
-        require_once($CFG->libdir . '/formslib.php');
+        require_once(\core\component::component_path('core', 'formslib.php'));
 
         $mform = new MoodleQuickForm('searchform', 'POST', $this->page->url);
 

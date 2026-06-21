@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/moodle_recordset.php');
+require_once(__DIR__ . '/moodle_recordset.php');
 
 /**
  * pgsql specific moodle recordset class

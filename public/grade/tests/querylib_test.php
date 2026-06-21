@@ -19,8 +19,8 @@ namespace core_grades;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/gradelib.php');
-require_once($CFG->dirroot.'/grade/querylib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(__DIR__ . '/../querylib.php');
 
 /**
  * Unit tests for grade quering

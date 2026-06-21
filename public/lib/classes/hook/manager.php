@@ -357,7 +357,7 @@ final class manager implements
         // @codeCoverageIgnoreEnd
 
         // Get list of all files with callbacks, one per component.
-        $components = ['core' => "{$CFG->dirroot}/lib/db/hooks.php"];
+        $components = ['core' => __DIR__ . '/../../db/hooks.php'];
         $plugintypes = \core_component::get_plugin_types();
         foreach ($plugintypes as $plugintype => $plugintypedir) {
             $plugins = \core_component::get_plugin_list($plugintype);

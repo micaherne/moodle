@@ -1,7 +1,7 @@
 <?php
 // Allows a teacher/admin to login as another user (in stealth mode).
 
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 require_once('lib.php');
 
 $id       = optional_param('id', SITEID, PARAM_INT);   // course id

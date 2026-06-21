@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once("{$CFG->libdir}/tablelib.php");
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * A table whose data is provided by SQL queries.

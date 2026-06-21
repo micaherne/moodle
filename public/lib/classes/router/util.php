@@ -358,7 +358,7 @@ class util {
 
         if (defined('ABORT_AFTER_CONFIG') && !defined('ABORT_AFTER_CONFIG_CANCEL')) {
             define('ABORT_AFTER_CONFIG_CANCEL', true);
-            require($CFG->dirroot . '/lib/setup.php');
+            require(__DIR__ . '/../../setup.php');
         }
     }
 }

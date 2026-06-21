@@ -27,7 +27,7 @@ namespace core\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/../fixtures/event_fixtures.php');
+require_once(__DIR__ . '/../fixtures/event_fixtures.php');
 
 final class events_test extends \advanced_testcase {
 
@@ -354,7 +354,7 @@ final class events_test extends \advanced_testcase {
     public function test_database_text_field_content_replaced(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/lib/adminlib.php');
+        require_once(__DIR__ . '/../../adminlib.php');
 
         // Trigger and capture the event for finding and replacing strings in the database.
         $sink = $this->redirectEvents();

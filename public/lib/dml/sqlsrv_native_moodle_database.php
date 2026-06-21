@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/moodle_database.php');
-require_once(__DIR__.'/sqlsrv_native_moodle_recordset.php');
-require_once(__DIR__.'/sqlsrv_native_moodle_temptables.php');
+require_once(__DIR__ . '/moodle_database.php');
+require_once(__DIR__ . '/sqlsrv_native_moodle_recordset.php');
+require_once(__DIR__ . '/sqlsrv_native_moodle_temptables.php');
 
 /**
  * Native sqlsrv class representing moodle database interface.

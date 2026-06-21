@@ -26,7 +26,7 @@ use mod_h5pactivity\local\manager;
 use mod_h5pactivity\event\report_viewed;
 
 require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $userid = optional_param('userid', null, PARAM_INT);
 $attemptid = optional_param('attemptid', null, PARAM_INT);

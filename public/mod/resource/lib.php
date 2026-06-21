@@ -96,7 +96,7 @@ function resource_get_post_actions() {
 function resource_add_instance($data, $mform) {
     global $CFG, $DB;
 
-    require_once("$CFG->dirroot/mod/resource/locallib.php");
+    require_once(__DIR__ . '/locallib.php');
 
     $cmid = $data->coursemodule;
     $data->timemodified = time();
@@ -124,7 +124,7 @@ function resource_add_instance($data, $mform) {
 function resource_update_instance($data, $mform) {
     global $CFG, $DB;
 
-    require_once("$CFG->dirroot/mod/resource/locallib.php");
+    require_once(__DIR__ . '/locallib.php');
 
     $data->timemodified = time();
     $data->id           = $data->instance;
@@ -203,9 +203,9 @@ function resource_delete_instance($id) {
  */
 function resource_get_coursemodule_info($coursemodule) {
     global $CFG, $DB;
-    require_once("$CFG->libdir/filelib.php");
-    require_once("$CFG->dirroot/mod/resource/locallib.php");
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once(\core\component::component_path('core', 'filelib.php'));
+    require_once(__DIR__ . '/locallib.php');
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     $context = context_module::instance($coursemodule->id);
 
@@ -274,7 +274,7 @@ function resource_get_coursemodule_info($coursemodule) {
  */
 function resource_cm_info_view(cm_info $cm) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/resource/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     $customdata = $cm->customdata;
     if (is_array($customdata) && isset($customdata['displayoptions'])) {
         $resource = (object) ['displayoptions' => $customdata['displayoptions']];
@@ -340,7 +340,7 @@ function resource_get_file_info($browser, $areas, $course, $cm, $context, $filea
                 return null;
             }
         }
-        require_once("$CFG->dirroot/mod/resource/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
         return new resource_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
     }
 
@@ -365,7 +365,7 @@ function resource_get_file_info($browser, $areas, $course, $cm, $context, $filea
  */
 function resource_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     global $CFG, $DB;
-    require_once("$CFG->libdir/resourcelib.php");
+    require_once(\core\component::component_path('core', 'resourcelib.php'));
 
     if ($context->contextlevel != CONTEXT_MODULE) {
         return false;

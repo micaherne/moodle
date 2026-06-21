@@ -25,7 +25,7 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../../../config.php');
-require_once($CFG->libdir.'/clilib.php');
+require_once(__DIR__ . '/../../../clilib.php');
 
 $help =
     "Create sample zip file for testing
@@ -42,7 +42,7 @@ $archive = $_SERVER['argv'][1];
 
 $packer = get_file_packer('application/zip');
 
-$file = __DIR__.'/test.txt';
+$file = __DIR__ . '/test.txt';
 $files = array(
     'test.test' => $file,
     'testíček.txt' => $file,

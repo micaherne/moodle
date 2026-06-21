@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/moodle_recordset.php');
+require_once(__DIR__ . '/moodle_recordset.php');
 
 /**
  * Mysqli specific moodle recordset class

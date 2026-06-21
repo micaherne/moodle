@@ -41,7 +41,7 @@ class core_role_preset {
      */
     public static function send_export_xml($roleid) {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $role = $DB->get_record('role', array('id'=>$roleid), '*', MUST_EXIST);
 
@@ -150,7 +150,7 @@ class core_role_preset {
         if (!$dom->loadXML($xml)) {
             return false;
         } else {
-            $val = @$dom->schemaValidate(__DIR__.'/../role_schema.xml');
+            $val = @$dom->schemaValidate(__DIR__ . '/../role_schema.xml');
             if (!$val) {
                 return false;
             }

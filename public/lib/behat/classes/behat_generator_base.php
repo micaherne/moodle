@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../../behat/behat_base.php');
+require_once(__DIR__ . '/../behat_base.php');
 
 use Behat\Gherkin\Node\TableNode as TableNode;
 use Behat\Behat\Tester\Exception\PendingException as PendingException;

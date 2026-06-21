@@ -16,7 +16,7 @@
 
 use Behat\Mink\Exception\ElementNotFoundException;
 
-require_once(__DIR__ . '/../../../../lib/tests/behat/behat_general.php');
+require_once(\core\component::component_path('core', 'tests/behat/behat_general.php'));
 
 /**
  * Behat grade related step definition overrides for the Classic theme.

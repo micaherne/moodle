@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once("$CFG->dirroot/repository/lib.php");
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 /**
  * Tests for the content bank search class.
@@ -205,7 +205,7 @@ final class search_test extends \advanced_testcase {
         // Add some content to the content bank in different contexts.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         // Add a content bank file in the system context.
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/ipsums.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/ipsums.h5p');
         $systemcontents = $generator->generate_contentbank_data('contenttype_h5p', 1, $admin->id,
             $systemcontext, true, $filepath, 'systemcontentfile');
         $systemcontent = reset($systemcontents);

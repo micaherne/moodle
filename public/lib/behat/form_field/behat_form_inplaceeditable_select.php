@@ -16,7 +16,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__  . '/behat_form_select.php');
+require_once(__DIR__ . '/behat_form_select.php');
 
 /**
  * Custom interaction with inplace editable elements of type select

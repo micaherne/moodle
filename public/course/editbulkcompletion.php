@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . "/../config.php");
-require_once($CFG->libdir . '/completionlib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 $courseid = required_param('id', PARAM_INT);
 $cmids = optional_param_array('cmid', [], PARAM_INT);

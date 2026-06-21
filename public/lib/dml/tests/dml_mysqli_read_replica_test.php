@@ -29,7 +29,7 @@ use moodle_database;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/fixtures/read_replica_moodle_database_mock_mysqli.php');
+require_once(__DIR__ . '/fixtures/read_replica_moodle_database_mock_mysqli.php');
 
 /**
  * DML mysqli_native_moodle_database read replica specific tests

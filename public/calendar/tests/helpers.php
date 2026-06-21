@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 use core_calendar\local\event\entities\action_event;
 use core_calendar\local\event\entities\event;
@@ -95,7 +95,7 @@ function create_standard_events(int $quantity): array {
 function create_action_event(array $data) {
     global $CFG;
 
-    require_once($CFG->dirroot . '/calendar/lib.php');
+    require_once(__DIR__ . '/../lib.php');
 
     if (!isset($data['modulename']) || !isset($data['instance'])) {
         throw new coding_exception('Module and instance should be specified when creating an action event.');

@@ -21,7 +21,7 @@ use quiz_statistics_table;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/statistics_table.php');
+require_once(__DIR__ . '/../statistics_table.php');
 
 /**
  * Class quiz_statistics_statistics_table_testcase

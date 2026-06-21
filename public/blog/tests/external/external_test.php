@@ -29,8 +29,8 @@ use core_external\external_api;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/blog/locallib.php');
-require_once($CFG->dirroot . '/blog/lib.php');
+require_once(__DIR__ . '/../../locallib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 
 /**

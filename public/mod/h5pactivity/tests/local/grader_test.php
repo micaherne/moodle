@@ -43,7 +43,7 @@ final class grader_test extends \advanced_testcase {
      */
     public static function setupBeforeClass(): void {
         global $CFG;
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
     }
 
     /**

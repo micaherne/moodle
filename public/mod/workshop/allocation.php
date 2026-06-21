@@ -27,8 +27,8 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/locallib.php');
-require_once(__DIR__.'/allocation/lib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/allocation/lib.php');
 
 $cmid       = required_param('cmid', PARAM_INT);                    // course module
 $method     = optional_param('method', 'manual', PARAM_ALPHA);      // method to use

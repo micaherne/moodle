@@ -33,7 +33,7 @@ use ReflectionMethod;
 
 global $CFG;
 
-require_once($CFG->libdir . '/adminlib.php');
+require_once(__DIR__ . '/../../../adminlib.php');
 
 /**
  * Unit tests check API get_result webservice

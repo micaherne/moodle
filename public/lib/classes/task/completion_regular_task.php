@@ -47,12 +47,12 @@ class completion_regular_task extends scheduled_task {
         global $CFG, $COMPLETION_CRITERIA_TYPES, $DB;
 
         if ($CFG->enablecompletion) {
-            require_once($CFG->libdir . "/completionlib.php");
+            require_once(__DIR__ . '/../../completionlib.php');
 
             // Process each criteria type.
             foreach ($COMPLETION_CRITERIA_TYPES as $type) {
                 $object = 'completion_criteria_' . $type;
-                require_once($CFG->dirroot . '/completion/criteria/' . $object . '.php');
+                require_once(\core\component::component_path('core_completion', "criteria/{$object}.php"));
 
                 $class = new $object();
                 // Run the criteria type's cron method, if it has one.

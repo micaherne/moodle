@@ -24,7 +24,7 @@ use file_system_filedir;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filestorage/file_system.php');
+require_once(__DIR__ . '/../file_system.php');
 
 /**
  * Unit tests for file_system.
@@ -903,7 +903,7 @@ final class file_system_test extends \advanced_testcase {
      * @covers ::get_imageinfo_from_path
      */
     public function test_get_imageinfo_from_path(): void {
-        $filepath = __DIR__ . "/fixtures/testimage.jpg";
+        $filepath = __DIR__ . '/fixtures/testimage.jpg';
 
         // Get the filesystem mock.
         $fs = $this->get_testable_mock();
@@ -1045,7 +1045,7 @@ final class file_system_test extends \advanced_testcase {
 
         $fs = $this->get_testable_mock(['get_local_path_from_storedfile']);
         $fs->method('get_local_path_from_storedfile')
-            ->willReturn(__DIR__ . "/fixtures/test.tgz");
+            ->willReturn(__DIR__ . '/fixtures/test.tgz');
 
         // Note: We are unable to determine the mode in which the $fh was opened.
         $fh = $fs->get_content_file_handle($file, \stored_file::FILE_HANDLE_GZOPEN);
@@ -1119,7 +1119,7 @@ final class file_system_test extends \advanced_testcase {
         $contenthash = \file_storage::hash_from_string($filecontent);
         $filename = 'example';
 
-        $filepath = __DIR__ . "/fixtures/testimage.jpg";
+        $filepath = __DIR__ . '/fixtures/testimage.jpg';
         $fs = $this->get_testable_mock(['get_local_path_from_hash']);
         $fs->method('get_local_path_from_hash')->willReturn($filepath);
 
@@ -1139,7 +1139,7 @@ final class file_system_test extends \advanced_testcase {
         $contenthash = \file_storage::hash_from_string($filecontent);
         $filename = 'example';
 
-        $filepath = __DIR__ . "/fixtures/testimage.jpg";
+        $filepath = __DIR__ . '/fixtures/testimage.jpg';
 
         $fs = $this->get_testable_mock([
             'get_remote_path_from_hash',
@@ -1193,7 +1193,7 @@ final class file_system_test extends \advanced_testcase {
      * @covers ::mimetype_from_storedfile
      */
     public function test_mimetype_from_storedfile_using_file_content(): void {
-        $filepath = __DIR__ . "/fixtures/testimage.jpg";
+        $filepath = __DIR__ . '/fixtures/testimage.jpg';
         $fs = $this->get_testable_mock(['get_local_path_from_hash']);
         $fs->method('get_local_path_from_hash')->willReturn($filepath);
 
@@ -1210,7 +1210,7 @@ final class file_system_test extends \advanced_testcase {
      * @covers ::mimetype_from_storedfile
      */
     public function test_mimetype_from_storedfile_using_file_content_remote(): void {
-        $filepath = __DIR__ . "/fixtures/testimage.jpg";
+        $filepath = __DIR__ . '/fixtures/testimage.jpg';
 
         $fs = $this->get_testable_mock([
             'is_file_readable_locally_by_hash',

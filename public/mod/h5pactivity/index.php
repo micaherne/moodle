@@ -23,7 +23,7 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $courseid = required_param('id', PARAM_INT);
 \core_courseformat\activityoverviewbase::redirect_to_overview_page($courseid, 'h5pactivity');

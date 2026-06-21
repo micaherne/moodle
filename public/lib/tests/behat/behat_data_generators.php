@@ -189,9 +189,9 @@ class behat_data_generators extends behat_base {
         global $CFG;
 
         // Ensure the generator class is loaded.
-        require_once($CFG->libdir . '/behat/classes/behat_generator_base.php');
+        require_once(__DIR__ . '/../../behat/classes/behat_generator_base.php');
         if ($component === 'core') {
-            $lib = $CFG->libdir . '/behat/classes/behat_core_generator.php';
+            $lib = __DIR__ . '/../../behat/classes/behat_core_generator.php';
         } else {
             $dir = core_component::get_component_directory($component);
             $lib = $dir . '/tests/generator/behat_' . $component . '_generator.php';
@@ -222,7 +222,7 @@ class behat_data_generators extends behat_base {
     public function get_all_entities(): array {
         global $CFG;
         // Ensure the generator class is loaded.
-        require_once($CFG->libdir . '/behat/classes/behat_generator_base.php');
+        require_once(__DIR__ . '/../../behat/classes/behat_generator_base.php');
         $componenttypes = core_component::get_component_list();
         $coregenerator = $this->get_instance_for_component('core');
         $pluginswithentities = ['core' => array_keys($coregenerator->get_available_generators())];

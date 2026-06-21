@@ -174,7 +174,7 @@ class converter implements \core_files\converter_interface {
      */
     public function serve_test_document() {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $filerecord = [
             'contextid' => \context_system::instance()->id,
@@ -191,7 +191,7 @@ class converter implements \core_files\converter_interface {
                 $filerecord['itemid'], $filerecord['filepath'], $filerecord['filename']);
 
         if (!$testdocx) {
-            $fixturefile = dirname(__DIR__) . '/tests/fixtures/source.docx';
+            $fixturefile = __DIR__ . '/../tests/fixtures/source.docx';
             $testdocx = $fs->create_file_from_pathname($filerecord, $fixturefile);
         }
 

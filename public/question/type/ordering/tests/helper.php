@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/ordering/question.php');
+require_once(__DIR__ . '/../question.php');
 
 /**
  * Test helper for the ordering question type.

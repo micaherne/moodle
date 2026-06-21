@@ -31,8 +31,8 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include the code to test
 global $CFG;
-require_once($CFG->dirroot . '/mod/workshop/locallib.php');
-require_once($CFG->dirroot . '/mod/workshop/form/numerrors/lib.php');
+require_once(\core\component::component_path('mod_workshop', 'locallib.php'));
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Unit tests for Number of errors grading lib.php

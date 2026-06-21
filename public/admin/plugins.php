@@ -25,8 +25,8 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 $fetchupdates = optional_param('fetchupdates', false, PARAM_BOOL); // Check for available plugins updates.
 $uninstall = optional_param('uninstall', '', PARAM_COMPONENT); // Uninstall the plugin.
@@ -162,7 +162,7 @@ if ($delete and $confirmed) {
 
 // Install all avilable updates.
 if ($installupdatex) {
-    require_once($CFG->libdir.'/upgradelib.php');
+    require_once(\core\component::component_path('core', 'upgradelib.php'));
     require_sesskey();
 
     $PAGE->set_url($pageurl);
@@ -179,7 +179,7 @@ if ($installupdatex) {
 
 // Install single available update.
 if ($installupdate and $installupdateversion) {
-    require_once($CFG->libdir.'/upgradelib.php');
+    require_once(\core\component::component_path('core', 'upgradelib.php'));
     require_sesskey();
 
     $PAGE->set_url($pageurl);

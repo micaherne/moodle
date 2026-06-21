@@ -20,7 +20,7 @@ use mod_feedback_completion;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/feedback/classes/completion.php');
+require_once(__DIR__ . '/../classes/completion.php');
 
 /**
  * Unit tests for (some of) mod/feedback/classes/completion.php.

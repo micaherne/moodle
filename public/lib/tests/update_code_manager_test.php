@@ -19,7 +19,7 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once(__DIR__.'/fixtures/testable_update_code_manager.php');
+require_once(__DIR__ . '/fixtures/testable_update_code_manager.php');
 
 /**
  * Tests for \core\update\code_manager features.

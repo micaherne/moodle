@@ -24,7 +24,7 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/locallib.php');
+require_once(__DIR__ . '/locallib.php');
 
 $id         = required_param('id', PARAM_INT); // course_module ID
 $tool       = required_param('tool', PARAM_ALPHA);

@@ -98,7 +98,7 @@ class block_online_users extends block_base {
         $userlimit = 50; // We'll just take the most recent 50 maximum.
         $initialcount = 0;
         if ($users = $onlineusers->get_users($userlimit)) {
-            require_once($CFG->dirroot . '/user/lib.php');
+            require_once(\core\component::component_path('core_user', 'lib.php'));
             $initialcount = count($users);
             foreach ($users as $user) {
                 if (!user_can_view_profile($user)) {

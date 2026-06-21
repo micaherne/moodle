@@ -136,7 +136,7 @@ final class cookie_helper {
      */
     public static function setup_session_cookie(): void {
         global $CFG;
-        require_once($CFG->libdir . '/sessionlib.php');
+        require_once(\core\component::component_path('core', 'sessionlib.php'));
 
         if (is_moodle_cookie_secure()) {
             $atts = ['SameSite=None', 'Secure'];
@@ -157,7 +157,7 @@ final class cookie_helper {
      */
     private static function set_test_cookie(string $name, string $value, bool $partitioned = false): void {
         global $CFG;
-        require_once($CFG->libdir . '/sessionlib.php');
+        require_once(\core\component::component_path('core', 'sessionlib.php'));
 
         $atts = ['expires' => time() + 30];
         if (is_moodle_cookie_secure()) {

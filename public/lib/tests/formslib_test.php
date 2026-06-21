@@ -35,10 +35,10 @@ use MoodleQuickForm_text;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/formslib.php');
-require_once($CFG->libdir . '/form/radio.php');
-require_once($CFG->libdir . '/form/select.php');
-require_once($CFG->libdir . '/form/text.php');
+require_once(__DIR__ . '/../formslib.php');
+require_once(\core\component::component_path('core_form', 'radio.php'));
+require_once(\core\component::component_path('core_form', 'select.php'));
+require_once(\core\component::component_path('core_form', 'text.php'));
 
 /**
  * Unit tests for /lib/formslib.php.
@@ -647,7 +647,7 @@ final class formslib_test extends \advanced_testcase {
      * MDL-56233 - Tests mocking a form inside a namespace.
      */
     public function test_mock_submit(): void {
-        require_once(__DIR__.'/fixtures/namespaced_form.php');
+        require_once(__DIR__ . '/fixtures/namespaced_form.php');
         \local_unittests\namespaced_form\exampleform::mock_submit(['title' => 'Mocked Value']);
         $form = new \local_unittests\namespaced_form\exampleform();
 

@@ -253,7 +253,7 @@ class combined_document {
             return $this;
         }
 
-        require_once($CFG->libdir . '/pdflib.php');
+        require_once(\core\component::component_path('core', 'pdflib.php'));
 
         $pdf = new pdf();
         $files = $this->get_source_files();

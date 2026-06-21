@@ -25,10 +25,10 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
-require_once(__DIR__ . '/../../../../../lib/behat/behat_field_manager.php');
-require_once(__DIR__ . '/../../../../../lib/tests/behat/behat_navigation.php');
-require_once(__DIR__ . '/../../../../../lib/behat/form_field/behat_form_field.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
+require_once(\core\component::component_path('core', 'behat/behat_field_manager.php'));
+require_once(\core\component::component_path('core', 'tests/behat/behat_navigation.php'));
+require_once(\core\component::component_path('core', 'behat/form_field/behat_form_field.php'));
 
 use Behat\Gherkin\Node\TableNode as TableNode,
     Behat\Mink\Exception\ElementNotFoundException as ElementNotFoundException,

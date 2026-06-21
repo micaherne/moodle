@@ -199,7 +199,7 @@ class enrol_self_plugin extends enrol_plugin {
                 }
                 if ($group->enrolmentkey === $data->enrolpassword) {
                     // Add user to group.
-                    require_once($CFG->dirroot.'/group/lib.php');
+                    require_once(\core\component::component_path('core_group', 'lib.php'));
                     groups_add_member($group->id, $USER->id);
                     break;
                 }
@@ -341,7 +341,7 @@ class enrol_self_plugin extends enrol_plugin {
         }
 
         if ($instance->customint5) {
-            require_once("$CFG->dirroot/cohort/lib.php");
+            require_once(\core\component::component_path('core_cohort', 'lib.php'));
             if (!cohort_is_member($instance->customint5, $USER->id)) {
                 $cohort = $DB->get_record('cohort', array('id' => $instance->customint5));
                 if (!$cohort) {
@@ -851,7 +851,7 @@ class enrol_self_plugin extends enrol_plugin {
      */
     public function get_bulk_operations(course_enrolment_manager $manager) {
         global $CFG;
-        require_once($CFG->dirroot.'/enrol/self/locallib.php');
+        require_once(__DIR__ . '/locallib.php');
         $context = $manager->get_context();
         $bulkoperations = array();
         if (has_capability("enrol/self:manage", $context)) {
@@ -942,7 +942,7 @@ class enrol_self_plugin extends enrol_plugin {
             $mform->addHelpButton('customint3', 'maxenrolled', 'enrol_self');
             $mform->setType('customint3', PARAM_INT);
 
-            require_once($CFG->dirroot.'/cohort/lib.php');
+            require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
             $cohorts = [0 => get_string('no')];
             $allcohorts = cohort_get_available_cohorts($context, 0, 0, 0);
@@ -1044,7 +1044,7 @@ class enrol_self_plugin extends enrol_plugin {
      */
     public function edit_instance_validation($data, $files, $instance, $context) {
         global $CFG;
-        require_once("{$CFG->dirroot}/enrol/self/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
 
         $errors = array();
 
@@ -1267,7 +1267,7 @@ class enrol_self_plugin extends enrol_plugin {
     public function validate_enrol_plugin_data(array $enrolmentdata, ?int $courseid = null): array {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . "/enrol/self/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
 
         // If password is omitted or empty in csv it will be generated automatically if it is a required policy.
 

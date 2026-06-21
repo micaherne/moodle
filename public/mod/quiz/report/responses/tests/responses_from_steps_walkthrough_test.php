@@ -35,8 +35,8 @@ final class responses_from_steps_walkthrough_test extends \mod_quiz\tests\attemp
 
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
-        require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+        require_once(\core\component::component_path('quiz_statistics', 'report.php'));
+        require_once(\core\component::component_path('mod_quiz', 'report/reportlib.php'));
     }
 
     #[\Override]

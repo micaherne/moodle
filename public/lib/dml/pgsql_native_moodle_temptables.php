@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/moodle_temptables.php');
+require_once(__DIR__ . '/moodle_temptables.php');
 
 class pgsql_native_moodle_temptables extends moodle_temptables {
     /**

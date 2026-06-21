@@ -20,7 +20,7 @@ use mod_quiz\quiz_settings;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/..//test_helper_trait.php');
+require_once(__DIR__ . '/../test_helper_trait.php');
 
 /**
  * PHPUnit tests for all plugin events.

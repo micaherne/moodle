@@ -25,8 +25,8 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../../config.php');
-require_once($CFG->libdir . '/clilib.php');
-require_once($CFG->libdir . '/csvlib.class.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
 $courseconfig = get_config('moodlecourse');
 

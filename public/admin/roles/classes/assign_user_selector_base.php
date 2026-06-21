@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/user/selector/lib.php');
+require_once(\core\component::component_path('core_user', 'selector/lib.php'));
 
 /**
  * Base class to avoid duplicating code.
@@ -48,7 +48,7 @@ abstract class core_role_assign_user_selector_base extends user_selector_base {
         $options['includecustomfields'] = true;
         parent::__construct($name, $options);
         $this->roleid = $options['roleid'];
-        require_once($CFG->dirroot . '/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
     }
 
     protected function get_options() {

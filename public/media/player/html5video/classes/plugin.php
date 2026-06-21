@@ -113,7 +113,7 @@ OET;
 
     public function get_supported_extensions() {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
         return file_get_typegroup('extension', 'html_video');
     }
 

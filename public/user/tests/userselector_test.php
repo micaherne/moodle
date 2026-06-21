@@ -21,8 +21,8 @@ use testable_user_selector;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/user/selector/lib.php');
-require_once($CFG->dirroot.'/user/tests/fixtures/testable_user_selector.php');
+require_once(__DIR__ . '/../selector/lib.php');
+require_once(__DIR__ . '/fixtures/testable_user_selector.php');
 
 /**
  * Tests for the implementation of {@link user_selector_base} class.

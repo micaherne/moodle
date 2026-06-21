@@ -15,8 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 // id of repository
 $edit    = optional_param('edit', 0, PARAM_INT);

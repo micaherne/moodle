@@ -326,7 +326,7 @@ class manager {
     public static function send_message(message $eventdata, \stdClass $savemessage, array $processorlist) {
         global $CFG;
 
-        require_once($CFG->dirroot.'/message/lib.php'); // This is most probably already included from messagelib.php file.
+        require_once(\core\component::component_path('core_message', 'lib.php')); // This is most probably already included from messagelib.php file.
 
         if (empty($processorlist)) {
             // Trigger event for sending a message or notification - we need to do this before marking as read!

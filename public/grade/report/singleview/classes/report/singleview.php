@@ -24,7 +24,7 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/grade/report/lib.php');
+require_once(\core\component::component_path('core_grades', 'report/lib.php'));
 
 /**
  * This class is the main class that must be implemented by a grade report plugin.

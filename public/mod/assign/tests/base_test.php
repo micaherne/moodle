@@ -21,7 +21,7 @@ use mod_assign_testable_assign;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(__DIR__ . '/../locallib.php');
 require_once(__DIR__ . '/fixtures/testable_assign.php');
 
 /**

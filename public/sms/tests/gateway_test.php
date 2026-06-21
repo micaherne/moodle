@@ -27,7 +27,7 @@ namespace core_sms;
  */
 final class gateway_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
-        require_once(__DIR__ . "/fixtures/dummy_gateway.php");
+        require_once(__DIR__ . '/fixtures/dummy_gateway.php');
         parent::setUpBeforeClass();
     }
 

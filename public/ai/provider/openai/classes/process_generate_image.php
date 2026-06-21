@@ -175,7 +175,7 @@ class process_generate_image extends abstract_processor {
     ): \stored_file {
         global $CFG;
 
-        require_once("{$CFG->libdir}/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         // Decode the image and store in temp dir.
         $b64json = $response['b64json'];

@@ -24,10 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/moodle_database.php');
-require_once(__DIR__.'/mysqli_native_moodle_database.php');
-require_once(__DIR__.'/mysqli_native_moodle_recordset.php');
-require_once(__DIR__.'/mysqli_native_moodle_temptables.php');
+require_once(__DIR__ . '/moodle_database.php');
+require_once(__DIR__ . '/mysqli_native_moodle_database.php');
+require_once(__DIR__ . '/mysqli_native_moodle_recordset.php');
+require_once(__DIR__ . '/mysqli_native_moodle_temptables.php');
 
 /**
  * Native MariaDB class representing moodle database interface.

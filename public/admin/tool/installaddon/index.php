@@ -24,7 +24,7 @@
  */
 
 require(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 admin_externalpage_setup('tool_installaddon_index');
 
@@ -49,7 +49,7 @@ $installremoteconfirm = optional_param('installremoteconfirm', false, PARAM_BOOL
 
 if ($installremote and $installremoteversion) {
     require_sesskey();
-    require_once($CFG->libdir.'/upgradelib.php');
+    require_once(\core\component::component_path('core', 'upgradelib.php'));
 
     $PAGE->set_pagelayout('maintenance');
     $PAGE->set_popup_notification_allowed(false);
@@ -74,7 +74,7 @@ $installzipconfirm = optional_param('installzipconfirm', false, PARAM_BOOL);
 
 if ($installzipcomponent and $installzipstorage) {
     require_sesskey();
-    require_once($CFG->libdir.'/upgradelib.php');
+    require_once(\core\component::component_path('core', 'upgradelib.php'));
 
     $PAGE->set_pagelayout('maintenance');
     $PAGE->set_popup_notification_allowed(false);

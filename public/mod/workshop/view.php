@@ -27,7 +27,7 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/locallib.php');
+require_once(__DIR__ . '/locallib.php');
 
 $id         = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $w          = optional_param('w', 0, PARAM_INT);  // workshop instance ID

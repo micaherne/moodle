@@ -30,7 +30,7 @@ use xmldb_table;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/fixtures/read_replica_moodle_database_mock_pgsql.php');
+require_once(__DIR__ . '/fixtures/read_replica_moodle_database_mock_pgsql.php');
 
 /**
  * DML pgsql_native_moodle_database read replica specific tests

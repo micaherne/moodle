@@ -133,7 +133,7 @@ final class component_test extends \advanced_testcase {
                 $this->assertNull($realsubsystems[$subsystem]);
                 continue;
             }
-            $this->assertSame($fulldir, $CFG->dirroot . '/' . $realsubsystems[$subsystem]);
+            $this->assertSame($fulldir, \core\component::from_mono_path($realsubsystems[$subsystem]));
         }
     }
 
@@ -522,7 +522,7 @@ final class component_test extends \advanced_testcase {
         $this->assertNull(component::get_subtype_parent('mod'));
 
         // Any plugin with more subtypes is ok here.
-        $this->assertFileExists("$CFG->dirroot/mod/assign/db/subplugins.json");
+        $this->assertFileExists(\core\component::component_path('mod_assign', 'db/subplugins.json'));
         $this->assertSame('mod_assign', component::get_subtype_parent('assignsubmission'));
         $this->assertSame('mod_assign', component::get_subtype_parent('assignfeedback'));
         $this->assertNull(component::get_subtype_parent('assignxxxxx'));
@@ -532,7 +532,7 @@ final class component_test extends \advanced_testcase {
         global $CFG;
 
         // Any plugin with more subtypes is ok here.
-        $this->assertFileExists("$CFG->dirroot/mod/assign/db/subplugins.json");
+        $this->assertFileExists(\core\component::component_path('mod_assign', 'db/subplugins.json'));
 
         $subplugins = component::get_subplugins('mod_assign');
         $this->assertSame(['assignsubmission', 'assignfeedback'], array_keys($subplugins));
@@ -544,8 +544,8 @@ final class component_test extends \advanced_testcase {
         $this->assertSame(array_keys($feeds), $subplugins['assignfeedback']);
 
         // Any plugin without subtypes is ok here.
-        $this->assertFileExists("$CFG->dirroot/mod/choice");
-        $this->assertFileDoesNotExist("$CFG->dirroot/mod/choice/db/subplugins.json");
+        $this->assertFileExists(\core\component::component_path('mod_choice', ''));
+        $this->assertFileDoesNotExist(\core\component::component_path('mod_choice', 'db/subplugins.json'));
 
         $this->assertNull(component::get_subplugins('mod_choice'));
 
@@ -973,7 +973,7 @@ final class component_test extends \advanced_testcase {
         // Note: This is pretty hacky, but it's the only way to test the classloader.
         // We have to override the dirroot and libdir, and then reset the plugintypes property.
         $CFG->dirroot = $vfileroot->url();
-        $CFG->libdir = $vfileroot->url() . '/lib';
+        __DIR__ . '/../' = $vfileroot->url() . '/lib';
         component::reset();
 
         // Existing classes do not break.
@@ -1101,9 +1101,9 @@ final class component_test extends \advanced_testcase {
         $this->assertArrayHasKey('core', $componentslist);
 
         // Check a few of the known plugin types to confirm their presence at their respective type index.
-        $this->assertEquals($componentslist['core']['core_comment'], $CFG->dirroot . '/comment');
-        $this->assertEquals($componentslist['mod']['mod_forum'], $CFG->dirroot . '/mod/forum');
-        $this->assertEquals($componentslist['tool']['tool_usertours'], $CFG->dirroot . '/' . $CFG->admin . '/tool/usertours');
+        $this->assertEquals($componentslist['core']['core_comment'], \core\component::component_path('core_comment', ''));
+        $this->assertEquals($componentslist['mod']['mod_forum'], \core\component::component_path('mod_forum', ''));
+        $this->assertEquals($componentslist['tool']['tool_usertours'], \core\component::component_path('tool_usertours', ''));
     }
 
     /**
@@ -1277,7 +1277,7 @@ final class component_test extends \advanced_testcase {
 
         $libs = [];
 
-        $xmlpath = $CFG->libdir . '/thirdpartylibs.xml';
+        $xmlpath = __DIR__ . '/../thirdpartylibs.xml';
         $xml = simplexml_load_file($xmlpath);
         foreach ($xml as $lib) {
             $base = realpath(dirname($xmlpath));

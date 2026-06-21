@@ -23,8 +23,8 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/capability/locallib.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 // Get URL parameters.
 $systemcontext = context_system::instance();

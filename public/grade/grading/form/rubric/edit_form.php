@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/lib/formslib.php');
-require_once(__DIR__.'/rubriceditor.php');
-MoodleQuickForm::registerElementType('rubriceditor', $CFG->dirroot.'/grade/grading/form/rubric/rubriceditor.php', 'MoodleQuickForm_rubriceditor');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(__DIR__ . '/rubriceditor.php');
+MoodleQuickForm::registerElementType('rubriceditor', __DIR__ . '/rubriceditor.php', 'MoodleQuickForm_rubriceditor');
 
 /**
  * Defines the rubric edit form

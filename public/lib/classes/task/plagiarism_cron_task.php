@@ -45,7 +45,7 @@ class plagiarism_cron_task extends scheduled_task {
         global $CFG;
 
         if (!empty($CFG->enableplagiarism)) {
-            require_once($CFG->libdir.'/plagiarismlib.php');
+            require_once(__DIR__ . '/../../plagiarismlib.php');
             $plagiarismplugins = plagiarism_load_available_plugins();
             foreach ($plagiarismplugins as $plugin => $dir) {
                 require_once($dir . '/lib.php');

@@ -19,9 +19,9 @@ namespace core_course;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/course/format/tests/fixtures/format_theunittest.php');
-require_once($CFG->dirroot . '/course/format/lib.php');
+require_once(__DIR__ . '/../lib.php');
+require_once(\core\component::component_path('core_courseformat', 'tests/fixtures/format_theunittest.php'));
+require_once(\core\component::component_path('core_courseformat', 'lib.php'));
 
 /**
  * Course format function unit tests

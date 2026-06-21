@@ -38,8 +38,8 @@ use enrol_lti\local\ltiadvantage\service\application_registration_service;
 
 require_once(__DIR__ . '/../../config.php');
 global $CFG, $OUTPUT, $DB;
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/enrol/lti/lib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/lib.php');
 
 $action = required_param('action', PARAM_ALPHA);
 if (!in_array($action, ['add', 'view', 'edit', 'delete'])) {

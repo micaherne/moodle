@@ -36,7 +36,7 @@ final class message_output_sms_test extends \advanced_testcase {
      */
     public function test_sms_output(): void {
         global $CFG;
-        require_once($CFG->dirroot . "/sms/tests/fixtures/dummy_gateway.php");
+        require_once(\core\component::component_path('core_sms', 'tests/fixtures/dummy_gateway.php'));
 
         $this->preventResetByRollback();
         $this->resetAfterTest();

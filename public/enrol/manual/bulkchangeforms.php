@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->dirroot/enrol/bulkchange_forms.php");
+require_once(\core\component::component_path('core_enrol', 'bulkchange_forms.php'));
 
 /**
  * The form to collect required information when bulk editing users enrolments.

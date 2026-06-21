@@ -18,7 +18,7 @@ namespace core;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/fixtures/lib.php');
+require_once(__DIR__ . '/fixtures/lib.php');
 
 /**
  * Unit tests for grade_scale

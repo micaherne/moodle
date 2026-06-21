@@ -39,7 +39,7 @@ class convert_submission extends adhoc_task {
      */
     public function execute() {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(\core\component::component_path('mod_assign', 'locallib.php'));
 
         $data = $this->get_custom_data();
 

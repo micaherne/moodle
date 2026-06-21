@@ -43,8 +43,8 @@ use core_question\statistics\questions\all_calculated_for_qubaid_condition;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
 
-require_once($CFG->dirroot . '/calendar/lib.php');
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(\core\component::component_path('core_calendar', 'lib.php'));
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 /**#@+
  * Option controlling what options are offered on the quiz settings form.
@@ -131,7 +131,7 @@ function quiz_add_instance($quiz) {
  */
 function quiz_update_instance($quiz, $mform) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     // Process the options from the form.
     $result = quiz_process_options($quiz);
@@ -337,7 +337,7 @@ function quiz_update_effective_access($quiz, $userid) {
  */
 function quiz_delete_all_attempts($quiz) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     question_engine::delete_questions_usage_by_activities(new qubaids_for_quiz($quiz->id));
     $DB->delete_records('quiz_attempts', ['quiz' => $quiz->id]);
     $DB->delete_records('quiz_grades', ['quiz' => $quiz->id]);
@@ -351,7 +351,7 @@ function quiz_delete_all_attempts($quiz) {
  */
 function quiz_delete_user_attempts($quiz, $user) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     question_engine::delete_questions_usage_by_activities(new qubaids_for_users_attempts(
             $quiz->get_quizid(), $user->id, 'all'));
     $params = [
@@ -420,7 +420,7 @@ function quiz_allows_multiple_tries($quiz) {
  */
 function quiz_user_outline($course, $user, $mod, $quiz) {
     global $DB, $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
     $grades = grade_get_grades($course->id, 'mod', 'quiz', $quiz->id, $user->id);
 
     if (empty($grades->items[0]->grades)) {
@@ -455,8 +455,8 @@ function quiz_user_outline($course, $user, $mod, $quiz) {
  */
 function quiz_user_complete($course, $user, $mod, $quiz) {
     global $DB, $CFG, $OUTPUT;
-    require_once($CFG->libdir . '/gradelib.php');
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
+    require_once(__DIR__ . '/locallib.php');
 
     $grades = grade_get_grades($course->id, 'mod', 'quiz', $quiz->id, $user->id);
     if (!empty($grades->items[0]->grades)) {
@@ -641,7 +641,7 @@ function quiz_format_question_grade($quiz, $grade) {
  */
 function quiz_update_grades($quiz, $userid = 0, $nullifnone = true) {
     global $CFG, $DB;
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     if ($quiz->grade == 0) {
         quiz_grade_item_update($quiz);
@@ -670,8 +670,8 @@ function quiz_update_grades($quiz, $userid = 0, $nullifnone = true) {
  */
 function quiz_grade_item_update($quiz, $grades = null) {
     global $CFG, $OUTPUT;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once(__DIR__ . '/locallib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     if (property_exists($quiz, 'cmidnumber')) { // May not be always present.
         $params = ['itemname' => $quiz->name, 'idnumber' => $quiz->cmidnumber];
@@ -773,7 +773,7 @@ function quiz_grade_item_update($quiz, $grades = null) {
  */
 function quiz_grade_item_delete($quiz) {
     global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     return grade_update('mod/quiz', $quiz->course, 'mod', 'quiz', $quiz->id, 0,
             null, ['deleted' => 1]);
@@ -826,7 +826,7 @@ function quiz_refresh_events($courseid = 0, $instance = null, $cm = null) {
 function quiz_get_recent_mod_activity(&$activities, &$index, $timestart,
         $courseid, $cmid, $userid = 0, $groupid = 0) {
     global $CFG, $USER, $DB;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $course = get_course($courseid);
     $modinfo = get_fast_modinfo($course);
@@ -969,8 +969,8 @@ function quiz_print_recent_mod_activity($activity, $courseid, $detail, $modnames
  */
 function quiz_process_options($quiz) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-    require_once($CFG->libdir . '/questionlib.php');
+    require_once(__DIR__ . '/locallib.php');
+    require_once(\core\component::component_path('core', 'questionlib.php'));
 
     $quiz->timemodified = time();
 
@@ -1472,7 +1472,7 @@ function quiz_reset_gradebook($courseid, $type='') {
  */
 function quiz_reset_userdata($data) {
     global $CFG, $DB;
-    require_once($CFG->libdir . '/questionlib.php');
+    require_once(\core\component::component_path('core', 'questionlib.php'));
 
     $componentstr = get_string('modulenameplural', 'quiz');
     $status = [];
@@ -1785,7 +1785,7 @@ function quiz_supports($feature) {
  */
 function quiz_get_extra_capabilities() {
     global $CFG;
-    require_once($CFG->libdir . '/questionlib.php');
+    require_once(\core\component::component_path('core', 'questionlib.php'));
     return question_get_all_capabilities();
 }
 
@@ -1804,7 +1804,7 @@ function quiz_extend_settings_navigation(settings_navigation $settings, navigati
 
     // Require {@link questionlib.php}
     // Included here as we only ever want to include this file if we really need to.
-    require_once($CFG->libdir . '/questionlib.php');
+    require_once(\core\component::component_path('core', 'questionlib.php'));
 
     // We want to add these new nodes after the Edit settings node, and before the
     // Locally assigned roles node. Of course, both of those are controlled by capabilities.
@@ -1844,7 +1844,7 @@ function quiz_extend_settings_navigation(settings_navigation $settings, navigati
     question_extend_settings_navigation($quiznode, $settings->get_page()->cm->context)->trim_if_empty();
 
     if (has_any_capability(['mod/quiz:viewreports', 'mod/quiz:grade'], $settings->get_page()->cm->context)) {
-        require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+        require_once(__DIR__ . '/report/reportlib.php');
         $reportlist = quiz_report_list($settings->get_page()->cm->context);
 
         $url = new moodle_url('/mod/quiz/report.php',
@@ -1929,7 +1929,7 @@ function quiz_pluginfile($course, $cm, $context, $filearea, $args, $forcedownloa
 function quiz_question_pluginfile($course, $context, $component,
         $filearea, $qubaid, $slot, $args, $forcedownload, array $options= []) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $attemptobj = quiz_attempt::create_from_usage_id($qubaid);
     require_login($attemptobj->get_course(), false, $attemptobj->get_cm());
@@ -2002,7 +2002,7 @@ function quiz_get_navigation_options() {
  */
 function quiz_check_updates_since(cm_info $cm, $from, $filter = []) {
     global $DB, $USER, $CFG;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $updates = course_check_module_updates_since($cm, $from, [], $filter);
 
@@ -2097,7 +2097,7 @@ function mod_quiz_core_calendar_provide_event_action(calendar_event $event,
                                                      int $userid = 0) {
     global $CFG, $USER;
 
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (empty($userid)) {
         $userid = $USER->id;
@@ -2287,7 +2287,7 @@ function mod_quiz_get_completion_active_rule_descriptions($cm) {
  */
 function mod_quiz_core_calendar_get_valid_event_timestart_range(\calendar_event $event, \stdClass $quiz) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     // Overrides do not have a valid timestart range.
     if (quiz_is_overriden_calendar_event($event)) {
@@ -2329,7 +2329,7 @@ function mod_quiz_core_calendar_get_valid_event_timestart_range(\calendar_event 
  */
 function mod_quiz_core_calendar_event_timestart_updated(\calendar_event $event, \stdClass $quiz) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (!in_array($event->eventtype, [QUIZ_EVENT_TYPE_OPEN, QUIZ_EVENT_TYPE_CLOSE])) {
         // This isn't an event that we care about so we can ignore it.
@@ -2691,7 +2691,7 @@ function build_required_parameters_for_custom_view(array $params, array $extrapa
  */
 function mod_quiz_calculate_question_stats(context $context): ?all_calculated_for_qubaid_condition {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
+    require_once(\core\component::component_path('quiz_statistics', 'report.php'));
     $cm = get_coursemodule_from_id('quiz', $context->instanceid);
     $report = new quiz_statistics_report();
     return $report->calculate_questions_stats_for_question_bank($cm->instance, false, false);

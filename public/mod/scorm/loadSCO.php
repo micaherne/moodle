@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
 
 $id    = optional_param('id', '', PARAM_INT);    // Course Module ID, or
 $a     = optional_param('a', '', PARAM_INT);     // scorm ID

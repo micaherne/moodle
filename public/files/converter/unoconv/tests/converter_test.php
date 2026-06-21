@@ -70,7 +70,7 @@ final class converter_test extends \advanced_testcase {
             'filename'  => 'test.docx',
         ];
         $fs = get_file_storage();
-        $source = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'unoconv-source.docx';
+        $source = __DIR__ . '/fixtures/unoconv-source.docx';
         $testfile = $fs->create_file_from_pathname($filerecord, $source);
 
         $converter = $this->get_testable_mock();

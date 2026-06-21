@@ -96,7 +96,7 @@ EOD;
     private static function get_assignment_from_param($assignment) {
         global $CFG;
 
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(\core\component::component_path('mod_assign', 'locallib.php'));
 
         if (!is_object($assignment)) {
             $cm = get_coursemodule_from_instance('assign', $assignment, 0, false, MUST_EXIST);
@@ -358,7 +358,7 @@ EOD;
     public static function page_number_for_attempt($assignment, $userid, $attemptnumber, $readonly = false) {
         global $CFG;
 
-        require_once($CFG->libdir . '/pdflib.php');
+        require_once(\core\component::component_path('core', 'pdflib.php'));
 
         $assignment = self::get_assignment_from_param($assignment);
 
@@ -395,7 +395,7 @@ EOD;
     protected static function generate_page_images_for_attempt($assignment, $userid, $attemptnumber, $resetrotation = true) {
         global $CFG;
 
-        require_once($CFG->libdir . '/pdflib.php');
+        require_once(\core\component::component_path('core', 'pdflib.php'));
 
         $assignment = self::get_assignment_from_param($assignment);
 

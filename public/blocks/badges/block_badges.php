@@ -27,7 +27,7 @@ class block_badges extends block_base {
     public function init() {
         global $CFG;
 
-        require_once($CFG->libdir . "/badgeslib.php");
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         $this->title = get_string('pluginname', 'block_badges');
     }

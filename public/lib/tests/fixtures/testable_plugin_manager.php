@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/testable_update_api.php');
+require_once(__DIR__ . '/testable_update_api.php');
 
 /**
  * Testable variant of the core_plugin_manager

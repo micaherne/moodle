@@ -33,7 +33,7 @@ final class tags_test extends \advanced_testcase {
         global $CFG, $USER, $DB;
 
         require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -41,7 +41,7 @@ final class tags_test extends \advanced_testcase {
         $backupid = 'abc';
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-                __DIR__ . "/fixtures/random_by_tag_quiz.mbz", $backuppath);
+                __DIR__ . '/fixtures/random_by_tag_quiz.mbz', $backuppath);
 
         // Do the restore to new course with default settings.
         $categoryid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");

@@ -48,7 +48,7 @@ class badges_cron_task extends scheduled_task {
         if (empty($CFG->enablebadges)) {
             return;
         }
-        require_once($CFG->libdir . '/badgeslib.php');
+        require_once(__DIR__ . '/../../badgeslib.php');
 
         $courseparams = [];
         if (empty($CFG->badges_allowcoursebadges)) {

@@ -54,7 +54,7 @@ final class testing_generator_test extends \advanced_testcase {
 
     public function test_create_user(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         $this->resetAfterTest(true);
         $generator = $this->getDataGenerator();
@@ -218,7 +218,7 @@ final class testing_generator_test extends \advanced_testcase {
 
         $this->setAdminUser();
 
-        if (!file_exists("$CFG->dirroot/mod/page/")) {
+        if (!file_exists(\core\component::component_path('mod_page', ''))) {
             $this->markTestSkipped('Can not find standard Page module');
         }
 
@@ -245,9 +245,9 @@ final class testing_generator_test extends \advanced_testcase {
         $CFG->enablecompletion = 1;
         $CFG->enableavailability = 1;
         $CFG->enableoutcomes = 1;
-        require_once($CFG->libdir.'/gradelib.php');
-        require_once($CFG->libdir.'/completionlib.php');
-        require_once($CFG->dirroot.'/rating/lib.php');
+        require_once(__DIR__ . '/../../gradelib.php');
+        require_once(__DIR__ . '/../../completionlib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
 
         // Create a course with enabled completion.
         $course = $generator->create_course(array('enablecompletion' => true));
@@ -373,7 +373,7 @@ final class testing_generator_test extends \advanced_testcase {
 
     public function test_create_block(): void {
         global $CFG;
-        if (!file_exists("$CFG->dirroot/blocks/online_users/")) {
+        if (!file_exists(\core\component::component_path('block_online_users', ''))) {
             $this->markTestSkipped('Can not find standard Online users block');
         }
 
@@ -473,7 +473,7 @@ final class testing_generator_test extends \advanced_testcase {
 
     public function test_create_grade_category(): void {
         global $DB, $CFG;
-        require_once $CFG->libdir . '/grade/constants.php';
+        require_once __DIR__ . '/../../grade/constants.php';
 
         $this->resetAfterTest(true);
         $generator = $this->getDataGenerator();

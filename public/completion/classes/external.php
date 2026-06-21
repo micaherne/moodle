@@ -33,7 +33,7 @@ use core_external\external_warnings;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("$CFG->libdir/completionlib.php");
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Completion external functions
@@ -228,7 +228,7 @@ class core_completion_external extends external_api {
      */
     public static function get_activities_completion_status($courseid, $userid) {
         global $CFG, $USER, $PAGE;
-        require_once($CFG->libdir . '/grouplib.php');
+        require_once(\core\component::component_path('core', 'grouplib.php'));
 
         $warnings = array();
         $arrayparams = array(
@@ -385,7 +385,7 @@ class core_completion_external extends external_api {
      */
     public static function get_course_completion_status($courseid, $userid) {
         global $CFG, $USER;
-        require_once($CFG->libdir . '/grouplib.php');
+        require_once(\core\component::component_path('core', 'grouplib.php'));
 
         $warnings = array();
         $arrayparams = array(

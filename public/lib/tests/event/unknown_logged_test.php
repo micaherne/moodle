@@ -18,7 +18,7 @@ namespace core\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/../fixtures/event_fixtures.php');
+require_once(__DIR__ . '/../fixtures/event_fixtures.php');
 
 /**
  * Tests for event manager, base event and observers.

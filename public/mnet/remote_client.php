@@ -71,7 +71,7 @@ class mnet_remote_client extends mnet_peer {
         mnet_debug("remote client refreshing key");
         global $CFG;
         // set up an RPC request
-        require_once $CFG->dirroot.'/mnet/xmlrpc/client.php';
+        require_once __DIR__ . '/xmlrpc/client.php';
         $mnetrequest = new mnet_xmlrpc_client();
         // Use any method - listServices is pretty lightweight.
         $mnetrequest->set_method('system/listServices');

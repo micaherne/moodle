@@ -23,8 +23,8 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/grade/grading/lib.php');
-require_once($CFG->dirroot.'/grade/grading/pick_form.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/pick_form.php');
 
 $targetid   = required_param('targetid', PARAM_INT); // area we are coming from
 $pick       = optional_param('pick', null, PARAM_INT); // create new form from this template

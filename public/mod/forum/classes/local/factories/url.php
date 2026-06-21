@@ -35,7 +35,7 @@ use moodle_url;
 use stored_file;
 use user_picture;
 
-require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once(__DIR__ . '/../../../lib.php');
 
 /**
  * A URL factory for the forum.
@@ -305,7 +305,7 @@ class url {
     public function get_export_post_url_from_post(post_entity $post): ?moodle_url {
         global $CFG;
 
-        require_once($CFG->libdir . '/portfoliolib.php');
+        require_once(\core\component::component_path('core', 'portfoliolib.php'));
         $button = new \portfolio_add_button();
         $button->set_callback_options('forum_portfolio_caller', ['postid' => $post->get_id()], 'mod_forum');
         if ($post->has_attachments()) {
@@ -378,7 +378,7 @@ class url {
     public function get_export_attachment_url_from_post_and_attachment(post_entity $post, stored_file $attachment): ?moodle_url {
         global $CFG;
 
-        require_once($CFG->libdir . '/portfoliolib.php');
+        require_once(\core\component::component_path('core', 'portfoliolib.php'));
         $button = new \portfolio_add_button();
         $button->set_callback_options(
             'forum_portfolio_caller',

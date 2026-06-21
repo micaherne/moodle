@@ -25,7 +25,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__  . '/behat_form_select.php');
+require_once(__DIR__ . '/behat_form_select.php');
 
 /**
  * Allows interaction with selectyesno form fields.

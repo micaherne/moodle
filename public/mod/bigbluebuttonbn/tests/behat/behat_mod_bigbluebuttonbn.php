@@ -23,7 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
 
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
@@ -31,7 +31,7 @@ use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\config;
 use mod_bigbluebuttonbn\test\subplugins_test_helper_trait;
 use Moodle\BehatExtension\Exception\SkippedException;
-require_once(__DIR__ . '../../../classes/test/subplugins_test_helper_trait.php');
+require_once(__DIR__ . '/../../classes/test/subplugins_test_helper_trait.php');
 /**
  * Behat custom steps and configuration for mod_bigbluebuttonbn.
  *

@@ -24,7 +24,7 @@
 
 define('NO_OUTPUT_BUFFERING', true);
 
-require('../../../config.php');
+require(__DIR__ . '/../../../config.php');
 require_once('locallib.php');
 require_once('database_export_form.php');
 

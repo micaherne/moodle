@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/course/edit_form.php');
+require_once(__DIR__ . '/../../edit_form.php');
 
 /**
  * Testable course edit form.

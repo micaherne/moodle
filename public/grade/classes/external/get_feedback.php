@@ -24,7 +24,7 @@ use invalid_parameter_exception;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/grade/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Web service to fetch students feedback for a grade item.

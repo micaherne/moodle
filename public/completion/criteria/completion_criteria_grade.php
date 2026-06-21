@@ -25,8 +25,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once $CFG->dirroot.'/grade/lib.php';
-require_once $CFG->dirroot.'/grade/querylib.php';
+require_once \core\component::component_path('core_grades', 'lib.php');
+require_once \core\component::component_path('core_grades', 'querylib.php');
 
 /**
  * Course completion critieria - completion on achieving course grade
@@ -144,7 +144,7 @@ class completion_criteria_grade extends completion_criteria {
      */
     public function get_title_detailed() {
         global $CFG;
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $decimalpoints = grade_get_setting($this->course, 'decimalpoints', $CFG->grade_decimalpoints);
         $graderequired = format_float($this->gradepass, $decimalpoints);
         return get_string('gradexrequired', 'completion', $graderequired);
@@ -167,7 +167,7 @@ class completion_criteria_grade extends completion_criteria {
      */
     public function get_status($completion) {
         global $CFG;
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $decimalpoints = grade_get_setting($this->course, 'decimalpoints', $CFG->grade_decimalpoints);
 
         $grade = $this->get_grade($completion);
@@ -245,7 +245,7 @@ class completion_criteria_grade extends completion_criteria {
      */
     public function get_details($completion) {
         global $CFG;
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $decimalpoints = grade_get_setting($this->course, 'decimalpoints', $CFG->grade_decimalpoints);
 
         $details = array();

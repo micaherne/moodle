@@ -39,8 +39,8 @@ final class document_test extends \advanced_testcase {
      */
     public static function setupBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/search/tests/fixtures/testable_core_search.php');
-        require_once($CFG->dirroot . '/search/tests/fixtures/mock_search_area.php');
+        require_once(__DIR__ . '/fixtures/testable_core_search.php');
+        require_once(__DIR__ . '/fixtures/mock_search_area.php');
     }
 
     /**

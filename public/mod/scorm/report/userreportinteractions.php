@@ -22,10 +22,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once("../../../config.php");
-require_once($CFG->dirroot.'/mod/scorm/locallib.php');
-require_once($CFG->dirroot.'/mod/scorm/report/reportlib.php');
-require_once($CFG->libdir . '/tablelib.php');
+require_once(__DIR__ . '/../../../config.php');
+require_once(__DIR__ . '/../locallib.php');
+require_once(__DIR__ . '/reportlib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 $id = required_param('id', PARAM_INT); // Course Module ID.
 $userid = required_param('user', PARAM_INT); // User ID.

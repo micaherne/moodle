@@ -29,7 +29,7 @@ define('NO_DEBUG_DISPLAY', true);
 
 // we need just the values from config.php and minlib.php
 define('ABORT_AFTER_CONFIG', true);
-require('../config.php'); // this stops immediately at the beginning of lib/setup.php
+require(__DIR__ . '/../config.php'); // this stops immediately at the beginning of lib/setup.php
 
 if ($slashargument = min_get_slash_argument()) {
     $path = ltrim($slashargument, '/');
@@ -62,7 +62,7 @@ if ($version == 'moodle' && count($parts) >= 3) {
     }
 } else if ($version == 'gallery' && count($parts) >= 3) {
     list($revision, $module, , , , $image) = $parts;
-    $imagepath = "$CFG->dirroot/lib/yuilib/gallery/$module/assets/skins/sam/$image";
+    $imagepath = \core\component::component_path('core', "yuilib/gallery/{$module}/assets/skins/sam/{$image}");
 } else {
     // Allow support for revisions on YUI between official releases.
     // We can just discard the subrevision since it is only used to invalidate the browser cache.
@@ -71,9 +71,9 @@ if ($version == 'moodle' && count($parts) >= 3) {
     if (count($parts) == 1 && ($yuiversion == $CFG->yui3version || $yuiversion == $CFG->yui2version)) {
         list($image) = $parts;
         if ($yuiversion == $CFG->yui3version) {
-            $imagepath = "$CFG->dirroot/lib/yuilib/$CFG->yui3version/assets/skins/sam/$image";
+            $imagepath = \core\component::component_path('core', "yuilib/{$CFG->yui3version}/assets/skins/sam/{$image}");
         } else  {
-            $imagepath = "$CFG->dirroot/lib/yuilib/2in3/$CFG->yui2version/build/assets/skins/sam/$image";
+            $imagepath = \core\component::component_path('core', "yuilib/2in3/{$CFG->yui2version}/build/assets/skins/sam/{$image}");
         }
     } else {
         yui_image_not_found();
@@ -115,7 +115,7 @@ yui_image_cached($imagepath, $imagename, $mimetype, $etag);
 
 function yui_image_cached($imagepath, $imagename, $mimetype, $etag) {
     global $CFG;
-    require("$CFG->dirroot/lib/xsendfilelib.php");
+    require(\core\component::component_path('core', 'xsendfilelib.php'));
 
     $lifetime = 60*60*24*360; // 1 year, we do not change YUI versions often, there are a few custom yui modules
 

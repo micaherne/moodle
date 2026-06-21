@@ -33,7 +33,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     protected function setUp(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/message/output/airnotifier/externallib.php');
+        require_once(__DIR__ . '/../externallib.php');
         parent::setUp();
     }
 
@@ -116,7 +116,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_get_user_devices(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/user/externallib.php');
+        require_once(\core\component::component_path('core_user', 'externallib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -145,7 +145,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_get_user_devices_permissions(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/user/externallib.php');
+        require_once(\core\component::component_path('core_user', 'externallib.php'));
 
         $this->resetAfterTest(true);
         $user  = self::getDataGenerator()->create_user();

@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/forum/backup/moodle2/restore_forum_stepslib.php'); // Because it exists (must)
+require_once(__DIR__ . '/restore_forum_stepslib.php'); // Because it exists (must)
 
 /**
  * forum restore task that provides all the settings and steps to perform one

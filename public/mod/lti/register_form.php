@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(__DIR__ . '/locallib.php');
 
 /**
  * The mod_lti_register_types_form class.

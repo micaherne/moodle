@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once(__DIR__.'/lib.php');
-require_once($CFG->dirroot.'/mod/book/locallib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('mod_book', 'locallib.php'));
 
 /**
  * Export one book as IMSCP package
@@ -115,7 +115,7 @@ function booktool_exportimscp_prepare_files($book, $context) {
 
     $css_file_record = array('contextid'=>$context->id, 'component'=>'booktool_exportimscp', 'filearea'=>'temp',
             'itemid'=>$book->revision, 'filepath'=>"/css/", 'filename'=>'styles.css');
-    $fs->create_file_from_pathname($css_file_record, __DIR__.'/imscp.css');
+    $fs->create_file_from_pathname($css_file_record, __DIR__ . '/imscp.css');
 
     // Init imsmanifest and others
     $imsmanifest = '';

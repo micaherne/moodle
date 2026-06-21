@@ -21,9 +21,9 @@ use assign;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/lib/accesslib.php');
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(\core\component::component_path('core', 'accesslib.php'));
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(__DIR__ . '/../locallib.php');
 
 /**
  * Unit tests for (some of) mod/assign/markerallocaion_test.php.

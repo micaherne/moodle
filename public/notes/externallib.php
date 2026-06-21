@@ -34,7 +34,7 @@ use core_external\util;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . "/notes/lib.php");
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Notes external functions
@@ -672,7 +672,7 @@ class core_notes_external extends external_api {
      */
     public static function view_notes($courseid, $userid = 0) {
         global $CFG;
-        require_once($CFG->dirroot . "/notes/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         if (empty($CFG->enablenotes)) {
             throw new moodle_exception('notesdisabled', 'notes');

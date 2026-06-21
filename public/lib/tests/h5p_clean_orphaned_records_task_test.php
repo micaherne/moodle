@@ -39,7 +39,7 @@ final class h5p_clean_orphaned_records_task_test extends advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $params = [
             'course' => $course->id,
-            'packagefilepath' => $CFG->dirroot.'/h5p/tests/fixtures/greeting-card.h5p',
+            'packagefilepath' => \core\component::component_path('core_h5p', 'tests/fixtures/greeting-card.h5p'),
             'introformat' => 1
         ];
 

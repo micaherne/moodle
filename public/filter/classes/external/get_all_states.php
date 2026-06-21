@@ -50,7 +50,7 @@ class get_all_states extends external_api {
      */
     public static function execute(): array {
         global $CFG;
-        require_once($CFG->libdir . '/filterlib.php');
+        require_once(\core\component::component_path('core', 'filterlib.php'));
 
         $system = \context_system::instance();
         external_api::validate_context($system);

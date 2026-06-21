@@ -20,7 +20,7 @@ use testable_core_update_validator;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/fixtures/testable_update_validator.php');
+require_once(__DIR__ . '/fixtures/testable_update_validator.php');
 
 /**
  * Unit tests for the {@link \core\update\validator} class
@@ -33,7 +33,7 @@ require_once(__DIR__.'/fixtures/testable_update_validator.php');
 final class update_validator_test extends \advanced_testcase {
 
     public function test_validate_files_layout(): void {
-        $fixtures = __DIR__.'/fixtures/update_validator';
+        $fixtures = __DIR__ . '/fixtures/update_validator';
 
         // Non-existing directory.
         $validator = testable_core_update_validator::instance($fixtures.'/nulldir', array(
@@ -108,7 +108,7 @@ final class update_validator_test extends \advanced_testcase {
     }
 
     public function test_validate_version_php(): void {
-        $fixtures = __DIR__.'/fixtures/update_validator';
+        $fixtures = __DIR__ . '/fixtures/update_validator';
 
         $validator = testable_core_update_validator::instance($fixtures.'/noversiontheme', array(
             'noversion/' => true,
@@ -189,7 +189,7 @@ final class update_validator_test extends \advanced_testcase {
     }
 
     public function test_validate_language_pack(): void {
-        $fixtures = __DIR__.'/fixtures/update_validator';
+        $fixtures = __DIR__ . '/fixtures/update_validator';
 
         $validator = testable_core_update_validator::instance($fixtures.'/nolang', array(
             'bah/' => true,
@@ -263,7 +263,7 @@ final class update_validator_test extends \advanced_testcase {
     }
 
     public function test_validate_target_location(): void {
-        $fixtures = __DIR__.'/fixtures/update_validator';
+        $fixtures = __DIR__ . '/fixtures/update_validator';
 
         $validator = testable_core_update_validator::instance($fixtures.'/installed', array(
             'greenbar/' => true,
@@ -309,7 +309,7 @@ final class update_validator_test extends \advanced_testcase {
     }
 
     public function test_parse_version_php(): void {
-        $fixtures = __DIR__.'/fixtures/update_validator/versionphp';
+        $fixtures = __DIR__ . '/fixtures/update_validator/versionphp';
 
         $validator = testable_core_update_validator::instance($fixtures, array());
         $this->assertEquals('testable_core_update_validator', get_class($validator));
@@ -327,7 +327,7 @@ final class update_validator_test extends \advanced_testcase {
     }
 
     public function test_messages_output(): void {
-        $fixtures = __DIR__.'/fixtures/update_validator';
+        $fixtures = __DIR__ . '/fixtures/update_validator';
         $validator = testable_core_update_validator::instance($fixtures, array());
 
         $this->assertDebuggingNotCalled();

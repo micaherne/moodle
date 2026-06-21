@@ -37,7 +37,7 @@ use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
 
-require_once($CFG->dirroot . '/blog/locallib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * Data provider class.

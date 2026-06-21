@@ -19,7 +19,7 @@ namespace core_calendar;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Defines test class to test manage rrule during ical imports.

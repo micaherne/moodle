@@ -23,9 +23,9 @@
  * @author     Chris Scribner
  */
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/lti/lib.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/locallib.php');
 
 $instanceid = required_param('instanceid', PARAM_INT);
 

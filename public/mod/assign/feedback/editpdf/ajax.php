@@ -29,8 +29,8 @@ use \assignfeedback_editpdf\comments_quick_list;
 
 define('AJAX_SCRIPT', true);
 
-require('../../../../config.php');
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require(__DIR__ . '/../../../../config.php');
+require_once(\core\component::component_path('mod_assign', 'locallib.php'));
 
 require_sesskey();
 

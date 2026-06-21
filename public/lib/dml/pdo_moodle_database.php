@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/moodle_database.php');
-require_once(__DIR__.'/pdo_moodle_recordset.php');
+require_once(__DIR__ . '/moodle_database.php');
+require_once(__DIR__ . '/pdo_moodle_recordset.php');
 
 /**
  * Experimental pdo database class

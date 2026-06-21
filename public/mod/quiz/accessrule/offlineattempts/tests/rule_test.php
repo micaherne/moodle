@@ -22,7 +22,7 @@ use quizaccess_offlineattempts;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/accessrule/offlineattempts/rule.php');
+require_once(__DIR__ . '/../rule.php');
 
 
 /**

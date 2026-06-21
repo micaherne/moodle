@@ -30,7 +30,7 @@ use renderer_base;
 use templatable;
 use stdClass;
 
-require_once($CFG->dirroot . '/blocks/myoverview/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Class containing data for my overview block.

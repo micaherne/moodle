@@ -26,7 +26,7 @@ namespace auth_manual\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/auth/manual/auth.php');
+require_once(__DIR__ . '/../../auth.php');
 
 use core_privacy\local\request\writer;
 use core_privacy\local\request\transform;

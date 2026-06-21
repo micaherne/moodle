@@ -27,9 +27,9 @@ namespace core;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/fixtures/read_replica_moodle_database_table_names.php');
-require_once(__DIR__.'/fixtures/read_replica_moodle_database_special.php');
-require_once(__DIR__.'/../../tests/fixtures/event_fixtures.php');
+require_once(__DIR__ . '/fixtures/read_replica_moodle_database_table_names.php');
+require_once(__DIR__ . '/fixtures/read_replica_moodle_database_special.php');
+require_once(__DIR__ . '/../../tests/fixtures/event_fixtures.php');
 
 /**
  * DML read/read-write database handle use tests

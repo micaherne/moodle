@@ -45,8 +45,8 @@ final class myprofilelib_test extends \advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/lib/myprofilelib.php');
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(__DIR__ . '/../myprofilelib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
         parent::setUpBeforeClass();
     }
 

@@ -264,7 +264,7 @@ class forum_gradeitem extends component_gradeitem {
      */
     protected function store_grade(stdClass $grade): bool {
         global $CFG, $DB;
-        require_once("{$CFG->dirroot}/mod/forum/lib.php");
+        require_once(__DIR__ . '/../../lib.php');
 
         if ($grade->forum != $this->forum->get_id()) {
             throw new coding_exception('Incorrect forum provided for this grade');

@@ -27,7 +27,7 @@ require_once(__DIR__.'/../../../../../config.php');
 defined('BEHAT_SITE_RUNNING') || die();
 
 global $CFG, $PAGE, $OUTPUT;
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 $PAGE->set_url('/lib/form/tests/behat/fixtures/repeat_defaults_form.php');
 require_login();
 $PAGE->set_context(context_system::instance());

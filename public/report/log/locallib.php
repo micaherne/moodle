@@ -30,7 +30,7 @@ if (!defined('REPORT_LOG_MAX_DISPLAY')) {
     define('REPORT_LOG_MAX_DISPLAY', 150); // days
 }
 
-require_once(__DIR__.'/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 /**
  * This function is used to generate and display the log activity graph
@@ -213,7 +213,7 @@ function report_log_print_mnet_selector_form($hostid, $course, $selecteduser=0, 
                                  $modname="", $modid=0, $modaction='', $selectedgroup=-1, $showcourses=0, $showusers=0, $logformat='showashtml') {
 
     global $USER, $CFG, $SITE, $DB, $OUTPUT, $SESSION;
-    require_once $CFG->dirroot.'/mnet/peer.php';
+    require_once \core\component::component_path('core_mnet', 'peer.php');
 
     $mnet_peer = new mnet_peer();
     $mnet_peer->set_id($hostid);

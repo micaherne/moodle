@@ -27,8 +27,8 @@ namespace core;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/test_moodle_database.php');
-require_once(__DIR__.'/../../moodle_read_replica_trait.php');
+require_once(__DIR__ . '/test_moodle_database.php');
+require_once(__DIR__ . '/../../moodle_read_replica_trait.php');
 
 /**
  * Database driver test class with moodle_read_replica_trait

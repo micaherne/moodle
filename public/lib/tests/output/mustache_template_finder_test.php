@@ -256,7 +256,7 @@ final class mustache_template_finder_test extends \advanced_testcase {
         global $CFG;
 
         $filename = mustache_template_finder::get_template_filepath($template, $theme);
-        $this->assertEquals("{$CFG->dirroot}/{$location}", $filename);
+        $this->assertEquals(\core\component::from_mono_path($location), $filename);
     }
 
     /**

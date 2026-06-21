@@ -16,7 +16,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__  . '/behat_form_date.php');
+require_once(__DIR__ . '/behat_form_date.php');
 
 /**
  * Date time form field.

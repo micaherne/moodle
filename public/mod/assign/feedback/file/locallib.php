@@ -457,8 +457,8 @@ class assign_feedback_file extends assign_feedback_plugin {
         global $CFG, $DB, $USER;
 
         require_capability('mod/assign:grade', $this->assignment->get_context());
-        require_once($CFG->dirroot . '/mod/assign/feedback/file/batchuploadfilesform.php');
-        require_once($CFG->dirroot . '/mod/assign/renderable.php');
+        require_once(__DIR__ . '/batchuploadfilesform.php');
+        require_once(\core\component::component_path('mod_assign', 'renderable.php'));
 
         $formparams = array('cm'=>$this->assignment->get_course_module()->id,
                             'users'=>$users,
@@ -587,9 +587,9 @@ class assign_feedback_file extends assign_feedback_plugin {
         global $CFG, $USER;
 
         require_capability('mod/assign:grade', $this->assignment->get_context());
-        require_once($CFG->dirroot . '/mod/assign/feedback/file/uploadzipform.php');
-        require_once($CFG->dirroot . '/mod/assign/feedback/file/importziplib.php');
-        require_once($CFG->dirroot . '/mod/assign/feedback/file/importzipform.php');
+        require_once(__DIR__ . '/uploadzipform.php');
+        require_once(__DIR__ . '/importziplib.php');
+        require_once(__DIR__ . '/importzipform.php');
 
         $formparams = array('context'=>$this->assignment->get_context(),
                             'cm'=>$this->assignment->get_course_module()->id);

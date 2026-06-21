@@ -34,7 +34,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     protected function setUp(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/externallib.php');
+        require_once(__DIR__ . '/../externallib.php');
         parent::setUp();
     }
 
@@ -54,7 +54,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
     public static function create_calendar_event($name, $userid = 0, $type = 'user', $repeats = 0, $timestart  = null, $prop = null) {
         global $CFG, $DB, $SITE;
 
-        require_once("$CFG->dirroot/calendar/lib.php");
+        require_once(__DIR__ . '/../lib.php');
         if (!empty($prop)) {
             if (is_array($prop)) {
                 $prop = (object)$prop;

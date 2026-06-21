@@ -363,7 +363,7 @@ final class manager_test extends \advanced_testcase {
         $this->resetAfterTest();
         global $DB, $CFG;
 
-        $fakepluginroot = $CFG->libdir . '/tests/fixtures/fakeplugins/fake/fullfeatured';
+        $fakepluginroot = __DIR__ . '/../fixtures/fakeplugins/fake/fullfeatured';
         require_once($fakepluginroot . '/classes/plugininfo/fullsubtype.php');
         require_once($fakepluginroot . '/classes/plugininfo/fulldeprecatedsubtype.php');
         require_once($fakepluginroot . '/fullsubtype/example/classes/task/scheduled_test.php');
@@ -436,7 +436,7 @@ final class manager_test extends \advanced_testcase {
         $this->resetAfterTest();
         global $DB, $CFG;
 
-        $fakepluginroot = $CFG->libdir . '/tests/fixtures/fakeplugins/fake/fullfeatured';
+        $fakepluginroot = __DIR__ . '/../fixtures/fakeplugins/fake/fullfeatured';
         require_once($fakepluginroot . '/classes/plugininfo/fullsubtype.php');
         require_once($fakepluginroot . '/classes/plugininfo/fulldeprecatedsubtype.php');
         require_once($fakepluginroot . '/classes/plugininfo/fulldeletedsubtype.php');
@@ -508,7 +508,7 @@ final class manager_test extends \advanced_testcase {
         $this->resetAfterTest();
         global $DB, $CFG;
 
-        $fakepluginroot = $CFG->libdir . '/tests/fixtures/fakeplugins/fake/fullfeatured';
+        $fakepluginroot = __DIR__ . '/../fixtures/fakeplugins/fake/fullfeatured';
         require_once($fakepluginroot . '/classes/plugininfo/fullsubtype.php');
         require_once($fakepluginroot . '/fullsubtype/example/classes/task/adhoc_test.php');
 

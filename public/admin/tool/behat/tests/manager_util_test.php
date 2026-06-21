@@ -29,9 +29,9 @@ use behat_config_util;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/' . $CFG->admin .'/tool/behat/locallib.php');
-require_once($CFG->libdir . '/behat/classes/util.php');
-require_once($CFG->libdir . '/behat/classes/behat_config_manager.php');
+require_once(__DIR__ . '/../locallib.php');
+require_once(\core\component::component_path('core', 'behat/classes/util.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_config_manager.php'));
 
 /**
  * Behat manager tests.
@@ -77,12 +77,12 @@ final class manager_util_test extends \advanced_testcase {
     );
 
     /** @var array List of core features. */
-    private $corefeatures = array('test_1_core_fixtures_tests_behat_tool' => __DIR__.'/fixtures/core/test_1.feature',
-                                 'test_2_core_fixtures_tests_behat_tool' => __DIR__.'/fixtures/core/test_2.feature');
+    private $corefeatures = array('test_1_core_fixtures_tests_behat_tool' => __DIR__ . '/fixtures/core/test_1.feature',
+                                 'test_2_core_fixtures_tests_behat_tool' => __DIR__ . '/fixtures/core/test_2.feature');
 
     /** @var array List of core contexts. */
-    private $corecontexts = array('behat_test_context_1' => __DIR__.'/fixtures/core/behat_test_context_1.php',
-                                  'behat_test_context_2' => __DIR__.'/fixtures/core/behat_test_context_2.php');
+    private $corecontexts = array('behat_test_context_1' => __DIR__ . '/fixtures/core/behat_test_context_1.php',
+                                  'behat_test_context_2' => __DIR__ . '/fixtures/core/behat_test_context_2.php');
 
     /**
      * Setup test.

@@ -23,11 +23,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/format/xml/format.php');
-require_once($CFG->dirroot . '/question/format.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(__DIR__ . '/../format.php');
+require_once(\core\component::component_path('core_question', 'format.php'));
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 /**
  * Unit tests for the XML question format import and export.
@@ -52,7 +52,7 @@ final class qformat_xml_import_export_test extends advanced_testcase {
         $qformat = new qformat_xml();
         $qformat->setContexts([context_module::instance($qbank->cmid)]);
         $qformat->setCourse($course);
-        $qformat->setFilename(__DIR__ . '/fixtures/' . $filename);
+        $qformat->setFilename(__DIR__ . "/fixtures/{$filename}");
         $qformat->setRealfilename($filename);
         $qformat->setMatchgrades('error');
         $qformat->setCatfromfile(1);

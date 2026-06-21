@@ -66,7 +66,7 @@ final class api_test extends \advanced_testcase {
         $this->assertEquals($time, $event->timestart);
         $this->assertEquals($time, $event->timesort);
 
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         // Delete the module.
         \core_courseformat\formatactions::cm($course->id)->delete($assign->cmid);
 
@@ -221,7 +221,7 @@ final class api_test extends \advanced_testcase {
      */
     public function test_mark_course_completions_activity_criteria(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_activity.php');
+        require_once(__DIR__ . '/../criteria/completion_criteria_activity.php');
         $this->resetAfterTest(true);
 
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
@@ -296,7 +296,7 @@ final class api_test extends \advanced_testcase {
      */
     public function test_mark_course_completions_activity_criteria_completion_states(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/completion/criteria/completion_criteria_activity.php');
+        require_once(__DIR__ . '/../criteria/completion_criteria_activity.php');
         $this->resetAfterTest(true);
 
         $courses[] = $this->getDataGenerator()->create_course(['shortname' => 'completionpassgradenotset',

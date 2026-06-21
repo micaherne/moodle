@@ -27,7 +27,7 @@ namespace core_tag\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot . '/tag/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\writer;
@@ -186,7 +186,7 @@ final class provider_test extends provider_testcase {
 
     protected function set_up_tags() {
         global $CFG;
-        require_once($CFG->dirroot.'/user/editlib.php');
+        require_once(\core\component::component_path('core_user', 'editlib.php'));
 
         $this->resetAfterTest(true);
 

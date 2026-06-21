@@ -27,7 +27,7 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/clilib.php');      // cli only functions
+require_once(\core\component::component_path('core', 'clilib.php'));      // cli only functions
 
 // Define the input options.
 $longparams = array(

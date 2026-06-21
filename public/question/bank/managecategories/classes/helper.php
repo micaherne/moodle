@@ -18,7 +18,7 @@ namespace qbank_managecategories;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . "/questionlib.php");
+require_once(\core\component::component_path('core', 'questionlib.php'));
 
 use context;
 use core_question\category_manager;

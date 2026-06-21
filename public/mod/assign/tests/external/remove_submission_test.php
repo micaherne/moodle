@@ -23,9 +23,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once("$CFG->dirroot/mod/assign/tests/generator.php");
-require_once("$CFG->dirroot/mod/assign/tests/fixtures/event_mod_assign_fixtures.php");
-require_once("$CFG->dirroot/mod/assign/tests/externallib_advanced_testcase.php");
+require_once(__DIR__ . '/../generator.php');
+require_once(__DIR__ . '/../fixtures/event_mod_assign_fixtures.php');
+require_once(__DIR__ . '/../externallib_advanced_testcase.php');
 
 /**
  * Test the remove submission external function.

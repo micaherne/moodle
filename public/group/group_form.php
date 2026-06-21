@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 
 use core_group\visibility;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Group form class

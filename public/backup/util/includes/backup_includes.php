@@ -91,14 +91,14 @@ require_once($CFG->dirroot . '/backup/util/plan/backup_structure_step.class.php'
 require_once($CFG->dirroot . '/backup/util/plan/backup_execution_step.class.php');
 require_once($CFG->dirroot . '/backup/controller/base_controller.class.php');
 require_once($CFG->dirroot . '/backup/controller/backup_controller.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/base_moodleform.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/base_ui.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/base_ui_stage.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/backup_moodleform.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/backup_ui.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/backup_ui_stage.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/backup_ui_setting.class.php');
+require_once(\core\component::component_path('core_backup', 'base_moodleform.class.php'));
+require_once(\core\component::component_path('core_backup', 'base_ui.class.php'));
+require_once(\core\component::component_path('core_backup', 'base_ui_stage.class.php'));
+require_once(\core\component::component_path('core_backup', 'backup_moodleform.class.php'));
+require_once(\core\component::component_path('core_backup', 'backup_ui.class.php'));
+require_once(\core\component::component_path('core_backup', 'backup_ui_stage.class.php'));
+require_once(\core\component::component_path('core_backup', 'backup_ui_setting.class.php'));
 
 // And some moodle stuff too
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->libdir.'/gradelib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(\core\component::component_path('core', 'gradelib.php'));

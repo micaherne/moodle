@@ -28,10 +28,10 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/assign/tests/externallib_advanced_testcase.php');
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
-require_once($CFG->dirroot . '/mod/assign/tests/mod_assign_override_test_trait.php');
+require_once(__DIR__ . '/externallib_advanced_testcase.php');
+require_once(__DIR__ . '/../locallib.php');
+require_once(__DIR__ . '/generator.php');
+require_once(__DIR__ . '/mod_assign_override_test_trait.php');
 
 /**
  * Test the override_manager class for assignments.

@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/enrol/manual/externallib.php');
+require_once(__DIR__ . '/../externallib.php');
 
 /**
  * Enrol manual external PHPunit tests
@@ -139,7 +139,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_unenrol_user_single(): void {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
         $this->resetAfterTest(true);
         // The user who perform the action.
         $user = $this->getDataGenerator()->create_user();
@@ -173,7 +173,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_unenrol_user_multiple(): void {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
         $this->resetAfterTest(true);
         // The user who perform the action.
         $user = $this->getDataGenerator()->create_user();
@@ -212,7 +212,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_unenrol_user_error_no_capability(): void {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
         $this->resetAfterTest(true);
         // The user who perform the action.
         $user = $this->getDataGenerator()->create_user();
@@ -259,7 +259,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_unenrol_user_error_not_exist(): void {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
         $this->resetAfterTest(true);
         // The user who perform the action.
         $user = $this->getDataGenerator()->create_user();

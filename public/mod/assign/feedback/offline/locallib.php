@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use \mod_assign\output\assign_header;
 
-require_once($CFG->dirroot.'/grade/grading/lib.php');
+require_once(\core\component::component_path('core_grading', 'lib.php'));
 
 /**
  * library class for file feedback plugin extending feedback plugin base class
@@ -247,10 +247,10 @@ class assign_feedback_offline extends assign_feedback_plugin {
         global $CFG, $USER;
 
         require_capability('mod/assign:grade', $this->assignment->get_context());
-        require_once($CFG->dirroot . '/mod/assign/feedback/offline/uploadgradesform.php');
-        require_once($CFG->dirroot . '/mod/assign/feedback/offline/importgradesform.php');
-        require_once($CFG->dirroot . '/mod/assign/feedback/offline/importgradeslib.php');
-        require_once($CFG->libdir . '/csvlib.class.php');
+        require_once(__DIR__ . '/uploadgradesform.php');
+        require_once(__DIR__ . '/importgradesform.php');
+        require_once(__DIR__ . '/importgradeslib.php');
+        require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
         $mform = new assignfeedback_offline_upload_grades_form(null,
                                                               array('context'=>$this->assignment->get_context(),
@@ -335,7 +335,7 @@ class assign_feedback_offline extends assign_feedback_plugin {
         global $CFG;
 
         require_capability('mod/assign:grade', $this->assignment->get_context());
-        require_once($CFG->dirroot . '/mod/assign/gradingtable.php');
+        require_once(\core\component::component_path('mod_assign', 'gradingtable.php'));
 
         $groupmode = groups_get_activity_groupmode($this->assignment->get_course_module());
         // All users.

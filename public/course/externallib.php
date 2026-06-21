@@ -38,7 +38,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
 use core_external\util;
-require_once(__DIR__ . "/lib.php");
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Course external functions
@@ -94,8 +94,8 @@ class core_course_external extends external_api {
      */
     public static function get_course_contents($courseid, $options = array()) {
         global $CFG, $DB, $USER, $PAGE;
-        require_once($CFG->dirroot . "/course/lib.php");
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(__DIR__ . '/lib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         //validate parameter
         $params = self::validate_parameters(self::get_course_contents_parameters(),
@@ -339,7 +339,11 @@ class core_course_external extends external_api {
                             $baseurl = 'webservice/pluginfile.php';
 
                             // Call $modulename_export_contents (each module callback take care about checking the capabilities).
-                            require_once($CFG->dirroot . '/mod/' . $cm->modname . '/lib.php');
+                            $moddir = \core_component::get_plugin_directory('mod', $cm->modname);
+                            if ($moddir === null) {
+                                throw new \coding_exception("Plugin not installed: mod_{$cm->modname}");
+                            }
+                            require_once("$moddir/lib.php");
                             $getcontentfunction = $cm->modname.'_export_contents';
                             if (function_exists($getcontentfunction)) {
                                 $contents = $getcontentfunction($cm, $baseurl);
@@ -702,7 +706,7 @@ class core_course_external extends external_api {
      */
     public static function get_courses($options = array()) {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/course/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         //validate parameter
         $params = self::validate_parameters(self::get_courses_parameters(),
@@ -1011,8 +1015,8 @@ class core_course_external extends external_api {
      */
     public static function create_courses($courses) {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/course/lib.php");
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(__DIR__ . '/lib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         $params = self::validate_parameters(self::create_courses_parameters(),
                         array('courses' => $courses));
@@ -1219,7 +1223,7 @@ class core_course_external extends external_api {
      */
     public static function update_courses($courses) {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/course/lib.php");
+        require_once(__DIR__ . '/lib.php');
         $warnings = array();
 
         $params = self::validate_parameters(self::update_courses_parameters(),
@@ -1393,7 +1397,7 @@ class core_course_external extends external_api {
      */
     public static function delete_courses($courseids) {
         global $CFG, $DB;
-        require_once($CFG->dirroot."/course/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         // Parameter validation.
         $params = self::validate_parameters(self::delete_courses_parameters(), array('courseids'=>$courseids));
@@ -1922,7 +1926,7 @@ class core_course_external extends external_api {
      */
     public static function get_categories($criteria = array(), $addsubcategories = true) {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/course/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         // Validate parameters.
         $params = self::validate_parameters(self::get_categories_parameters(),
@@ -2393,7 +2397,7 @@ class core_course_external extends external_api {
      */
     public static function delete_categories($categories) {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/course/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         // Validate parameters.
         $params = self::validate_parameters(self::delete_categories_parameters(), array('categories' => $categories));
@@ -2476,7 +2480,7 @@ class core_course_external extends external_api {
         global $CFG, $DB;
 
         // Require course file containing the course delete module function.
-        require_once($CFG->dirroot . "/course/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         // Clean the parameters.
         $params = self::validate_parameters(self::delete_modules_parameters(), array('cmids' => $cmids));
@@ -2542,7 +2546,7 @@ class core_course_external extends external_api {
      */
     public static function view_course($courseid, $sectionnumber = 0) {
         global $CFG;
-        require_once($CFG->dirroot . "/course/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::view_course_parameters(),
                                             array(
@@ -2967,8 +2971,8 @@ class core_course_external extends external_api {
 
         // If the user has permissions to manage the activity, return all the information.
         if (has_capability('moodle/course:manageactivities', $context)) {
-            require_once($CFG->dirroot . '/course/modlib.php');
-            require_once($CFG->libdir . '/gradelib.php');
+            require_once(__DIR__ . '/modlib.php');
+            require_once(\core\component::component_path('core', 'gradelib.php'));
 
             $info = $cm;
             // Get the extra information: grade, advanced grading and outcomes data.
@@ -3173,7 +3177,7 @@ class core_course_external extends external_api {
      */
     public static function get_user_navigation_options($courseids) {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(__DIR__ . '/lib.php');
 
         // Parameter validation.
         $params = self::validate_parameters(self::get_user_navigation_options_parameters(), array('courseids' => $courseids));
@@ -3263,7 +3267,7 @@ class core_course_external extends external_api {
      */
     public static function get_user_administration_options($courseids) {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(__DIR__ . '/lib.php');
 
         // Parameter validation.
         $params = self::validate_parameters(self::get_user_administration_options_parameters(), array('courseids' => $courseids));
@@ -3339,8 +3343,8 @@ class core_course_external extends external_api {
      */
     public static function get_courses_by_field($field = '', $value = '') {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
-        require_once($CFG->libdir . '/filterlib.php');
+        require_once(__DIR__ . '/lib.php');
+        require_once(\core\component::component_path('core', 'filterlib.php'));
 
         $params = self::validate_parameters(self::get_courses_by_field_parameters(),
             array(
@@ -3541,7 +3545,7 @@ class core_course_external extends external_api {
      */
     public static function check_updates($courseid, $tocheck, $filter = array()) {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/course/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(
             self::check_updates_parameters(),
@@ -4058,7 +4062,7 @@ class core_course_external extends external_api {
         array $requiredfields = []
     ) {
         global $CFG, $PAGE, $USER;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::get_enrolled_courses_by_timeline_classification_parameters(),
             array(

@@ -30,8 +30,8 @@ use moodle_page;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/pagelib.php');
-require_once($CFG->libdir . '/blocklib.php');
+require_once(__DIR__ . '/../pagelib.php');
+require_once(__DIR__ . '/../blocklib.php');
 
 /**
  * Tests for the moodle_page class.

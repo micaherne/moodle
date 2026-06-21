@@ -32,7 +32,7 @@ define('NO_DEBUG_DISPLAY', true);
 define('ABORT_AFTER_CONFIG', true);
 
 // This stops immediately at the beginning of lib/setup.php.
-require('../../../config.php');
+require(__DIR__ . '/../../../config.php');
 
 /**
  * An anonymous class to handle loading and serving lang files for TinyMCE.
@@ -135,7 +135,7 @@ class lang {
         // Ignore upgrade check.
         define('NO_UPGRADE_CHECK', true);
 
-        require("{$CFG->dirroot}/lib/setup.php");
+        require(\core\component::component_path('core', 'setup.php'));
         $this->fullyloaded = true;
     }
 
@@ -159,7 +159,7 @@ class lang {
 
         // We maintain a list of string identifier to original TinyMCE string.
         // TinyMCE uses English language strings to perform translations.
-        $stringlist = file_get_contents(__DIR__ . "/tinystrings.json");
+        $stringlist = file_get_contents(__DIR__ . '/tinystrings.json');
         if (empty($stringlist)) {
             $this->send_not_found("Failed to load strings from tinystrings.json");
         }

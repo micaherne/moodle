@@ -24,9 +24,9 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/mod/forum/lib.php');
-require_once($CFG->dirroot.'/rating/lib.php');
-require_once($CFG->dirroot.'/user/lib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core_rating', 'lib.php'));
+require_once(\core\component::component_path('core_user', 'lib.php'));
 
 $courseid  = optional_param('course', null, PARAM_INT); // Limit the posts to just this course
 $userid = optional_param('id', $USER->id, PARAM_INT);        // User id whose posts we want to view

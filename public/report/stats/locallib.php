@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once(__DIR__.'/lib.php');
-require_once($CFG->dirroot.'/lib/statslib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'statslib.php'));
 
 function report_stats_mode_menu($course, $mode, $time, $url) {
     global $CFG, $OUTPUT;
@@ -261,7 +261,7 @@ function report_stats_report($course, $report, $mode, $user, $roleid, $time) {
                     $table->head[] = $param->line2;
                 }
             }
-            if (!file_exists($CFG->dirroot.'/report/log/index.php')) {
+            if (!file_exists(\core\component::component_path('report_log', 'index.php'))) {
                 // bad luck, we can not link other report
             } else if (empty($param->crosstab)) {
                 foreach  ($stats as $stat) {

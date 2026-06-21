@@ -36,7 +36,7 @@ use core_badges\privacy\provider;
 use core_privacy\local\request\approved_userlist;
 use core_badges\helper;
 
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 /**
  * Data provider testcase class.

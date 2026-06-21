@@ -26,7 +26,7 @@
  */
 
 global $CFG;
-require_once "$CFG->libdir/form/select.php";
+require_once __DIR__ . '/select.php';
 
 /**
  * Yes/No drop down type form element

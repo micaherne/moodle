@@ -26,7 +26,7 @@ namespace core_user\analytics\target;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/enrollib.php');
+require_once(\core\component::component_path('core', 'enrollib.php'));
 
 /**
  * Upcoming activities due target.

@@ -80,7 +80,7 @@ class enrol_meta_handler {
      */
     protected static function sync_with_parent_course(stdClass $instance, $userid) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         $plugin = enrol_get_plugin('meta');
 
@@ -260,7 +260,7 @@ class enrol_meta_handler {
  */
 function enrol_meta_sync($courseid = NULL, $verbose = false) {
     global $CFG, $DB;
-    require_once("{$CFG->dirroot}/group/lib.php");
+    require_once(\core\component::component_path('core_group', 'lib.php'));
 
     // purge all roles if meta sync disabled, those can be recreated later here in cron
     if (!enrol_is_enabled('meta')) {
@@ -643,7 +643,7 @@ function enrol_meta_sync($courseid = NULL, $verbose = false) {
 function enrol_meta_create_new_group($courseid, $linkedcourseid) {
     global $DB, $CFG;
 
-    require_once($CFG->dirroot.'/group/lib.php');
+    require_once(\core\component::component_path('core_group', 'lib.php'));
 
     $coursename = $DB->get_field('course', 'fullname', array('id' => $linkedcourseid), MUST_EXIST);
     $a = new stdClass();

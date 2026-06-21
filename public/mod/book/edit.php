@@ -23,8 +23,8 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/locallib.php');
-require_once(__DIR__.'/edit_form.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/edit_form.php');
 
 $cmid       = required_param('cmid', PARAM_INT);  // Book Course Module ID
 $chapterid  = optional_param('id', 0, PARAM_INT); // Chapter ID

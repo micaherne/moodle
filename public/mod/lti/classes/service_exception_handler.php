@@ -26,8 +26,8 @@ namespace mod_lti;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/../locallib.php');
-require_once(__DIR__.'/../servicelib.php');
+require_once(__DIR__ . '/../locallib.php');
+require_once(__DIR__ . '/../servicelib.php');
 
 /**
  * Handles exceptions when handling incoming LTI messages.

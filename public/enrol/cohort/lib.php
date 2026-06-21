@@ -94,7 +94,7 @@ class enrol_cohort_plugin extends enrol_plugin {
      */
     public function can_add_instance($courseid) {
         global $CFG;
-        require_once($CFG->dirroot . '/cohort/lib.php');
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
         $coursecontext = context_course::instance($courseid);
         if (!has_capability('moodle/course:enrolconfig', $coursecontext) or !has_capability('enrol/cohort:config', $coursecontext)) {
             return false;
@@ -131,7 +131,7 @@ class enrol_cohort_plugin extends enrol_plugin {
         } else {
             $result = parent::add_instance($course, $fields);
         }
-        require_once("$CFG->dirroot/enrol/cohort/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
         $trace = new null_progress_trace();
         enrol_cohort_sync($trace, $course->id);
         $trace->finished();
@@ -168,7 +168,7 @@ class enrol_cohort_plugin extends enrol_plugin {
 
         $result = parent::update_instance($instance, $data);
 
-        require_once("$CFG->dirroot/enrol/cohort/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
         $trace = new null_progress_trace();
         enrol_cohort_sync($trace, $instance->courseid);
         $trace->finished();
@@ -200,7 +200,7 @@ class enrol_cohort_plugin extends enrol_plugin {
 
         parent::update_status($instance, $newstatus);
 
-        require_once("$CFG->dirroot/enrol/cohort/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
         $trace = new null_progress_trace();
         enrol_cohort_sync($trace, $instance->courseid);
         $trace->finished();
@@ -253,7 +253,7 @@ class enrol_cohort_plugin extends enrol_plugin {
             }
             $step->set_mapping('enrol', $oldid, $instanceid);
 
-            require_once("$CFG->dirroot/enrol/cohort/locallib.php");
+            require_once(__DIR__ . '/locallib.php');
             $trace = new null_progress_trace();
             enrol_cohort_sync($trace, $course->id);
             $trace->finished();
@@ -270,7 +270,7 @@ class enrol_cohort_plugin extends enrol_plugin {
             }
             $step->set_mapping('enrol', $oldid, $instanceid);
 
-            require_once("$CFG->dirroot/enrol/cohort/locallib.php");
+            require_once(__DIR__ . '/locallib.php');
             $trace = new null_progress_trace();
             enrol_cohort_sync($trace, $course->id);
             $trace->finished();
@@ -348,7 +348,7 @@ class enrol_cohort_plugin extends enrol_plugin {
     protected function get_cohort_options($instance, $context) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/cohort/lib.php');
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
         $cohorts = array();
 
@@ -701,7 +701,7 @@ function enrol_cohort_allow_group_member_remove($itemid, $groupid, $userid) {
 function enrol_cohort_create_new_group($courseid, $cohortid) {
     global $DB, $CFG;
 
-    require_once($CFG->dirroot . '/group/lib.php');
+    require_once(\core\component::component_path('core_group', 'lib.php'));
 
     $groupname = $DB->get_field('cohort', 'name', array('id' => $cohortid), MUST_EXIST);
     $a = new stdClass();

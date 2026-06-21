@@ -30,8 +30,8 @@ class recalculate_penalties extends adhoc_task {
     public function execute(): void {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/mod/assign/lib.php');
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $assignid = $this->get_custom_data()->assignid;
         $assign = $DB->get_record('assign', ['id' => $assignid], '*', MUST_EXIST);

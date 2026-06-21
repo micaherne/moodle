@@ -43,8 +43,7 @@ final class copy_form_hook_test extends advanced_testcase {
             manager::class,
             manager::phpunit_get_instance([
                 // Load a list of hooks for `test_plugin1` from the fixture file.
-                'test_plugin1' => __DIR__ .
-                    '/fixtures/copy_form_hooks.php',
+                'test_plugin1' => __DIR__ . '/fixtures/copy_form_hooks.php',
             ]),
         );
 

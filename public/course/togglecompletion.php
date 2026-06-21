@@ -26,8 +26,8 @@
  * @package course
  */
 
-require_once('../config.php');
-require_once($CFG->libdir.'/completionlib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 // Parameters
 $cmid = optional_param('id', 0, PARAM_INT);

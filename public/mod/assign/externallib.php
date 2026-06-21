@@ -34,8 +34,8 @@ use core_external\util as external_util;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("$CFG->dirroot/user/externallib.php");
-require_once("$CFG->dirroot/mod/assign/locallib.php");
+require_once(\core\component::component_path('core_user', 'externallib.php'));
+require_once(__DIR__ . '/locallib.php');
 
 /**
  * Assign functions
@@ -1570,8 +1570,8 @@ class mod_assign_external extends \mod_assign\external\external_api {
      */
     public static function submit_grading_form($assignmentid, $userid, $jsonformdata, $marker = false) {
         global $CFG, $USER;
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
-        require_once($CFG->dirroot . '/mod/assign/gradeform.php');
+        require_once(__DIR__ . '/locallib.php');
+        require_once(__DIR__ . '/gradeform.php');
 
         $params = self::validate_parameters(self::submit_grading_form_parameters(),
                                             array(
@@ -1891,7 +1891,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
      */
     public static function save_grade_parameters() {
         global $CFG;
-        require_once("$CFG->dirroot/grade/grading/lib.php");
+        require_once(\core\component::component_path('core_grading', 'lib.php'));
         $instance = new assign(null, null, null);
         $pluginfeedbackparams = array();
 
@@ -1907,7 +1907,11 @@ class mod_assign_external extends \mod_assign\external\external_api {
         $advancedgradingdata = array();
         $methods = array_keys(grading_manager::available_methods(false));
         foreach ($methods as $method) {
-            require_once($CFG->dirroot.'/grade/grading/form/'.$method.'/lib.php');
+            $gradingformdir = \core_component::get_plugin_directory('gradingform', $method);
+            if ($gradingformdir === null) {
+                throw new \coding_exception("Plugin not installed: gradingform_{$method}");
+            }
+            require_once("$gradingformdir/lib.php");
             $details  = call_user_func('gradingform_'.$method.'_controller::get_external_instance_filling_details');
             if (!empty($details)) {
                 $items = array();
@@ -2027,7 +2031,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
      */
     public static function save_grades_parameters() {
         global $CFG;
-        require_once("$CFG->dirroot/grade/grading/lib.php");
+        require_once(\core\component::component_path('core_grading', 'lib.php'));
         $instance = new assign(null, null, null);
         $pluginfeedbackparams = array();
 
@@ -2043,7 +2047,11 @@ class mod_assign_external extends \mod_assign\external\external_api {
         $advancedgradingdata = array();
         $methods = array_keys(grading_manager::available_methods(false));
         foreach ($methods as $method) {
-            require_once($CFG->dirroot.'/grade/grading/form/'.$method.'/lib.php');
+            $gradingformdir = \core_component::get_plugin_directory('gradingform', $method);
+            if ($gradingformdir === null) {
+                throw new \coding_exception("Plugin not installed: gradingform_{$method}");
+            }
+            require_once("$gradingformdir/lib.php");
             $details  = call_user_func('gradingform_'.$method.'_controller::get_external_instance_filling_details');
             if (!empty($details)) {
                 $items = array();
@@ -2685,9 +2693,9 @@ class mod_assign_external extends \mod_assign\external\external_api {
         $marking
     ) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . "/mod/assign/locallib.php");
-        require_once($CFG->dirroot . "/user/lib.php");
-        require_once($CFG->libdir . '/grouplib.php');
+        require_once(__DIR__ . '/locallib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
+        require_once(\core\component::component_path('core', 'grouplib.php'));
 
         $params = self::validate_parameters(self::list_participants_parameters(),
                                             array(
@@ -2889,9 +2897,9 @@ class mod_assign_external extends \mod_assign\external\external_api {
      */
     public static function get_participant($assignid, $userid, $embeduser) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . "/mod/assign/locallib.php");
-        require_once($CFG->dirroot . "/user/lib.php");
-        require_once($CFG->libdir . '/grouplib.php');
+        require_once(__DIR__ . '/locallib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
+        require_once(\core\component::component_path('core', 'grouplib.php'));
 
         $params = self::validate_parameters(self::get_participant_parameters(), array(
             'assignid' => $assignid,

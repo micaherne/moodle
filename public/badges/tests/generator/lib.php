@@ -21,7 +21,7 @@ use core_badges\badge;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("{$CFG->libdir}/badgeslib.php");
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 /**
  * Badges test generator
@@ -85,7 +85,7 @@ class core_badges_generator extends component_generator_base {
                 'itemid' => file_get_unused_draft_itemid(),
                 'filepath' => '/',
                 'filename' => basename($badgeimage),
-            ], "{$CFG->dirroot}/$badgeimage");
+            ], \core\component::from_mono_path($badgeimage));
 
             // Copy image to temp file, as it'll be deleted by the following call.
             badges_process_badge_image($badge, $file->copy_content_to_temp());

@@ -19,7 +19,7 @@ namespace mod_quiz;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Unit tests for the calendar event modification callbacks used

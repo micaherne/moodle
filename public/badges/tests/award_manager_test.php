@@ -25,7 +25,7 @@ use context_system;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 /**
  * Unit tests for award_manager class.

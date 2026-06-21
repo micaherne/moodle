@@ -18,16 +18,16 @@ namespace factor_totp;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/tcpdf/tcpdf_barcodes_2d.php');
-require_once(__DIR__.'/../extlib/OTPHP/OTPInterface.php');
-require_once(__DIR__.'/../extlib/OTPHP/TOTPInterface.php');
-require_once(__DIR__.'/../extlib/OTPHP/ParameterTrait.php');
-require_once(__DIR__.'/../extlib/OTPHP/OTP.php');
-require_once(__DIR__.'/../extlib/OTPHP/TOTP.php');
+require_once(\core\component::component_path('core', 'tcpdf/tcpdf_barcodes_2d.php'));
+require_once(__DIR__ . '/../extlib/OTPHP/OTPInterface.php');
+require_once(__DIR__ . '/../extlib/OTPHP/TOTPInterface.php');
+require_once(__DIR__ . '/../extlib/OTPHP/ParameterTrait.php');
+require_once(__DIR__ . '/../extlib/OTPHP/OTP.php');
+require_once(__DIR__ . '/../extlib/OTPHP/TOTP.php');
 
-require_once(__DIR__.'/../extlib/ParagonIE/ConstantTime/EncoderInterface.php');
-require_once(__DIR__.'/../extlib/ParagonIE/ConstantTime/Binary.php');
-require_once(__DIR__.'/../extlib/ParagonIE/ConstantTime/Base32.php');
+require_once(__DIR__ . '/../extlib/ParagonIE/ConstantTime/EncoderInterface.php');
+require_once(__DIR__ . '/../extlib/ParagonIE/ConstantTime/Binary.php');
+require_once(__DIR__ . '/../extlib/ParagonIE/ConstantTime/Base32.php');
 
 use MoodleQuickForm;
 use tool_mfa\local\factor\object_factor_base;

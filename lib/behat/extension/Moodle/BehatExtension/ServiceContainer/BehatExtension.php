@@ -69,7 +69,7 @@ class BehatExtension implements ExtensionInterface {
      * @param array            $config    Extension configuration hash (from behat.yml)
      */
     public function load(ContainerBuilder $container, array $config) {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/services'));
+        $loader = new XmlFileLoader($container, new FileLocator(\core\component::component_path('core', 'behat/extension/Moodle/BehatExtension/ServiceContainer/services')));
         $loader->load('core.xml');
 
         // Getting the extension parameters.

@@ -25,7 +25,7 @@
 
 define('NO_OUTPUT_BUFFERING', true);
 
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 
 // Restore of large courses requires extra memory. Use the amount configured

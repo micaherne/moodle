@@ -40,7 +40,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
 
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
     }
 
     /**

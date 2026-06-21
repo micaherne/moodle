@@ -205,7 +205,7 @@ trait editor_tiny_helpers {
 
         $filepath = str_replace('/', DIRECTORY_SEPARATOR, $filepath);
         if (!is_readable($filepath)) {
-            $filepath = $CFG->dirroot . DIRECTORY_SEPARATOR . $filepath;
+            $filepath = \core\component::from_mono_path($filepath);
             if (!is_readable($filepath)) {
                 throw new ExpectationException('The file to be uploaded does not exist.', $this->getSession());
             }

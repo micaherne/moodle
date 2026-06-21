@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(__DIR__ . '/../locallib.php');
 
 /**
  * Quiz backup and restore tests.
@@ -471,7 +471,7 @@ final class quiz_question_restore_test extends \advanced_testcase {
         $backupid = 'abc';
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-            __DIR__ . "/fixtures/moodle_28_quiz.mbz", $backuppath);
+            __DIR__ . '/fixtures/moodle_28_quiz.mbz', $backuppath);
 
         // Do the restore to new course with default settings.
         $categoryid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");
@@ -520,7 +520,7 @@ final class quiz_question_restore_test extends \advanced_testcase {
         $backupid = 'abc';
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-            __DIR__ . "/fixtures/random_by_tag_quiz.mbz", $backuppath);
+            __DIR__ . '/fixtures/random_by_tag_quiz.mbz', $backuppath);
 
         // Do the restore to new course with default settings.
         $categoryid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");
@@ -583,7 +583,7 @@ final class quiz_question_restore_test extends \advanced_testcase {
         $backupid = 'abc';
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-            __DIR__ . "/fixtures/moodle_311_quiz.mbz", $backuppath);
+            __DIR__ . '/fixtures/moodle_311_quiz.mbz', $backuppath);
 
         // Do the restore to new course with default settings.
         $categoryid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");
@@ -640,7 +640,7 @@ final class quiz_question_restore_test extends \advanced_testcase {
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')
             ->extract_to_pathname(
-                __DIR__ . "/fixtures/moodle_311_quiz_missing_tag.mbz",
+                __DIR__ . '/fixtures/moodle_311_quiz_missing_tag.mbz',
                 $backuppath,
             );
 
@@ -714,7 +714,7 @@ final class quiz_question_restore_test extends \advanced_testcase {
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')
             ->extract_to_pathname(
-                __DIR__ . "/fixtures/moodle_311_quiz_missing_tag.mbz",
+                __DIR__ . '/fixtures/moodle_311_quiz_missing_tag.mbz',
                 $backuppath,
             );
 
@@ -786,7 +786,7 @@ final class quiz_question_restore_test extends \advanced_testcase {
         $backupid = 'abc';
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-                __DIR__ . "/fixtures/pre-40-shared-random-question.mbz", $backuppath);
+                __DIR__ . '/fixtures/pre-40-shared-random-question.mbz', $backuppath);
 
         // Do the restore to new course with default settings.
         $categoryid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");
@@ -926,7 +926,7 @@ final class quiz_question_restore_test extends \advanced_testcase {
         $backupid = 'abc';
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-                __DIR__ . "/fixtures/moodle_42_random_question.mbz", $backuppath);
+                __DIR__ . '/fixtures/moodle_42_random_question.mbz', $backuppath);
 
         // Do the restore to new course with default settings.
         $categoryid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");

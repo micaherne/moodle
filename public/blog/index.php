@@ -21,9 +21,9 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->dirroot .'/blog/lib.php');
-require_once($CFG->dirroot .'/blog/locallib.php');
-require_once($CFG->dirroot .'/course/lib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 $id       = optional_param('id', null, PARAM_INT);
 $start    = optional_param('formstart', 0, PARAM_INT);

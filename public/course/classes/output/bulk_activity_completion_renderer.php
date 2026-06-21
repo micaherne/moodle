@@ -19,7 +19,7 @@ use core_course\output\activity_icon;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/course/renderer.php');
+require_once(__DIR__ . '/../../renderer.php');
 
 /**
  * Main renderer for the bulk activity completion stuff.

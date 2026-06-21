@@ -22,7 +22,7 @@ use tgz_packer;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filestorage/file_progress.php');
+require_once(__DIR__ . '/../file_progress.php');
 
 /**
  * Unit tests for /lib/filestorage/tgz_packer.php and tgz_extractor.php.

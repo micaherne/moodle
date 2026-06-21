@@ -104,12 +104,12 @@ class csv_entries_importer extends entries_importer {
                     } else {
                         $field = $rawfields[$name];
                         $field->type = clean_param($field->type, PARAM_ALPHA);
-                        $filepath = "$CFG->dirroot/mod/data/field/$field->type/field.class.php";
-                        if (!file_exists($filepath)) {
+                        $fielddir = \core_component::get_plugin_directory('datafield', $field->type);
+                        if (!$fielddir || !file_exists("$fielddir/field.class.php")) {
                             $errorfield .= "'$name' ";
                             continue;
                         }
-                        require_once($filepath);
+                        require_once("$fielddir/field.class.php");
                         $classname = 'data_field_' . $field->type;
                         $fields[$name] = new $classname($field, $data, $cm);
                     }

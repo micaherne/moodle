@@ -35,7 +35,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("{$CFG->libdir}/flickrclient.php");
+require_once(__DIR__ . '/flickrclient.php');
 
 /**
  * Flickr Class

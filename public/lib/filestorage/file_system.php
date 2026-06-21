@@ -485,7 +485,7 @@ abstract class file_system {
      */
     public function xsendfile($contenthash) {
         global $CFG;
-        require_once($CFG->libdir . "/xsendfilelib.php");
+        require_once(__DIR__ . '/../xsendfilelib.php');
 
         return xsendfile($this->get_remote_path_from_hash($contenthash));
     }

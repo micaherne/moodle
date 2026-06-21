@@ -65,7 +65,7 @@ class generate_documentation extends XMLDBAction {
 
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
         $path = $dirpath.'/install.xml';
         if(!file_exists($path) || !is_readable($path)) {
             return false;
@@ -87,7 +87,7 @@ class generate_documentation extends XMLDBAction {
             $doc = new DOMDocument();
             $xsl = new XSLTProcessor();
 
-            $doc->load(__DIR__.'/xmldb.xsl');
+            $doc->load(__DIR__ . '/xmldb.xsl');
             $xsl->importStyleSheet($doc);
 
             $doc->load($path);

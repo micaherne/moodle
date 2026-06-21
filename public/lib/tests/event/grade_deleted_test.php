@@ -33,7 +33,7 @@ final class grade_deleted_test extends \advanced_testcase {
      */
     public function test_event(): void {
         global $CFG;
-        require_once("$CFG->libdir/gradelib.php");
+        require_once(__DIR__ . '/../../gradelib.php');
 
         $this->resetAfterTest();
 

@@ -26,9 +26,9 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../config.php');
-require_once("$CFG->libdir/clilib.php");
-require_once("$CFG->libdir/csslib.php");
-require_once("$CFG->libdir/outputlib.php");
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(\core\component::component_path('core', 'csslib.php'));
+require_once(\core\component::component_path('core', 'outputlib.php'));
 
 $longparams = [
     'themes'    => null,

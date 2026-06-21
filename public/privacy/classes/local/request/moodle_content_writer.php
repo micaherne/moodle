@@ -406,7 +406,7 @@ class moodle_content_writer implements content_writer {
         $fulldestination = $this->path . DIRECTORY_SEPARATOR . $destdirectory;
         check_dir_exists($fulldestination, true, true);
         $fulldestination .= $filename;
-        $currentpath = $CFG->dirroot . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $path);
+        $currentpath = \core\component::from_mono_path(implode(DIRECTORY_SEPARATOR, $path));
         copy($currentpath, $fulldestination);
         $this->files[$destdirectory . DIRECTORY_SEPARATOR . $filename] = $fulldestination;
     }

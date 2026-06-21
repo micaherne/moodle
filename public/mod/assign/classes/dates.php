@@ -47,7 +47,7 @@ class dates extends activity_dates {
     protected function get_dates(): array {
         global $CFG;
 
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
 
         $this->timedue = null;
 

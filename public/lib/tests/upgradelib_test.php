@@ -26,9 +26,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/upgradelib.php');
-require_once($CFG->libdir.'/db/upgradelib.php');
-require_once($CFG->dirroot . '/calendar/tests/helpers.php');
+require_once(__DIR__ . '/../upgradelib.php');
+require_once(__DIR__ . '/../db/upgradelib.php');
+require_once(\core\component::component_path('core_calendar', 'tests/helpers.php'));
 
 /**
  * Tests various classes and functions in upgradelib.php library.
@@ -59,7 +59,7 @@ final class upgradelib_test extends advanced_testcase {
      */
     private function insert_fake_grade_item_sortorder($courseid, $sortorder) {
         global $DB, $CFG;
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(__DIR__ . '/../gradelib.php');
 
         $item = new stdClass();
         $item->courseid = $courseid;
@@ -82,7 +82,7 @@ final class upgradelib_test extends advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        require_once($CFG->libdir . '/db/upgradelib.php');
+        require_once(__DIR__ . '/../db/upgradelib.php');
 
         $c = array();
         $a = array();
@@ -150,7 +150,7 @@ final class upgradelib_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        require_once($CFG->libdir . '/db/upgradelib.php');
+        require_once(__DIR__ . '/../db/upgradelib.php');
 
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
@@ -330,7 +330,7 @@ final class upgradelib_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        require_once($CFG->libdir . '/db/upgradelib.php');
+        require_once(__DIR__ . '/../db/upgradelib.php');
 
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
@@ -400,7 +400,7 @@ final class upgradelib_test extends advanced_testcase {
         global $CFG, $DB;
         $this->resetAfterTest(true);
 
-        require_once($CFG->libdir . '/db/upgradelib.php');
+        require_once(__DIR__ . '/../db/upgradelib.php');
 
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
@@ -605,7 +605,7 @@ final class upgradelib_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        require_once($CFG->libdir . '/db/upgradelib.php');
+        require_once(__DIR__ . '/../db/upgradelib.php');
 
         $courses = array();
         $contexts = array();
@@ -813,7 +813,7 @@ final class upgradelib_test extends advanced_testcase {
      */
     public function test_upgrade_delete_orphaned_file_records(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $this->resetAfterTest();
         // Create user.
@@ -1049,8 +1049,8 @@ final class upgradelib_test extends advanced_testcase {
     public function test_upgrade_calendar_subscription_events_fix(): void {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/calendar/lib.php');
-        require_once($CFG->dirroot . '/lib/bennu/bennu.inc.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
+        require_once(__DIR__ . '/../bennu/bennu.inc.php');
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -1063,7 +1063,7 @@ final class upgradelib_test extends advanced_testcase {
         $id = calendar_add_subscription($subscription);
 
         // Get repeated events ICS file.
-        $calendar = file_get_contents($CFG->dirroot . '/lib/tests/fixtures/repeated_events.ics');
+        $calendar = file_get_contents(__DIR__ . '/fixtures/repeated_events.ics');
         $ical = new iCalendar();
         $ical->unserialize($calendar);
 

@@ -384,7 +384,7 @@ class assign_submission_onlinetext extends assign_submission_plugin {
             $plagiarismlinks = '';
 
             if (!empty($CFG->enableplagiarism)) {
-                require_once($CFG->libdir . '/plagiarismlib.php');
+                require_once(\core\component::component_path('core', 'plagiarismlib.php'));
 
                 $plagiarismlinks .= plagiarism_get_links(array('userid' => $submission->userid,
                     'content' => $onlinetext,
@@ -492,7 +492,7 @@ class assign_submission_onlinetext extends assign_submission_plugin {
                                                                 'assignsubmission_onlinetext');
 
             if (!empty($CFG->enableplagiarism)) {
-                require_once($CFG->libdir . '/plagiarismlib.php');
+                require_once(\core\component::component_path('core', 'plagiarismlib.php'));
 
                 $plagiarismlinks .= plagiarism_get_links(array('userid' => $submission->userid,
                     'content' => trim($onlinetextsubmission->onlinetext),

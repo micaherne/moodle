@@ -23,7 +23,7 @@ use Exception;
 use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/../fixtures/event_mod_fixtures.php');
+require_once(__DIR__ . '/../fixtures/event_mod_fixtures.php');
 
 /**
  * Tests for base course module instance list viewed event.

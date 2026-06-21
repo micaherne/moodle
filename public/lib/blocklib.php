@@ -1728,18 +1728,19 @@ class block_manager {
      */
     public static function get_block_edit_form_class(string $blockname): string {
         global $CFG;
-        require_once("$CFG->dirroot/blocks/moodleblock.class.php");
+        require_once(\core\component::component_path('core_block', 'moodleblock.class.php'));
         $blockname = clean_param($blockname, PARAM_PLUGIN);
-        $formfile = $CFG->dirroot . '/blocks/' . $blockname . '/edit_form.php';
-        if (is_readable($formfile)) {
-            require_once($CFG->dirroot . '/blocks/edit_form.php');
+        $blockdir = \core_component::get_plugin_directory('block', $blockname);
+        $formfile = $blockdir ? "$blockdir/edit_form.php" : null;
+        if ($formfile && is_readable($formfile)) {
+            require_once(\core\component::component_path('core_block', 'edit_form.php'));
             require_once($formfile);
             $classname = 'block_' . $blockname . '_edit_form';
             if (!class_exists($classname)) {
                 $classname = 'block_edit_form';
             }
         } else {
-            require_once($CFG->dirroot . '/blocks/edit_form.php');
+            require_once(\core\component::component_path('core_block', 'edit_form.php'));
             $classname = 'block_edit_form';
         }
         return $classname;
@@ -1810,7 +1811,7 @@ class block_manager {
             return false;
         }
 
-        require_once($CFG->dirroot . '/blocks/edit_form.php');
+        require_once(\core\component::component_path('core_block', 'edit_form.php'));
 
         $block = $this->find_instance($blockid);
 
@@ -2217,11 +2218,10 @@ function block_load_class($blockname) {
         return true;
     }
 
-    $blockpath = $CFG->dirroot.'/blocks/'.$blockname.'/block_'.$blockname.'.php';
-
-    if (file_exists($blockpath)) {
-        require_once($CFG->dirroot.'/blocks/moodleblock.class.php');
-        include_once($blockpath);
+    $blockdir = \core_component::get_plugin_directory('block', $blockname);
+    if ($blockdir && file_exists("$blockdir/block_{$blockname}.php")) {
+        require_once(\core\component::component_path('core_block', 'moodleblock.class.php'));
+        include_once("$blockdir/block_{$blockname}.php");
     }else{
         //debugging("$blockname code does not exist in $blockpath", DEBUG_DEVELOPER);
         return false;
@@ -2753,7 +2753,7 @@ function blocks_add_default_course_blocks($course) {
         $blocknames = blocks_parse_default_blocks_list($CFG->{'defaultblocks_' . $course->format});
 
     } else {
-        require_once($CFG->dirroot. '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $blocknames = course_get_format($course)->get_default_blocks();
 
     }

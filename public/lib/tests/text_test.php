@@ -429,7 +429,7 @@ final class text_test extends advanced_testcase {
      */
     public function test_encode_mimeheader(): void {
         global $CFG;
-        require_once($CFG->libdir.'/phpmailer/moodle_phpmailer.php');
+        require_once(__DIR__ . '/../phpmailer/moodle_phpmailer.php');
         $mailer = new moodle_phpmailer();
 
         // Encode short string with non-latin characters.

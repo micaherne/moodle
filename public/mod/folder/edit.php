@@ -23,10 +23,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../config.php');
-require_once("$CFG->dirroot/mod/folder/locallib.php");
-require_once("$CFG->dirroot/mod/folder/edit_form.php");
-require_once("$CFG->dirroot/repository/lib.php");
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/edit_form.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 $id = required_param('id', PARAM_INT);  // Course module ID
 

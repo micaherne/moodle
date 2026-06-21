@@ -24,10 +24,10 @@
 
 define('NO_OUTPUT_BUFFERING', true); // The progress bar may be used here.
 
-require_once '../../../config.php';
-require_once $CFG->dirroot.'/grade/lib.php';
-require_once $CFG->dirroot.'/grade/report/lib.php'; // for preferences
-require_once $CFG->dirroot.'/grade/edit/tree/lib.php';
+require_once __DIR__ . '/../../../config.php';
+require_once __DIR__ . '/../../lib.php';
+require_once __DIR__ . '/../../report/lib.php'; // for preferences
+require_once __DIR__ . '/lib.php';
 
 $courseid        = required_param('id', PARAM_INT);
 $action          = optional_param('action', 0, PARAM_ALPHA);

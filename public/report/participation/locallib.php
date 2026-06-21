@@ -91,14 +91,17 @@ function report_participation_get_time_options($minlog) {
  * @return array actionsql and actionparams.
  */
 function report_participation_get_action_sql($action, $modname) {
-    global $CFG, $DB;
+    global $DB;
 
     $actionsql = '';
     $actionparams = array();
 
     $viewnames = array();
     $postnames = array();
-    include_once($CFG->dirroot.'/mod/' . $modname . '/lib.php');
+    $moddir = \core_component::get_plugin_directory('mod', $modname);
+    if ($moddir !== null) {
+        include_once("$moddir/lib.php");
+    }
 
     $viewfun = $modname.'_get_view_actions';
     $postfun = $modname.'_get_post_actions';

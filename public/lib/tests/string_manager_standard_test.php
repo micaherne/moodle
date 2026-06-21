@@ -30,7 +30,7 @@ use core_string_manager_standard;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/moodlelib.php');
+require_once(__DIR__ . '/../moodlelib.php');
 
 /**
  * Tests for the API of the string_manager.
@@ -47,7 +47,7 @@ final class string_manager_standard_test extends \advanced_testcase {
     public function test_string_manager_instance(): void {
         $this->resetAfterTest();
 
-        $otherroot = __DIR__.'/fixtures/langtest';
+        $otherroot = __DIR__ . '/fixtures/langtest';
         $stringman = testable_core_string_manager::instance($otherroot);
         $this->assertInstanceOf('core_string_manager', $stringman);
     }
@@ -55,7 +55,7 @@ final class string_manager_standard_test extends \advanced_testcase {
     public function test_get_language_dependencies(): void {
         $this->resetAfterTest();
 
-        $otherroot = __DIR__.'/fixtures/langtest';
+        $otherroot = __DIR__ . '/fixtures/langtest';
         $stringman = testable_core_string_manager::instance($otherroot);
 
         // There is no parent language for 'en'.

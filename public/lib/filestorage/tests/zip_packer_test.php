@@ -23,7 +23,7 @@ use zip_archive;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filestorage/file_progress.php');
+require_once(__DIR__ . '/../file_progress.php');
 
 /**
  * Unit tests for /lib/filestorage/zip_packer.php and zip_archive.php
@@ -45,7 +45,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
     protected function setUp(): void {
         parent::setUp();
 
-        $this->testfile = __DIR__.'/fixtures/test.txt';
+        $this->testfile = __DIR__ . '/fixtures/test.txt';
 
         $fs = get_file_storage();
         $context = \context_system::instance();
@@ -81,20 +81,20 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
         $this->resetAfterTest(false);
 
         $files = array(
-            __DIR__.'/fixtures/test_moodle_22.zip',
-            __DIR__.'/fixtures/test_moodle.zip',
-            __DIR__.'/fixtures/test_tc_8.zip',
-            __DIR__.'/fixtures/test_7zip_927.zip',
-            __DIR__.'/fixtures/test_winzip_165.zip',
-            __DIR__.'/fixtures/test_winrar_421.zip',
-            __DIR__.'/fixtures/test_thumbsdb.zip',
+            __DIR__ . '/fixtures/test_moodle_22.zip',
+            __DIR__ . '/fixtures/test_moodle.zip',
+            __DIR__ . '/fixtures/test_tc_8.zip',
+            __DIR__ . '/fixtures/test_7zip_927.zip',
+            __DIR__ . '/fixtures/test_winzip_165.zip',
+            __DIR__ . '/fixtures/test_winrar_421.zip',
+            __DIR__ . '/fixtures/test_thumbsdb.zip',
         );
 
         if (function_exists('normalizer_normalize')) {
             // Unfortunately there is no way to standardise UTF-8 strings without INTL extension.
-            $files[] = __DIR__.'/fixtures/test_infozip_3.zip';
-            $files[] = __DIR__.'/fixtures/test_osx_1074.zip';
-            $files[] = __DIR__.'/fixtures/test_osx_compress.zip';
+            $files[] = __DIR__ . '/fixtures/test_infozip_3.zip';
+            $files[] = __DIR__ . '/fixtures/test_osx_1074.zip';
+            $files[] = __DIR__ . '/fixtures/test_osx_compress.zip';
         }
 
         $packer = get_file_packer('application/zip');
@@ -113,7 +113,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
         }
 
         // Windows packer supports only DOS encoding.
-        $archive = __DIR__.'/fixtures/test_win8_de.zip';
+        $archive = __DIR__ . '/fixtures/test_win8_de.zip';
         $archivefiles = $packer->list_files($archive);
         $this->assertTrue(is_array($archivefiles), "Archive not extracted properly: ".basename($archive).' ');
         $this->assertEquals(2, count($archivefiles));
@@ -122,7 +122,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
         }
 
         $zip_archive = new zip_archive();
-        $zip_archive->open(__DIR__.'/fixtures/test_win8_cz.zip', file_archive::OPEN, 'cp852');
+        $zip_archive->open(__DIR__ . '/fixtures/test_win8_cz.zip', file_archive::OPEN, 'cp852');
         $archivefiles = $zip_archive->list_files();
         $this->assertTrue(is_array($archivefiles), "Archive not extracted properly: ".basename($archive).' ');
         $this->assertEquals(3, count($archivefiles));
@@ -132,7 +132,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
         $zip_archive->close();
 
         // Empty archive extraction.
-        $archive = __DIR__.'/fixtures/empty.zip';
+        $archive = __DIR__ . '/fixtures/empty.zip';
         $archivefiles = $packer->list_files($archive);
         $this->assertSame(array(), $archivefiles);
     }
@@ -164,8 +164,8 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
         $archive = "$CFG->tempdir/archive2.zip";
         $this->assertFileDoesNotExist($archive);
 
-        $this->assertFileDoesNotExist(__DIR__.'/xx/yy/ee.txt');
-        $files = array('xtest.txt'=>__DIR__.'/xx/yy/ee.txt');
+        $this->assertFileDoesNotExist(__DIR__ . '/xx/yy/ee.txt');
+        $files = array('xtest.txt'=>__DIR__ . '/xx/yy/ee.txt');
 
         $result = $packer->archive_to_pathname($files, $archive, false);
         $this->assertFalse($result);
@@ -180,9 +180,9 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
         $this->assertSame(array(), $archivefiles);
         unlink($archive);
 
-        $this->assertFileDoesNotExist(__DIR__.'/xx/yy/ee.txt');
-        $this->assertFileExists(__DIR__.'/fixtures/test.txt');
-        $files = array('xtest.txt'=>__DIR__.'/xx/yy/ee.txt', 'test.txt'=>__DIR__.'/fixtures/test.txt', 'ytest.txt'=>__DIR__.'/xx/yy/yy.txt');
+        $this->assertFileDoesNotExist(__DIR__ . '/xx/yy/ee.txt');
+        $this->assertFileExists(__DIR__ . '/fixtures/test.txt');
+        $files = array('xtest.txt'=>__DIR__ . '/xx/yy/ee.txt', 'test.txt'=>__DIR__ . '/fixtures/test.txt', 'ytest.txt'=>__DIR__ . '/xx/yy/yy.txt');
         $result = $packer->archive_to_pathname($files, $archive);
         $this->assertTrue($result);
         $this->assertFileExists($archive);
@@ -479,7 +479,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
         $this->assertEquals('test.txt', $files[0]->pathname);
         $this->assertEquals('test2/', $files[1]->pathname);
 
-        $result = $zip_archive->add_file_from_pathname('test.txt', __DIR__.'/nonexistent/file.txt');
+        $result = $zip_archive->add_file_from_pathname('test.txt', __DIR__ . '/nonexistent/file.txt');
         $this->assertFalse($result);
         $zip_archive->close();
         $zip_archive->open($archive, file_archive::OPEN);

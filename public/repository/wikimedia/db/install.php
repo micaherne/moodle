@@ -30,7 +30,7 @@
 function xmldb_repository_wikimedia_install() {
     global $CFG;
     $result = true;
-    require_once($CFG->dirroot.'/repository/lib.php');
+    require_once(\core\component::component_path('core_repository', 'lib.php'));
     $wikimediaplugin = new repository_type('wikimedia', array(), true);
     if(!$id = $wikimediaplugin->create(true)) {
         $result = false;

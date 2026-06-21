@@ -27,28 +27,28 @@
 // This just sets up the autoloaders, basic configuration, and so on.
 define('ABORT_AFTER_CONFIG', true);
 
-require_once('config.php');
+require_once(__DIR__ . '/config.php');
 
 // Load the rest of the setup.
-require_once("{$CFG->libdir}/setuplib.php");        // Functions that MUST be loaded first.
+require_once(\core\component::component_path('core', 'setuplib.php'));        // Functions that MUST be loaded first.
 
 // Load up standard libraries.
-require_once("{$CFG->libdir}/filterlib.php");       // Functions for filtering test as it is output.
-require_once("{$CFG->libdir}/weblib.php");          // Functions relating to HTTP and content.
-require_once("{$CFG->libdir}/outputlib.php");       // Functions for generating output.
-require_once("{$CFG->libdir}/dmllib.php");          // Database access.
-require_once("{$CFG->libdir}/datalib.php");         // Legacy lib with a big-mix of functions.
-require_once("{$CFG->libdir}/accesslib.php");       // Access control functions.
-require_once("{$CFG->libdir}/deprecatedlib.php");   // Deprecated functions included for backward compatibility.
-require_once("{$CFG->libdir}/moodlelib.php");       // Other general-purpose functions.
-require_once("{$CFG->libdir}/enrollib.php");        // Enrolment related functions.
-require_once("{$CFG->libdir}/pagelib.php");         // Library that defines the moodle_page class, used for $PAGE.
-require_once("{$CFG->libdir}/blocklib.php");        // Library for controlling blocks.
-require_once("{$CFG->libdir}/grouplib.php");        // Groups functions.
-require_once("{$CFG->libdir}/sessionlib.php");      // All session and cookie related stuff.
-require_once("{$CFG->libdir}/editorlib.php");       // All text editor related functions and classes.
-require_once("{$CFG->libdir}/messagelib.php");      // Messagelib functions.
-require_once("{$CFG->libdir}/modinfolib.php");      // Cached information on course-module instances.
+require_once(\core\component::component_path('core', 'filterlib.php'));       // Functions for filtering test as it is output.
+require_once(\core\component::component_path('core', 'weblib.php'));          // Functions relating to HTTP and content.
+require_once(\core\component::component_path('core', 'outputlib.php'));       // Functions for generating output.
+require_once(\core\component::component_path('core', 'dmllib.php'));          // Database access.
+require_once(\core\component::component_path('core', 'datalib.php'));         // Legacy lib with a big-mix of functions.
+require_once(\core\component::component_path('core', 'accesslib.php'));       // Access control functions.
+require_once(\core\component::component_path('core', 'deprecatedlib.php'));   // Deprecated functions included for backward compatibility.
+require_once(\core\component::component_path('core', 'moodlelib.php'));       // Other general-purpose functions.
+require_once(\core\component::component_path('core', 'enrollib.php'));        // Enrolment related functions.
+require_once(\core\component::component_path('core', 'pagelib.php'));         // Library that defines the moodle_page class, used for $PAGE.
+require_once(\core\component::component_path('core', 'blocklib.php'));        // Library for controlling blocks.
+require_once(\core\component::component_path('core', 'grouplib.php'));        // Groups functions.
+require_once(\core\component::component_path('core', 'sessionlib.php'));      // All session and cookie related stuff.
+require_once(\core\component::component_path('core', 'editorlib.php'));       // All text editor related functions and classes.
+require_once(\core\component::component_path('core', 'messagelib.php'));      // Messagelib functions.
+require_once(\core\component::component_path('core', 'modinfolib.php'));      // Cached information on course-module instances.
 
 $router = \core\di::get(\core\router::class);
 $router->serve();

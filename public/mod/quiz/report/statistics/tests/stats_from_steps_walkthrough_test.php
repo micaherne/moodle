@@ -50,8 +50,8 @@ final class stats_from_steps_walkthrough_test extends \mod_quiz\tests\attempt_wa
 
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
-        require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+        require_once(__DIR__ . '/../report.php');
+        require_once(\core\component::component_path('mod_quiz', 'report/reportlib.php'));
     }
 
     #[\Override]

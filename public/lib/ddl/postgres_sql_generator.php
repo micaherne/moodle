@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/ddl/sql_generator.php');
+require_once(__DIR__ . '/sql_generator.php');
 
 /**
  * This class generate SQL code to be used against PostgreSQL

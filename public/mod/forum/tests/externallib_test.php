@@ -40,7 +40,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // tests using these functions.
         \mod_forum\subscriptions::reset_forum_cache();
 
-        require_once($CFG->dirroot . '/mod/forum/externallib.php');
+        require_once(__DIR__ . '/../externallib.php');
     }
 
     public function tearDown(): void {
@@ -1854,7 +1854,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_mod_forum_get_discussion_rating_information(): void {
         global $DB, $CFG, $PAGE;
-        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
         $PAGE->set_url('/my/index.php');    // Need this because some internal API calls require the $PAGE url to be set.
         $this->resetAfterTest(true);
 

@@ -31,11 +31,11 @@ use core_courseformat\formatactions;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/data/lib.php');
-require_once($CFG->dirroot . '/lib/datalib.php');
-require_once($CFG->dirroot . '/lib/csvlib.class.php');
-require_once($CFG->dirroot . '/search/tests/fixtures/testable_core_search.php');
-require_once($CFG->dirroot . '/mod/data/tests/generator/lib.php');
+require_once(__DIR__ . '/../../lib.php');
+require_once(\core\component::component_path('core', 'datalib.php'));
+require_once(\core\component::component_path('core', 'csvlib.class.php'));
+require_once(\core\component::component_path('core_search', 'tests/fixtures/testable_core_search.php'));
+require_once(__DIR__ . '/../generator/lib.php');
 
 /**
  * Unit tests for {@see data_get_all_recordids()}.
@@ -164,9 +164,9 @@ final class search_test extends \advanced_testcase {
 
         // Set up data for the test database.
         $files = array(
-                'data_fields'  => __DIR__.'/../fixtures/test_data_fields.csv',
-                'data_records' => __DIR__.'/../fixtures/test_data_records.csv',
-                'data_content' => __DIR__.'/../fixtures/test_data_content.csv',
+                'data_fields'  => __DIR__ . '/../fixtures/test_data_fields.csv',
+                'data_records' => __DIR__ . '/../fixtures/test_data_records.csv',
+                'data_content' => __DIR__ . '/../fixtures/test_data_content.csv',
         );
         $this->dataset_from_files($files)->to_database();
         // Set dataid to the correct value now the data has been inserted by csv file.

@@ -499,7 +499,7 @@ class portfolio_format_leap2a extends portfolio_format_rich {
             global $USER;
             $user = $USER;
         }
-        require_once($CFG->libdir . '/portfolio/formats/leap2a/lib.php');
+        require_once(__DIR__ . '/formats/leap2a/lib.php');
         return new portfolio_format_leap2a_writer($user);
     }
 

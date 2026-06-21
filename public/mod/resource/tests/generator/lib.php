@@ -48,7 +48,7 @@ class mod_resource_generator extends testing_module_generator {
      */
     public function create_instance($record = null, ?array $options = null) {
         global $CFG, $USER;
-        require_once($CFG->dirroot . '/lib/resourcelib.php');
+        require_once(\core\component::component_path('core', 'resourcelib.php'));
         // Ensure the record can be modified without affecting calling code.
         $record = (object)(array)$record;
 
@@ -93,7 +93,7 @@ class mod_resource_generator extends testing_module_generator {
                         'The $record->defaultfilename option is required in order to upload a file');
                 }
                 // We require the full file path to exist when uploading a real file (fixture or whatever).
-                $fullfilepath = $CFG->dirroot . '/' . $record->defaultfilename;
+                $fullfilepath = \core\component::from_mono_path($record->defaultfilename);
                 if (!is_readable($fullfilepath)) {
                     throw new coding_exception(
                         'The $record->defaultfilename option must point to an existing file within dirroot');

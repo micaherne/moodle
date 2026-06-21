@@ -91,7 +91,7 @@ class behat_core_badges_generator extends behat_generator_base {
     protected function preprocess_badge(array $badge): array {
         global $CFG;
 
-        require_once("{$CFG->libdir}/badgeslib.php");
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         // Allow text status' that correspond to badge constants.
         if (array_key_exists('status', $badge) && !is_numeric($badge['status'])) {

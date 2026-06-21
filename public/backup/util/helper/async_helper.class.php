@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/user/lib.php');
+require_once(\core\component::component_path('core_user', 'lib.php'));
 
 /**
  * Helper functions for asynchronous backups and restores.

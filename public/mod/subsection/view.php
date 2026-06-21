@@ -26,7 +26,7 @@ use mod_subsection\manager;
 use core_courseformat\formatactions;
 
 require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 // Course module id.
 $id = required_param('id', PARAM_INT);

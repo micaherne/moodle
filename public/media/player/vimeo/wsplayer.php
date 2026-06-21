@@ -34,7 +34,7 @@
 define('NO_MOODLE_COOKIES', true);
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot . '/webservice/lib.php');
+require_once(\core\component::component_path('core_webservice', 'lib.php'));
 
 global $OUTPUT;
 

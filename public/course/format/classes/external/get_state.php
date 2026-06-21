@@ -62,7 +62,7 @@ class get_state extends external_api {
     public static function execute(int $courseid): string {
         global $PAGE, $CFG, $USER;
 
-        require_once($CFG->dirroot.'/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $params = external_api::validate_parameters(self::execute_parameters(), [
             'courseid' => $courseid,

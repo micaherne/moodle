@@ -2020,9 +2020,9 @@ class core_course_category implements renderable, cacheable_object, IteratorAggr
     public function delete_full($showfeedback = true) {
         global $CFG, $DB;
 
-        require_once($CFG->libdir.'/gradelib.php');
-        require_once($CFG->libdir.'/questionlib.php');
-        require_once($CFG->dirroot.'/cohort/lib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core', 'questionlib.php'));
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
         // Make sure we won't timeout when deleting a lot of courses.
         $settimeout = core_php_time_limit::raise();
@@ -2104,7 +2104,7 @@ class core_course_category implements renderable, cacheable_object, IteratorAggr
      */
     public function move_content_targets_list() {
         global $CFG;
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(\core\component::component_path('core', 'questionlib.php'));
         $context = $this->get_context();
         if (!$this->is_uservisible() ||
                 !has_capability('moodle/category:manage', $context)) {
@@ -2140,7 +2140,7 @@ class core_course_category implements renderable, cacheable_object, IteratorAggr
      */
     public function can_move_content_to($newcatid) {
         global $CFG;
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(\core\component::component_path('core', 'questionlib.php'));
 
         if (!$this->has_manage_capability()) {
             return false;
@@ -2186,9 +2186,9 @@ class core_course_category implements renderable, cacheable_object, IteratorAggr
     public function delete_move($newparentid, $showfeedback = false) {
         global $CFG, $DB, $OUTPUT;
 
-        require_once($CFG->libdir.'/gradelib.php');
-        require_once($CFG->libdir.'/questionlib.php');
-        require_once($CFG->dirroot.'/cohort/lib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core', 'questionlib.php'));
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
         // Get all objects and lists because later the caches will be reset so.
         // We don't need to make extra queries.
@@ -2219,7 +2219,7 @@ class core_course_category implements renderable, cacheable_object, IteratorAggr
         }
 
         if ($coursesids) {
-            require_once($CFG->dirroot.'/course/lib.php');
+            require_once(__DIR__ . '/../lib.php');
             if (!move_courses($coursesids, $newparentid)) {
                 if ($showfeedback) {
                     echo $OUTPUT->notification("Error moving courses");

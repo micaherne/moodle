@@ -1,10 +1,10 @@
 <?php
 
-    require_once('../config.php');
-    require_once($CFG->libdir.'/adminlib.php');
-    require_once($CFG->libdir.'/authlib.php');
-    require_once($CFG->dirroot.'/user/lib.php');
-    require_once($CFG->dirroot.'/'.$CFG->admin.'/user/user_bulk_forms.php');
+    require_once(__DIR__ . '/../config.php');
+    require_once(\core\component::component_path('core', 'adminlib.php'));
+    require_once(\core\component::component_path('core', 'authlib.php'));
+    require_once(\core\component::component_path('core_user', 'lib.php'));
+    require_once(__DIR__ . '/user/user_bulk_forms.php');
 
     $delete       = optional_param('delete', 0, PARAM_INT);
     $confirm      = optional_param('confirm', '', PARAM_ALPHANUM);   //md5 confirmation hash

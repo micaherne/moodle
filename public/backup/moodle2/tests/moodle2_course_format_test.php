@@ -26,8 +26,8 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/course/format/topics/lib.php');
-require_once($CFG->libdir . '/completionlib.php');
+require_once(\core\component::component_path('format_topics', 'lib.php'));
+require_once(\core\component::component_path('core', 'completionlib.php'));
 require_once($CFG->dirroot . '/backup/moodle2/tests/fixtures/format_test_cs_options.php');
 
 /**

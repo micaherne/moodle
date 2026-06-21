@@ -25,7 +25,7 @@ namespace core_calendar\local\event\forms;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Form for adding a subscription to a Moodle course calendar.

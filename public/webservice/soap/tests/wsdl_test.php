@@ -26,7 +26,7 @@ namespace webservice_soap;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/webservice/soap/classes/wsdl.php');
+require_once(__DIR__ . '/../classes/wsdl.php');
 
 /**
  * Unit tests for the WSDL class.

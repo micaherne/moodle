@@ -30,7 +30,7 @@
 function xmldb_repository_url_install() {
     global $CFG;
     $result = true;
-    require_once($CFG->dirroot.'/repository/lib.php');
+    require_once(\core\component::component_path('core_repository', 'lib.php'));
     $urlplugin = new repository_type('url', array(), true);
     if(!$id = $urlplugin->create(true)) {
         $result = false;

@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/url/backup/moodle2/backup_url_stepslib.php');
+require_once(__DIR__ . '/backup_url_stepslib.php');
 
 /**
  * Provides all the settings and steps to perform one complete backup of the activity

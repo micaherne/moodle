@@ -35,7 +35,7 @@ function data_export_xls($export, $dataname, $count) {
 
     debugging('Function data_export_xls() has been deprecated, because xls export has been dropped.',
         DEBUG_DEVELOPER);
-    require_once("$CFG->libdir/excellib.class.php");
+    require_once(\core\component::component_path('core', 'excellib.class.php'));
     $filename = clean_filename("{$dataname}-{$count}_record");
     if ($count > 1) {
         $filename .= 's';
@@ -76,7 +76,7 @@ function data_export_csv($export, $delimiter_name, $database, $count, $return=fa
 
     debugging('Function data_export_csv has been deprecated. Exporting is now being done by '
         . '\mod_data\local\csv_exporter.', DEBUG_DEVELOPER);
-    require_once($CFG->libdir . '/csvlib.class.php');
+    require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
     $filename = $database . '-' . $count . '-record';
     if ($count > 1) {
@@ -102,7 +102,7 @@ function data_export_ods($export, $dataname, $count) {
 
     debugging('Function data_export_ods has been deprecated. Exporting is now being done by '
         . '\mod_data\local\ods_exporter.', DEBUG_DEVELOPER);
-    require_once("$CFG->libdir/odslib.class.php");
+    require_once(\core\component::component_path('core', 'odslib.class.php'));
     $filename = clean_filename("{$dataname}-{$count}_record");
     if ($count > 1) {
         $filename .= 's';

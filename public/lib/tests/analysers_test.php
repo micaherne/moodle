@@ -22,9 +22,9 @@ use test_target_shortname;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../../analytics/tests/fixtures/test_target_course_level_shortname.php');
-require_once(__DIR__ . '/../../analytics/tests/fixtures/test_target_shortname.php');
-require_once(__DIR__ . '/../../lib/enrollib.php');
+require_once(\core\component::component_path('core_analytics', 'tests/fixtures/test_target_course_level_shortname.php'));
+require_once(\core\component::component_path('core_analytics', 'tests/fixtures/test_target_shortname.php'));
+require_once(__DIR__ . '/../enrollib.php');
 
 /**
  * Unit tests for core analysers.

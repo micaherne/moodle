@@ -29,10 +29,10 @@ use Exception;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/../../moodle_database.php');
-require_once(__DIR__.'/../../moodle_temptables.php');
-require_once(__DIR__.'/../../../ddl/database_manager.php');
-require_once(__DIR__.'/test_sql_generator.php');
+require_once(__DIR__ . '/../../moodle_database.php');
+require_once(__DIR__ . '/../../moodle_temptables.php');
+require_once(__DIR__ . '/../../../ddl/database_manager.php');
+require_once(__DIR__ . '/test_sql_generator.php');
 
 /**
  * Abstract database driver test class

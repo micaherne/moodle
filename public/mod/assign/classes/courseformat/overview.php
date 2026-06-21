@@ -45,7 +45,7 @@ class overview extends \core_courseformat\activityoverviewbase {
         cm_info $cm,
     ) {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(__DIR__ . '/../../locallib.php');
 
         parent::__construct($cm);
         $this->assign = new assign($this->context, $this->cm, $this->cm->get_course());

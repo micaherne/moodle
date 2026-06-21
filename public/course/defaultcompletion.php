@@ -24,8 +24,8 @@
  */
 
 require_once(__DIR__.'/../config.php');
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->libdir.'/completionlib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 $id = required_param('id', PARAM_INT);       // Course id.
 $modids = optional_param_array('modids', [], PARAM_INT);

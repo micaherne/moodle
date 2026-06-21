@@ -34,7 +34,7 @@ use grade_item;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/grade/report/lib.php');
+require_once(\core\component::component_path('core_grades', 'report/lib.php'));
 
 /**
  * Abstract class used as a base for the 3 screens.

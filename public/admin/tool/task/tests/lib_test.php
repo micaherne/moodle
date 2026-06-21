@@ -74,7 +74,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_tool_task_mtrace_wrapper(string $output, string $expected): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/{$CFG->admin}/tool/task/lib.php");
+        require_once(__DIR__ . '/../lib.php');
 
         $this->expectOutputString($expected);
         $result = tool_task_mtrace_wrapper($output);

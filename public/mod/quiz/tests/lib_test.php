@@ -31,8 +31,8 @@ use mod_quiz\quiz_settings;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/lib.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once(__DIR__ . '/../lib.php');
+require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
 
 /**
  * @copyright  2008 The Open University
@@ -977,7 +977,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_quiz_inplace_editable(int $slotnumber, string $newvalue): void {
         global $CFG;
-        require_once($CFG->dirroot . '/lib/external/externallib.php');
+        require_once(\core\component::component_path('core_external', 'externallib.php'));
         $this->resetAfterTest();
 
         $this->setAdminUser();

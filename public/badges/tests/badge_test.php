@@ -23,7 +23,7 @@ use core_badges_generator;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("{$CFG->libdir}/badgeslib.php");
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 /**
  * Unit tests for badge class.

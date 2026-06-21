@@ -24,7 +24,7 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/locallib.php');
+require_once(__DIR__ . '/locallib.php');
 
 $cmid       = required_param('cmid', PARAM_INT);            // course module
 $phase      = required_param('phase', PARAM_INT);           // the code of the new phase

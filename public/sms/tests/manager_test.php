@@ -31,7 +31,7 @@ use core_sms\task\send_sms_task;
  */
 final class manager_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
-        require_once(__DIR__ . "/fixtures/dummy_gateway.php");
+        require_once(__DIR__ . '/fixtures/dummy_gateway.php');
         parent::setUpBeforeClass();
     }
 

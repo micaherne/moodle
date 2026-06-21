@@ -544,7 +544,7 @@ class template {
             return '';
         }
         // Add the portfolio export button.
-        require_once($CFG->libdir . '/portfoliolib.php');
+        require_once(\core\component::component_path('core', 'portfoliolib.php'));
         $button = new portfolio_add_button();
         $button->set_callback_options(
             'data_portfolio_caller',
@@ -856,7 +856,7 @@ class template {
             $canexportown = has_capability('mod/data:exportownentry', $context);
             if ($canexportall || (data_isowner($entry->id) && $canexportown)) {
                 // Add the portfolio export button.
-                require_once($CFG->libdir . '/portfoliolib.php');
+                require_once(\core\component::component_path('core', 'portfoliolib.php'));
                 $button = new portfolio_add_button();
                 $button->set_callback_options(
                     'data_portfolio_caller',

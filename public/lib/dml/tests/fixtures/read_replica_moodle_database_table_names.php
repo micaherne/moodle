@@ -27,7 +27,7 @@ namespace core;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/read_replica_moodle_database.php');
+require_once(__DIR__ . '/read_replica_moodle_database.php');
 
 /**
  * Database driver test class that exposes table_names()

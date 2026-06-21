@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/moodle_temptables.php');
+require_once(__DIR__ . '/moodle_temptables.php');
 
 /**
  * This class is not specific to the SQL Server Native Driver but rather

@@ -18,7 +18,7 @@ namespace core\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/..//fixtures/event_fixtures.php');
+require_once(__DIR__ . '/../fixtures/event_fixtures.php');
 
 /**
  * Tests for event manager, base event and observers.
@@ -169,7 +169,7 @@ final class base_test extends \advanced_testcase {
         $observer->callable = '\core_tests\event\unittest_observer::observe_one';
         $observer->priority = 0;
         $observer->internal = true;
-        $observer->includefile = $CFG->dirroot.'/lib/tests/fixtures/event_fixtures.php';
+        $observer->includefile = __DIR__ . '/../fixtures/event_fixtures.php';
         $observer->plugintype = null;
         $observer->plugin = null;
         $expected[1] = $observer;
@@ -225,7 +225,7 @@ final class base_test extends \advanced_testcase {
         $observer->callable = '\core_tests\event\unittest_observer::observe_one';
         $observer->priority = 0;
         $observer->internal = true;
-        $observer->includefile = $CFG->dirroot.'/lib/tests/fixtures/event_fixtures.php';
+        $observer->includefile = __DIR__ . '/../fixtures/event_fixtures.php';
         $observer->plugintype = null;
         $observer->plugin = null;
         $expected[0] = $observer;

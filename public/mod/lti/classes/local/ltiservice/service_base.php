@@ -29,8 +29,8 @@ namespace mod_lti\local\ltiservice;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
-require_once($CFG->dirroot . '/mod/lti/OAuthBody.php');
+require_once(__DIR__ . '/../../../locallib.php');
+require_once(__DIR__ . '/../../../OAuthBody.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
 use moodle\mod\lti as lti;

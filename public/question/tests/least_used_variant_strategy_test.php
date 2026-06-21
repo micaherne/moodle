@@ -24,7 +24,7 @@ use question_engine;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(__DIR__ . '/../engine/tests/helpers.php');
 
 /**
  * Tests for the {@link core_question\engine\variants\least_used_strategy} class.

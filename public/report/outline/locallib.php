@@ -28,8 +28,8 @@ use core_course\output\activity_icon;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once(__DIR__.'/lib.php');
-require_once($CFG->dirroot.'/course/lib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 function report_outline_print_row($mod, $instance, $result) {
     global $OUTPUT, $CFG;

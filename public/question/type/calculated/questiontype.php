@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/questiontypebase.php');
-require_once($CFG->dirroot . '/question/type/questionbase.php');
-require_once($CFG->dirroot . '/question/type/numerical/question.php');
+require_once(\core\component::component_path('core_question', 'type/questiontypebase.php'));
+require_once(\core\component::component_path('core_question', 'type/questionbase.php'));
+require_once(\core\component::component_path('qtype_numerical', 'question.php'));
 
 
 /**
@@ -389,11 +389,11 @@ class qtype_calculated extends question_type {
         // See where we're coming from.
         switch($form->wizardpage) {
             case 'question':
-                require("{$CFG->dirroot}/question/type/calculated/datasetdefinitions.php");
+                require(__DIR__ . '/datasetdefinitions.php');
                 break;
             case 'datasetdefinitions':
             case 'datasetitems':
-                require("{$CFG->dirroot}/question/type/calculated/datasetitems.php");
+                require(__DIR__ . '/datasetitems.php');
                 break;
             default:
                 throw new \moodle_exception('invalidwizardpage', 'question');
@@ -417,12 +417,12 @@ class qtype_calculated extends question_type {
         // See where we're coming from.
         switch($wizardnow) {
             case 'datasetdefinitions':
-                require("{$CFG->dirroot}/question/type/calculated/datasetdefinitions_form.php");
+                require(__DIR__ . '/datasetdefinitions_form.php');
                 $mform = new question_dataset_dependent_definitions_form(
                         "{$submiturl}?wizardnow=datasetdefinitions", $question);
                 break;
             case 'datasetitems':
-                require("{$CFG->dirroot}/question/type/calculated/datasetitems_form.php");
+                require(__DIR__ . '/datasetitems_form.php');
                 $regenerate = optional_param('forceregeneration', false, PARAM_BOOL);
                 $mform = new question_dataset_dependent_items_form(
                         "{$submiturl}?wizardnow=datasetitems", $question, $regenerate);

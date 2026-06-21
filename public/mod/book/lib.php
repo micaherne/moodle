@@ -33,7 +33,7 @@ require_once(__DIR__ . '/deprecatedlib.php');
 function book_get_numbering_types() {
     global $CFG; // required for the include
 
-    require_once(__DIR__.'/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     return array (
         BOOK_NUM_NONE       => get_string('numbering0', 'mod_book'),
@@ -376,7 +376,7 @@ function book_get_file_info($browser, $areas, $course, $cm, $context, $filearea,
         return null;
     }
 
-    require_once(__DIR__.'/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (is_null($itemid)) {
         return new book_file_info($browser, $course, $cm, $context, $areas, $filearea);
@@ -465,7 +465,7 @@ function book_pluginfile($course, $cm, $context, $filearea, $args, $forcedownloa
         $titles = "";
         // Format the chapter titles.
         if (!$book->customtitles) {
-            require_once(__DIR__.'/locallib.php');
+            require_once(__DIR__ . '/locallib.php');
             $chapters = book_preload_chapters($book);
 
             if (!$chapter->subchapter) {

@@ -30,8 +30,8 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../../../config.php');
-require_once($CFG->libdir.'/clilib.php');
-require_once(__DIR__.'/../locallib.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(__DIR__ . '/../locallib.php');
 
 $help =
     "Database migration script.

@@ -17,7 +17,7 @@
 namespace factor_cohort;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__ . '/../../../../../../cohort/lib.php');
+require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
 use stdClass;
 use tool_mfa\local\factor\object_factor_base;

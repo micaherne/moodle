@@ -82,8 +82,8 @@ class update_entry extends external_api {
             array $options = []): array {
 
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/blog/lib.php');
-        require_once($CFG->dirroot . '/blog/locallib.php');
+        require_once(__DIR__ . '/../../lib.php');
+        require_once(__DIR__ . '/../../locallib.php');
 
         $params = self::validate_parameters(self::execute_parameters(), compact('entryid', 'subject', 'summary',
             'summaryformat', 'options'));

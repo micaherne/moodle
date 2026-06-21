@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/adminlib.php');
+require_once(__DIR__ . '/adminlib.php');
 
 if ($ADMIN->fulltree) {
 

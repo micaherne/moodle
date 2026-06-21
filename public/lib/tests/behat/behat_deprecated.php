@@ -16,7 +16,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../lib/behat/behat_deprecated_base.php');
+require_once(__DIR__ . '/../../behat/behat_deprecated_base.php');
 
 /**
  * Steps definitions that are now deprecated and will be removed in the next releases.

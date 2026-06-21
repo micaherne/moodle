@@ -25,7 +25,7 @@
  */
 
 require_once(__DIR__ . '/../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 require_login();
 require_capability('moodle/site:configview', context_system::instance());

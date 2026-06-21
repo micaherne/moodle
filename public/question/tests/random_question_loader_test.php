@@ -29,8 +29,8 @@ use question_filter_test_helper;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once(__DIR__ . '/../engine/tests/helpers.php');
+require_once(\core\component::component_path('mod_quiz', 'tests/quiz_question_helper_test_trait.php'));
 
 /**
  * Tests for the {@see \core_question\local\bank\random_question_loader} class.

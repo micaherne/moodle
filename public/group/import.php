@@ -23,9 +23,9 @@
  * @package core_group
  */
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->dirroot.'/group/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(__DIR__ . '/lib.php');
 include_once('import_form.php');
 
 $id = required_param('id', PARAM_INT);    // Course id
@@ -61,7 +61,7 @@ if ($importform->is_cancelled()) {
     $text = $importform->get_file_content('userfile');
     $text = preg_replace('!\r\n?!', "\n", $text);
 
-    require_once($CFG->libdir . '/csvlib.class.php');
+    require_once(\core\component::component_path('core', 'csvlib.class.php'));
     $importid = csv_import_reader::get_new_iid('groupimport');
     $csvimport = new csv_import_reader($importid, 'groupimport');
     $delimiter = $formdata->delimiter_name;

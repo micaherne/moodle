@@ -23,8 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . '/../../../../../../../lib/behat/behat_base.php');
-require_once(__DIR__ . '/../../../../../../../lib/behat/behat_field_manager.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
+require_once(\core\component::component_path('core', 'behat/behat_field_manager.php'));
 
 /**
  * Behat custom steps and configuration for factor_sms.

@@ -23,7 +23,7 @@
  * @package mod_data
  */
 
-require_once("../../config.php");
+require_once(__DIR__ . '/../../config.php');
 
 $courseid = required_param('id', PARAM_INT);
 \core_courseformat\activityoverviewbase::redirect_to_overview_page($courseid, 'data');

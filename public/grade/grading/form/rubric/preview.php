@@ -23,9 +23,9 @@
  */
 
 require_once(__DIR__.'/../../../../config.php');
-require_once(__DIR__.'/lib.php');
-require_once(__DIR__.'/edit_form.php');
-require_once($CFG->dirroot.'/grade/grading/lib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/edit_form.php');
+require_once(\core\component::component_path('core_grading', 'lib.php'));
 
 $areaid = required_param('areaid', PARAM_INT);
 

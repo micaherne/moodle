@@ -22,7 +22,7 @@ use GuzzleHttp\Psr7\Response;
 use ReflectionMethod;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(dirname(__DIR__) . '/matrix_client_test_trait.php');
+require_once(__DIR__ . '/../matrix_client_test_trait.php');
 
 /**
  * Tests for the Matrix command class.

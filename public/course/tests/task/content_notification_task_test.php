@@ -48,7 +48,7 @@ final class content_notification_task_test extends \advanced_testcase {
             'itemid' => file_get_unused_draft_itemid(),
             'filename' => 'gd-logo.png',
             'filepath' => '/',
-        ], "{$CFG->libdir}/tests/fixtures/gd-logo.png");
+        ], \core\component::component_path('core', 'tests/fixtures/gd-logo.png'));
 
         $course = $this->getDataGenerator()->create_course(['overviewfiles_filemanager' => $draft->get_itemid()]);
 

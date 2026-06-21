@@ -26,7 +26,7 @@
 
  use core\url;
 
-require_once($CFG->libdir . '/completionlib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 define("GLOSSARY_SHOW_ALL_CATEGORIES", 0);
 define("GLOSSARY_SHOW_NOT_CATEGORISED", -1);
@@ -82,7 +82,7 @@ function glossary_add_instance($glossary) {
     $glossary->timemodified = $glossary->timecreated;
 
     //Check displayformat is a valid one
-    $formats = get_list_of_plugins('mod/glossary/formats','TEMPLATE');
+    $formats = get_list_of_plugins('formats', 'TEMPLATE', \core_component::get_component_directory('mod_glossary'));
     if (!in_array($glossary->displayformat, $formats)) {
         throw new \moodle_exception('unknowformat', '', '', $glossary->displayformat);
     }
@@ -129,7 +129,7 @@ function glossary_update_instance($glossary) {
     }
 
     //Check displayformat is a valid one
-    $formats = get_list_of_plugins('mod/glossary/formats','TEMPLATE');
+    $formats = get_list_of_plugins('formats', 'TEMPLATE', \core_component::get_component_directory('mod_glossary'));
     if (!in_array($glossary->displayformat, $formats)) {
         throw new \moodle_exception('unknowformat', '', '', $glossary->displayformat);
     }
@@ -249,7 +249,7 @@ function glossary_delete_instance($id) {
 function glossary_user_outline($course, $user, $mod, $glossary) {
     global $CFG;
 
-    require_once("$CFG->libdir/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
     $grades = grade_get_grades($course->id, 'mod', 'glossary', $glossary->id, $user->id);
     if (empty($grades->items[0]->grades)) {
         $grade = false;
@@ -318,7 +318,7 @@ function glossary_get_user_entries($glossaryid, $userid) {
  */
 function glossary_user_complete($course, $user, $mod, $glossary) {
     global $CFG, $OUTPUT;
-    require_once("$CFG->libdir/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $grades = grade_get_grades($course->id, 'mod', 'glossary', $glossary->id, $user->id);
     if (!empty($grades->items[0]->grades)) {
@@ -654,7 +654,7 @@ function glossary_cron () {
 function glossary_get_user_grades($glossary, $userid=0) {
     global $CFG;
 
-    require_once($CFG->dirroot.'/rating/lib.php');
+    require_once(\core\component::component_path('core_rating', 'lib.php'));
 
     $ratingoptions = new stdClass;
 
@@ -796,7 +796,7 @@ function glossary_rating_validate($params) {
  */
 function glossary_update_grades($glossary=null, $userid=0, $nullifnone=true) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     if (!$glossary->assessed) {
         glossary_grade_item_update($glossary);
@@ -825,7 +825,7 @@ function glossary_update_grades($glossary=null, $userid=0, $nullifnone=true) {
  */
 function glossary_grade_item_update($glossary, $grades=NULL) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $params = array('itemname'=>$glossary->name, 'idnumber'=>$glossary->cmidnumber);
 
@@ -858,7 +858,7 @@ function glossary_grade_item_update($glossary, $grades=NULL) {
  */
 function glossary_grade_item_delete($glossary) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     return grade_update('mod/glossary', $glossary->course, 'mod', 'glossary', $glossary->id, 0, NULL, array('deleted'=>1));
 }
@@ -906,8 +906,8 @@ function glossary_get_available_formats() {
 
     foreach ($formats as $format) {
         // If the format file exists.
-        if (file_exists($CFG->dirroot.'/mod/glossary/formats/'.$format.'/'.$format.'_format.php')) {
-            include_once($CFG->dirroot.'/mod/glossary/formats/'.$format.'/'.$format.'_format.php');
+        if (file_exists(__DIR__ . "/formats/{$format}/{$format}_format.php")) {
+            include_once(__DIR__ . "/formats/{$format}/{$format}_format.php");
             //If the function exists
             if (function_exists('glossary_show_entry_'.$format)) {
                 // Acummulate it as a valid format.
@@ -1076,7 +1076,7 @@ function glossary_print_entry(
         $displayformat = $glossary->displayformat;
     }
     if ($entry->approved or ($USER->id == $entry->userid) or ($mode == 'approval' and !$entry->approved) ) {
-        $formatfile = $CFG->dirroot.'/mod/glossary/formats/'.$displayformat.'/'.$displayformat.'_format.php';
+        $formatfile = __DIR__ . "/formats/{$displayformat}/{$displayformat}_format.php";
         if ($printview) {
             $functionname = 'glossary_print_entry_'.$displayformat;
         } else {
@@ -1116,7 +1116,7 @@ function glossary_print_entry(
 function glossary_print_entry_default ($entry, $glossary, $cm) {
     global $CFG;
 
-    require_once($CFG->libdir . '/filelib.php');
+    require_once(\core\component::component_path('core', 'filelib.php'));
 
     echo $OUTPUT->heading(strip_tags($entry->concept), 4);
 
@@ -1314,7 +1314,7 @@ function glossary_print_entry_icons($course, $cm, $glossary, $entry, $mode='',$h
         }
     }
     if (!empty($CFG->enableportfolios) && (has_capability('mod/glossary:exportentry', $context) || ($iscurrentuser && has_capability('mod/glossary:exportownentry', $context)))) {
-        require_once($CFG->libdir . '/portfoliolib.php');
+        require_once(\core\component::component_path('core', 'portfoliolib.php'));
         $button = new portfolio_add_button();
         $button->set_callback_options('glossary_entry_portfolio_caller',  array('id' => $cm->id, 'entryid' => $entry->id), 'mod_glossary');
 
@@ -1716,7 +1716,7 @@ function glossary_get_file_info($browser, $areas, $course, $cm, $context, $filea
     }
 
     if (is_null($itemid)) {
-        require_once($CFG->dirroot.'/mod/glossary/locallib.php');
+        require_once(__DIR__ . '/locallib.php');
         return new glossary_file_info_container($browser, $course, $cm, $context, $areas, $filearea);
     }
 
@@ -2261,7 +2261,7 @@ function glossary_print_dynaentry($courseid, $entries, $displayformat = -1) {
                 $displayformat = 'dictionary';
             }
 
-            $formatfile = $CFG->dirroot.'/mod/glossary/formats/'.$displayformat.'/'.$displayformat.'_format.php';
+            $formatfile = __DIR__ . "/formats/{$displayformat}/{$displayformat}_format.php";
             $functionname = 'glossary_show_entry_'.$displayformat;
 
             if (file_exists($formatfile)) {
@@ -2288,7 +2288,7 @@ function glossary_generate_export_csv($entries, $aliases, $categories) {
     global $CFG;
     $csv = '';
     $delimiter = '';
-    require_once($CFG->libdir . '/csvlib.class.php');
+    require_once(\core\component::component_path('core', 'csvlib.class.php'));
     $delimiter = csv_import_reader::get_delimiter('comma');
     $csventries = array(0 => array(get_string('concept', 'glossary'), get_string('definition', 'glossary')));
     $csvaliases = array(0 => array());
@@ -2589,7 +2589,7 @@ function glossary_xml_import_files($xmlparent, $tag, $contextid, $filearea, $ite
             }
             if (array_key_exists('FILELICENSE', $file['#'])) {
                 $license = $file['#']['FILELICENSE'][0]['#'];
-                require_once($CFG->libdir . "/licenselib.php");
+                require_once(\core\component::component_path('core', 'licenselib.php'));
                 if (license_manager::get_license_by_shortname($license)) {
                     $filerecord['license'] = $license;
                 }
@@ -2898,7 +2898,7 @@ function glossary_reset_gradebook($courseid, $type='') {
  */
 function glossary_reset_userdata($data) {
     global $CFG, $DB;
-    require_once($CFG->dirroot.'/rating/lib.php');
+    require_once(\core\component::component_path('core_rating', 'lib.php'));
 
     $componentstr = get_string('modulenameplural', 'glossary');
     $status = [];
@@ -3252,7 +3252,7 @@ function glossary_extend_settings_navigation(settings_navigation $settings, navi
 
     if (!empty($CFG->enablerssfeeds) && !empty($CFG->glossary_enablerssfeeds) && $glossary->rsstype &&
             $glossary->rssarticles && has_capability('mod/glossary:view', $settings->get_page()->cm->context)) {
-        require_once("$CFG->libdir/rsslib.php");
+        require_once(\core\component::component_path('core', 'rsslib.php'));
 
         $string = get_string('rsstype', 'glossary');
 
@@ -4656,7 +4656,7 @@ function mod_glossary_delete_entry($entry, $glossary, $cm, $context, $course, $h
         }
 
         // Delete glossary entry ratings.
-        require_once($CFG->dirroot.'/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
         $delopt = new stdClass;
         $delopt->contextid = $context->id;
         $delopt->component = 'mod_glossary';
@@ -4668,7 +4668,7 @@ function mod_glossary_delete_entry($entry, $glossary, $cm, $context, $course, $h
 
     // Delete cached RSS feeds.
     if (!empty($CFG->enablerssfeeds)) {
-        require_once($CFG->dirroot . '/mod/glossary/rsslib.php');
+        require_once(__DIR__ . '/rsslib.php');
         glossary_rss_delete_file($glossary);
     }
 

@@ -144,9 +144,9 @@ function issue_info($issueid) {
 function load_third_party_lib_list() {
     global $CFG;
     $libs = array();
-    $xml = simplexml_load_file($CFG->libdir . '/thirdpartylibs.xml');
+    $xml = simplexml_load_file(__DIR__ . '/../../thirdpartylibs.xml');
     foreach ($xml->library as $libobject) {
-        $libs[$CFG->libdir . '/' . $libobject->location] = 1;
+        $libs[__DIR__ . "/../..//{$libobject->location}"] = 1;
     }
     return $libs;
 }

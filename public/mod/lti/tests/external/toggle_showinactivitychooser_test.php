@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/lti/tests/mod_lti_testcase.php');
+require_once(__DIR__ . '/../mod_lti_testcase.php');
 
 /**
  * PHPUnit tests for toggle_showinactivitychooser external function.

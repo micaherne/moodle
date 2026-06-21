@@ -33,7 +33,7 @@ final class provider_test extends \mod_assign\tests\provider_testcase {
         global $CFG;
 
         parent::setUpBeforeClass();
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(\core\component::component_path('mod_assign', 'locallib.php'));
     }
 
     #[\Override]
@@ -72,7 +72,7 @@ final class provider_test extends \mod_assign\tests\provider_testcase {
             'filepath' => '/',
             'filename' => 'submission.pdf'
         );
-        $sourcefile = $CFG->dirroot.'/mod/assign/feedback/editpdf/tests/fixtures/submission.pdf';
+        $sourcefile = __DIR__ . '/../fixtures/submission.pdf';
         $fi = $fs->create_file_from_pathname($pdfsubmission, $sourcefile);
 
         $data = new \stdClass();

@@ -35,7 +35,7 @@ use moodle_exception;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/completionlib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Class for unit testing mod_feedback/activity_custom_completion.

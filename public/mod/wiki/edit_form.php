@@ -31,7 +31,7 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->dirroot . '/mod/wiki/editors/wikieditor.php');
+require_once(__DIR__ . '/editors/wikieditor.php');
 
 class mod_wiki_edit_form extends moodleform {
 

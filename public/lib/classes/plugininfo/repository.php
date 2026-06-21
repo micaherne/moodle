@@ -28,7 +28,7 @@ use moodle_url;
 use part_of_admin_tree;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 /**
  * Class for repositories
@@ -178,7 +178,7 @@ class repository extends base {
      */
     public function uninstall_cleanup() {
         global $CFG;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $repo = \repository::get_type_by_typename($this->name);
         if ($repo) {

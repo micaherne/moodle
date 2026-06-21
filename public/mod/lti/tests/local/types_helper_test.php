@@ -39,8 +39,8 @@ use mod_lti_testcase;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
-require_once($CFG->dirroot . '/mod/lti/tests/mod_lti_testcase.php');
+require_once(__DIR__ . '/../../locallib.php');
+require_once(__DIR__ . '/../mod_lti_testcase.php');
 
 /**
  * Types helper tests.

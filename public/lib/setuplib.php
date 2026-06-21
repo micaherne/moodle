@@ -258,7 +258,7 @@ function is_early_init($backtrace) {
     $dangerouscode = array(
         array('function' => 'header', 'type' => '->'),
         array('class' => 'bootstrap_renderer'),
-        array('file' => __DIR__.'/setup.php'),
+        array('file' => __DIR__ . '/setup.php'),
     );
     foreach ($backtrace as $stackframe) {
         foreach ($dangerouscode as $pattern) {

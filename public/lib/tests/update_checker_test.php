@@ -22,7 +22,7 @@ use core\update\testable_checker;
 use core\update\testable_checker_cron_executed;
 
 global $CFG;
-require_once(__DIR__.'/fixtures/testable_update_checker.php');
+require_once(__DIR__ . '/fixtures/testable_update_checker.php');
 
 /**
  * Tests of the basic API of the available update checker.
