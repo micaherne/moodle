@@ -26,7 +26,7 @@ namespace core_rating\external;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/rating/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;

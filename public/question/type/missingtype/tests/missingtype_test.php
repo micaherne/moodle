@@ -29,10 +29,10 @@ use testable_question_attempt;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once(__DIR__ . '/../../../engine/tests/helpers.php');
-require_once(__DIR__ . '/../../../behaviour/deferredfeedback/behaviour.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(\core\component::component_path('qbehaviour_deferredfeedback', 'behaviour.php'));
 require_once(__DIR__ . '/../question.php');
-require_once($CFG->dirroot . '/question/type/missingtype/questiontype.php');
+require_once(__DIR__ . '/../questiontype.php');
 
 /**
  * Unit tests for the 'missing' question type.

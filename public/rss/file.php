@@ -33,9 +33,9 @@ define('NO_DEBUG_DISPLAY', true);
 /** NO_MOODLE_COOKIES - bool, Disable the use of sessions/cookies - we recreate $USER for every call. */
 define('NO_MOODLE_COOKIES', true);
 
-require_once('../config.php');
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->libdir.'/rsslib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'rsslib.php'));
 
 // RSS feeds must be enabled site-wide.
 if (empty($CFG->enablerssfeeds)) {

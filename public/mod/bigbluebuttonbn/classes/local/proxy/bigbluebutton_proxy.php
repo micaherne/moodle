@@ -287,7 +287,7 @@ class bigbluebutton_proxy extends proxy_base {
      */
     public static function update_completion_state(stdClass $bigbluebuttonbn, int $userid) {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
         list($course, $cm) = get_course_and_cm_from_instance($bigbluebuttonbn, 'bigbluebuttonbn');
         $completion = new completion_info($course);
         if (!$completion->is_enabled($cm)) {

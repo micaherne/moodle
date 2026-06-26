@@ -29,8 +29,8 @@ namespace core_contentbank\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_contenttype.php');
-require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_content.php');
+require_once(__DIR__ . '/../fixtures/testable_contenttype.php');
+require_once(__DIR__ . '/../fixtures/testable_content.php');
 
 use core_external\external_api;
 

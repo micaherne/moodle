@@ -1361,6 +1361,6 @@ class manager {
             'rcube_utils.php',
         ];
 
-        array_map(fn($file) => require_once("$CFG->dirroot/$CFG->admin/tool/messageinbound/roundcube/{$file}"), $dependencies);
+        array_map(fn($file) => require_once(__DIR__ . "/../roundcube/{$file}"), $dependencies);
     }
 }

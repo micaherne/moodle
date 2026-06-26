@@ -38,7 +38,7 @@ use Packback\Lti1p3\LtiServiceConnector;
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/lib.php');
 global $CFG, $DB, $PAGE, $USER;
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 require_login(null, false);
 require_sesskey();
 $launchid = required_param('launchid', PARAM_TEXT);
@@ -71,7 +71,7 @@ foreach ($resources as $resource) {
 
     // If the activity supports grading, and the user has selected it, then include line item information.
     if ($resource->supports_grades() && in_array($resource->get_id(), $grades)) {
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         $lineitem = LtiLineitem::new()
             ->setScoreMaximum($resource->get_grademax())

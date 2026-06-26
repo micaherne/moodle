@@ -30,7 +30,7 @@ require_once(__DIR__ . '/fixtures/test_indicator_multiclass.php');
 require_once(__DIR__ . '/fixtures/test_target_shortname.php');
 require_once(__DIR__ . '/fixtures/test_target_shortname_multiclass.php');
 require_once(__DIR__ . '/fixtures/test_static_target_shortname.php');
-require_once(__DIR__ . '/../../course/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 /**
  * Unit tests for evaluation, training and prediction.

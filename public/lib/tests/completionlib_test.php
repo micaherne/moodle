@@ -17,7 +17,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/completionlib.php');
+require_once(__DIR__ . '/../completionlib.php');
 
 /**
  * Completion tests.
@@ -1827,7 +1827,7 @@ final class completionlib_test extends advanced_testcase {
      */
     public function test_aggregate_completions(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_activity.php');
+        require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_activity.php'));
         $this->resetAfterTest(true);
         $time = time();
 

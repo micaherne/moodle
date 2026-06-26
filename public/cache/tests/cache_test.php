@@ -49,8 +49,8 @@ final class cache_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/cache/tests/fixtures/lib.php');
-        require_once($CFG->dirroot . '/cache/tests/fixtures/cache_phpunit_dummy_datasource_versionable.php');
+        require_once(__DIR__ . '/fixtures/lib.php');
+        require_once(__DIR__ . '/fixtures/cache_phpunit_dummy_datasource_versionable.php');
         parent::setUpBeforeClass();
     }
 

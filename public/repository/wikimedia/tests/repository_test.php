@@ -31,8 +31,8 @@ use GuzzleHttp\Psr7\Response;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->dirroot . '/repository/wikimedia/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Unit tests for Wikimedia repository

@@ -26,7 +26,7 @@ namespace core_badges\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 use core_badges\external\backpack_exporter;
 

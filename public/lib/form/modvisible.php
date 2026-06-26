@@ -26,7 +26,7 @@
  */
 
 global $CFG;
-require_once "$CFG->libdir/form/select.php";
+require_once __DIR__ . '/select.php';
 
 /**
  * Drop down form element to select visibility in an activity mod update form

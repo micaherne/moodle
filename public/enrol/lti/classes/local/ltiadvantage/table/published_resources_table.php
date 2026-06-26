@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
 
-require_once($CFG->libdir . '/tablelib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * Class which displays a list of resources published over LTI Advantage.

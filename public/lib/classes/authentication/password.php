@@ -227,7 +227,7 @@ class password {
 
             // Remove WS user tokens.
             if (!empty($CFG->passwordchangetokendeletion)) {
-                require_once($CFG->dirroot . '/webservice/lib.php');
+                require_once(\core\component::component_path('core_webservice', 'lib.php'));
                 \webservice::delete_user_ws_tokens($user->id);
             }
         }

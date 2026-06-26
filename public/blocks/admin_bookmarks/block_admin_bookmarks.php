@@ -79,7 +79,7 @@ class block_admin_bookmarks extends block_base {
         $this->content = new stdClass();
 
         if (get_user_preferences('admin_bookmarks')) {
-            require_once($CFG->libdir.'/adminlib.php');
+            require_once(\core\component::component_path('core', 'adminlib.php'));
             $adminroot = admin_get_root(false, false);  // settings not required - only pages
 
             $bookmarks = explode(',', get_user_preferences('admin_bookmarks'));

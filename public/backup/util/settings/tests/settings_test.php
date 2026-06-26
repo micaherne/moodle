@@ -48,7 +48,7 @@ require_once($CFG->dirroot . '/backup/util/settings/root/root_backup_setting.cla
 require_once($CFG->dirroot . '/backup/util/settings/activity/activity_backup_setting.class.php');
 require_once($CFG->dirroot . '/backup/util/settings/section/section_backup_setting.class.php');
 require_once($CFG->dirroot . '/backup/util/settings/course/course_backup_setting.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/backup_ui_setting.class.php');
+require_once(\core\component::component_path('core_backup', 'backup_ui_setting.class.php'));
 
 /**
  * Setting tests (all).

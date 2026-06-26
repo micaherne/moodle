@@ -30,7 +30,7 @@ use renderable;
 use renderer_base;
 use templatable;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Age and location verification renderable class.

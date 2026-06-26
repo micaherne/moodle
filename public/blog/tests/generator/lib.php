@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/blog/locallib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * Blog module test data generator class

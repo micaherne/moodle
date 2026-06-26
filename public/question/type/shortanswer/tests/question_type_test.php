@@ -23,10 +23,10 @@ use question_possible_response;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/shortanswer/questiontype.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/type/edit_question_form.php');
-require_once($CFG->dirroot . '/question/type/shortanswer/edit_shortanswer_form.php');
+require_once(__DIR__ . '/../questiontype.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(\core\component::component_path('core_question', 'type/edit_question_form.php'));
+require_once(__DIR__ . '/../edit_shortanswer_form.php');
 
 /**
  * Unit tests for the shortanswer question type class.

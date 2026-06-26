@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/choice/backup/moodle2/restore_choice_stepslib.php'); // Because it exists (must)
+require_once(__DIR__ . '/restore_choice_stepslib.php'); // Because it exists (must)
 
 /**
  * choice restore task that provides all the settings and steps to perform one

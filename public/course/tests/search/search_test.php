@@ -28,7 +28,7 @@ namespace core_course\search;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/search/tests/fixtures/testable_core_search.php');
+require_once(\core\component::component_path('core_search', 'tests/fixtures/testable_core_search.php'));
 
 /**
  * Provides the unit tests for course global search.

@@ -1122,7 +1122,7 @@ final class local_api_test extends \advanced_testcase {
      */
     public function test_update_event_start_day_activity_event_no_max(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(\core\component::component_path('mod_feedback', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1157,7 +1157,7 @@ final class local_api_test extends \advanced_testcase {
      */
     public function test_update_event_start_day_activity_event_less_than_max(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(\core\component::component_path('mod_feedback', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1194,7 +1194,7 @@ final class local_api_test extends \advanced_testcase {
      */
     public function test_update_event_start_day_activity_event_equal_to_max(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(\core\component::component_path('mod_feedback', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1230,7 +1230,7 @@ final class local_api_test extends \advanced_testcase {
      */
     public function test_update_event_start_day_activity_event_after_max(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(\core\component::component_path('mod_feedback', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1261,7 +1261,7 @@ final class local_api_test extends \advanced_testcase {
      */
     public function test_update_event_start_day_activity_event_no_min(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(\core\component::component_path('mod_feedback', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1297,7 +1297,7 @@ final class local_api_test extends \advanced_testcase {
      */
     public function test_update_event_start_day_activity_event_greater_than_min(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(\core\component::component_path('mod_feedback', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1334,7 +1334,7 @@ final class local_api_test extends \advanced_testcase {
      */
     public function test_update_event_start_day_activity_event_equal_to_min(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(\core\component::component_path('mod_feedback', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1371,7 +1371,7 @@ final class local_api_test extends \advanced_testcase {
      */
     public function test_update_event_start_day_activity_event_before_min(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(\core\component::component_path('mod_feedback', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1403,8 +1403,8 @@ final class local_api_test extends \advanced_testcase {
      */
     public function test_update_event_start_day_activity_event_override(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
-        require_once($CFG->dirroot . '/mod/quiz/lib.php');
+        require_once(__DIR__ . '/../lib.php');
+        require_once(\core\component::component_path('mod_quiz', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();

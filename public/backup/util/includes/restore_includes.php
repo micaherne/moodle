@@ -86,18 +86,18 @@ require_once($CFG->dirroot . '/backup/util/plan/restore_execution_step.class.php
 require_once($CFG->dirroot . '/backup/moodle2/restore_plan_builder.class.php');
 require_once($CFG->dirroot . '/backup/controller/base_controller.class.php');
 require_once($CFG->dirroot . '/backup/controller/restore_controller.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/base_moodleform.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/base_ui.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/base_ui_stage.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/backup_ui_setting.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/restore_ui_stage.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/restore_ui.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/restore_moodleform.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/restore_ui_components.php');
+require_once(\core\component::component_path('core_backup', 'base_moodleform.class.php'));
+require_once(\core\component::component_path('core_backup', 'base_ui.class.php'));
+require_once(\core\component::component_path('core_backup', 'base_ui_stage.class.php'));
+require_once(\core\component::component_path('core_backup', 'backup_ui_setting.class.php'));
+require_once(\core\component::component_path('core_backup', 'restore_ui_stage.class.php'));
+require_once(\core\component::component_path('core_backup', 'restore_ui.class.php'));
+require_once(\core\component::component_path('core_backup', 'restore_moodleform.class.php'));
+require_once(\core\component::component_path('core_backup', 'restore_ui_components.php'));
 
 // And some moodle stuff too
-require_once($CFG->dirroot . '/tag/lib.php');
-require_once($CFG->dirroot . '/lib/gradelib.php');
-require_once($CFG->dirroot . '/lib//questionlib.php');
-require_once($CFG->dirroot . '/course/lib.php');
-require_once ($CFG->dirroot . '/blocks/moodleblock.class.php');
+require_once(\core\component::component_path('core_tag', 'lib.php'));
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(\core\component::component_path('core', '/questionlib.php'));
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once (\core\component::component_path('core_block', 'moodleblock.class.php'));

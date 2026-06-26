@@ -80,7 +80,7 @@ class core_requirejs {
         $jsdirs = array();
         $jsfiles = array();
 
-        $dir = $CFG->libdir . '/amd';
+        $dir = __DIR__ . '/../amd';
         if (!empty($dir) && is_dir($dir)) {
             $jsdirs['core'] = $dir;
         }

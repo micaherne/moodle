@@ -62,7 +62,7 @@ class media_videojs_plugin extends core_media_player_native {
      */
     public function embed($urls, $name, $width, $height, $options) {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $sources = array();
         $mediamanager = core_media_manager::instance();
@@ -259,7 +259,7 @@ class media_videojs_plugin extends core_media_player_native {
 
     public function get_supported_extensions() {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
         if ($this->extensions === null) {
             // Get extensions set by user in UI config.
             $filetypes = preg_split('/\s*,\s*/',
@@ -347,7 +347,7 @@ class media_videojs_plugin extends core_media_player_native {
     protected function find_language() {
         global $CFG;
         $this->language = current_language();
-        $basedir = $CFG->dirroot . '/media/player/videojs/videojs/lang/';
+        $basedir = __DIR__ . '/../videojs/lang';
         $langfiles = get_directory_list($basedir);
         $candidates = [];
         foreach ($langfiles as $langfile) {
@@ -382,7 +382,7 @@ class media_videojs_plugin extends core_media_player_native {
      */
     public static function get_language_content(string $lang) {
         global $CFG;
-        $langfile = "{$CFG->dirroot}/media/player/videojs/videojs/lang/{$lang}.json";
+        $langfile = __DIR__ . "/../videojs/lang/{$lang}.json";
 
         return file_exists($langfile) ? file_get_contents($langfile) : '';
     }

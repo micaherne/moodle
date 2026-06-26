@@ -3,8 +3,8 @@
     // Allows the admin to configure mnet stuff
 
     require(__DIR__.'/../../config.php');
-    require_once($CFG->libdir.'/adminlib.php');
-    include_once($CFG->dirroot.'/mnet/lib.php');
+    require_once(\core\component::component_path('core', 'adminlib.php'));
+    include_once(\core\component::component_path('core_mnet', 'lib.php'));
 
     admin_externalpage_setup('net');
 

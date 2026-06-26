@@ -28,9 +28,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 /** Include the files that are required by this module */
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once($CFG->dirroot . '/mod/lesson/lib.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core_course', 'moodleform_mod.php'));
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 /** This page */
 define('LESSON_THISPAGE', 0);
@@ -578,7 +578,7 @@ function lesson_menu_block_contents($cmid, $lesson) {
  */
 function lesson_get_media_html($lesson, $context) {
     global $CFG, $PAGE, $OUTPUT;
-    require_once("$CFG->libdir/resourcelib.php");
+    require_once(\core\component::component_path('core', 'resourcelib.php'));
 
     // get the media file link
     if (strpos($lesson->mediafile, '://') !== false) {
@@ -667,7 +667,7 @@ function lesson_process_group_deleted_in_course($courseid, $groupid = null) {
  */
 function lesson_get_overview_report_table_and_data(lesson $lesson, $currentgroup) {
     global $DB, $CFG, $OUTPUT;
-    require_once($CFG->dirroot . '/mod/lesson/pagetypes/branchtable.php');
+    require_once(__DIR__ . '/pagetypes/branchtable.php');
 
     $context = $lesson->context;
     $cm = $lesson->cm;
@@ -1665,8 +1665,8 @@ class lesson extends lesson_base {
      */
     public function delete() {
         global $CFG, $DB;
-        require_once($CFG->libdir.'/gradelib.php');
-        require_once($CFG->dirroot.'/calendar/lib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $cm = get_coursemodule_from_instance('lesson', $this->properties->id, $this->properties->course);
         $context = context_module::instance($cm->id);
@@ -1708,7 +1708,7 @@ class lesson extends lesson_base {
     public function delete_override($overrideid) {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $cm = get_coursemodule_from_instance('lesson', $this->properties->id, $this->properties->course);
 
@@ -3133,7 +3133,7 @@ class lesson extends lesson_base {
      */
     public function set_module_viewed() {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         // Trigger module viewed event.
         $event = \mod_lesson\event\course_module_viewed::create(array(
@@ -3379,7 +3379,7 @@ class lesson extends lesson_base {
             }
             $lessoncontent = $lessonoutput->display_page($this, $page, $attempt);
         } else {
-            require_once($CFG->dirroot . '/mod/lesson/view_form.php');
+            require_once(__DIR__ . '/view_form.php');
             $data = new stdClass;
             $data->id = $this->get_cm()->id;
             $data->pageid = $page->id;
@@ -5232,7 +5232,7 @@ class lesson_page_type_manager {
      */
     public function load_lesson_types(lesson $lesson) {
         global $CFG;
-        $basedir = $CFG->dirroot.'/mod/lesson/pagetypes/';
+        $basedir = __DIR__ . '/pagetypes';
         $dir = dir($basedir);
         while (false !== ($entry = $dir->read())) {
             if (strpos($entry, '.')===0 || !preg_match('#^[a-zA-Z]+\.php#i', $entry)) {

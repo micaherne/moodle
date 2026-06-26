@@ -24,11 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../config.php');
-require_once($CFG->dirroot.'/user/lib.php');
+require(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core_user', 'lib.php'));
 require_once('change_password_form.php');
-require_once($CFG->libdir.'/authlib.php');
-require_once($CFG->dirroot.'/webservice/lib.php');
+require_once(\core\component::component_path('core', 'authlib.php'));
+require_once(\core\component::component_path('core_webservice', 'lib.php'));
 require_once('lib.php');
 
 $id     = optional_param('id', SITEID, PARAM_INT); // current course

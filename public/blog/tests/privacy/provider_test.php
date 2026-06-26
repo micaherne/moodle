@@ -34,7 +34,7 @@ use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
 use core_blog\privacy\provider;
 
-require_once($CFG->dirroot . '/blog/locallib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * Data provider testcase class.

@@ -114,7 +114,7 @@ class results extends resource_base {
                     }
                 }
             }
-            require_once($CFG->libdir.'/gradelib.php');
+            require_once(\core\component::component_path('core', 'gradelib.php'));
             switch ($response->get_request_method()) {
                 case 'GET':
                     $useridfilter = optional_param('user_id', 0, PARAM_INT);
@@ -251,7 +251,7 @@ class results extends resource_base {
     public function parse_value($value) {
         global $COURSE, $CFG;
         if (strpos($value, '$Results.url') !== false) {
-            require_once($CFG->libdir . '/gradelib.php');
+            require_once(\core\component::component_path('core', 'gradelib.php'));
 
             $resolved = '';
             $this->params['context_id'] = $COURSE->id;

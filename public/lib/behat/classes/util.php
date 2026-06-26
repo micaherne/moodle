@@ -68,7 +68,7 @@ class behat_util extends \core\test\testing_util {
      */
     public static function install_site() {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
         if (!defined('BEHAT_UTIL')) {
             throw new coding_exception('This method can be only used by Behat CLI tool');
         }
@@ -146,7 +146,7 @@ class behat_util extends \core\test\testing_util {
      */
     public static function build_themes($mtraceprogress = false) {
         global $CFG;
-        require_once("{$CFG->libdir}/outputlib.php");
+        require_once(__DIR__ . '/../../outputlib.php');
 
         $themenames = array_keys(\core_component::get_plugin_list('theme'));
 

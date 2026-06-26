@@ -106,7 +106,7 @@ class overview extends \core_courseformat\activityoverviewbase {
     public function get_extra_overview_items(): array {
         global $CFG;
         // Some extra items require global quiz functions.
-        require_once($CFG->dirroot . '/mod/quiz/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         return [
             'studentswhoattempted' => $this->get_extra_students_who_attempted_overview(),

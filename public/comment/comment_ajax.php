@@ -24,7 +24,7 @@
 define('AJAX_SCRIPT', true);
 define('NO_DEBUG_DISPLAY', true);
 
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 
 $contextid = optional_param('contextid', SYSCONTEXTID, PARAM_INT);
 $action    = optional_param('action', '', PARAM_ALPHA);

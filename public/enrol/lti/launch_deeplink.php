@@ -40,7 +40,7 @@ use Packback\Lti1p3\LtiServiceConnector;
 
 require_once(__DIR__ . '/../../config.php');
 global $OUTPUT, $PAGE, $CFG;
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 $idtoken = optional_param('id_token', null, PARAM_RAW);
 $launchid = optional_param('launchid', null, PARAM_RAW);

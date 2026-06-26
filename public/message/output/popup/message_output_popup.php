@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/message/output/lib.php');
+require_once(\core\component::component_path('core_message', 'output/lib.php'));
 
 /**
  * The popup message processor

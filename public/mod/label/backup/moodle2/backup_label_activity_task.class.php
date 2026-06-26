@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/label/backup/moodle2/backup_label_stepslib.php');
+require_once(__DIR__ . '/backup_label_stepslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the Label instance

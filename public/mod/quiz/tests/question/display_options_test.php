@@ -19,7 +19,7 @@ namespace mod_quiz\question;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * Unit tests for {@see display_options}.

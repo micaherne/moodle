@@ -31,7 +31,7 @@ define('NO_DEBUG_DISPLAY', true);
 
 // We need just the values from config.php and minlib.php.
 define('ABORT_AFTER_CONFIG', true);
-require('../config.php'); // This stops immediately at the beginning of lib/setup.php.
+require(__DIR__ . '/../config.php'); // This stops immediately at the beginning of lib/setup.php.
 
 if ($slashargument = min_get_slash_argument()) {
     $path = ltrim($slashargument, '/');
@@ -52,14 +52,10 @@ if (empty($path) or empty($component)) {
 
 // Find the jQuery dir for this component.
 if ($component === 'core') {
-    $componentdir = "$CFG->dirroot/lib";
+    $componentdir = \core\component::component_path('core', '');
 
 } else if (strpos($component, 'theme_')) {
-    if (!empty($CFG->themedir)) {
-        $componentdir = "$CFG->themedir/$component";
-    } else {
-        $componentdir = "$CFG->dirroot/theme/$component";
-    }
+    $componentdir = \core_component::get_component_directory($component);
 
 } else {
     $componentdir = core_component::get_component_directory($component);
@@ -119,7 +115,7 @@ if (!empty($_SERVER['HTTP_IF_NONE_MATCH']) || !empty($_SERVER['HTTP_IF_MODIFIED_
     die;
 }
 
-require_once("$CFG->dirroot/lib/xsendfilelib.php");
+require_once(\core\component::component_path('core', 'xsendfilelib.php'));
 
 header('Etag: "'.$etag.'"');
 header('Content-Disposition: inline; filename="'.$filename.'"');

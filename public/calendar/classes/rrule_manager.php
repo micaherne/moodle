@@ -31,7 +31,7 @@ use moodle_exception;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Defines calendar class to manage recurrence rule (rrule) during ical imports.

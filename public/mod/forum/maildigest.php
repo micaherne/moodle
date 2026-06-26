@@ -24,7 +24,7 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/mod/forum/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $id = required_param('id', PARAM_INT);
 $maildigest = required_param('maildigest', PARAM_INT);

@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /* Include required award criteria library. */
-require_once($CFG->dirroot . '/badges/criteria/award_criteria.php');
+require_once(\core\component::component_path('core_badges', 'criteria/award_criteria.php'));
 
 /* Include required user badge exporter */
 use core_badges\external\user_badge_exporter;
@@ -674,7 +674,7 @@ function badges_award_handle_manual_criteria_review(stdClass $data) {
  */
 function badges_process_badge_image(badge $badge, $iconfile) {
     global $CFG, $USER;
-    require_once($CFG->libdir. '/gdlib.php');
+    require_once(__DIR__ . '/gdlib.php');
 
     if (!empty($CFG->gdversion)) {
         process_new_icon($badge->get_context(), 'badges', 'badgeimage', $badge->id, $iconfile, true);
@@ -877,7 +877,7 @@ function badges_user_has_backpack($userid) {
  */
 function badges_handle_course_deletion($courseid) {
     global $CFG, $DB;
-    include_once $CFG->libdir . '/filelib.php';
+    include_once __DIR__ . '/filelib.php';
 
     $systemcontext = context_system::instance();
     $coursecontext = context_course::instance($courseid);
@@ -1421,7 +1421,7 @@ function badges_list_criteria($enabled = true) {
     if ($enabled) {
         foreach ($types as $key => $type) {
             $class = 'award_criteria_' . $type;
-            $file = $CFG->dirroot . '/badges/criteria/' . $class . '.php';
+            $file = \core\component::component_path('core_badges', "criteria/{$class}.php");
             if (file_exists($file)) {
                 require_once($file);
 

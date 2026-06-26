@@ -33,7 +33,7 @@
 // disable moodle specific debug messages and any errors in output
 define('NO_DEBUG_DISPLAY', true);
 
-require_once('config.php');
+require_once(__DIR__ . '/config.php');
 require_once('lib/filelib.php');
 
 $relativepath  = get_file_argument();

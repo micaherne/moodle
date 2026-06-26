@@ -25,7 +25,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
 
 use Moodle\BehatExtension\Exception\SkippedException;
 
@@ -60,7 +60,7 @@ class behat_tool_langimport extends behat_base {
      */
     public function outdated_langpack_is_installed($langcode) {
         global $CFG;
-        require_once($CFG->libdir.'/componentlib.class.php');
+        require_once(\core\component::component_path('core', 'componentlib.class.php'));
 
         // Download the langpack.
         $dir = make_upload_directory('lang');

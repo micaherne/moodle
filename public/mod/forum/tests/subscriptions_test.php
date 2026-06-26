@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once(__DIR__ . '/generator_trait.php');
-require_once("{$CFG->dirroot}/mod/forum/lib.php");
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * The module forums tests

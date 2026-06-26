@@ -57,7 +57,7 @@ class restricted_section {
     ): ResponseInterface {
         global $OUTPUT, $PAGE, $CFG;
 
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(__DIR__ . '/../../../lib.php');
 
         // Confirm the section is actually restricted. Redirect to section page otherwise.
         $modinfo = get_fast_modinfo($section->course);

@@ -24,9 +24,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
-require_once($CFG->dirroot . '/mod/lti/lib.php');
-require_once($CFG->dirroot . '/mod/lti/tests/mod_lti_testcase.php');
+require_once(\core\component::component_path('core_webservice', 'tests/helpers.php'));
+require_once(__DIR__ . '/../lib.php');
+require_once(__DIR__ . '/mod_lti_testcase.php');
 
 /**
  * External tool module external functions tests

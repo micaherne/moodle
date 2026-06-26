@@ -90,7 +90,7 @@ class block_blog_tags extends block_base {
         }
 
         // require the libs and do the work
-        require_once($CFG->dirroot .'/blog/lib.php');
+        require_once(\core\component::component_path('core_blog', 'lib.php'));
 
         if (empty($this->config)) {
             $this->config = new stdClass();

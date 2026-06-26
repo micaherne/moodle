@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/user/selector/lib.php');
+require_once(\core\component::component_path('core_user', 'selector/lib.php'));
 
 /**
  * User selector control for removing subscribed users

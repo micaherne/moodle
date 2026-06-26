@@ -27,7 +27,7 @@ namespace mod_workshop\event;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("$CFG->dirroot/mod/workshop/locallib.php");
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * The mod_workshop course module viewed event class.

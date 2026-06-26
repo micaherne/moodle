@@ -25,7 +25,7 @@ namespace mod_workshop;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/workshop/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Unit tests for mod/workshop/lib.php.
@@ -498,7 +498,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_workshop_core_calendar_get_valid_event_timestart_range_unknown_event(): void {
         global $CFG;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -604,7 +604,7 @@ final class lib_test extends \advanced_testcase {
             $assessmentstart, $assessmentend, $eventtype, $expectedmin, $expectedmax): void {
 
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -642,7 +642,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_workshop_core_calendar_event_timestart_updated_unknown_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -727,7 +727,7 @@ final class lib_test extends \advanced_testcase {
     public function test_mod_workshop_core_calendar_event_timestart_updated($submissionstart, $submissionend, $assessmentstart,
             $assessmentend, $eventtype, $fieldtoupdate, $newtime): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();

@@ -37,7 +37,7 @@ class mod_feedback_generator extends testing_module_generator {
 
     public function create_instance($record = null, ?array $options = null) {
         global $CFG;
-        require_once($CFG->dirroot.'/mod/feedback/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $record = (object)(array)$record;
 
         if (!isset($record->anonymous)) {
@@ -197,7 +197,7 @@ class mod_feedback_generator extends testing_module_generator {
     public function create_item_info($feedback, $record = array()) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/mod/feedback/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         $itemobj = feedback_get_item_class('info');
         $position = $DB->count_records('feedback_item', array('feedback' => $feedback->id)) + 1;
@@ -232,7 +232,7 @@ class mod_feedback_generator extends testing_module_generator {
     public function create_item_label($feedback, $record = array()) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/mod/feedback/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         $itemobj = feedback_get_item_class('label');
         $position = $DB->count_records('feedback_item', array('feedback' => $feedback->id)) + 1;
@@ -275,7 +275,7 @@ class mod_feedback_generator extends testing_module_generator {
     public function create_item_multichoice($feedback, $record = array()) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/mod/feedback/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         $itemobj = feedback_get_item_class('multichoice');
         $position = $DB->count_records('feedback_item', array('feedback' => $feedback->id)) + 1;
@@ -322,7 +322,7 @@ class mod_feedback_generator extends testing_module_generator {
     public function create_item_multichoicerated($feedback, $record = array()) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/mod/feedback/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         $itemobj = feedback_get_item_class('multichoicerated');
         $position = $DB->count_records('feedback_item', array('feedback' => $feedback->id)) + 1;
@@ -371,7 +371,7 @@ class mod_feedback_generator extends testing_module_generator {
     public function create_item_numeric($feedback, $record = array()) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/mod/feedback/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         $itemobj = feedback_get_item_class('numeric');
         $position = $DB->count_records('feedback_item', array('feedback' => $feedback->id)) + 1;
@@ -416,7 +416,7 @@ class mod_feedback_generator extends testing_module_generator {
     public function create_item_textarea($feedback, $record = array()) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/mod/feedback/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         $itemobj = feedback_get_item_class('textarea');
         $position = $DB->count_records('feedback_item', array('feedback' => $feedback->id)) + 1;
@@ -455,7 +455,7 @@ class mod_feedback_generator extends testing_module_generator {
     public function create_item_textfield($feedback, $record = array()) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/mod/feedback/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         $itemobj = feedback_get_item_class('textfield');
         $position = $DB->count_records('feedback_item', array('feedback' => $feedback->id)) + 1;
@@ -492,7 +492,7 @@ class mod_feedback_generator extends testing_module_generator {
      */
     public function create_item_pagebreak($feedback) {
         global $CFG;
-        require_once($CFG->dirroot.'/mod/feedback/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         return feedback_create_pagebreak($feedback->id);
     }
@@ -509,11 +509,11 @@ class mod_feedback_generator extends testing_module_generator {
     protected function format_item_values(string $questiontype, string $values): string {
         global $CFG;
 
-        if (!file_exists($CFG->dirroot.'/mod/feedback/item/'.$questiontype.'/lib.php')) {
+        if (!file_exists(__DIR__ . "/../../item/{$questiontype}/lib.php")) {
             throw new coding_exception("Question type '$questiontype' not found");
         }
 
-        require_once($CFG->dirroot.'/mod/feedback/item/'.$questiontype.'/lib.php');
+        require_once(__DIR__ . "/../../item/{$questiontype}/lib.php");
 
         $questiontype = strtoupper($questiontype);
 

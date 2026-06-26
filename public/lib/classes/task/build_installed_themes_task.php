@@ -40,7 +40,7 @@ class build_installed_themes_task extends adhoc_task {
      */
     public function execute() {
         global $CFG;
-        require_once("{$CFG->libdir}/outputlib.php");
+        require_once(__DIR__ . '/../../outputlib.php');
 
         $themenames = array_keys(\core_component::get_plugin_list('theme'));
         // Load the theme configs.

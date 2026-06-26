@@ -37,8 +37,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/filestorage/file_packer.php");
-require_once("$CFG->libdir/filestorage/tgz_extractor.php");
+require_once(__DIR__ . '/file_packer.php');
+require_once(__DIR__ . '/tgz_extractor.php');
 
 /**
  * Utility class - handles all packing/unpacking of .tar.gz files.

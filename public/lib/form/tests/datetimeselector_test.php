@@ -33,8 +33,8 @@ use MoodleQuickForm_date_time_selector;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/form/datetimeselector.php');
-require_once($CFG->libdir.'/formslib.php');
+require_once(__DIR__ . '/../datetimeselector.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Unit tests for MoodleQuickForm_date_time_selector

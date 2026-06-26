@@ -44,25 +44,25 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Add required XMLDB constants
-require_once($CFG->libdir.'/xmldb/xmldb_constants.php');
+require_once(__DIR__ . '/xmldb/xmldb_constants.php');
 
 // Add required XMLDB DB classes
-require_once($CFG->libdir.'/xmldb/xmldb_object.php');
+require_once(__DIR__ . '/xmldb/xmldb_object.php');
 // Add required XMLDB DB classes
-require_once($CFG->libdir.'/xmldb/xmldb_file.php');
+require_once(__DIR__ . '/xmldb/xmldb_file.php');
 // Add required XMLDB DB classes
-require_once($CFG->libdir.'/xmldb/xmldb_structure.php');
+require_once(__DIR__ . '/xmldb/xmldb_structure.php');
 // Add required XMLDB DB classes
-require_once($CFG->libdir.'/xmldb/xmldb_table.php');
+require_once(__DIR__ . '/xmldb/xmldb_table.php');
 // Add required XMLDB DB classes
-require_once($CFG->libdir.'/xmldb/xmldb_field.php');
+require_once(__DIR__ . '/xmldb/xmldb_field.php');
 // Add required XMLDB DB classes
-require_once($CFG->libdir.'/xmldb/xmldb_key.php');
+require_once(__DIR__ . '/xmldb/xmldb_key.php');
 // Add required XMLDB DB classes
-require_once($CFG->libdir.'/xmldb/xmldb_index.php');
+require_once(__DIR__ . '/xmldb/xmldb_index.php');
 
-require_once($CFG->libdir.'/ddl/sql_generator.php');
-require_once($CFG->libdir.'/ddl/database_manager.php');
+require_once(__DIR__ . '/ddl/sql_generator.php');
+require_once(__DIR__ . '/ddl/database_manager.php');
 
 
 

@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/questiontypebase.php');
-require_once($CFG->dirroot . '/question/type/multichoice/question.php');
-require_once($CFG->dirroot . '/question/type/numerical/questiontype.php');
+require_once(\core\component::component_path('core_question', 'type/questiontypebase.php'));
+require_once(\core\component::component_path('qtype_multichoice', 'question.php'));
+require_once(\core\component::component_path('qtype_numerical', 'questiontype.php'));
 
 /**
  * The multi-answer question type class.

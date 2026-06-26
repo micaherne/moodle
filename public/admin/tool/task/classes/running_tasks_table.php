@@ -27,7 +27,7 @@ namespace tool_task;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/tablelib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 use core\task\manager;
 
 /**

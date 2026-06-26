@@ -21,9 +21,9 @@ use core_analytics\tests\mlbackend_helper_trait;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once(__DIR__ . '/../../../lib/completionlib.php');
-require_once(__DIR__ . '/../../../completion/criteria/completion_criteria_self.php');
-require_once(__DIR__ . '/../../../analytics/tests/fixtures/test_target_course_users.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_self.php'));
+require_once(\core\component::component_path('core_analytics', 'tests/fixtures/test_target_course_users.php'));
 
 /**
  * Unit tests for core_course indicators.

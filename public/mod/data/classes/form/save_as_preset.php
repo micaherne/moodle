@@ -155,7 +155,7 @@ class save_as_preset extends dynamic_form {
      */
     public function process_dynamic_submission(): array {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/mod/data/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         $formdata = $this->get_data();
         $result = false;

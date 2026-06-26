@@ -27,7 +27,7 @@ use core_form\filetypes_util;
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once($CFG->dirroot.'/lib/form/group.php');
+require_once(__DIR__ . '/group.php');
 
 /**
  * File types and type groups selection form element.

@@ -70,7 +70,7 @@ class override_manager {
     ) {
         global $CFG;
         // Required for assign_* functions.
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
     }
 
     /**
@@ -633,7 +633,7 @@ class override_manager {
     private function delete_override_events(?int $userid = null, ?int $groupid = null): void {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         // Sanity check.
         $this->ensure_userid_xor_groupid_set($userid, $groupid);

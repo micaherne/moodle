@@ -25,9 +25,9 @@
 
 use report_outline\output\hierarchicalactivities;
 
-require('../../config.php');
-require_once($CFG->dirroot.'/report/outline/locallib.php');
-require_once($CFG->dirroot.'/report/outline/lib.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/lib.php');
 
 $userid   = required_param('id', PARAM_INT);
 $courseid = required_param('course', PARAM_INT);

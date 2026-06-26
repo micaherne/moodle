@@ -46,7 +46,7 @@ class custom_completion extends activity_custom_completion {
         $userid = $this->userid;
         $cm = $this->cm;
 
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(__DIR__ . '/../../locallib.php');
 
         $assign = new \assign(null, $cm, $cm->get_course());
         if ($assign->get_instance()->teamsubmission) {

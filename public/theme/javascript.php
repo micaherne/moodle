@@ -29,8 +29,8 @@ define('NO_DEBUG_DISPLAY', true);
 
 // we need just the values from config.php and minlib.php
 define('ABORT_AFTER_CONFIG', true);
-require('../config.php'); // this stops immediately at the beginning of lib/setup.php
-require_once("$CFG->dirroot/lib/jslib.php");
+require(__DIR__ . '/../config.php'); // this stops immediately at the beginning of lib/setup.php
+require_once(\core\component::component_path('core', 'jslib.php'));
 
 if ($slashargument = min_get_slash_argument()) {
     $slashargument = ltrim($slashargument, '/');
@@ -88,7 +88,7 @@ define('ABORT_AFTER_CONFIG_CANCEL', true);
 define('NO_MOODLE_COOKIES', true); // Session not used here
 define('NO_UPGRADE_CHECK', true);  // Ignore upgrade check
 
-require("$CFG->dirroot/lib/setup.php");
+require(\core\component::component_path('core', 'setup.php'));
 
 $theme = theme_config::load($themename);
 $themerev = theme_get_revision();

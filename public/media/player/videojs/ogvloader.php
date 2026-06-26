@@ -28,9 +28,9 @@ define('NO_DEBUG_DISPLAY', true);
 
 // We need just the values from config.php and minlib.php.
 define('ABORT_AFTER_CONFIG', true);
-require_once('../../../config.php'); // This stops immediately at the beginning of lib/setup.php.
-require_once($CFG->dirroot . '/lib/jslib.php');
-require_once($CFG->dirroot . '/lib/wasmlib.php');
+require_once(__DIR__ . '/../../../config.php'); // This stops immediately at the beginning of lib/setup.php.
+require_once(\core\component::component_path('core', 'jslib.php'));
+require_once(\core\component::component_path('core', 'wasmlib.php'));
 
 $slashargument = min_get_slash_argument();
 if (!$slashargument) {
@@ -45,7 +45,7 @@ if (substr_count($slashargument, '/') < 1) {
 }
 
 // Get all the library files (js and wasm) of the OGV.
-$basepath = $CFG->dirroot . '/media/player/videojs/ogvjs/';
+$basepath = __DIR__ . '/ogvjs';
 $jsfiles = [];
 $files = glob("{$basepath}*.{js,wasm}", GLOB_BRACE);
 foreach ($files as $file) {

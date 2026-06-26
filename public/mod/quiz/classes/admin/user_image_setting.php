@@ -34,7 +34,7 @@ class user_image_setting extends \admin_setting_configselect_with_advanced {
             return true;
         }
 
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once(__DIR__ . '/../../locallib.php');
         $this->choices = quiz_get_user_image_options();
 
         return true;

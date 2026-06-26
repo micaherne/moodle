@@ -28,8 +28,8 @@
 use core_cache\factory as cache_factory;
 use core_cache\helper as cache_helper;
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/lib/adminlib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 // The first time the user visits this page we are going to reparse the definitions.
 // Just ensures that everything is up to date.

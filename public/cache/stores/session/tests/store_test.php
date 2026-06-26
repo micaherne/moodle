@@ -22,8 +22,8 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include the necessary evils.
 global $CFG;
-require_once($CFG->dirroot.'/cache/tests/fixtures/stores.php');
-require_once($CFG->dirroot.'/cache/stores/session/lib.php');
+require_once(\core\component::component_path('core_cache', 'tests/fixtures/stores.php'));
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Session unit test class.

@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/message/externallib.php');
+require_once(__DIR__ . '/../externallib.php');
 
 /**
  * External message functions unit tests
@@ -42,7 +42,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
     protected function setUp(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/message/lib.php');
+        require_once(__DIR__ . '/../lib.php');
         parent::setUp();
     }
 
@@ -4278,7 +4278,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $group1 = $this->getDataGenerator()->create_group([
             'courseid' => $course1->id,
             'enablemessaging' => 1,
-            'picturepath' => $CFG->dirroot . '/lib/tests/fixtures/gd-logo.png'
+            'picturepath' => \core\component::component_path('core', 'tests/fixtures/gd-logo.png')
         ]);
 
         // Add users to group1.

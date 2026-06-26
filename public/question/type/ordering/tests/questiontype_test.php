@@ -31,15 +31,15 @@ use question_check_specified_fields_expectation;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/type/edit_question_form.php');
-require_once($CFG->dirroot . '/question/type/ordering/questiontype.php');
-require_once($CFG->dirroot . '/question/type/ordering/edit_ordering_form.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(\core\component::component_path('core_question', 'type/edit_question_form.php'));
+require_once(__DIR__ . '/../questiontype.php');
+require_once(__DIR__ . '/../edit_ordering_form.php');
 
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/format.php');
-require_once($CFG->dirroot . '/question/format/gift/format.php');
-require_once($CFG->dirroot . '/question/format/xml/format.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(\core\component::component_path('core_question', 'format.php'));
+require_once(\core\component::component_path('qformat_gift', 'format.php'));
+require_once(\core\component::component_path('qformat_xml', 'format.php'));
 
 /**
  * Unit tests for the ordering question type class.

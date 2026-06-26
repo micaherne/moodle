@@ -126,7 +126,7 @@ class message extends base {
     public function uninstall_cleanup() {
         global $CFG;
 
-        require_once($CFG->libdir.'/messagelib.php');
+        require_once(__DIR__ . '/../../messagelib.php');
         message_processor_uninstall($this->name);
 
         parent::uninstall_cleanup();

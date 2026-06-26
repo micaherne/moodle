@@ -31,4 +31,4 @@ require_once($CFG->dirroot . '/backup/util/interfaces/checksumable.class.php'); 
 require_once($CFG->dirroot . '/backup/backup.class.php'); // provides backup::FORMAT_xxx constants
 require_once($CFG->dirroot . '/backup/util/helper/convert_helper.class.php');
 require_once($CFG->dirroot . '/backup/util/factories/convert_factory.class.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));

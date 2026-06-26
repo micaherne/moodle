@@ -149,7 +149,7 @@ class cohortmember extends base {
     private static function get_cohorts(): array {
         global $CFG;
 
-        require_once($CFG->dirroot.'/cohort/lib.php');
+        require_once(__DIR__ . '/../../../lib.php');
 
         $cohortslist = [];
 

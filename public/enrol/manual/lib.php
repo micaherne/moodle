@@ -207,7 +207,7 @@ class enrol_manual_plugin extends enrol_plugin {
      */
     public function get_manual_enrol_button(course_enrolment_manager $manager) {
         global $CFG, $PAGE;
-        require_once($CFG->dirroot.'/cohort/lib.php');
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
         static $called = false;
 
@@ -375,7 +375,7 @@ class enrol_manual_plugin extends enrol_plugin {
      */
     public function get_bulk_operations(course_enrolment_manager $manager) {
         global $CFG;
-        require_once($CFG->dirroot.'/enrol/manual/locallib.php');
+        require_once(__DIR__ . '/locallib.php');
         $context = $manager->get_context();
         $bulkoperations = array();
         if (has_capability("enrol/manual:manage", $context)) {
@@ -480,7 +480,7 @@ class enrol_manual_plugin extends enrol_plugin {
      */
     public function restore_group_member($instance, $groupid, $userid) {
         global $CFG;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         // This might be called when forcing restore as manual enrolments.
 

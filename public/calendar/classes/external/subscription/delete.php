@@ -27,7 +27,7 @@ namespace core_calendar\external\subscription;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(__DIR__ . '/../../../lib.php');
 
 use core_external\external_api;
 use core_external\external_function_parameters;

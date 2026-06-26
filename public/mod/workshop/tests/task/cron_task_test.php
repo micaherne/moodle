@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/mod/workshop/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Test the functionality provided by  the {@link mod_workshop\task\cron_task} scheduled task.

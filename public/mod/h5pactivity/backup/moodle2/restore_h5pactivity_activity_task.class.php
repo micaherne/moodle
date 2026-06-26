@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/h5pactivity/backup/moodle2/restore_h5pactivity_stepslib.php');
+require_once(__DIR__ . '/restore_h5pactivity_stepslib.php');
 
 /**
  * Restore task for mod_h5pactivity.

@@ -56,7 +56,7 @@ class dndupload_handler {
     public function __construct($course, $modnames = null) {
         global $CFG, $PAGE;
 
-        require_once("{$CFG->dirroot}/course/lib.php");
+        require_once(__DIR__ . '/../lib.php');
 
         // Add some default types to handle.
         // Note: 'Files' type is hard-coded into the Javascript as this needs to be ...
@@ -345,7 +345,7 @@ class dndupload_handler {
     private function load_repository(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/repository/lib.php");
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
     }
 }
 

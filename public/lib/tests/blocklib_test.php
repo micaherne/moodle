@@ -19,9 +19,9 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/pagelib.php');
-require_once($CFG->libdir . '/blocklib.php');
-require_once($CFG->dirroot . '/blocks/moodleblock.class.php');
+require_once(__DIR__ . '/../pagelib.php');
+require_once(__DIR__ . '/../blocklib.php');
+require_once(\core\component::component_path('core_block', 'moodleblock.class.php'));
 require_once(__DIR__ . '/fixtures/block_ablocktype.php');
 require_once(__DIR__ . '/fixtures/testable_block_manager.php');
 
@@ -729,7 +729,7 @@ final class blocklib_test extends \advanced_testcase {
     public function test_default_dashboard(): void {
         global $CFG, $PAGE, $DB;
         $storedpage = $PAGE;
-        require_once($CFG->dirroot . '/my/lib.php');
+        require_once(\core\component::component_path('core_my', 'lib.php'));
         $this->purge_blocks();
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();

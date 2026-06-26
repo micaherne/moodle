@@ -28,9 +28,9 @@ namespace mod_wiki;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/wiki/lib.php');
-require_once($CFG->dirroot . '/mod/wiki/locallib.php');
-require_once($CFG->libdir . '/completionlib.php');
+require_once(__DIR__ . '/../lib.php');
+require_once(__DIR__ . '/../locallib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Unit tests for mod_wiki lib

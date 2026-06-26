@@ -52,7 +52,7 @@ final class restore_39_test extends advanced_testcase {
         $backupid = $backupfile;
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-            __DIR__ . "/../fixtures/$backupfile.mbz", $backuppath);
+            __DIR__ . "/../fixtures/{$backupfile}.mbz", $backuppath);
 
         // Restore the quiz activity in the backup from Moodle 3.9 to a new course.
         $coursecat = self::getDataGenerator()->create_category();

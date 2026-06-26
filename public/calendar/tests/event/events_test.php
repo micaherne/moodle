@@ -28,7 +28,7 @@ use core_calendar_externallib_testcase;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/calendar/tests/externallib_test.php');
+require_once(__DIR__ . '/../externallib_test.php');
 
 /**
  * This file contains the class that handles testing of the calendar events.
@@ -426,7 +426,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_created_site(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         // Create a mock subscription.
@@ -457,7 +457,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_created_category(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         $categoryid = $this->course->category;
@@ -490,7 +490,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_created_course(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         // Create a mock subscription.
@@ -522,7 +522,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_created_group(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         $courseid = $this->course->id;
@@ -557,7 +557,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_updated_site(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         // Create a mock subscription.
@@ -590,7 +590,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_updated_category(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         $categoryid = $this->course->category;
@@ -625,7 +625,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_updated_course(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         // Create a mock subscription.
@@ -658,7 +658,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_updated_group(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         $courseid = $this->course->id;
@@ -696,7 +696,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_deleted_site(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         // Create a mock subscription.
@@ -725,7 +725,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_deleted_category(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         $categoryid = $this->course->category;
@@ -758,7 +758,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_deleted_course(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         // Create a mock subscription.
@@ -789,7 +789,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_subscription_deleted_group(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $this->resetAfterTest(true);
 
         $courseid = $this->course->id;

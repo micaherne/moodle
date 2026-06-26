@@ -26,7 +26,7 @@
 
 // NOTE: no MOODLE_INTERNAL used, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
 
 /**
  * Contains functions used by behat to test functionality.

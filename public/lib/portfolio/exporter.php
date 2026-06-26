@@ -296,7 +296,7 @@ class portfolio_exporter {
                 'formats' => $formats,
                 'expectedtime' => $expectedtime,
             );
-            require_once($CFG->libdir . '/portfolio/forms.php');
+            require_once(__DIR__ . '/forms.php');
             $mform = new portfolio_export_form('', $customdata);
             if ($mform->is_cancelled()){
                 $this->cancel_request();
@@ -673,10 +673,10 @@ class portfolio_exporter {
      */
     public static function rewaken_object($id) {
         global $DB, $CFG;
-        require_once($CFG->libdir . '/filelib.php');
-        require_once($CFG->libdir . '/portfolio/exporter.php');
-        require_once($CFG->libdir . '/portfolio/caller.php');
-        require_once($CFG->libdir . '/portfolio/plugin.php');
+        require_once(__DIR__ . '/../filelib.php');
+        require_once(__DIR__ . '/exporter.php');
+        require_once(__DIR__ . '/caller.php');
+        require_once(__DIR__ . '/plugin.php');
         if (!$data = $DB->get_record('portfolio_tempdata', array('id' => $id))) {
             // maybe it's been finished already by a pull plugin
             // so look in the logs
@@ -687,7 +687,7 @@ class portfolio_exporter {
         }
         $exporter = unserialize(base64_decode($data->data));
         if ($exporter->instancefile) {
-            require_once($CFG->dirroot . '/' . $exporter->instancefile);
+            require_once(\core\component::from_mono_path('/' . $exporter->instancefile));
         }
         if (!empty($exporter->callerfile)) {
             portfolio_include_callback_file($exporter->callerfile);

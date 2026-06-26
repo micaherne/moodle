@@ -18,8 +18,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use core_sms\message_status;
 
-require_once($CFG->dirroot . '/message/output/lib.php');
-require_once($CFG->libdir . '/moodlelib.php');
+require_once(\core\component::component_path('core_message', 'output/lib.php'));
+require_once(\core\component::component_path('core', 'moodlelib.php'));
 
 /**
  * Message processor for SMS.

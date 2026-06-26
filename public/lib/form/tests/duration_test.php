@@ -22,7 +22,7 @@ use MoodleQuickForm;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/form/duration.php');
+require_once(__DIR__ . '/../duration.php');
 
 /**
  * Unit tests for MoodleQuickForm_duration

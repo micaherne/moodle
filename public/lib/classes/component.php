@@ -2095,6 +2095,116 @@ $cache = ' . var_export($cache, true) . ';
     }
 
     /**
+     * Returns the absolute path for a component and an optional path within it.
+     *
+     * Always returns a string even if the component is not installed, falling back
+     * to constructing a path from the plugin type directory.
+     *
+     * @param string|null $component Frankenstyle component name, or null for files outside any component.
+     * @param string|null $path Path relative to the component root.
+     * @return string Absolute filesystem path.
+     */
+    public static function component_path(?string $component, ?string $path = null): string {
+        global $CFG;
+
+        $suffix = $path !== null ? '/' . ltrim($path, '/') : '';
+
+        if ($component === null) {
+            return $CFG->dirroot . $suffix;
+        }
+
+        $dir = self::get_component_directory($component);
+        if ($dir !== null) {
+            return $dir . $suffix;
+        }
+
+        // Component not installed: fall back to the plugin type directory.
+        [$type, $plugin] = self::normalize_component($component);
+
+        if ($type === 'core') {
+            throw new \RuntimeException("Core subsystem '$plugin' has no registered directory");
+        }
+
+        $types = self::get_plugin_types();
+        if (isset($types[$type])) {
+            return $types[$type] . '/' . $plugin . $suffix;
+        }
+
+        throw new \RuntimeException("Unknown plugin type '$type' in component '$component'");
+    }
+
+    /**
+     * Returns the absolute filesystem path for a path relative to the codebase root.
+     *
+     * The path may carry a leading separator (e.g. '/mod/assign/lib.php') or
+     * omit it (e.g. 'mod/assign/lib.php'); the caller declares which form it is
+     * passing so the correct separator can be inserted. The path itself is never
+     * normalised.
+     *
+     * @param string $monopath Path relative to $CFG->dirroot.
+     * @param bool $leadingslash True when $monopath carries its own leading separator.
+     * @param string $separator Separator inserted between dirroot and $monopath when $leadingslash is false.
+     * @return string Absolute filesystem path.
+     */
+    public static function from_mono_path(string $monopath, bool $leadingslash = true, string $separator = '/'): string {
+        global $CFG;
+        return $CFG->dirroot . ($leadingslash ? '' : $separator) . $monopath;
+    }
+
+    /**
+     * Returns a path relative to the codebase root for an absolute filesystem path.
+     *
+     * Does not verify that the path is inside the codebase; the result is
+     * meaningless for a path that does not start with $CFG->dirroot. Use
+     * is_inside_codebase() to check first if needed.
+     *
+     * @param string $abspath Absolute filesystem path.
+     * @param bool $leadingslash True to include the leading separator in the result (e.g. '/mod/assign'); false to omit it (e.g. 'mod/assign').
+     * @param string $separator The separator between dirroot and the relative part. Dropped from the result when $leadingslash is false.
+     * @return string Path relative to the codebase root.
+     */
+    public static function to_mono_path(string $abspath, bool $leadingslash = true, string $separator = '/'): string {
+        global $CFG;
+        return substr($abspath, strlen($CFG->dirroot) + ($leadingslash ? 0 : strlen($separator)));
+    }
+
+    /**
+     * Returns true if the given absolute filesystem path is inside the codebase root.
+     *
+     * Uses a string prefix check with no filesystem access and no existence
+     * check. With the default separator '/' the path must begin with
+     * $CFG->dirroot.'/', so $CFG->dirroot itself does not qualify and sibling
+     * directories that share the same prefix are excluded. Passing an empty
+     * separator relaxes the check to a bare prefix match, which also accepts
+     * $CFG->dirroot itself and any path that merely starts with that string.
+     *
+     * @param string $abspath Absolute filesystem path.
+     * @param string $separator Character(s) that must immediately follow $CFG->dirroot.
+     * @return bool
+     */
+    public static function is_inside_codebase(string $abspath, string $separator = '/'): bool {
+        global $CFG;
+        return str_starts_with($abspath, $CFG->dirroot . $separator);
+    }
+
+    /**
+     * Replaces every occurrence of the codebase root in a piece of text.
+     *
+     * For scrubbing installation paths out of text that is displayed or sent
+     * elsewhere (stack traces, error messages). Operates on arbitrary text and
+     * replaces all occurrences, unlike to_mono_path() which strips a single
+     * path value.
+     *
+     * @param string $text The text to scrub.
+     * @param string $replacement What to put in place of each occurrence.
+     * @return string The scrubbed text.
+     */
+    public static function scrub_paths(string $text, string $replacement = ''): string {
+        global $CFG;
+        return str_replace($CFG->dirroot, $replacement, $text);
+    }
+
+    /**
      * Returns a path relative to the Moodle root directory.
      *
      * @param string $path The child path

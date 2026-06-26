@@ -22,7 +22,7 @@ use mod_quiz\quiz_settings;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once(__DIR__ . '/../quiz_question_helper_test_trait.php');
 
 /**
  * Unit tests for precreate_attempts

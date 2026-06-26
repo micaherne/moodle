@@ -26,7 +26,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 $format = required_param('format', PARAM_INT);
 $returnurl = required_param('returnurl', PARAM_LOCALURL);

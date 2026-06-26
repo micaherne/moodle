@@ -33,7 +33,7 @@ class block_login extends block_base {
 
     function get_content() {
         global $USER, $CFG, $SESSION, $OUTPUT;
-        require_once($CFG->libdir . '/authlib.php');
+        require_once(\core\component::component_path('core', 'authlib.php'));
 
         $wwwroot = '';
         $signup = '';
@@ -79,7 +79,7 @@ class block_login extends block_base {
 
             // ReCaptcha.
             if (login_captcha_enabled()) {
-                require_once($CFG->libdir . '/recaptchalib_v2.php');
+                require_once(\core\component::component_path('core', 'recaptchalib_v2.php'));
                 $this->content->text .= '<div class="mb-3">';
                 $this->content->text .= recaptcha_get_challenge_html(RECAPTCHA_API_URL, $CFG->recaptchapublickey,
                     current_language(), true);

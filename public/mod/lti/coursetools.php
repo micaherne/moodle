@@ -24,9 +24,9 @@
 
 use mod_lti\output\course_tools_page;
 
-require_once("../../config.php");
-require_once($CFG->dirroot . '/mod/lti/lib.php');
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/locallib.php');
 
 $id = required_param('id', PARAM_INT); // Course Id.
 

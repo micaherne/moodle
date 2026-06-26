@@ -85,7 +85,7 @@ final class caching_content_item_readonly_repository_test extends \advanced_test
      */
     public function test_find_all_for_course_user_cache(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core\component::component_path('mod_lti', 'locallib.php'));
 
         $this->resetAfterTest();
         $admin = get_admin();

@@ -19,8 +19,8 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/simplepie/moodle_simplepie.php');
-require_once($CFG->libdir . '/rsslib.php');
+require_once(__DIR__ . '/../simplepie/moodle_simplepie.php');
+require_once(__DIR__ . '/../rsslib.php');
 
 /**
  * These tests rely on the rsstest.xml file on download.moodle.org,

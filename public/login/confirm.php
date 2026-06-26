@@ -26,7 +26,7 @@
 
 require(__DIR__ . '/../config.php');
 require_once(__DIR__ . '/lib.php');
-require_once($CFG->libdir . '/authlib.php');
+require_once(\core\component::component_path('core', 'authlib.php'));
 
 $data = optional_param('data', '', PARAM_RAW);  // Formatted as:  secret/username
 

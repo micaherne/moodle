@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once(__DIR__ . '/fixtures/screen.php');
-require_once($CFG->libdir . '/gradelib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
 
 /**
  * Tests for screen class.

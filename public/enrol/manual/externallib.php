@@ -69,7 +69,7 @@ class enrol_manual_external extends external_api {
     public static function enrol_users($enrolments) {
         global $DB, $CFG;
 
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
 
         $params = self::validate_parameters(self::enrol_users_parameters(),
                 array('enrolments' => $enrolments));
@@ -184,7 +184,7 @@ class enrol_manual_external extends external_api {
     public static function unenrol_users($enrolments) {
         global $CFG, $DB;
         $params = self::validate_parameters(self::unenrol_users_parameters(), array('enrolments' => $enrolments));
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
         $transaction = $DB->start_delegated_transaction(); // Rollback all enrolment if an error occurs.
         $enrol = enrol_get_plugin('manual');
         if (empty($enrol)) {

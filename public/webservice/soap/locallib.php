@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 global $CFG;
-require_once($CFG->dirroot . '/webservice/lib.php');
+require_once(\core\component::component_path('core_webservice', 'lib.php'));
 use webservice_soap\wsdl;
 
 /**
@@ -329,7 +329,7 @@ class webservice_soap_test_client implements webservice_test_client_interface {
     public function simpletest($serverurl, $function, $params) {
         global $CFG;
 
-        require_once($CFG->dirroot . '/webservice/soap/lib.php');
+        require_once(__DIR__ . '/lib.php');
         $client = new webservice_soap_client($serverurl);
         return $client->call($function, $params);
     }

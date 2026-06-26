@@ -16,8 +16,8 @@
 
 // This page is called via AJAX to repopulte the TOC when LMSFinish() is called.
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
 
 $id = optional_param('id', '', PARAM_INT);                  // Course Module ID, or
 $a = optional_param('a', '', PARAM_INT);                    // scorm ID
@@ -62,10 +62,10 @@ $PAGE->set_url('/mod/scorm/prereqs.php', array('scoid' => $scoid, 'attempt' => $
 require_login($course, false, $cm);
 
 $scorm->version = strtolower(clean_param($scorm->version, PARAM_SAFEDIR));   // Just to be safe.
-if (!file_exists($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'lib.php')) {
+if (!file_exists(__DIR__ . "/datamodels/{$scorm->version}lib.php")) {
     $scorm->version = 'scorm_12';
 }
-require_once($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'lib.php');
+require_once(__DIR__ . "/datamodels/{$scorm->version}lib.php");
 
 
 if (confirm_sesskey() && (!empty($scoid))) {

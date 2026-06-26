@@ -19,7 +19,7 @@ namespace qbank_deletequestion;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
 
 /**
  * Class containing unit tests for the helper class

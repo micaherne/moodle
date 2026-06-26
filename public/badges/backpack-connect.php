@@ -24,7 +24,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 $backpackid = required_param('backpackid', PARAM_INT);
 $scope = optional_param('scope', '', PARAM_RAW);

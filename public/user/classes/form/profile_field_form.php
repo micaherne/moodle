@@ -40,13 +40,17 @@ class profile_field_form extends dynamic_form {
      */
     public function definition() {
         global $CFG;
-        require_once($CFG->dirroot.'/user/profile/definelib.php');
+        require_once(__DIR__ . '/../../profile/definelib.php');
 
         $mform = $this->_form;
 
         // Everything else is dependant on the data type.
         $datatype = $this->get_field_record()->datatype;
-        require_once($CFG->dirroot.'/user/profile/field/'.$datatype.'/define.class.php');
+        $fielddir = \core_component::get_plugin_directory('profilefield', $datatype);
+        if ($fielddir === null) {
+            throw new \coding_exception("Plugin not installed: profilefield_$datatype");
+        }
+        require_once("{$fielddir}/define.class.php");
         $newfield = 'profile_define_'.$datatype;
         $this->field = new $newfield();
 
@@ -111,7 +115,7 @@ class profile_field_form extends dynamic_form {
      */
     public function process_dynamic_submission() {
         global $CFG;
-        require_once($CFG->dirroot.'/user/profile/definelib.php');
+        require_once(__DIR__ . '/../../profile/definelib.php');
         profile_save_field($this->get_data(), $this->editors());
     }
 

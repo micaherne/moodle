@@ -27,7 +27,7 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../config.php');
-require_once($CFG->libdir . '/clilib.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
 
 [$options, $unrecognized] = cli_get_params(['help' => false], ['h' => 'help']);
 

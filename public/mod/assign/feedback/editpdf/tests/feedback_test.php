@@ -22,7 +22,7 @@ use mod_assign_test_generator;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(\core\component::component_path('mod_assign', 'tests/generator.php'));
 
 /**
  * Unit tests for assignfeedback_editpdf\comments_quick_list
@@ -73,7 +73,7 @@ final class feedback_test extends \advanced_testcase {
             'filepath' => '/',
             'filename' => $textfile ? 'submission.txt' : 'submission.pdf'
         );
-        $sourcefile = $CFG->dirroot . '/mod/assign/feedback/editpdf/tests/fixtures/submission.' . ($textfile ? 'txt' : 'pdf');
+        $sourcefile = __DIR__ . '/fixtures/submission./' . $textfile ? 'txt' : 'pdf';
         $fs->create_file_from_pathname($filerecord, $sourcefile);
 
         $data = new \stdClass();

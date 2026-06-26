@@ -31,7 +31,7 @@ use core_reportbuilder\local\report\{column, filter};
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("{$CFG->libdir}/grouplib.php");
+require_once(\core\component::component_path('core', 'grouplib.php'));
 
 /**
  * Group entity
@@ -143,7 +143,7 @@ class group extends base {
                     return '';
                 }
 
-                require_once("{$CFG->libdir}/filelib.php");
+                require_once(\core\component::component_path('core', 'filelib.php'));
 
                 context_helper::preload_from_record(clone $group);
                 $context = context::instance_by_id($group->ctxid);

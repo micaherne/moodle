@@ -36,7 +36,7 @@ final class requirejs_test extends \advanced_testcase {
 
         // Find a core module.
         $result = core_requirejs::find_one_amd_module('core', 'templates');
-        $expected = ['core/templates' => $CFG->dirroot . '/lib/amd/build/templates.min.js'];
+        $expected = ['core/templates' => __DIR__ . '/../amd/build/templates.min.js'];
         $this->assertEquals($expected, $result);
 
         // Find a subsystem module (none exist yet).

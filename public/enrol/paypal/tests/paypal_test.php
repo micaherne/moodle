@@ -197,7 +197,7 @@ final class paypal_test extends \advanced_testcase {
         // Enrol the student to the course.
         $generator->enrol_user($student->id, $course->id, 'student', $pluginname);
 
-        require_once($CFG->dirroot . '/enrol/locallib.php');
+        require_once(\core\component::component_path('core_enrol', 'locallib.php'));
         $manager = new \course_enrolment_manager($PAGE, $course);
         $userenrolments = $manager->get_user_enrolments($student->id);
         $this->assertCount(1, $userenrolments);

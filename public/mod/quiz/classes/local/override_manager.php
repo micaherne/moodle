@@ -55,7 +55,7 @@ class override_manager {
     ) {
         global $CFG;
         // Required for quiz_* methods.
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once(__DIR__ . '/../../locallib.php');
 
         // Sanity check that the context matches the quiz.
         if (empty($quiz->cmid) || $quiz->cmid != $context->instanceid) {

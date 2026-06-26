@@ -54,7 +54,7 @@ class portfolio extends base {
     public static function enable_plugin(string $pluginname, int $enabled): bool {
         global $DB, $CFG;
 
-        require_once($CFG->libdir . '/portfoliolib.php');
+        require_once(__DIR__ . '/../../portfoliolib.php');
 
         $haschanged = false;
         $oldvalue = null;

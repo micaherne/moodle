@@ -20,7 +20,7 @@ namespace qtype_calculated;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/numerical/question.php');
+require_once(\core\component::component_path('qtype_numerical', 'question.php'));
 
 /**
  * Class to represent a calculated question answer.

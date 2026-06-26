@@ -1,6 +1,6 @@
 <?php
 
-    require_once("../../config.php");
+    require_once(__DIR__ . '/../../config.php');
     require_once("lib.php");
 
     $id         = required_param('id', PARAM_INT);   //moduleid
@@ -104,7 +104,7 @@
     $extrafields = \core_user\fields::get_identity_fields($context, false);
 
     if ($download == "ods" && has_capability('mod/choice:downloadresponses', $context)) {
-        require_once("$CFG->libdir/odslib.class.php");
+        require_once(\core\component::component_path('core', 'odslib.class.php'));
 
     /// Calculate file name
         $shortname = format_string($course->shortname, true, array('context' => $context));
@@ -167,7 +167,7 @@
 
     //print spreadsheet if one is asked for:
     if ($download == "xls" && has_capability('mod/choice:downloadresponses', $context)) {
-        require_once("$CFG->libdir/excellib.class.php");
+        require_once(\core\component::component_path('core', 'excellib.class.php'));
 
     /// Calculate file name
         $shortname = format_string($course->shortname, true, array('context' => $context));

@@ -130,7 +130,7 @@ class core_completion_bulkedit_form extends core_completion_edit_base_form {
         if (array_key_exists('completion', $data) &&
                 $data['completion'] == COMPLETION_TRACKING_AUTOMATIC &&
                 (!empty($data['completionusegrade']) || !empty($data['completionpassgrade']))) {
-            require_once($CFG->libdir.'/gradelib.php');
+            require_once(\core\component::component_path('core', 'gradelib.php'));
             $moduleswithoutgradeitem = [];
             foreach ($this->cms as $cm) {
                 $item = grade_item::fetch(array('courseid' => $cm->course, 'itemtype' => 'mod',

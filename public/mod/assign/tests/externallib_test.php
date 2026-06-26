@@ -26,9 +26,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
-require_once($CFG->dirroot . '/mod/assign/externallib.php');
-require_once($CFG->dirroot . '/mod/assign/tests/externallib_advanced_testcase.php');
+require_once(\core\component::component_path('core_webservice', 'tests/helpers.php'));
+require_once(__DIR__ . '/../externallib.php');
+require_once(__DIR__ . '/externallib_advanced_testcase.php');
 require_once(__DIR__ . '/fixtures/testable_assign.php');
 
 /**
@@ -1499,7 +1499,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
      */
     public function test_save_grades_with_group_submission(): void {
         global $DB, $USER, $CFG;
-        require_once($CFG->dirroot . '/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         $this->resetAfterTest(true);
         // Create a course and assignment and users.
@@ -1897,7 +1897,7 @@ final class externallib_test extends \mod_assign\externallib_advanced_testcase {
     public function test_subplugins_availability(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/mod/assign/adminlib.php');
+        require_once(__DIR__ . '/../adminlib.php');
         $this->resetAfterTest(true);
 
         // Hide assignment file submissiong plugin.

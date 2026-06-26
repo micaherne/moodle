@@ -33,8 +33,8 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../../config.php');
-require_once("$CFG->dirroot/enrol/category/locallib.php");
-require_once("$CFG->libdir/clilib.php");
+require_once(__DIR__ . '/../locallib.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
 
 // Now get cli options.
 list($options, $unrecognized) = cli_get_params(array('verbose'=>false, 'help'=>false), array('v'=>'verbose', 'h'=>'help'));

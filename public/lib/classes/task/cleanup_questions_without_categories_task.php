@@ -36,7 +36,7 @@ class cleanup_questions_without_categories_task extends adhoc_task {
     #[\Override]
     public function execute() {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(__DIR__ . '/../../questionlib.php');
 
         $this->start_stored_progress();
         $progress = $this->get_progress();

@@ -22,9 +22,9 @@
  * @package core_course
  */
 
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 require_once('lib.php');
-require_once($CFG->libdir.'/completionlib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 redirect_if_major_upgrade_required();
 
@@ -110,7 +110,7 @@ if ($switchrole > 0 && confirm_sesskey() &&
 $hook = new \core_course\hook\before_course_viewed($course);
 \core\hook\manager::get_instance()->dispatch($hook);
 
-require_once($CFG->dirroot.'/calendar/lib.php'); // This is after login because it needs $USER.
+require_once(\core\component::component_path('core_calendar', 'lib.php')); // This is after login because it needs $USER.
 
 // Must set layout before gettting section info. See MDL-47555.
 $PAGE->set_pagelayout('course');
@@ -393,7 +393,11 @@ echo html_writer::start_tag('div', $containerattributes);
 $displaysection = $section;
 
 // Include the actual course format.
-require($CFG->dirroot .'/course/format/'. $course->format .'/format.php');
+$formatdir = \core_component::get_plugin_directory('format', $course->format);
+if ($formatdir === null) {
+    throw new \coding_exception("Plugin not installed: format_{$course->format}");
+}
+require("$formatdir/format.php");
 // Content wrapper end.
 
 echo html_writer::end_tag('div');

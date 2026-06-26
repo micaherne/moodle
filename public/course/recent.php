@@ -23,7 +23,7 @@
  * @package course
  */
 
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 require_once('lib.php');
 require_once('recent_form.php');
 
@@ -102,7 +102,8 @@ if ($param->modid === 'all') {
 
 } else if (strpos($param->modid, 'mod/') === 0) {
     $modname = substr($param->modid, strlen('mod/'));
-    if (array_key_exists($modname, $modnames) and file_exists("$CFG->dirroot/mod/$modname/lib.php")) {
+    $moddir = \core_component::get_plugin_directory('mod', $modname);
+    if (array_key_exists($modname, $modnames) and $moddir && file_exists("{$moddir}/lib.php")) {
         $filter = $modname;
     }
 
@@ -153,9 +154,10 @@ foreach ($sections as $sectionnum => $section) {
             continue;
         }
 
-        $libfile = "$CFG->dirroot/mod/$cm->modname/lib.php";
+        $moddir = \core_component::get_plugin_directory('mod', $cm->modname);
+        $libfile = $moddir ? "{$moddir}/lib.php" : null;
 
-        if (file_exists($libfile)) {
+        if ($libfile && file_exists($libfile)) {
             require_once($libfile);
             $get_recent_mod_activity = $cm->modname."_get_recent_mod_activity";
 

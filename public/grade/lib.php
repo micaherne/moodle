@@ -22,8 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->libdir . '/gradelib.php');
-require_once($CFG->dirroot . '/grade/export/lib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(__DIR__ . '/export/lib.php');
 
 use \core_grades\output\action_bar;
 use \core_grades\output\general_action_bar;
@@ -919,7 +919,7 @@ function print_grade_page_head(int $courseid, string $active_type, ?string $acti
     }
 
     // Put a warning on all gradebook pages if the course has modules currently scheduled for background deletion.
-    require_once($CFG->dirroot . '/course/lib.php');
+    require_once(\core\component::component_path('core_course', 'lib.php'));
     if (course_modules_pending_deletion($courseid, true)) {
         \core\notification::add(get_string('gradesmoduledeletionpendingwarning', 'grades'),
             \core\output\notification::NOTIFY_WARNING);
@@ -1470,7 +1470,6 @@ class grade_structure {
      * @return moodle_url|null URL or null if unable to construct it
      */
     public function get_grade_analysis_url(grade_grade $grade) {
-        global $CFG;
         /** @var array static cache of the grade.php file existence flags */
         static $hasgradephp = array();
 
@@ -1491,11 +1490,8 @@ class grade_structure {
         }
 
         if (!array_key_exists($item->itemmodule, $hasgradephp)) {
-            if (file_exists($CFG->dirroot . '/mod/' . $item->itemmodule . '/grade.php')) {
-                $hasgradephp[$item->itemmodule] = true;
-            } else {
-                $hasgradephp[$item->itemmodule] = false;
-            }
+            $moddir = \core_component::get_plugin_directory('mod', $item->itemmodule);
+            $hasgradephp[$item->itemmodule] = $moddir && file_exists("{$moddir}/grade.php");
         }
 
         if (!$hasgradephp[$item->itemmodule]) {
@@ -1802,8 +1798,6 @@ class grade_structure {
      * @return string|null
      */
     public function get_advanced_grading_link(array $element, object $gpr): ?string {
-        global $CFG;
-
         /** @var array static cache of the grade.php file existence flags */
         static $hasgradephp = [];
 
@@ -1824,11 +1818,8 @@ class grade_structure {
                 // Do not add link if activity is not visible to the current user.
                 if ($cm->uservisible) {
                     if (!array_key_exists($itemmodule, $hasgradephp)) {
-                        if (file_exists($CFG->dirroot . '/mod/' . $itemmodule . '/grade.php')) {
-                            $hasgradephp[$itemmodule] = true;
-                        } else {
-                            $hasgradephp[$itemmodule] = false;
-                        }
+                        $moddir = \core_component::get_plugin_directory('mod', $itemmodule);
+                        $hasgradephp[$itemmodule] = $moddir && file_exists("{$moddir}/grade.php");
                     }
 
                     // If module has grade.php, add link to that.
@@ -3385,8 +3376,8 @@ abstract class grade_helper {
         }
 
         $fields = array();
-        require_once($CFG->dirroot.'/user/lib.php');                // Loads user_get_default_fields()
-        require_once($CFG->dirroot.'/user/profile/lib.php');        // Loads constants, such as PROFILE_VISIBLE_ALL
+        require_once(\core\component::component_path('core_user', 'lib.php'));                // Loads user_get_default_fields()
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));        // Loads constants, such as PROFILE_VISIBLE_ALL
         $userdefaultfields = user_get_default_fields();
 
         // Sets the list of profile fields
@@ -3479,7 +3470,7 @@ abstract class grade_helper {
      */
     public static function get_element_icon(array $element, bool $spacerifnone = false): string {
         global $CFG, $OUTPUT;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $outputstr = '';
 

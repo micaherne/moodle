@@ -44,7 +44,7 @@ final class administration_helper_test extends \advanced_testcase {
         global $CFG;
 
         parent::setUpBeforeClass();
-        require_once($CFG->dirroot . '/cache/tests/fixtures/lib.php');
+        require_once(__DIR__ . '/fixtures/lib.php');
     }
 
     /**

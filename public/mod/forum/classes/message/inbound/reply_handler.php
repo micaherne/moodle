@@ -27,9 +27,9 @@ namespace mod_forum\message\inbound;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/forum/lib.php');
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->libdir . '/completionlib.php');
+require_once(__DIR__ . '/../../../lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * A Handler to process replies to forum posts.

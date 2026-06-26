@@ -19,8 +19,8 @@ namespace filter_displayh5p;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/filter/displayh5p/db/upgradelib.php');
-require_once("$CFG->libdir/filterlib.php");
+require_once(__DIR__ . '/../db/upgradelib.php');
+require_once(\core\component::component_path('core', 'filterlib.php'));
 
 /**
  * Unit tests for the upgradelib of the Display H5P filter.

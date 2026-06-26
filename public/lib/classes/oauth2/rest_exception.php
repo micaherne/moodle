@@ -27,7 +27,7 @@ use Exception;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/filelib.php');
+require_once(__DIR__ . '/../../filelib.php');
 
 /**
  * Rest Exception class containing error code and message.

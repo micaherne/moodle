@@ -23,7 +23,7 @@
  */
 
 require(__DIR__.'/../../../config.php');
-require_once($CFG->dirroot.'/user/editlib.php');
+require_once(\core\component::component_path('core_user', 'editlib.php'));
 
 $userid = optional_param('userid', null, PARAM_INT);
 $returnurl = optional_param('returnurl', null, PARAM_LOCALURL);

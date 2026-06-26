@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/feedback/lib.php');
+require_once(\core\component::component_path('mod_feedback', 'lib.php'));
 
 class block_feedback extends block_list {
 

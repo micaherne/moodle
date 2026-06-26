@@ -89,7 +89,7 @@ class edit_table extends XMLDBAction {
         // Do the job, setting result as needed
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         // Get the correct dirs
         if (!empty($XMLDB->dbdirs)) {
@@ -196,7 +196,7 @@ class edit_table extends XMLDBAction {
         $b .= '</p>';
         $o .= $e . $b;
 
-        require_once("$CFG->libdir/ddl/sql_generator.php");
+        require_once(\core\component::component_path('core', 'ddl/sql_generator.php'));
         $reserved_words = sql_generator::getAllReservedWords();
 
         // Delete any 'changeme' field/key/index

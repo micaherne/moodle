@@ -1211,7 +1211,7 @@ abstract class restore_dbops {
     public static function create_included_users($basepath, $restoreid, $userid,
             \core\progress\base $progress, int $courseid = 0) {
         global $CFG, $DB;
-        require_once($CFG->dirroot.'/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
         $progress->start_progress('Creating included users');
 
         $authcache = array(); // Cache to get some bits from authentication plugins

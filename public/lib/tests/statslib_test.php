@@ -19,8 +19,8 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/statslib.php');
+require_once(__DIR__ . '/../adminlib.php');
+require_once(__DIR__ . '/../statslib.php');
 require_once(__DIR__ . '/fixtures/stats_events.php');
 
 /**
@@ -329,7 +329,7 @@ final class statslib_test extends \advanced_testcase {
         // New log stores.
         $this->preventResetByRollback();
 
-        $this->assertFileExists("$CFG->dirroot/$CFG->admin/tool/log/store/standard/version.php");
+        $this->assertFileExists(\core\component::component_path('logstore_standard', 'version.php'));
         set_config('enabled_stores', 'logstore_standard', 'tool_log');
         set_config('buffersize', 0, 'logstore_standard');
         set_config('logguests', 1, 'logstore_standard');
@@ -586,7 +586,7 @@ final class statslib_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->assertFileExists("$CFG->dirroot/$CFG->admin/tool/log/store/standard/version.php");
+        $this->assertFileExists(\core\component::component_path('logstore_standard', 'version.php'));
         set_config('enabled_stores', 'logstore_standard', 'tool_log');
         set_config('buffersize', 0, 'logstore_standard');
         set_config('logguests', 1, 'logstore_standard');
@@ -720,7 +720,7 @@ final class statslib_test extends \advanced_testcase {
     public function test_statslib_cron_daily($xmlfile): void {
         global $CFG, $DB;
 
-        $dataset = $this->load_xml_data_file(__DIR__."/fixtures/{$xmlfile}");
+        $dataset = $this->load_xml_data_file(__DIR__ . "/fixtures/{$xmlfile}");
         $stats = $this->prepare_db($dataset, array('log'));
         $stats = $dataset->get_rows(['stats_daily', 'stats_user_daily']);
 

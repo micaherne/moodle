@@ -30,7 +30,7 @@ abstract class provider_testcase extends \core_privacy\tests\provider_testcase {
 
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(__DIR__ . '/../../locallib.php');
     }
 
     /**

@@ -45,7 +45,7 @@ class data_field_file extends data_field_base {
         global $CFG, $DB, $OUTPUT, $PAGE;
 
         // Necessary for the constants used in args.
-        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $itemid = null;
 

@@ -23,9 +23,9 @@
  */
 
 require_once(__DIR__.'/../../../config.php');
-require_once($CFG->dirroot.'/lib/formslib.php');
-require_once($CFG->dirroot.'/grade/lib.php');
-require_once($CFG->libdir.'/gradelib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(__DIR__ . '/../../lib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
 require_once('import_outcomes_form.php');
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
@@ -54,7 +54,7 @@ if ($courseid) {
         new moodle_url('/grade/edit/outcome/import.php', ['courseid' => $courseid]));
 
 } else {
-    require_once $CFG->libdir.'/adminlib.php';
+    require_once \core\component::component_path('core', 'adminlib.php');
     admin_externalpage_setup('outcomes');
     $context = context_system::instance();
 }

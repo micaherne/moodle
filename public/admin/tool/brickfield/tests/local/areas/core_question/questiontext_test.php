@@ -18,7 +18,7 @@ namespace tool_brickfield\local\areas\core_question;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/admin/tool/brickfield/tests/area_test_base.php');
+require_once(__DIR__ . '/../../../area_test_base.php');
 
 use tool_brickfield\area_test_base;
 
@@ -36,7 +36,7 @@ final class questiontext_test extends area_test_base {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once(\core\component::component_path('mod_quiz', 'locallib.php'));
         parent::setUpBeforeClass();
     }
 

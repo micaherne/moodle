@@ -24,7 +24,7 @@
  * @author    Fred Dixon  (ffdixon [at] blindsidenetworks [dt] com)
  */
 
-require_once("../../config.php");
+require_once(__DIR__ . '/../../config.php');
 
 $courseid = required_param('id', PARAM_INT);
 

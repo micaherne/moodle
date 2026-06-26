@@ -24,7 +24,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 require_login();
 core_question\local\bank\helper::require_plugin_enabled('qbank_history');

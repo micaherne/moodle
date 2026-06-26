@@ -38,8 +38,8 @@ use mod_quiz\quiz_attempt;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/lib.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(__DIR__ . '/../../lib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * Privacy Subsystem implementation for mod_quiz.

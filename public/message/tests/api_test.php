@@ -1891,7 +1891,7 @@ final class api_test extends \advanced_testcase {
         $group1 = $this->getDataGenerator()->create_group([
             'courseid' => $course1->id,
             'enablemessaging' => 1,
-            'picturepath' => $CFG->dirroot . '/lib/tests/fixtures/gd-logo.png',
+            'picturepath' => \core\component::component_path('core', 'tests/fixtures/gd-logo.png'),
         ]);
 
         // Add users to group1.
@@ -5684,7 +5684,7 @@ final class api_test extends \advanced_testcase {
         $group = $this->getDataGenerator()->create_group([
             'courseid' => $course->id,
             'enablemessaging' => 1,
-            'picturepath' => $CFG->dirroot . '/lib/tests/fixtures/gd-logo.png',
+            'picturepath' => \core\component::component_path('core', 'tests/fixtures/gd-logo.png'),
         ]);
 
         // Add users to group.

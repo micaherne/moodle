@@ -27,7 +27,7 @@ namespace core_notes\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot . "/notes/lib.php");
+require_once(__DIR__ . '/../../lib.php');
 
 use core_notes\privacy\provider;
 use core_privacy\local\request\writer;

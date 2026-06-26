@@ -31,7 +31,7 @@ class activitybadge extends \core_courseformat\output\activitybadge {
     protected function update_content(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(__DIR__ . '/../../../lib.php');
 
         if (forum_tp_can_track_forums()) {
             if ($unread = forum_tp_count_forum_unread_posts($this->cminfo, $this->cminfo->get_course())) {

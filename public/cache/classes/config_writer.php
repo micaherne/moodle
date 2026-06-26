@@ -455,9 +455,9 @@ class config_writer extends config {
     protected static function get_default_stores() {
         global $CFG;
 
-        require_once($CFG->dirroot . '/cache/stores/file/lib.php');
-        require_once($CFG->dirroot . '/cache/stores/session/lib.php');
-        require_once($CFG->dirroot . '/cache/stores/static/lib.php');
+        require_once(\core\component::component_path('cachestore_file', 'lib.php'));
+        require_once(\core\component::component_path('cachestore_session', 'lib.php'));
+        require_once(\core\component::component_path('cachestore_static', 'lib.php'));
 
         return [
             'default_application' => [
@@ -524,8 +524,8 @@ class config_writer extends config {
         global $CFG;
 
         $files = [];
-        if (file_exists($CFG->dirroot . '/lib/db/caches.php')) {
-            $files['core'] = $CFG->dirroot . '/lib/db/caches.php';
+        if (file_exists(\core\component::component_path('core', 'db/caches.php'))) {
+            $files['core'] = \core\component::component_path('core', 'db/caches.php');
         }
 
         if (!$coreonly) {

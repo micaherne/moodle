@@ -30,7 +30,7 @@ use question_first_matching_answer_grading_strategy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/questiontypebase.php');
+require_once(__DIR__ . '/../questiontypebase.php');
 
 /**
  * Helper used by the testcases in this file.

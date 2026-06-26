@@ -31,8 +31,8 @@ use moodle_url;
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once($CFG->dirroot.'/grade/report/lib.php');
-require_once($CFG->dirroot.'/grade/lib.php');
+require_once(\core\component::component_path('core_grades', 'report/lib.php'));
+require_once(\core\component::component_path('core_grades', 'lib.php'));
 
 /**
  * Class providing an API for the user report building and displaying.

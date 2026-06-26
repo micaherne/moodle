@@ -24,8 +24,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/gradelib.php');
+require_once(__DIR__ . '/../../../adminlib.php');
+require_once(__DIR__ . '/../../../gradelib.php');
 
 
 /**

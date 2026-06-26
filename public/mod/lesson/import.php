@@ -23,11 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
-require_once("../../config.php");
-require_once($CFG->libdir.'/questionlib.php');
-require_once($CFG->dirroot.'/mod/lesson/locallib.php');
-require_once($CFG->dirroot.'/mod/lesson/import_form.php');
-require_once($CFG->dirroot.'/mod/lesson/format.php');  // Parent class
+require_once(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/import_form.php');
+require_once(__DIR__ . '/format.php');  // Parent class
 
 $id     = required_param('id', PARAM_INT);         // Course Module ID
 $pageid = optional_param('pageid', '', PARAM_INT); // Page ID
@@ -77,11 +77,11 @@ if ($data = $mform->get_data()) {
     }
 
     $formatclass = 'qformat_'.$data->format;
-    $formatclassfile = $CFG->dirroot.'/question/format/'.$data->format.'/format.php';
-    if (!is_readable($formatclassfile)) {
+    $qformatdir = \core_component::get_plugin_directory('qformat', $data->format);
+    if (!$qformatdir || !is_readable("$qformatdir/format.php")) {
         throw new \moodle_exception('unknowformat', '', '', $data->format);
     }
-    require_once($formatclassfile);
+    require_once("$qformatdir/format.php");
     $format = new $formatclass();
 
     $format->set_importcontext($context);

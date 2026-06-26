@@ -33,6 +33,6 @@
  */
 
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 
 redirect(new moodle_url('/admin/registration/index.php'));

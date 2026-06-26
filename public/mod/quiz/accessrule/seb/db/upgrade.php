@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot  . '/mod/quiz/accessrule/seb/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Function to upgrade quizaccess_seb plugin.

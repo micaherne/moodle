@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/authlib.php');
+require_once(\core\component::component_path('core', 'authlib.php'));
 
 /**
  * Email authentication plugin.
@@ -103,8 +103,8 @@ class auth_plugin_email extends auth_plugin_base {
      */
     public function user_signup_with_confirmation($user, $notify=true, $confirmationurl = null) {
         global $CFG, $DB, $SESSION;
-        require_once($CFG->dirroot.'/user/profile/lib.php');
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         $plainpassword = $user->password;
         $user->password = \core\di::get(\core\authentication\password::class)->hash($user->password);

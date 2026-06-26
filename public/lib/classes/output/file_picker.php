@@ -52,7 +52,7 @@ class file_picker implements renderable {
      */
     public function __construct(stdClass $options) {
         global $CFG, $USER, $PAGE;
-        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
         $defaults = [
             'accepted_types' => '*',
             'return_types' => FILE_INTERNAL,

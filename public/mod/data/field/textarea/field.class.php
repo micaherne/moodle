@@ -25,8 +25,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/lib/filelib.php');
-require_once($CFG->dirroot.'/repository/lib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 class data_field_textarea extends data_field_base {
 

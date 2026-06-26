@@ -238,7 +238,7 @@ class section_info implements IteratorAggregate {
      */
     public function __construct($data, $number, $notused1, $notused2, $modinfo, $notused3) {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(__DIR__ . '/../lib.php');
 
         // Data that is always present.
         $this->_id = $data->id;

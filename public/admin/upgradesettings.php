@@ -3,8 +3,8 @@
 // detects settings that were added during an upgrade, displays a screen for the admin to
 // modify them, and then processes modifications
 
-require_once('../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $return = optional_param('return', '', PARAM_ALPHA);
 

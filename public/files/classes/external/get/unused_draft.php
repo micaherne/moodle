@@ -28,7 +28,7 @@ namespace core_files\external\get;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 use core_external\external_api;
 use core_external\external_function_parameters;

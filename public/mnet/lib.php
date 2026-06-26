@@ -7,9 +7,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package mnet
  */
-require_once $CFG->dirroot.'/mnet/xmlrpc/xmlparser.php';
-require_once $CFG->dirroot.'/mnet/peer.php';
-require_once $CFG->dirroot.'/mnet/environment.php';
+require_once __DIR__ . '/xmlrpc/xmlparser.php';
+require_once __DIR__ . '/peer.php';
+require_once __DIR__ . '/environment.php';
 
 /// CONSTANTS ///////////////////////////////////////////////////////////
 
@@ -800,7 +800,7 @@ function mnet_get_service_info(mnet_peer $mnet_peer, $fulldata=true) {
         $resultset = array();
     }
 
-    require_once $CFG->dirroot.'/mnet/xmlrpc/client.php';
+    require_once __DIR__ . '/xmlrpc/client.php';
 
     $remoteservices = array();
     if ($mnet_peer->id != $CFG->mnet_all_hosts_id) {

@@ -21,7 +21,7 @@ use MoodleQuickForm_autocomplete;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/form/autocomplete.php');
+require_once(__DIR__ . '/../autocomplete.php');
 
 /**
  * Unit tests for MoodleQuickForm_autocomplete

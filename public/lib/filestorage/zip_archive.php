@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/filestorage/file_archive.php");
+require_once(__DIR__ . '/file_archive.php');
 
 /**
  * Zip file archive class.

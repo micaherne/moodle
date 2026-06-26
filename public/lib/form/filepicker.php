@@ -28,7 +28,7 @@
 global $CFG;
 
 require_once("HTML/QuickForm/button.php");
-require_once($CFG->dirroot.'/repository/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 require_once('templatable_form_element.php');
 
 /**

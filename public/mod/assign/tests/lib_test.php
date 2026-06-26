@@ -27,9 +27,9 @@ namespace mod_assign;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/lib.php');
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(__DIR__ . '/../lib.php');
+require_once(__DIR__ . '/../locallib.php');
+require_once(__DIR__ . '/generator.php');
 
 use core_calendar\local\api as calendar_local_api;
 use core_calendar\local\event\container as calendar_event_container;
@@ -856,7 +856,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_assign_is_override_calendar_event_no_override(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -882,7 +882,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_assign_is_override_calendar_event_no_nodule_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -908,7 +908,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_assign_is_override_calendar_event_different_assign_instance(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -942,7 +942,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_assign_is_override_calendar_event_user_override(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -974,7 +974,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_assign_is_override_calendar_event_group_override(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1005,7 +1005,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_assign_core_calendar_get_valid_event_timestart_range_unkown_event_type(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1033,7 +1033,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_assign_core_calendar_get_valid_event_timestart_range_override_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1071,7 +1071,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_assign_core_calendar_get_valid_event_timestart_range_due_no_limit(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1104,7 +1104,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_assign_core_calendar_get_valid_event_timestart_range_due_with_limits(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1140,7 +1140,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_assign_core_calendar_get_valid_event_timestart_range_gradingdue_no_limit(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1171,7 +1171,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_assign_core_calendar_get_valid_event_timestart_range_gradingdue_with_due_date(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1200,7 +1200,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_assign_core_calendar_event_timestart_updated_non_due_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1237,7 +1237,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_assign_core_calendar_event_timestart_updated_due_event_override(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1283,7 +1283,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_assign_core_calendar_event_timestart_updated_due_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1323,7 +1323,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_student_role_cant_update_due_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
@@ -1379,7 +1379,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_teacher_role_can_update_due_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();

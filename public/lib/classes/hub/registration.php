@@ -180,8 +180,8 @@ class registration {
      */
     public static function get_site_info($defaults = []) {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/badgeslib.php');
-        require_once($CFG->dirroot . "/course/lib.php");
+        require_once(__DIR__ . '/../../badgeslib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $siteinfo = array();
         foreach (self::FORM_FIELDS as $field) {
@@ -235,7 +235,7 @@ class registration {
         if (!empty($CFG->enablewebservices) && !empty($CFG->enablemobilewebservice)) {
             $siteinfo['mobileservicesenabled'] = 1;
             $siteinfo['registereduserdevices'] = $DB->count_records('user_devices');
-            $airnotifierextpath = $CFG->dirroot . '/message/output/airnotifier/externallib.php';
+            $airnotifierextpath = \core\component::component_path('message_airnotifier', 'externallib.php');
             if (file_exists($airnotifierextpath)) { // Maybe some one uninstalled the plugin.
                 require_once($airnotifierextpath);
                 $siteinfo['mobilenotificationsenabled'] = \message_airnotifier_external::is_system_configured();

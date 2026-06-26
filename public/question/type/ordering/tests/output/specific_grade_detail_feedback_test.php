@@ -24,7 +24,7 @@ use qtype_ordering_test_helper;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
 
 /**
  * A test class used to test specific_grade_detail_feedback.
@@ -96,7 +96,7 @@ final class specific_grade_detail_feedback_test extends advanced_testcase {
      */
     public static function export_for_template_provider(): array {
         global $CFG;
-        require_once($CFG->dirroot . '/question/type/ordering/question.php');
+        require_once(__DIR__ . '/../../question.php');
 
         return [
             'Do not show partial or wrong' => [
