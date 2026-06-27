@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/formslib.php");
-require_once($CFG->dirroot . '/enrol/locallib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('core_enrol', 'locallib.php'));
 
 /**
  * Check if the given password match a group enrolment key in the specified course.

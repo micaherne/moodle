@@ -66,7 +66,7 @@ class MoodleQuickForm_recaptcha extends HTML_QuickForm_input implements templata
      */
     public function toHtml() {
         global $CFG;
-        require_once($CFG->libdir . '/recaptchalib_v2.php');
+        require_once(\core\component::component_path('core', 'recaptchalib_v2.php'));
 
         return recaptcha_get_challenge_html(RECAPTCHA_API_URL, $CFG->recaptchapublickey);
     }
@@ -88,7 +88,7 @@ class MoodleQuickForm_recaptcha extends HTML_QuickForm_input implements templata
      */
     public function verify($responsestr) {
         global $CFG;
-        require_once($CFG->libdir . '/recaptchalib_v2.php');
+        require_once(\core\component::component_path('core', 'recaptchalib_v2.php'));
 
         $response = recaptcha_check_response(RECAPTCHA_VERIFY_URL, $CFG->recaptchaprivatekey,
                                            getremoteaddr(), $responsestr);

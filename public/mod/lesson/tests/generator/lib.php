@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/lesson/locallib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * mod_lesson data generator class.
@@ -114,7 +114,7 @@ class mod_lesson_generator extends testing_module_generator {
             'grade' => 100,
         );
         if (!isset($record['mediafile'])) {
-            require_once($CFG->libdir.'/filelib.php');
+            require_once(\core\component::component_path('core', 'filelib.php'));
             $record['mediafile'] = file_get_unused_draft_itemid();
         }
 

@@ -22,10 +22,10 @@ use quiz_statistics_report;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/statisticslib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
+require_once(\core\component::component_path('mod_quiz', 'locallib.php'));
+require_once(__DIR__ . '/../../statisticslib.php');
+require_once(\core\component::component_path('mod_quiz', 'report/reportlib.php'));
+require_once(__DIR__ . '/../../report.php');
 
 /**
  * Re-calculate question statistics.

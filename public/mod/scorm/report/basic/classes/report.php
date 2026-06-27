@@ -24,7 +24,7 @@
 namespace scormreport_basic;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir . '/csvlib.class.php');
+require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
 class report extends \mod_scorm\report {
     /**
@@ -185,7 +185,7 @@ class report extends \mod_scorm\report {
                 // Start working -- this is necessary as soon as the niceties are over.
                 $table->setup();
             } else if ($download == 'ODS') {
-                require_once("$CFG->libdir/odslib.class.php");
+                require_once(\core\component::component_path('core', 'odslib.class.php'));
 
                 $filename .= ".ods";
                 // Creating a workbook.
@@ -224,7 +224,7 @@ class report extends \mod_scorm\report {
                 }
                 $rownum = 1;
             } else if ($download == 'Excel') {
-                require_once("$CFG->libdir/excellib.class.php");
+                require_once(\core\component::component_path('core', 'excellib.class.php'));
 
                 $filename .= ".xls";
                 // Creating a workbook.

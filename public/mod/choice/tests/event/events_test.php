@@ -27,7 +27,7 @@ namespace mod_choice\event;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/choice/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Events tests class.

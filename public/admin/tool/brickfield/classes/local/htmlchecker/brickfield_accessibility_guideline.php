@@ -82,7 +82,7 @@ class brickfield_accessibility_guideline {
      * @param string $domain
      */
     public function load_translations(string $domain) {
-        $csv = fopen(dirname(__FILE__) .'/guidelines/translations/'. $domain .'.txt', 'r');
+        $csv = fopen(__DIR__ . "/guidelines/translations/{$domain}.txt", 'r');
 
         if ($csv) {
             while ($translation = fgetcsv($csv, escape: '\\')) {

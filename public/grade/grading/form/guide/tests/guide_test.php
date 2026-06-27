@@ -21,8 +21,8 @@ use gradingform_controller;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/grade/grading/lib.php');
-require_once($CFG->dirroot . '/grade/grading/form/guide/lib.php');
+require_once(\core\component::component_path('core_grading', 'lib.php'));
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Test cases for the Marking Guide.

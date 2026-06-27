@@ -762,7 +762,7 @@ class page_requirements_manager {
             }
             if (debugging()) {
                 // Check file existence only when in debug mode.
-                if (!file_exists($CFG->dirroot . strtok($url, '?'))) {
+                if (!file_exists(\core\component::from_mono_path(strtok($url, '?')))) {
                     throw new coding_exception('Attempt to require a JavaScript file that does not exist.', $url);
                 }
             }
@@ -1513,7 +1513,7 @@ class page_requirements_manager {
         $requirejsloader = new moodle_url('/lib/requirejs.php');
         $requirejsloader->set_slashargument('/' . $jsrev . '/');
 
-        $requirejsconfig = file_get_contents($CFG->dirroot . '/lib/requirejs/moodle-config.js');
+        $requirejsconfig = file_get_contents(__DIR__ . '/../../../requirejs/moodle-config.js');
 
         // No extension required unless slash args is disabled.
         $jsextension = '.js';

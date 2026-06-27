@@ -30,8 +30,8 @@ use repository;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->dirroot . '/files/externallib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(\core\component::component_path('core_files', 'externallib.php'));
 /**
  * Unit test for recent repository
  *

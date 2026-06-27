@@ -50,7 +50,7 @@ class enrol_ldap_plugin extends enrol_plugin {
      */
     public function __construct() {
         global $CFG;
-        require_once($CFG->libdir.'/ldaplib.php');
+        require_once(\core\component::component_path('core', 'ldaplib.php'));
 
         // Do our own stuff to fix the config (it's easier to do it
         // here than using the admin settings infrastructure). We
@@ -664,7 +664,7 @@ class enrol_ldap_plugin extends enrol_plugin {
      */
     protected function ldap_connect(?progress_trace $trace = null) {
         global $CFG;
-        require_once($CFG->libdir.'/ldaplib.php');
+        require_once(\core\component::component_path('core', 'ldaplib.php'));
 
         if (isset($this->ldapconnection)) {
             return true;
@@ -709,7 +709,7 @@ class enrol_ldap_plugin extends enrol_plugin {
      */
     protected function find_ext_enrolments($memberuid, $role) {
         global $CFG;
-        require_once($CFG->libdir.'/ldaplib.php');
+        require_once(\core\component::component_path('core', 'ldaplib.php'));
 
         if (empty($memberuid)) {
             // No "idnumber" stored for this user, so no LDAP enrolments
@@ -854,7 +854,7 @@ class enrol_ldap_plugin extends enrol_plugin {
      */
     protected function ldap_find_userdn($userid) {
         global $CFG;
-        require_once($CFG->libdir.'/ldaplib.php');
+        require_once(\core\component::component_path('core', 'ldaplib.php'));
 
         $ldap_contexts = explode(';', $this->get_config('user_contexts'));
 
@@ -976,7 +976,7 @@ class enrol_ldap_plugin extends enrol_plugin {
     function create_course($course_ext, progress_trace $trace) {
         global $CFG, $DB;
 
-        require_once("$CFG->dirroot/course/lib.php");
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         // Override defaults with template course
         $template = false;
@@ -1070,7 +1070,7 @@ class enrol_ldap_plugin extends enrol_plugin {
             return false;
         }
 
-        require_once("$CFG->dirroot/course/lib.php");
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $courseupdated = false;
         $updatedcourse = new stdClass();
         $updatedcourse->id = $course->id;

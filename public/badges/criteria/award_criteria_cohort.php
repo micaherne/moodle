@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/cohort/lib.php');
+require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
 /**
  * Badge award criteria -- award on cohort membership

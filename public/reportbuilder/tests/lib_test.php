@@ -26,7 +26,7 @@ use core_user\reportbuilder\datasource\users;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("{$CFG->dirroot}/reportbuilder/lib.php");
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Unit tests for the component callbacks

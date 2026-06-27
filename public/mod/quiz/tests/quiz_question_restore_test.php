@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(__DIR__ . '/../locallib.php');
 
 /**
  * Quiz backup and restore tests.

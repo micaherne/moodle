@@ -24,7 +24,7 @@ namespace tool_dataprivacy;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/dataprivacy/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 use context_helper;
 use context_system;

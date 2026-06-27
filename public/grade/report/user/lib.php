@@ -24,8 +24,8 @@
 
 use core_user\output\myprofile\tree;
 
-require_once($CFG->dirroot . '/grade/report/lib.php');
-require_once($CFG->libdir.'/tablelib.php');
+require_once(\core\component::component_path('core_grades', 'report/lib.php'));
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 define("GRADE_REPORT_USER_HIDE_HIDDEN", 0);
 define("GRADE_REPORT_USER_HIDE_UNTIL", 1);

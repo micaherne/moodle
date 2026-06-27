@@ -23,8 +23,8 @@ use mod_assign_test_generator;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(__DIR__ . '/../locallib.php');
+require_once(__DIR__ . '/generator.php');
 
 /**
  * Provides the unit tests for feedback.

@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/feedback/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Unit tests to check group membership for teacher access to responses.

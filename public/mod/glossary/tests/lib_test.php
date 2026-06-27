@@ -26,8 +26,8 @@ namespace mod_glossary;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/glossary/lib.php');
-require_once($CFG->dirroot . '/mod/glossary/locallib.php');
+require_once(__DIR__ . '/../lib.php');
+require_once(__DIR__ . '/../locallib.php');
 
 /**
  * Glossary lib testcase.
@@ -576,7 +576,7 @@ final class lib_test extends \advanced_testcase {
     public function test_mod_glossary_delete_entry(): void {
         global $DB, $CFG;
         $this->resetAfterTest();
-        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
 
         // Create required data.
         $course = $this->getDataGenerator()->create_course();

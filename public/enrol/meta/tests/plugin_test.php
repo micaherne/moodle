@@ -118,7 +118,7 @@ final class plugin_test extends \advanced_testcase {
         set_config('syncall', 0, 'enrol_meta');
         set_config('nosyncroleids', $manager->id, 'enrol_meta');
 
-        require_once($CFG->dirroot.'/enrol/meta/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
 
         enrol_meta_sync(null, false);
         $this->assertEquals(7, $DB->count_records('user_enrolments'));
@@ -447,7 +447,7 @@ final class plugin_test extends \advanced_testcase {
     public function test_add_to_group(): void {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot.'/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         $this->resetAfterTest(true);
 
@@ -543,7 +543,7 @@ final class plugin_test extends \advanced_testcase {
     public function test_add_to_group_with_member(): void {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot.'/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         $this->resetAfterTest(true);
 
@@ -743,7 +743,7 @@ final class plugin_test extends \advanced_testcase {
         $course2 = $this->getDataGenerator()->create_course(array('fullname' => 'Physics'));
         $metacourse = $this->getDataGenerator()->create_course(array('fullname' => 'All sciences'));
 
-        require_once($CFG->dirroot.'/enrol/meta/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
 
         // Run the function.
         $groupid = enrol_meta_create_new_group($metacourse->id, $course->id);
@@ -928,7 +928,7 @@ final class plugin_test extends \advanced_testcase {
 
         // Teachers don't have enrol/meta:unenrol capability by default. Login as admin for simplicity.
         $this->setAdminUser();
-        require_once($CFG->dirroot . '/enrol/locallib.php');
+        require_once(\core\component::component_path('core_enrol', 'locallib.php'));
         $manager = new \course_enrolment_manager($PAGE, $course);
 
         $userenrolments = $manager->get_user_enrolments($student->id);

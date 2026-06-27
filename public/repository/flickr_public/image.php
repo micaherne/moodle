@@ -85,7 +85,7 @@ class moodle_image {
         }
 
         if (empty($options['font'])) {
-            $options['font'] = $CFG->libdir . '/default.ttf';
+            $options['font'] = \core\component::component_path('core', 'default.ttf');
         }
         if (empty($options['angle'])) {
             $options['angle'] = 0;

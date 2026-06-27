@@ -28,7 +28,7 @@ use tool_dataprivacy\local\helper;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * The contact form to the site's Data Protection Officer

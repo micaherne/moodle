@@ -37,7 +37,7 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/bigbluebuttonbn/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * BBB Library tests class.
@@ -424,7 +424,7 @@ final class lib_test extends \advanced_testcase {
         $this->setAdminUser();
         $this->resetAfterTest();
         list($bbactivitycontext, $bbactivitycm, $bbactivity) = $this->create_instance();
-        include_once($CFG->dirroot . '/mod/bigbluebuttonbn/mod_form.php');
+        include_once(__DIR__ . '/../mod_form.php');
         $data = new stdClass();
         $data->instance = $bbactivity;
         $data->id = $bbactivity->id;

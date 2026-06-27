@@ -28,10 +28,10 @@ if (empty($CFG->enableportfolios)) {
     throw new \moodle_exception('disabled', 'portfolio');
 }
 
-require_once($CFG->libdir . '/portfoliolib.php');
-require_once($CFG->libdir . '/portfolio/exporter.php');
-require_once($CFG->libdir . '/portfolio/caller.php');
-require_once($CFG->libdir . '/portfolio/plugin.php');
+require_once(\core\component::component_path('core', 'portfoliolib.php'));
+require_once(\core\component::component_path('core', 'portfolio/exporter.php'));
+require_once(\core\component::component_path('core', 'portfolio/caller.php'));
+require_once(\core\component::component_path('core', 'portfolio/plugin.php'));
 
 $dataid = optional_param('id', 0, PARAM_INT); // The ID of partially completed export, corresponds to a record in portfolio_tempdata.
 $type = optional_param('type', null, PARAM_SAFEDIR); // If we're returning from an external system (postcontrol) for a single-export only plugin.
@@ -223,7 +223,7 @@ if (!$exporter->get('instance')) {
         redirect($CFG->wwwroot . '/portfolio/add.php?id= ' . $exporter->get('id') . '&instance=' . $instance . '&sesskey=' . sesskey());
     }
     // be very selective about not including this unless we really need to
-    require_once($CFG->libdir . '/portfolio/forms.php');
+    require_once(\core\component::component_path('core', 'portfolio/forms.php'));
     $mform = new portfolio_instance_select('', array('id' => $exporter->get('id'), 'caller' => $exporter->get('caller'), 'options' => $options));
     if ($mform->is_cancelled()) {
         $exporter->cancel_request();

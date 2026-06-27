@@ -68,7 +68,7 @@ class view_reserved_words extends XMLDBAction {
         global $CFG, $XMLDB, $DB;
 
         // Calculate list of available SQL generators
-        require_once("$CFG->libdir/ddl/sql_generator.php");
+        require_once(\core\component::component_path('core', 'ddl/sql_generator.php'));
         $reserved_words = sql_generator::getAllReservedWords();
 
         // Now, calculate, looking into current DB (with AdoDB Metadata), which fields are

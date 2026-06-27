@@ -19,8 +19,8 @@ namespace tool_monitor;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/blog/locallib.php');
-require_once($CFG->dirroot . '/blog/lib.php');
+require_once(\core\component::component_path('core_blog', 'locallib.php'));
+require_once(\core\component::component_path('core_blog', 'lib.php'));
 
 /**
  * Unit tests for event observers.

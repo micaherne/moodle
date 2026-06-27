@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot.'/mod/lesson/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     $yesno = array(0 => get_string('no'), 1 => get_string('yes'));
 
     // Introductory explanation that all the settings are defaults for the add lesson form.

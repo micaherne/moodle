@@ -108,13 +108,13 @@ use core_admin\admin_search;
 defined('MOODLE_INTERNAL') || die();
 
 /// Add libraries
-require_once($CFG->libdir.'/ddllib.php');
-require_once($CFG->libdir.'/messagelib.php');
+require_once(__DIR__ . '/ddllib.php');
+require_once(__DIR__ . '/messagelib.php');
 
 // Add classes, traits, and interfaces which should be autoloaded.
 // The autoloader is configured late in setup.php, after ABORT_AFTER_CONFIG.
 // This is also required where the setup system is not included at all.
-require_once($CFG->dirroot.'/'.$CFG->admin.'/classes/local/settings/linkable_settings_page.php');
+require_once(\core\component::component_path('core_admin', 'classes/local/settings/linkable_settings_page.php'));
 
 define('INSECURE_DATAROOT_WARNING', 1);
 define('INSECURE_DATAROOT_ERROR', 2);
@@ -431,7 +431,7 @@ function get_db_directories() {
     $dbdirs = array();
 
     /// First, the main one (lib/db)
-    $dbdirs[] = $CFG->libdir.'/db';
+    $dbdirs[] = __DIR__ . '/db';
 
     /// Then, all the ones defined by core_component::get_plugin_types()
     $plugintypes = core_component::get_plugin_types();
@@ -3030,7 +3030,7 @@ class admin_setting_configexecutable extends admin_setting_configfile {
     public function output_html($data, $query='') {
         global $CFG, $OUTPUT;
         $default = $this->get_defaultsetting();
-        require_once("$CFG->libdir/filelib.php");
+        require_once(__DIR__ . '/filelib.php');
 
         $context = (object) [
             'id' => $this->get_id(),
@@ -4731,7 +4731,7 @@ class admin_setting_courselist_frontpage extends admin_setting {
      */
     public function __construct($loggedin) {
         global $CFG;
-        require_once($CFG->dirroot.'/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $name        = 'frontpage'.($loggedin ? 'loggedin' : '');
         $visiblename = get_string('frontpage'.($loggedin ? 'loggedin' : ''),'admin');
         $description = get_string('configfrontpage'.($loggedin ? 'loggedin' : ''),'admin');
@@ -5728,7 +5728,7 @@ class admin_setting_question_behaviour extends admin_setting_configselect {
      */
     public function load_choices() {
         global $CFG;
-        require_once($CFG->dirroot . '/question/engine/lib.php');
+        require_once(\core\component::component_path('core_question', 'engine/lib.php'));
         $this->choices = question_engine::get_behaviour_options('');
         return true;
     }
@@ -6086,7 +6086,7 @@ class admin_setting_special_gradelimiting extends admin_setting_configcheckbox {
      */
     function regrade_all() {
         global $CFG;
-        require_once("$CFG->libdir/gradelib.php");
+        require_once(__DIR__ . '/gradelib.php');
         grade_force_site_regrading();
     }
 
@@ -6149,7 +6149,7 @@ class admin_setting_special_grademinmaxtouse extends admin_setting_configselect 
 
         // If saved and the value has changed.
         if (empty($result) && $previous != $data) {
-            require_once($CFG->libdir . '/gradelib.php');
+            require_once(__DIR__ . '/gradelib.php');
             grade_force_site_regrading();
         }
 
@@ -6437,7 +6437,7 @@ class admin_setting_gradecat_combo extends admin_setting {
 
         // force regrade if needed
         if ($oldforced != $forced or ($forced and $value != $oldvalue)) {
-            require_once($CFG->libdir.'/gradelib.php');
+            require_once(__DIR__ . '/gradelib.php');
             grade_category::updated_forced_settings();
         }
 
@@ -6522,7 +6522,7 @@ class admin_setting_grade_profilereport extends admin_setting_configselect {
         $this->choices = array();
 
         global $CFG;
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(__DIR__ . '/gradelib.php');
 
         foreach (core_component::get_plugin_list('gradereport') as $plugin => $plugindir) {
             if (file_exists($plugindir.'/lib.php')) {
@@ -6687,7 +6687,8 @@ class admin_page_managemods extends admin_externalpage {
         $found = false;
         if ($modules = $DB->get_records('modules')) {
             foreach ($modules as $module) {
-                if (!file_exists("$CFG->dirroot/mod/$module->name/lib.php")) {
+                $moddir = \core_component::get_plugin_directory('mod', $module->name);
+                if (!$moddir || !file_exists("$moddir/lib.php")) {
                     continue;
                 }
                 if (strpos($module->name, $query) !== false) {
@@ -6973,7 +6974,7 @@ class admin_page_manageblocks extends admin_externalpage {
         $found = false;
         if ($blocks = $DB->get_records('block')) {
             foreach ($blocks as $block) {
-                if (!file_exists("$CFG->dirroot/blocks/$block->name/")) {
+                if (!\core_component::get_plugin_directory('block', $block->name)) {
                     continue;
                 }
                 if (strpos($block->name, $query) !== false) {
@@ -7090,7 +7091,7 @@ class admin_page_manageqbehaviours extends admin_externalpage {
         }
 
         $found = false;
-        require_once($CFG->dirroot . '/question/engine/lib.php');
+        require_once(\core\component::component_path('core_question', 'engine/lib.php'));
         foreach (core_component::get_plugin_list('qbehaviour') as $behaviour => $notused) {
             if (strpos(core_text::strtolower(question_engine::get_behaviour_name($behaviour)),
                     $query) !== false) {
@@ -7140,7 +7141,7 @@ class admin_page_manageqtypes extends admin_externalpage {
         }
 
         $found = false;
-        require_once($CFG->dirroot . '/question/engine/bank.php');
+        require_once(\core\component::component_path('core_question', 'engine/bank.php'));
         foreach (question_bank::get_all_qtypes() as $qtype) {
             if (strpos(core_text::strtolower($qtype->local_name()), $query) !== false) {
                 $type = admin_search::SEARCH_MATCH_SETTING_DISPLAY_NAME;
@@ -7465,9 +7466,10 @@ class admin_setting_manageauths extends admin_setting {
             }
 
             // settings link
-            if (file_exists($CFG->dirroot.'/auth/'.$auth.'/settings.php')) {
+            $authdir = \core_component::get_plugin_directory('auth', $auth);
+            if ($authdir && file_exists($authdir.'/settings.php')) {
                 $settings = "<a href=\"settings.php?section=authsetting$auth\">{$txt->settings}</a>";
-            } else if (file_exists($CFG->dirroot.'/auth/'.$auth.'/config.html')) {
+            } else if ($authdir && file_exists($authdir.'/config.html')) {
                 throw new \coding_exception('config.html is no longer supported, please use settings.php instead.');
             } else {
                 $settings = '';
@@ -7656,7 +7658,8 @@ class admin_setting_manageantiviruses extends admin_setting {
             }
 
             // Settings link.
-            if (file_exists($CFG->dirroot.'/lib/antivirus/'.$antivirus.'/settings.php')) {
+            $antivirusdir = \core_component::get_plugin_directory('antivirus', $antivirus);
+            if ($antivirusdir && file_exists($antivirusdir.'/settings.php')) {
                 $eurl = new moodle_url('/admin/settings.php', array('section' => 'antivirussettings'.$antivirus));
                 $settings = html_writer::link($eurl, $txt->settings);
             } else {
@@ -8920,20 +8923,20 @@ function admin_get_root($reload=false, $requirefulltree=true) {
 
     if (!$ADMIN->loaded) {
     // we process this file first to create categories first and in correct order
-        require($CFG->dirroot.'/'.$CFG->admin.'/settings/top.php');
+        require(\core\component::component_path('core_admin', 'settings/top.php'));
 
         // now we process all other files in admin/settings to build the admin tree
-        foreach (glob($CFG->dirroot.'/'.$CFG->admin.'/settings/*.php') as $file) {
-            if ($file == $CFG->dirroot.'/'.$CFG->admin.'/settings/top.php') {
+        foreach (glob(\core\component::component_path('core_admin', 'settings/*.php')) as $file) {
+            if ($file == \core\component::component_path('core_admin', 'settings/top.php')) {
                 continue;
             }
-            if ($file == $CFG->dirroot.'/'.$CFG->admin.'/settings/plugins.php') {
+            if ($file == \core\component::component_path('core_admin', 'settings/plugins.php')) {
             // plugins are loaded last - they may insert pages anywhere
                 continue;
             }
             require($file);
         }
-        require($CFG->dirroot.'/'.$CFG->admin.'/settings/plugins.php');
+        require(\core\component::component_path('core_admin', 'settings/plugins.php'));
 
         $ADMIN->loaded = true;
     }
@@ -9837,7 +9840,7 @@ class admin_setting_enablemobileservice extends admin_setting_configcheckbox {
             return 0;
         }
 
-        require_once($CFG->dirroot . '/webservice/lib.php');
+        require_once(\core\component::component_path('core_webservice', 'lib.php'));
         $webservicemanager = new webservice();
         $mobileservice = $webservicemanager->get_external_service_by_shortname(MOODLE_OFFICIAL_MOBILE_SERVICE);
         if ($mobileservice->enabled and $this->is_protocol_cap_allowed()) {
@@ -9863,7 +9866,7 @@ class admin_setting_enablemobileservice extends admin_setting_configcheckbox {
 
         $servicename = MOODLE_OFFICIAL_MOBILE_SERVICE;
 
-        require_once($CFG->dirroot . '/webservice/lib.php');
+        require_once(\core\component::component_path('core_webservice', 'lib.php'));
         $webservicemanager = new webservice();
 
         $updateprotocol = false;
@@ -10475,8 +10478,9 @@ class admin_setting_managewebserviceprotocols extends admin_setting {
             $name = get_string('pluginname', 'webservice_'.$protocol);
 
             $plugin = new stdClass();
-            if (file_exists($CFG->dirroot.'/webservice/'.$protocol.'/version.php')) {
-                include($CFG->dirroot.'/webservice/'.$protocol.'/version.php');
+            $wsdir = \core_component::get_plugin_directory('webservice', $protocol);
+            if ($wsdir && file_exists($wsdir.'/version.php')) {
+                include($wsdir.'/version.php');
             }
             $version = isset($plugin->version) ? $plugin->version : '';
 
@@ -10492,7 +10496,7 @@ class admin_setting_managewebserviceprotocols extends admin_setting {
             }
 
             // settings link
-            if (file_exists($CFG->dirroot.'/webservice/'.$protocol.'/settings.php')) {
+            if ($wsdir && file_exists($wsdir.'/settings.php')) {
                 $settings = "<a href=\"settings.php?section=webservicesetting$protocol\">$strsettings</a>";
             } else {
                 $settings = '';
@@ -10719,8 +10723,8 @@ class admin_setting_configstoredfile extends admin_setting {
     protected function get_options() {
         global $CFG;
 
-        require_once("$CFG->libdir/filelib.php");
-        require_once("$CFG->dirroot/repository/lib.php");
+        require_once(__DIR__ . '/filelib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
         $defaults = array(
             'mainfile' => '', 'subdirs' => 0, 'maxbytes' => -1, 'maxfiles' => 1,
             'accepted_types' => '*', 'return_types' => FILE_INTERNAL, 'areamaxbytes' => FILE_AREA_MAX_BYTES_UNLIMITED,
@@ -10824,7 +10828,7 @@ class admin_setting_configstoredfile extends admin_setting {
         file_prepare_draft_area($draftitemid, $options['context']->id, $component, $this->filearea, $this->itemid, $options);
 
         // Filemanager form element implementation is far from optimal, we need to rework this if we ever fix it...
-        require_once("$CFG->dirroot/lib/form/filemanager.php");
+        require_once(\core\component::component_path('core_form', 'filemanager.php'));
 
         $fmoptions = new stdClass();
         $fmoptions->mainfile       = $options['mainfile'];
@@ -10883,7 +10887,8 @@ class admin_setting_configmultiselect_modules extends admin_setting_configmultis
         $records = $DB->get_records('modules', array('visible'=>1), 'name');
         foreach ($records as $record) {
             // Exclude modules if the code doesn't exist
-            if (file_exists("$CFG->dirroot/mod/$record->name/lib.php")) {
+            $moddir = \core_component::get_plugin_directory('mod', $record->name);
+            if ($moddir && file_exists("$moddir/lib.php")) {
                 // Also exclude system modules (if specified)
                 if (!($this->excludesystem &&
                         plugin_supports('mod', $record->name, FEATURE_MOD_ARCHETYPE) ===

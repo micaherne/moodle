@@ -23,7 +23,7 @@
  * @author     Tung Thai <Tung.ThaiDuc@nashtechglobal.com>
  */
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 $relatedid = optional_param('relatedid', 0, PARAM_INT); // Related badge ID.
 $badgeid = optional_param('badgeid', 0, PARAM_INT); // Badge ID.

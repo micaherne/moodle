@@ -33,7 +33,7 @@ final class importlib_test extends \advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/grade/import/lib.php");
+        require_once(__DIR__ . '/../import/lib.php');
         parent::setUpBeforeClass();
     }
 

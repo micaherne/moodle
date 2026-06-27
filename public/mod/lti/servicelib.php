@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/mod/lti/OAuthBody.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once(__DIR__ . '/OAuthBody.php');
+require_once(__DIR__ . '/locallib.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
 use moodle\mod\lti as lti;
@@ -175,7 +175,7 @@ function lti_set_session_user($userid) {
 
 function lti_update_grade($ltiinstance, $userid, $launchid, $gradeval) {
     global $CFG, $DB;
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $params = array();
     $params['itemname'] = $ltiinstance->name;
@@ -221,7 +221,7 @@ function lti_update_grade($ltiinstance, $userid, $launchid, $gradeval) {
 
 function lti_read_grade($ltiinstance, $userid) {
     global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $grades = grade_get_grades($ltiinstance->course, LTI_ITEM_TYPE, LTI_ITEM_MODULE, $ltiinstance->id, $userid);
 
@@ -239,7 +239,7 @@ function lti_read_grade($ltiinstance, $userid) {
 
 function lti_delete_grade($ltiinstance, $userid) {
     global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $grade = new stdClass();
     $grade->userid   = $userid;

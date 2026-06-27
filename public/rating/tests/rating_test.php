@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff.
 global $CFG;
-require_once($CFG->dirroot . '/rating/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 
 /**

@@ -76,10 +76,10 @@ if (!defined('LDAP_OPT_DIAGNOSTIC_MESSAGE')) {
     define('LDAP_OPT_DIAGNOSTIC_MESSAGE', 0x0032);
 }
 
-require_once($CFG->libdir.'/authlib.php');
-require_once($CFG->libdir.'/ldaplib.php');
-require_once($CFG->dirroot.'/user/lib.php');
-require_once($CFG->dirroot.'/auth/ldap/locallib.php');
+require_once(\core\component::component_path('core', 'authlib.php'));
+require_once(\core\component::component_path('core', 'ldaplib.php'));
+require_once(\core\component::component_path('core_user', 'lib.php'));
+require_once(__DIR__ . '/locallib.php');
 
 /**
  * LDAP authentication plugin.
@@ -525,8 +525,8 @@ class auth_plugin_ldap extends auth_plugin_base {
     function user_signup($user, $notify=true) {
         global $CFG, $DB, $PAGE, $OUTPUT;
 
-        require_once($CFG->dirroot.'/user/profile/lib.php');
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         if ($this->user_exists($user->username)) {
             throw new \moodle_exception('auth_ldap_user_exists', 'auth_ldap');
@@ -682,7 +682,7 @@ class auth_plugin_ldap extends auth_plugin_base {
     public function sync_users_update_callback(?callable $updatecallback = null): bool {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         print_string('connectingldap', 'auth_ldap');
         $ldapconnection = $this->ldap_connect();
@@ -1133,7 +1133,7 @@ class auth_plugin_ldap extends auth_plugin_base {
     function user_update($olduser, $newuser) {
         global $CFG;
 
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         if (isset($olduser->username) and isset($newuser->username) and $olduser->username != $newuser->username) {
             error_log($this->errorlogtag.get_string('renamingnotallowed', 'auth_ldap'));

@@ -29,7 +29,7 @@ use \core_privacy\local\request\userlist;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/rating/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Privacy Subsystem implementation for core_ratings.

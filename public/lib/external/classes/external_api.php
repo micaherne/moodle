@@ -64,7 +64,7 @@ class external_api {
             if (empty($function->classpath)) {
                 $function->classpath = core_component::get_component_directory($function->component) . '/externallib.php';
             } else {
-                $function->classpath = "{$CFG->dirroot}/{$function->classpath}";
+                $function->classpath = \core\component::from_mono_path('/' . $function->classpath);
             }
             if (!file_exists($function->classpath)) {
                 throw new coding_exception(
@@ -181,7 +181,7 @@ class external_api {
     public static function call_external_function($function, $args, $ajaxonly = false) {
         global $PAGE, $COURSE, $CFG, $SITE;
 
-        require_once("{$CFG->libdir}/pagelib.php");
+        require_once(\core\component::component_path('core', 'pagelib.php'));
 
         $externalfunctioninfo = static::external_function_info($function);
 

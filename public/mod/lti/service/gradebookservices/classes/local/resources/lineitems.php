@@ -241,7 +241,7 @@ class lineitems extends resource_base {
         } else {
             throw new \Exception(null, 400);
         }
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $resourceid = (isset($json->resourceId)) ? $json->resourceId : '';
         $ltilinkid = (isset($json->resourceLinkId)) ? $json->resourceLinkId : null;
         if ($ltilinkid == null) {

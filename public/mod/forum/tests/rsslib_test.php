@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once(__DIR__ . '/generator_trait.php');
-require_once("{$CFG->dirroot}/mod/forum/rsslib.php");
+require_once(__DIR__ . '/../rsslib.php');
 
 /**
  * Tests for the forum implementation of the RSS component.

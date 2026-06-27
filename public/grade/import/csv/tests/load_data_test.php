@@ -19,10 +19,10 @@ namespace gradeimport_csv;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/grade/import/csv/tests/fixtures/phpunit_gradeimport_csv_load_data.php');
-require_once($CFG->libdir . '/csvlib.class.php');
-require_once($CFG->libdir . '/grade/grade_item.php');
-require_once($CFG->libdir . '/grade/tests/fixtures/lib.php');
+require_once(__DIR__ . '/fixtures/phpunit_gradeimport_csv_load_data.php');
+require_once(\core\component::component_path('core', 'csvlib.class.php'));
+require_once(\core\component::component_path('core', 'grade/grade_item.php'));
+require_once(\core\component::component_path('core', 'grade/tests/fixtures/lib.php'));
 
 /**
  * Unit tests for lib.php

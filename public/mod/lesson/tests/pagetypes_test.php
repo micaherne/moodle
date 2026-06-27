@@ -21,8 +21,8 @@ use lesson_page_type_essay;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/lesson/locallib.php');
-require_once($CFG->dirroot . '/mod/lesson/pagetypes/essay.php');
+require_once(__DIR__ . '/../locallib.php');
+require_once(__DIR__ . '/../pagetypes/essay.php');
 
 
 /**

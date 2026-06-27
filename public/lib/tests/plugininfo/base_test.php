@@ -37,8 +37,8 @@ final class base_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once($CFG->dirroot.'/lib/tests/fixtures/testable_plugin_manager.php');
-        require_once($CFG->dirroot.'/lib/tests/fixtures/testable_plugininfo_base.php');
+        require_once(__DIR__ . '/../fixtures/testable_plugin_manager.php');
+        require_once(__DIR__ . '/../fixtures/testable_plugininfo_base.php');
         parent::setUpBeforeClass();
     }
 

@@ -30,7 +30,7 @@ use tool_usertours\helper;
 use tool_usertours\tour;
 use tool_usertours\step;
 
-require_once($CFG->libdir . '/tablelib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * Table to show the list of steps in a tour.

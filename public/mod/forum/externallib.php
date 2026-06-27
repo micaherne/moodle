@@ -63,7 +63,7 @@ class mod_forum_external extends external_api {
     public static function get_forums_by_courses($courseids = array()) {
         global $CFG;
 
-        require_once($CFG->dirroot . "/mod/forum/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::get_forums_by_courses_parameters(), array('courseids' => $courseids));
 
@@ -347,7 +347,7 @@ class mod_forum_external extends external_api {
 
         global $CFG, $DB, $USER;
 
-        require_once($CFG->dirroot . "/mod/forum/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $warnings = array();
         $discussions = array();
@@ -628,7 +628,7 @@ class mod_forum_external extends external_api {
      */
     public static function view_forum($forumid) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . "/mod/forum/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::view_forum_parameters(),
                                             array(
@@ -693,7 +693,7 @@ class mod_forum_external extends external_api {
      */
     public static function view_forum_discussion($discussionid) {
         global $DB, $CFG, $USER;
-        require_once($CFG->dirroot . "/mod/forum/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::view_forum_discussion_parameters(),
                                             array(
@@ -788,7 +788,7 @@ class mod_forum_external extends external_api {
      */
     public static function add_discussion_post($postid, $subject, $message, $options = array(), $messageformat = FORMAT_HTML) {
         global $CFG, $USER;
-        require_once($CFG->dirroot . "/mod/forum/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         // Get all the factories that are required.
         $vaultfactory = mod_forum\local\container::get_vault_factory();
@@ -1104,7 +1104,7 @@ class mod_forum_external extends external_api {
      */
     public static function add_discussion($forumid, $subject, $message, $groupid = 0, $options = array()) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . "/mod/forum/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::add_discussion_parameters(),
                                             array(
@@ -1279,7 +1279,7 @@ class mod_forum_external extends external_api {
      */
     public static function can_add_discussion($forumid, $groupid = null) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . "/mod/forum/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::can_add_discussion_parameters(),
                                             array(
@@ -1649,7 +1649,7 @@ class mod_forum_external extends external_api {
      */
     public static function delete_post($postid) {
         global $USER, $CFG;
-        require_once($CFG->dirroot . "/mod/forum/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::delete_post_parameters(),
             array(
@@ -2194,7 +2194,7 @@ class mod_forum_external extends external_api {
     public static function update_discussion_post($postid, $subject = '', $message = '', $messageformat = FORMAT_HTML,
             $options = []) {
         global $CFG, $USER;
-        require_once($CFG->dirroot . "/mod/forum/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::add_discussion_post_parameters(),
             [
@@ -2374,7 +2374,7 @@ class mod_forum_external extends external_api {
      */
     public static function mark_posts_read(array $postids, int $discussionid): bool {
         global $CFG, $DB, $USER;
-        require_once($CFG->dirroot . "/mod/forum/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(
             self::mark_posts_read_parameters(),

@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/course/renderer.php');
+require_once(__DIR__ . '/../renderer.php');
 
 use core_course\management\helper;
 

@@ -30,7 +30,7 @@ use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(__DIR__ . '/locallib.php');
 
 // Get submitted parameters.
 $id = required_param('cmid', PARAM_INT); // Course module id

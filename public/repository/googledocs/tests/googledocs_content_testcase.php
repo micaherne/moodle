@@ -17,7 +17,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/repository/googledocs/tests/repository_googledocs_testcase.php');
+require_once(__DIR__ . '/repository_googledocs_testcase.php');
 
 /**
  * Base class for the googledoc repository unit tests related to content browsing and searching.

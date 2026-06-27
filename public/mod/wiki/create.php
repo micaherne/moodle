@@ -15,11 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/create_form.php');
-require_once($CFG->dirroot . '/mod/wiki/lib.php');
-require_once($CFG->dirroot . '/mod/wiki/locallib.php');
-require_once($CFG->dirroot . '/mod/wiki/pagelib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/pagelib.php');
 
 // this page accepts two actions: new and create
 // 'new' action will display a form contains page title and page format

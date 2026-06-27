@@ -180,7 +180,7 @@ class framework_importer {
         // Rule type, Rule outcome, Rule config, Is framework, Taxonomy.
 
         // The idnumber is concatenated with the category names.
-        require_once($CFG->libdir . '/csvlib.class.php');
+        require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
         $type = 'competency_framework';
 
@@ -372,7 +372,7 @@ class framework_importer {
     public function get_scale_id($scalevalues, $competencyname) {
         global $CFG, $USER;
 
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         if (empty($this->scalecache)) {
             $allscales = grade_scale::fetch_all_global();

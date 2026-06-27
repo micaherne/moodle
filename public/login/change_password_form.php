@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/user/lib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('core_user', 'lib.php'));
 require_once('lib.php');
 
 class login_change_password_form extends moodleform {

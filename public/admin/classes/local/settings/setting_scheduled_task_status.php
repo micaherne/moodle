@@ -27,8 +27,8 @@ namespace core_admin\local\settings;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/moodlelib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'moodlelib.php'));
 
 use admin_setting_description;
 use core\task\manager;

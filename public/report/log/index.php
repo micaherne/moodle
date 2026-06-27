@@ -24,11 +24,11 @@
 
 use core\report_helper;
 
-require('../../config.php');
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->dirroot.'/report/log/locallib.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/lib/tablelib.php');
+require(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 $id          = optional_param('id', 0, PARAM_INT);// Course ID.
 $group       = optional_param('group', 0, PARAM_INT); // Group to display.

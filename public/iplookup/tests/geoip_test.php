@@ -31,7 +31,7 @@ final class geoip_test extends \advanced_testcase {
 
         parent::setUpBeforeClass();
 
-        require_once("{$CFG->libdir}/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
         require_once("{$CFG->dirroot}/iplookup/lib.php");
     }
 

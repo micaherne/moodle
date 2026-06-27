@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->libdir . '/questionlib.php');
+require_once(__DIR__ . '/../engine/lib.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
 
 use core_question\versions;
 
@@ -201,7 +201,7 @@ class question_type {
     public function create_editing_form($submiturl, $question, $category,
             $contexts, $formeditable) {
         global $CFG;
-        require_once($CFG->dirroot . '/question/type/edit_question_form.php');
+        require_once(__DIR__ . '/edit_question_form.php');
         $definitionfile = $CFG->dirroot . '/question/type/' . $this->name() .
                 '/edit_' . $this->name() . '_form.php';
         if (!is_readable($definitionfile) || !is_file($definitionfile)) {
@@ -224,6 +224,10 @@ class question_type {
      */
     public function plugin_dir() {
         global $CFG;
+        $dir = \core_component::get_plugin_directory('qtype', $this->name());
+        if ($dir !== null) {
+            return $dir;
+        }
         return $CFG->dirroot . '/question/type/' . $this->name();
     }
 

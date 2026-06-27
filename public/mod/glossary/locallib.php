@@ -24,8 +24,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->libdir . '/portfolio/caller.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'portfolio/caller.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 /**
  * class to handle exporting an entire glossary database

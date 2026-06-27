@@ -29,7 +29,7 @@ final class overviewfactory_test extends \advanced_testcase {
     #[\Override]
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/course/format/tests/fixtures/wrongcm_activityoverview.php');
+        require_once(__DIR__ . '/../../fixtures/wrongcm_activityoverview.php');
         parent::setUpBeforeClass();
     }
 

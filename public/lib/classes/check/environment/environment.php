@@ -66,7 +66,7 @@ class environment extends check {
     public function get_result(): result {
         global $CFG;
 
-        require_once($CFG->libdir.'/environmentlib.php');
+        require_once(__DIR__ . '/../../../environmentlib.php');
         list($status, $details) = check_moodle_environment($CFG->release, ENV_SELECT_NEWER);
 
         if ($status) {

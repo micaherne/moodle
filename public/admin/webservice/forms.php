@@ -22,7 +22,7 @@
  * @copyright 2009 Moodle Pty Ltd (http://moodle.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once $CFG->libdir . '/formslib.php';
+require_once \core\component::component_path('core', 'formslib.php');
 
 /**
  * Display the authorised user settings form
@@ -189,7 +189,7 @@ class external_service_functions_form extends moodleform {
 
         $mform->addElement('header', 'addfunction', get_string('addfunctions', 'webservice'));
 
-        require_once($CFG->dirroot . "/webservice/lib.php");
+        require_once(\core\component::component_path('core_webservice', 'lib.php'));
         $webservicemanager = new webservice();
         $functions = $webservicemanager->get_not_associated_external_functions($data['id']);
 

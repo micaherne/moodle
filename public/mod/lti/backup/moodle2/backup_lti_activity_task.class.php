@@ -47,7 +47,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/lti/backup/moodle2/backup_lti_stepslib.php');
+require_once(__DIR__ . '/backup_lti_stepslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the LTI instance

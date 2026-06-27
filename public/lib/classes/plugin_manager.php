@@ -260,7 +260,7 @@ class plugin_manager {
 
         $this->enabledplugins = [];
 
-        require_once($CFG->libdir . '/adminlib.php');
+        require_once(__DIR__ . '/../adminlib.php');
 
         $plugintypes = core_component::get_plugin_types();
         foreach ($plugintypes as $plugintype => $fulldir) {
@@ -1524,7 +1524,7 @@ class plugin_manager {
      */
     public function uninstall_plugin($component, progress_trace $progress) {
         global $CFG;
-        require_once($CFG->libdir . '/upgradelib.php');
+        require_once(__DIR__ . '/../upgradelib.php');
 
         $pluginfo = $this->get_plugin_info($component);
 

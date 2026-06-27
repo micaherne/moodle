@@ -145,7 +145,7 @@ abstract class component_generator_base {
                 [$sourcefile, $targetfile, $username] = $explodedfilename;
                 $user = \core_user::get_user_by_username($username);
             }
-            $filepath = "{$CFG->dirroot}/{$sourcefile}";
+            $filepath = \core\component::from_mono_path('/' . $sourcefile);
             if (!file_exists($filepath)) {
                 throw new coding_exception("File '{$filepath}' does not exist");
             }

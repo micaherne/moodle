@@ -397,7 +397,7 @@ class behat_core_generator extends behat_generator_base {
      */
     protected function preprocess_grade_item($data) {
         global $CFG;
-        require_once("$CFG->libdir/grade/constants.php");
+        require_once(__DIR__ . '/../../grade/constants.php');
 
         if (isset($data['gradetype'])) {
             $data['gradetype'] = constant("GRADE_TYPE_" . strtoupper($data['gradetype']));
@@ -448,7 +448,7 @@ class behat_core_generator extends behat_generator_base {
         // Convert scale name into scale id (negative number indicates using scale).
         if (isset($data['grade']) && strlen($data['grade']) && !is_number($data['grade'])) {
             $data['grade'] = - $this->get_scale_id($data['grade']);
-            require_once("$CFG->libdir/grade/constants.php");
+            require_once(__DIR__ . '/../../grade/constants.php');
 
             if (!isset($data['gradetype'])) {
                 $data['gradetype'] = GRADE_TYPE_SCALE;
@@ -522,8 +522,8 @@ class behat_core_generator extends behat_generator_base {
     protected function process_customlang($data) {
         global $CFG, $DB, $USER;
 
-        require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/customlang/locallib.php');
-        require_once($CFG->libdir . '/adminlib.php');
+        require_once(\core\component::component_path('tool_customlang', 'locallib.php'));
+        require_once(__DIR__ . '/../../adminlib.php');
 
         if (empty($data['component'])) {
             throw new Exception('\'customlang\' requires the field \'component\' type to be specified');
@@ -1066,7 +1066,7 @@ class behat_core_generator extends behat_generator_base {
                     'filename' => $filename,
                     'filepath' => '/',
                 ];
-                $fs->create_file_from_pathname($filerecord, $CFG->dirroot . $data['filepath']);
+                $fs->create_file_from_pathname($filerecord, \core\component::from_mono_path($data['filepath']));
             }
         } else {
             throw new Exception('The specified "' . $data['contenttype'] . '" contenttype does not exist');
@@ -1084,7 +1084,7 @@ class behat_core_generator extends behat_generator_base {
 
         $userid = $data['userid'];
         $fs = get_file_storage();
-        $filepath = "{$CFG->dirroot}/{$data['filepath']}";
+        $filepath = \core\component::from_mono_path('/' . $data['filepath']);
 
         if (!file_exists($filepath)) {
             throw new coding_exception("File '{$filepath}' does not exist");

@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/assign/backup/moodle2/backup_assign_stepslib.php');
+require_once(__DIR__ . '/backup_assign_stepslib.php');
 
 /**
  * assign backup task that provides all the settings and steps to perform one complete backup of the activity

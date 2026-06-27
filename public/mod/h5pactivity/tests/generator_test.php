@@ -64,7 +64,7 @@ final class generator_test extends \advanced_testcase {
         // 1. As path to the file in filesystem.
         $params = [
             'course' => $course->id,
-            'packagefilepath' => $CFG->dirroot.'/h5p/tests/fixtures/filltheblanks.h5p'
+            'packagefilepath' => \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p')
         ];
         $activity = $this->getDataGenerator()->create_module('h5pactivity', $params);
 
@@ -78,7 +78,7 @@ final class generator_test extends \advanced_testcase {
         $filerecord = ['component' => 'user', 'filearea' => 'draft',
                 'contextid' => $usercontext->id, 'itemid' => $params['packagefile'],
                 'filename' => 'singlescobasic.zip', 'filepath' => '/'];
-        $filepath = $CFG->dirroot.'/h5p/tests/fixtures/filltheblanks.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p');
         $fs->create_file_from_pathname($filerecord, $filepath);
         $activity = $this->getDataGenerator()->create_module('h5pactivity', $params);
     }
@@ -97,7 +97,7 @@ final class generator_test extends \advanced_testcase {
         // Testing generator exceptions.
         $params = [
             'course' => $course->id,
-            'packagefilepath' => $CFG->dirroot.'/h5p/tests/fixtures/wrong_file_.xxx'
+            'packagefilepath' => \core\component::component_path('core_h5p', 'tests/fixtures/wrong_file_.xxx')
         ];
         $this->expectException(\coding_exception::class);
         $activity = $this->getDataGenerator()->create_module('h5pactivity', $params);

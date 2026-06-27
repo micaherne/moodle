@@ -25,7 +25,7 @@ namespace fileconverter_unoconv;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 use stored_file;
 use \core_files\conversion;
@@ -208,7 +208,7 @@ class converter implements \core_files\converter_interface {
      */
     public function serve_test_document() {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $format = 'pdf';
 

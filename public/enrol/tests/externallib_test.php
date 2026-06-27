@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/enrol/externallib.php');
+require_once(__DIR__ . '/../externallib.php');
 
 /**
  * Enrol external PHPunit tests
@@ -557,7 +557,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_get_users_courses(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/completion/criteria/completion_criteria_self.php');
+        require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_self.php'));
 
         $this->resetAfterTest(true);
         $CFG->enablecompletion = 1;
@@ -605,7 +605,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $DB->insert_record('user_lastaccess', $lastaccess);
 
         // Force completion, setting at least one criteria.
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_self.php');
+        require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_self.php'));
         $criteriadata = new \stdClass();
         $criteriadata->id = $course1->id;
         // Self completion.
@@ -1422,7 +1422,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $formdata = array_merge($formdata, $customdata);
 
-        require_once("$CFG->dirroot/enrol/editenrolment_form.php");
+        require_once(__DIR__ . '/../editenrolment_form.php');
         $formdata = enrol_user_enrolment_form::mock_generate_submit_keys($formdata);
 
         $querystring = http_build_query($formdata);

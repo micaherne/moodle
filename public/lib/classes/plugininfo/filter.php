@@ -50,7 +50,7 @@ class filter extends base {
      */
     public static function get_enabled_plugins() {
         global $DB, $CFG;
-        require_once("$CFG->libdir/filterlib.php");
+        require_once(__DIR__ . '/../../filterlib.php');
 
         $enabled = array();
         $filters = $DB->get_records_select('filter_active', "active <> :disabled AND contextid = :contextid", array(
@@ -74,8 +74,8 @@ class filter extends base {
      */
     public static function enable_plugin(string $pluginname, int $enabled): bool {
         global $CFG;
-        require_once("$CFG->libdir/filterlib.php");
-        require_once("$CFG->libdir/weblib.php");
+        require_once(__DIR__ . '/../../filterlib.php');
+        require_once(__DIR__ . '/../../weblib.php');
 
         filter_set_global_state($pluginname, $enabled);
         if ($enabled == TEXTFILTER_DISABLED) {
@@ -99,7 +99,7 @@ class filter extends base {
      */
     public static function get_enabled_plugin(string $pluginname): int {
         global $DB, $CFG;
-        require_once("$CFG->libdir/filterlib.php");
+        require_once(__DIR__ . '/../../filterlib.php');
 
         $conditions = ['filter' => $pluginname, 'contextid' => \context_system::instance()->id];
         $record = $DB->get_record('filter_active', $conditions, 'active');

@@ -58,7 +58,7 @@ class framework_exporter {
      */
     public function export() {
         global $CFG;
-        require_once($CFG->libdir . '/csvlib.class.php');
+        require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
         $writer = new csv_export_writer();
         $filename = clean_param($this->framework->get('shortname') . '-' . $this->framework->get('idnumber'), PARAM_FILE);

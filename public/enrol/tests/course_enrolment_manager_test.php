@@ -52,7 +52,7 @@ final class course_enrolment_manager_test extends \advanced_testcase {
      */
     protected function setUp(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/enrol/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
         parent::setUp();
         $this->setAdminUser();
 

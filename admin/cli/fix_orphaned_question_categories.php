@@ -29,8 +29,8 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/clilib.php');
-require_once($CFG->libdir.'/questionlib.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(\core\component::component_path('core', 'questionlib.php'));
 
 $long = array('fix'  => false, 'help' => false);
 $short = array('f' => 'fix', 'h' => 'help');

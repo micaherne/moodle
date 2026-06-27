@@ -23,9 +23,9 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot . '/question/editlib.php');
-require_once($CFG->dirroot . '/question/format.php');
-require_once($CFG->dirroot . '/question/renderer.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
+require_once(\core\component::component_path('core_question', 'format.php'));
+require_once(\core\component::component_path('core_question', 'renderer.php'));
 
 use qbank_exportquestions\exportquestions_helper;
 use qbank_exportquestions\form\export_form;
@@ -62,7 +62,8 @@ $exportform = new export_form($thispageurl,
 
 if ($fromform = $exportform->get_data()) {
     $thiscontext = $contexts->lowest();
-    if (!is_readable($CFG->dirroot . "/question/format/{$fromform->format}/format.php")) {
+    $qformatdir = \core_component::get_plugin_directory('qformat', $fromform->format);
+    if (!$qformatdir || !is_readable("$qformatdir/format.php")) {
         throw new moodle_exception('unknowformat', '', '', $fromform->format);
     }
     $withcategories = 'nocategories';

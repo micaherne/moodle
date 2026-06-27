@@ -21,9 +21,9 @@ require(__DIR__.'/../../config.php');
 
 $mnet = get_mnet_environment();
 // Include MNET stuff:
-require_once $CFG->dirroot.'/mnet/lib.php';
-require_once $CFG->dirroot.'/mnet/remote_client.php';
-require_once $CFG->dirroot.'/mnet/xmlrpc/serverlib.php';
+require_once __DIR__ . '/../lib.php';
+require_once __DIR__ . '/../remote_client.php';
+require_once __DIR__ . '/serverlib.php';
 
 
 if ($CFG->mnet_dispatcher_mode === 'off') {

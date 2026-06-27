@@ -31,7 +31,7 @@ final class overview_test extends \advanced_testcase {
     #[\Override]
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         parent::setUpBeforeClass();
     }
 

@@ -433,7 +433,7 @@ class event_vault implements event_vault_interface {
         $params['modulename'] = '%' . $DB->sql_like_escape($searchvalue) . '%';
 
         // Activity type searching (localised type name).
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         // Search in modules' singular and plural names.
         $modules = array_keys(array_merge(
             preg_grep('/' . $searchvalue . '/i', get_module_types_names()) ?: [],

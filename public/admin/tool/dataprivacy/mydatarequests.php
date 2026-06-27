@@ -22,7 +22,7 @@
  * @package tool_dataprivacy
  */
 
-require_once("../../../config.php");
+require_once(__DIR__ . '/../../../config.php');
 require_once('lib.php');
 
 $courseid = optional_param('course', 0, PARAM_INT);

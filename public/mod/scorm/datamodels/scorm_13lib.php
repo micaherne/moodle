@@ -16,8 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/scorm/datamodels/scormlib.php');
-require_once($CFG->dirroot.'/mod/scorm/datamodels/sequencinglib.php');
+require_once(__DIR__ . '/scormlib.php');
+require_once(__DIR__ . '/sequencinglib.php');
 
 function scorm_seq_overall ($scoid, $userid, $request, $attempt) {
     $seq = scorm_seq_navigation($scoid, $userid, $request, $attempt);

@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    require_once("$CFG->libdir/resourcelib.php");
+    require_once(\core\component::component_path('core', 'resourcelib.php'));
 
     $displayoptions = resourcelib_get_displayoptions(array(RESOURCELIB_DISPLAY_OPEN, RESOURCELIB_DISPLAY_POPUP));
     $defaultdisplayoptions = array(RESOURCELIB_DISPLAY_OPEN);

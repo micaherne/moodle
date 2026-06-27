@@ -24,7 +24,7 @@
  * @package course
  */
 
-require('../config.php');
+require(__DIR__ . '/../config.php');
 
 $jump = required_param('jump', PARAM_RAW);
 

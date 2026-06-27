@@ -91,14 +91,14 @@ final class content_h5p_test extends \advanced_testcase {
 
         // Add contents to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/filltheblanks.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p');
         $contents = $generator->generate_contentbank_data('contenttype_h5p', 1, $USER->id, $coursecontext, true, $filepath);
         $filltheblanks = array_shift($contents);
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/ipsums.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/ipsums.h5p');
         $contents = $generator->generate_contentbank_data('contenttype_h5p', 2, $USER->id, $coursecontext, true, $filepath);
         $accordion1 = array_shift($contents);
         $accordion2 = array_shift($contents);
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/invalid.zip';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/invalid.zip');
         $contents = $generator->generate_contentbank_data('contenttype_h5p', 1, $USER->id, $coursecontext, true, $filepath);
         $invalid = array_shift($contents);
 

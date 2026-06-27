@@ -31,7 +31,7 @@ use core_privacy\local\request\transform;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/questionattempt.php');
+require_once(\core\component::component_path('core_question', 'engine/questionattempt.php'));
 
 /**
  * Privacy provider tests class.

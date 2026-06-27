@@ -132,7 +132,7 @@ final class progress_test extends \advanced_testcase {
     public function test_course_progress_percentage_completion_state(): void {
         global $DB, $CFG;
 
-        require_once("{$CFG->dirroot}/completion/criteria/completion_criteria_activity.php");
+        require_once(__DIR__ . '/../criteria/completion_criteria_activity.php');
 
         // Add a course that supports completion.
         $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);

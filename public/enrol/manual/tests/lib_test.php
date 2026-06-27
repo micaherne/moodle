@@ -33,7 +33,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_migrate_plugin_enrolments(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/enrol/manual/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
 
         $this->resetAfterTest();
 
@@ -523,7 +523,7 @@ final class lib_test extends \advanced_testcase {
 
         // Login as the teacher.
         $this->setUser($teacher);
-        require_once($CFG->dirroot . '/enrol/locallib.php');
+        require_once(\core\component::component_path('core_enrol', 'locallib.php'));
         $manager = new course_enrolment_manager($PAGE, $course);
         $userenrolments = $manager->get_user_enrolments($student->id);
         $this->assertCount(1, $userenrolments);

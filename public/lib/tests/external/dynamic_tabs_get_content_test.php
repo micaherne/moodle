@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/lib/tests/fixtures/testeable_dynamic_tab.php');
+require_once(__DIR__ . '/../fixtures/testeable_dynamic_tab.php');
 
 /**
  * Unit tests external dynamic tabs get content

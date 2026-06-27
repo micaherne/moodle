@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Needed for constants.
-require_once($CFG->dirroot . '/lib/editor/tiny/plugins/recordrtc/classes/plugininfo.php');
+require_once(__DIR__ . '/classes/plugininfo.php');
 
 $ADMIN->add('editortiny', new admin_category('tiny_recordrtc', new lang_string('pluginname', 'tiny_recordrtc')));
 

@@ -63,7 +63,7 @@ class validate_password extends external_api {
      */
     public static function execute(int $instanceid, string $password): stdClass {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
 
         $params = external_api::validate_parameters(self::execute_parameters(), [
             'instanceid' => $instanceid,

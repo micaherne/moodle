@@ -70,8 +70,8 @@ class mod_book_external extends external_api {
      */
     public static function view_book($bookid, $chapterid = 0) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . "/mod/book/lib.php");
-        require_once($CFG->dirroot . "/mod/book/locallib.php");
+        require_once(__DIR__ . '/../lib.php');
+        require_once(__DIR__ . '/../locallib.php');
 
         $params = self::validate_parameters(self::view_book_parameters(),
                                             array(

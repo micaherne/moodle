@@ -21,7 +21,7 @@ use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * A Moodle form base class for editing local filter settings.

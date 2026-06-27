@@ -20,7 +20,7 @@ use \core_contentbank\content;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Form to edit a user's preferences concerning the content bank.

@@ -19,7 +19,7 @@ use mod_quiz\quiz_attempt;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/report/grading/gradingsettings_form.php');
+require_once(__DIR__ . '/gradingsettings_form.php');
 
 /**
  * Quiz report to help teachers manually grade questions that need it.

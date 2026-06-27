@@ -551,7 +551,7 @@ class util {
         $settings = external_settings::get_instance();
 
         if ($component && $filearea && $settings->get_fileurl()) {
-            require_once($CFG->libdir . "/filelib.php");
+            require_once(\core\component::component_path('core', 'filelib.php'));
             $text = file_rewrite_pluginfile_urls($text, $settings->get_file(), $context->id, $component, $filearea, $itemid);
         }
 

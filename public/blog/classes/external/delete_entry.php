@@ -57,8 +57,8 @@ class delete_entry extends external_api {
     public static function execute(int $entryid): array {
         global $USER, $CFG;
 
-        require_once($CFG->dirroot . '/blog/lib.php');
-        require_once($CFG->dirroot . '/blog/locallib.php');
+        require_once(__DIR__ . '/../../lib.php');
+        require_once(__DIR__ . '/../../locallib.php');
 
         $params = self::validate_parameters(self::execute_parameters(), ['entryid' => $entryid]);
 

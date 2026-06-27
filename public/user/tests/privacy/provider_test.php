@@ -35,7 +35,7 @@ final class provider_test extends provider_testcase {
         global $CFG;
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . "/user/lib.php");
+        require_once(__DIR__ . '/../../lib.php');
     }
 
     /**

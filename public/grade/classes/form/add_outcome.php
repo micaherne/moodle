@@ -27,7 +27,7 @@ use grade_outcome;
 use grade_plugin_return;
 use moodle_url;
 
-require_once($CFG->dirroot.'/grade/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Prints the add outcome gradebook form.

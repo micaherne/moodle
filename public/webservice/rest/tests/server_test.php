@@ -23,7 +23,7 @@ use core_external\external_value;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot . '/webservice/rest/locallib.php');
+require_once(__DIR__ . '/../locallib.php');
 
 /**
  * Rest server testcase.

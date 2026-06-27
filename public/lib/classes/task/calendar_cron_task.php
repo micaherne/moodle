@@ -25,7 +25,7 @@ namespace core\task;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
 /**
  * Simple task to run the calendar cron.
@@ -48,7 +48,7 @@ class calendar_cron_task extends scheduled_task {
     public function execute() {
         global $CFG, $DB;
 
-        require_once($CFG->libdir . '/bennu/bennu.inc.php');
+        require_once(__DIR__ . '/../../bennu/bennu.inc.php');
 
         $time = time();
         $sql = "SELECT *

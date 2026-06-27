@@ -36,13 +36,13 @@ defined('MOODLE_INTERNAL') || die();
 // so we don't have to always include everything unnecessarily for performance
 
 // very lightweight list of constants. always needed and no further dependencies
-require_once($CFG->libdir . '/portfolio/constants.php');
+require_once(__DIR__ . '/portfolio/constants.php');
 // a couple of exception deinitions. always needed and no further dependencies
-require_once($CFG->libdir . '/portfolio/exceptions.php');  // exception classes used by portfolio code
+require_once(__DIR__ . '/portfolio/exceptions.php');  // exception classes used by portfolio code
 // The base class for the caller classes. We always need this because we're either drawing a button,
 // in which case the button needs to know the calling class definition, which requires the base class,
 // or we're exporting, in which case we need the caller class anyway.
-require_once($CFG->libdir . '/portfolio/caller.php');
+require_once(__DIR__ . '/portfolio/caller.php');
 
 // the other dependencies are included on demand:
 // libdir/portfolio/formats.php  - the classes for the export formats
@@ -153,7 +153,7 @@ class portfolio_add_button {
         global $CFG;
 
         // Require the base class first before any other files.
-        require_once($CFG->libdir . '/portfolio/caller.php');
+        require_once(__DIR__ . '/portfolio/caller.php');
 
         // Include any potential callback files and check for errors.
         portfolio_include_callback_file($component, $class);
@@ -602,7 +602,7 @@ function portfolio_format_from_mimetype($mimetype) {
         return $alreadymatched[$mimetype];
     }
     $allformats = portfolio_supported_formats();
-    require_once($CFG->libdir . '/portfolio/formats.php');
+    require_once(__DIR__ . '/portfolio/formats.php');
     foreach ($allformats as $format => $classname) {
         $supportedmimetypes = call_user_func(array($classname, 'mimetypes'));
         if (!is_array($supportedmimetypes)) {
@@ -639,7 +639,7 @@ function portfolio_supported_formats_intersect($callerformats, $pluginformats) {
             }
             continue;
         }
-        require_once($CFG->libdir . '/portfolio/formats.php');
+        require_once(__DIR__ . '/portfolio/formats.php');
         $cfobj = new $allformats[$cf]();
         foreach ($pluginformats as $p => $pf) {
             if (!array_key_exists($pf, $allformats)) {
@@ -713,7 +713,7 @@ function portfolio_most_specific_formats($specificformats, $generalformats) {
             //debugging("skipping $f because it was already removed");
             unset($specificformats[$k]);
         }
-        require_once($CFG->libdir . '/portfolio/formats.php');
+        require_once(__DIR__ . '/portfolio/formats.php');
         $fobj = new $allformats[$f];
         foreach ($generalformats as $key => $cf) {
             if (in_array($cf, $removedformats)) {
@@ -760,7 +760,7 @@ function portfolio_most_specific_formats($specificformats, $generalformats) {
  */
 function portfolio_format_object($name) {
     global $CFG;
-    require_once($CFG->libdir . '/portfolio/formats.php');
+    require_once(__DIR__ . '/portfolio/formats.php');
     $formats = portfolio_supported_formats();
     return new $formats[$name];
 }
@@ -784,8 +784,12 @@ function portfolio_instance($instanceid, $record=null) {
             throw new portfolio_exception('invalidinstance', 'portfolio');
         }
     }
-    require_once($CFG->libdir . '/portfolio/plugin.php');
-    require_once($CFG->dirroot . '/portfolio/'. $instance->plugin . '/lib.php');
+    require_once(__DIR__ . '/portfolio/plugin.php');
+    $plugindir = \core_component::get_plugin_directory('portfolio', $instance->plugin);
+    if ($plugindir === null) {
+        throw new \coding_exception("Plugin not installed: portfolio_{$instance->plugin}");
+    }
+    require_once($plugindir . '/lib.php');
     $classname = 'portfolio_plugin_' . $instance->plugin;
     return new $classname($instanceid, $instance);
 }
@@ -820,8 +824,12 @@ function portfolio_static_function($plugin, $function) {
         array_shift($args);
     }
 
-    require_once($CFG->libdir . '/portfolio/plugin.php');
-    require_once($CFG->dirroot . '/portfolio/' . $plugin .  '/lib.php');
+    require_once(__DIR__ . '/portfolio/plugin.php');
+    $plugindir = \core_component::get_plugin_directory('portfolio', $pname);
+    if ($plugindir === null) {
+        throw new \coding_exception("Plugin not installed: portfolio_$pname");
+    }
+    require_once($plugindir . '/lib.php');
     return call_user_func_array(array('portfolio_plugin_' . $plugin, $function), $args);
 }
 
@@ -1268,7 +1276,7 @@ function portfolio_rewrite_pluginfile_url_callback($contextid, $component, $file
  */
 function portfolio_include_callback_file($component, $class = null) {
     global $CFG;
-    require_once($CFG->libdir . '/adminlib.php');
+    require_once(__DIR__ . '/adminlib.php');
 
     // It's possible that they are passing a file path rather than passing a component.
     // We want to try and convert this to a component name, eg. mod_forum.

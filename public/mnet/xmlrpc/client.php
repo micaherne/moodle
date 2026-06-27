@@ -8,7 +8,7 @@
  * @package mnet
  */
 
-require_once $CFG->dirroot.'/mnet/lib.php';
+require_once __DIR__ . '/../lib.php';
 
 /**
  * Class representing an XMLRPC request against a remote machine

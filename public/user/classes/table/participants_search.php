@@ -34,7 +34,7 @@ use core_user\fields;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/user/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Class used to fetch participants based on a filterset.

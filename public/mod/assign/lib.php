@@ -35,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 function assign_add_instance(stdClass $data, ?mod_assign_mod_form $form = null) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $assignment = new assign(context_module::instance($data->coursemodule), null, null);
     return $assignment->add_instance($data, true);
@@ -48,7 +48,7 @@ function assign_add_instance(stdClass $data, ?mod_assign_mod_form $form = null) 
  */
 function assign_delete_instance($id) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     $cm = get_coursemodule_from_instance('assign', $id, 0, false, MUST_EXIST);
     $context = context_module::instance($cm->id);
 
@@ -66,7 +66,7 @@ function assign_delete_instance($id) {
  */
 function assign_reset_userdata($data) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $status = [];
     $params = ['courseid' => $data->courseid];
@@ -103,7 +103,7 @@ function assign_reset_userdata($data) {
  */
 function assign_refresh_events($courseid = 0, $instance = null, $cm = null) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     // If we have instance information then we can just update the one event instead of updating all events.
     if (isset($instance)) {
@@ -235,7 +235,7 @@ function assign_reset_course_form_defaults($course) {
  */
 function assign_update_instance(stdClass $data, $form) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     $context = context_module::instance($data->coursemodule);
     $assignment = new assign($context, null, null);
     return $assignment->update_instance($data);
@@ -252,7 +252,7 @@ function assign_update_instance(stdClass $data, $form) {
 function assign_update_events($assign, $override = null) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot . '/calendar/lib.php');
+    require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
     $assigninstance = $assign->get_instance();
 
@@ -398,7 +398,7 @@ function assign_supports($feature) {
 function assign_extend_settings_navigation(settings_navigation $settings, navigation_node $navref) {
     global $DB, $CFG;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     // We want to add these new nodes after the Edit settings node, and before the
     // Locally assigned roles node. Of course, both of those are controlled by capabilities.
@@ -638,7 +638,7 @@ function assign_page_type_list($pagetype, $parentcontext, $currentcontext) {
  */
 function assign_print_recent_activity($course, $viewfullnames, $timestart) {
     global $CFG, $USER, $DB, $OUTPUT;
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     // Do not use log table if possible, it may be huge.
 
@@ -769,7 +769,7 @@ function assign_get_recent_mod_activity(&$activities,
                                         $groupid=0) {
     global $CFG, $COURSE, $USER, $DB;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if ($COURSE->id == $courseid) {
         $course = $COURSE;
@@ -867,7 +867,7 @@ function assign_get_recent_mod_activity(&$activities,
     }
 
     if ($grader) {
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $userids = array();
         foreach ($show as $id => $submission) {
             $userids[] = $submission->userid;
@@ -1010,7 +1010,7 @@ function assign_get_extra_capabilities() {
  */
 function assign_grade_item_update($assign, $grades=null) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     if (!isset($assign->courseid)) {
         $assign->courseid = $assign->course;
@@ -1025,7 +1025,7 @@ function assign_grade_item_update($assign, $grades=null) {
     if (isset($assign->gradefeedbackenabled)) {
         $gradefeedbackenabled = $assign->gradefeedbackenabled;
     } else if ($assign->grade == 0) { // Grade feedback is needed only when grade == 0.
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(__DIR__ . '/locallib.php');
         $mod = get_coursemodule_from_instance('assign', $assign->id, $assign->courseid);
         $cm = context_module::instance($mod->id);
         $assignment = new assign($cm, null, null);
@@ -1099,7 +1099,7 @@ function assign_grade_item_update($assign, $grades=null) {
 function assign_get_user_grades($assign, $userid=0) {
     global $CFG;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $cm = get_coursemodule_from_instance('assign', $assign->id, 0, false, MUST_EXIST);
     $context = context_module::instance($cm->id);
@@ -1117,7 +1117,7 @@ function assign_get_user_grades($assign, $userid=0) {
  */
 function assign_update_grades($assign, $userid=0, $nullifnone=true) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     if ($assign->grade == 0) {
         assign_grade_item_update($assign);
@@ -1145,7 +1145,7 @@ function assign_update_grades($assign, $userid=0, $nullifnone=true) {
  */
 function assign_get_file_areas($course, $cm, $context) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $areas = array(
         ASSIGN_INTROATTACHMENT_FILEAREA => get_string('introattachments', 'mod_assign'),
@@ -1199,7 +1199,7 @@ function assign_get_file_info($browser,
                               $filepath,
                               $filename) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if ($context->contextlevel != CONTEXT_MODULE) {
         return null;
@@ -1276,7 +1276,7 @@ function assign_get_file_info($browser,
  */
 function assign_user_complete($course, $user, $coursemodule, $assign) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $context = context_module::instance($coursemodule->id);
 
@@ -1342,8 +1342,8 @@ function assign_rescale_activity_grades($course, $cm, $oldmin, $oldmax, $newmin,
  */
 function assign_user_outline($course, $user, $coursemodule, $assignment) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
-    require_once($CFG->dirroot.'/grade/grading/lib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
+    require_once(\core\component::component_path('core_grading', 'lib.php'));
 
     $gradinginfo = grade_get_grades($course->id,
                                         'mod',
@@ -1398,7 +1398,7 @@ function assign_pluginfile($course,
         return false;
     }
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     $assign = new assign($context, $cm, $course);
 
     if ($filearea !== ASSIGN_INTROATTACHMENT_FILEAREA && $filearea !== ASSIGN_ACTIVITYATTACHMENT_FILEAREA) {
@@ -1440,7 +1440,7 @@ function mod_assign_output_fragment_gradingpanel($args) {
     if ($context->contextlevel != CONTEXT_MODULE) {
         return null;
     }
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     $assign = new assign($context, null, null);
 
     $userid = clean_param($args['userid'], PARAM_INT);
@@ -1480,7 +1480,7 @@ function mod_assign_output_fragment_gradingpanel($args) {
  */
 function assign_check_updates_since(cm_info $cm, $from, $filter = array()) {
     global $DB, $USER, $CFG;
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $updates = new stdClass();
     $updates = course_check_module_updates_since($cm, $from, array(ASSIGN_INTROATTACHMENT_FILEAREA), $filter);
@@ -1548,7 +1548,7 @@ function assign_check_updates_since(cm_info $cm, $from, $filter = array()) {
 function mod_assign_core_calendar_is_event_visible(calendar_event $event, $userid = 0) {
     global $CFG, $USER;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (empty($userid)) {
         $userid = $USER->id;
@@ -1583,7 +1583,7 @@ function mod_assign_core_calendar_provide_event_action(calendar_event $event,
 
     global $CFG, $USER;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (empty($userid)) {
         $userid = $USER->id;
@@ -1700,7 +1700,7 @@ function mod_assign_core_calendar_event_action_shows_item_count(calendar_event $
 function mod_assign_core_calendar_get_valid_event_timestart_range(\calendar_event $event, \stdClass $instance) {
     global $CFG;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $courseid = $event->courseid;
     $modulename = $event->modulename;
@@ -1724,7 +1724,7 @@ function mod_assign_core_calendar_get_valid_event_timestart_range(\calendar_even
 function mod_assign_core_calendar_event_timestart_updated(\calendar_event $event, \stdClass $instance) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (empty($event->instance) || $event->modulename != 'assign') {
         return;

@@ -59,8 +59,8 @@ class transfer_question_categories extends adhoc_task {
 
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/course/modlib.php');
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(\core\component::component_path('core_course', 'modlib.php'));
+        require_once(\core\component::component_path('core', 'questionlib.php'));
 
         $this->fix_wrong_parents();
 

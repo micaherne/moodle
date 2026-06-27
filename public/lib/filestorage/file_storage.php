@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core_files\hook\before_file_created;
 
-require_once("$CFG->libdir/filestorage/stored_file.php");
+require_once(__DIR__ . '/stored_file.php');
 
 /**
  * File storage class used for low level access to stored files.
@@ -70,12 +70,12 @@ class file_storage {
     public function setup_file_system() {
         global $CFG;
         if ($this->filesystem === null) {
-            require_once($CFG->libdir . '/filestorage/file_system.php');
+            require_once(__DIR__ . '/file_system.php');
             if (!empty($CFG->alternative_file_system_class)) {
                 $class = $CFG->alternative_file_system_class;
             } else {
                 // The default file_system is the filedir.
-                require_once($CFG->libdir . '/filestorage/file_system_filedir.php');
+                require_once(__DIR__ . '/file_system_filedir.php');
                 $class = file_system_filedir::class;
             }
             $this->filesystem = new $class();
@@ -456,7 +456,7 @@ class file_storage {
      */
     protected function create_imagefile_preview(stored_file $file, $mode) {
         global $CFG;
-        require_once($CFG->libdir.'/gdlib.php');
+        require_once(__DIR__ . '/../gdlib.php');
 
         if ($mode === 'tinyicon') {
             $data = $file->generate_image_thumbnail(24, 24);
@@ -2296,7 +2296,7 @@ class file_storage {
         // if you want to disable purging of trash put $CFG->fileslastcleanup=time(); into config.php
         $filescleanupperiod = empty($CFG->filescleanupperiod) ? 86400 : $CFG->filescleanupperiod;
         if (empty($CFG->fileslastcleanup) || ($CFG->fileslastcleanup < time() - $filescleanupperiod)) {
-            require_once($CFG->libdir.'/filelib.php');
+            require_once(__DIR__ . '/../filelib.php');
             // Delete files that are associated with a context that no longer exists.
             mtrace('Cleaning up files from deleted contexts... ', '');
             \core\cron::trace_time_and_memory();

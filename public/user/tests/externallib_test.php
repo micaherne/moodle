@@ -35,8 +35,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/user/externallib.php');
-require_once($CFG->dirroot . '/files/externallib.php');
+require_once(__DIR__ . '/../externallib.php');
+require_once(\core\component::component_path('core_files', 'externallib.php'));
 
 /**
  * Tests for the user external functions.
@@ -74,7 +74,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $user1 = self::getDataGenerator()->create_user($user1);
         set_config('usetags', 1);
-        require_once($CFG->dirroot . '/user/editlib.php');
+        require_once(__DIR__ . '/../editlib.php');
         $user1->interests = array('Cinema', 'Tennis', 'Dance', 'Guitar', 'Cooking');
         useredit_update_interests($user1, $user1->interests);
 
@@ -228,7 +228,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         );
         $user1 = $generator->create_user($user1);
         if (!empty($CFG->usetags)) {
-            require_once($CFG->dirroot . '/user/editlib.php');
+            require_once(__DIR__ . '/../editlib.php');
             $user1->interests = array('Cinema', 'Tennis', 'Dance', 'Guitar', 'Cooking');
             useredit_update_interests($user1, $user1->interests);
         }
@@ -397,7 +397,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         );
         $return->user1 = self::getDataGenerator()->create_user($return->user1);
         if (!empty($CFG->usetags)) {
-            require_once($CFG->dirroot . '/user/editlib.php');
+            require_once(__DIR__ . '/../editlib.php');
             $return->user1->interests = array('Cinema', 'Tennis', 'Dance', 'Guitar', 'Cooking');
             useredit_update_interests($return->user1, $return->user1->interests);
         }

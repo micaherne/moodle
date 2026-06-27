@@ -26,7 +26,7 @@ namespace message_popup\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/message/lib.php');
+require_once(\core\component::component_path('core_message', 'lib.php'));
 
 use renderable;
 use templatable;

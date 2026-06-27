@@ -23,8 +23,8 @@
  */
 
 require(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir . '/excellib.class.php');
-require_once($CFG->libdir . '/odslib.class.php');
+require_once(__DIR__ . '/../../excellib.class.php');
+require_once(__DIR__ . '/../../odslib.class.php');
 
 $context = context_system::instance();
 $PAGE->set_url('/lib/tests/other/spreadsheettestpage.php');

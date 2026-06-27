@@ -27,11 +27,11 @@
 define('NO_OUTPUT_BUFFERING', true);
 
 // Require both the backup and restore libs
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/moodle2/backup_plan_builder.class.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/backup/util/ui/import_extensions.php');
+require_once(\core\component::component_path('core_backup', 'import_extensions.php'));
 
 // The courseid we are importing to
 $courseid = required_param('id', PARAM_INT);

@@ -25,8 +25,8 @@ use qtype_ordering_test_helper;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/type/ordering/question.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(__DIR__ . '/../../question.php');
 
 /**
  * A test class used to test formulation_and_controls.

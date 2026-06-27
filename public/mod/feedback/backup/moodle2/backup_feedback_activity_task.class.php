@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/feedback/backup/moodle2/backup_feedback_stepslib.php');
-require_once($CFG->dirroot . '/mod/feedback/backup/moodle2/backup_feedback_settingslib.php');
+require_once(__DIR__ . '/backup_feedback_stepslib.php');
+require_once(__DIR__ . '/backup_feedback_settingslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the Feedback instance

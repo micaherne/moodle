@@ -34,7 +34,7 @@ use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
 use core_grades\privacy\provider;
 
-require_once($CFG->libdir . '/gradelib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
 
 /**
  * Data provider testcase class.

@@ -22,13 +22,13 @@
  * @package core_user
  */
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/user/lib.php');
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->dirroot.'/notes/lib.php');
-require_once($CFG->libdir.'/tablelib.php');
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->dirroot.'/enrol/locallib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(\core\component::component_path('core_notes', 'lib.php'));
+require_once(\core\component::component_path('core', 'tablelib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core_enrol', 'locallib.php'));
 
 use core_table\local\filter\filter;
 use core_table\local\filter\integer_filter;

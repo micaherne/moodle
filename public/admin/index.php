@@ -84,7 +84,7 @@ if (
     $cache = 1;
 }
 
-require('../config.php');
+require(__DIR__ . '/../config.php');
 
 // Invalidate the cache of version.php in any circumstances to help core_component
 // detecting if the version has changed and component cache should be reset.
@@ -101,8 +101,8 @@ if (is_major_upgrade_required() && isloggedin()) {
     redirect_if_major_upgrade_required();
 }
 
-require_once($CFG->libdir . '/adminlib.php');    // Various admin-only functions.
-require_once($CFG->libdir . '/upgradelib.php');  // General upgrade/install related functions.
+require_once(\core\component::component_path('core', 'adminlib.php'));    // Various admin-only functions.
+require_once(\core\component::component_path('core', 'upgradelib.php'));  // General upgrade/install related functions.
 
 $confirmupgrade = optional_param('confirmupgrade', 0, PARAM_BOOL); // Core upgrade confirmed?
 $confirmrelease = optional_param('confirmrelease', 0, PARAM_BOOL); // Core release info and server checks confirmed?
@@ -234,7 +234,7 @@ if (!core_tables_exist()) {
         die();
     }
     if (empty($confirmrelease)) {
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(\core\component::component_path('core', 'environmentlib.php'));
         [$envstatus, $environmentresults] = check_moodle_environment(normalize_version($release), ENV_SELECT_RELEASE);
         $strcurrentrelease = get_string('currentrelease');
 
@@ -371,7 +371,7 @@ if (!$outagelessupgrade) {
             echo $output->upgrade_confirm_page($a->newversion, $maturity, $testsite);
             die();
         } else if (empty($confirmrelease)) {
-            require_once($CFG->libdir . '/environmentlib.php');
+            require_once(\core\component::component_path('core', 'environmentlib.php'));
             [$envstatus, $environmentresults] = check_moodle_environment($release, ENV_SELECT_RELEASE);
             $strcurrentrelease = get_string('currentrelease');
 
@@ -576,7 +576,7 @@ if (!$outagelessupgrade) {
             $output = $PAGE->get_renderer('core', 'admin');
 
             if (empty($confirmrelease)) {
-                require_once($CFG->libdir . '/environmentlib.php');
+                require_once(\core\component::component_path('core', 'environmentlib.php'));
 
                 [$envstatus, $environmentresults] = check_moodle_environment($release, ENV_SELECT_RELEASE);
                 $strcurrentrelease = get_string('currentrelease');
@@ -985,7 +985,7 @@ $showfeedbackencouragement = empty($CFG->enableuserfeedback);
 $servicesandsupportcontent = !isset($CFG->showservicesandsupportcontent) || $CFG->showservicesandsupportcontent;
 
 // Check whether the XML-RPC protocol is enabled or not.
-require_once($CFG->libdir . '/environmentlib.php');
+require_once(\core\component::component_path('core', 'environmentlib.php'));
 $result = new environment_results('custom_checks');
 $result = check_xmlrpc_usage($result);
 $xmlrpcwarning = !is_null($result) ? get_string($result->getFeedbackStr(), 'admin') : '';

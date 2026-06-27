@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/gradelib.php'); // grade_floatval() called here
+require_once(\core\component::component_path('core', 'gradelib.php')); // grade_floatval() called here
 
 /**
  * Conversion handler for the numerrors grading strategy data

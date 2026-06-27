@@ -20,7 +20,7 @@ use mod_quiz\quiz_attempt;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/engine/datalib.php');
+require_once(\core\component::component_path('core_question', 'engine/datalib.php'));
 
 /**
  * A {@see qubaid_condition} representing all the attempts by one user at a given quiz.

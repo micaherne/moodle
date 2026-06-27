@@ -29,7 +29,7 @@ define('NO_DEBUG_DISPLAY', true);
 
 // we need just the values from config.php and minlib.php
 define('ABORT_AFTER_CONFIG', true);
-require('../config.php'); // this stops immediately at the beginning of lib/setup.php
+require(__DIR__ . '/../config.php'); // this stops immediately at the beginning of lib/setup.php
 
 // get special url parameters
 
@@ -208,7 +208,7 @@ while (count($parts)) {
                 $newparts = array();
                 foreach ($yuimodules as $module) {
                     $candidate =  $yuiversion . '/' . $module . '/assets/skins/sam/' . $module . '.css';
-                    if (!file_exists("$CFG->libdir/yuilib/$candidate")) {
+                    if (!file_exists(\core\component::component_path('core', "yuilib/{$candidate}"))) {
                         continue;
                     }
                     $newparts[] = $candidate;
@@ -270,7 +270,7 @@ while (count($parts)) {
             $contentfile = $dir . '/yui/' . join('/', $bits) . '/' . $filename;
         }
     } else if ($version === '2in3') {
-        $contentfile = "$CFG->libdir/yuilib/$part";
+        $contentfile = \core\component::component_path('core', "yuilib/{$part}");
 
     } else if ($version == 'gallery') {
         if (count($bits) <= 2) {
@@ -284,7 +284,7 @@ while (count($parts)) {
             $revision = -1;
             $cache = false;
         }
-        $contentfile = "$CFG->libdir/yuilib/gallery/" . join('/', $bits);
+        $contentfile = \core\component::component_path('core', 'yuilib/gallery/' . join('/', $bits));
 
     } else if ($version == 'yuiuseall') {
         // Create global Y that is available in global scope,
@@ -303,7 +303,7 @@ while (count($parts)) {
         $newpart = explode('/', $part);
         $newpart[0] = $yuiversion;
         $part = implode('/', $newpart);
-        $contentfile = "$CFG->libdir/yuilib/$part";
+        $contentfile = \core\component::component_path('core', "yuilib/{$part}");
     }
     if (!file_exists($contentfile) or !is_file($contentfile)) {
         $location = '$CFG->dirroot'.preg_replace('/^'.preg_quote($CFG->dirroot, '/').'/', '', $contentfile);

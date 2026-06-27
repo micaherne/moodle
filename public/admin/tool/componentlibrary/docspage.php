@@ -25,7 +25,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot . '/lib/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 require_login();
 require_capability('moodle/site:configview', context_system::instance());
@@ -98,7 +98,7 @@ if (!file_exists($docspage)) {
 }
 
 echo $OUTPUT->header();
-if (!file_exists($CFG->dirroot . $docsdir)) {
+if (!file_exists(\core\component::from_mono_path($docsdir))) {
     echo $OUTPUT->render_from_template('tool_componentlibrary/rundocs', (object) []);
     exit(0);
 }

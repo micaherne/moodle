@@ -38,10 +38,10 @@ use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
-require_once($CFG->dirroot . '/mod/lesson/locallib.php');
-require_once($CFG->dirroot . '/mod/lesson/pagetypes/essay.php');
-require_once($CFG->dirroot . '/mod/lesson/pagetypes/matching.php');
-require_once($CFG->dirroot . '/mod/lesson/pagetypes/multichoice.php');
+require_once(__DIR__ . '/../../locallib.php');
+require_once(__DIR__ . '/../../pagetypes/essay.php');
+require_once(__DIR__ . '/../../pagetypes/matching.php');
+require_once(__DIR__ . '/../../pagetypes/multichoice.php');
 
 /**
  * Data provider class.

@@ -22,7 +22,7 @@ use quizaccess_openclosedate;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/accessrule/openclosedate/rule.php');
+require_once(__DIR__ . '/../rule.php');
 
 
 /**

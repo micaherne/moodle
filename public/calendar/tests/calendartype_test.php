@@ -29,15 +29,15 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 // The test calendar type.
-require_once($CFG->dirroot . '/calendar/tests/calendartype_test_example.php');
+require_once(__DIR__ . '/calendartype_test_example.php');
 
 // Used to test the dateselector elements.
-require_once($CFG->libdir . '/form/dateselector.php');
-require_once($CFG->libdir . '/form/datetimeselector.php');
+require_once(\core\component::component_path('core_form', 'dateselector.php'));
+require_once(\core\component::component_path('core_form', 'datetimeselector.php'));
 
 // Used to test the user datetime profile field.
-require_once($CFG->dirroot . '/user/profile/lib.php');
-require_once($CFG->dirroot . '/user/profile/definelib.php');
+require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+require_once(\core\component::component_path('core_user', 'profile/definelib.php'));
 
 /**
  * Unit tests for the calendar type system.

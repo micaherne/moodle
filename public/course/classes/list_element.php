@@ -247,8 +247,8 @@ class core_course_list_element implements IteratorAggregate {
         if (empty($CFG->courseoverviewfileslimit)) {
             return array();
         }
-        require_once($CFG->libdir. '/filestorage/file_storage.php');
-        require_once($CFG->dirroot. '/course/lib.php');
+        require_once(\core\component::component_path('core', 'filestorage/file_storage.php'));
+        require_once(__DIR__ . '/../lib.php');
         $fs = get_file_storage();
         $context = context_course::instance($this->id);
         $files = $fs->get_area_files($context->id, 'course', 'overviewfiles', false, 'filename', false);
@@ -257,7 +257,7 @@ class core_course_list_element implements IteratorAggregate {
             $acceptedtypes = $overviewfilesoptions['accepted_types'];
             if ($acceptedtypes !== '*') {
                 // Filter only files with allowed extensions.
-                require_once($CFG->libdir. '/filelib.php');
+                require_once(\core\component::component_path('core', 'filelib.php'));
                 foreach ($files as $key => $file) {
                     if (!file_extension_in_typegroup($file->get_filename(), $acceptedtypes)) {
                         unset($files[$key]);

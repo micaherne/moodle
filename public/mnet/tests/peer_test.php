@@ -19,7 +19,7 @@ namespace core_mnet;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mnet/peer.php');
+require_once(__DIR__ . '/../peer.php');
 
 /**
  * Unit tests for mnet_peer hostname validation.

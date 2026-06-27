@@ -1181,7 +1181,7 @@ final class api_test extends \advanced_testcase {
         }
 
         // Prepare the file.
-        $path = __DIR__ . $filename;
+        $path = __DIR__ . "/{$filename}";
         $file = helper::create_fake_stored_file_from_path($path, (int)$user->id);
 
         // Check if the H5P content is valid or not.

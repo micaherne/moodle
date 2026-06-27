@@ -200,7 +200,7 @@ class process_generate_image extends abstract_processor {
      */
     protected function base64_to_file(string $base64): \stored_file {
         global $CFG, $USER;
-        require_once("{$CFG->libdir}/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $base64 = ltrim($base64, "\xEF\xBB\xBF");
         $base64 = preg_replace('/\s+/', '', $base64) ?? '';

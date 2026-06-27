@@ -301,7 +301,7 @@ class mod_wiki_renderer extends plugin_renderer_base {
 
     public function wiki_print_subwiki_selector($wiki, $subwiki, $page, $pagetype = 'view') {
         global $CFG, $USER;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
         $cm = get_coursemodule_from_instance('wiki', $wiki->id);
 
         switch ($pagetype) {

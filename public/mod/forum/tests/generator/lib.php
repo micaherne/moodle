@@ -62,7 +62,7 @@ class mod_forum_generator extends testing_module_generator {
 
     public function create_instance($record = null, ?array $options = null) {
         global $CFG;
-        require_once($CFG->dirroot.'/mod/forum/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $record = (object)(array)$record;
 
         if (!isset($record->type)) {

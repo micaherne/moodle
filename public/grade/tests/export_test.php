@@ -19,8 +19,8 @@ namespace core_grades;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/grade/lib.php');
-require_once($CFG->dirroot.'/grade/export/lib.php');
+require_once(__DIR__ . '/../lib.php');
+require_once(__DIR__ . '/../export/lib.php');
 
 /**
  * A test class used to test grade_report, the abstract grade report parent class

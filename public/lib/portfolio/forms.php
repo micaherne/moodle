@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 // make sure we include moodleform first!
-require_once ($CFG->libdir.'/formslib.php');
+require_once (__DIR__ . '/../formslib.php');
 
 /**
  * During-export config form.
@@ -196,8 +196,8 @@ final class portfolio_admin_form extends moodleform {
 
         // let the plugin add the fields they want (either statically or not)
         if (portfolio_static_function($this->plugin, 'has_admin_config')) {
-            require_once($CFG->libdir . '/portfolio/plugin.php');
-            require_once($CFG->dirroot . '/portfolio/' . $this->plugin .  '/lib.php');
+            require_once(__DIR__ . '/plugin.php');
+            require_once(\core_component::get_plugin_directory('portfolio', $this->plugin) . '/lib.php');
             $classname = 'portfolio_plugin_' . $this->plugin;
             $classname::admin_config_form($mform);
         }

@@ -31,7 +31,7 @@ final class outputfactories_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once($CFG->libdir . '/tests/fixtures/test_renderer_factory.php');
+        require_once(__DIR__ . '/fixtures/test_renderer_factory.php');
 
         parent::setUpBeforeClass();
     }

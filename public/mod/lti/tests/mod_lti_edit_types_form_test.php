@@ -47,7 +47,7 @@ final class mod_lti_edit_types_form_test extends \advanced_testcase {
     public function test_set_nested_categories(): void {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/mod/lti/tests/fixtures/test_edit_form.php');
+        require_once(__DIR__ . '/fixtures/test_edit_form.php');
 
         $this->resetAfterTest(true);
         $this->setAdminUser();

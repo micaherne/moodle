@@ -82,7 +82,7 @@ final class generator_test extends \advanced_testcase {
      */
     public static function provider_create_instance_with_name(): array {
         global $CFG;
-        require_once($CFG->libdir . '/testing/classes/frozen_clock.php');
+        require_once(\core\component::component_path('core', 'testing/classes/frozen_clock.php'));
         $clock = new \frozen_clock();
         \core\di::set(\core\clock::class, $clock);
         $opening = $clock->time();

@@ -25,7 +25,7 @@ use core_external\util;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/cohort/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 /**
  * External cohort API
@@ -83,7 +83,7 @@ class core_cohort_external extends external_api {
      */
     public static function create_cohorts($cohorts) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/cohort/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::create_cohorts_parameters(), array('cohorts' => $cohorts));
 
@@ -202,7 +202,7 @@ class core_cohort_external extends external_api {
      */
     public static function delete_cohorts($cohortids) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/cohort/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::delete_cohorts_parameters(), array('cohortids' => $cohortids));
 
@@ -376,7 +376,7 @@ class core_cohort_external extends external_api {
      */
     public static function search_cohorts($query, $context, $includes = 'parents', $limitfrom = 0, $limitnum = 25) {
         global $CFG;
-        require_once($CFG->dirroot . '/cohort/lib.php');
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::search_cohorts_parameters(), array(
             'query' => $query,
@@ -528,7 +528,7 @@ class core_cohort_external extends external_api {
      */
     public static function update_cohorts($cohorts) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/cohort/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::update_cohorts_parameters(), array('cohorts' => $cohorts));
 
@@ -652,7 +652,7 @@ class core_cohort_external extends external_api {
      */
     public static function add_cohort_members($members) {
         global $CFG, $DB;
-        require_once($CFG->dirroot."/cohort/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::add_cohort_members_parameters(), array('members' => $members));
 
@@ -773,7 +773,7 @@ class core_cohort_external extends external_api {
      */
     public static function delete_cohort_members($members) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/cohort/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         // Validate parameters.
         $params = self::validate_parameters(self::delete_cohort_members_parameters(), array('members' => $members));

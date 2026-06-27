@@ -24,7 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 /**
  * A repository plugin to allow user uploading files

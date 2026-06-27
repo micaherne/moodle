@@ -98,7 +98,7 @@ class profile_category_form extends dynamic_form {
      */
     public function process_dynamic_submission() {
         global $CFG;
-        require_once($CFG->dirroot.'/user/profile/definelib.php');
+        require_once(__DIR__ . '/../../profile/definelib.php');
         profile_save_category($this->get_data());
     }
 

@@ -37,7 +37,7 @@ if (($hassiteconfig || has_any_capability(array(
             'moodle/badges:configuredetails',
             'moodle/badges:deletebadge'), $systemcontext))) {
 
-    require_once($CFG->libdir . '/badgeslib.php');
+    require_once(\core\component::component_path('core', 'badgeslib.php'));
 
     $globalsettings = new admin_settingpage('badgesettings', new lang_string('badgesettings', 'badges'),
             array('moodle/badges:manageglobalsettings'), empty($CFG->enablebadges));

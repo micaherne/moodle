@@ -55,7 +55,7 @@ final class reset_course_test extends \advanced_testcase {
      */
     public function test_execute(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/notes/lib.php');
+        require_once(\core\component::component_path('core_notes', 'lib.php'));
 
         $this->resetAfterTest();
 

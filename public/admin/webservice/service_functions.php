@@ -22,9 +22,9 @@
  * @copyright 2009 Moodle Pty Ltd (http://moodle.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/webservice/lib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core_webservice', 'lib.php'));
 require_once('forms.php');
 
 $serviceid = required_param('id', PARAM_INT);

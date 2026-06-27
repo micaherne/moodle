@@ -352,7 +352,7 @@ class phpunit_util extends \core\test\testing_util {
 
         // Manually load the test_exception class here for legacy purposes.
 
-        require_once($CFG->libdir . '/phpunit/classes/exception/test_exception.php');
+        require_once(__DIR__ . '/../../../phpunit/classes/exception/test_exception.php');
     }
 
     /**
@@ -532,7 +532,7 @@ class phpunit_util extends \core\test\testing_util {
         $excludelists = [];
 
         $subsystems = \core\component::get_core_subsystems();
-        $subsystems['core'] = $CFG->dirroot . '/lib';
+        $subsystems['core'] = __DIR__ . '/../../../';
         foreach ($subsystems as $subsystem => $fulldir) {
             if (empty($fulldir)) {
                 continue;

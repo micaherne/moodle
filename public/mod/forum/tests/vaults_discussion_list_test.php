@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/forum/externallib.php');
+require_once(__DIR__ . '/../externallib.php');
 require_once(__DIR__ . '/generator_trait.php');
 
 /**

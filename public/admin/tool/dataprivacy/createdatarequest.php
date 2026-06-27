@@ -22,7 +22,7 @@
  * @package tool_dataprivacy
  */
 
-require_once('../../../config.php');
+require_once(__DIR__ . '/../../../config.php');
 require_once('lib.php');
 require_once('createdatarequest_form.php');
 

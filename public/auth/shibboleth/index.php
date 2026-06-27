@@ -2,7 +2,7 @@
 
     // Designed to be redirected from moodle/login/index.php
 
-    require('../../config.php');
+    require(__DIR__ . '/../../config.php');
 
     $context = context_system::instance();
     $PAGE->set_url('/auth/shibboleth/index.php');

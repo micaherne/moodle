@@ -21,7 +21,7 @@ use wiki_parser_proxy;
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/wiki/parser/parser.php');
+require_once(__DIR__ . '/../parser/parser.php');
 
 /**
  * Unit tests for the wiki parser
@@ -140,11 +140,11 @@ final class wikiparser_test extends \advanced_testcase {
     }
 
     private function assertTestFile($num, $markup) {
-        if(!file_exists(__DIR__."/fixtures/input/$markup/$num") || !file_exists(__DIR__."/fixtures/output/$markup/$num")) {
+        if(!file_exists(__DIR__ . "/fixtures/input/{$markup}/{$num}") || !file_exists(__DIR__ . "/fixtures/output/{$markup}/{$num}")) {
             return false;
         }
-        $input = file_get_contents(__DIR__."/fixtures/input/$markup/$num");
-        $output = file_get_contents(__DIR__."/fixtures/output/$markup/$num");
+        $input = file_get_contents(__DIR__ . "/fixtures/input/{$markup}/{$num}");
+        $output = file_get_contents(__DIR__ . "/fixtures/output/{$markup}/{$num}");
 
         $result = wiki_parser_proxy::parse($input, $markup, array('pretty_print' => true));
 

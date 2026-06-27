@@ -50,7 +50,7 @@ class recentlyaccesseditems_item_exporter extends \core\external\exporter {
      */
     protected function get_other_values(renderer_base $output) {
         global $CFG;
-        require_once($CFG->libdir.'/modinfolib.php');
+        require_once(\core\component::component_path('core', 'modinfolib.php'));
 
         $renderer = \core\di::get(\core\output\renderer_helper::class)->get_core_renderer();
         $cminfo = get_fast_modinfo($this->data->courseid)->get_cm($this->data->cmid);

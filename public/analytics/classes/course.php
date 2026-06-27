@@ -26,9 +26,9 @@ namespace core_analytics;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/lib/gradelib.php');
-require_once($CFG->dirroot . '/lib/enrollib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(\core\component::component_path('core', 'enrollib.php'));
 
 /**
  * Moodle course analysable

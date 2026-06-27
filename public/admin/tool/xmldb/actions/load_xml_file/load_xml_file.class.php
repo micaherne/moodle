@@ -65,7 +65,7 @@ class load_xml_file extends XMLDBAction {
 
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         // Get the correct dir
         if (!empty($XMLDB->dbdirs)) {
@@ -81,8 +81,8 @@ class load_xml_file extends XMLDBAction {
                 }
                 $xmldb_file = new xmldb_file($dbdir->path . '/install.xml');
                 // Set the XML DTD and schema
-                $xmldb_file->setDTD($CFG->dirroot . '/lib/xmldb/xmldb.dtd');
-                $xmldb_file->setSchema($CFG->dirroot . '/lib/xmldb/xmldb.xsd');
+                $xmldb_file->setDTD(\core\component::component_path('core', 'xmldb/xmldb.dtd'));
+                $xmldb_file->setSchema(\core\component::component_path('core', 'xmldb/xmldb.xsd'));
                 // Set dbdir as necessary
                 if ($xmldb_file->fileExists()) {
                     $dbdir->xml_exists = true;

@@ -10,8 +10,8 @@ if (empty($CFG->enableportfolios)) {
     throw new \moodle_exception('disabled', 'portfolio');
 }
 
-require_once($CFG->libdir.'/portfoliolib.php');
-require_once($CFG->libdir.'/portfolio/exporter.php');
+require_once(\core\component::component_path('core', 'portfoliolib.php'));
+require_once(\core\component::component_path('core', 'portfolio/exporter.php'));
 
 $id = required_param('id', PARAM_INT);
 

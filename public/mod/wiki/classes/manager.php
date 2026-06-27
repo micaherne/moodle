@@ -231,7 +231,7 @@ class manager {
      */
     public function get_main_wiki_pageid(): ?int {
         global $USER, $CFG;
-        require_once($CFG->dirroot . '/mod/wiki/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
 
         if (!$wiki = wiki_get_wiki($this->cm->instance)) {
             return null;

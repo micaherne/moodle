@@ -35,8 +35,8 @@ use core_external\util;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/scorm/lib.php');
-require_once($CFG->dirroot . '/mod/scorm/locallib.php');
+require_once(__DIR__ . '/../lib.php');
+require_once(__DIR__ . '/../locallib.php');
 
 /**
  * SCORM module external functions
@@ -73,7 +73,7 @@ class mod_scorm_external extends external_api {
      */
     public static function view_scorm($scormid) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/mod/scorm/lib.php');
+        require_once(__DIR__ . '/../lib.php');
 
         $params = self::validate_parameters(self::view_scorm_parameters(),
                                             array(
@@ -338,10 +338,10 @@ class mod_scorm_external extends external_api {
         scorm_require_available($scorm, true, $context);
 
         $scorm->version = strtolower(clean_param($scorm->version, PARAM_SAFEDIR));
-        if (!file_exists($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'lib.php')) {
+        if (!file_exists(__DIR__ . "/../datamodels/{$scorm->version}lib.php")) {
             $scorm->version = 'scorm_12';
         }
-        require_once($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'lib.php');
+        require_once(__DIR__ . "/../datamodels/{$scorm->version}lib.php");
 
         if ($scoes = scorm_get_scoes($scorm->id)) {
             $def = new stdClass();
@@ -862,7 +862,7 @@ class mod_scorm_external extends external_api {
     public static function launch_sco($scormid, $scoid = 0) {
         global $DB, $CFG;
 
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         $params = self::validate_parameters(self::launch_sco_parameters(),
                                             array(

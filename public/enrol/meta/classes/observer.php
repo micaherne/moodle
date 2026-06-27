@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/enrol/meta/locallib.php');
+require_once(__DIR__ . '/../locallib.php');
 
 /**
  * Event observer for enrol_meta.

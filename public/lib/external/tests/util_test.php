@@ -53,7 +53,7 @@ final class util_test extends \advanced_testcase {
         );
 
         // Note: This is retained for testing of the old functions.
-        require_once("{$CFG->libdir}/externallib.php");
+        require_once(\core\component::component_path('core', 'externallib.php'));
     }
 
     /**

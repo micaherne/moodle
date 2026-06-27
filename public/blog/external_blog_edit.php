@@ -24,10 +24,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 require_once('lib.php');
 require_once('external_blog_edit_form.php');
-require_once($CFG->libdir . '/simplepie/moodle_simplepie.php');
+require_once(\core\component::component_path('core', 'simplepie/moodle_simplepie.php'));
 
 require_login();
 $context = context_system::instance();

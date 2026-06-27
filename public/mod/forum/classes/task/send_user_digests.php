@@ -27,7 +27,7 @@ namespace mod_forum\task;
 defined('MOODLE_INTERNAL') || die();
 
 use html_writer;
-require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Adhoc task to send moodle forum digests for the specified user.

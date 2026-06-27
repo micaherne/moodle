@@ -25,7 +25,7 @@
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(__DIR__ . '/lib.php');
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 
 $id = required_param('id', PARAM_INT); // Course ID.

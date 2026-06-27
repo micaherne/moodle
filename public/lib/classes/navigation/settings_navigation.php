@@ -284,7 +284,7 @@ class settings_navigation extends navigation_node {
         if ($referencebranch === null) {
             // Require the admin lib then get an admin structure.
             if (!function_exists('admin_get_root')) {
-                require_once($CFG->dirroot . '/lib/adminlib.php');
+                require_once(__DIR__ . '/../../adminlib.php');
             }
             $adminroot = admin_get_root(false, false);
             // This is the active section identifier.
@@ -412,7 +412,7 @@ class settings_navigation extends navigation_node {
      */
     protected function load_course_settings($forceopen = false) {
         global $CFG, $USER;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $course = $this->page->course;
         $coursecontext = context_course::instance($course->id);
@@ -494,7 +494,7 @@ class settings_navigation extends navigation_node {
             );
             $coursereports = component::get_plugin_list('coursereport');
             foreach ($coursereports as $report => $dir) {
-                $libfile = $CFG->dirroot . '/course/report/' . $report . '/lib.php';
+                $libfile = \core\component::component_path('core_course', "report/{$report}/lib.php");
                 if (file_exists($libfile)) {
                     require_once($libfile);
                     $reportfunction = $report . '_report_extend_navigation';
@@ -548,19 +548,19 @@ class settings_navigation extends navigation_node {
 
         // Add badges navigation.
         if ($adminoptions->badges) {
-            require_once($CFG->libdir . '/badgeslib.php');
+            require_once(__DIR__ . '/../../badgeslib.php');
             badges_add_course_navigation($coursenode, $course);
         }
 
         // Questions.
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(__DIR__ . '/../../questionlib.php');
         $baseurl = \core_question\local\bank\question_bank_helper::get_url_for_qbank_list($course->id);
         question_extend_settings_navigation($coursenode, $coursecontext, $baseurl);
 
         if ($adminoptions->update) {
             // Repository Instances.
             if (!$this->cache->cached('contexthasrepos' . $coursecontext->id)) {
-                require_once($CFG->dirroot . '/repository/lib.php');
+                require_once(\core\component::component_path('core_repository', 'lib.php'));
                 $editabletypes = repository::get_editable_types($coursecontext);
                 $haseditabletypes = !empty($editabletypes);
                 unset($editabletypes);
@@ -710,9 +710,9 @@ class settings_navigation extends navigation_node {
             $this->page->set_cm($cm, $this->page->course);
         }
 
-        $file = $CFG->dirroot . '/mod/' . $this->page->activityname . '/lib.php';
-        if (file_exists($file)) {
-            require_once($file);
+        $moddir = \core_component::get_plugin_directory('mod', $this->page->activityname);
+        if ($moddir && file_exists("$moddir/lib.php")) {
+            require_once("$moddir/lib.php");
         }
 
         $modulenode = $this->add(
@@ -833,7 +833,7 @@ class settings_navigation extends navigation_node {
             && $featuresfunc(FEATURE_ADVANCED_GRADING)
             && has_capability('moodle/grade:managegradingforms', $this->page->cm->context)
         ) {
-            require_once($CFG->dirroot . '/grade/grading/lib.php');
+            require_once(\core\component::component_path('core_grading', 'lib.php'));
             $gradingman = get_grading_manager($this->page->cm->context, 'mod_' . $this->page->activityname);
             $gradingman->extend_settings_navigation($this, $modulenode);
         }
@@ -1051,7 +1051,7 @@ class settings_navigation extends navigation_node {
             // Add blog nodes.
             if (!empty($CFG->enableblogs)) {
                 if (!$this->cache->cached('userblogoptions' . $user->id)) {
-                    require_once($CFG->dirroot . '/blog/lib.php');
+                    require_once(\core\component::component_path('core_blog', 'lib.php'));
                     // Get all options for the user.
                     $options = blog_get_options_for_user($user);
                     $this->cache->set('userblogoptions' . $user->id, $options);
@@ -1110,7 +1110,7 @@ class settings_navigation extends navigation_node {
 
             // Show the grades node.
             if (($issitecourse && $iscurrentuser) || has_capability('moodle/user:viewdetails', $usercontext)) {
-                require_once($CFG->dirroot . '/user/lib.php');
+                require_once(\core\component::component_path('core_user', 'lib.php'));
                 // Set the grades node to link to the "Grades" page.
                 if ($course->id == SITEID) {
                     $url = user_mygrades_url($user->id, $course->id);
@@ -1199,7 +1199,7 @@ class settings_navigation extends navigation_node {
         // Default homepage.
         $defaulthomepageuser = (!empty($CFG->defaulthomepage) && ($CFG->defaulthomepage == HOMEPAGE_USER));
         if (isloggedin() && !isguestuser($user) && $defaulthomepageuser) {
-            require_once($CFG->dirroot . '/user/lib.php');
+            require_once(\core\component::component_path('core_user', 'lib.php'));
             $options = user_get_default_homepage_options();
             if (
                 !empty($options) &&
@@ -1320,7 +1320,7 @@ class settings_navigation extends navigation_node {
 
         // Repositories.
         if (!$this->cache->cached('contexthasrepos' . $usercontext->id)) {
-            require_once($CFG->dirroot . '/repository/lib.php');
+            require_once(\core\component::component_path('core_repository', 'lib.php'));
             $editabletypes = repository::get_editable_types($usercontext);
             $haseditabletypes = !empty($editabletypes);
             unset($editabletypes);
@@ -1338,7 +1338,7 @@ class settings_navigation extends navigation_node {
 
         // Portfolio.
         if ($currentuser && !empty($CFG->enableportfolios) && has_capability('moodle/portfolio:export', $systemcontext)) {
-            require_once($CFG->libdir . '/portfoliolib.php');
+            require_once(__DIR__ . '/../../portfoliolib.php');
             if (portfolio_has_visible_instances()) {
                 $portfolio = $usersetting->add(get_string('portfolios', 'portfolio'), null, self::TYPE_SETTING);
 
@@ -1685,7 +1685,7 @@ class settings_navigation extends navigation_node {
      */
     protected function load_front_page_settings($forceopen = false) {
         global $SITE, $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $course = clone($SITE);
         $coursecontext = context_course::instance($course->id);   // Course context.
@@ -1754,7 +1754,7 @@ class settings_navigation extends navigation_node {
             );
             $coursereports = component::get_plugin_list('coursereport');
             foreach ($coursereports as $report => $dir) {
-                $libfile = $CFG->dirroot . '/course/report/' . $report . '/lib.php';
+                $libfile = \core\component::component_path('core_course', "report/{$report}/lib.php");
                 if (file_exists($libfile)) {
                     require_once($libfile);
                     $reportfunction = $report . '_report_extend_navigation';
@@ -1775,7 +1775,7 @@ class settings_navigation extends navigation_node {
         }
 
         // Questions.
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(__DIR__ . '/../../questionlib.php');
         $baseurl = \core_question\local\bank\question_bank_helper::get_url_for_qbank_list($course->id);
         question_extend_settings_navigation($frontpage, $coursecontext, $baseurl);
 

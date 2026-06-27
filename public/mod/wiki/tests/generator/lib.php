@@ -122,7 +122,7 @@ class mod_wiki_generator extends testing_module_generator {
      */
     public function create_page($wiki, $record = array()) {
         global $CFG, $USER;
-        require_once($CFG->dirroot.'/mod/wiki/locallib.php');
+        require_once(__DIR__ . '/../../locallib.php');
         $this->pagecount++;
         $record = (array)$record + array(
             'title' => 'wiki page '.$this->pagecount,

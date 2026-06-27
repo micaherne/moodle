@@ -25,7 +25,7 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/clilib.php');      // cli only functions
+require_once(\core\component::component_path('core', 'clilib.php'));      // cli only functions
 
 if ($DB->get_dbfamily() !== 'mysql') {
     cli_error('This function is designed for MySQL databases only!');

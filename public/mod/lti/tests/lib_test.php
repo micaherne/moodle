@@ -44,7 +44,7 @@ final class lib_test extends \advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lti/lib.php');
+        require_once(__DIR__ . '/../lib.php');
         parent::setUpBeforeClass();
     }
 
@@ -335,7 +335,7 @@ final class lib_test extends \advanced_testcase {
     public function test_content_item_callbacks(): void {
         $this->resetAfterTest();
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
 
         $admin = get_admin();
         $time = time();

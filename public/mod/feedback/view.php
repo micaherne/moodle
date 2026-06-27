@@ -22,7 +22,7 @@
  * @package mod_feedback
  */
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/feedback/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $id = required_param('id', PARAM_INT);
 $courseid = optional_param('courseid', false, PARAM_INT);

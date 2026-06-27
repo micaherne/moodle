@@ -30,7 +30,7 @@ final class googlelib_test extends \advanced_testcase {
 
     public function test_invalid_google_api_key(): void {
         global $CFG;
-        require_once($CFG->libdir . '/google/lib.php');
+        require_once(__DIR__ . '/../google/lib.php');
         $client = get_google_client();
         $client->setDeveloperKey('invalid');
         $client->setScopes(array(Google_Service_YouTube::YOUTUBE_READONLY));

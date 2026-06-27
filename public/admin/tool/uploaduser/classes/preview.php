@@ -28,8 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use tool_uploaduser\local\field_value_validators;
 
-require_once($CFG->libdir.'/csvlib.class.php');
-require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/uploaduser/locallib.php');
+require_once(\core\component::component_path('core', 'csvlib.class.php'));
+require_once(__DIR__ . '/../locallib.php');
 
 /**
  * Display the preview of a CSV file

@@ -147,7 +147,7 @@ final class calendar_event_exporter_test extends \advanced_testcase {
      */
     public function test_calendar_event_exporter_course_url_course_event(): void {
         global $CFG, $PAGE;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -187,7 +187,7 @@ final class calendar_event_exporter_test extends \advanced_testcase {
      */
     public function test_calendar_event_exporter_course_url_user_event(): void {
         global $CFG, $PAGE;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();

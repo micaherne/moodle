@@ -21,7 +21,7 @@ use core\output\html_writer;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(__DIR__ . '/../locallib.php');
 
 /**
  * Helper for sending assignment related notifications.

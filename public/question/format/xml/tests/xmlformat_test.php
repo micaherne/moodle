@@ -27,9 +27,9 @@ use question_hint_with_parts;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/format/xml/format.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(__DIR__ . '/../format.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
 
 /**
  * Unit tests for the Moodle XML format.

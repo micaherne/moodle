@@ -25,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("$CFG->libdir/filelib.php");
-require_once("$CFG->libdir/resourcelib.php");
-require_once("$CFG->dirroot/mod/url/lib.php");
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'resourcelib.php'));
+require_once(__DIR__ . '/lib.php');
 
 /**
  * This methods does weak url validation, we are looking for major problems only,
@@ -533,7 +533,7 @@ function url_get_encrypted_parameter($url, $config) {
  */
 function url_guess_icon($fullurl, $unused = null) {
     global $CFG;
-    require_once("$CFG->libdir/filelib.php");
+    require_once(\core\component::component_path('core', 'filelib.php'));
 
     if ($unused !== null) {
         debugging('Deprecated argument passed to ' . __FUNCTION__, DEBUG_DEVELOPER);

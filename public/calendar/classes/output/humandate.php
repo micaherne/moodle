@@ -377,7 +377,7 @@ class humandate implements externable, renderable, templatable {
     private function format_time(): string {
         global $CFG;
         // Ensure calendar constants are loaded.
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
 
         $timeformat = get_user_preferences('calendar_timeformat');
         if (empty($timeformat)) {

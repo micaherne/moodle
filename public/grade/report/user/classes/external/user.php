@@ -32,7 +32,7 @@ use moodle_exception;
 use stdClass;
 use gradereport_user\report\user as user_report;
 
-require_once($CFG->dirroot.'/grade/lib.php');
+require_once(\core\component::component_path('core_grades', 'lib.php'));
 
 /**
  * External grade report API implementation
@@ -155,10 +155,10 @@ class user extends external_api {
 
         $warnings = [];
         // Require files here to save some memory in case validation fails.
-        require_once($CFG->dirroot . '/group/lib.php');
-        require_once($CFG->libdir  . '/gradelib.php');
-        require_once($CFG->dirroot . '/grade/lib.php');
-        require_once($CFG->dirroot . '/grade/report/user/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core_grades', 'lib.php'));
+        require_once(__DIR__ . '/../../lib.php');
 
         // Force regrade to update items marked as 'needupdate'.
         grade_regrade_final_grades($course->id);
@@ -382,8 +382,8 @@ class user extends external_api {
      */
     public static function view_grade_report(int $courseid, int $userid = 0): array {
         global $CFG, $USER;
-        require_once($CFG->dirroot . "/grade/lib.php");
-        require_once($CFG->dirroot . "/grade/report/user/lib.php");
+        require_once(\core\component::component_path('core_grades', 'lib.php'));
+        require_once(__DIR__ . '/../../lib.php');
 
         $params = self::validate_parameters(self::view_grade_report_parameters(),
             [

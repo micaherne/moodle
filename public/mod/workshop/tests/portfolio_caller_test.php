@@ -22,9 +22,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/workshop/locallib.php');
+require_once(__DIR__ . '/../locallib.php');
 require_once(__DIR__ . '/fixtures/testable.php');
-require_once($CFG->dirroot . '/mod/workshop/classes/portfolio_caller.php');
+require_once(__DIR__ . '/../classes/portfolio_caller.php');
 
 /**
  * Unit tests for mod_workshop_portfolio_caller class

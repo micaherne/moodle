@@ -31,8 +31,8 @@
  * process because
  */
 
-require('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+require(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $url = optional_param('url', '', PARAM_URL);
 $token = optional_param('token', '', PARAM_TEXT);
