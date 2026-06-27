@@ -26,7 +26,7 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/login/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Login lib testcase.
@@ -385,7 +385,7 @@ final class login_lib_test extends \advanced_testcase {
      */
     public function test_core_login_process_password_reset_email_sensitivity(): void {
         global $CFG;
-        require_once($CFG->libdir.'/phpmailer/moodle_phpmailer.php');
+        require_once(\core\component::component_path('core', 'phpmailer/moodle_phpmailer.php'));
 
         $this->resetAfterTest();
         $sink = $this->redirectEmails();

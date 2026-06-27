@@ -355,7 +355,7 @@ class tool_installaddon_installer {
      */
     protected function extract_versionphp_file($zipfilepath, $targetdir) {
         global $CFG;
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $fp = get_file_packer('application/zip');
         $files = $fp->list_files($zipfilepath);

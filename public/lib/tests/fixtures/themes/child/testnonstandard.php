@@ -22,9 +22,9 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once("../../../../../config.php");
+require_once(__DIR__ . '/../../../../../config.php');
 global $CFG, $SITE, $PAGE, $OUTPUT;
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 require_login();
 

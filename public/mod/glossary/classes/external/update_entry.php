@@ -28,7 +28,7 @@ namespace mod_glossary\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/glossary/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 use core_external\external_api;
 use core_external\external_format_value;

@@ -20,8 +20,8 @@
  * @author Dan Poltawski <talktodan@gmail.com>
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-require_once($CFG->libdir.'/portfolio/plugin.php');
-require_once($CFG->libdir . '/google/lib.php');
+require_once(\core\component::component_path('core', 'portfolio/plugin.php'));
+require_once(\core\component::component_path('core', 'google/lib.php'));
 
 class portfolio_plugin_googledocs extends portfolio_plugin_push_base {
     /**

@@ -23,8 +23,8 @@ use backup_controller;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+require_once(__DIR__ . '/../../includes/backup_includes.php');
+require_once(__DIR__ . '/../../includes/restore_includes.php');
 
 /**
  * Asyncronhous helper tests.

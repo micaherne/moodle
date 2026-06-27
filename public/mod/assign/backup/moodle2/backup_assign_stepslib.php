@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * Define the complete choice structure for backup, with file and id annotations

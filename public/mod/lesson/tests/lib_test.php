@@ -30,7 +30,7 @@ use mod_lesson_external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/lesson/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Unit tests for mod/lesson/lib.php.
@@ -789,7 +789,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_lesson_core_calendar_event_timestart_updated_unknown_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -830,7 +830,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_lesson_core_calendar_event_timestart_updated_open_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -890,7 +890,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_lesson_core_calendar_event_timestart_updated_close_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $generator = $this->getDataGenerator();
@@ -943,7 +943,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_lesson_core_calendar_get_valid_event_timestart_range_unknown_event(): void {
         global $CFG;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -981,7 +981,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_lesson_core_calendar_get_valid_event_timestart_range_open_event(): void {
         global $CFG;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1026,7 +1026,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_lesson_core_calendar_get_valid_event_timestart_range_close_event(): void {
         global $CFG;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();

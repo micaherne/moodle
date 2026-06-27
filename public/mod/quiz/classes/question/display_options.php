@@ -17,7 +17,7 @@
 namespace mod_quiz\question;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/question/engine/lib.php');
+require_once(\core\component::component_path('core_question', 'engine/lib.php'));
 
 /**
  * An extension of question_display_options that includes the extra options used by the quiz.

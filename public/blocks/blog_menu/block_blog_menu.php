@@ -72,7 +72,7 @@ class block_blog_menu extends block_base {
         }
 
         // require necessary libs and get content
-        require_once($CFG->dirroot .'/blog/lib.php');
+        require_once(\core\component::component_path('core_blog', 'lib.php'));
 
         // Prep the content
         $this->content = new stdClass();

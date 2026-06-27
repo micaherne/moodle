@@ -19,7 +19,7 @@ namespace core_badges\local\backpack\ob\v2p1;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/badges/tests/local/backpack/ob/v2p0/assertion_exporter_test.php');
+require_once(__DIR__ . '/../v2p0/assertion_exporter_test.php');
 
 use core_badges\local\backpack\ob\v2p0\assertion_exporter_test as assertion_exporter_v2p0_test;
 

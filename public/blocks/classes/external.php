@@ -35,7 +35,7 @@ use core_external\external_warnings;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("$CFG->dirroot/my/lib.php");
+require_once(\core\component::component_path('core_my', 'lib.php'));
 
 /**
  * Blocks external functions
@@ -248,7 +248,7 @@ class core_block_external extends external_api {
     public static function get_dashboard_blocks($userid = 0, $returncontents = false, $mypage = MY_PAGE_DEFAULT) {
         global $CFG, $USER, $PAGE;
 
-        require_once($CFG->dirroot . '/my/lib.php');
+        require_once(\core\component::component_path('core_my', 'lib.php'));
 
         $warnings = array();
         $params = self::validate_parameters(self::get_dashboard_blocks_parameters(),

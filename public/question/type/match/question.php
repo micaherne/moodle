@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/questionbase.php');
+require_once(\core\component::component_path('core_question', 'type/questionbase.php'));
 
 /**
  * Represents a matching question.

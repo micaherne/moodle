@@ -23,7 +23,7 @@ use repository_type;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("$CFG->dirroot/repository/lib.php");
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Repository API unit tests

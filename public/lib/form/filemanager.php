@@ -18,8 +18,8 @@ use core\context\user;
 
 global $CFG;
 require_once('HTML/QuickForm/element.php');
-require_once($CFG->dirroot.'/lib/filelib.php');
-require_once($CFG->dirroot.'/repository/lib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 require_once('templatable_form_element.php');
 
 /**
@@ -231,7 +231,7 @@ class MoodleQuickForm_filemanager extends HTML_QuickForm_element implements temp
      */
     function toHtml() {
         global $CFG, $USER, $COURSE, $PAGE, $OUTPUT;
-        require_once("$CFG->dirroot/repository/lib.php");
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         // security - never ever allow guest/not logged in user to upload anything or use this element!
         if (isguestuser() or !isloggedin()) {
@@ -251,7 +251,7 @@ class MoodleQuickForm_filemanager extends HTML_QuickForm_element implements temp
 
         if (empty($draftitemid)) {
             // no existing area info provided - let's use fresh new draft area
-            require_once("$CFG->libdir/filelib.php");
+            require_once(\core\component::component_path('core', 'filelib.php'));
             $this->setValue(file_get_unused_draft_itemid());
             $draftitemid = $this->getValue();
         }
@@ -405,8 +405,8 @@ class form_filemanager implements renderable {
      */
     public function __construct(stdClass $options) {
         global $CFG, $USER, $PAGE;
-        require_once($CFG->dirroot. '/repository/lib.php');
-        require_once($CFG->libdir . '/licenselib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
+        require_once(\core\component::component_path('core', 'licenselib.php'));
         $defaults = array(
             'maxbytes'=>-1,
             'areamaxbytes' => FILE_AREA_MAX_BYTES_UNLIMITED,

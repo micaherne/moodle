@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/feedback/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Feedback module external functions tests

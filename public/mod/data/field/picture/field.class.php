@@ -50,7 +50,7 @@ class data_field_picture extends data_field_base {
         global $CFG, $DB, $OUTPUT, $USER, $PAGE;
 
         // Necessary for the constants used in args.
-        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $file        = false;
         $content     = false;

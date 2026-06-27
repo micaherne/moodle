@@ -27,8 +27,8 @@ use grade_tree;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/course/externallib.php');
-require_once($CFG->dirroot.'/grade/lib.php');
+require_once(\core\component::component_path('core_course', 'externallib.php'));
+require_once(\core\component::component_path('core_grades', 'lib.php'));
 
 /**
  * External grade report singleview API

@@ -26,10 +26,10 @@ use mod_quiz\local\reports\attempts_report;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/report/responses/responses_options.php');
-require_once($CFG->dirroot . '/mod/quiz/report/responses/responses_form.php');
-require_once($CFG->dirroot . '/mod/quiz/report/responses/last_responses_table.php');
-require_once($CFG->dirroot . '/mod/quiz/report/responses/first_or_all_responses_table.php');
+require_once(__DIR__ . '/responses_options.php');
+require_once(__DIR__ . '/responses_form.php');
+require_once(__DIR__ . '/last_responses_table.php');
+require_once(__DIR__ . '/first_or_all_responses_table.php');
 
 
 /**

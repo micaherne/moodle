@@ -73,7 +73,7 @@ class MoodleODSWorkbook {
      */
     public function close() {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(__DIR__ . '/filelib.php');
 
         $writer = new MoodleODSWriter($this->worksheets);
         $contents = $writer->get_file_content();

@@ -32,8 +32,8 @@ use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->libdir . '/webdavlib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(\core\component::component_path('core', 'webdavlib.php'));
 
 /**
  * Class repository_equella_lib_testcase

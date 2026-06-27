@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/helper/convert_helper.class.php');
+require_once(__DIR__ . '/../convert_helper.class.php');
 
 /**
  * Test the convert helper.

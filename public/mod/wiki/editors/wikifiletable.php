@@ -29,7 +29,7 @@
 use core\url;
 
 require_once('HTML/QuickForm/element.php');
-require_once($CFG->dirroot.'/lib/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 class MoodleQuickForm_wikifiletable extends HTML_QuickForm_element {
 
@@ -163,4 +163,4 @@ class MoodleQuickForm_wikifiletable extends HTML_QuickForm_element {
 }
 
 //register wikieditor
-MoodleQuickForm::registerElementType('wikifiletable', $CFG->dirroot."/mod/wiki/editors/wikifiletable.php", 'MoodleQuickForm_wikifiletable');
+MoodleQuickForm::registerElementType('wikifiletable', __DIR__ . '/wikifiletable.php', 'MoodleQuickForm_wikifiletable');

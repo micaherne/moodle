@@ -34,7 +34,7 @@
 function block_html_pluginfile($course, $birecord_or_cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     global $CFG;
 
-    require_once("{$CFG->dirroot}/user/lib.php");
+    require_once(\core\component::component_path('core_user', 'lib.php'));
 
     if ($context->contextlevel != CONTEXT_BLOCK) {
         send_file_not_found();

@@ -185,21 +185,21 @@ require_once($CFG->libdir.'/classes/component.php');
 // Register our classloader.
 \core\component::register_autoloader();
 
-require_once($CFG->libdir.'/classes/text.php');
-require_once($CFG->libdir.'/classes/string_manager.php');
-require_once($CFG->libdir.'/classes/string_manager_install.php');
-require_once($CFG->libdir.'/classes/string_manager_standard.php');
-require_once($CFG->libdir.'/installlib.php');
-require_once($CFG->libdir.'/clilib.php');
-require_once($CFG->libdir.'/setuplib.php');
-require_once($CFG->libdir.'/weblib.php');
-require_once($CFG->libdir.'/dmllib.php');
-require_once($CFG->libdir.'/moodlelib.php');
-require_once($CFG->libdir.'/deprecatedlib.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/componentlib.class.php');
+require_once(\core\component::component_path('core', 'classes/text.php'));
+require_once(\core\component::component_path('core', 'classes/string_manager.php'));
+require_once(\core\component::component_path('core', 'classes/string_manager_install.php'));
+require_once(\core\component::component_path('core', 'classes/string_manager_standard.php'));
+require_once(\core\component::component_path('core', 'installlib.php'));
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(\core\component::component_path('core', 'setuplib.php'));
+require_once(\core\component::component_path('core', 'weblib.php'));
+require_once(\core\component::component_path('core', 'dmllib.php'));
+require_once(\core\component::component_path('core', 'moodlelib.php'));
+require_once(\core\component::component_path('core', 'deprecatedlib.php'));
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'componentlib.class.php'));
 
-require($CFG->dirroot.'/version.php');
+require(__DIR__ . '/../../public/version.php');
 $CFG->target_release = $release;
 
 \core\session\manager::init_empty_session();
@@ -833,10 +833,10 @@ require($configfile);
 $CFG->lang = $installlang;
 $SESSION->lang = $CFG->lang;
 
-require("$CFG->dirroot/version.php");
+require(__DIR__ . '/../../public/version.php');
 
 // Test environment first.
-require_once($CFG->libdir . '/environmentlib.php');
+require_once(\core\component::component_path('core', 'environmentlib.php'));
 list($envstatus, $environment_results) = check_moodle_environment(normalize_version($release), ENV_SELECT_RELEASE);
 if (!$envstatus) {
     $errors = environment_get_errors($environment_results);
@@ -861,7 +861,7 @@ if (!$skipdatabase) {
     // have been purged for the last time.
     // This will build a cached version of the current theme for the user
     // to immediately start browsing the site.
-    require_once($CFG->libdir.'/upgradelib.php');
+    require_once(\core\component::component_path('core', 'upgradelib.php'));
     upgrade_themes();
 } else {
     echo get_string('cliskipdatabase', 'install')."\n";

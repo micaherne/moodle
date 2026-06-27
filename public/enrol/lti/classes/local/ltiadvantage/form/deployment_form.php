@@ -19,7 +19,7 @@ use enrol_lti\local\ltiadvantage\repository\deployment_repository;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * The deployment_form class, for registering a deployment for a registered platform.

@@ -29,7 +29,7 @@ namespace core;
 final class authlib_test extends \advanced_testcase {
     public function test_lockout(): void {
         global $CFG;
-        require_once("$CFG->libdir/authlib.php");
+        require_once(__DIR__ . '/../authlib.php');
 
         $this->resetAfterTest();
 
@@ -453,9 +453,9 @@ final class authlib_test extends \advanced_testcase {
      */
     public function test_signup_validate_data_same_email(): void {
         global $CFG;
-        require_once($CFG->libdir . '/authlib.php');
-        require_once($CFG->libdir . '/phpmailer/moodle_phpmailer.php');
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(__DIR__ . '/../authlib.php');
+        require_once(__DIR__ . '/../phpmailer/moodle_phpmailer.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         $this->resetAfterTest();
 
@@ -513,8 +513,8 @@ final class authlib_test extends \advanced_testcase {
      */
     public function test_find_cli_user(): void {
         global $CFG, $USER;
-        require_once("$CFG->libdir/authlib.php");
-        require_once("$CFG->libdir/tests/fixtures/testable_auth_plugin_base.php");
+        require_once(__DIR__ . '/../authlib.php');
+        require_once(__DIR__ . '/fixtures/testable_auth_plugin_base.php');
 
         $this->resetAfterTest();
 
@@ -545,7 +545,7 @@ final class authlib_test extends \advanced_testcase {
      */
     public function test_get_enabled_auth_plugin_classes(): void {
         global $CFG;
-        require_once("$CFG->libdir/authlib.php");
+        require_once(__DIR__ . '/../authlib.php');
         $plugins = \auth_plugin_base::get_enabled_auth_plugin_classes();
         $this->assertEquals(get_class($plugins[0]), 'auth_plugin_manual');
         $this->assertEquals(count($plugins), 3);

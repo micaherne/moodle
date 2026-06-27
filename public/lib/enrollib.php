@@ -108,7 +108,10 @@ function enrol_get_plugins($enabled) {
         $enabled = explode(',', $CFG->enrol_plugins_enabled);
         $plugins = array();
         foreach ($enabled as $plugin) {
-            $plugins[$plugin] = "$CFG->dirroot/enrol/$plugin";
+            $plugindir = \core_component::get_plugin_directory('enrol', $plugin);
+            if ($plugindir !== null) {
+                $plugins[$plugin] = $plugindir;
+            }
         }
     } else {
         // sorted alphabetically
@@ -140,8 +143,6 @@ function enrol_get_plugins($enabled) {
  * @return ?enrol_plugin
  */
 function enrol_get_plugin($name) {
-    global $CFG;
-
     $name = clean_param($name, PARAM_PLUGIN);
 
     if (empty($name)) {
@@ -149,7 +150,7 @@ function enrol_get_plugin($name) {
         return null;
     }
 
-    $location = "$CFG->dirroot/enrol/$name";
+    $location = \core_component::get_plugin_directory('enrol', $name);
 
     $class = "enrol_{$name}_plugin";
     if (!class_exists($class)) {
@@ -186,7 +187,8 @@ function enrol_get_instances($courseid, $enabled) {
             unset($result[$key]);
             continue;
         }
-        if (!file_exists("$CFG->dirroot/enrol/$instance->enrol/lib.php")) {
+        $enroldir = \core_component::get_plugin_directory('enrol', $instance->enrol);
+        if (!$enroldir || !file_exists("$enroldir/lib.php")) {
             // broken plugin
             unset($result[$key]);
             continue;
@@ -1749,7 +1751,7 @@ function enrol_output_fragment_user_enrolment_form($args) {
         parse_str($serialiseddata, $data);
     }
 
-    require_once("$CFG->dirroot/enrol/editenrolment_form.php");
+    require_once(\core\component::component_path('core_enrol', 'editenrolment_form.php'));
     $mform = new \enrol_user_enrolment_form(null, $customdata, 'post', '', null, true, $data);
 
     if (!empty($data)) {
@@ -2185,7 +2187,7 @@ abstract class enrol_plugin {
 
         // Recover old grades if present.
         if ($recovergrades) {
-            require_once("$CFG->libdir/gradelib.php");
+            require_once(__DIR__ . '/gradelib.php');
             grade_recover_history_grades($userid, $courseid);
         }
 
@@ -2293,7 +2295,7 @@ abstract class enrol_plugin {
      */
     public function unenrol_user(stdClass $instance, $userid) {
         global $CFG, $USER, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         $name = $this->get_name();
         $courseid = $instance->courseid;
@@ -2338,7 +2340,7 @@ abstract class enrol_plugin {
 
         } else {
             // the big cleanup IS necessary!
-            require_once("$CFG->libdir/gradelib.php");
+            require_once(__DIR__ . '/gradelib.php');
 
             // remove all remaining roles
             role_unassign_all(array('userid'=>$userid, 'contextid'=>$context->id), true, false);
@@ -2504,7 +2506,8 @@ abstract class enrol_plugin {
             return NULL;
         }
 
-        if (!file_exists("$CFG->dirroot/enrol/$name/unenrolself.php")) {
+        $enroldir = \core_component::get_plugin_directory('enrol', $name);
+        if (!$enroldir || !file_exists("$enroldir/unenrolself.php")) {
             return NULL;
         }
 
@@ -2863,10 +2866,8 @@ abstract class enrol_plugin {
      * @return bool
      */
     public function is_cron_required() {
-        global $CFG;
-
         $name = $this->get_name();
-        $versionfile = "$CFG->dirroot/enrol/$name/version.php";
+        $versionfile = \core_component::get_plugin_directory('enrol', $name) . '/version.php';
         $plugin = new stdClass();
         include($versionfile);
         if (empty($plugin->cron)) {
@@ -3642,7 +3643,7 @@ abstract class enrol_plugin {
         ?int $roleid = null,
     ): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $user = core_user::get_user($userid);
         $course = get_course($instance->courseid);

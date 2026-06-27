@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Repeat event collection tests.

@@ -119,7 +119,7 @@ class backup_final_task extends backup_task {
         // to the backup, settings, license, versions and other useful information
         $this->add_step(new backup_main_structure_step('mainfile', 'moodle_backup.xml'));
 
-        require_once($CFG->dirroot . '/backup/util/helper/convert_helper.class.php');
+        require_once(__DIR__ . '/../util/helper/convert_helper.class.php');
 
         // Look for converter steps only in type course and mode general backup operations.
         $conversion = false;

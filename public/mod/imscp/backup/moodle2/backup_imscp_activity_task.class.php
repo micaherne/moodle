@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/imscp/backup/moodle2/backup_imscp_stepslib.php');
+require_once(__DIR__ . '/backup_imscp_stepslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the IMSCP instance

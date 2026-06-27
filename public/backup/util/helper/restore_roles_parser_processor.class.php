@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/backup/util/xml/parser/processors/grouped_parser_processor.class.php');
+require_once(__DIR__ . '/../xml/parser/processors/grouped_parser_processor.class.php');
 
 /**
  * helper implementation of grouped_parser_processor that will

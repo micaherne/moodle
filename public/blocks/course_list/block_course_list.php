@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-include_once($CFG->dirroot . '/course/lib.php');
+include_once(\core\component::component_path('core_course', 'lib.php'));
 
 class block_course_list extends block_list {
     function init() {

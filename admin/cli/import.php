@@ -27,9 +27,9 @@
 define('CLI_SCRIPT', 1);
 
 require(__DIR__ . '/../../config.php');
-require_once($CFG->libdir . '/clilib.php');
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . "/backup/util/includes/restore_includes.php");
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(__DIR__ . '/../../public/backup/util/includes/backup_includes.php');
+require_once(__DIR__ . '/../../public/backup/util/includes/restore_includes.php');
 
 list($options, $unrecognized) = cli_get_params([
     'srccourseid' => '',

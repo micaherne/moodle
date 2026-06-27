@@ -352,7 +352,7 @@ if ($hassiteconfig) {
     }
 
     //== Portfolio settings ==
-    require_once($CFG->libdir. '/portfoliolib.php');
+    require_once(\core\component::component_path('core', 'portfoliolib.php'));
     $manage = new lang_string('manageportfolios', 'portfolio');
     $url = "$CFG->wwwroot/$CFG->admin/portfolio.php";
 
@@ -394,7 +394,11 @@ if ($hassiteconfig) {
     $ADMIN->add('portfoliosettings', new admin_externalpage('portfoliocontroller', new lang_string('manageportfolios', 'portfolio'), $url, 'moodle/site:config', true));
 
     foreach (portfolio_instances(false, false) as $portfolio) {
-        require_once($CFG->dirroot . '/portfolio/' . $portfolio->get('plugin') . '/lib.php');
+        $plugindir = \core_component::get_plugin_directory('portfolio', $portfolio->get('plugin'));
+        if ($plugindir === null) {
+            throw new \coding_exception('Plugin not installed: portfolio_' . $portfolio->get('plugin'));
+        }
+        require_once($plugindir . '/lib.php');
         $classname = 'portfolio_plugin_' . $portfolio->get('plugin');
         $ADMIN->add(
             'portfoliosettings',
@@ -408,7 +412,7 @@ if ($hassiteconfig) {
     }
 
     // repository setting
-    require_once("$CFG->dirroot/repository/lib.php");
+    require_once(\core\component::component_path('core_repository', 'lib.php'));
     $managerepo = new lang_string('manage', 'repository');
     $url = $CFG->wwwroot.'/'.$CFG->admin.'/repository.php';
 
@@ -562,7 +566,7 @@ $ADMIN->add('reports', new admin_externalpage('comments', new lang_string('comme
 if ($hassiteconfig) {
     $pages = array();
     foreach (core_component::get_plugin_list('coursereport') as $report => $path) {
-        $file = $CFG->dirroot . '/course/report/' . $report . '/settings.php';
+        $file = \core\component::component_path('core_course', "report/{$report}/settings.php");
         if (file_exists($file)) {
             $settings = new admin_settingpage('coursereport' . $report,
                     new lang_string('pluginname', 'coursereport_' . $report), 'moodle/site:config');

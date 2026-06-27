@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/backup/util/xml/parser/processors/grouped_parser_processor.class.php');
+require_once(__DIR__ . '/../xml/parser/processors/grouped_parser_processor.class.php');
 
 /**
  * helper implementation of grouped_parser_processor that will
@@ -159,9 +159,13 @@ class restore_questions_parser_processor extends grouped_parser_processor {
      * @return ?restore_qtype_plugin
      */
     protected static function get_qtype_restore(string $qtype): ?restore_qtype_plugin {
-        global $CFG;
+        global $CFG; // Needed in scope for included qtype restore files that use $CFG at file level.
         $step = new restore_quiz_activity_structure_step('questions', 'question.xml');
-        $filepath = "{$CFG->dirroot}/question/type/{$qtype}/backup/moodle2/restore_qtype_{$qtype}_plugin.class.php";
+        $qtypedir = \core_component::get_plugin_directory('qtype', $qtype);
+        if ($qtypedir === null) {
+            return null;
+        }
+        $filepath = "$qtypedir/backup/moodle2/restore_qtype_{$qtype}_plugin.class.php";
         if (!file_exists($filepath)) {
             return null;
         }

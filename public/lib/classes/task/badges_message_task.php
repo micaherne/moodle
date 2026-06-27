@@ -46,7 +46,7 @@ class badges_message_task extends scheduled_task {
         global $CFG, $DB;
 
         if (!empty($CFG->enablebadges)) {
-            require_once($CFG->libdir . '/badgeslib.php');
+            require_once(__DIR__ . '/../../badgeslib.php');
             mtrace('Sending scheduled badge notifications.');
 
             $scheduled = $DB->get_records_select('badge', 'notification > ? AND (status != ?) AND nextcron < ?',

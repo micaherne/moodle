@@ -19,7 +19,7 @@ namespace tool_mfa\tests;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 require_once(__DIR__ . '../../../lib.php');
 
 /**

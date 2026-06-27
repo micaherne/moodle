@@ -22,9 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once '../../../config.php';
-require_once $CFG->dirroot.'/grade/lib.php';
-require_once $CFG->libdir.'/gradelib.php';
+require_once __DIR__ . '/../../../config.php';
+require_once __DIR__ . '/../../lib.php';
+require_once \core\component::component_path('core', 'gradelib.php');
 
 $contextid = optional_param('id', SYSCONTEXTID, PARAM_INT);
 $action   = optional_param('action', '', PARAM_ALPHA);
@@ -51,7 +51,7 @@ $PAGE->set_url($url);
 $returnurl = null;
 $editparam = null;
 if ($context->contextlevel == CONTEXT_SYSTEM or $context->contextlevel == CONTEXT_COURSECAT) {
-    require_once $CFG->libdir.'/adminlib.php';
+    require_once \core\component::component_path('core', 'adminlib.php');
 
     admin_externalpage_setup('letters');
 

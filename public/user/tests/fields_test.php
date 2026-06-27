@@ -56,7 +56,7 @@ final class fields_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(__DIR__ . '/../profile/lib.php');
 
         // Create custom profile fields, one with each visibility option.
         $generator = self::getDataGenerator();

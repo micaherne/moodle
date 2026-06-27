@@ -35,10 +35,10 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/xml/xml_writer.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/output/xml_output.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/output/memory_xml_output.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/contenttransformer/xml_contenttransformer.class.php');
+require_once(__DIR__ . '/../xml_writer.class.php');
+require_once(__DIR__ . '/../output/xml_output.class.php');
+require_once(__DIR__ . '/../output/memory_xml_output.class.php');
+require_once(__DIR__ . '/../contenttransformer/xml_contenttransformer.class.php');
 
 /**
  * Test xml_writer tests.
@@ -329,7 +329,7 @@ final class writer_test extends \basic_testcase {
         $xw->end_tag('toptag');
         $xw->stop();
         $result = $xo->get_allcontents();
-        $fcontents = file_get_contents($CFG->dirroot . '/backup/util/xml/tests/fixtures/test1.xml');
+        $fcontents = file_get_contents(__DIR__ . '/fixtures/test1.xml');
 
         // Normalise carriage return characters.
         $fcontents = \core\test\phpunit\phpunit_util::normalise_line_endings($fcontents);

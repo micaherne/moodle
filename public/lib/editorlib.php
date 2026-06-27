@@ -118,13 +118,11 @@ function editors_get_enabled() {
  * @return object|bool texeditor instance or false if does not exist
  */
 function get_texteditor($editorname) {
-    global $CFG;
-
-    $libfile = "$CFG->libdir/editor/$editorname/lib.php";
-    if (!file_exists($libfile)) {
+    $editordir = \core_component::get_plugin_directory('editor', $editorname);
+    if (!$editordir || !file_exists($editordir . '/lib.php')) {
         return false;
     }
-    require_once($libfile);
+    require_once($editordir . '/lib.php');
     $classname = $editorname.'_texteditor';
     if (!class_exists($classname)) {
         return false;

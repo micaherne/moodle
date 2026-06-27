@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot . '/blocks/myoverview/lib.php');
+    require_once(__DIR__ . '/lib.php');
 
     // Presentation options heading.
     $settings->add(new admin_setting_heading('block_myoverview/appearance',

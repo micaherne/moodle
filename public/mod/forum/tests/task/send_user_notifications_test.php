@@ -63,7 +63,7 @@ final class send_user_notifications_test extends \advanced_testcase {
         array $userpreferences = [],
     ): void {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(__DIR__ . '/../../lib.php');
         $CFG->handlebounces = true;
         $this->resetAfterTest(true);
         $this->setAdminUser();

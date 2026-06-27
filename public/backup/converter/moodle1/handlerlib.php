@@ -29,9 +29,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/backup/util/xml/xml_writer.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/output/xml_output.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/output/file_xml_output.class.php');
+require_once(__DIR__ . '/../../util/xml/xml_writer.class.php');
+require_once(__DIR__ . '/../../util/xml/output/xml_output.class.php');
+require_once(__DIR__ . '/../../util/xml/output/file_xml_output.class.php');
 
 /**
  * Handlers factory class
@@ -632,11 +632,10 @@ class moodle1_info_handler extends moodle1_handler {
      * Stashes the backup info for later processing by {@link moodle1_root_handler}
      */
     public function on_info_details_mod_end($data) {
-        global $CFG;
-
         // keep only such modules that seem to have the support for moodle1 implemented
         $modname = $this->currentmod['name'];
-        if (file_exists($CFG->dirroot.'/mod/'.$modname.'/backup/moodle1/lib.php')) {
+        $moddir = \core_component::get_plugin_directory('mod', $modname);
+        if ($moddir && file_exists("$moddir/backup/moodle1/lib.php")) {
             $this->converter->set_stash('modinfo_'.$modname, $this->currentmod);
             $this->modnames[] = $modname;
         } else {
@@ -828,7 +827,6 @@ class moodle1_course_outline_handler extends moodle1_xml_handler {
      * course module info so that is can be dumped to activities/xxxx_x/module.xml later
      */
     public function process_course_module($data, $raw) {
-        global $CFG;
 
         // check that this type of module should be included in the mbz
         $modinfo = $this->converter->get_stash_itemids('modinfo_'.$data['modulename']);
@@ -861,12 +859,12 @@ class moodle1_course_outline_handler extends moodle1_xml_handler {
         // whenever we can but that might not be accurate for some modules.
         // also there might be problem with modules that are not present at the target
         // host...
-        $versionfile = $CFG->dirroot.'/mod/'.$data['modulename'].'/version.php';
-        if (file_exists($versionfile)) {
+        $moddir = \core_component::get_plugin_directory('mod', $data['modulename']);
+        if ($moddir && file_exists("$moddir/version.php")) {
             $plugin = new stdClass();
             $plugin->version = null;
             $module = $plugin;
-            include($versionfile);
+            include("$moddir/version.php");
             // Have to hardcode - since quiz uses some hardcoded version numbers when restoring.
             // This is the lowest number used minus one.
             $data['version'] = 2011010099;

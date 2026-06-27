@@ -23,18 +23,18 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/user/filters/text.php');
-require_once($CFG->dirroot.'/user/filters/date.php');
-require_once($CFG->dirroot.'/user/filters/select.php');
-require_once($CFG->dirroot.'/user/filters/simpleselect.php');
-require_once($CFG->dirroot.'/user/filters/courserole.php');
-require_once($CFG->dirroot.'/user/filters/globalrole.php');
-require_once($CFG->dirroot.'/user/filters/profilefield.php');
-require_once($CFG->dirroot.'/user/filters/yesno.php');
-require_once($CFG->dirroot.'/user/filters/anycourses.php');
-require_once($CFG->dirroot.'/user/filters/cohort.php');
-require_once($CFG->dirroot.'/user/filters/user_filter_forms.php');
-require_once($CFG->dirroot.'/user/filters/checkbox.php');
+require_once(__DIR__ . '/text.php');
+require_once(__DIR__ . '/date.php');
+require_once(__DIR__ . '/select.php');
+require_once(__DIR__ . '/simpleselect.php');
+require_once(__DIR__ . '/courserole.php');
+require_once(__DIR__ . '/globalrole.php');
+require_once(__DIR__ . '/profilefield.php');
+require_once(__DIR__ . '/yesno.php');
+require_once(__DIR__ . '/anycourses.php');
+require_once(__DIR__ . '/cohort.php');
+require_once(__DIR__ . '/user_filter_forms.php');
+require_once(__DIR__ . '/checkbox.php');
 
 /**
  * User filtering wrapper class.

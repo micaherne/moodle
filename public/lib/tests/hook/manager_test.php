@@ -315,8 +315,8 @@ final class manager_test extends \advanced_testcase {
     protected function setup_hooktest_plugin(): void {
         global $CFG;
 
-        $this->add_mocked_plugintype('fake', "{$CFG->dirroot}/lib/tests/fixtures/hook/fakeplugins");
-        $this->add_mocked_plugin('fake', 'hooktest', "{$CFG->dirroot}/lib/tests/fixtures/hook/fakeplugins/hooktest");
+        $this->add_mocked_plugintype('fake', __DIR__ . '/../fixtures/hook/fakeplugins');
+        $this->add_mocked_plugin('fake', 'hooktest', __DIR__ . '/../fixtures/hook/fakeplugins/hooktest');
     }
 
     /**

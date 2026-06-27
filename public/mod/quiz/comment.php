@@ -25,7 +25,7 @@
 
 use mod_quiz\output\attempt_summary_information;
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 require_once('locallib.php');
 
 $attemptid = required_param('attempt', PARAM_INT);

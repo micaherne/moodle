@@ -31,8 +31,8 @@ final class lib_test extends \advanced_testcase {
      */
     protected function setUp(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/grade/report/overview/lib.php');
-        require_once($CFG->dirroot . '/grade/querylib.php');
+        require_once(__DIR__ . '/../lib.php');
+        require_once(\core\component::component_path('core_grades', 'querylib.php'));
         parent::setUp();
     }
 

@@ -25,7 +25,7 @@ namespace mod_lti\output;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 use renderable;
 use templatable;

@@ -29,8 +29,8 @@ use backup_cron_automated_helper;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/helper/backup_cron_helper.class.php');
-require_once($CFG->libdir . '/completionlib.php');
+require_once(__DIR__ . '/../util/helper/backup_cron_helper.class.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Automated backup tests.

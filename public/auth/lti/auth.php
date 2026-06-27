@@ -18,8 +18,8 @@ use auth_lti\local\ltiadvantage\entity\user_migration_claim;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/authlib.php');
-require_once($CFG->libdir.'/accesslib.php');
+require_once(\core\component::component_path('core', 'authlib.php'));
+require_once(\core\component::component_path('core', 'accesslib.php'));
 
 /**
  * LTI Authentication plugin.
@@ -348,7 +348,7 @@ class auth_plugin_lti extends \auth_plugin_base {
     protected function create_new_account(array $userdata, string $iss): stdClass {
 
         global $CFG;
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         // Launches and membership calls handle the user id differently.
         // Launch uses 'sub', whereas member uses 'user_id'.
@@ -385,7 +385,7 @@ class auth_plugin_lti extends \auth_plugin_base {
      */
     public function update_user_account(stdClass $user, array $userdata, string $iss): void {
         global $CFG;
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
         if ($user->auth !== 'lti') {
             return;
         }
@@ -427,8 +427,8 @@ class auth_plugin_lti extends \auth_plugin_base {
     protected function update_user_picture(int $userid, string $url): void {
         global $CFG, $DB;
 
-        require_once($CFG->libdir . '/filelib.php');
-        require_once($CFG->libdir . '/gdlib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
+        require_once(\core\component::component_path('core', 'gdlib.php'));
 
         $fs = get_file_storage();
 

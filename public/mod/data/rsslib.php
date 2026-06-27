@@ -77,7 +77,7 @@ defined('MOODLE_INTERNAL') || die();
         //if the cache is more than 60 seconds old and there's new stuff
         $dontrecheckcutoff = time()-60;
         if ( $dontrecheckcutoff > $cachedfilelastmodified && data_rss_newstuff($data, $cachedfilelastmodified)) {
-            require_once($CFG->dirroot . '/mod/data/lib.php');
+            require_once(__DIR__ . '/lib.php');
 
             // Get the first field in the list  (a hack for now until we have a selector)
             if (!$firstfield = $DB->get_record_sql('SELECT id,name FROM {data_fields} WHERE dataid = ? ORDER by id', array($data->id), true)) {
@@ -195,7 +195,7 @@ defined('MOODLE_INTERNAL') || die();
      */
     function data_rss_delete_file($data) {
         global $CFG;
-        require_once("$CFG->libdir/rsslib.php");
+        require_once(\core\component::component_path('core', 'rsslib.php'));
 
         rss_delete_file('mod_data', $data);
     }

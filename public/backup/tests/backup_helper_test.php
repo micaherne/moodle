@@ -22,8 +22,8 @@ use restore_controller;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+require_once(__DIR__ . '/../util/includes/backup_includes.php');
+require_once(__DIR__ . '/../util/includes/restore_includes.php');
 
 /**
  * Tests for backup_helper class.

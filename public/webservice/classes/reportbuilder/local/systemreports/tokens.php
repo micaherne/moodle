@@ -214,7 +214,7 @@ class tokens extends system_report {
      */
     protected static function get_missing_capabilities(int $userid, int $serviceid, string $serviceshortname): array {
         global $CFG;
-        require_once($CFG->dirroot . '/webservice/lib.php');
+        require_once(__DIR__ . '/../../../../lib.php');
 
         $webservicemanager = new \webservice();
         $usermissingcaps = $webservicemanager->get_missing_capabilities_by_users([['id' => $userid]], $serviceid);

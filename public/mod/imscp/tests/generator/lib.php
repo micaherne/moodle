@@ -41,7 +41,7 @@ class mod_imscp_generator extends testing_module_generator {
         // Add default values for imscp.
         $record = (array)$record + array(
             'package' => '',
-            'packagepath' => $CFG->dirroot.'/mod/imscp/tests/packages/singlescobasic.zip',
+            'packagepath' => __DIR__ . '/../packages/singlescobasic.zip',
             'keepold' => -1
         );
 

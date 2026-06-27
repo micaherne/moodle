@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/lib/formslib.php');
-require_once(__DIR__ . '/../random/settings_form.php'); // parent form
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('workshopallocation_random', 'settings_form.php')); // parent form
 
 /**
  * Allocator settings form

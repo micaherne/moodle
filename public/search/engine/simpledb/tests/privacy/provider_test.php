@@ -30,8 +30,8 @@ use core_privacy\local\request\writer;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/search/tests/fixtures/testable_core_search.php');
-require_once($CFG->dirroot . '/search/tests/fixtures/mock_search_area.php');
+require_once(\core\component::component_path('core_search', 'tests/fixtures/testable_core_search.php'));
+require_once(\core\component::component_path('core_search', 'tests/fixtures/mock_search_area.php'));
 
 /**
  * Unit tests for privacy.

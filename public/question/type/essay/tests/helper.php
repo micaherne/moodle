@@ -311,8 +311,7 @@ class qtype_essay_test_helper extends question_test_helper {
         $filerecord->itemid = $questiontextdraftid;
         $filerecord->filepath = '/';
         $filerecord->filename = '1.png';
-        $fs->create_file_from_pathname($filerecord, $CFG->dirroot .
-            '/question/type/essay/tests/fixtures/1.png');
+        $fs->create_file_from_pathname($filerecord, __DIR__ . '/fixtures/1.png');
 
         $feedbackdraftid = 2;
         file_prepare_draft_area($feedbackdraftid, $usercontext->id, null, null, null);
@@ -324,8 +323,7 @@ class qtype_essay_test_helper extends question_test_helper {
         $filerecord->itemid = $feedbackdraftid;
         $filerecord->filepath = '/';
         $filerecord->filename = '2.png';
-        $fs->create_file_from_pathname($filerecord, $CFG->dirroot .
-            '/question/type/essay/tests/fixtures/2.png');
+        $fs->create_file_from_pathname($filerecord, __DIR__ . '/fixtures/2.png');
 
         $graderinfodraftid = 3;
         file_prepare_draft_area($graderinfodraftid, $usercontext->id, null, null, null);
@@ -337,8 +335,7 @@ class qtype_essay_test_helper extends question_test_helper {
         $filerecord->itemid = $graderinfodraftid;
         $filerecord->filepath = '/';
         $filerecord->filename = '3.png';
-        $fs->create_file_from_pathname($filerecord, $CFG->dirroot .
-            '/question/type/essay/tests/fixtures/3.png');
+        $fs->create_file_from_pathname($filerecord, __DIR__ . '/fixtures/3.png');
 
         $fromform->name = 'Essay question (HTML editor)';
         $questionfileurl = $CFG->wwwroot . '/draftfile.php/' . $usercontext->id . '/user/draft/' . $questiontextdraftid . '/1.png';

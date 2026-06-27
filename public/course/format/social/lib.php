@@ -24,7 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot. '/course/format/lib.php');
+require_once(\core\component::component_path('core_courseformat', 'lib.php'));
 
 /**
  * Main class for the Social course format

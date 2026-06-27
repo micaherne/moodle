@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/lib/dml/pgsql_native_moodle_database.php');
+require_once(__DIR__ . '/../pgsql_native_moodle_database.php');
 
 /**
  * Test specific features of the Postgres dml support relating to recordsets.

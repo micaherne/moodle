@@ -22,7 +22,7 @@ use mod_forum\local\entities\forum as forum_entity;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/rating/lib.php');
+require_once(\core\component::component_path('core_rating', 'lib.php'));
 
 /**
  * The forum entity tests.

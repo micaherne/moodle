@@ -18,8 +18,8 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff.
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+require_once(__DIR__ . '/../util/includes/backup_includes.php');
+require_once(__DIR__ . '/../util/includes/restore_includes.php');
 
 
 /**

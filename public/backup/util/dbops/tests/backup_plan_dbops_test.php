@@ -19,7 +19,7 @@ namespace core_backup;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
+require_once(__DIR__ . '/../../includes/backup_includes.php');
 
 /**
  * Tests for backup_plan_dbops.

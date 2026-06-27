@@ -57,9 +57,9 @@ class tool_xmldb_external extends external_api {
      */
     public static function invoke_move_action($action, $dir, $table, $field, $key, $index, $position) {
         global $CFG, $XMLDB, $SESSION;
-        require_once($CFG->libdir.'/ddllib.php');
-        require_once("$CFG->dirroot/$CFG->admin/tool/xmldb/actions/XMLDBAction.class.php");
-        require_once("$CFG->dirroot/$CFG->admin/tool/xmldb/actions/XMLDBCheckAction.class.php");
+        require_once(\core\component::component_path('core', 'ddllib.php'));
+        require_once(__DIR__ . '/../actions/XMLDBAction.class.php');
+        require_once(__DIR__ . '/../actions/XMLDBCheckAction.class.php');
         $params = self::validate_parameters(self::invoke_move_action_parameters(), [
             'action' => $action,
             'dir' => $dir,
@@ -78,7 +78,7 @@ class tool_xmldb_external extends external_api {
         }
 
         $action = $params['action'];
-        $actionsroot = "$CFG->dirroot/$CFG->admin/tool/xmldb/actions";
+        $actionsroot = __DIR__ . '/../actions';
         $actionclass = $action . '.class.php';
         $actionpath = "$actionsroot/$action/$actionclass";
 

@@ -23,8 +23,8 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once("{$CFG->libdir}/adminlib.php");
-require_once($CFG->dirroot.'/grade/lib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core_grades', 'lib.php'));
 
 use core_reportbuilder\system_report_factory;
 use gradereport_summary\local\systemreports\summary;

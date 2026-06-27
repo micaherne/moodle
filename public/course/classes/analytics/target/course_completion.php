@@ -26,9 +26,9 @@ namespace core_course\analytics\target;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/lib/completionlib.php');
-require_once($CFG->dirroot . '/completion/completion_completion.php');
+require_once(__DIR__ . '/../../../lib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
+require_once(\core\component::component_path('core_completion', 'completion_completion.php'));
 
 /**
  * Course completion target.

@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/mod/lesson/locallib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 final class events_test extends \advanced_testcase {
 

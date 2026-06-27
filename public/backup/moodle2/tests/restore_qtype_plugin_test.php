@@ -31,8 +31,8 @@ final class restore_qtype_plugin_test extends \basic_testcase {
      */
     public function test_remove_excluded_question_data(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/backup/moodle2/restore_plugin.class.php');
-        require_once($CFG->dirroot . '/backup/moodle2/restore_qtype_plugin.class.php');
+        require_once(__DIR__ . '/../restore_plugin.class.php');
+        require_once(__DIR__ . '/../restore_qtype_plugin.class.php');
         $data = (object) [
             // Default excluded fields should be removed.
             'id' => 1,

@@ -44,7 +44,7 @@ abstract class backup_check {
             throw new backup_controller_exception('backup_check_unsupported_type', $type);
         }
 
-        require_once($CFG->dirroot . '/backup/moodle2/backup_plan_builder.class.php');
+        require_once(__DIR__ . '/../../moodle2/backup_plan_builder.class.php');
     }
 
     public static function check_id($type, $id) {

@@ -62,7 +62,7 @@ class template extends XMLDBAction {
         // Do the job, setting result as needed
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         // Get the correct dirs
         if (!empty($XMLDB->dbdirs)) {

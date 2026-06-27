@@ -25,7 +25,7 @@ namespace core_calendar\local\event\forms;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * The mform class for updating a calendar event.

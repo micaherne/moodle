@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../adaptive/behaviour.php');
+require_once(\core\component::component_path('qbehaviour_adaptive', 'behaviour.php'));
 
 
 /**

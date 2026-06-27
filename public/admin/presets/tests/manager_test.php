@@ -34,7 +34,7 @@ final class manager_test extends \advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->libdir.'/adminlib.php');
+        require_once(\core\component::component_path('core', 'adminlib.php'));
         parent::setUpBeforeClass();
     }
 
@@ -833,8 +833,8 @@ final class manager_test extends \advanced_testcase {
         helper::add_plugin($presetid, 'fake', 'fullfeatured', true);
 
         // Inject the mock plugin type + plugin, and deprecate it.
-        $this->add_mocked_plugintype('fake', "$CFG->libdir/tests/fixtures/fakeplugins/fake", true);
-        $this->add_mocked_plugin('fake', 'fullfeatured', $CFG->libdir . '/tests/fixtures/fakeplugins/fake/fullfeatured');
+        $this->add_mocked_plugintype('fake', \core\component::component_path('core', 'tests/fixtures/fakeplugins/fake'), true);
+        $this->add_mocked_plugin('fake', 'fullfeatured', \core\component::component_path('core', 'tests/fixtures/fakeplugins/fake/fullfeatured'));
 
         // Pre-flight check to ensure that the plugin is deprecated.
         $pluginman = \core\plugin_manager::instance();

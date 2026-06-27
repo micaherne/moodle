@@ -37,8 +37,8 @@ class mod_scorm_generator extends testing_module_generator {
 
     public function create_instance($record = null, ?array $options = null) {
         global $CFG, $USER;
-        require_once($CFG->dirroot.'/mod/scorm/lib.php');
-        require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+        require_once(__DIR__ . '/../../lib.php');
+        require_once(__DIR__ . '/../../locallib.php');
         $cfgscorm = get_config('scorm');
 
         // Add default values for scorm.
@@ -77,10 +77,10 @@ class mod_scorm_generator extends testing_module_generator {
             $record['timeclose'] = strtotime($record['timeclose']);
         }
         if (empty($record['packagefilepath'])) {
-            $record['packagefilepath'] = $CFG->dirroot.'/mod/scorm/tests/packages/singlescobasic.zip';
+            $record['packagefilepath'] = __DIR__ . '/../packages/singlescobasic.zip';
         }
         if (strpos($record['packagefilepath'], $CFG->dirroot) !== 0) {
-            $record['packagefilepath'] = "{$CFG->dirroot}/{$record['packagefilepath']}";
+            $record['packagefilepath'] = \core\component::from_mono_path('/' . $record['packagefilepath']);
         }
 
         // The 'packagefile' value corresponds to the draft file area ID. If not specified, create from packagefilepath.

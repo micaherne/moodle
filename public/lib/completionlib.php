@@ -34,10 +34,10 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Include the required completion libraries
  */
-require_once $CFG->dirroot.'/completion/completion_aggregation.php';
-require_once $CFG->dirroot.'/completion/criteria/completion_criteria.php';
-require_once $CFG->dirroot.'/completion/completion_completion.php';
-require_once $CFG->dirroot.'/completion/completion_criteria_completion.php';
+require_once \core\component::component_path('core_completion', 'completion_aggregation.php');
+require_once \core\component::component_path('core_completion', 'criteria/completion_criteria.php');
+require_once \core\component::component_path('core_completion', 'completion_completion.php');
+require_once \core\component::component_path('core_completion', 'completion_criteria_completion.php');
 
 
 /**
@@ -748,7 +748,7 @@ class completion_info {
     public function get_grade_completion(cm_info $cm, int $userid): int {
         global $CFG;
 
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(__DIR__ . '/gradelib.php');
         $item = grade_item::fetch([
             'courseid' => $cm->course,
             'itemtype' => 'mod',
@@ -1237,7 +1237,7 @@ class completion_info {
      */
     public function internal_set_data($cm, $data, $isbulkupdate = false) {
         global $USER, $DB, $CFG;
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_activity.php');
+        require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_activity.php'));
 
         $transaction = $DB->start_delegated_transaction();
         if (!$data->id) {

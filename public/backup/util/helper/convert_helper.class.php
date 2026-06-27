@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/backup/util/includes/convert_includes.php');
+require_once(__DIR__ . '/../includes/convert_includes.php');
 
 /**
  * Provides various functionality via its static methods

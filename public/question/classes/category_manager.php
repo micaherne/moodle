@@ -269,7 +269,7 @@ class category_manager {
         ?int $sortorder = null,
     ): void {
         global $DB, $CFG;
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(\core\component::component_path('core', 'questionlib.php'));
 
         if (empty($newname)) {
             throw new moodle_exception('categorynamecantbeblank', 'question');

@@ -29,7 +29,7 @@ use context;
 use lang_string;
 use stdClass;
 
-require_once($CFG->libdir . '/grade/grade_scale.php');
+require_once(\core\component::component_path('core', 'grade/grade_scale.php'));
 
 /**
  * Class for loading/storing competency frameworks from the DB.

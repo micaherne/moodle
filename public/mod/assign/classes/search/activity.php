@@ -26,7 +26,7 @@ namespace mod_assign\search;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * Search area for mod_assign activities.

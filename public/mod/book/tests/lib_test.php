@@ -29,7 +29,7 @@ use core_external\external_api;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/book/lib.php');
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * Unit tests for (some of) mod/book/lib.php.
@@ -49,7 +49,7 @@ final class lib_test extends \advanced_testcase {
 
     public function test_export_contents(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/course/externallib.php');
+        require_once(\core\component::component_path('core_course', 'externallib.php'));
 
         $user = $this->getDataGenerator()->create_user();
         $teacher = $this->getDataGenerator()->create_user();

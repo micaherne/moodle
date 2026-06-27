@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../lib.php');  // interface definition
-require_once($CFG->libdir . '/gradelib.php');           // to handle float vs decimal issues
+require_once(\core\component::component_path('mod_workshop', 'form/lib.php'));  // interface definition
+require_once(\core\component::component_path('core', 'gradelib.php'));           // to handle float vs decimal issues
 
 /**
  * Server workshop files

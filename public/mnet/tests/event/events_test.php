@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mnet/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 final class events_test extends \advanced_testcase {
 

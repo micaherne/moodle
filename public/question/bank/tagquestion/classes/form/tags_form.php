@@ -18,8 +18,8 @@ namespace qbank_tagquestion\form;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/formslib.php');
-require_once($CFG->dirroot . '/lib/questionlib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('core', 'questionlib.php'));
 
 /**
  * The mform class for  manage question tags.

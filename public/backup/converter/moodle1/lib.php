@@ -26,13 +26,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/backup/converter/convertlib.php');
-require_once($CFG->dirroot . '/backup/util/xml/parser/progressive_parser.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/parser/processors/grouped_parser_processor.class.php');
-require_once($CFG->dirroot . '/backup/util/dbops/backup_dbops.class.php');
-require_once($CFG->dirroot . '/backup/util/dbops/backup_controller_dbops.class.php');
-require_once($CFG->dirroot . '/backup/util/dbops/restore_dbops.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/contenttransformer/xml_contenttransformer.class.php');
+require_once(__DIR__ . '/../convertlib.php');
+require_once(__DIR__ . '/../../util/xml/parser/progressive_parser.class.php');
+require_once(__DIR__ . '/../../util/xml/parser/processors/grouped_parser_processor.class.php');
+require_once(__DIR__ . '/../../util/dbops/backup_dbops.class.php');
+require_once(__DIR__ . '/../../util/dbops/backup_controller_dbops.class.php');
+require_once(__DIR__ . '/../../util/dbops/restore_dbops.class.php');
+require_once(__DIR__ . '/../../util/xml/contenttransformer/xml_contenttransformer.class.php');
 require_once(__DIR__ . '/handlerlib.php');
 
 /**

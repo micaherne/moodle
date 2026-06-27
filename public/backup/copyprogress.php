@@ -23,9 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../config.php');
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+require_once(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/util/includes/backup_includes.php');
+require_once(__DIR__ . '/util/includes/restore_includes.php');
 
 defined('MOODLE_INTERNAL') || die();
 

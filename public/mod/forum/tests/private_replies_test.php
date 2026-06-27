@@ -21,8 +21,8 @@ use mod_forum_tests_generator_trait;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/forum/lib.php');
-require_once($CFG->dirroot . '/mod/forum/locallib.php');
+require_once(__DIR__ . '/../lib.php');
+require_once(__DIR__ . '/../locallib.php');
 require_once(__DIR__ . '/generator_trait.php');
 
 /**

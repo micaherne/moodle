@@ -31,12 +31,12 @@ final class completion_criteria_test extends \advanced_testcase {
      */
     public function setUp(): void {
         global $CFG;
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_course.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_activity.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_duration.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_grade.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_date.php');
+        require_once(__DIR__ . '/../criteria/completion_criteria.php');
+        require_once(__DIR__ . '/../criteria/completion_criteria_course.php');
+        require_once(__DIR__ . '/../criteria/completion_criteria_activity.php');
+        require_once(__DIR__ . '/../criteria/completion_criteria_duration.php');
+        require_once(__DIR__ . '/../criteria/completion_criteria_grade.php');
+        require_once(__DIR__ . '/../criteria/completion_criteria_date.php');
         parent::setUp();
 
         $this->setAdminUser();

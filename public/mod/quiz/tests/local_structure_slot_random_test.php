@@ -21,8 +21,8 @@ defined('MOODLE_INTERNAL') || die();
 use mod_quiz\question\bank\qbank_helper;
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
 
 /**
  * Class mod_quiz_local_structure_slot_random_test

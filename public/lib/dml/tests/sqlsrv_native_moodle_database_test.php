@@ -30,7 +30,7 @@ use sqlsrv_native_moodle_database;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/lib/dml/sqlsrv_native_moodle_database.php');
+require_once(__DIR__ . '/../sqlsrv_native_moodle_database.php');
 
 /**
  * Test case for sqlsrv dml support.

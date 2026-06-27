@@ -18,7 +18,7 @@ namespace core_h5p;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/filelib.php");
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 use Moodle\H5PCore;
 use Moodle\H5PFrameworkInterface;

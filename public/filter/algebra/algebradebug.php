@@ -3,16 +3,16 @@
       // If not, it obtains the corresponding TeX expression from the cache_filters db table
       // and uses LaTeX to create the image file.
 
-    require_once("../../config.php");
+    require_once(__DIR__ . '/../../config.php');
 
     if (!filter_is_enabled('algebra')) {
         throw new \moodle_exception('filternotenabled');
     }
 
-    require_once($CFG->libdir.'/filelib.php');
-    require_once($CFG->dirroot.'/filter/tex/lib.php');
-    require_once($CFG->dirroot . '/filter/algebra/lib.php');
-    require_once($CFG->dirroot . '/filter/tex/latex.php');
+    require_once(\core\component::component_path('core', 'filelib.php'));
+    require_once(\core\component::component_path('filter_tex', 'lib.php'));
+    require_once(__DIR__ . '/lib.php');
+    require_once(\core\component::component_path('filter_tex', 'latex.php'));
 
     $action = optional_param('action', '', PARAM_ALPHANUM);
     $algebra = optional_param('algebra', '', PARAM_RAW);
@@ -117,7 +117,7 @@ function algebra2tex($algebra) {
       $ecmd = $cmd . " 2>&1";
       echo `$ecmd` . "<br/>\n";
       echo "The shell command<br/>$cmd<br/>returned status = $status<br/>\n";
-      $commandpath = "$CFG->dirroot/filter/algebra/algebra2tex.pl";
+      $commandpath = __DIR__ . '/algebra2tex.pl';
       if (file_exists($commandpath)) {
         echo "The file permissions of algebra2tex.pl are: " . decoct(fileperms($commandpath)) . "<br/>";
       }

@@ -22,7 +22,7 @@ use core\check\result as check_result;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("{$CFG->libdir}/clilib.php");
+require_once(__DIR__ . '/../../clilib.php');
 
 /**
  * A renderer that generates output for command-line scripts.

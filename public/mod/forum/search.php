@@ -21,7 +21,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 require_once('lib.php');
 
 $id = required_param('id', PARAM_INT);                  // course id
@@ -295,7 +295,7 @@ if (!$posts = forum_search_posts($searchterms, $course->id, $page*$perpage, $per
 }
 
 //including this here to prevent it being included if there are no search results
-require_once($CFG->dirroot.'/rating/lib.php');
+require_once(\core\component::component_path('core_rating', 'lib.php'));
 
 //set up the ratings information that will be the same for all posts
 $ratingoptions = new stdClass();

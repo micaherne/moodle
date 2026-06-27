@@ -19,7 +19,7 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("$CFG->libdir/graphlib.php");
+require_once(__DIR__ . '/../graphlib.php');
 
 /**
  * Tests for Graphlib.

@@ -18,7 +18,7 @@ namespace qbank_previewquestion;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 use action_menu;
 use comment;

@@ -39,7 +39,7 @@ final class get_state_test extends \core_external\tests\externallib_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/lib/xapi/tests/helper.php');
+        require_once(__DIR__ . '/../helper.php');
         parent::setUpBeforeClass();
     }
 

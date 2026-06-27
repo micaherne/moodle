@@ -53,7 +53,7 @@ class api {
         global $CFG, $DB;
 
         // Required for calendar constant CALENDAR_EVENT_TYPE_ACTION.
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $instance = null;
         if (is_object($instanceorid)) {

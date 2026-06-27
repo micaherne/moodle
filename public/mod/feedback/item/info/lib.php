@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') OR die('not allowed');
-require_once($CFG->dirroot.'/mod/feedback/item/feedback_item_class.php');
+require_once(__DIR__ . '/../feedback_item_class.php');
 
 class feedback_item_info extends feedback_item_base {
     protected $type = "info";

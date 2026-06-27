@@ -244,7 +244,7 @@ $CFG->jsrev = 1;
 })();
 
 // Load test case stub classes and other stuff.
-require_once("$CFG->dirroot/lib/phpunit/lib.php");
+require_once(__DIR__ . '/lib.php');
 
 // Finish moodle init.
 define('ABORT_AFTER_CONFIG_CANCEL', true);
@@ -252,7 +252,7 @@ if (isset($CFG->phpunit_profilingenabled) && $CFG->phpunit_profilingenabled) {
     $CFG->profilingenabled = true;
     $CFG->profilingincluded = '*';
 }
-require("$CFG->dirroot/lib/setup.php");
+require(__DIR__ . '/../setup.php');
 
 raise_memory_limit(MEMORY_HUGE);
 

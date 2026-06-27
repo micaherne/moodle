@@ -28,7 +28,7 @@ use core_contentbank\content;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_contenttype.php');
+require_once(__DIR__ . '/../fixtures/testable_contenttype.php');
 
 /**
  * Generator for the core_contentbank subsystem.

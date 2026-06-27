@@ -52,8 +52,8 @@ final class auth_ldap_test extends \advanced_testcase {
         global $CFG;
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . '/auth/ldap/auth.php');
-        require_once($CFG->libdir . '/ldaplib.php');
+        require_once(__DIR__ . '/../auth.php');
+        require_once(\core\component::component_path('core', 'ldaplib.php'));
     }
 
     /**

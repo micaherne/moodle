@@ -24,8 +24,8 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/questionlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'questionlib.php'));
 
 // Get URL parameters.
 $requestedqtype = optional_param('qtype', '', PARAM_SAFEDIR);

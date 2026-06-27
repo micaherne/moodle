@@ -21,7 +21,7 @@ use qtype_essay;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/essay/questiontype.php');
+require_once(__DIR__ . '/../questiontype.php');
 
 
 /**

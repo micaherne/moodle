@@ -26,7 +26,7 @@ namespace core_message\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/message/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 use renderable;
 use templatable;

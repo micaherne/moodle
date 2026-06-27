@@ -119,7 +119,7 @@ final class plugin_test extends \advanced_testcase {
      */
     public function test_instance_form(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/customfield/tests/fixtures/test_instance_form.php');
+        require_once(\core\component::component_path('core_customfield', 'tests/fixtures/test_instance_form.php'));
         $this->setAdminUser();
         $handler = $this->cfcat->get_handler();
 

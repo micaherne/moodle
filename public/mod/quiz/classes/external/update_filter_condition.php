@@ -18,8 +18,8 @@ namespace mod_quiz\external;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/editlib.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
+require_once(__DIR__ . '/../../locallib.php');
 
 use core\context\module;
 use core_external\external_api;

@@ -22,9 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once '../../../config.php';
-require_once $CFG->dirroot.'/grade/lib.php';
-require_once $CFG->libdir.'/mathslib.php';
+require_once __DIR__ . '/../../../config.php';
+require_once __DIR__ . '/../../lib.php';
+require_once \core\component::component_path('core', 'mathslib.php');
 require_once 'calculation_form.php';
 
 $courseid  = required_param('courseid', PARAM_INT);

@@ -55,7 +55,7 @@ class file_handlers extends external_api {
     public static function execute(int $courseid): array {
         global $CFG;
 
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $params = external_api::validate_parameters(self::execute_parameters(), [
             'courseid' => $courseid,

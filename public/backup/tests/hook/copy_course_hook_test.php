@@ -37,7 +37,7 @@ final class copy_course_hook_test extends advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/backup/util/includes/backup_includes.php");
+        require_once(__DIR__ . '/../../util/includes/backup_includes.php');
         parent::setUpBeforeClass();
     }
 

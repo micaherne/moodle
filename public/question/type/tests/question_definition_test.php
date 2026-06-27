@@ -19,7 +19,7 @@ namespace core_question;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(__DIR__ . '/../../engine/tests/helpers.php');
 
 /**
  * Test for question_definition base classes.

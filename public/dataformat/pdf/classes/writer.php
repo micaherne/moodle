@@ -59,7 +59,7 @@ class writer extends \core\dataformat\base {
      */
     public function __construct() {
         global $CFG;
-        require_once($CFG->libdir . '/pdflib.php');
+        require_once(\core\component::component_path('core', 'pdflib.php'));
 
         $this->pdf = new \pdf();
         $this->pdf->setPrintHeader(false);

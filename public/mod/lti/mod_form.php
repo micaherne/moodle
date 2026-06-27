@@ -48,8 +48,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once(\core\component::component_path('core_course', 'moodleform_mod.php'));
+require_once(__DIR__ . '/locallib.php');
 
 class mod_lti_mod_form extends moodleform_mod {
 

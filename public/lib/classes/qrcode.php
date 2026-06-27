@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/tcpdf/tcpdf_barcodes_2d.php');
+require_once(__DIR__ . '/../tcpdf/tcpdf_barcodes_2d.php');
 
 /**
  * Class for generating QR codes. Wrapper class that extends TCPDF.

@@ -21,7 +21,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot . '/blocks/rss_client/backup/moodle2/restore_rss_client_stepslib.php'); // We have structure steps
+require_once(__DIR__ . '/restore_rss_client_stepslib.php'); // We have structure steps
 
 /**
  * Specialised restore task for the rss_client block

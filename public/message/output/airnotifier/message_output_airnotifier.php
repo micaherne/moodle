@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/message/output/lib.php');
+require_once(\core\component::component_path('core_message', 'output/lib.php'));
 
 /**
  * Message processor class
@@ -45,7 +45,7 @@ class message_output_airnotifier extends message_output {
      */
     public function send_message($eventdata) {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         if (!empty($CFG->noemailever)) {
             // Hidden setting for development sites, set in config.php if needed.

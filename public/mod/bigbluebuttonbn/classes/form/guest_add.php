@@ -162,7 +162,7 @@ class guest_add extends dynamic_form {
     public static function add_meeting_links_elements(MoodleQuickForm &$mform): void {
         global $CFG;
         MoodleQuickForm::registerElementType('text_with_copy',
-            "$CFG->dirroot/mod/bigbluebuttonbn/classes/form/text_with_copy_element.php",
+            __DIR__ . '/text_with_copy_element.php',
             text_with_copy_element::class);
         $mform->addElement('text_with_copy', 'guestjoinurl',
             get_string('guestaccess_meeting_link', 'mod_bigbluebuttonbn'),

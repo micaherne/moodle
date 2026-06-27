@@ -28,7 +28,7 @@
 die(); //TODO: this needs to be rewritten as standard advanced_testcase
 
 require(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir . '/ddllib.php');
+require_once(__DIR__ . '/../../ddllib.php');
 
 require_login();
 $syscontext = context_system::instance();
@@ -68,7 +68,7 @@ switch (optional_param('action', '', PARAM_ALPHANUMEXT)) {
         require_sesskey();
         if ($issetup == 0) {
             foreach ($requiredtables as $table) {
-                $dbman->install_one_table_from_xmldb_file($CFG->dirroot . '/lib/db/install.xml', $table);
+                $dbman->install_one_table_from_xmldb_file(__DIR__ . '/../../db/install.xml', $table);
                 $issetup++;
             }
             flush();

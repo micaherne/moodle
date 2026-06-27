@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 function core_badges_myprofile_navigation(\core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
     global $CFG, $PAGE, $USER, $SITE;
-    require_once($CFG->dirroot . '/badges/renderer.php');
+    require_once(__DIR__ . '/renderer.php');
     if (empty($CFG->enablebadges) || (!empty($course) && empty($CFG->badges_allowcoursebadges))) {
         // Y U NO LIKE BADGES ?
         return true;

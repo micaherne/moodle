@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config.php");
+require_once(__DIR__ . '/../../config.php');
 require_once("lib.php");
 
 $id = required_param('id', PARAM_INT);      // Course Module ID
@@ -68,7 +68,7 @@ $exporturl = moodle_url::make_pluginfile_url($context->id, 'mod_glossary', 'expo
 <?php
     // don't need cap check here, we share with the general export.
     if (!empty($CFG->enableportfolios) && $DB->count_records('glossary_entries', array('glossaryid' => $glossary->id))) {
-        require_once($CFG->libdir . '/portfoliolib.php');
+        require_once(\core\component::component_path('core', 'portfoliolib.php'));
         $button = new portfolio_add_button();
         $button->set_callback_options('glossary_full_portfolio_caller', array('id' => $cm->id), 'mod_glossary');
         $button->render();

@@ -25,10 +25,10 @@
 
 use mod_data\manager;
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 require_once('locallib.php');
-require_once("$CFG->libdir/rsslib.php");
-require_once("$CFG->libdir/form/filemanager.php");
+require_once(\core\component::component_path('core', 'rsslib.php'));
+require_once(\core\component::component_path('core_form', 'filemanager.php'));
 
 $id = optional_param('id', 0, PARAM_INT); // Course module id.
 $d = optional_param('d', 0, PARAM_INT); // Database id.

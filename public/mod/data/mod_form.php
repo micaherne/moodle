@@ -3,7 +3,7 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once ($CFG->dirroot.'/course/moodleform_mod.php');
+require_once (\core\component::component_path('core_course', 'moodleform_mod.php'));
 
 class mod_data_mod_form extends moodleform_mod {
 

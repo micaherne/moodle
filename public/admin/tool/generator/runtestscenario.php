@@ -28,8 +28,8 @@ use tool_generator\output\parsingresult;
 use tool_generator\output\stepsinformation;
 
 require(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/behat/classes/behat_config_manager.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_config_manager.php'));
 
 // Executing behat generator can take some time.
 core_php_time_limit::raise(300);

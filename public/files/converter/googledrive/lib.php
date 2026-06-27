@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/google/lib.php');
+require_once(\core\component::component_path('core', 'google/lib.php'));
 
 /**
  * Callback to get the required scopes for system account.

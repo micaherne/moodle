@@ -136,7 +136,7 @@ class enrol_meta_plugin extends enrol_plugin {
     public function add_instance($course, ?array $fields = null) {
         global $CFG;
 
-        require_once("$CFG->dirroot/enrol/meta/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
 
         // Support creating multiple at once.
         if (isset($fields['customint1']) && is_array($fields['customint1'])) {
@@ -172,7 +172,7 @@ class enrol_meta_plugin extends enrol_plugin {
     public function update_instance($instance, $data) {
         global $CFG;
 
-        require_once("$CFG->dirroot/enrol/meta/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
 
         if (!empty($data->customint2) && $data->customint2 == ENROL_META_CREATE_GROUP) {
             $context = context_course::instance($instance->courseid);
@@ -200,7 +200,7 @@ class enrol_meta_plugin extends enrol_plugin {
 
         parent::update_status($instance, $newstatus);
 
-        require_once("$CFG->dirroot/enrol/meta/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
         enrol_meta_sync($instance->courseid);
     }
 
@@ -570,7 +570,7 @@ class enrol_meta_plugin extends enrol_plugin {
             }
             $step->set_mapping('enrol', $oldid, $instanceid);
 
-            require_once("$CFG->dirroot/enrol/meta/locallib.php");
+            require_once(__DIR__ . '/locallib.php');
             enrol_meta_sync($data->customint1);
 
         } else {

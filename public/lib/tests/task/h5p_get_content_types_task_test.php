@@ -36,7 +36,7 @@ final class h5p_get_content_types_task_test extends \advanced_testcase {
 
         autoloader::register();
 
-        require_once($CFG->libdir . '/tests/fixtures/testable_core_h5p.php');
+        require_once(__DIR__ . '/../fixtures/testable_core_h5p.php');
     }
 
     /**

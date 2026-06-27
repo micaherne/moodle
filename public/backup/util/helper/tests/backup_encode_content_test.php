@@ -21,8 +21,8 @@ use backup_course_task;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_course_task.class.php');
+require_once(__DIR__ . '/../../includes/backup_includes.php');
+require_once(__DIR__ . '/../../../moodle2/backup_course_task.class.php');
 
 /**
  * Tests for encoding content links in backup_course_task.

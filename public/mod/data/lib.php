@@ -427,14 +427,15 @@ class data_field_base {     // Base class for Database Field Types (see field/*/
 
         echo $OUTPUT->heading($this->name(), 3);
 
-        $filepath = $CFG->dirroot . '/mod/data/field/' . $this->type . '/mod.html';
+        $fielddir = \core_component::get_plugin_directory('datafield', $this->type);
+        $filepath = $fielddir ? "$fielddir/mod.html" : null;
         $templatename = 'datafield_' . $this->type . '/' . $this->type;
 
         try {
             $templatefilepath = \core\output\mustache_template_finder::get_template_filepath($templatename);
             $templatefileexists = true;
         } catch (moodle_exception $e) {
-            if (!file_exists($filepath)) {
+            if (!$filepath || !file_exists($filepath)) {
                 // Neither file exists.
                 throw new \moodle_exception(get_string('missingfieldtype', 'data', (object)['name' => $this->field->name]));
             }
@@ -1045,15 +1046,13 @@ function data_get_field_from_id($fieldid, $data){
  * @return object
  */
 function data_get_field_new($type, $data) {
-    global $CFG;
-
     $type = clean_param($type, PARAM_ALPHA);
-    $filepath = $CFG->dirroot.'/mod/data/field/'.$type.'/field.class.php';
+    $fielddir = \core_component::get_plugin_directory('datafield', $type);
     // It should never access this method if the subfield class doesn't exist.
-    if (!file_exists($filepath)) {
+    if (!$fielddir || !file_exists("$fielddir/field.class.php")) {
         throw new \moodle_exception('invalidfieldtype', 'data');
     }
-    require_once($filepath);
+    require_once("$fielddir/field.class.php");
     $newfield = 'data_field_'.$type;
     $newfield = new $newfield(0, $data);
     return $newfield;
@@ -1071,16 +1070,15 @@ function data_get_field_new($type, $data) {
  * @return data_field_base the field object instance or data_field_base if unkown type
  */
 function data_get_field(stdClass $field, stdClass $data, ?stdClass $cm=null): data_field_base {
-    global $CFG;
     if (!isset($field->type)) {
         return new data_field_base($field);
     }
     $field->type = clean_param($field->type, PARAM_ALPHA);
-    $filepath = $CFG->dirroot.'/mod/data/field/'.$field->type.'/field.class.php';
-    if (!file_exists($filepath)) {
+    $fielddir = \core_component::get_plugin_directory('datafield', $field->type);
+    if (!$fielddir || !file_exists("$fielddir/field.class.php")) {
         return new data_field_base($field);
     }
-    require_once($filepath);
+    require_once("$fielddir/field.class.php");
     $newfield = 'data_field_'.$field->type;
     $newfield = new $newfield($field, $data, $cm);
     return $newfield;
@@ -1227,7 +1225,7 @@ function data_tags_check($dataid, $template) {
  */
 function data_add_instance($data, $mform = null) {
     global $DB, $CFG;
-    require_once($CFG->dirroot.'/mod/data/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (empty($data->assessed)) {
         $data->assessed = 0;
@@ -1262,7 +1260,7 @@ function data_add_instance($data, $mform = null) {
  */
 function data_update_instance($data) {
     global $DB, $CFG;
-    require_once($CFG->dirroot.'/mod/data/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $data->timemodified = time();
     if (!empty($data->instance)) {
@@ -1348,7 +1346,7 @@ function data_delete_instance($id) {    // takes the dataid
  */
 function data_user_outline($course, $user, $mod, $data) {
     global $DB, $CFG;
-    require_once("$CFG->libdir/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $grades = grade_get_grades($course->id, 'mod', 'data', $data->id, $user->id);
     if (empty($grades->items[0]->grades)) {
@@ -1399,7 +1397,7 @@ function data_user_outline($course, $user, $mod, $data) {
  */
 function data_user_complete($course, $user, $mod, $data) {
     global $DB, $CFG, $OUTPUT;
-    require_once("$CFG->libdir/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $grades = grade_get_grades($course->id, 'mod', 'data', $data->id, $user->id);
     if (!empty($grades->items[0]->grades)) {
@@ -1436,7 +1434,7 @@ function data_user_complete($course, $user, $mod, $data) {
 function data_get_user_grades($data, $userid=0) {
     global $CFG;
 
-    require_once($CFG->dirroot.'/rating/lib.php');
+    require_once(\core\component::component_path('core_rating', 'lib.php'));
 
     $ratingoptions = new stdClass;
     $ratingoptions->component = 'mod_data';
@@ -1464,7 +1462,7 @@ function data_get_user_grades($data, $userid=0) {
  */
 function data_update_grades($data, $userid=0, $nullifnone=true) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     if (!$data->assessed) {
         data_grade_item_update($data);
@@ -1493,7 +1491,7 @@ function data_update_grades($data, $userid=0, $nullifnone=true) {
  */
 function data_grade_item_update($data, $grades=NULL) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $params = array('itemname'=>$data->name, 'idnumber'=>$data->cmidnumber);
 
@@ -1527,7 +1525,7 @@ function data_grade_item_update($data, $grades=NULL) {
  */
 function data_grade_item_delete($data) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     return grade_update('mod/data', $data->course, 'mod', 'data', $data->id, 0, NULL, array('deleted'=>1));
 }
@@ -2331,7 +2329,8 @@ function data_preset_path($course, $userid, $shortname) {
     if ($userid > 0 && ($userid == $USER->id || has_capability('mod/data:viewalluserpresets', $context))) {
         $path = $CFG->dataroot.'/data/preset/'.$userid.'/'.$shortname;
     } else if ($userid == 0) {
-        $path = $CFG->dirroot.'/mod/data/preset/'.$shortname;
+        $moddir = \core_component::get_plugin_directory('mod', 'data');
+        $path = $moddir ? "$moddir/preset/$shortname" : null;
     } else if ($userid < 0) {
         $path = $CFG->tempdir.'/data/'.-$userid.'/'.$shortname;
     }
@@ -2404,8 +2403,8 @@ function data_reset_gradebook($courseid, $type='') {
  */
 function data_reset_userdata($data) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/filelib.php');
-    require_once($CFG->dirroot.'/rating/lib.php');
+    require_once(\core\component::component_path('core', 'filelib.php'));
+    require_once(\core\component::component_path('core_rating', 'lib.php'));
 
     $componentstr = get_string('modulenameplural', 'data');
     $status = [];
@@ -2667,7 +2666,7 @@ function data_get_file_info($browser, $areas, $course, $cm, $context, $filearea,
     }
 
     if (is_null($itemid)) {
-        require_once($CFG->dirroot.'/mod/data/locallib.php');
+        require_once(__DIR__ . '/locallib.php');
         return new data_file_info_container($browser, $course, $cm, $context, $areas, $filearea);
     }
 
@@ -2812,7 +2811,7 @@ function data_pluginfile($course, $cm, $context, $filearea, $args, $forcedownloa
 
 function data_extend_navigation($navigation, $course, $module, $cm) {
     global $CFG, $OUTPUT, $USER, $DB;
-    require_once($CFG->dirroot . '/mod/data/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $rid = optional_param('rid', 0, PARAM_INT);
 
@@ -2896,7 +2895,7 @@ function data_extend_settings_navigation(settings_navigation $settings, navigati
     }
 
     if (!empty($CFG->enablerssfeeds) && !empty($CFG->data_enablerssfeeds) && $data->rssarticles > 0) {
-        require_once("$CFG->libdir/rsslib.php");
+        require_once(\core\component::component_path('core', 'rsslib.php'));
 
         $string = get_string('rsstype', 'data');
 
@@ -3264,7 +3263,7 @@ function data_delete_record($recordid, $data, $courseid, $cmid) {
 
                 // Delete cached RSS feeds.
                 if (!empty($CFG->enablerssfeeds)) {
-                    require_once($CFG->dirroot.'/mod/data/rsslib.php');
+                    require_once(__DIR__ . '/rsslib.php');
                     data_rss_delete_file($data);
                 }
 
@@ -3408,7 +3407,7 @@ function data_process_submission(stdClass $mod, $fields, stdClass $datarecord) {
  */
 function data_refresh_events($courseid = 0, $instance = null, $cm = null) {
     global $DB, $CFG;
-    require_once($CFG->dirroot.'/mod/data/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     // If we have instance information then we can just update the one event instead of updating all events.
     if (isset($instance)) {
@@ -3539,7 +3538,7 @@ function mod_data_get_deprecated_icons() {
  */
 function data_check_updates_since(cm_info $cm, $from, $filter = array()) {
     global $DB, $CFG;
-    require_once($CFG->dirroot . '/mod/data/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $updates = course_check_module_updates_since($cm, $from, array(), $filter);
 

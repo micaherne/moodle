@@ -36,9 +36,9 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\url;
 
-require_once($CFG->dirroot . '/mod/wiki/lib.php');
-require_once($CFG->dirroot . '/mod/wiki/parser/parser.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/parser/parser.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 define('WIKI_REFRESH_CACHE_TIME', 30); // @TODO: To be deleted.
 define('FORMAT_CREOLE', '37');
@@ -1426,7 +1426,7 @@ function wiki_print_edit_form_default_fields($format, $pageid, $version = -1, $u
     echo '<input type="hidden" name="format" value="' . $format . '"/>';
 
     //attachments
-    require_once($CFG->dirroot . '/lib/form/filemanager.php');
+    require_once(\core\component::component_path('core_form', 'filemanager.php'));
 
     $filemanager = new MoodleQuickForm_filemanager('attachments', get_string('wikiattachments', 'wiki'), array('id' => 'attachments'), array('subdirs' => false, 'maxfiles' => 99, 'maxbytes' => $CFG->maxbytes));
 

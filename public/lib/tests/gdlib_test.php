@@ -35,7 +35,7 @@ final class gdlib_test extends \basic_testcase {
 
     public function test_generate_image_thumbnail(): void {
         global $CFG;
-        require_once($CFG->libdir . '/gdlib.php');
+        require_once(__DIR__ . '/../gdlib.php');
 
         // Test with meaningless data.
 
@@ -53,7 +53,7 @@ final class gdlib_test extends \basic_testcase {
 
     public function test_generate_image_thumbnail_from_string(): void {
         global $CFG;
-        require_once($CFG->libdir . '/gdlib.php');
+        require_once(__DIR__ . '/../gdlib.php');
 
         // Test with meaningless data.
 
@@ -80,7 +80,7 @@ final class gdlib_test extends \basic_testcase {
 
     public function test_resize_image(): void {
         global $CFG;
-        require_once($CFG->libdir . '/gdlib.php');
+        require_once(__DIR__ . '/../gdlib.php');
 
         $pngpath = $this->fixturepath . 'gd-logo.png';
 
@@ -111,7 +111,7 @@ final class gdlib_test extends \basic_testcase {
 
     public function test_resize_image_from_image(): void {
         global $CFG;
-        require_once($CFG->libdir . '/gdlib.php');
+        require_once(__DIR__ . '/../gdlib.php');
 
         $pngpath = $this->fixturepath . 'gd-logo.png';
         $origimageinfo = getimagesize($pngpath);

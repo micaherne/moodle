@@ -26,7 +26,7 @@ namespace core_question\local\bank;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(__DIR__ . '/../../../editlib.php');
 
 use coding_exception;
 use core\output\datafilter;

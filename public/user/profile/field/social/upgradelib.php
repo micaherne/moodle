@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->dirroot/user/profile/definelib.php");
+require_once(\core\component::component_path('core_user', 'profile/definelib.php'));
 
 /**
  * Create the default category for custom profile fields if it does not exist yet.

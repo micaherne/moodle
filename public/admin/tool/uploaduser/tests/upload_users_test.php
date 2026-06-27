@@ -39,7 +39,7 @@ final class upload_users_test extends advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/{$CFG->admin}/tool/uploaduser/locallib.php");
+        require_once(__DIR__ . '/../locallib.php');
         parent::setUpBeforeClass();
     }
 

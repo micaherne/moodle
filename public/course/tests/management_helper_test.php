@@ -23,8 +23,8 @@ use course_capability_assignment;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->dirroot.'/course/tests/fixtures/course_capability_assignment.php');
+require_once(__DIR__ . '/../lib.php');
+require_once(__DIR__ . '/fixtures/course_capability_assignment.php');
 
 /**
  * Course and category management helper class tests.

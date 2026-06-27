@@ -60,10 +60,10 @@ use mod_lti\local\ltiopenid\jwks_helper;
 use mod_lti\local\ltiopenid\registration_helper;
 
 global $CFG;
-require_once($CFG->dirroot.'/mod/lti/OAuth.php');
-require_once($CFG->libdir.'/weblib.php');
-require_once($CFG->dirroot . '/course/modlib.php');
-require_once($CFG->dirroot . '/mod/lti/TrivialStore.php');
+require_once(__DIR__ . '/OAuth.php');
+require_once(\core\component::component_path('core', 'weblib.php'));
+require_once(\core\component::component_path('core_course', 'modlib.php'));
+require_once(__DIR__ . '/TrivialStore.php');
 
 define('LTI_URL_DOMAIN_REGEX', '/(?:https?:\/\/)?(?:www\.)?([^\/]+)(?:\/|$)/i');
 
@@ -2850,7 +2850,7 @@ function lti_update_type($type, $config) {
         if (isset($config->lti_coursecategories) && !empty($config->lti_coursecategories)) {
             lti_type_add_categories($type->id, $config->lti_coursecategories);
         }
-        require_once($CFG->libdir.'/modinfolib.php');
+        require_once(\core\component::component_path('core', 'modinfolib.php'));
         if ($clearcache) {
             $sql = "SELECT cm.id, cm.course
                       FROM {course_modules} cm
@@ -4488,7 +4488,7 @@ function lti_load_tool_from_cartridge($url, $lti) {
  */
 function lti_load_cartridge($url, $map, $propertiesmap = array()) {
     global $CFG;
-    require_once($CFG->libdir. "/filelib.php");
+    require_once(\core\component::component_path('core', 'filelib.php'));
 
     $curl = new curl();
     $response = $curl->get($url);

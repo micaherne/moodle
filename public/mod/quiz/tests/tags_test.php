@@ -33,7 +33,7 @@ final class tags_test extends \advanced_testcase {
         global $CFG, $USER, $DB;
 
         require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once(__DIR__ . '/../locallib.php');
 
         $this->resetAfterTest();
         $this->setAdminUser();

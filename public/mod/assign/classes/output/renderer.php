@@ -32,7 +32,7 @@ use stored_file;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * A custom renderer class that extends the plugin_renderer_base and is used by the assign module.
@@ -1403,7 +1403,7 @@ class renderer extends \plugin_renderer_base {
         foreach ($dir['files'] as $file) {
             $filename = $file->get_filename();
             if ($CFG->enableplagiarism) {
-                require_once($CFG->libdir.'/plagiarismlib.php');
+                require_once(\core\component::component_path('core', 'plagiarismlib.php'));
                 $plagiarismlinks = plagiarism_get_links(array('userid'=>$file->get_userid(),
                                                              'file'=>$file,
                                                              'cmid'=>$tree->cm->id,
@@ -1451,7 +1451,7 @@ class renderer extends \plugin_renderer_base {
             return '';
         }
 
-        require_once($CFG->libdir . '/portfoliolib.php');
+        require_once(\core\component::component_path('core', 'portfoliolib.php'));
 
         $button = new portfolio_add_button();
         $portfolioparams = [
@@ -1564,7 +1564,7 @@ class renderer extends \plugin_renderer_base {
      */
     public function format_activity_text($assign, $cmid) {
         global $CFG;
-        require_once("$CFG->libdir/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
         $context = \context_module::instance($cmid);
         $options = array('noclean' => true, 'para' => false, 'filter' => true, 'context' => $context, 'overflowdiv' => true);
         $activity = file_rewrite_pluginfile_urls(

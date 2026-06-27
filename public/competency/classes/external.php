@@ -25,7 +25,7 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/grade/grade_scale.php");
+require_once(\core\component::component_path('core', 'grade/grade_scale.php'));
 
 use context_course;
 use context_module;

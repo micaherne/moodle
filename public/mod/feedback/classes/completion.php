@@ -661,7 +661,7 @@ class mod_feedback_completion extends mod_feedback_structure {
      */
     public function set_module_viewed() {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         $completion = new completion_info($this->cm->get_course());
         $completion->set_module_viewed($this->cm, $this->userid);

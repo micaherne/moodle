@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once("$CFG->dirroot/mod/assign/locallib.php");
+require_once(__DIR__ . '/../../locallib.php');
 
 /**
  * Extend the base external_api class with mod_assign utility methods.

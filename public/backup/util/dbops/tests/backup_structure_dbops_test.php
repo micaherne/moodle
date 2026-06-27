@@ -31,7 +31,7 @@ final class backup_structure_dbops_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
         parent::setUpBeforeClass();
-        require_once("{$CFG->dirroot}/backup/util/includes/backup_includes.php");
+        require_once(__DIR__ . '/../../includes/backup_includes.php');
     }
 
     /**

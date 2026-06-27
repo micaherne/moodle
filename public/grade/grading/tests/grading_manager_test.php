@@ -21,7 +21,7 @@ use grading_manager;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/grade/grading/lib.php'); // Include the code to test
+require_once(__DIR__ . '/../lib.php'); // Include the code to test
 
 /**
  * Test cases for the grading manager API

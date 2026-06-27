@@ -28,7 +28,7 @@ namespace core_calendar\external\export;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(__DIR__ . '/../../../lib.php');
 
 use context_system;
 use core_external\external_api;

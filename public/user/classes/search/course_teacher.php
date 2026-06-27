@@ -27,7 +27,7 @@ namespace core_user\search;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/user/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Search for user role assignment in a course

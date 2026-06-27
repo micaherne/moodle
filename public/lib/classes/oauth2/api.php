@@ -25,7 +25,7 @@ namespace core\oauth2;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/filelib.php');
+require_once(__DIR__ . '/../../filelib.php');
 
 use stdClass;
 use moodle_url;

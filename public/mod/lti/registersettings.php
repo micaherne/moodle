@@ -26,10 +26,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/mod/lti/register_form.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/register_form.php');
+require_once(__DIR__ . '/locallib.php');
 
 $action       = optional_param('action', null, PARAM_ALPHANUMEXT);
 $id           = optional_param('id', null, PARAM_INT);

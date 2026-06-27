@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use moodleform;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(__DIR__ . '/../../formslib.php');
 
 /**
  * Moodle 404 Error page feedback form

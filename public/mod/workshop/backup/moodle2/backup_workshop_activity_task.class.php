@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/workshop/backup/moodle2/backup_workshop_settingslib.php');
-require_once($CFG->dirroot . '/mod/workshop/backup/moodle2/backup_workshop_stepslib.php');
+require_once(__DIR__ . '/backup_workshop_settingslib.php');
+require_once(__DIR__ . '/backup_workshop_stepslib.php');
 
 /**
  * Provides all the settings and steps to perform one complete backup of workshop activity

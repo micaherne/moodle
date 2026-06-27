@@ -42,7 +42,7 @@ class custom_completion extends activity_custom_completion {
      */
     protected function check_passing_grade_or_all_attempts(): bool {
         global $CFG;
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         $completionpassorattempts = $this->cm->customdata['customcompletionrules']['completionpassorattemptsexhausted'];
 

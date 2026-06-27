@@ -39,16 +39,16 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/interfaces/checksumable.class.php');
-require_once($CFG->dirroot . '/backup/backup.class.php');
-require_once($CFG->dirroot . '/backup/util/settings/base_setting.class.php');
-require_once($CFG->dirroot . '/backup/util/settings/backup_setting.class.php');
-require_once($CFG->dirroot . '/backup/util/settings/setting_dependency.class.php');
-require_once($CFG->dirroot . '/backup/util/settings/root/root_backup_setting.class.php');
-require_once($CFG->dirroot . '/backup/util/settings/activity/activity_backup_setting.class.php');
-require_once($CFG->dirroot . '/backup/util/settings/section/section_backup_setting.class.php');
-require_once($CFG->dirroot . '/backup/util/settings/course/course_backup_setting.class.php');
-require_once($CFG->dirroot . '/backup/util/ui/backup_ui_setting.class.php');
+require_once(__DIR__ . '/../../interfaces/checksumable.class.php');
+require_once(__DIR__ . '/../../../backup.class.php');
+require_once(__DIR__ . '/../base_setting.class.php');
+require_once(__DIR__ . '/../backup_setting.class.php');
+require_once(__DIR__ . '/../setting_dependency.class.php');
+require_once(__DIR__ . '/../root/root_backup_setting.class.php');
+require_once(__DIR__ . '/../activity/activity_backup_setting.class.php');
+require_once(__DIR__ . '/../section/section_backup_setting.class.php');
+require_once(__DIR__ . '/../course/course_backup_setting.class.php');
+require_once(\core\component::component_path('core_backup', 'backup_ui_setting.class.php'));
 
 /**
  * Setting tests (all).

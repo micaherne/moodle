@@ -19,9 +19,9 @@ namespace core_backup;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->libdir . '/completionlib.php');
+require_once(__DIR__ . '/../../util/includes/backup_includes.php');
+require_once(__DIR__ . '/../../util/includes/restore_includes.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Test for restore_stepslib.

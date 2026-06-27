@@ -30,8 +30,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/lib.php');     // we extend this library here
-require_once($CFG->libdir . '/gradelib.php');   // we use some rounding and comparing routines here
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));   // we use some rounding and comparing routines here
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 /**
  * Full-featured workshop API
@@ -2623,7 +2623,7 @@ class workshop {
      */
     public function get_gradebook_grades($userid) {
         global $CFG;
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         if (empty($userid)) {
             throw new coding_exception('User id expected, empty value given.');
@@ -2670,7 +2670,7 @@ class workshop {
      */
     public function submission_content_options() {
         global $CFG;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         return array(
             'trusttext' => true,
@@ -2689,7 +2689,7 @@ class workshop {
      */
     public function submission_attachment_options() {
         global $CFG;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $options = array(
             'subdirs' => true,
@@ -2711,7 +2711,7 @@ class workshop {
      */
     public function overall_feedback_content_options() {
         global $CFG;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         return array(
             'subdirs' => 0,
@@ -2730,7 +2730,7 @@ class workshop {
      */
     public function overall_feedback_attachment_options() {
         global $CFG;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $options = array(
             'subdirs' => 1,
@@ -2914,7 +2914,7 @@ class workshop {
      */
     public function set_module_viewed() {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         // Mark viewed.
         $completion = new completion_info($this->course);

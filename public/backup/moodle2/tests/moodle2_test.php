@@ -25,9 +25,9 @@ use restore_dbops;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->libdir . '/completionlib.php');
+require_once(__DIR__ . '/../../util/includes/backup_includes.php');
+require_once(__DIR__ . '/../../util/includes/restore_includes.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Tests for Moodle 2 format backup operation.
@@ -117,8 +117,8 @@ final class moodle2_test extends \advanced_testcase {
      */
     public function test_restore_legacy_availability(): void {
         global $DB, $USER, $CFG;
-        require_once($CFG->dirroot . '/grade/querylib.php');
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core_grades', 'querylib.php'));
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1174,7 +1174,7 @@ final class moodle2_test extends \advanced_testcase {
         // Create course and add content bank content.
         $course = $generator->create_course();
         $context = \context_course::instance($course->id);
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/filltheblanks.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p');
         $contents = $cbgenerator->generate_contentbank_data('contenttype_h5p', 2, $USER->id, $context, true, $filepath);
         $this->assertEquals(2, $DB->count_records('contentbank_content'));
 

@@ -27,7 +27,7 @@
 use core\report_helper;
 
 require_once(__DIR__.'/../../config.php');
-require_once("{$CFG->libdir}/completionlib.php");
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Configuration
@@ -64,7 +64,7 @@ if ($csv) {
 
 // Load CSV library
 if ($csv) {
-    require_once("{$CFG->libdir}/csvlib.class.php");
+    require_once(\core\component::component_path('core', 'csvlib.class.php'));
 }
 
 // Paging

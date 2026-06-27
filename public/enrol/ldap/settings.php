@@ -36,8 +36,8 @@ if ($ADMIN->fulltree) {
 
         $settings->add(new admin_setting_heading('enrol_ldap_settings', '', get_string('pluginname_desc', 'enrol_ldap')));
 
-        require_once($CFG->dirroot.'/enrol/ldap/settingslib.php');
-        require_once($CFG->libdir.'/ldaplib.php');
+        require_once(__DIR__ . '/settingslib.php');
+        require_once(\core\component::component_path('core', 'ldaplib.php'));
 
         $yesno = array(get_string('no'), get_string('yes'));
 

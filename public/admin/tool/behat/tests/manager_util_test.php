@@ -29,9 +29,9 @@ use behat_config_util;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/' . $CFG->admin .'/tool/behat/locallib.php');
-require_once($CFG->libdir . '/behat/classes/util.php');
-require_once($CFG->libdir . '/behat/classes/behat_config_manager.php');
+require_once(__DIR__ . '/../locallib.php');
+require_once(\core\component::component_path('core', 'behat/classes/util.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_config_manager.php'));
 
 /**
  * Behat manager tests.

@@ -20,10 +20,10 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff.
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/interfaces/checksumable.class.php');
-require_once($CFG->dirroot . '/backup/backup.class.php');
-require_once($CFG->dirroot . '/backup/util/helper/backup_helper.class.php');
-require_once($CFG->dirroot . '/backup/util/helper/backup_general_helper.class.php');
+require_once(__DIR__ . '/../../interfaces/checksumable.class.php');
+require_once(__DIR__ . '/../../../backup.class.php');
+require_once(__DIR__ . '/../backup_helper.class.php');
+require_once(__DIR__ . '/../backup_general_helper.class.php');
 
 /**
  * backup_helper tests (all)

@@ -25,10 +25,10 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_custom_fields.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_subplugin.class.php');
+require_once(__DIR__ . '/../../../includes/backup_includes.php');
+require_once(__DIR__ . '/../../../includes/restore_includes.php');
+require_once(__DIR__ . '/../../../../moodle2/backup_custom_fields.php');
+require_once(__DIR__ . '/../../../../moodle2/backup_subplugin.class.php');
 
 
 /**

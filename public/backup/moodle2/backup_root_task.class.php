@@ -64,7 +64,7 @@ class backup_root_task extends backup_task {
      */
     protected function define_settings() {
         global $CFG;
-        require_once($CFG->dirroot . '/backup/util/helper/convert_helper.class.php');
+        require_once(__DIR__ . '/../util/helper/convert_helper.class.php');
         // Define filename setting
         $filename = new backup_filename_setting('filename', base_setting::IS_FILENAME, 'backup.mbz');
         $filename->set_ui_filename(get_string('filename', 'backup'), 'backup.mbz', array('size'=>50));

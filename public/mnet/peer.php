@@ -8,7 +8,7 @@
  * @package mnet
  */
 
-require_once($CFG->libdir . '/filelib.php'); // download_file_content() used here
+require_once(\core\component::component_path('core', 'filelib.php')); // download_file_content() used here
 
 class mnet_peer {
 
@@ -168,8 +168,8 @@ class mnet_peer {
         // TODO: Expires each PHP session individually
         $sessions = $DB->get_records('mnet_session', array('mnethostid'=>$this->id));
 
-        if (count($sessions) > 0 && file_exists($CFG->dirroot.'/auth/mnet/auth.php')) {
-            require_once($CFG->dirroot.'/auth/mnet/auth.php');
+        if (count($sessions) > 0 && file_exists(\core\component::component_path('core_auth', 'mnet/auth.php'))) {
+            require_once(\core\component::component_path('core_auth', 'mnet/auth.php'));
             $auth = new auth_plugin_mnet();
             $auth->end_local_sessions($sessions);
         }

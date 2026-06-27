@@ -27,7 +27,7 @@ use grade_plugin_return;
 use grade_scale;
 use moodle_url;
 
-require_once($CFG->dirroot.'/grade/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 /**
  * Prints the add item gradebook form

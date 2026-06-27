@@ -70,7 +70,7 @@ class mod_page_external extends external_api {
      */
     public static function view_page($pageid) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . "/mod/page/lib.php");
+        require_once(__DIR__ . '/../lib.php');
 
         $params = self::validate_parameters(self::view_page_parameters(),
                                             array(

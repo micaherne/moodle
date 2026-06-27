@@ -15,11 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once('../../../config.php');
-require_once($CFG->libdir . '/gradelib.php');
-require_once($CFG->dirroot . '/grade/lib.php');
-require_once($CFG->dirroot . '/grade/import/xml/lib.php');
-require_once($CFG->dirroot . '/grade/import/xml/grade_import_form.php');
+require_once(__DIR__ . '/../../../config.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(\core\component::component_path('core_grades', 'lib.php'));
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/grade_import_form.php');
 
 $id = required_param('id', PARAM_INT); // course id
 

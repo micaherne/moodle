@@ -26,11 +26,11 @@ use core_question\local\bank\question_version_status;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/format.php');
-require_once($CFG->dirroot . '/question/format/aiken/format.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(\core\component::component_path('core_question', 'format.php'));
+require_once(__DIR__ . '/../format.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 /**
  * Unit tests for the Aiken question format export.

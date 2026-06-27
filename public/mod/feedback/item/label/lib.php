@@ -15,8 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') OR die('not allowed');
-require_once($CFG->dirroot.'/mod/feedback/item/feedback_item_class.php');
-require_once($CFG->libdir.'/formslib.php');
+require_once(__DIR__ . '/../feedback_item_class.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 class feedback_item_label extends feedback_item_base {
     protected $type = "label";
@@ -129,7 +129,7 @@ class feedback_item_label extends feedback_item_base {
     private function print_item($item) {
         global $DB, $CFG;
 
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         //is the item a template?
         if (!$item->feedback AND $item->template) {

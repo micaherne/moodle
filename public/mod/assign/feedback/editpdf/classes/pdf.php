@@ -29,8 +29,8 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/pdflib.php');
-require_once($CFG->dirroot.'/mod/assign/feedback/editpdf/fpdi/src/autoload.php');
+require_once(\core\component::component_path('core', 'pdflib.php'));
+require_once(__DIR__ . '/../fpdi/src/autoload.php');
 
 /**
  * Library code for manipulating PDFs
@@ -774,7 +774,7 @@ class pdf extends Fpdi {
     public static function get_error_image($errorimagefolder, $pageno) {
         global $CFG;
 
-        $errorfile = $CFG->dirroot . self::BLANK_PDF;
+        $errorfile = \core\component::from_mono_path(self::BLANK_PDF);
         if (!file_exists($errorfile)) {
             throw new \coding_exception("Blank PDF not found", "File path" . $errorfile);
         }
@@ -833,7 +833,7 @@ class pdf extends Fpdi {
             return $ret;
         }
 
-        $testfile = $CFG->dirroot.'/mod/assign/feedback/editpdf/tests/fixtures/testgs.pdf';
+        $testfile = __DIR__ . '/../tests/fixtures/testgs.pdf';
         if (!file_exists($testfile)) {
             $ret->status = self::GSPATH_NOTESTFILE;
             return $ret;
@@ -866,7 +866,7 @@ class pdf extends Fpdi {
     public static function send_test_image() {
         global $CFG;
         header('Content-type: image/png');
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $testimagefolder = \make_temp_directory('assignfeedback_editpdf_test');
         $testimage = $testimagefolder . '/' . self::IMAGE_PAGE . '0.png';

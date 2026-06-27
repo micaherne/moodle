@@ -23,7 +23,7 @@
  */
 
 require(__DIR__.'/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 use core\output\notification;
 

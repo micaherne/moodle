@@ -44,7 +44,7 @@ use core\router\response\not_found_response;
 defined('MOODLE_INTERNAL') || die();
 
 // Require the essential
-require_once($CFG->libdir.'/dml/moodle_database.php');
+require_once(__DIR__ . '/dml/moodle_database.php');
 
 /** Return false if record not found, show debug warning if multiple records found */
 define('IGNORE_MISSING', 0);

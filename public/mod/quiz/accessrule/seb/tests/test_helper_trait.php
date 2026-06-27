@@ -31,8 +31,8 @@ use quizaccess_seb\settings_provider;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . "/mod/quiz/accessrule/seb/rule.php"); // Include plugin rule class.
-require_once($CFG->dirroot . "/mod/quiz/mod_form.php"); // Include plugin rule class.
+require_once(__DIR__ . '/../rule.php'); // Include plugin rule class.
+require_once(\core\component::component_path('mod_quiz', 'mod_form.php')); // Include plugin rule class.
 
 /**
  * A test helper trait. It has some common helper methods.

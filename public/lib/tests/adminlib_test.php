@@ -19,7 +19,7 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/adminlib.php');
+require_once(__DIR__ . '/../adminlib.php');
 
 /**
  * Unit tests for parts of adminlib.php.

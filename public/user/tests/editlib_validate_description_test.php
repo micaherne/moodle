@@ -19,7 +19,7 @@ namespace core_user;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/user/editlib.php');
+require_once(__DIR__ . '/../editlib.php');
 
 /**
  * Unit tests for useredit_validate_description_length().

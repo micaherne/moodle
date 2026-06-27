@@ -605,7 +605,7 @@ class auth_plugin_base {
      */
     public function get_custom_user_profile_fields() {
         global $CFG;
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         // If already retrieved then return.
         if (!is_null($this->customfields)) {
@@ -648,7 +648,7 @@ class auth_plugin_base {
     protected function update_user_record($username, $updatekeys = false, $triggerevent = false, $suspenduser = false) {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot.'/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         // Just in case check text case.
         $username = trim(core_text::strtolower($username));
@@ -1147,7 +1147,7 @@ function validate_login_captcha(string|bool $captcha): bool {
         return true;
     }
 
-    require_once($CFG->libdir . '/recaptchalib_v2.php');
+    require_once(__DIR__ . '/recaptchalib_v2.php');
     $response = recaptcha_check_response(RECAPTCHA_VERIFY_URL, $CFG->recaptchaprivatekey, getremoteaddr(), $captcha);
     return $response['isvalid'];
 }
@@ -1325,7 +1325,7 @@ function signup_is_enabled() {
  */
 function display_auth_lock_options($settings, $auth, $userfields, $helptext, $mapremotefields, $updateremotefields, $customfields = array()) {
     global $CFG;
-    require_once($CFG->dirroot . '/user/profile/lib.php');
+    require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
     // Introductory explanation and help text.
     if ($mapremotefields) {

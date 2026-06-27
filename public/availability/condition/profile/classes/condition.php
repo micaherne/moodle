@@ -362,7 +362,7 @@ class condition extends \core_availability\condition {
 
         if (self::$customprofilefields === null) {
             // Get fields and store them indexed by shortname.
-            require_once($CFG->dirroot . '/user/profile/lib.php');
+            require_once(\core\component::component_path('core_user', 'profile/lib.php'));
             $fields = profile_get_custom_fields(true);
             self::$customprofilefields = array();
             foreach ($fields as $field) {
@@ -432,7 +432,7 @@ class condition extends \core_availability\condition {
                 $user = new \stdClass;
                 $user->id = $USER->id;
                 // This should ALWAYS be set, but just in case we check.
-                require_once($CFG->dirroot . '/user/profile/lib.php');
+                require_once(\core\component::component_path('core_user', 'profile/lib.php'));
                 profile_load_custom_fields($user);
                 if (array_key_exists($field, $user->profile)) {
                     return $user->profile[$field];

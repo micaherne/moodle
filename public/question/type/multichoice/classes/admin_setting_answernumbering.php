@@ -49,7 +49,7 @@ class qtype_multichoice_admin_setting_answernumbering extends admin_setting_conf
             return true;
         }
 
-        require_once($CFG->dirroot . '/question/type/multichoice/questiontype.php');
+        require_once(__DIR__ . '/../questiontype.php');
         $this->choices = qtype_multichoice::get_numbering_styles();
 
         return true;

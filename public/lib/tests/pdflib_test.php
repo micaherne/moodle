@@ -30,7 +30,7 @@ final class pdflib_test extends \advanced_testcase {
 
     public function test_gettcpdf_producer(): void {
         global $CFG;
-        require_once($CFG->libdir.'/pdflib.php');
+        require_once(__DIR__ . '/../pdflib.php');
 
         // This is to reduce the information disclosure in PDF metadata.
         // If we upgrade TCPDF keep it just the major version.
@@ -40,7 +40,7 @@ final class pdflib_test extends \advanced_testcase {
 
     public function test_qrcode(): void {
         global $CFG;
-        require_once($CFG->libdir.'/pdflib.php');
+        require_once(__DIR__ . '/../pdflib.php');
 
         $this->resetAfterTest();
 
@@ -77,7 +77,7 @@ final class pdflib_test extends \advanced_testcase {
      */
     public function test_get_export_fontlist(): void {
         global $CFG;
-        require_once($CFG->libdir.'/pdflib.php');
+        require_once(__DIR__ . '/../pdflib.php');
 
         $this->resetAfterTest();
 

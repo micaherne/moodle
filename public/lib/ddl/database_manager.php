@@ -907,7 +907,7 @@ class database_manager {
      */
     public function get_install_xml_files(): array {
         global $CFG;
-        require_once($CFG->libdir.'/adminlib.php');
+        require_once(__DIR__ . '/../adminlib.php');
 
         $files = [];
         $dbdirs = get_db_directories();
@@ -928,7 +928,7 @@ class database_manager {
      */
     public function get_install_xml_schema() {
         global $CFG;
-        require_once($CFG->libdir.'/adminlib.php');
+        require_once(__DIR__ . '/../adminlib.php');
 
         $schema = new xmldb_structure('export');
         $schema->setVersion($CFG->version);

@@ -45,8 +45,8 @@ function assignfeedback_comments_pluginfile(
         array $options = []) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
-    require_once($CFG->dirroot . '/mod/assign/feedback/comments/locallib.php');
+    require_once(\core\component::component_path('mod_assign', 'locallib.php'));
+    require_once(__DIR__ . '/locallib.php');
 
     if ($context->contextlevel != CONTEXT_MODULE) {
         return false;

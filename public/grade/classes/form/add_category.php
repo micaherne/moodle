@@ -29,8 +29,8 @@ use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/grade/lib.php');
-require_once($CFG->dirroot . '/grade/edit/tree/lib.php');
+require_once(__DIR__ . '/../../lib.php');
+require_once(__DIR__ . '/../../edit/tree/lib.php');
 
 /**
  * Prints the add category gradebook form

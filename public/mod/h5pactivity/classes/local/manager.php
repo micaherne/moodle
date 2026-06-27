@@ -484,7 +484,7 @@ class manager {
     public function get_report(?int $userid = null, ?int $attemptid = null, $currentgroup = false): ?report {
         global $USER, $CFG;
 
-        require_once("{$CFG->dirroot}/user/lib.php");
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         // If tracking is disabled, no reports are available.
         if (!$this->instance->enabletracking) {
@@ -583,7 +583,7 @@ class manager {
      */
     public function set_module_viewed(stdClass $course): void {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         // Trigger module viewed event.
         $event = course_module_viewed::create([

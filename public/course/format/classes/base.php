@@ -113,7 +113,7 @@ abstract class base {
      */
     final protected static function get_format_or_default($format) {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         if (array_key_exists($format, self::$classesforformat)) {
             return self::$classesforformat[$format];
@@ -165,7 +165,7 @@ abstract class base {
             }
             $classnames[$format] = 'format_'. $usedformat;
             if (!class_exists($classnames[$format])) {
-                require_once($CFG->dirroot.'/course/format/formatlegacy.php');
+                require_once(__DIR__ . '/../formatlegacy.php');
                 $classnames[$format] = 'format_legacy';
             }
         }
@@ -1536,7 +1536,7 @@ abstract class base {
      */
     public function editsection_form($action, $customdata = array()) {
         global $CFG;
-        require_once($CFG->dirroot. '/course/editsection_form.php');
+        require_once(\core\component::component_path('core_course', 'editsection_form.php'));
         if (!array_key_exists('course', $customdata)) {
             $customdata['course'] = $this->get_course();
         }
@@ -1908,7 +1908,7 @@ abstract class base {
     public function inplace_editable_render_section_name($section, $linkifneeded = true,
                                                          $editable = null, $edithint = null, $editlabel = null) {
         global $USER, $CFG;
-        require_once($CFG->dirroot.'/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         if ($editable === null) {
             $editable = !empty($USER->editing) && has_capability('moodle/course:update',

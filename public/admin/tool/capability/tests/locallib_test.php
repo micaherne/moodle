@@ -25,7 +25,7 @@ namespace tool_capability;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/capability/locallib.php');
+require_once(__DIR__ . '/../locallib.php');
 
 
 /**

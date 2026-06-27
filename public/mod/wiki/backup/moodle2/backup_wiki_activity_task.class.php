@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/wiki/backup/moodle2/backup_wiki_stepslib.php');
-require_once($CFG->dirroot . '/mod/wiki/backup/moodle2/backup_wiki_settingslib.php');
+require_once(__DIR__ . '/backup_wiki_stepslib.php');
+require_once(__DIR__ . '/backup_wiki_settingslib.php');
 
 /**
  * Provides all the settings and steps to perform one complete backup of the activity

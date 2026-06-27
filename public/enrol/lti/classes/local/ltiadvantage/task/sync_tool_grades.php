@@ -145,7 +145,7 @@ class sync_tool_grades extends adhoc_task {
                             $appregistration->get_clientid()
                         );
                         global $CFG;
-                        require_once($CFG->libdir . '/filelib.php');
+                        require_once(\core\component::component_path('core', 'filelib.php'));
                         $sc = new LtiServiceConnector(new launch_cache_session(), new http_client());
 
                         $lineitemurl = $gradeservice->get_lineitemurl();
@@ -257,9 +257,9 @@ class sync_tool_grades extends adhoc_task {
     public function execute() {
         global $CFG;
 
-        require_once($CFG->dirroot . '/lib/completionlib.php');
-        require_once($CFG->libdir . '/gradelib.php');
-        require_once($CFG->dirroot . '/grade/querylib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core_grades', 'querylib.php'));
 
         $resource = $this->get_custom_data();
 

@@ -278,7 +278,7 @@ final class manager_test extends \advanced_testcase {
 
         $models = null;
 
-        require("{$CFG->dirroot}/analytics/tests/fixtures/db_analytics_php/{$filename}.php");
+        require(__DIR__ . "/fixtures/db_analytics_php/{$filename}.php");
 
         return $models;
     }

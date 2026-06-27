@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(__DIR__ . '/../../editlib.php');
 
 final class events_test extends \advanced_testcase {
 
@@ -192,9 +192,9 @@ final class events_test extends \advanced_testcase {
     public function test_question_updated(): void {
 
         global $CFG;
-        require_once($CFG->dirroot . '/question/type/description/questiontype.php');
-        require_once($CFG->dirroot . '/question/type/edit_question_form.php');
-        require_once($CFG->dirroot . '/question/type/description/edit_description_form.php');
+        require_once(\core\component::component_path('qtype_description', 'questiontype.php'));
+        require_once(__DIR__ . '/../../type/edit_question_form.php');
+        require_once(\core\component::component_path('qtype_description', 'edit_description_form.php'));
 
         $this->setAdminUser();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');

@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/assign/externallib.php');
+require_once(__DIR__ . '/../externallib.php');
 require_once(__DIR__ . '/fixtures/testable_assign.php');
 
 /**

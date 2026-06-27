@@ -29,7 +29,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/form/text.php');
+require_once(__DIR__ . '/text.php');
 
 /**
  * Float type form element.

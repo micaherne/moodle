@@ -52,7 +52,7 @@ class enrol_cohort_sync extends \core\task\scheduled_task {
     public function execute() {
         global $CFG;
 
-        require_once("$CFG->dirroot/enrol/cohort/locallib.php");
+        require_once(__DIR__ . '/../../locallib.php');
         $trace = new \null_progress_trace();
         enrol_cohort_sync($trace);
         $trace->finished();

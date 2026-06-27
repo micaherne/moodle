@@ -29,11 +29,11 @@ use core_question\statistics\responses\analyser;
 use mod_quiz\local\reports\report_base;
 use core_question\statistics\questions\all_calculated_for_qubaid_condition;
 
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/statistics_form.php');
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/statistics_table.php');
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/statistics_question_table.php');
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/statisticslib.php');
+require_once(\core\component::component_path('mod_quiz', 'report/reportlib.php'));
+require_once(__DIR__ . '/statistics_form.php');
+require_once(__DIR__ . '/statistics_table.php');
+require_once(__DIR__ . '/statistics_question_table.php');
+require_once(__DIR__ . '/statisticslib.php');
 
 /**
  * The quiz statistics report provides summary information about each question in

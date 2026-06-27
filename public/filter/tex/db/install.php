@@ -29,7 +29,7 @@ function xmldb_filter_tex_install() {
 
     // purge all caches during installation
 
-    require_once("$CFG->dirroot/filter/tex/lib.php");
+    require_once(__DIR__ . '/../lib.php');
     filter_tex_updatedcallback(null);
 }
 

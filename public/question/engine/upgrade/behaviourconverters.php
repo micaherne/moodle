@@ -265,20 +265,19 @@ abstract class question_behaviour_attempt_updater {
      * @return qtype_updater
      */
     protected function make_qtype_updater() {
-        global $CFG;
+        global $CFG; // Needed in scope for included qtype upgradelib files that use $CFG at file level.
 
         if ($this->question->qtype == 'deleted') {
             return new question_deleted_question_attempt_updater(
                     $this, $this->question, $this->logger, $this->qeupdater);
         }
 
-        $path = $CFG->dirroot . '/question/type/' . $this->question->qtype . '/db/upgradelib.php';
-        if (!is_readable($path)) {
+        $qtypedir = \core_component::get_plugin_directory('qtype', $this->question->qtype);
+        if (!$qtypedir || !is_readable("$qtypedir/db/upgradelib.php")) {
             throw new coding_exception("Question type {$this->question->qtype}
-                    is missing important code (the file {$path})
-                    required to run the upgrade to the new question engine.");
+                    is missing important code required to run the upgrade to the new question engine.");
         }
-        include_once($path);
+        include_once("$qtypedir/db/upgradelib.php");
         $class = 'qtype_' . $this->question->qtype . '_qe2_attempt_updater';
         if (!class_exists($class)) {
             throw new coding_exception("Question type {$this->question->qtype}

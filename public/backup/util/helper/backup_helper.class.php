@@ -441,8 +441,8 @@ abstract class backup_helper {
     public static function is_async_pending_for_course(int $courseid): bool {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/backup/util/interfaces/checksumable.class.php');
-        require_once($CFG->dirroot . '/backup/backup.class.php');
+        require_once(__DIR__ . '/../interfaces/checksumable.class.php');
+        require_once(__DIR__ . '/../../backup.class.php');
 
         // Check for course-, section- and activity-level backup/restore operations in a single query.
         // - Course level: the controller item is the course itself.

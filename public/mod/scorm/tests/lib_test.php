@@ -31,8 +31,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
-require_once($CFG->dirroot . '/mod/scorm/lib.php');
+require_once(\core\component::component_path('core_webservice', 'tests/helpers.php'));
+require_once(__DIR__ . '/../lib.php');
 
 /**
  * SCORM module library functions tests
@@ -118,7 +118,7 @@ final class lib_test extends \advanced_testcase {
         // Now do the same with a SCORM 2004 package.
         $record = new \stdClass();
         $record->course = $this->course->id;
-        $record->packagefilepath = $CFG->dirroot.'/mod/scorm/tests/packages/RuntimeBasicCalls_SCORM20043rdEdition.zip';
+        $record->packagefilepath = __DIR__ . '/packages/RuntimeBasicCalls_SCORM20043rdEdition.zip';
         $scorm13 = $this->getDataGenerator()->create_module('scorm', $record);
         $newattempt = 'on';
         $attempt = 1;
@@ -593,7 +593,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_scorm_core_calendar_event_timestart_updated_unknown_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -636,7 +636,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_scorm_core_calendar_event_timestart_updated_open_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -697,7 +697,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_scorm_core_calendar_event_timestart_updated_close_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -757,7 +757,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_scorm_core_calendar_get_valid_event_timestart_range_unknown_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -795,7 +795,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_scorm_core_calendar_get_valid_event_timestart_range_open_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -842,7 +842,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_scorm_core_calendar_get_valid_event_timestart_range_close_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();

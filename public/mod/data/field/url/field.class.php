@@ -51,7 +51,7 @@ class data_field_url extends data_field_base {
     function display_add_field($recordid = 0, $formdata = null) {
         global $CFG, $DB, $OUTPUT, $PAGE;
 
-        require_once($CFG->dirroot. '/repository/lib.php'); // necessary for the constants used in args
+        require_once(\core\component::component_path('core_repository', 'lib.php')); // necessary for the constants used in args
 
         $args = new stdClass();
         $args->accepted_types = '*';

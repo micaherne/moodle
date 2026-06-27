@@ -22,9 +22,9 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once(__DIR__ . '/../../editlib.php');
-require_once($CFG->libdir . '/filelib.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 // Read URL parameters telling us which question to edit.
 $id = optional_param('id', 0, PARAM_INT); // Question id.

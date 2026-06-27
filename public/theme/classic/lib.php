@@ -39,14 +39,14 @@ function theme_classic_get_main_scss_content($theme) {
     $fs = get_file_storage();
 
     $context = context_system::instance();
-    $scss .= file_get_contents($CFG->dirroot . '/theme/classic/scss/classic/pre.scss');
+    $scss .= file_get_contents(__DIR__ . '/scss/classic/pre.scss');
     if ($filename && ($presetfile = $fs->get_file($context->id, 'theme_classic', 'preset', 0, '/', $filename))) {
         $scss .= $presetfile->get_content();
     } else {
         // Safety fallback - maybe new installs etc.
-        $scss .= file_get_contents($CFG->dirroot . '/theme/classic/scss/preset/default.scss');
+        $scss .= file_get_contents(__DIR__ . '/scss/preset/default.scss');
     }
-    $scss .= file_get_contents($CFG->dirroot . '/theme/classic/scss/classic/post.scss');
+    $scss .= file_get_contents(__DIR__ . '/scss/classic/post.scss');
 
     return $scss;
 }
@@ -102,8 +102,7 @@ function theme_classic_get_extra_scss($theme) {
     $imageurl = $theme->setting_file_url('backgroundimage', 'backgroundimage');
     if (!empty($imageurl)) {
         $content .= '$imageurl: "' . $imageurl . '";';
-        $content .= file_get_contents($CFG->dirroot .
-            '/theme/classic/scss/classic/body-background.scss');
+        $content .= file_get_contents(__DIR__ . '/scss/classic/body-background.scss');
     }
 
     // Sets the login background image.
@@ -140,11 +139,9 @@ function theme_classic_get_extra_scss($theme) {
     }
 
     if (!empty($theme->settings->navbardark)) {
-        $content .= file_get_contents($CFG->dirroot .
-            '/theme/classic/scss/classic/navbar-dark.scss');
+        $content .= file_get_contents(__DIR__ . '/scss/classic/navbar-dark.scss');
     } else {
-        $content .= file_get_contents($CFG->dirroot .
-            '/theme/classic/scss/classic/navbar-light.scss');
+        $content .= file_get_contents(__DIR__ . '/scss/classic/navbar-light.scss');
     }
     if (!empty($theme->settings->scss)) {
         $content .= $theme->settings->scss;
@@ -159,7 +156,7 @@ function theme_classic_get_extra_scss($theme) {
  */
 function theme_classic_get_precompiled_css() {
     global $CFG;
-    return file_get_contents($CFG->dirroot . '/theme/classic/style/moodle.css');
+    return file_get_contents(__DIR__ . '/style/moodle.css');
 }
 
 /**

@@ -24,7 +24,7 @@
 
 namespace core_user\search;
 
-require_once($CFG->dirroot . '/user/lib.php');
+require_once(__DIR__ . '/../../lib.php');
 
 defined('MOODLE_INTERNAL') || die();
 

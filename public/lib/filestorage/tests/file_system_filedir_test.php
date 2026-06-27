@@ -21,8 +21,8 @@ use file_system_filedir;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filestorage/file_system.php');
-require_once($CFG->libdir . '/filestorage/file_system_filedir.php');
+require_once(__DIR__ . '/../file_system.php');
+require_once(__DIR__ . '/../file_system_filedir.php');
 
 /**
  * Unit tests for file_system_filedir.

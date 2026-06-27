@@ -29,9 +29,9 @@ use mod_data\local\importer\preset_importer;
 use mod_data\local\importer\preset_upload_importer;
 use mod_data\manager;
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 require_once('lib.php');
-require_once($CFG->dirroot.'/mod/data/preset_form.php');
+require_once(__DIR__ . '/preset_form.php');
 
 $id             = optional_param('id', 0, PARAM_INT);            // course module id
 $d              = optional_param('d', 0, PARAM_INT);             // database id

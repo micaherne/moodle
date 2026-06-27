@@ -266,8 +266,8 @@ class api {
      */
     public static function create_new_confirmed_account($userinfo, $issuer) {
         global $CFG, $DB;
-        require_once($CFG->dirroot.'/user/profile/lib.php');
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         $user = new stdClass();
         $user->auth = 'oauth2';
@@ -303,8 +303,8 @@ class api {
      */
     public static function send_confirm_account_email($userinfo, $issuer) {
         global $CFG, $DB;
-        require_once($CFG->dirroot.'/user/profile/lib.php');
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         if (linked_login::has_existing_issuer_match($issuer, $userinfo['username'])) {
             throw new moodle_exception('alreadylinked', 'auth_oauth2');

@@ -231,7 +231,7 @@ if ($hassiteconfig || has_any_capability($capabilities, $systemcontext)) { // Sp
                 new lang_string('showuseridentity_desc', 'admin'), ['email' => 1],
                 function() {
                     global $CFG;
-                    require_once($CFG->dirroot.'/user/profile/lib.php');
+                    require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
                     // Basic fields available in user table.
                     $fields = [

@@ -21,7 +21,7 @@ use core_external\external_api;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 /**
  * Topics course format related unit tests.
@@ -131,7 +131,7 @@ final class format_topics_test extends \advanced_testcase {
      */
     public function test_update_inplace_editable(): void {
         global $CFG, $DB, $PAGE;
-        require_once($CFG->dirroot . '/lib/external/externallib.php');
+        require_once(\core\component::component_path('core_external', 'externallib.php'));
 
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
@@ -203,7 +203,7 @@ final class format_topics_test extends \advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        require_once($CFG->dirroot . '/course/tests/fixtures/testable_course_edit_form.php');
+        require_once(\core\component::component_path('core_course', 'tests/fixtures/testable_course_edit_form.php'));
 
         $this->setTimezone('UTC');
 

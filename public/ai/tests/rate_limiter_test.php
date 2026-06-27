@@ -19,7 +19,7 @@ namespace core_ai;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/testing/classes/incrementing_clock.php');
+require_once(\core\component::component_path('core', 'testing/classes/incrementing_clock.php'));
 
 /**
  * Test ai subsystem rate limiter methods.

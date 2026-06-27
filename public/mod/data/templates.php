@@ -25,7 +25,7 @@
 
 use mod_data\manager;
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 require_once('lib.php');
 
 $id    = optional_param('id', 0, PARAM_INT);  // course module id

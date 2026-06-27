@@ -145,7 +145,7 @@ EOD;
      */
     public function create_user($record=null, ?array $options=null) {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         $this->usercounter++;
         $i = $this->usercounter;
@@ -246,7 +246,7 @@ EOD;
                 return strpos($key, 'profile_field_') === 0;
             }, ARRAY_FILTER_USE_KEY);
             if ($hasprofilefields) {
-                require_once($CFG->dirroot.'/user/profile/lib.php');
+                require_once(\core\component::component_path('core_user', 'profile/lib.php'));
                 $usernew = (object)(['id' => $userid] + $record);
                 profile_save_data($usernew);
             }
@@ -255,7 +255,7 @@ EOD;
         $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
 
         if (!$tobedeleted && isset($record['interests'])) {
-            require_once($CFG->dirroot . '/user/editlib.php');
+            require_once(\core\component::component_path('core_user', 'editlib.php'));
             if (!is_array($record['interests'])) {
                 $record['interests'] = preg_split('/\s*,\s*/', trim($record['interests']), -1, PREG_SPLIT_NO_EMPTY);
             }
@@ -306,7 +306,7 @@ EOD;
      */
     public function create_cohort($record=null, ?array $options=null) {
         global $DB, $CFG;
-        require_once("$CFG->dirroot/cohort/lib.php");
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
         $this->cohortcount++;
         $i = $this->cohortcount;
@@ -356,7 +356,7 @@ EOD;
      */
     public function create_course($record=null, ?array $options=null) {
         global $DB, $CFG;
-        require_once("$CFG->dirroot/course/lib.php");
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $this->coursecount++;
         $i = $this->coursecount;
@@ -539,7 +539,7 @@ EOD;
     public function create_group($record) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         $this->groupcount++;
         $i = str_pad($this->groupcount, 4, '0', STR_PAD_LEFT);
@@ -574,7 +574,7 @@ EOD;
 
         // Allow tests to set group pictures.
         if (!empty($record['picturepath'])) {
-            require_once($CFG->dirroot . '/lib/gdlib.php');
+            require_once(__DIR__ . '/../../gdlib.php');
             $grouppicture = process_new_icon(\context_course::instance($record['courseid']), 'group', 'icon', $id,
                 $record['picturepath']);
 
@@ -596,7 +596,7 @@ EOD;
     public function create_group_member($record) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         $record = (array)$record;
 
@@ -633,7 +633,7 @@ EOD;
     public function create_grouping($record) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         $this->groupingcount++;
         $i = $this->groupingcount;
@@ -670,7 +670,7 @@ EOD;
     public function create_grouping_group($record) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         $record = (array)$record;
 
@@ -1109,7 +1109,7 @@ EOD;
         }
 
         // For gradelib classes.
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(__DIR__ . '/../../gradelib.php');
         // Create new grading category in this course.
         $gradecategory = new grade_category(array('courseid' => $record['courseid']), false);
         $gradecategory->apply_default_settings();
@@ -1183,7 +1183,7 @@ EOD;
      */
     public function create_grade_item($record = null) {
         global $CFG;
-        require_once("$CFG->libdir/gradelib.php");
+        require_once(__DIR__ . '/../../gradelib.php');
 
         $this->gradeitemcounter++;
 
@@ -1230,7 +1230,7 @@ EOD;
         }
 
         // For gradelib classes.
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(__DIR__ . '/../../gradelib.php');
         // Create new grading outcome in this course.
         $gradeoutcome = new grade_outcome($record, false);
         $gradeoutcome->insert();
@@ -1297,7 +1297,7 @@ EOD;
     public function create_event($data = []) {
         global $CFG;
 
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
         $record = new \stdClass();
         $record->name = 'event name';
         $record->repeat = 0;
@@ -1410,7 +1410,7 @@ EOD;
      */
     public function create_custom_profile_field(array $data): \stdClass {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         // Set up category if necessary.
         if (!array_key_exists('categoryid', $data)) {

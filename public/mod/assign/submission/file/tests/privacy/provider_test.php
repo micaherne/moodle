@@ -49,7 +49,7 @@ final class provider_test extends \mod_assign\tests\provider_testcase {
             'filepath' => '/',
             'filename' => $filename
         );
-        $sourcefile = $CFG->dirroot.'/mod/assign/feedback/editpdf/tests/fixtures/submission.pdf';
+        $sourcefile = \core\component::component_path('assignfeedback_editpdf', 'tests/fixtures/submission.pdf');
         $fi = $fs->create_file_from_pathname($pdfsubmission, $sourcefile);
 
         $data = new \stdClass();

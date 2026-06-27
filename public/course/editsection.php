@@ -23,9 +23,9 @@
  * @package course
  */
 
-require_once("../config.php");
+require_once(__DIR__ . '/../config.php');
 require_once("lib.php");
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 $id = required_param('id', PARAM_INT);    // course_sections.id
 $sectionreturn = optional_param('sr', null, PARAM_INT);

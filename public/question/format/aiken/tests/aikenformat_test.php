@@ -26,10 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/format.php');
-require_once($CFG->dirroot . '/question/format/aiken/format.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(\core\component::component_path('core_question', 'format.php'));
+require_once(__DIR__ . '/../format.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
 
 
 /**
@@ -42,7 +42,7 @@ final class aikenformat_test extends question_testcase {
     public function test_readquestions(): void {
         global $CFG;
 
-        $lines = file($CFG->dirroot.'/question/format/aiken/tests/fixtures/aiken_errors.txt');
+        $lines = file(__DIR__ . '/fixtures/aiken_errors.txt');
         $importer = new qformat_aiken($lines);
 
         // The importer echos some errors, so we need to capture and check that.
