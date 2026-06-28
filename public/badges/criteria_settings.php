@@ -25,8 +25,8 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
-require_once($CFG->dirroot . '/badges/criteria_form.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
+require_once(__DIR__ . '/criteria_form.php');
 
 $badgeid = optional_param('badgeid', 0, PARAM_INT); // Badge ID.
 $type    = optional_param('type', 0, PARAM_INT); // Criteria type.

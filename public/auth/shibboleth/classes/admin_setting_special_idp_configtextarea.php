@@ -59,7 +59,7 @@ class auth_shibboleth_admin_setting_special_idp_configtextarea extends admin_set
         if (isset($data) && !empty($data) && isset($login) && $login == 'on') {
 
             // Need to use the get_idp_list() function here.
-            require_once($CFG->dirroot.'/auth/shibboleth/auth.php');
+            require_once(dirname(__DIR__) . '/auth.php');
 
             $idplist = get_idp_list($data);
             if (count($idplist) < 1) {

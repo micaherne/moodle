@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Cohort upload form class
@@ -330,7 +330,7 @@ class cohort_upload_form extends moodleform {
      */
     protected function process_upload_file($file, $encoding, $delimiter, $defaultcontext) {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/csvlib.class.php');
+        require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
         $cohorts = array(
             0 => array('errors' => array(), 'warnings' => array(), 'data' => array())

@@ -17,7 +17,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/course/moodleform_mod.php');
+require_once(\core\component::component_path('core_course', 'moodleform_mod.php'));
 
 /**
  * mod_qbank settings form definition.

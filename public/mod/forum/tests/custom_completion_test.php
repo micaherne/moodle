@@ -35,9 +35,9 @@ use moodle_exception;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/completionlib.php');
-require_once($CFG->dirroot . '/mod/forum/tests/generator/lib.php');
-require_once($CFG->dirroot . '/mod/forum/tests/generator_trait.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
+require_once(__DIR__ . '/generator/lib.php');
+require_once(__DIR__ . '/generator_trait.php');
 
 /**
  * Class for unit testing mod_forum/activity_custom_completion.

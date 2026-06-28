@@ -42,7 +42,7 @@ final class get_h5pactivities_by_courses_test extends \core_external\tests\exter
         $course1 = $this->getDataGenerator()->create_course();
         $params = [
             'course' => $course1->id,
-            'packagefilepath' => $CFG->dirroot.'/h5p/tests/fixtures/filltheblanks.h5p',
+            'packagefilepath' => \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p'),
             'introformat' => 1
         ];
         $activities[] = $this->getDataGenerator()->create_module('h5pactivity', $params);
@@ -53,7 +53,7 @@ final class get_h5pactivities_by_courses_test extends \core_external\tests\exter
 
         $params = [
             'course' => $course1->id,
-            'packagefilepath' => $CFG->dirroot.'/h5p/tests/fixtures/greeting-card.h5p',
+            'packagefilepath' => \core\component::component_path('core_h5p', 'tests/fixtures/greeting-card.h5p'),
             'introformat' => 1
         ];
         $activities[] = $this->getDataGenerator()->create_module('h5pactivity', $params);
@@ -65,7 +65,7 @@ final class get_h5pactivities_by_courses_test extends \core_external\tests\exter
         $course2 = $this->getDataGenerator()->create_course();
         $params = [
             'course' => $course2->id,
-            'packagefilepath' => $CFG->dirroot.'/h5p/tests/fixtures/guess-the-answer.h5p',
+            'packagefilepath' => \core\component::component_path('core_h5p', 'tests/fixtures/guess-the-answer.h5p'),
             'introformat' => 1
         ];
         $activities[] = $this->getDataGenerator()->create_module('h5pactivity', $params);

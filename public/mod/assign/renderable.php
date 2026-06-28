@@ -747,7 +747,7 @@ class assign_files implements renderable {
                                      false);
 
         if (!empty($CFG->enableportfolios)) {
-            require_once($CFG->libdir . '/portfoliolib.php');
+            require_once(\core\component::component_path('core', 'portfoliolib.php'));
             if (count($files) >= 1 && !empty($sid) &&
                     has_capability('mod/assign:exportownsubmission', $this->context)) {
                 $button = new portfolio_add_button();

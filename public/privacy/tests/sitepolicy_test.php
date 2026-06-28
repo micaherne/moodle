@@ -231,7 +231,7 @@ final class sitepolicy_test extends advanced_testcase {
      */
     protected function get_mock_manager_with_handler() {
         global $CFG;
-        require_once($CFG->dirroot.'/privacy/tests/fixtures/mock_sitepolicy_handler.php');
+        require_once(__DIR__ . '/fixtures/mock_sitepolicy_handler.php');
 
         $mock = $this->getMockBuilder(\core_privacy\local\sitepolicy\manager::class)
             ->onlyMethods(['get_all_handlers'])

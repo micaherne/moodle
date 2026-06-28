@@ -115,7 +115,7 @@ class tool_deployment_service {
                     ON (e.id = lt.enrolid)
                  WHERE lu.ltideploymentid = :deploymentid";
         $instancesrs = $DB->get_recordset_sql($sql, ['deploymentid' => $deploymentid]);
-        require_once($CFG->dirroot . '/enrol/lti/lib.php');
+        require_once(dirname(__DIR__, 4) . '/lib.php');
         $enrollti = new \enrol_lti_plugin();
         foreach ($instancesrs as $instance) {
             $userid = $instance->ltiuserid;

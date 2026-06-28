@@ -1208,7 +1208,7 @@ class moodle_page {
 
         // Notify course format that this page is set for the course.
         if ($this->_course->id != $SITE->id) {
-            require_once($CFG->dirroot.'/course/lib.php');
+            require_once(\core\component::component_path('core_course', 'lib.php'));
             $courseformat = course_get_format($this->_course);
             $this->add_body_class('format-'. $courseformat->get_format());
             $courseformat->page_set_course($this);
@@ -1295,7 +1295,7 @@ class moodle_page {
 
         // Notify course format that this page is set for the course module.
         if ($this->_course->id != $SITE->id) {
-            require_once($CFG->dirroot.'/course/lib.php');
+            require_once(\core\component::component_path('core_course', 'lib.php'));
             course_get_format($this->_course)->page_set_cm($this);
         }
     }
@@ -1952,7 +1952,7 @@ class moodle_page {
         $mnetpeertheme = '';
         $mnetvarsok = isset($CFG->mnet_localhost_id) && isset($USER->mnethostid);
         if (isloggedin() and $mnetvarsok and $USER->mnethostid != $CFG->mnet_localhost_id) {
-            require_once($CFG->dirroot.'/mnet/peer.php');
+            require_once(\core\component::component_path('core_mnet', 'peer.php'));
             $mnetpeer = new mnet_peer();
             $mnetpeer->set_id($USER->mnethostid);
             if ($mnetpeer->force_theme == 1 && $mnetpeer->theme != '') {

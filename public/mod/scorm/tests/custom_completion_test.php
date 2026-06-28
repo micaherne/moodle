@@ -27,8 +27,8 @@ use moodle_exception;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/completionlib.php');
-require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * Class for unit testing mod_scorm/custom_completion.

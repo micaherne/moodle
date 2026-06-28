@@ -195,7 +195,7 @@ final class import_test extends \advanced_testcase {
      * @return array
      */
     public static function import_execute_provider(): array {
-        $fixturesfolder = __DIR__ . '/../../../../../presets/tests/fixtures/';
+        $fixturesfolder = \core\component::component_path('core_adminpresets', 'tests/fixtures/');
 
         return [
             'Import settings from an empty file' => [

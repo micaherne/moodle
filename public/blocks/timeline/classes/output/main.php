@@ -29,9 +29,9 @@ use renderer_base;
 use templatable;
 use core_course\external\course_summary_exporter;
 
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/blocks/timeline/lib.php');
-require_once($CFG->libdir . '/completionlib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(dirname(__DIR__, 2) . '/lib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Class containing data for timeline block.

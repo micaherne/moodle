@@ -19,7 +19,7 @@ namespace mod_scorm;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/scorm/locallib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * Unit tests for {@link mod_scorm}.
@@ -59,17 +59,17 @@ final class validatepackage_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         $filename = "validscorm.zip";
-        $file = $this->create_stored_file_from_path($CFG->dirroot.'/mod/scorm/tests/packages/'.$filename, \file_archive::OPEN);
+        $file = $this->create_stored_file_from_path(__DIR__ . "/packages/{$filename}", \file_archive::OPEN);
         $errors = scorm_validate_package($file);
         $this->assertEmpty($errors);
 
         $filename = "validaicc.zip";
-        $file = $this->create_stored_file_from_path($CFG->dirroot.'/mod/scorm/tests/packages/'.$filename, \file_archive::OPEN);
+        $file = $this->create_stored_file_from_path(__DIR__ . "/packages/{$filename}", \file_archive::OPEN);
         $errors = scorm_validate_package($file);
         $this->assertEmpty($errors);
 
         $filename = "invalid.zip";
-        $file = $this->create_stored_file_from_path($CFG->dirroot.'/mod/scorm/tests/packages/'.$filename, \file_archive::OPEN);
+        $file = $this->create_stored_file_from_path(__DIR__ . "/packages/{$filename}", \file_archive::OPEN);
         $errors = scorm_validate_package($file);
         $this->assertArrayHasKey('packagefile', $errors);
         if (isset($errors['packagefile'])) {
@@ -77,7 +77,7 @@ final class validatepackage_test extends \advanced_testcase {
         }
 
         $filename = "badscorm.zip";
-        $file = $this->create_stored_file_from_path($CFG->dirroot.'/mod/scorm/tests/packages/'.$filename, \file_archive::OPEN);
+        $file = $this->create_stored_file_from_path(__DIR__ . "/packages/{$filename}", \file_archive::OPEN);
         $errors = scorm_validate_package($file);
         $this->assertArrayHasKey('packagefile', $errors);
         if (isset($errors['packagefile'])) {

@@ -448,7 +448,7 @@ function uu_allowed_sysroles_cache() {
  */
 function uu_pre_process_custom_profile_data($data) {
     global $CFG;
-    require_once($CFG->dirroot . '/user/profile/lib.php');
+    require_once(\core\component::component_path('core_user', 'profile/lib.php'));
     $fields = profile_get_user_fields_with_data(0);
 
     // find custom profile fields and check if data needs to converted.
@@ -477,7 +477,7 @@ function uu_pre_process_custom_profile_data($data) {
  */
 function uu_check_custom_profile_data(&$data, array &$profilefieldvalues = []) {
     global $CFG;
-    require_once($CFG->dirroot.'/user/profile/lib.php');
+    require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
     $noerror = true;
     $testuserid = null;

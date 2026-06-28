@@ -26,7 +26,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once(__DIR__ . '/../../editlib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 global $DB, $OUTPUT, $PAGE, $COURSE;
 
 $deleteselected = optional_param('deleteselected', false, PARAM_BOOL);

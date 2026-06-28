@@ -23,7 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../config.php');
+require(__DIR__ . '/../config.php');
 
 require_login();
 
@@ -39,7 +39,7 @@ $rsstokenboxhtml = $webservicetokenboxhtml = '';
 if ( !is_siteadmin($USER->id)
     && !empty($CFG->enablewebservices)
     && has_capability('moodle/webservice:createtoken', $usercontext )) {
-    require_once($CFG->dirroot.'/webservice/lib.php');
+    require_once(\core\component::component_path('core_webservice', 'lib.php'));
 
     $action  = optional_param('action', '', PARAM_ALPHANUMEXT);
     $tokenid = optional_param('tokenid', '', PARAM_SAFEDIR);
@@ -89,7 +89,7 @@ if ( !is_siteadmin($USER->id)
 
 // RSS keys.
 if (!empty($CFG->enablerssfeeds)) {
-    require_once($CFG->dirroot.'/lib/rsslib.php');
+    require_once(\core\component::component_path('core', 'rsslib.php'));
 
     $action  = optional_param('action', '', PARAM_ALPHANUMEXT);
     $confirm = optional_param('confirm', 0, PARAM_BOOL);

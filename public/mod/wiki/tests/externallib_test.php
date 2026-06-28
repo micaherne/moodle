@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/wiki/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Wiki module external functions tests

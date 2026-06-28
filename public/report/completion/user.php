@@ -23,9 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../config.php');
-require_once($CFG->dirroot.'/report/completion/lib.php');
-require_once($CFG->libdir.'/completionlib.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 $userid   = required_param('id', PARAM_INT);
 $courseid = required_param('course', PARAM_INT);

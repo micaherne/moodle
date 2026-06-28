@@ -16,8 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/badgeslib.php');
-require_once($CFG->dirroot . '/badges/renderer.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
+require_once(dirname(__DIR__) . '/renderer.php');
 
 use core_badges\local\backpack\helper;
 use core_badges\local\backpack\ob_factory;

@@ -69,7 +69,7 @@ function iplookup_find_location($ip) {
         return $info;
 
     } else if (!empty($CFG->geopluginapikey)) {
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         if (strpos($ip, ':') !== false) {
             // IPv6 is not supported by geoplugin.net.

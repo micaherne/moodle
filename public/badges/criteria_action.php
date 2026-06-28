@@ -25,7 +25,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 $badgeid = optional_param('badgeid', 0, PARAM_INT); // Badge ID.
 $crit    = optional_param('crit', 0, PARAM_INT);

@@ -24,7 +24,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot.'/mod/forum/lib.php');
+    require_once(__DIR__ . '/lib.php');
 
     $settings->add(new admin_setting_configselect('forum_displaymode', get_string('displaymode', 'forum'),
                        get_string('configdisplaymode', 'forum'), FORUM_MODE_NESTED, forum_get_layout_modes()));

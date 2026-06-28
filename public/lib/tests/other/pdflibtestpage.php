@@ -23,7 +23,7 @@
  */
 
 require(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir . '/pdflib.php');
+require_once(dirname(__DIR__, 2) . '/pdflib.php');
 
 require_login();
 $context = context_system::instance();

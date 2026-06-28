@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die;
 
 // The curl class is in filelib.
 global $CFG;
-require_once("{$CFG->libdir}/filelib.php");
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 use curl;
 use moodle_url;

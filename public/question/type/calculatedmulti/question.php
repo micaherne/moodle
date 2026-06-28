@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/questionbase.php');
-require_once($CFG->dirroot . '/question/type/multichoice/question.php');
-require_once($CFG->dirroot . '/question/type/calculated/question.php');
+require_once(\core\component::component_path('core_question', 'type/questionbase.php'));
+require_once(\core\component::component_path('qtype_multichoice', 'question.php'));
+require_once(\core\component::component_path('qtype_calculated', 'question.php'));
 
 
 /**

@@ -98,7 +98,7 @@ function imscp_get_post_actions() {
  */
 function imscp_add_instance($data, $mform) {
     global $CFG, $DB;
-    require_once("$CFG->dirroot/mod/imscp/locallib.php");
+    require_once(__DIR__ . '/locallib.php');
 
     $cmid = $data->coursemodule;
 
@@ -146,7 +146,7 @@ function imscp_add_instance($data, $mform) {
  */
 function imscp_update_instance($data, $mform) {
     global $CFG, $DB;
-    require_once("$CFG->dirroot/mod/imscp/locallib.php");
+    require_once(__DIR__ . '/locallib.php');
 
     $cmid = $data->coursemodule;
 
@@ -275,7 +275,7 @@ function imscp_get_file_info($browser, $areas, $course, $cm, $context, $filearea
         return null;
     }
 
-    require_once("$CFG->dirroot/mod/imscp/locallib.php");
+    require_once(__DIR__ . '/locallib.php');
 
     if (is_null($itemid)) {
         return new imscp_file_info($browser, $course, $cm, $context, $areas, $filearea, $itemid);

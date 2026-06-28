@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot . '/filter/algebra/lib.php');
+    require_once(__DIR__ . '/lib.php');
 
     $items = [];
     $items[] = new admin_setting_heading('filter_algebra/latexheading', get_string('latexsettings', 'filter_algebra'), '');

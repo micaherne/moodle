@@ -130,15 +130,15 @@ ini_set('log_errors', '1');
 
 // Finish moodle init.
 define('ABORT_AFTER_CONFIG_CANCEL', true);
-require("$CFG->dirroot/lib/setup.php");
+require(\core\component::component_path('core', 'setup.php'));
 
 raise_memory_limit(MEMORY_HUGE);
 
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/upgradelib.php');
-require_once($CFG->libdir.'/clilib.php');
-require_once($CFG->libdir.'/installlib.php');
-require_once($CFG->libdir.'/testing/classes/test_lock.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'upgradelib.php'));
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(\core\component::component_path('core', 'installlib.php'));
+require_once(\core\component::component_path('core', 'testing/classes/test_lock.php'));
 
 if ($unrecognized) {
     $unrecognized = implode(PHP_EOL . "  ", $unrecognized);
@@ -146,9 +146,9 @@ if ($unrecognized) {
 }
 
 // Behat utilities.
-require_once($CFG->libdir . '/behat/classes/util.php');
-require_once($CFG->libdir . '/behat/classes/behat_command.php');
-require_once($CFG->libdir . '/behat/classes/behat_config_manager.php');
+require_once(\core\component::component_path('core', 'behat/classes/util.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_command.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_config_manager.php'));
 
 // Ensure run option is <= parallel run installed.
 $run = 0;

@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/pdflib.php');
+require_once(\core\component::component_path('core', 'pdflib.php'));
 
 use core_admin\local\settings\filesize;
 
@@ -130,7 +130,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
 
     // Main course settings.
     $temp = new admin_settingpage('coursesettings', new lang_string('coursesettings'));
-    require_once($CFG->dirroot.'/course/lib.php');
+    require_once(\core\component::component_path('core_course', 'lib.php'));
 
     $choices = array();
     $choices['0'] = new lang_string('hide');

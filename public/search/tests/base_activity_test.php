@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once(__DIR__ . '/fixtures/testable_core_search.php');
-require_once($CFG->dirroot . '/search/tests/fixtures/mock_search_area.php');
+require_once(__DIR__ . '/fixtures/mock_search_area.php');
 
 /**
  * Search engine base unit tests.
@@ -303,7 +303,7 @@ final class base_activity_test extends \advanced_testcase {
      */
     public function test_check_access(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         // Create a test user who can access courses 1 and 2 (everything except forum 4).
         $generator = $this->getDataGenerator();

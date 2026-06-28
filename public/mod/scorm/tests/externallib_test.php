@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/scorm/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * SCORM module external functions tests
@@ -333,7 +333,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $record = new \stdClass();
         $record->course = $this->course->id;
-        $record->packagefilepath = $CFG->dirroot.'/mod/scorm/tests/packages/complexscorm.zip';
+        $record->packagefilepath = __DIR__ . '/packages/complexscorm.zip';
         $scorm = self::getDataGenerator()->create_module('scorm', $record);
 
         $result = mod_scorm_external::get_scorm_scoes($scorm->id);

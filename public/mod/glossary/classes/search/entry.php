@@ -26,7 +26,7 @@ namespace mod_glossary\search;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/glossary/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Glossary entries search.

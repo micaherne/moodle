@@ -26,7 +26,7 @@ namespace core_course\analytics\indicator;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/completionlib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Completion enabled set indicator.

@@ -34,7 +34,7 @@ final class portfolio_caller_test extends \advanced_testcase {
      */
     public function test_file_in_user_post_is_loaded(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/forum/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
         $this->resetAfterTest(true);
 
         $user = $this->getDataGenerator()->create_user();
@@ -79,7 +79,7 @@ final class portfolio_caller_test extends \advanced_testcase {
      */
     public function test_file_not_in_user_post_not_loaded(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/forum/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
         $this->resetAfterTest(true);
 
         $user = $this->getDataGenerator()->create_user();

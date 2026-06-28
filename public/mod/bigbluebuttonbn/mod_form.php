@@ -31,7 +31,7 @@ use mod_bigbluebuttonbn\local\proxy\bigbluebutton_proxy;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/course/moodleform_mod.php');
+require_once(\core\component::component_path('core_course', 'moodleform_mod.php'));
 
 /**
  * Moodle class for mod_form.

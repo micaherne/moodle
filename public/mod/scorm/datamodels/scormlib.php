@@ -550,7 +550,7 @@ function scorm_parse_scorm(&$scorm, $manifest) {
     if ($manifest instanceof stored_file) {
         $xmltext = $manifest->get_content();
     } else {
-        require_once("$CFG->libdir/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
         $xmltext = download_file_content($manifest);
     }
 

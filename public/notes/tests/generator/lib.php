@@ -58,7 +58,7 @@ class core_notes_generator extends component_generator_base {
      */
     public function create_instance($record = null) {
         global $CFG, $USER;
-        require_once("$CFG->dirroot/notes/lib.php");
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         $this->instancecount++;
         $i = $this->instancecount;

@@ -39,7 +39,7 @@ class cron_task extends \core\task\scheduled_task {
      */
     public function execute() {
         global $CFG;
-        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $instances = \repository::get_instances(['type' => 'dropbox']);
         foreach ($instances as $instance) {

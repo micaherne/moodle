@@ -29,9 +29,9 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
 define('CLI_SCRIPT', true);
 
 require_once(__DIR__ . '/../../../../config.php');
-require_once(__DIR__ . '/../../../../lib/clilib.php');
-require_once(__DIR__ . '/../../../../lib/behat/classes/behat_config_manager.php');
-require_once(__DIR__ . '/../../../../lib/testing/lib.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_config_manager.php'));
+require_once(\core\component::component_path('core', 'testing/lib.php'));
 
 ini_set('display_errors', '1');
 ini_set('log_errors', '1');

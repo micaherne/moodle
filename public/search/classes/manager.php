@@ -26,7 +26,7 @@ namespace core_search;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/lib/accesslib.php');
+require_once(\core\component::component_path('core', 'accesslib.php'));
 
 /**
  * Search subsystem manager.

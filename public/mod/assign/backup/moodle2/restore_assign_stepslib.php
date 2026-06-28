@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 /**
  * Define the complete assignment structure for restore, with file and id annotations
@@ -343,7 +343,7 @@ class restore_assign_activity_structure_step extends restore_activity_structure_
         global $DB, $CFG;
 
         // Required for constants.
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
 
         $assignmentid = $this->get_new_parentid('assign');
 

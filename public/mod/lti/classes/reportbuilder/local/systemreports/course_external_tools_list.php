@@ -42,7 +42,7 @@ class course_external_tools_list extends system_report {
      */
     protected function initialise(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(dirname(__DIR__, 4) . '/locallib.php');
 
         $this->course = get_course($this->get_context()->instanceid);
 

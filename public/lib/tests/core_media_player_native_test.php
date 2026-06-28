@@ -45,7 +45,7 @@ final class core_media_player_native_test extends \advanced_testcase {
      */
     public function test_get_supported_extensions(): void {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(dirname(__DIR__) . '/filelib.php');
         $nativeextensions = file_get_typegroup('extension', ['html_video', 'html_audio']);
 
         // Make sure that the list of extensions from the setting is exactly the same.
@@ -60,7 +60,7 @@ final class core_media_player_native_test extends \advanced_testcase {
      */
     public function test_list_supported_urls(): void {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(dirname(__DIR__) . '/filelib.php');
         $nativeextensions = file_get_typegroup('extension', ['html_video', 'html_audio']);
 
         // Create list of URLs for each extension.

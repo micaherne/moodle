@@ -129,7 +129,7 @@ class process_generate_image extends abstract_processor {
     private function url_to_file(int $userid, string $url): \stored_file {
         global $CFG;
 
-        require_once("{$CFG->libdir}/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         // Azure AI doesn't always return unique file names, but does return unique URLS.
         // Therefore, some processing is needed to get a unique filename.

@@ -26,7 +26,7 @@ namespace core_notes;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/notes/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 /**
  * Class core_notes_lib_testcase
  *

@@ -26,9 +26,9 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     // We use a couple of custom admin settings since we need to massage the data before it is inserted into the DB.
-    require_once($CFG->dirroot.'/auth/shibboleth/classes/admin_setting_special_wayf_select.php');
-    require_once($CFG->dirroot.'/auth/shibboleth/classes/admin_setting_special_idp_configtextarea.php');
-    require_once($CFG->dirroot.'/auth/shibboleth/classes/admin_setting_special_convert_data_configfile.php');
+    require_once(__DIR__ . '/classes/admin_setting_special_wayf_select.php');
+    require_once(__DIR__ . '/classes/admin_setting_special_idp_configtextarea.php');
+    require_once(__DIR__ . '/classes/admin_setting_special_convert_data_configfile.php');
 
     // Introductory explanation.
     $readmeurl = (new moodle_url('/auth/shibboleth/README.txt'))->out();

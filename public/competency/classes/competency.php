@@ -29,7 +29,7 @@ use context_system;
 use lang_string;
 use stdClass;
 
-require_once($CFG->libdir . '/grade/grade_scale.php');
+require_once(\core\component::component_path('core', 'grade/grade_scale.php'));
 
 /**
  * Class for loading/storing competencies from the DB.
@@ -798,7 +798,7 @@ class competency extends persistent {
             return false;
         }
 
-        require_once($CFG->libdir . '/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
         // Check if competency is used in a badge.
         if (badge_award_criteria_competency_has_records_for_competencies($ids)) {
             return false;

@@ -25,8 +25,8 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot . '/' . $CFG->admin .'/mnet/profilefields_form.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/profilefields_form.php');
 $mnet = get_mnet_environment();
 
 $hostid = required_param('hostid', PARAM_INT);

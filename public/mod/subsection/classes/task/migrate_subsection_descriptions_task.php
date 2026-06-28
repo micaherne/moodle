@@ -44,7 +44,7 @@ class migrate_subsection_descriptions_task extends adhoc_task {
             mtrace('Text and media area or Subsection module is not enabled. Skipping migration task.');
             return;
         }
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         // Process subsections in batches to reduce server overload.
         $migratedcount = 0;

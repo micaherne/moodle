@@ -29,9 +29,9 @@ final class activityoverviewbase_test extends \advanced_testcase {
     #[\Override()]
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
-        require_once($CFG->dirroot . '/course/format/tests/fixtures/fake_activityoverview.php');
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
+        require_once(__DIR__ . '/fixtures/fake_activityoverview.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         parent::setUpBeforeClass();
     }
 

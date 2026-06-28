@@ -403,14 +403,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_get_course_completion_status(): void {
         global $DB, $CFG, $COMPLETION_CRITERIA_TYPES;
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_self.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_date.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_unenrol.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_activity.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_duration.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_grade.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_role.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_course.php');
+        require_once(dirname(__DIR__) . '/criteria/completion_criteria_self.php');
+        require_once(dirname(__DIR__) . '/criteria/completion_criteria_date.php');
+        require_once(dirname(__DIR__) . '/criteria/completion_criteria_unenrol.php');
+        require_once(dirname(__DIR__) . '/criteria/completion_criteria_activity.php');
+        require_once(dirname(__DIR__) . '/criteria/completion_criteria_duration.php');
+        require_once(dirname(__DIR__) . '/criteria/completion_criteria_grade.php');
+        require_once(dirname(__DIR__) . '/criteria/completion_criteria_role.php');
+        require_once(dirname(__DIR__) . '/criteria/completion_criteria_course.php');
 
         $this->resetAfterTest(true);
 
@@ -534,7 +534,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_mark_course_self_completed(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_self.php');
+        require_once(dirname(__DIR__) . '/criteria/completion_criteria_self.php');
 
         $this->resetAfterTest(true);
 

@@ -247,7 +247,7 @@ final class permission_test extends advanced_testcase {
      */
     public function test_require_can_edit_report_system_report(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_available.php");
+        require_once(__DIR__ . '/fixtures/system_report_available.php');
 
         $this->resetAfterTest();
         $this->setAdminUser();

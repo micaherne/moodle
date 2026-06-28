@@ -442,7 +442,7 @@ final class overview_test extends \advanced_testcase {
         bool $createusers = true,
     ): array {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/scorm/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
         $users = [];
         $generator = $this->getDataGenerator();
         $courseparams = [];

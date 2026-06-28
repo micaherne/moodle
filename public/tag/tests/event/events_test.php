@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 // Used to create a wiki page to tag.
-require_once($CFG->dirroot . '/mod/wiki/locallib.php');
+require_once(\core\component::component_path('mod_wiki', 'locallib.php'));
 
 final class events_test extends \advanced_testcase {
 

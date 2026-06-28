@@ -28,14 +28,14 @@ defined('MOODLE_INTERNAL') || die();
 
 use tool_uploaduser\local\cli_progress_tracker;
 
-require_once($CFG->dirroot.'/user/profile/lib.php');
-require_once($CFG->dirroot.'/user/lib.php');
-require_once($CFG->dirroot.'/group/lib.php');
-require_once($CFG->dirroot.'/cohort/lib.php');
-require_once($CFG->libdir.'/csvlib.class.php');
-require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/uploaduser/locallib.php');
-require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/uploaduser/user_form.php');
-require_once($CFG->libdir . '/clilib.php');
+require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+require_once(\core\component::component_path('core_user', 'lib.php'));
+require_once(\core\component::component_path('core_group', 'lib.php'));
+require_once(\core\component::component_path('core_cohort', 'lib.php'));
+require_once(\core\component::component_path('core', 'csvlib.class.php'));
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(dirname(__DIR__) . '/user_form.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
 
 /**
  * Helper method for CLI script to upload users (also has special wrappers for cli* functions for phpunit testing)

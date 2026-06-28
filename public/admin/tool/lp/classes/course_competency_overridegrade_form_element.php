@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->libdir . '/form/advcheckbox.php');
+require_once(\core\component::component_path('core_form', 'advcheckbox.php'));
 
 /**
  * Course competency override grade element.

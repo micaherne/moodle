@@ -109,7 +109,7 @@ class no_teaching extends \core_analytics\local\target\binary {
             $isinsightuser = false) {
         global $CFG;
 
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(dirname(__DIR__, 3) . '/lib.php');
 
         $sampledata = $prediction->get_sample_data();
         $course = $sampledata['course'];

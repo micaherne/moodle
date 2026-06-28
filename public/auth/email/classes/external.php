@@ -34,9 +34,9 @@ use core_external\external_warnings;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir . '/authlib.php');
-require_once($CFG->dirroot . '/user/editlib.php');
-require_once($CFG->dirroot . '/user/profile/lib.php');
+require_once(\core\component::component_path('core', 'authlib.php'));
+require_once(\core\component::component_path('core_user', 'editlib.php'));
+require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
 /**
  * Auth e-mail external functions
@@ -321,7 +321,7 @@ class auth_email_external extends external_api {
 
         // Validate recaptcha.
         if (signup_captcha_enabled()) {
-            require_once($CFG->libdir . '/recaptchalib_v2.php');
+            require_once(\core\component::component_path('core', 'recaptchalib_v2.php'));
             $response = recaptcha_check_response(RECAPTCHA_VERIFY_URL, $CFG->recaptchaprivatekey,
                                                  getremoteaddr(), $params['recaptcharesponse']);
             if (!$response['isvalid']) {

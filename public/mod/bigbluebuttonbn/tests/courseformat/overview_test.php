@@ -438,7 +438,7 @@ final class overview_test extends \advanced_testcase {
         string $moderators = 'user:t3'
     ): array {
         global $CFG;
-        require_once($CFG->dirroot . '/lib/grade/constants.php');
+        require_once(\core\component::component_path('core', 'grade/constants.php'));
         $users = [];
         $generator = $this->getDataGenerator();
         $courseparams = [];

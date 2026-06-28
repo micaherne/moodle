@@ -85,7 +85,7 @@
 function xmldb_main_upgrade($oldversion) {
     global $CFG, $DB;
 
-    require_once($CFG->libdir . '/db/upgradelib.php'); // Core Upgrade-related functions.
+    require_once(__DIR__ . '/upgradelib.php'); // Core Upgrade-related functions.
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
@@ -140,7 +140,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2024072600.01) {
         // If tool_innodb is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/admin/tool/innodb/version.php')) {
+        if (!file_exists(\core\component::component_path('core_admin', 'tool/innodb/version.php'))) {
             // Delete tool_innodb.
             uninstall_plugin('tool', 'innodb');
         }
@@ -174,7 +174,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2024082900.01) {
         // If filter_tidy is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/filter/tidy/version.php')) {
+        if (!file_exists(\core\component::component_path('core_filters', 'tidy/version.php'))) {
             // Clean config.
             uninstall_plugin('filter', 'tidy');
         }
@@ -355,13 +355,13 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2024092600.00) {
         // If h5plib_v126 is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/h5p/h5plib/v126/version.php')) {
+        if (!file_exists(\core\component::component_path('core_h5p', 'h5plib/v126/version.php'))) {
             // Clean config.
             uninstall_plugin('h5plib', 'v126');
         }
 
         // If h5plib_v127 is present, set it as the default one.
-        if (file_exists($CFG->dirroot . '/h5p/h5plib/v127/version.php')) {
+        if (file_exists(\core\component::component_path('core_h5p', 'h5plib/v127/version.php'))) {
             set_config('h5plibraryhandler', 'h5plib_v127');
         }
         // Main savepoint reached.
@@ -697,7 +697,7 @@ function xmldb_main_upgrade($oldversion) {
 
     // Uninstall auth_cas and remove dependencies.
     if ($oldversion < 2025030500.00) {
-        if (!file_exists($CFG->dirroot . "/auth/cas/version.php")) {
+        if (!file_exists(\core\component::component_path('core_auth', 'cas/version.php'))) {
             uninstall_plugin('auth', 'cas');
 
             // Remove the sensiblesettings config for auth_cas.
@@ -717,7 +717,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2025030500.01) {
         // If atto is no longer present, remove it.
-        if (!file_exists("{$CFG->dirroot}/lib/editor/atto/version.php")) {
+        if (!file_exists(\core\component::component_path('core_editor', 'atto/version.php'))) {
             // Remove each of the subplugins first. These are no longer on disk so the standard `uninstall_plugin` approach
             // on atto itself will not remove them.
             $plugins = array_keys(core_plugin_manager::instance()->get_plugins_of_type('atto'));
@@ -736,7 +736,7 @@ function xmldb_main_upgrade($oldversion) {
 
     // Remove portfolio_mahara.
     if ($oldversion < 2025030600.02) {
-        if (!file_exists($CFG->dirroot . "/portfolio/mahara/version.php")) {
+        if (!file_exists(\core\component::component_path('core_portfolio', 'mahara/version.php'))) {
             uninstall_plugin('portfolio', 'mahara');
         }
         // Main savepoint reached.
@@ -745,7 +745,7 @@ function xmldb_main_upgrade($oldversion) {
 
     // Remove enrol_mnet.
     if ($oldversion < 2025030600.03) {
-        if (!file_exists($CFG->dirroot . "/enrol/mnet/version.php")) {
+        if (!file_exists(\core\component::component_path('core_enrol', 'mnet/version.php'))) {
             uninstall_plugin('enrol', 'mnet');
         }
         // Main savepoint reached.
@@ -754,7 +754,7 @@ function xmldb_main_upgrade($oldversion) {
 
     // Remove block_mnet_hosts.
     if ($oldversion < 2025030600.04) {
-        if (!file_exists($CFG->dirroot . "/blocks/mnet_hosts/version.php")) {
+        if (!file_exists(\core\component::component_path('core_block', 'mnet_hosts/version.php'))) {
             uninstall_plugin('block', 'mnet_hosts');
 
             // Delete all the admin preset plugin states concerning mnet_hosts in adminpresets_plug table.
@@ -767,7 +767,7 @@ function xmldb_main_upgrade($oldversion) {
 
     // Remove auth_mnet.
     if ($oldversion < 2025030600.05) {
-        if (!file_exists($CFG->dirroot . "/auth/mnet/version.php")) {
+        if (!file_exists(\core\component::component_path('core_auth', 'mnet/version.php'))) {
             uninstall_plugin('auth', 'mnet');
         }
         // Main savepoint reached.
@@ -776,7 +776,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2025030600.06) {
         // If mlbackend_php is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/lib/mlbackend/php/version.php')) {
+        if (!file_exists(dirname(__DIR__) . '/mlbackend/php/version.php')) {
             // Clean config.
             uninstall_plugin('mlbackend', 'php');
 
@@ -816,7 +816,7 @@ function xmldb_main_upgrade($oldversion) {
 
     // Remove mnetservice_enrol.
     if ($oldversion < 2025030600.08) {
-        if (!file_exists($CFG->dirroot . "/mnet/service/enrol/version.php")) {
+        if (!file_exists(\core\component::component_path('core_mnet', 'service/enrol/version.php'))) {
             uninstall_plugin('mnetservice', 'enrol');
         }
         // Main savepoint reached.
@@ -1248,7 +1248,7 @@ function xmldb_main_upgrade($oldversion) {
     if ($oldversion < 2025081900.03) {
         // Remove section_links block.
 
-        if (!file_exists($CFG->dirroot . "/blocks/section_links/version.php")) {
+        if (!file_exists(\core\component::component_path('core_block', 'section_links/version.php'))) {
             uninstall_plugin('block', 'section_links');
             // Delete all the admin preset plugin references to section_links.
             $DB->delete_records('adminpresets_plug', ['plugin' => 'block', 'name' => 'section_links']);
@@ -1676,7 +1676,7 @@ function xmldb_main_upgrade($oldversion) {
     if ($oldversion < 2026011600.01) {
         // Remove activity_modules block.
 
-        if (!file_exists($CFG->dirroot . "/blocks/activity_modules/version.php")) {
+        if (!file_exists(\core\component::component_path('core_block', 'activity_modules/version.php'))) {
             uninstall_plugin('block', 'activity_modules');
             // Delete all the admin preset plugin references to activity_modules.
             $DB->delete_records('adminpresets_plug', ['plugin' => 'block', 'name' => 'activity_modules']);
@@ -1814,7 +1814,7 @@ function xmldb_main_upgrade($oldversion) {
     }
 
     if ($oldversion < 2026030600.03) {
-        require_once($CFG->dirroot . '/lib/db/upgradelib.php');
+        require_once(__DIR__ . '/upgradelib.php');
 
         // Check if the moodlenetprofile column exists in the user table.
         $table = new xmldb_table('user');
@@ -1834,7 +1834,7 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2026030600.04) {
         // Remove tool_moodlenet if no longer present.
-        if (!file_exists($CFG->dirroot . '/admin/tool/moodlenet/version.php')) {
+        if (!file_exists(\core\component::component_path('core_admin', 'tool/moodlenet/version.php'))) {
             // Reset activity chooser footer if set to tool_moodlenet.
             if (get_config('core', 'activitychooseractivefooter') === 'tool_moodlenet') {
                 set_config('activitychooseractivefooter', 'hidden');
@@ -1850,13 +1850,13 @@ function xmldb_main_upgrade($oldversion) {
 
     if ($oldversion < 2026032700.01) {
         // If h5plib_v127 is no longer present, remove it.
-        if (!file_exists($CFG->dirroot . '/h5p/h5plib/v127/version.php')) {
+        if (!file_exists(\core\component::component_path('core_h5p', 'h5plib/v127/version.php'))) {
             // Clean config.
             uninstall_plugin('h5plib', 'v127');
         }
 
         // If h5plib_v128 is present, set it as the default one.
-        if (file_exists($CFG->dirroot . '/h5p/h5plib/v128/version.php')) {
+        if (file_exists(\core\component::component_path('h5plib_v128', 'version.php'))) {
             set_config('h5plibraryhandler', 'h5plib_v128');
         }
 

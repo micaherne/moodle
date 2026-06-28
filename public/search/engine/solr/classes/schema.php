@@ -26,7 +26,7 @@ namespace search_solr;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 /**
  * Schema class to interact with Solr schema.

@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/ddimageortext/rendererbase.php');
+require_once(__DIR__ . '/rendererbase.php');
 
 /**
  * Generates the output for drag-and-drop onto image questions.

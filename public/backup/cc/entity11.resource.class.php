@@ -45,7 +45,7 @@ class cc11_resource extends entities11 {
     private function create_node_course_modules_mod_resource($sheet_mod_resource, $instance) {
         global $CFG;
 
-        require_once($CFG->libdir.'/validateurlsyntax.php');
+        require_once(\core\component::component_path('core', 'validateurlsyntax.php'));
 
         $link = '';
         $mod_alltext = '';

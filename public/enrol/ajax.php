@@ -27,10 +27,10 @@
 
 define('AJAX_SCRIPT', true);
 
-require('../config.php');
-require_once("$CFG->dirroot/enrol/locallib.php");
-require_once("$CFG->dirroot/enrol/renderer.php");
-require_once("$CFG->dirroot/group/lib.php");
+require(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/renderer.php');
+require_once(\core\component::component_path('core_group', 'lib.php'));
 
 // Must have the sesskey
 $id      = required_param('id', PARAM_INT); // course id

@@ -94,7 +94,7 @@ class manager {
      */
     public function get_service_classnames(): array {
         global $CFG;
-        $servicesdir = "{$CFG->dirroot}/files/classes/redactor/services/";
+        $servicesdir = __DIR__ . '/services/';
         $servicefiles = glob("{$servicesdir}*_service.php");
         $services = [];
         foreach ($servicefiles as $servicefile) {

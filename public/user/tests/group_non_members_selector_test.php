@@ -21,7 +21,7 @@ use group_non_members_selector;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/user/selector/lib.php');
+require_once(dirname(__DIR__) . '/selector/lib.php');
 
 /**
  * Unit tests for {@link group_non_members_selector} class.

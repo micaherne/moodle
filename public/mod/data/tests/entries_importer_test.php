@@ -44,11 +44,11 @@ final class entries_importer_test extends \advanced_testcase {
         parent::setUp();
 
         global $CFG;
-        require_once($CFG->dirroot . '/mod/data/lib.php');
-        require_once($CFG->dirroot . '/lib/datalib.php');
-        require_once($CFG->dirroot . '/lib/csvlib.class.php');
-        require_once($CFG->dirroot . '/search/tests/fixtures/testable_core_search.php');
-        require_once($CFG->dirroot . '/mod/data/tests/generator/lib.php');
+        require_once(dirname(__DIR__) . '/lib.php');
+        require_once(\core\component::component_path('core', 'datalib.php'));
+        require_once(\core\component::component_path('core', 'csvlib.class.php'));
+        require_once(\core\component::component_path('core_search', 'tests/fixtures/testable_core_search.php'));
+        require_once(__DIR__ . '/generator/lib.php');
     }
 
     /**

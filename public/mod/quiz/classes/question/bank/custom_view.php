@@ -35,7 +35,7 @@ use core_question\local\bank\column_manager_base;
 use core_question\local\bank\filter_condition_manager;
 use core_question\local\bank\question_version_status;
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(dirname(__DIR__, 3) . '/locallib.php');
 /**
  * Subclass to customise the view of the question bank for the quiz editing screen.
  *

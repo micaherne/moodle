@@ -96,7 +96,7 @@ function url_get_post_actions() {
 function url_add_instance($data, $mform) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot.'/mod/url/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $parameters = array();
     for ($i=0; $i < 100; $i++) {
@@ -139,7 +139,7 @@ function url_add_instance($data, $mform) {
 function url_update_instance($data, $mform) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot.'/mod/url/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $parameters = array();
     for ($i=0; $i < 100; $i++) {
@@ -209,7 +209,7 @@ function url_delete_instance($id) {
  */
 function url_get_coursemodule_info($coursemodule) {
     global $CFG, $DB;
-    require_once("$CFG->dirroot/mod/url/locallib.php");
+    require_once(__DIR__ . '/locallib.php');
 
     if (!$url = $DB->get_record('url', array('id'=>$coursemodule->instance),
             'id, name, display, displayoptions, externalurl, parameters, intro, introformat')) {
@@ -268,7 +268,7 @@ function url_page_type_list($pagetype, $parentcontext, $currentcontext) {
  */
 function url_export_contents($cm, $baseurl) {
     global $CFG, $DB;
-    require_once("$CFG->dirroot/mod/url/locallib.php");
+    require_once(__DIR__ . '/locallib.php');
     $contents = array();
     $context = context_module::instance($cm->id);
 

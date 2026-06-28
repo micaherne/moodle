@@ -73,8 +73,8 @@ final class ldap_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        require_once($CFG->dirroot.'/enrol/ldap/lib.php');
-        require_once($CFG->libdir.'/ldaplib.php');
+        require_once(dirname(__DIR__) . '/lib.php');
+        require_once(\core\component::component_path('core', 'ldaplib.php'));
 
         if (!defined('TEST_ENROL_LDAP_HOST_URL') or !defined('TEST_ENROL_LDAP_BIND_DN') or !defined('TEST_ENROL_LDAP_BIND_PW') or !defined('TEST_ENROL_LDAP_DOMAIN')) {
             $this->markTestSkipped('External LDAP test server not configured.');

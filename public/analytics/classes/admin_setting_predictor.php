@@ -26,7 +26,7 @@ namespace core_analytics;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../../lib/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 /**
  * Extension to show an error message if the selected predictor is not available.

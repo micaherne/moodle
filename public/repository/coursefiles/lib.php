@@ -22,7 +22,7 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 /**
  * repository_coursefiles class is used to browse course files

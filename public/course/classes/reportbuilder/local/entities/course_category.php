@@ -158,7 +158,7 @@ class course_category extends base {
             ->set_is_sortable(true)
             ->add_callback(static function(?string $description, stdClass $category): string {
                 global $CFG;
-                require_once("{$CFG->libdir}/filelib.php");
+                require_once(\core\component::component_path('core', 'filelib.php'));
 
                 if ($description === null || $category->ctxid === null) {
                     return '';

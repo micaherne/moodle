@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->libdir.'/oauthlib.php');
+require_once(__DIR__ . '/filelib.php');
+require_once(__DIR__ . '/oauthlib.php');
 
 /**
  * Class for manipulating google documents through the google data api.

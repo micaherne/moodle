@@ -1322,7 +1322,7 @@ class behat_config_util {
 
         $themetestdir = "/theme/" . $themename;
 
-        return $CFG->dirroot . $themetestdir  . self::get_behat_tests_path();
+        return \core\component::from_mono_path($themetestdir . self::get_behat_tests_path());
     }
 
     /**

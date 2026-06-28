@@ -26,7 +26,7 @@ namespace core_course\analytics\indicator;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/calendar/externallib.php');
+require_once(\core\component::component_path('core_calendar', 'externallib.php'));
 
 /**
  * Activities due indicator.

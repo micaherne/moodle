@@ -43,8 +43,8 @@ trait subplugins_test_helper_trait {
      */
     protected function setup_fake_plugin(string $pluginname): void {
         global $CFG;
-        require_once("$CFG->libdir/upgradelib.php");
-        $bbbextpath = "{$CFG->dirroot}/mod/bigbluebuttonbn/tests/fixtures/extension";
+        require_once(\core\component::component_path('core', 'upgradelib.php'));
+        $bbbextpath = dirname(__DIR__, 2) . '/tests/fixtures/extension';
         // This is similar to accesslib_test::setup_fake_plugin.
         $mockedcomponent = new ReflectionClass(core_component::class);
 
@@ -131,7 +131,7 @@ trait subplugins_test_helper_trait {
      */
     protected function uninstall_fake_plugin(string $pluginname): void {
         global $CFG;
-        require_once("$CFG->libdir/adminlib.php");
+        require_once(\core\component::component_path('core', 'adminlib.php'));
         // We just need access to fill_all_caches so everything goes back to normal.
         // If we don't do this, there are some side effects that will make other test fails
         // (such as mod_bigbluebuttonbn\task\upgrade_recordings_task_test::test_upgrade_recordings_imported_basic).

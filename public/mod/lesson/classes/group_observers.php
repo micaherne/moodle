@@ -25,7 +25,7 @@
 namespace mod_lesson;
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/lesson/locallib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * Group observers class.

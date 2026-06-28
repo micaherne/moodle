@@ -28,8 +28,8 @@ use \core_privacy\local\request\writer;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/modinfolib.php');
-require_once($CFG->dirroot . '/course/modlib.php');
+require_once(\core\component::component_path('core', 'modinfolib.php'));
+require_once(\core\component::component_path('core_course', 'modlib.php'));
 
 /**
  * The core_privacy\local\request\helper class with useful shared functionality.

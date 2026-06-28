@@ -120,9 +120,9 @@ if (!empty($options['parallel'])) {
 }
 
 require_once(__DIR__ . '/../../../../config.php');
-require_once(__DIR__ . '/../../../../lib/behat/lib.php');
-require_once(__DIR__ . '/../../../../lib/behat/classes/behat_command.php');
-require_once(__DIR__ . '/../../../../lib/behat/classes/behat_config_manager.php');
+require_once(\core\component::component_path('core', 'behat/lib.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_command.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_config_manager.php'));
 
 // Remove error handling overrides done in config.php. This is consistent with admin/tool/behat/cli/util_single_run.php.
 $CFG->debug = (E_ALL);
@@ -132,8 +132,8 @@ ini_set('display_errors', '1');
 ini_set('log_errors', '1');
 
 // Import the necessary libraries.
-require_once($CFG->libdir . '/setuplib.php');
-require_once($CFG->libdir . '/behat/classes/util.php');
+require_once(\core\component::component_path('core', 'setuplib.php'));
+require_once(\core\component::component_path('core', 'behat/classes/util.php'));
 
 // For drop option check if parallel site.
 if ((empty($options['parallel'])) && ($options['drop']) || $options['updatesteps']) {

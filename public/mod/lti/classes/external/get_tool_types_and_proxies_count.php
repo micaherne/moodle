@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 /**
  * External function for fetching the count of all tool types and proxies.

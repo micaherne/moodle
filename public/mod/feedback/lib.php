@@ -28,7 +28,7 @@ use mod_feedback\manager;
 defined('MOODLE_INTERNAL') || die();
 
 // Include forms lib.
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 define('FEEDBACK_ANONYMOUS_YES', 1);
 define('FEEDBACK_ANONYMOUS_NO', 2);
@@ -769,7 +769,7 @@ function feedback_set_events($feedback) {
     global $DB, $CFG;
 
     // Include calendar/lib.php.
-    require_once($CFG->dirroot.'/calendar/lib.php');
+    require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
     // Get CMID if not sent as part of $feedback.
     if (!isset($feedback->coursemodule)) {
@@ -1302,7 +1302,7 @@ function feedback_delete_template($template) {
 function feedback_items_from_template($feedback, $templateid, $deleteold = false) {
     global $DB, $CFG;
 
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     $fs = get_file_storage();
 
@@ -1448,13 +1448,13 @@ function feedback_get_template_list($course, $onlyownorpublic = '') {
 function feedback_get_item_class($typ) {
     global $CFG;
 
-    require_once($CFG->dirroot.'/mod/feedback/item/feedback_item_class.php');
+    require_once(__DIR__ . '/item/feedback_item_class.php');
 
     //get the class of item-typ
     $typeclean = clean_param($typ, PARAM_ALPHA);
 
     $itemclass = "feedback_item_{$typeclean}";
-    $itemclasspath = "{$CFG->dirroot}/mod/feedback/item/{$typeclean}/lib.php";
+    $itemclasspath = __DIR__ . "/item/{$typeclean}/lib.php";
 
     //get the instance of item-class
     if (!class_exists($itemclass) && file_exists($itemclasspath)) {
@@ -1476,13 +1476,13 @@ function feedback_get_item_class($typ) {
  * @param string $dir the subdir
  * @return array pluginnames as string
  */
-function feedback_load_feedback_items($dir = 'mod/feedback/item') {
-    global $CFG;
-    $names = get_list_of_plugins($dir);
+function feedback_load_feedback_items($dir = 'item') {
+    $componentdir = \core_component::get_component_directory('mod_feedback');
+    $names = get_list_of_plugins($dir, '', $componentdir);
     $ret_names = array();
 
     foreach ($names as $name) {
-        require_once($CFG->dirroot.'/'.$dir.'/'.$name.'/lib.php');
+        require_once($componentdir . '/' . $dir . '/' . $name . '/lib.php');
         if (class_exists('feedback_item_'.$name)) {
             $ret_names[] = $name;
         }
@@ -1501,7 +1501,7 @@ function feedback_load_feedback_items_options() {
 
     $feedback_options = array("pagebreak" => get_string('add_pagebreak', 'feedback'));
 
-    if (!$feedback_names = feedback_load_feedback_items('mod/feedback/item')) {
+    if (!$feedback_names = feedback_load_feedback_items('item')) {
         return array();
     }
 
@@ -1633,7 +1633,7 @@ function feedback_delete_item($itemid, $renumber = true, $template = false) {
  */
 function feedback_delete_all_items($feedbackid) {
     global $DB, $CFG;
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     if (!$feedback = $DB->get_record('feedback', array('id'=>$feedbackid))) {
         return false;
@@ -2278,7 +2278,7 @@ function feedback_delete_all_completeds($feedback, $cm = null, $course = null) {
  */
 function feedback_delete_completed($completed, $feedback = null, $cm = null, $course = null) {
     global $DB, $CFG;
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     if (!isset($completed->id)) {
         if (!$completed = $DB->get_record('feedback_completed', array('id' => $completed))) {

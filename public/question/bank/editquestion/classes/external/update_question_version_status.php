@@ -18,7 +18,7 @@ namespace qbank_editquestion\external;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/engine/bank.php');
+require_once(\core\component::component_path('core_question', 'engine/bank.php'));
 
 use core_external\external_api;
 use core_external\external_function_parameters;

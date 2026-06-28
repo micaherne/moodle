@@ -22,9 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/tablelib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 admin_externalpage_setup('thirdpartylibs');
 
@@ -33,7 +33,7 @@ echo $OUTPUT->heading(get_string('thirdpartylibs', 'core_admin'));
 
 $files = [
     "$CFG->root/lib/thirdpartylibs.xml",
-    "$CFG->libdir/thirdpartylibs.xml",
+    \core\component::component_path('core', 'thirdpartylibs.xml'),
 ];
 
 $plugintypes = core_component::get_plugin_types();
@@ -59,7 +59,7 @@ foreach ($files as $xmlpath) {
     foreach ($xml as $lib) {
         $base = realpath(dirname($xmlpath));
         $location = substr($base, strlen($CFG->root)) . '/' . $lib->location;
-        if (is_dir($CFG->dirroot . $location)) {
+        if (is_dir(\core\component::from_mono_path($location))) {
             $location .= '/';
         }
         $version = '';

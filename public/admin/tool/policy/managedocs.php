@@ -26,7 +26,7 @@
  */
 
 require(__DIR__.'/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $archived = optional_param('archived', 0, PARAM_INT);
 

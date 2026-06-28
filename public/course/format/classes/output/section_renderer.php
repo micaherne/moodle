@@ -19,7 +19,7 @@ namespace core_courseformat\output;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/course/renderer.php');
+require_once(\core\component::component_path('core_course', 'renderer.php'));
 
 use cm_info;
 use coding_exception;

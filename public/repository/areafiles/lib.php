@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 /**
  * Main class responsible for files listing in repostiory_areafiles

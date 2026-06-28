@@ -822,7 +822,7 @@ class enrol_database_plugin extends enrol_plugin {
             return 4;
         }
         if ($createcourses) {
-            require_once("$CFG->dirroot/course/lib.php");
+            require_once(\core\component::component_path('core_course', 'lib.php'));
 
             $templatecourse = $this->get_config('templatecourse');
 
@@ -944,7 +944,7 @@ class enrol_database_plugin extends enrol_plugin {
     protected function db_init() {
         global $CFG;
 
-        require_once($CFG->libdir.'/adodb/adodb.inc.php');
+        require_once(\core\component::component_path('core', 'adodb/adodb.inc.php'));
 
         // Connect to the external database (forcing new connection).
         $extdb = ADONewConnection($this->get_config('dbtype'));

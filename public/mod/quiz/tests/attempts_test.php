@@ -26,7 +26,7 @@ use mod_quiz\quiz_settings;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/group/lib.php');
+require_once(\core\component::component_path('core_group', 'lib.php'));
 
 /**
  * Unit tests for quiz attempt overdue handling

@@ -22,7 +22,7 @@ use csv_import_reader;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/lib/csvlib.class.php');
+require_once(dirname(__DIR__) . '/csvlib.class.php');
 
 /**
  * Tests csv import and export functions.
@@ -133,7 +133,7 @@ final class csvclass_test extends \advanced_testcase {
 
         // Testing for a tab separated file.
         // The tab separated file has a trailing tab and extra blank lines at the end of the file.
-        $filename = $CFG->dirroot . '/lib/tests/fixtures/tabfile.csv';
+        $filename = __DIR__ . '/fixtures/tabfile.csv';
         $fp = fopen($filename, 'r');
         $tabdata = fread($fp, filesize($filename));
         fclose($fp);

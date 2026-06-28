@@ -24,7 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir . '/portfolio/caller.php');
+require_once(\core\component::component_path('core', 'portfolio/caller.php'));
 
 /**
  * Workshop portfolio caller class to integrate with portfolio API.

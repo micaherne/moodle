@@ -31,9 +31,9 @@ use core_external\external_warnings;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir . '/gradelib.php');
-require_once($CFG->dirroot . '/grade/lib.php');
-require_once($CFG->dirroot . '/grade/report/overview/lib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(\core\component::component_path('core_grades', 'lib.php'));
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * External grade overview report API implementation

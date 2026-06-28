@@ -19,7 +19,7 @@ namespace qtype_essay;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . "/phpunit/classes/restore_date_testcase.php");
+require_once(\core\component::component_path('core', 'phpunit/classes/restore_date_testcase.php'));
 
 /**
  * Test restore logic.

@@ -23,10 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/lesson/locallib.php');
-require_once($CFG->dirroot.'/mod/lesson/pagetypes/essay.php');
-require_once($CFG->dirroot.'/mod/lesson/essay_form.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/pagetypes/essay.php');
+require_once(__DIR__ . '/essay_form.php');
 
 $id   = required_param('id', PARAM_INT);             // Course Module ID
 $mode = optional_param('mode', 'display', PARAM_ALPHA);

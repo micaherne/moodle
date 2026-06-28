@@ -23,7 +23,7 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once("../../config.php");
+require_once(__DIR__ . '/../../config.php');
 
 $id = required_param('id', PARAM_INT);
 $course = get_course($id);

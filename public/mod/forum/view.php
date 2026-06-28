@@ -24,7 +24,7 @@
 
 use mod_forum\grades\forum_gradeitem;
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 
 $managerfactory = mod_forum\local\container::get_manager_factory();
 $legacydatamapperfactory = mod_forum\local\container::get_legacy_data_mapper_factory();
@@ -146,7 +146,7 @@ forum_view(
 $SESSION->fromdiscussion = qualified_me();
 
 if (!empty($CFG->enablerssfeeds) && !empty($CFG->forum_enablerssfeeds) && $forum->get_rss_type() && $forum->get_rss_articles()) {
-    require_once("{$CFG->libdir}/rsslib.php");
+    require_once(\core\component::component_path('core', 'rsslib.php'));
 
     $rsstitle = format_string($course->shortname, true, [
             'context' => context_course::instance($course->id),

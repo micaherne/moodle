@@ -16,9 +16,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->libdir.'/gradelib.php');
-require_once($CFG->libdir.'/plagiarismlib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(\core\component::component_path('core', 'plagiarismlib.php'));
 
 use core_grades\component_gradeitems;
 
@@ -111,7 +111,7 @@ abstract class moodleform_mod extends moodleform {
         }
 
         // Set the course format.
-        require_once($CFG->dirroot . '/course/format/lib.php');
+        require_once(\core\component::component_path('core_courseformat', 'lib.php'));
         $this->courseformat = course_get_format($course);
 
         // Guess module name if not set.
@@ -745,7 +745,7 @@ abstract class moodleform_mod extends moodleform {
         }
         $this->gradedorrated = 'rated';
 
-        require_once("{$CFG->dirroot}/rating/lib.php");
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
         $rm = new rating_manager();
 
         $component = "mod_{$this->_modname}";

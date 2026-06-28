@@ -24,8 +24,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(dirname(__DIR__) . '/questionlib.php');
+require_once(\core\component::component_path('mod_quiz', 'locallib.php'));
 
 // Get the necessary files to perform backup and restore.
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
@@ -1638,8 +1638,7 @@ final class questionlib_test extends \advanced_testcase {
             $filerecord->itemid = $question->id;
             $filerecord->filepath = '/';
             $filerecord->filename = $img;
-            $fs->create_file_from_pathname($filerecord, $CFG->dirroot .
-                '/lib/tests/fixtures/' . $img);
+            $fs->create_file_from_pathname($filerecord, __DIR__ . "/fixtures/{$img}");
         }
 
         // Firstly, confirm that the file records exist and there were no problems creating them.

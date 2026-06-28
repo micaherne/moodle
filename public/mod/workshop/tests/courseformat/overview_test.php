@@ -34,7 +34,7 @@ final class overview_test extends \advanced_testcase {
 
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . '/mod/workshop/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
     }
 
     /**

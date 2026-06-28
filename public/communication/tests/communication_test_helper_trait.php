@@ -113,7 +113,7 @@ trait communication_test_helper_trait {
             'itemid' => $itemid,
             'filepath' => '/',
             'filename' => $storedname,
-        ], "{$CFG->dirroot}/communication/tests/fixtures/{$filename}");
+        ], __DIR__ . "/fixtures/{$filename}");
     }
 
     /**

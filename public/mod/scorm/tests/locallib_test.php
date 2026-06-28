@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/scorm/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Class containing the SCORM module local library function tests.

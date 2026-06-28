@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 /**
  * repository_equella class implements equella_client
@@ -274,7 +274,7 @@ class repository_equella extends repository {
      */
     public static function instance_config_form($mform) {
         global $CFG;
-        require_once("{$CFG->dirroot}/user/profile/lib.php");
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         $mform->addElement('text', 'equella_url', get_string('equellaurl', 'repository_equella'));
         $mform->setType('equella_url', PARAM_URL);

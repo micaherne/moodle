@@ -1211,7 +1211,7 @@ abstract class restore_dbops {
     public static function create_included_users($basepath, $restoreid, $userid,
             \core\progress\base $progress, int $courseid = 0) {
         global $CFG, $DB;
-        require_once($CFG->dirroot.'/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
         $progress->start_progress('Creating included users');
 
         $authcache = array(); // Cache to get some bits from authentication plugins
@@ -1973,8 +1973,8 @@ abstract class restore_dbops {
      */
     protected static function get_backup_xml_transformer(int $courseid): backup_xml_transformer {
         global $CFG;
-        require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-        require_once($CFG->dirroot . '/backup/moodle2/backup_plan_builder.class.php');
+        require_once(dirname(__DIR__) . '/includes/backup_includes.php');
+        require_once(dirname(__DIR__, 2) . '/moodle2/backup_plan_builder.class.php');
         return new backup_xml_transformer($courseid);
     }
 }

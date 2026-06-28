@@ -25,8 +25,8 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
-require_once(__DIR__ . '/../../../../question/tests/behat/behat_question_base.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
+require_once(\core\component::component_path('core_question', 'tests/behat/behat_question_base.php'));
 
 use Behat\Gherkin\Node\TableNode as TableNode;
 

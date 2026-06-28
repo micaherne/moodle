@@ -25,10 +25,10 @@
 
 use core\report_helper;
 
-require('../../config.php');
-require_once($CFG->dirroot.'/lib/tablelib.php');
-require_once($CFG->dirroot.'/notes/lib.php');
-require_once($CFG->dirroot.'/report/participation/locallib.php');
+require(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
+require_once(\core\component::component_path('core_notes', 'lib.php'));
+require_once(__DIR__ . '/locallib.php');
 
 $participantsperpage = intval(get_config('moodlecourse', 'participantsperpage'));
 define('DEFAULT_PAGE_SIZE', (!empty($participantsperpage) ? $participantsperpage : 20));

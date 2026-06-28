@@ -2095,6 +2095,107 @@ $cache = ' . var_export($cache, true) . ';
     }
 
     /**
+     * Returns the absolute path for a component and an optional path within it.
+     *
+     * Always returns a string even if the component is not installed, falling back
+     * to constructing a path from the plugin type directory.
+     *
+     * @param string|null $component Frankenstyle component name. An empty string or null mean core (libdir), as elsewhere in this class.
+     * @param string|null $path Path relative to the component root.
+     * @return string Absolute filesystem path.
+     */
+    public static function component_path(?string $component, ?string $path = null): string {
+        // An empty string or null component means core, exactly as normalize_component() treats it.
+        $component = $component ?? '';
+
+        $suffix = $path !== null ? '/' . ltrim($path, '/') : '';
+
+        $dir = self::get_component_directory($component);
+        if ($dir !== null) {
+            return $dir . $suffix;
+        }
+
+        // Component not installed: fall back to the plugin type directory.
+        [$type, $plugin] = self::normalize_component($component);
+
+        if ($type === 'core') {
+            throw new \RuntimeException("Core subsystem '$plugin' has no registered directory");
+        }
+
+        $types = self::get_plugin_types();
+        if (isset($types[$type])) {
+            return $types[$type] . '/' . $plugin . $suffix;
+        }
+
+        throw new \RuntimeException("Unknown plugin type '$type' in component '$component'");
+    }
+
+    /**
+     * Returns the absolute filesystem path for a path relative to the codebase root.
+     *
+     * $path is a "mono path": the location of a file as it appears relative to the root of a
+     * standard Moodle codebase, e.g. '/mod/assign/lib.php'. Pass the whole path exactly as it
+     * would appear after the codebase root, including its leading slash (if any). This is the
+     * inverse of to_mono_path().
+     *
+     * Requirements for any implementation:
+     *  - Always return a string. Never check that the file exists, call realpath(), or otherwise
+     *    alter the given path.
+     *  - Resolve the file to its real location, which is not required to be under $CFG->dirroot.
+     *
+     * @param string $path Mono path, e.g. '/mod/assign/lib.php'.
+     * @return string Absolute filesystem path.
+     */
+    public static function from_mono_path(string $path): string {
+        global $CFG;
+        return $CFG->dirroot . $path;
+    }
+
+    /**
+     * Returns the mono path for an absolute filesystem path inside the codebase.
+     *
+     * A "mono path" is the location of a file as it appears relative to the root of a standard
+     * Moodle codebase, e.g. '/mod/assign/lib.php'. This is the inverse of from_mono_path().
+     *
+     * The result is only meaningful for a path inside the codebase; if you are not certain, check
+     * with is_inside_codebase() first.
+     *
+     * Requirements for any implementation:
+     *  - Always return a string. Never check that the file exists.
+     *  - When $leadingslash is true the result must start with a forward slash; when false it must
+     *    have no leading separator.
+     *  - Separators *within* the returned path are not guaranteed to be forward slashes. If you need
+     *    a uniformly '/'-separated string, convert it yourself.
+     *
+     * @param string $abspath Absolute filesystem path to a file inside the codebase.
+     * @param bool $leadingslash Whether the result starts with a leading '/'.
+     * @return string Mono path, e.g. '/mod/assign/lib.php'.
+     */
+    public static function to_mono_path(string $abspath, bool $leadingslash): string {
+        global $CFG;
+        return substr($abspath, strlen($CFG->dirroot) + ($leadingslash ? 0 : 1));
+    }
+
+    /**
+     * Returns true if the given absolute filesystem path is inside the codebase root.
+     *
+     * Uses a string prefix check with no filesystem access and no existence
+     * check. With the default separator '/' the path must begin with
+     * $CFG->dirroot.'/', so $CFG->dirroot itself does not qualify and sibling
+     * directories that share the same prefix are excluded. Passing an empty
+     * separator relaxes the check to a bare prefix match, which also accepts
+     * $CFG->dirroot itself and any path that merely starts with that string.
+     *
+     * @param string $abspath Absolute filesystem path.
+     * @param string $separator Character(s) that must immediately follow $CFG->dirroot.
+     * @return bool
+     */
+    public static function is_inside_codebase(string $abspath, string $separator = '/'): bool {
+        global $CFG;
+        return str_starts_with($abspath, $CFG->dirroot . $separator);
+    }
+
+    /**
      * Returns a path relative to the Moodle root directory.
      *
      * @param string $path The child path

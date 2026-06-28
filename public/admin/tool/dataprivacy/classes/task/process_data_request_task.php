@@ -56,7 +56,7 @@ class process_data_request_task extends adhoc_task {
     public function execute() {
         global $CFG, $PAGE, $SITE;
 
-        require_once($CFG->dirroot . "/{$CFG->admin}/tool/dataprivacy/lib.php");
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         if (!isset($this->get_custom_data()->requestid)) {
             throw new coding_exception('The custom data \'requestid\' is required.');

@@ -24,7 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__ . '/../../../../../cohort/lib.php');
+require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading('factor_cohort/description', '',

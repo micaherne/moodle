@@ -19,7 +19,7 @@ namespace tool_usertours;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 require_once(__DIR__ . '/helper_trait.php');
 
 /**

@@ -19,10 +19,10 @@ header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 header("Cache-Control: no-cache");
 header("Pragma: no-cache");
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/scorm/lib.php');
-require_once($CFG->dirroot.'/mod/scorm/locallib.php');
-require_once($CFG->dirroot.'/mod/scorm/datamodels/aicclib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/datamodels/aicclib.php');
 
 foreach ($_POST as $key => $value) {
     $tempkey = strtolower($key);

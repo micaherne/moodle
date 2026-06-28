@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->libdir . '/mathslib.php');
+require_once(dirname(__DIR__, 2) . '/mathslib.php');
 
 /**
  * Tests for event \core\event\user_graded
@@ -45,7 +45,7 @@ final class user_graded_test extends \advanced_testcase {
      */
     public function test_event(): void {
         global $CFG;
-        require_once("$CFG->libdir/gradelib.php");
+        require_once(dirname(__DIR__, 2) . '/gradelib.php');
 
         $course = $this->getDataGenerator()->create_course();
         $user = $this->getDataGenerator()->create_user();

@@ -50,8 +50,8 @@
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(__DIR__ . '/locallib.php');
 
 /**
  * LTI Edit Form
@@ -394,7 +394,7 @@ class mod_lti_edit_types_form extends moodleform {
 
         // LTI2 tools do not contain a ltiversion field.
         if (isset($data['lti_ltiversion']) && $data['lti_ltiversion'] == LTI_VERSION_1P3) {
-            require_once($CFG->dirroot . '/mod/lti/upgradelib.php');
+            require_once(__DIR__ . '/upgradelib.php');
 
             $warning = mod_lti_verify_private_key();
             if (!empty($warning)) {

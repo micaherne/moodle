@@ -125,7 +125,7 @@ class factory {
                 self::$instance = new disabled_factory();
             } else if ((defined('PHPUNIT_TEST') && PHPUNIT_TEST) || defined('BEHAT_SITE_RUNNING')) {
                 // We're using the test factory.
-                require_once($CFG->dirroot . '/cache/tests/fixtures/lib.php');
+                require_once(dirname(__DIR__) . '/tests/fixtures/lib.php');
                 self::$instance = new cache_phpunit_factory();
                 if (defined('CACHE_DISABLE_STORES') && CACHE_DISABLE_STORES !== false) {
                     // The cache stores have been disabled.
@@ -360,7 +360,7 @@ class factory {
 
         // Check if this is a PHPUnit test and redirect to the phpunit config classes if it is.
         if ($testing) {
-            require_once($CFG->dirroot . '/cache/tests/fixtures/lib.php');
+            require_once(dirname(__DIR__) . '/tests/fixtures/lib.php');
             // We have just a single class for PHP unit tests. We don't care enough about its
             // performance to do otherwise and having a single method allows us to inject things into it
             // while testing.

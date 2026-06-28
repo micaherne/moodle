@@ -21,8 +21,8 @@ use testable_access_controlled_link_manager;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/webdavlib.php');
-require_once($CFG->dirroot . '/repository/nextcloud/tests/fixtures/testable_access_controlled_link_manager.php');
+require_once(\core\component::component_path('core', 'webdavlib.php'));
+require_once(__DIR__ . '/fixtures/testable_access_controlled_link_manager.php');
 
 /**
  * Class repository_nextcloud_testcase

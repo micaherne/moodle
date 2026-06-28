@@ -220,14 +220,14 @@ final class deprecation_test extends \advanced_testcase {
     }
 
     public function test_from_object(): void {
-        require_once(dirname(__FILE__) . '/fixtures/deprecated_fixtures.php');
+        require_once(__DIR__ . '/fixtures/deprecated_fixtures.php');
 
         $this->assertNull(deprecation::from(new \core\fixtures\not_deprecated_class()));
         $this->assertInstanceOf(deprecated::class, deprecation::from([new \core\fixtures\deprecated_class()]));
     }
 
     public static function from_provider(): array {
-        require_once(dirname(__FILE__) . '/fixtures/deprecated_fixtures.php');
+        require_once(__DIR__ . '/fixtures/deprecated_fixtures.php');
         return [
             // Classes.
             [\core\fixtures\deprecated_class::class, true],
@@ -339,7 +339,7 @@ final class deprecation_test extends \advanced_testcase {
         array $reference,
         string $expectedowner,
     ): void {
-        require_once(dirname(__FILE__) . '/fixtures/deprecated_fixtures.php');
+        require_once(__DIR__ . '/fixtures/deprecated_fixtures.php');
 
         // All attributes for any part of a deprecated class should belong to the deprecated class.
         $this->assertEquals(

@@ -27,8 +27,8 @@ use core_reportbuilder\system_report_factory;
 use core_webservice\reportbuilder\local\systemreports\tokens;
 
 require(__DIR__ . '/../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/webservice/lib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core_webservice', 'lib.php'));
 
 $action = optional_param('action', '', PARAM_ALPHANUMEXT);
 $tokenid = optional_param('tokenid', '', PARAM_SAFEDIR);

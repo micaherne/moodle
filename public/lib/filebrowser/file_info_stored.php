@@ -139,7 +139,7 @@ class file_info_stored extends file_info {
             // first, get and cache the name of the repository_local (will be used as prefix for file names):
             static $replocalname = null;
             if ($replocalname === null) {
-                require_once($CFG->dirroot . "/repository/lib.php");
+                require_once(\core\component::component_path('core_repository', 'lib.php'));
                 $instances = repository::get_instances(array('type' => 'local'));
                 if (count($instances)) {
                     $firstinstance = reset($instances);

@@ -1,6 +1,6 @@
 <?php
 
-require_once($CFG->dirroot.'/user/filters/lib.php');
+require_once(\core\component::component_path('core_user', 'filters/lib.php'));
 
 if (!defined('MAX_BULK_USERS')) {
     define('MAX_BULK_USERS', 2000);

@@ -23,7 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/user/filters/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 /**
  * User filter based on values of custom profile fields.
@@ -64,7 +64,7 @@ class user_filter_profilefield extends user_filter_type {
      */
     public function get_profile_fields() {
         global $CFG;
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(dirname(__DIR__) . '/profile/lib.php');
 
         $fieldrecords = profile_get_custom_fields();
         foreach ($fieldrecords as $key => $fieldrecord) {

@@ -26,8 +26,8 @@ use mod_quiz\form\edit_override_form;
 use mod_quiz\quiz_settings;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot.'/mod/quiz/lib.php');
-require_once($CFG->dirroot.'/mod/quiz/locallib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/locallib.php');
 
 $overrideid = required_param('id', PARAM_INT);
 $confirm = optional_param('confirm', false, PARAM_BOOL);

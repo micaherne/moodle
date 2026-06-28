@@ -32,12 +32,12 @@ use core_course_category;
 
 use tool_uploaduser\local\field_value_validators;
 
-require_once($CFG->dirroot.'/user/profile/lib.php');
-require_once($CFG->dirroot.'/user/lib.php');
-require_once($CFG->dirroot.'/group/lib.php');
-require_once($CFG->dirroot.'/cohort/lib.php');
-require_once($CFG->libdir.'/csvlib.class.php');
-require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/uploaduser/locallib.php');
+require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+require_once(\core\component::component_path('core_user', 'lib.php'));
+require_once(\core\component::component_path('core_group', 'lib.php'));
+require_once(\core\component::component_path('core_cohort', 'lib.php'));
+require_once(\core\component::component_path('core', 'csvlib.class.php'));
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * Process CSV file with users data, this will create/update users, enrol them into courses, etc
@@ -167,7 +167,7 @@ class process {
      */
     protected function find_profile_fields(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
         $this->allprofilefields = profile_get_user_fields_with_data(0);
         $this->profilefields = [];
         if ($proffields = $this->allprofilefields) {

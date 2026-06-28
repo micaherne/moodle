@@ -21,7 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 use moodleform;
 
 global $CFG;
-require_once($CFG->dirroot . '/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Form for loading settings.

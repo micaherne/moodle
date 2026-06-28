@@ -25,7 +25,7 @@ use MoodleQuickForm_filemanager;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("{$CFG->libdir}/form/filemanager.php");
+require_once(dirname(__DIR__) . '/filemanager.php');
 
 /**
  * Tests for the filemanager form element

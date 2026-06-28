@@ -23,8 +23,8 @@
  */
 
 require_once(__DIR__.'/../../../config.php');
-require_once($CFG->dirroot.'/grade/lib.php');
-require_once($CFG->libdir.'/gradelib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
 
 $courseid = optional_param('id', 0, PARAM_INT);
 $action   = optional_param('action', '', PARAM_ALPHA);
@@ -50,7 +50,7 @@ if ($courseid) {
     if (empty($CFG->enableoutcomes)) {
         redirect('../../../');
     }
-    require_once $CFG->libdir.'/adminlib.php';
+    require_once \core\component::component_path('core', 'adminlib.php');
     admin_externalpage_setup('outcomes');
     $context = context_system::instance();
     $PAGE->set_primary_active_tab('siteadminnode');

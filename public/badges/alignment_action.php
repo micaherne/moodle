@@ -23,7 +23,7 @@
  * @author     Tung Thai <Tung.ThaiDuc@nashtechglobal.com>
  */
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 $alignmentid = required_param('alignmentid', PARAM_INT); // Alignment ID.
 $badgeid = required_param('id', PARAM_INT); // Badge ID.

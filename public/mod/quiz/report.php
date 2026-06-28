@@ -27,8 +27,8 @@ use mod_quiz\quiz_settings;
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/report/reportlib.php');
 
 $id = optional_param('id', 0, PARAM_INT);
 $q = optional_param('q', 0, PARAM_INT);
@@ -71,9 +71,9 @@ if (!is_readable("report/$mode/report.php")) {
 }
 
 // Open the selected quiz report and display it.
-$file = $CFG->dirroot . '/mod/quiz/report/' . $mode . '/report.php';
-if (is_readable($file)) {
-    include_once($file);
+$quizreportdir = \core_component::get_plugin_directory('quiz', $mode);
+if ($quizreportdir && is_readable("$quizreportdir/report.php")) {
+    include_once("$quizreportdir/report.php");
 }
 $reportclassname = 'quiz_' . $mode . '_report';
 if (!class_exists($reportclassname)) {

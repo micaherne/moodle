@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once($CFG->libdir.'/filelib.php');
+require_once(\core\component::component_path('core_course', 'moodleform_mod.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 /**
  * IMS CP configuration form

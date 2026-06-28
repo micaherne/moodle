@@ -26,7 +26,7 @@ namespace gradereport_user;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/grade/report/user/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Class gradereport_user_lib_testcase.

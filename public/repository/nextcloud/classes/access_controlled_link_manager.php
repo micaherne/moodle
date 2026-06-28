@@ -29,7 +29,7 @@ use \core\notification;
 use repository_exception;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir . '/webdavlib.php');
+require_once(\core\component::component_path('core', 'webdavlib.php'));
 
 /**
  * Manages the creation and usage of access controlled links.

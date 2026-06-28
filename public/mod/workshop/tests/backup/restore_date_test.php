@@ -19,10 +19,10 @@ namespace mod_workshop\backup;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/workshop/locallib.php');
-require_once($CFG->dirroot . '/mod/workshop/lib.php');
-require_once($CFG->libdir . "/phpunit/classes/restore_date_testcase.php");
-require_once($CFG->dirroot . "/mod/workshop/tests/fixtures/testable.php");
+require_once(dirname(__DIR__, 2) . '/locallib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
+require_once(\core\component::component_path('core', 'phpunit/classes/restore_date_testcase.php'));
+require_once(dirname(__DIR__) . '/fixtures/testable.php');
 
 /**
  * Restore date tests.

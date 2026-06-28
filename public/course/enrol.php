@@ -23,7 +23,7 @@
  * @package course
  */
 
-require('../config.php');
+require(__DIR__ . '/../config.php');
 
 $id = required_param('id', PARAM_INT);
 

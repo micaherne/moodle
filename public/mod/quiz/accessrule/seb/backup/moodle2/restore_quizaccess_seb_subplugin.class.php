@@ -30,7 +30,7 @@ use quizaccess_seb\template;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/restore_mod_quiz_access_subplugin.class.php');
+require_once(\core\component::component_path('mod_quiz', 'backup/moodle2/restore_mod_quiz_access_subplugin.class.php'));
 
 /**
  * Restore instructions for the seb (Safe Exam Browser) quiz access subplugin.

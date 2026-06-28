@@ -1,6 +1,6 @@
 <?php
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 
 class webservice_test_client_form extends moodleform {

@@ -18,7 +18,7 @@ namespace core_user;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . "/user/tests/fixtures/myprofile_fixtures.php");
+require_once(__DIR__ . '/fixtures/myprofile_fixtures.php');
 
 /**
  * Unit tests for core_user\output\myprofile

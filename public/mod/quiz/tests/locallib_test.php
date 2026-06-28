@@ -30,8 +30,8 @@ use mod_quiz\question\display_options;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
 
 /**
  * Unit tests for (some of) mod/quiz/locallib.php.

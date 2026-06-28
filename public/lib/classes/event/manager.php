@@ -213,7 +213,7 @@ class manager {
         $systemdone = false;
         foreach ($plugintypes as $plugintype => $ignored) {
             if ($plugintype === 'core') {
-                $plugins['core'] = "$CFG->dirroot/lib";
+                $plugins['core'] = dirname(__DIR__, 2) . '/';
             } else {
                 $plugins = \core_component::get_plugin_list($plugintype);
             }
@@ -282,7 +282,7 @@ class manager {
                 if ($CFG->admin !== 'admin' and strpos($observer['includefile'], '/admin/') === 0) {
                     $observer['includefile'] = preg_replace('|^/admin/|', '/'.$CFG->admin.'/', $observer['includefile']);
                 }
-                $observer['includefile'] = $CFG->dirroot . '/' . ltrim($observer['includefile'], '/');
+                $observer['includefile'] = \core\component::from_mono_path('/' . ltrim($observer['includefile'], '/'));
                 if (!file_exists($observer['includefile'])) {
                     debugging("Invalid 'includefile' detected in $file observer definition", DEBUG_DEVELOPER);
                     continue;

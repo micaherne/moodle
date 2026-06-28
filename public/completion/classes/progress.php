@@ -26,7 +26,7 @@ namespace core_completion;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/completionlib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Class used to return completion progress information.

@@ -1372,7 +1372,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest(true);
 
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
 
         $this->resetAfterTest(true);
 

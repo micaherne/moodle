@@ -37,7 +37,7 @@ class mod_workshop_generator extends testing_module_generator {
 
     public function create_instance($record = null, ?array $options = null) {
         global $CFG;
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $workshopconfig = get_config('workshop');
 
@@ -65,7 +65,7 @@ class mod_workshop_generator extends testing_module_generator {
             'assessmentend' => 0,
         );
         if (!isset($record['gradecategory']) || !isset($record['gradinggradecategory'])) {
-            require_once($CFG->libdir.'/gradelib.php');
+            require_once(\core\component::component_path('core', 'gradelib.php'));
             $courseid = is_object($record['course']) ? $record['course']->id : $record['course'];
             $gradecategories = grade_get_categories_menu($courseid);
             reset($gradecategories);

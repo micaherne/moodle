@@ -27,7 +27,7 @@ namespace booktool_importhtml;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot.'/mod/book/tool/importhtml/locallib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * booktool_importhtml tests class.

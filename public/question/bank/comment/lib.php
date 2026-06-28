@@ -109,7 +109,7 @@ function qbank_comment_preview_display($question, $courseid): string {
 function qbank_comment_output_fragment_question_comment($args): string {
     global $PAGE, $CFG;
     $displaydata = [];
-    require_once($CFG->dirroot . '/question/engine/bank.php');
+    require_once(\core\component::component_path('core_question', 'engine/bank.php'));
     $question = question_bank::load_question($args['questionid']);
     $displaydata['question'] = question_bank::render_preview_of_question($question);
 

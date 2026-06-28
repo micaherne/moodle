@@ -39,10 +39,10 @@ define('CLI_SCRIPT', true);
 define('CACHE_DISABLE_ALL', true);
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');       // various admin-only functions
-require_once($CFG->libdir.'/upgradelib.php');     // general upgrade/install related functions
-require_once($CFG->libdir.'/clilib.php');         // cli only functions
-require_once($CFG->libdir.'/environmentlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));       // various admin-only functions
+require_once(\core\component::component_path('core', 'upgradelib.php'));     // general upgrade/install related functions
+require_once(\core\component::component_path('core', 'clilib.php'));         // cli only functions
+require_once(\core\component::component_path('core', 'environmentlib.php'));
 
 // now get cli options
 $lang = isset($SESSION->lang) ? $SESSION->lang : $CFG->lang;
@@ -125,7 +125,7 @@ if (empty($CFG->version)) {
     cli_error(get_string('missingconfigversion', 'debug'));
 }
 
-require("$CFG->dirroot/version.php");       // defines $version, $release, $branch and $maturity
+require(dirname(__DIR__, 2) . '/public/version.php');       // defines $version, $release, $branch and $maturity
 $CFG->target_release = $release;            // used during installation and upgrades
 
 if ($version < $CFG->version) {

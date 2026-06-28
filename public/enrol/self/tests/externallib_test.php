@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/enrol/self/externallib.php');
+require_once(dirname(__DIR__) . '/externallib.php');
 
 /**
  * Self enrol external PHPunit tests
