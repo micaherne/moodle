@@ -40,6 +40,9 @@ interface route_loader_interface {
     /** @var string The route path prefix to use for shortlinks */
     public const ROUTE_GROUP_SHORTLINK = '/s/';
 
+    /** @var string The route path prefix for well-known URLs */
+    public const ROUTE_GROUP_WELLKNOWN = '/.well-known/';
+
     /**
      * Configure all routes for the application.
      *

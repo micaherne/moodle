@@ -37,6 +37,7 @@ class route_loader extends abstract_route_loader implements route_loader_interfa
             route_loader_interface::ROUTE_GROUP_PAGE => $this->configure_standard_routes($app),
             route_loader_interface::ROUTE_GROUP_SHIM => $this->configure_shim_routes($app),
             route_loader_interface::ROUTE_GROUP_SHORTLINK => $this->configure_shortlink_routes($app),
+            route_loader_interface::ROUTE_GROUP_WELLKNOWN => $this->configure_wellknown_routes($app),
         ];
     }
 
@@ -108,6 +109,27 @@ class route_loader extends abstract_route_loader implements route_loader_interfa
                 return $slimroute;
             },
             $this->get_all_shortlink_routes(),
+        );
+    }
+
+    /**
+     * Configure all well-known routes.
+     *
+     * Any component may register routes which are served from the server root level `/.well-known/` subdirectory
+     * (see RFC 8615). Unlike standard routes, well-known routes are not prefixed with the owning component's path:
+     * they are always mounted directly beneath `/.well-known/`.
+     *
+     * @param App $app
+     * @return RouteInterface[]
+     */
+    protected function configure_wellknown_routes(App $app): array {
+        return array_map(
+            function (array $moodleroute) use ($app): RouteInterface {
+                $slimroute = $app->map(...$moodleroute);
+                $this->set_route_name_for_callable($slimroute, $moodleroute['callable']);
+                return $slimroute;
+            },
+            $this->get_all_wellknown_routes(),
         );
     }
 
@@ -189,6 +211,37 @@ class route_loader extends abstract_route_loader implements route_loader_interfa
             );
 
             $cache->set('standard_routes', $cachedata);
+        }
+
+        return $cachedata;
+    }
+
+    /**
+     * Fetch all well-known routes.
+     *
+     * Well-known routes are discovered from the `route\wellknown` namespace of any component. The owning
+     * component is intentionally not used as part of the path, so that the routes are served from the server
+     * root level `/.well-known/` subdirectory.
+     *
+     * Note: This method caches results in MUC.
+     *
+     * @return array[]
+     */
+    protected function get_all_wellknown_routes(): array {
+        $cache = \cache::make('core', 'routes');
+
+        if (!($cachedata = $cache->get('wellknown_routes'))) {
+            $cachedata = $this->get_all_routes_in_namespace(
+                namespace: 'route\wellknown',
+                // Well-known routes are mounted beneath /.well-known/ at the server root, with no
+                // component-specific path segment, regardless of the component which declared them.
+                componentpathcallback: fn(string $component): string => trim(
+                    route_loader_interface::ROUTE_GROUP_WELLKNOWN,
+                    '/',
+                ),
+            );
+
+            $cache->set('wellknown_routes', $cachedata);
         }
 
         return $cachedata;
