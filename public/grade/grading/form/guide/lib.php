@@ -29,7 +29,7 @@ use core_external\external_value;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/grade/grading/form/lib.php');
+require_once(\core\component::component_path('core_grading', 'form/lib.php'));
 
 /** guide: Used to compare our gradeitem_type against. */
 const MARKING_GUIDE = 'guide';

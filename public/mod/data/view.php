@@ -25,8 +25,8 @@
 use mod_data\manager;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/data/locallib.php');
-require_once($CFG->libdir . '/rsslib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'rsslib.php'));
 
 /// One of these is necessary!
 $id = optional_param('id', 0, PARAM_INT);  // course module id
@@ -477,7 +477,7 @@ if ($showactivity) {
                 $baseurl = new moodle_url($baseurl, $baseurlparams);
 
                 echo $OUTPUT->box_start('', 'data-singleview-content');
-                require_once($CFG->dirroot.'/rating/lib.php');
+                require_once(\core\component::component_path('core_rating', 'lib.php'));
                 if ($data->assessed != RATING_AGGREGATE_NONE) {
                     $ratingoptions = new stdClass;
                     $ratingoptions->context = $context;

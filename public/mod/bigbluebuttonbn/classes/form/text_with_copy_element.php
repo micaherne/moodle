@@ -19,7 +19,7 @@ use MoodleQuickForm_text;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once("$CFG->libdir/form/text.php");
+require_once(\core\component::component_path('core_form', 'text.php'));
 
 /**
  * Text type form element with a copy widget

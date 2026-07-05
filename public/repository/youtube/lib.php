@@ -26,7 +26,7 @@
 use Google\Client;
 use Google\Service\YouTube;
 
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 /**
  * repository_youtube class

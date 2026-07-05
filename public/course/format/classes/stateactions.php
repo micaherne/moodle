@@ -1173,7 +1173,7 @@ class stateactions {
         ?int $targetcmid = null
     ): void {
         global $CFG;
-        require_once($CFG->dirroot . '/course/modlib.php');
+        require_once(\core\component::component_path('core_course', 'modlib.php'));
 
         \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
 
@@ -1206,7 +1206,7 @@ class stateactions {
         ?int $targetcmid = null
     ): void {
         global $CFG;
-        require_once($CFG->dirroot . '/course/modlib.php');
+        require_once(\core\component::component_path('core_course', 'modlib.php'));
 
         $coursecontext = context_course::instance($course->id);
         require_capability('moodle/course:update', $coursecontext);

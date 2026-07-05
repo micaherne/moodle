@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once($CFG->dirroot.'/grade/export/lib.php');
-require_once($CFG->libdir.'/filelib.php');
+require_once(\core\component::component_path('core_grades', 'export/lib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 class grade_export_xml extends grade_export {
 
@@ -55,7 +55,7 @@ class grade_export_xml extends grade_export {
      */
     public function print_grades($feedback = false) {
         global $CFG;
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $export_tracking = $this->track_exports();
 

@@ -78,7 +78,7 @@ class observer {
             return;
         }
 
-        require_once($CFG->dirroot.'/lib/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         $eventdata = $event->get_record_snapshot('course_modules_completion', $event->objectid);
         $userid = $event->relateduserid;
@@ -121,7 +121,7 @@ class observer {
             return;
         }
 
-        require_once($CFG->dirroot.'/lib/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         if (!get_config('core_competency', 'enabled')) {
             return;
@@ -156,7 +156,7 @@ class observer {
             return;
         }
 
-        require_once($CFG->dirroot.'/lib/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         $userid = $event->relateduserid;
         $courseid = $event->courseid;
@@ -192,7 +192,7 @@ class observer {
             return;
         }
 
-        require_once($CFG->dirroot.'/lib/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         $userid = $event->relateduserid;
 
@@ -216,7 +216,7 @@ class observer {
             return;
         }
 
-        require_once($CFG->dirroot . '/lib/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
         $userid = $event->objectid;
 
         if ($rs = $DB->get_records('badge_criteria', ['criteriatype' => BADGE_CRITERIA_TYPE_PROFILE])) {
@@ -239,7 +239,7 @@ class observer {
             return;
         }
 
-        require_once($CFG->dirroot . '/lib/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         $cohortid = $event->objectid;
         $userid = $event->relateduserid;

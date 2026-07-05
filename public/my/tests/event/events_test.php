@@ -83,7 +83,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_dashboard_reset(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/my/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         $user = $this->user;
         $usercontext = context_user::instance($this->user->id);
@@ -153,7 +153,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_dashboards_reset(): void {
         global $CFG, $USER, $DB;
-        require_once($CFG->dirroot . '/my/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         $usercontext = context_user::instance($this->user->id);
 

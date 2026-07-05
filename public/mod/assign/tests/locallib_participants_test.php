@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once(__DIR__ . '/../locallib.php');
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(__DIR__ . '/generator.php');
 
 /**
  * Unit tests for (some of) mod/assign/locallib.php.

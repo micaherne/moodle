@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../config.php');
+require(__DIR__ . '/../../config.php');
 
 $contextid = required_param('contextid', PARAM_INT);
 $roleid    = required_param('roleid', PARAM_INT);

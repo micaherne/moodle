@@ -310,7 +310,7 @@ class qtype_ordering extends question_type {
      */
     public function import_from_gift(array $lines, ?stdClass $question, qformat_gift $format, ?string $extra = null): bool|stdClass {
         global $CFG;
-        require_once($CFG->dirroot.'/question/type/ordering/question.php');
+        require_once(__DIR__ . '/question.php');
 
         // Extract question info from GIFT file $lines.
         $selectcount = '\d+';
@@ -516,7 +516,7 @@ class qtype_ordering extends question_type {
      */
     public function export_to_gift(stdClass $question, qformat_gift $format, ?string $extra = null): string {
         global $CFG;
-        require_once($CFG->dirroot.'/question/type/ordering/question.php');
+        require_once(__DIR__ . '/question.php');
 
         $output = '';
 
@@ -548,7 +548,7 @@ class qtype_ordering extends question_type {
 
     public function export_to_xml($question, qformat_xml $format, $extra = null): string {
         global $CFG;
-        require_once($CFG->dirroot.'/question/type/ordering/question.php');
+        require_once(__DIR__ . '/question.php');
 
         list($layouttype, $selecttype, $selectcount, $gradingtype, $showgrading, $numberingstyle) =
             $this->extract_options_for_export($question);
@@ -585,7 +585,7 @@ class qtype_ordering extends question_type {
 
     public function import_from_xml($data, $question, qformat_xml $format, $extra = null): object|bool {
         global $CFG;
-        require_once($CFG->dirroot.'/question/type/ordering/question.php');
+        require_once(__DIR__ . '/question.php');
 
         $questiontype = $format->getpath($data, ['@', 'type'], '');
 

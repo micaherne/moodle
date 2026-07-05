@@ -22,7 +22,7 @@ use mod_assign_test_generator;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(\core\component::component_path('mod_assign', 'tests/generator.php'));
 require(__DIR__ . '/feedback_helper_trait.php');
 
 /**

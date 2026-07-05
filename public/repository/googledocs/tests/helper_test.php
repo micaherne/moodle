@@ -19,8 +19,8 @@ namespace repository_googledocs;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/repository/googledocs/tests/repository_googledocs_testcase.php');
-require_once($CFG->dirroot . '/repository/googledocs/lib.php');
+require_once(__DIR__ . '/repository_googledocs_testcase.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Class containing unit tests for the helper class.

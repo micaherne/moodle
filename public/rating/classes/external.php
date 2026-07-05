@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("$CFG->dirroot/rating/lib.php");
+require_once(dirname(__DIR__) . '/lib.php');
 
 use core_external\external_api;
 use core_external\external_value;

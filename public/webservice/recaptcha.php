@@ -40,7 +40,7 @@ $content = '';
 
 // Check that reCAPTCHA is configured.
 if (!empty($CFG->recaptchapublickey) && !empty($CFG->recaptchaprivatekey)) {
-    require_once($CFG->libdir . '/recaptchalib_v2.php');
+    require_once(\core\component::component_path('core', 'recaptchalib_v2.php'));
 
     $apiurl = RECAPTCHA_API_URL;
     $pubkey = $CFG->recaptchapublickey;
@@ -71,7 +71,7 @@ if (!empty($CFG->recaptchapublickey) && !empty($CFG->recaptchaprivatekey)) {
     $content .= $apicode;
 } else {
     // To use reCAPTCHA you must have an API key.
-    require_once($CFG->libdir . '/filelib.php');
+    require_once(\core\component::component_path('core', 'filelib.php'));
     send_header_404();
     throw new \moodle_exception('cannotusepage2');
 }

@@ -19,8 +19,8 @@ namespace search_simpledb;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/search/tests/fixtures/testable_core_search.php');
-require_once($CFG->dirroot . '/search/tests/fixtures/mock_search_area.php');
+require_once(\core\component::component_path('core_search', 'tests/fixtures/testable_core_search.php'));
+require_once(\core\component::component_path('core_search', 'tests/fixtures/mock_search_area.php'));
 
 /**
  * Simple search engine base unit tests.

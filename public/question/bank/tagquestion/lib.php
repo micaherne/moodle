@@ -39,7 +39,7 @@ function qbank_tagquestion_output_fragment_tags_form($args) {
 
     if (!empty($args['id'])) {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(\core\component::component_path('core', 'questionlib.php'));
         $id = clean_param($args['id'], PARAM_INT);
         $editingcontext = $args['context'];
 

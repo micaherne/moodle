@@ -75,7 +75,7 @@ class cmactions extends baseactions {
      */
     public function rename(int $cmid, string $name): bool {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         $paramcleaning = empty($CFG->formatstringstriptags) ? PARAM_CLEANHTML : PARAM_TEXT;
         $name = clean_param($name, $paramcleaning);
@@ -143,8 +143,8 @@ class cmactions extends baseactions {
      */
     public function set_visibility(int $cmid, int $visible, int $visibleoncoursepage = 1, bool $rebuildcache = true): bool {
         global $DB, $CFG;
-        require_once($CFG->libdir.'/gradelib.php');
-        require_once($CFG->dirroot.'/calendar/lib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         if (!$cm = get_coursemodule_from_id('', $cmid, 0, false, MUST_EXIST)) {
             return false;
@@ -275,10 +275,10 @@ class cmactions extends baseactions {
 
         global $CFG, $DB;
 
-        require_once($CFG->libdir . '/gradelib.php');
-        require_once($CFG->libdir . '/questionlib.php');
-        require_once($CFG->dirroot . '/blog/lib.php');
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core', 'questionlib.php'));
+        require_once(\core\component::component_path('core_blog', 'lib.php'));
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         if (!$cm = $DB->get_record('course_modules', ['id' => $cmid])) {
             return;
@@ -414,7 +414,7 @@ class cmactions extends baseactions {
         global $CFG, $DB, $USER;
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
         require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $modinfo = get_fast_modinfo($this->course);
         $cm = $modinfo->get_cm($cmid);
@@ -609,14 +609,10 @@ class cmactions extends baseactions {
      * @throws \moodle_exception
      */
     private function check_deletion(stdClass $cm, string $modulename) {
-        global $CFG;
-
-        // Get the file location of the delete_instance function for this module.
-        $modlib = "$CFG->dirroot/mod/$modulename/lib.php";
-
         // Include the file required to call the delete_instance function for this module.
-        if (file_exists($modlib)) {
-            require_once($modlib);
+        $moddir = \core_component::get_plugin_directory('mod', $modulename);
+        if ($moddir && file_exists("$moddir/lib.php")) {
+            require_once("$moddir/lib.php");
         } else {
             throw new \moodle_exception(
                 errorcode: 'cannotdeletemodulemissinglib',

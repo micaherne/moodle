@@ -33,8 +33,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../config.php');
-require_once($CFG->libdir.'/authlib.php');
+require(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'authlib.php'));
 require_once(__DIR__ . '/lib.php');
 require_once('forgot_password_form.php');
 require_once('set_password_form.php');

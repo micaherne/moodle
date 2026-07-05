@@ -19,7 +19,7 @@ namespace qbank_managecategories;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 use context;
 use context_course;

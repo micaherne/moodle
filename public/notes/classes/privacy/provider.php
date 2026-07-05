@@ -35,7 +35,7 @@ use \core_privacy\local\request\approved_userlist;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/notes/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Implementation of the privacy subsystem plugin provider for core_notes.

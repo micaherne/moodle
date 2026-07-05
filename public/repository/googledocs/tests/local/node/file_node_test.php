@@ -19,7 +19,7 @@ namespace repository_googledocs\local\node;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/repository/googledocs/tests/repository_googledocs_testcase.php');
+require_once(dirname(__DIR__, 2) . '/repository_googledocs_testcase.php');
 
 /**
  * Class containing unit tests for the repository file node class.

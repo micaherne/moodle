@@ -24,7 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/lib/grade/constants.php');
+require_once(\core\component::component_path('core', 'grade/constants.php'));
 
 /**
  * Form for editing activity results block instances.

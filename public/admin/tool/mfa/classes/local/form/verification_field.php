@@ -17,7 +17,7 @@
 namespace tool_mfa\local\form;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir . '/form/text.php');
+require_once(\core\component::component_path('core_form', 'text.php'));
 
 /**
  * MFA Verification code element.

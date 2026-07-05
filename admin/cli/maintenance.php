@@ -26,8 +26,8 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../config.php');
-require_once("$CFG->libdir/clilib.php");
-require_once("$CFG->libdir/adminlib.php");
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 
 // Now get cli options.

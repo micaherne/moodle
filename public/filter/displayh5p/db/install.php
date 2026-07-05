@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_filter_displayh5p_install() {
     global $CFG;
 
-    require_once($CFG->dirroot . '/filter/displayh5p/db/upgradelib.php');
+    require_once(__DIR__ . '/upgradelib.php');
 
     // We need to move up the displayh5p filter over urltolink and activitynames filters to works properly.
     filter_displayh5p_reorder();

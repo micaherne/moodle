@@ -51,7 +51,7 @@ final class editor_test extends advanced_testcase {
     protected function get_test_form() {
         global $CFG;
 
-        require_once($CFG->libdir . '/formslib.php');
+        require_once(\core\component::component_path('core', 'formslib.php'));
 
         return new class extends \moodleform {
             /**

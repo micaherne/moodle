@@ -264,7 +264,7 @@ class entities {
                 mkdir($dpath, $CFG->directorypermissions, true);
             }
             // Copy the folder.gif file.
-            $folder_gif = "{$CFG->dirroot}/pix/i/files.gif";
+            $folder_gif = dirname(__DIR__, 2) . '/pix/i/files.gif';
             copy($folder_gif, $fpath);
             $all_files[] = $rfpath;
         }

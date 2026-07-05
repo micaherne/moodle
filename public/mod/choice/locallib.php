@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
 function choice_set_events($choice) {
     global $DB, $CFG;
 
-    require_once($CFG->dirroot.'/calendar/lib.php');
+    require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
     // Get CMID if not sent as part of $choice.
     if (!isset($choice->coursemodule)) {

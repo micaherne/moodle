@@ -25,7 +25,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->libdir . '/blocklib.php');
+require_once(\core\component::component_path('core', 'blocklib.php'));
 
 /**
  * The base class form used by blocks/edit.php to edit block instance configuration.

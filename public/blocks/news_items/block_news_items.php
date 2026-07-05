@@ -52,7 +52,7 @@ class block_news_items extends block_base {
 
         if ($this->page->course->newsitems) {   // Create a nice listing of recent postings
 
-            require_once($CFG->dirroot.'/mod/forum/lib.php');   // We'll need this
+            require_once(\core\component::component_path('mod_forum', 'lib.php'));   // We'll need this
 
             $text = '';
 
@@ -145,7 +145,7 @@ class block_news_items extends block_base {
         /// If RSS is activated at site and forum level and this forum has rss defined, show link
             if (isset($CFG->enablerssfeeds) && isset($CFG->forum_enablerssfeeds) &&
                 $CFG->enablerssfeeds && $CFG->forum_enablerssfeeds && $forum->rsstype && $forum->rssarticles) {
-                require_once($CFG->dirroot.'/lib/rsslib.php');   // We'll need this
+                require_once(\core\component::component_path('core', 'rsslib.php'));   // We'll need this
                 if ($forum->rsstype == 1) {
                     $tooltiptext = get_string('rsssubscriberssdiscussions','forum');
                 } else {

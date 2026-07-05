@@ -31,8 +31,8 @@ final class completion_test extends \advanced_testcase {
     #[\Override]
     public static function setupBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
-        require_once($CFG->dirroot . '/completion/criteria/completion_criteria_activity.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
+        require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_activity.php'));
     }
 
     /**

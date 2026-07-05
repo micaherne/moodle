@@ -28,7 +28,7 @@ use core_badges\reportbuilder\local\systemreports\badges;
 use core_reportbuilder\system_report_factory;
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 $type       = required_param('type', PARAM_INT);
 $courseid   = optional_param('id', 0, PARAM_INT);

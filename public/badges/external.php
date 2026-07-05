@@ -25,7 +25,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 $json = optional_param('badge', null, PARAM_RAW);
 // Redirect to homepage if users are trying to access external badge through old url.

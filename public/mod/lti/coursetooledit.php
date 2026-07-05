@@ -24,9 +24,9 @@
 
 use core\output\notification;
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/lti/edit_form.php');
-require_once($CFG->dirroot.'/mod/lti/lib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/edit_form.php');
+require_once(__DIR__ . '/lib.php');
 
 $courseid = required_param('course', PARAM_INT);
 $typeid = optional_param('typeid', null, PARAM_INT);

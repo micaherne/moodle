@@ -22,11 +22,11 @@
 
 defined('MOODLE_INTERNAL') or die('Direct access to this script is forbidden.');
 
-require_once($CFG->dirroot . '/backup/cc/entities.class.php');
-require_once($CFG->dirroot . '/backup/cc/entity.label.class.php');
-require_once($CFG->dirroot . '/backup/cc/entity.resource.class.php');
-require_once($CFG->dirroot . '/backup/cc/entity.forum.class.php');
-require_once($CFG->dirroot . '/backup/cc/entity.quiz.class.php');
+require_once(__DIR__ . '/entities.class.php');
+require_once(__DIR__ . '/entity.label.class.php');
+require_once(__DIR__ . '/entity.resource.class.php');
+require_once(__DIR__ . '/entity.forum.class.php');
+require_once(__DIR__ . '/entity.quiz.class.php');
 
 class cc2moodle {
 
@@ -372,7 +372,7 @@ class cc2moodle {
         $sheet_course_blocks_block = static::loadsheet(SHEET_COURSE_BLOCKS_BLOCK);
         $node_course_blocks_block = '';
 
-        $format_config = $CFG->dirroot . '/course/format/weeks/config.php';
+        $format_config = \core\component::component_path('format_weeks', 'config.php');
 
         if (@is_file($format_config) && is_readable($format_config)) {
             require ($format_config);

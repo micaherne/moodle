@@ -19,7 +19,7 @@ namespace mod_quiz;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+require_once(dirname(__DIR__) . '/report/reportlib.php');
 
 /**
  * This class contains the test cases for the functions in reportlib.php.

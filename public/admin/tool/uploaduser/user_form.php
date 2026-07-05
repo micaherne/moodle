@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once $CFG->libdir.'/formslib.php';
-require_once($CFG->dirroot . '/user/editlib.php');
+require_once \core\component::component_path('core', 'formslib.php');
+require_once(\core\component::component_path('core_user', 'editlib.php'));
 
 /**
  * Upload a file CVS file with user information.

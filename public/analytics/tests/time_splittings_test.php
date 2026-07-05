@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/fixtures/test_timesplitting_seconds.php');
 require_once(__DIR__ . '/fixtures/test_timesplitting_upcoming_seconds.php');
-require_once(__DIR__ . '/../../lib/enrollib.php');
+require_once(\core\component::component_path('core', 'enrollib.php'));
 
 /**
  * Unit tests for core time splitting methods.

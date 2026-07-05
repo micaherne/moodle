@@ -87,7 +87,7 @@ class admin_plugin_manager {
      */
     private function plugins_view(): void {
         global $OUTPUT, $CFG;
-        require_once($CFG->libdir . '/tablelib.php');
+        require_once(\core\component::component_path('core', 'tablelib.php'));
         $this->print_header();
         $table = new flexible_table(extension::BBB_EXTENSION_PLUGIN_NAME . 'pluginsadminttable');
         $table->define_baseurl($this->pageurl);

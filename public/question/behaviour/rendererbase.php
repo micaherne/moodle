@@ -71,8 +71,8 @@ abstract class qbehaviour_renderer extends plugin_renderer_base {
     public function manual_comment_fields(question_attempt $qa, question_display_options $options) {
         global $CFG;
 
-        require_once($CFG->dirroot.'/lib/filelib.php');
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $inputname = $qa->get_behaviour_field_name('comment');
         $id = $inputname . '_id';

@@ -22,8 +22,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/admin/tool/mobile/tests/fixtures/output/mobile.php');
-require_once($CFG->dirroot . '/webservice/lib.php');
+require_once(__DIR__ . '/fixtures/output/mobile.php');
+require_once(\core\component::component_path('core_webservice', 'lib.php'));
 
 /**
  * Moodle Mobile admin tool external functions tests.
@@ -174,7 +174,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_get_config(): void {
         global $CFG, $SITE;
-        require_once($CFG->dirroot . '/course/format/lib.php');
+        require_once(\core\component::component_path('core_courseformat', 'lib.php'));
 
         $this->resetAfterTest(true);
 

@@ -28,7 +28,7 @@ use core_question\output\qbank_action_menu;
 use core_question\local\bank\view;
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(__DIR__ . '/editlib.php');
 
 // Since Moodle 5.0 any request with the courseid parameter is deprecated and will redirect to the banks management page.
 if ($courseid = optional_param('courseid', 0, PARAM_INT)) {

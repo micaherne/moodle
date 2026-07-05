@@ -275,7 +275,7 @@ class user {
      */
     public function set_country(string $countrycode): void {
         global $CFG;
-        require_once($CFG->libdir . '/moodlelib.php');
+        require_once(\core\component::component_path('core', 'moodlelib.php'));
         $validcountrycodes = array_merge([''], array_keys(get_string_manager()->get_list_of_countries(true)));
         if (!in_array($countrycode, $validcountrycodes)) {
             throw new \coding_exception("Invalid country code '$countrycode'.");
@@ -392,7 +392,7 @@ class user {
      */
     public function set_lastgrade(float $lastgrade): void {
         global $CFG;
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $this->lastgrade = grade_floatval($lastgrade);
     }
 

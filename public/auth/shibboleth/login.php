@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-require_once("../../config.php");
-require_once($CFG->dirroot . "/auth/shibboleth/auth.php");
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/auth.php');
 
 $idp = optional_param('idp', null, PARAM_RAW);
 

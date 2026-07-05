@@ -23,12 +23,12 @@
 
 defined('MOODLE_INTERNAL') or die('Direct access to this script is forbidden.');
 
-require_once($CFG->dirroot . '/backup/cc/cc2moodle.php');
-require_once($CFG->dirroot . '/backup/cc/entities11.class.php');
-require_once($CFG->dirroot . '/backup/cc/entity11.resource.class.php');
-require_once($CFG->dirroot . '/backup/cc/entity11.forum.class.php');
-require_once($CFG->dirroot . '/backup/cc/entity11.quiz.class.php');
-require_once($CFG->dirroot . '/backup/cc/entity11.lti.class.php');
+require_once(__DIR__ . '/cc2moodle.php');
+require_once(__DIR__ . '/entities11.class.php');
+require_once(__DIR__ . '/entity11.resource.class.php');
+require_once(__DIR__ . '/entity11.forum.class.php');
+require_once(__DIR__ . '/entity11.quiz.class.php');
+require_once(__DIR__ . '/entity11.lti.class.php');
 
 class cc112moodle extends cc2moodle {
     const CC_TYPE_FORUM              = 'imsdt_xmlv1p1';

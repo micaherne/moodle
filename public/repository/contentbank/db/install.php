@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_repository_contentbank_install() {
     global $CFG;
     $result = true;
-    require_once($CFG->dirroot.'/repository/lib.php');
+    require_once(\core\component::component_path('core_repository', 'lib.php'));
     $userplugin = new repository_type('contentbank', [], true);
     if (!$id = $userplugin->create(true)) {
         $result = false;

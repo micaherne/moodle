@@ -27,10 +27,10 @@ defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
 
     // We use a couple of custom admin settings since we need to massage the data before it is inserted into the DB.
-    require_once($CFG->dirroot.'/auth/db/classes/admin_setting_special_auth_configtext.php');
+    require_once(__DIR__ . '/classes/admin_setting_special_auth_configtext.php');
 
     // Needed for constants.
-    require_once($CFG->libdir.'/authlib.php');
+    require_once(\core\component::component_path('core', 'authlib.php'));
 
     // Introductory explanation.
     $settings->add(new admin_setting_heading('auth_db/pluginname', '', new lang_string('auth_dbdescription', 'auth_db')));

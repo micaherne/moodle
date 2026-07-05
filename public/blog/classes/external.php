@@ -25,8 +25,8 @@
 namespace core_blog;
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot .'/blog/lib.php');
-require_once($CFG->dirroot .'/blog/locallib.php');
+require_once(dirname(__DIR__) . '/lib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 use core_external\external_api;
 use core_external\external_function_parameters;

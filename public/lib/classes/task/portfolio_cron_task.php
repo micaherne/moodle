@@ -45,8 +45,8 @@ class portfolio_cron_task extends scheduled_task {
         global $CFG, $DB;
 
         if ($CFG->enableportfolios) {
-            require_once($CFG->libdir . '/portfoliolib.php');
-            require_once($CFG->libdir . '/portfolio/exporter.php');
+            require_once(dirname(__DIR__, 2) . '/portfoliolib.php');
+            require_once(dirname(__DIR__, 2) . '/portfolio/exporter.php');
             if ($expired = $DB->get_records_select('portfolio_tempdata', 'expirytime < ?', [time()], '', 'id')) {
                 foreach ($expired as $tempdata) {
                     try {

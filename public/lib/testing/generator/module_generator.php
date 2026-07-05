@@ -82,7 +82,7 @@ abstract class testing_module_generator extends component_generator_base {
      */
     protected function precreate_course_module($courseid, array $options) {
         global $DB, $CFG;
-        require_once("$CFG->dirroot/course/lib.php");
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $modulename = $this->get_modulename();
         $sectionnum = isset($options['section']) ? $options['section'] : 0;
@@ -225,7 +225,7 @@ abstract class testing_module_generator extends component_generator_base {
      */
     public function create_instance($record = null, ?array $options = null) {
         global $CFG, $DB, $PAGE;
-        require_once($CFG->dirroot.'/course/modlib.php');
+        require_once(\core\component::component_path('core_course', 'modlib.php'));
 
         $this->instancecount++;
 

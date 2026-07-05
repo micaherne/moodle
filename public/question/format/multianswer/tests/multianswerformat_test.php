@@ -22,10 +22,10 @@ use question_check_specified_fields_expectation;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/format.php');
-require_once($CFG->dirroot . '/question/format/multianswer/format.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(\core\component::component_path('core_question', 'format.php'));
+require_once(dirname(__DIR__) . '/format.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
 
 /**
  * Unit tests for the Embedded answer (Cloze) question importer.

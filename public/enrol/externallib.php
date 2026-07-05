@@ -90,8 +90,8 @@ class core_enrol_external extends external_api {
     public static function get_enrolled_users_with_capability($coursecapabilities, $options) {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/course/lib.php');
-        require_once($CFG->dirroot . "/user/lib.php");
+        require_once(\core\component::component_path('core_course', 'lib.php'));
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         if (empty($coursecapabilities)) {
             throw new invalid_parameter_exception('Parameter can not be empty');
@@ -427,9 +427,9 @@ class core_enrol_external extends external_api {
     public static function get_users_courses($userid, $returnusercount = true) {
         global $CFG, $USER, $DB, $OUTPUT;
 
-        require_once($CFG->dirroot . '/course/lib.php');
-        require_once($CFG->dirroot . '/user/lib.php');
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
+        require_once(\core\component::component_path('core_user', 'lib.php'));
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         // Do basic automatic PARAM checks on incoming data, using params description
         // If any problems are found then exceptions are thrown with helpful error messages
@@ -657,8 +657,8 @@ class core_enrol_external extends external_api {
     public static function get_potential_users($courseid, $enrolid, $search, $searchanywhere, $page, $perpage) {
         global $PAGE, $DB, $CFG;
 
-        require_once($CFG->dirroot.'/enrol/locallib.php');
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(__DIR__ . '/locallib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         $params = self::validate_parameters(
             self::get_potential_users_parameters(),
@@ -737,7 +737,7 @@ class core_enrol_external extends external_api {
      */
     public static function get_potential_users_returns() {
         global $CFG;
-        require_once($CFG->dirroot . '/user/externallib.php');
+        require_once(\core\component::component_path('core_user', 'externallib.php'));
         return new external_multiple_structure(core_user_external::user_description());
     }
 
@@ -774,8 +774,8 @@ class core_enrol_external extends external_api {
     public static function search_users(int $courseid, string $search, bool $searchanywhere, int $page, int $perpage, ?int $contextid = null): array {
         global $PAGE, $CFG;
 
-        require_once($CFG->dirroot.'/enrol/locallib.php');
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(__DIR__ . '/locallib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         $params = self::validate_parameters(
                 self::search_users_parameters(),
@@ -838,7 +838,7 @@ class core_enrol_external extends external_api {
      */
     public static function search_users_returns(): external_multiple_structure {
         global $CFG;
-        require_once($CFG->dirroot . '/user/externallib.php');
+        require_once(\core\component::component_path('core_user', 'externallib.php'));
         return new external_multiple_structure(core_user_external::user_description());
     }
 
@@ -893,8 +893,8 @@ class core_enrol_external extends external_api {
     public static function get_enrolled_users($courseid, $options = []) {
         global $CFG, $USER, $DB, $PAGE;
 
-        require_once($CFG->dirroot . '/course/lib.php');
-        require_once($CFG->dirroot . "/user/lib.php");
+        require_once(\core\component::component_path('core_course', 'lib.php'));
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         $params = self::validate_parameters(
             self::get_enrolled_users_parameters(),
@@ -1239,7 +1239,7 @@ class core_enrol_external extends external_api {
         $context = context_course::instance($course->id);
         self::validate_context($context);
 
-        require_once("$CFG->dirroot/enrol/editenrolment_form.php");
+        require_once(__DIR__ . '/editenrolment_form.php');
         $customformdata = [
             'ue' => $userenrolment,
             'modal' => true,
@@ -1251,7 +1251,7 @@ class core_enrol_external extends external_api {
             if (!empty($validateddata->duration) && $validateddata->timeend == 0) {
                 $validateddata->timeend = $validateddata->timestart + $validateddata->duration;
             }
-            require_once($CFG->dirroot . '/enrol/locallib.php');
+            require_once(__DIR__ . '/locallib.php');
             $manager = new course_enrolment_manager($PAGE, $course);
             $result = $manager->edit_enrolment($userenrolment, $validateddata);
 
@@ -1317,7 +1317,7 @@ class core_enrol_external extends external_api {
 
         // If the userenrolment exists, unenrol the user.
         if (!isset($validationerrors)) {
-            require_once($CFG->dirroot . '/enrol/locallib.php');
+            require_once(__DIR__ . '/locallib.php');
             $manager = new course_enrolment_manager($PAGE, $course);
             $result = $manager->unenrol_user($userenrolment);
         } else {

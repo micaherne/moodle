@@ -181,7 +181,7 @@ class XMLDBAction {
         global $CFG;
 
         // Get the action path and invoke it
-        $actionsroot = "$CFG->dirroot/$CFG->admin/tool/xmldb/actions";
+        $actionsroot = __DIR__ . '/';
         $actionclass = $action . '.class.php';
         $actionpath = "$actionsroot/$action/$actionclass";
 
@@ -238,7 +238,7 @@ class XMLDBAction {
             $path = dirname($path);
             $plugintypes = core_component::get_plugin_types();
             foreach ($plugintypes as $type => $fulldir) {
-                if ($CFG->dirroot.'/'.$path === $fulldir) {
+                if (\core\component::from_mono_path('/' . $path) === $fulldir) {
                     $plugintype = $type;
                     break;
                 }

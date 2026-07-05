@@ -26,8 +26,8 @@ use ReflectionClass;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(__DIR__ . '/generator.php');
 
 /**
  * Penalty test.
@@ -55,9 +55,9 @@ final class penalty_test extends \advanced_testcase {
         $mockedcomponent = new ReflectionClass(core_component::class);
         $mockedplugins = $mockedcomponent->getProperty('plugins');
         $plugins = $mockedplugins->getValue();
-        $plugins['gradepenalty'] = ["fake_deduction" => "{$CFG->dirroot}/mod/assign/tests/fixtures/fakeplugins/fake_deduction"];
+        $plugins['gradepenalty'] = ["fake_deduction" => __DIR__ . '/fixtures/fakeplugins/fake_deduction'];
         // Load the penalty_calculator class.
-        require_once($CFG->dirroot . '/mod/assign/tests/fixtures/fakeplugins/fake_deduction/classes/penalty_calculator.php');
+        require_once(__DIR__ . '/fixtures/fakeplugins/fake_deduction/classes/penalty_calculator.php');
         $mockedplugins->setValue(null, $plugins);
 
         \core\plugininfo\gradepenalty::enable_plugin('fake_deduction', true);

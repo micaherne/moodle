@@ -26,7 +26,7 @@ namespace core_analytics;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/messagelib.php');
+require_once(\core\component::component_path('core', 'messagelib.php'));
 
 /**
  * Insights generator.

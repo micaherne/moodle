@@ -174,7 +174,7 @@ class restore_scorm_activity_structure_step extends restore_activity_structure_s
 
     protected function process_scorm_sco_track($data) {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
         $data = (object)$data;
         $attemptobject = scorm_get_attempt($this->get_mappingid('user', $data->userid),
                                            $this->get_new_parentid('scorm'),
@@ -191,7 +191,7 @@ class restore_scorm_activity_structure_step extends restore_activity_structure_s
     protected function after_execute() {
         global $DB, $CFG;
 
-        require_once("{$CFG->dirroot}/mod/scorm/locallib.php");
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
 
         // Add scorm related files, no need to match by itemname (just internally handled context)
         $this->add_related_files('mod_scorm', 'intro', null);

@@ -191,7 +191,7 @@ final class manager_test extends \advanced_testcase {
      */
     private function setup_users_and_activity(int $groupmode = NOGROUPS, wiki_mode $mode = wiki_mode::COLLABORATIVE): array {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/wiki/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
         $users = [];
         $generator = $this->getDataGenerator();
         $courseparams = [];

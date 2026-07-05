@@ -49,8 +49,8 @@ abstract class badges_testcase extends \advanced_testcase {
     protected static function load_requirements(): void {
         global $CFG;
 
-        require_once($CFG->libdir . '/badgeslib.php');
-        require_once($CFG->dirroot . '/badges/lib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
+        require_once(dirname(__DIR__, 2) . '/lib.php');
     }
 
     #[\Override]
@@ -97,7 +97,7 @@ abstract class badges_testcase extends \advanced_testcase {
         $this->assertNotEmpty($studentrole);
 
         // Get manual enrolment plugin and enrol user.
-        require_once($CFG->dirroot.'/enrol/manual/locallib.php');
+        require_once(\core\component::component_path('enrol_manual', 'locallib.php'));
         $manplugin = enrol_get_plugin('manual');
         $maninstance = $DB->get_record('enrol', array('courseid' => $this->course->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $manplugin->enrol_user($maninstance, $this->user->id, $studentrole->id);

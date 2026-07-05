@@ -1121,7 +1121,7 @@ class theme_config {
         $cache = null;
         $cachekey = 'cssfiles';
         if ($themedesigner) {
-            require_once($CFG->dirroot . '/lib/csslib.php');
+            require_once(dirname(__DIR__, 2) . '/csslib.php');
             // We need some kind of caching here because otherwise the page navigation becomes
             // way too slow in theme designer mode. Feel free to create full cache definition later...
             $cache = cache::make_from_params(cache_store::MODE_APPLICATION, 'core', 'themedesigner', ['theme' => $this->name]);
@@ -1806,7 +1806,7 @@ class theme_config {
      */
     public function setting_file_serve($filearea, $args, $forcedownload, $options) {
         global $CFG;
-        require_once("$CFG->libdir/filelib.php");
+        require_once(dirname(__DIR__, 2) . '/filelib.php');
 
         $syscontext = context_system::instance();
         $component = 'theme_' . $this->name;
@@ -1956,8 +1956,8 @@ class theme_config {
             if (file_exists("$CFG->dataroot/fonts/$font")) {
                 return "$CFG->dataroot/fonts/$font";
             }
-            if (file_exists("$CFG->dirroot/lib/fonts/$font")) {
-                return "$CFG->dirroot/lib/fonts/$font";
+            if (file_exists(dirname(__DIR__, 2) . "/fonts/{$font}")) {
+                return dirname(__DIR__, 2) . "/fonts/{$font}";
             }
             return null;
         } else if ($component === 'theme') { // Exception.

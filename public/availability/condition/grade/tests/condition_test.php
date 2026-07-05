@@ -29,7 +29,7 @@ final class condition_test extends \advanced_testcase {
      */
     public function test_usage(): void {
         global $USER, $CFG;
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(\core\component::component_path('mod_assign', 'locallib.php'));
 
         $this->resetAfterTest();
         $CFG->enableavailability = true;

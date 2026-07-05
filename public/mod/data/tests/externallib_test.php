@@ -1385,7 +1385,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_get_entry_rating_information(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
 
         $DB->set_field('data', 'assessed', RATING_AGGREGATE_SUM, array('id' => $this->database->id));
         $DB->set_field('data', 'scale', 100, array('id' => $this->database->id));

@@ -121,7 +121,7 @@ class view_action_bar implements templatable, renderable {
         if ($this->mode == '' && !empty($CFG->enableportfolios) && $this->hasentries) {
             if ($manager->can_export_entries()) {
                 // Add the portfolio export button.
-                require_once($CFG->libdir . '/portfoliolib.php');
+                require_once(\core\component::component_path('core', 'portfoliolib.php'));
 
                 $cm = $manager->get_coursemodule();
 

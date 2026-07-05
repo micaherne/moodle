@@ -516,9 +516,11 @@ function profile_save_category(stdClass $data): void {
  * @param array $editors editors for this form field type
  */
 function profile_save_field(stdClass $data, array $editors): void {
-    global $CFG;
-
-    require_once($CFG->dirroot.'/user/profile/field/'.$data->datatype.'/define.class.php');
+    $fielddir = \core_component::get_plugin_directory('profilefield', $data->datatype);
+    if ($fielddir === null) {
+        throw new \coding_exception("Plugin not installed: profilefield_{$data->datatype}");
+    }
+    require_once("{$fielddir}/define.class.php");
     $newfield = 'profile_define_'.$data->datatype;
     /** @var profile_define_base $formfield */
     $formfield = new $newfield();

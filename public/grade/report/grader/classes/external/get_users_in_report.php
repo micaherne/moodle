@@ -30,10 +30,10 @@ use user_picture;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/course/externallib.php');
-require_once($CFG->dirroot .'/user/externallib.php');
-require_once($CFG->dirroot.'/grade/lib.php');
-require_once($CFG->dirroot.'/grade/report/grader/lib.php');
+require_once(\core\component::component_path('core_course', 'externallib.php'));
+require_once(\core\component::component_path('core_user', 'externallib.php'));
+require_once(\core\component::component_path('core_grades', 'lib.php'));
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * External grade report grader API

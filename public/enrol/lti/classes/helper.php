@@ -179,8 +179,8 @@ class helper {
     public static function update_user_profile_image($userid, $url) {
         global $CFG, $DB;
 
-        require_once($CFG->libdir . '/filelib.php');
-        require_once($CFG->libdir . '/gdlib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
+        require_once(\core\component::component_path('core', 'gdlib.php'));
 
         $fs = get_file_storage();
 

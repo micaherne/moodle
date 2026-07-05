@@ -38,7 +38,7 @@ use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use moodle_exception;
-require_once($CFG->dirroot.'/grade/grading/form/guide/lib.php');
+require_once(dirname(__DIR__, 5) . '/lib.php');
 
 /**
  * Web services relating to storing of a marking guide for the grading panel.

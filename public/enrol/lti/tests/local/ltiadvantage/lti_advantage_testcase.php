@@ -277,8 +277,8 @@ abstract class lti_advantage_testcase extends \advanced_testcase {
             int $provisioningmodelearner = 0): array {
 
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
-        require_once($CFG->dirroot . '/auth/lti/auth.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
+        require_once(\core\component::component_path('auth_lti', 'auth.php'));
 
         if ($enableauthplugin) {
             $this->enable_auth();

@@ -46,7 +46,7 @@ class refresh_mod_calendar_events_task extends adhoc_task {
     public function execute() {
         global $CFG;
 
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         // Specific list of plugins that need to be refreshed. If not set, then all mod plugins will be refreshed.
         $pluginstorefresh = null;

@@ -25,9 +25,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/behat/classes/behat_command.php');
-require_once($CFG->libdir . '/behat/classes/behat_config_manager.php');
-require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/behat/steps_definitions_form.php');
+require_once(\core\component::component_path('core', 'behat/classes/behat_command.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_config_manager.php'));
+require_once(__DIR__ . '/steps_definitions_form.php');
 
 /**
  * Behat commands manager

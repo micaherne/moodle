@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/lesson/locallib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 use mod_lesson\external\lesson_summary_exporter;
 use core_external\external_api;
@@ -626,7 +626,7 @@ class mod_lesson_external extends external_api {
      */
     public static function get_user_grade($lessonid, $userid = null) {
         global $CFG, $USER;
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         $params = array(
             'lessonid' => $lessonid,
@@ -736,7 +736,7 @@ class mod_lesson_external extends external_api {
      */
     public static function get_user_attempt_grade($lessonid, $lessonattempt, $userid = null) {
         global $CFG, $USER;
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         $params = array(
             'lessonid' => $lessonid,

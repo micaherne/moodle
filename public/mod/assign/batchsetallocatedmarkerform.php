@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php');
-require_once($CFG->dirroot . '/mod/assign/feedback/file/locallib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('assignfeedback_file', 'locallib.php'));
 /**
  * Set allocated marker form.
  *

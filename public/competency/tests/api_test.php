@@ -4559,7 +4559,7 @@ final class api_test extends \advanced_testcase {
 
     public function test_list_user_competencies_to_review(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         $dg = $this->getDataGenerator();
         $this->resetAfterTest();

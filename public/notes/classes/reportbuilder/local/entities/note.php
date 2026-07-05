@@ -29,7 +29,7 @@ use core_reportbuilder\local\report\{column, filter};
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once("{$CFG->dirroot}/notes/lib.php");
+require_once(dirname(__DIR__, 4) . '/lib.php');
 
 /**
  * Note entity
@@ -88,7 +88,7 @@ class note extends base {
             ->set_is_sortable(true)
             ->add_callback(static function(?string $content, stdClass $note): string {
                 global $CFG;
-                require_once("{$CFG->libdir}/filelib.php");
+                require_once(\core\component::component_path('core', 'filelib.php'));
 
                 if ($content === null || $note->ctxid === null) {
                     return '';

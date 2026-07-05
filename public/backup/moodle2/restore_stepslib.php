@@ -509,13 +509,13 @@ class restore_gradebook_structure_step extends restore_structure_step {
         // Extra credits need adjustments only for backups made between 2.8 release (20141110) and the fix release (20150619).
         if (!$gradebookcalculationsfreeze && $restoretask->backup_version_compare(20141110, '>=')
                 && $restoretask->backup_version_compare(20150619, '<')) {
-            require_once($CFG->libdir . '/db/upgradelib.php');
+            require_once(\core\component::component_path('core', 'db/upgradelib.php'));
             upgrade_extra_credit_weightoverride($this->get_courseid());
         }
         // Calculated grade items need recalculating for backups made between 2.8 release (20141110) and the fix release (20150627).
         if (!$gradebookcalculationsfreeze && $restoretask->backup_version_compare(20141110, '>=')
                 && $restoretask->backup_version_compare(20150627, '<')) {
-            require_once($CFG->libdir . '/db/upgradelib.php');
+            require_once(\core\component::component_path('core', 'db/upgradelib.php'));
             upgrade_calculated_grade_items($this->get_courseid());
         }
         // Courses from before 3.1 (20160518) may have a letter boundary problem and should be checked for this issue.
@@ -523,7 +523,7 @@ class restore_gradebook_structure_step extends restore_structure_step {
         // be checked for this problem.
         if (!$gradebookcalculationsfreeze
                 && ($restoretask->backup_version_compare(20160518, '<') || $restoretask->backup_release_compare('2.9', '<='))) {
-            require_once($CFG->libdir . '/db/upgradelib.php');
+            require_once(\core\component::component_path('core', 'db/upgradelib.php'));
             upgrade_course_letter_boundary($this->get_courseid());
         }
 
@@ -539,7 +539,7 @@ class restore_gradebook_structure_step extends restore_structure_step {
      */
     protected function check_minmaxtouse() {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         $userinfo = $this->task->get_setting_value('users');
         $settingname = 'minmaxtouse';
@@ -1322,7 +1322,7 @@ class restore_groups_structure_step extends restore_structure_step {
     public function process_grouping_group($data) {
         global $CFG;
 
-        require_once($CFG->dirroot.'/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         $data = (object)$data;
         groups_assign_grouping($this->get_new_parentid('grouping'), $this->get_mappingid('group', $data->groupid), $data->timeadded);
@@ -1371,7 +1371,7 @@ class restore_groups_members_structure_step extends restore_structure_step {
 
     public function process_member($data) {
         global $DB, $CFG;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         // NOTE: Always use groups_add_member() because it triggers events and verifies if user is enrolled.
 
@@ -1763,7 +1763,7 @@ class restore_section_structure_step extends restore_structure_step {
      */
     public function process_availability_field($data) {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         $data = (object)$data;
         // Mark it is as passed by default
@@ -2768,7 +2768,7 @@ class restore_badges_structure_step extends restore_structure_step {
     public function process_badge($data) {
         global $DB, $CFG;
 
-        require_once($CFG->libdir . '/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         $data = (object)$data;
         $data->usercreated = $this->get_mappingid('user', $data->usercreated);
@@ -2902,7 +2902,7 @@ class restore_badges_structure_step extends restore_structure_step {
     public function process_parameter($data) {
         global $DB, $CFG;
 
-        require_once($CFG->libdir . '/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         $data = (object)$data;
         $criteriaid = $this->get_new_parentid('criterion');
@@ -4166,7 +4166,7 @@ class restore_activity_grades_structure_step extends restore_structure_step {
     protected function process_grade_grade($data) {
         global $CFG;
 
-        require_once($CFG->libdir . '/grade/constants.php');
+        require_once(\core\component::component_path('core', 'grade/constants.php'));
 
         $data = (object)($data);
         $olduserid = $data->userid;
@@ -4268,7 +4268,7 @@ class restore_activity_grade_history_structure_step extends restore_structure_st
     protected function process_grade_grade($data) {
         global $CFG, $DB;
 
-        require_once($CFG->libdir . '/grade/constants.php');
+        require_once(\core\component::component_path('core', 'grade/constants.php'));
 
         $data = (object) $data;
         $oldhistoryid = $data->id;
@@ -4720,7 +4720,7 @@ class restore_module_structure_step extends restore_structure_step {
         } else if (!empty($data->groupmembersonly)) {
             // There is current availability data, but it still has groupmembersonly
             // as well (2.7 backups), convert just that part.
-            require_once($CFG->dirroot . '/lib/db/upgradelib.php');
+            require_once(\core\component::component_path('core', 'db/upgradelib.php'));
             $data->availability = upgrade_group_members_only($data->groupingid, $data->availability);
         }
 
@@ -4803,7 +4803,7 @@ class restore_module_structure_step extends restore_structure_step {
      */
     protected function process_availability_field($data) {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         $data = (object)$data;
         // Mark it is as passed by default
@@ -6045,7 +6045,7 @@ class restore_process_file_aliases_queue extends restore_execution_step {
      */
     private function choose_repository(stdClass $info) {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         if ($this->task->is_samesite()) {
             // We can rely on repository instance id.
@@ -6602,7 +6602,7 @@ abstract class restore_questions_activity_structure_step extends restore_activit
      */
     protected function add_legacy_question_attempt_data($element, &$paths) {
         global $CFG;
-        require_once($CFG->dirroot . '/question/engine/upgrade/upgradelib.php');
+        require_once(\core\component::component_path('core_question', 'engine/upgrade/upgradelib.php'));
 
         // Check $element is restore_path_element
         if (!($element instanceof restore_path_element)) {

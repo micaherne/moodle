@@ -18,7 +18,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Include required files.
-require_once($CFG->dirroot.'/question/type/ordering/question.php');
+require_once(__DIR__ . '/question.php');
 
 /**
  * Ordering editing form definition

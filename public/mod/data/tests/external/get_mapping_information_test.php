@@ -19,7 +19,7 @@ namespace mod_data\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
+require_once(\core\component::component_path('core_webservice', 'tests/helpers.php'));
 
 use core_external\external_api;
 use mod_data\manager;

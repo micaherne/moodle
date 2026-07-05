@@ -48,7 +48,7 @@ use core_external\util as external_util;
 function qbank_viewquestionname_inplace_editable ($itemtype, $itemid, $newvalue): \core\output\inplace_editable {
     if ($itemtype === 'questionname') {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(\core\component::component_path('core', 'questionlib.php'));
         // Get the question data and to confirm any invalud itemid is not passed.
         $record = $DB->get_record('question', ['id' => $itemid], '*', MUST_EXIST);
 

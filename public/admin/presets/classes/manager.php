@@ -24,7 +24,7 @@ use xml_writer;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 /**
  * Admin tool presets manager class.
@@ -1063,7 +1063,7 @@ class manager {
                     if ($settingdata instanceof \admin_setting_configexecutable) {
                         $execpath = $presetsetting->get_value();
                         if (!empty($execpath)) {
-                            require_once($CFG->libdir . '/filelib.php');
+                            require_once(\core\component::component_path('core', 'filelib.php'));
                             if (!file_exists($execpath) || is_dir($execpath) || !file_is_executable($execpath)) {
                                 $skipped[] = $data;
                                 continue;

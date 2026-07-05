@@ -29,7 +29,7 @@ use core_badges\existing_award_selector;
 use core_badges\potential_award_selector;
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 $badgeid = required_param('id', PARAM_INT);
 $role = optional_param('role', 0, PARAM_INT);

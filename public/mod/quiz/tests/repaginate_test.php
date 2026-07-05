@@ -27,8 +27,8 @@ namespace mod_quiz;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/classes/repaginate.php');
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(dirname(__DIR__) . '/classes/repaginate.php');
 
 /**
  * Test for {@see \mod_quiz\repaginate}

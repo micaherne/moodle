@@ -19,7 +19,7 @@ namespace core\task;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
 /**
  * Class containing unit tests for the calendar cron task.

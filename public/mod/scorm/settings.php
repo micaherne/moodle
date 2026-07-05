@@ -17,7 +17,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot . '/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     $yesno = array(0 => get_string('no'),
                    1 => get_string('yes'));
 

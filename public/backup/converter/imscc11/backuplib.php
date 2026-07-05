@@ -26,12 +26,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/backup/converter/convertlib.php');
+require_once(dirname(__DIR__) . '/convertlib.php');
 
 class imscc11_export_converter extends base_converter {
     public static function get_deps() {
         global $CFG;
-        require_once($CFG->dirroot . '/backup/util/settings/setting_dependency.class.php');
+        require_once(dirname(__DIR__, 2) . '/util/settings/setting_dependency.class.php');
         return array(
                 'users'   => setting_dependency::DISABLED_VALUE,
                 'filters' => setting_dependency::DISABLED_VALUE,
@@ -137,7 +137,7 @@ class imscc11_backup_convert extends backup_execution_step {
         // Get basepath
         $basepath = $this->get_basepath();
 
-        require_once($CFG->dirroot . '/backup/cc/cc_includes.php');
+        require_once(dirname(__DIR__, 2) . '/cc/cc_includes.php');
 
         $tempdir = $CFG->backuptempdir . '/' . uniqid('', true);
 

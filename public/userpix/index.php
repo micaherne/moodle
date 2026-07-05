@@ -6,7 +6,7 @@
   // to administrators only (see below)
 
 
-require('../config.php');
+require(__DIR__ . '/../config.php');
 
 $PAGE->set_url('/userpix/index.php');
 

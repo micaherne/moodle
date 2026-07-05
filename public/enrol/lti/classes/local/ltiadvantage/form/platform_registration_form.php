@@ -19,7 +19,7 @@ use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * The platform_registration_form class, for registering a platform as a consumer of a published tool.

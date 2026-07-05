@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/glossary/backup/moodle2/backup_glossary_stepslib.php');
+require_once(__DIR__ . '/backup_glossary_stepslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the Glossary instance

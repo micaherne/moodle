@@ -26,8 +26,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../config.php');
-require_once($CFG->libdir.'/filelib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 require_once('lib.php');
 /// Wait as long as it takes for this script to finish
 core_php_time_limit::raise();

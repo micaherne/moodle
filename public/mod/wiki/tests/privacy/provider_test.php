@@ -33,7 +33,7 @@ use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\writer;
 
-require_once($CFG->dirroot.'/mod/wiki/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 /**
  * Data provider testcase class.

@@ -79,7 +79,7 @@ final class overview_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $params = [
             'course' => $course->id,
-            'packagefilepath' => "{$CFG->dirroot}/h5p/tests/fixtures/{$h5pfile}",
+            'packagefilepath' => \core\component::component_path('core_h5p', "tests/fixtures/{$h5pfile}"),
             'introformat' => 1,
         ];
         $activity = $this->getDataGenerator()->create_module('h5pactivity', $params);

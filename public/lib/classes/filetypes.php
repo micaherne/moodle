@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/filelib.php');
+require_once(dirname(__DIR__) . '/filelib.php');
 
 /**
  * Class to manage the custom filetypes list that is stored in a config variable.

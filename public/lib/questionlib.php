@@ -33,8 +33,8 @@ use core_question\question_reference_manager;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/question/type/questiontypebase.php');
+require_once(\core\component::component_path('core_question', 'engine/lib.php'));
+require_once(\core\component::component_path('core_question', 'type/questiontypebase.php'));
 
 
 
@@ -1234,7 +1234,7 @@ function question_categorylist_parents(int $categoryid): array {
  */
 function get_import_export_formats($type): array {
     global $CFG;
-    require_once($CFG->dirroot . '/question/format.php');
+    require_once(\core\component::component_path('core_question', 'format.php'));
 
     $formatclasses = core_component::get_plugin_list_with_class('qformat', '', 'format.php');
 
@@ -1674,7 +1674,7 @@ function question_pluginfile($course, $context, $component, $filearea, $args, $f
         list($context, $course, $cm) = get_context_info_array($context->id);
         require_login($course, false, $cm);
 
-        require_once($CFG->dirroot . '/question/editlib.php');
+        require_once(\core\component::component_path('core_question', 'editlib.php'));
         $contexts = new core_question\local\bank\question_edit_contexts($context);
         // Check export capability.
         $contexts->require_one_edit_tab_cap('export');
@@ -1685,9 +1685,13 @@ function question_pluginfile($course, $context, $component, $filearea, $args, $f
         $filename    = array_shift($args);
 
         // Load parent class for import/export.
-        require_once($CFG->dirroot . '/question/format.php');
-        require_once($CFG->dirroot . '/question/editlib.php');
-        require_once($CFG->dirroot . '/question/format/' . $format . '/format.php');
+        require_once(\core\component::component_path('core_question', 'format.php'));
+        require_once(\core\component::component_path('core_question', 'editlib.php'));
+        $formatdir = \core_component::get_plugin_directory('qformat', $format);
+        if ($formatdir === null) {
+            send_file_not_found();
+        }
+        require_once("{$formatdir}/format.php");
 
         $classname = 'qformat_' . $format;
         if (!class_exists($classname)) {
@@ -1856,7 +1860,7 @@ function question_page_type_list($pagetype, $parentcontext, $currentcontext): ar
         'question-import' => get_string('page-question-import', 'question')
     ];
     if ($currentcontext && $currentcontext->contextlevel == CONTEXT_COURSE) {
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         return array_merge(course_page_type_list($pagetype, $parentcontext, $currentcontext), $types);
     } else {
         return $types;

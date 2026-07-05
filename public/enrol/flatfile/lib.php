@@ -194,8 +194,8 @@ class enrol_flatfile_plugin extends enrol_plugin {
         if (strpos($filepath, $CFG->dataroot.'/') === 0 or strpos($filepath, $CFG->dataroot.'\\') === 0) {
             $disclosefile = '$CFG->dataroot'.substr($filepath, strlen($CFG->dataroot));
 
-        } else if (strpos($filepath, $CFG->dirroot.'/') === 0 or strpos($filepath, $CFG->dirroot.'\\') === 0) {
-            $disclosefile = '$CFG->dirroot'.substr($filepath, strlen($CFG->dirroot));
+        } else if (\core\component::is_inside_codebase($filepath, '/') or \core\component::is_inside_codebase($filepath, '\\')) {
+            $disclosefile = '$CFG->dirroot'.\core\component::to_mono_path($filepath, leadingslash: true);
 
         } else {
             $disclosefile = basename($filepath);

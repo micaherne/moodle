@@ -21,8 +21,8 @@ use Google_Service_Drive;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/repository/googledocs/tests/googledocs_content_testcase.php');
-require_once($CFG->dirroot . '/repository/googledocs/lib.php');
+require_once(dirname(__DIR__, 2) . '/googledocs_content_testcase.php');
+require_once(dirname(__DIR__, 3) . '/lib.php');
 
 /**
  * Class containing unit tests for the drive browser class.

@@ -226,7 +226,7 @@ function core_login_process_password_reset($username, $email) {
  */
 function core_login_process_password_set($token) {
     global $DB, $CFG, $OUTPUT, $PAGE, $SESSION;
-    require_once($CFG->dirroot.'/user/lib.php');
+    require_once(\core\component::component_path('core_user', 'lib.php'));
 
     $pwresettime = isset($CFG->pwresettime) ? $CFG->pwresettime : 1800;
     $sql = "SELECT u.*, upr.token, upr.timerequested, upr.id as tokenid

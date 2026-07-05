@@ -26,7 +26,7 @@ namespace core_calendar\external;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . "/calendar/lib.php");
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 use core_calendar\local\event\container;
 use core_calendar\output\humantimeperiod;
@@ -64,7 +64,7 @@ class event_exporter extends event_exporter_base {
         $values = parent::get_other_values($output);
 
         global $CFG;
-        require_once($CFG->dirroot.'/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $event = $this->event;
         $context = $this->related['context'];

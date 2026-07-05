@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/message/tests/messagelib_test.php');
+require_once(dirname(__DIR__) . '/messagelib_test.php');
 
 /**
  * Class for testing the migrate message data task.

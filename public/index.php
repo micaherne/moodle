@@ -27,9 +27,9 @@ if (!file_exists('./config.php')) {
     die;
 }
 
-require_once('config.php');
-require_once($CFG->dirroot .'/course/lib.php');
-require_once($CFG->libdir .'/filelib.php');
+require_once(__DIR__ . '/config.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 redirect_if_major_upgrade_required();
 

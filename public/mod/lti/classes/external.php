@@ -35,8 +35,8 @@ use core_external\util;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/lti/lib.php');
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once(dirname(__DIR__) . '/lib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * External tool module external functions
@@ -196,7 +196,7 @@ class mod_lti_external extends external_api {
      */
     public static function get_tool_launch_data($toolid) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/mod/lti/lib.php');
+        require_once(dirname(__DIR__) . '/lib.php');
 
         $params = self::validate_parameters(self::get_tool_launch_data_parameters(),
                                             array(

@@ -31,8 +31,8 @@ use tool_brickfield\registration;
 require(__DIR__ . '/../../../config.php');
 
 global $CFG, $OUTPUT, $PAGE;
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/moodlelib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'moodlelib.php'));
 
 // If this feature has been disabled, do nothing.
 \tool_brickfield\accessibility::require_accessibility_enabled();

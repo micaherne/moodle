@@ -384,8 +384,8 @@ function install_print_footer($config, $reload=false) {
  */
 function install_cli_database(array $options, $interactive) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/environmentlib.php');
-    require_once($CFG->libdir.'/upgradelib.php');
+    require_once(__DIR__ . '/environmentlib.php');
+    require_once(__DIR__ . '/upgradelib.php');
 
     // show as much debug as possible
     @error_reporting(E_ALL);

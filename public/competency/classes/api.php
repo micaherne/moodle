@@ -2600,7 +2600,7 @@ class api {
     public static function create_plans_from_template_cohort($templateorid, $cohortid, $recreateunlinked = false) {
         global $DB, $CFG;
         static::require_enabled();
-        require_once($CFG->dirroot . '/cohort/lib.php');
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
         $template = $templateorid;
         if (!is_object($template)) {

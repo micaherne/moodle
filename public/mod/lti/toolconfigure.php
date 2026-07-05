@@ -23,10 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/mod/lti/lib.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/locallib.php');
 
 $cartridgeurl = optional_param('cartridgeurl', '', PARAM_URL);
 

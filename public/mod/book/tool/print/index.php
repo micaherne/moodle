@@ -24,7 +24,7 @@
 
 require(__DIR__.'/../../../../config.php');
 require_once(__DIR__.'/lib.php');
-require_once(__DIR__.'/../../locallib.php');
+require_once(\core\component::component_path('mod_book', 'locallib.php'));
 
 $id        = required_param('id', PARAM_INT);           // Course Module ID
 $chapterid = optional_param('chapterid', 0, PARAM_INT); // Chapter ID

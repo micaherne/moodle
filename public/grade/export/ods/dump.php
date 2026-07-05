@@ -16,8 +16,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 define('NO_MOODLE_COOKIES', true); // session not used here
-require_once '../../../config.php';
-require_once($CFG->dirroot.'/grade/export/ods/grade_export_ods.php');
+require_once __DIR__ . '/../../../config.php';
+require_once(__DIR__ . '/grade_export_ods.php');
 
 $id                 = required_param('id', PARAM_INT);
 $groupid            = optional_param('groupid', 0, PARAM_INT);

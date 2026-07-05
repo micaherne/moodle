@@ -36,7 +36,7 @@ use tool_brickfield\manager;
 use tool_brickfield\registration;
 
 global $CFG;
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Class registration_form

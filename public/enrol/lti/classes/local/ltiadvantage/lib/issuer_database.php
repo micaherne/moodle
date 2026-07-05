@@ -63,7 +63,7 @@ class issuer_database implements IDatabase {
         }
 
         global $CFG;
-        require_once($CFG->libdir . '/moodlelib.php'); // For get_config() usage.
+        require_once(\core\component::component_path('core', 'moodlelib.php')); // For get_config() usage.
 
         // We can identify registrations two ways. Either:
         // 1. Using issuer + the platform-generated clientid. Most platforms will have sent client_id in the initiate login request

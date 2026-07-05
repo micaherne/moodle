@@ -9,10 +9,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/backup/converter/convertlib.php');
-require_once($CFG->dirroot.'/backup/cc/includes/constants.php');
-require_once($CFG->dirroot.'/backup/cc/cc112moodle.php');
-require_once($CFG->dirroot.'/backup/cc/validator.php');
+require_once(dirname(__DIR__) . '/convertlib.php');
+require_once(dirname(__DIR__, 2) . '/cc/includes/constants.php');
+require_once(dirname(__DIR__, 2) . '/cc/cc112moodle.php');
+require_once(dirname(__DIR__, 2) . '/cc/validator.php');
 
 
 class imscc11_converter extends base_converter {
@@ -92,7 +92,7 @@ class imscc11_converter extends base_converter {
         }
 
         $this->log('validating manifest', backup::LOG_DEBUG, null, 1);
-        $validator = new manifest_validator($CFG->dirroot . '/backup/cc/schemas11');
+        $validator = new manifest_validator(dirname(__DIR__, 2) . '/cc/schemas11');
         if (!$validator->validate($manifest)) {
             $this->log('validation error(s): '.PHP_EOL.error_messages::instance(), backup::LOG_DEBUG, null, 2);
             throw new imscc11_convert_exception(error_messages::instance()->to_string(true));

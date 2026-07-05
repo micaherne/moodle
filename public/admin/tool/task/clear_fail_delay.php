@@ -24,7 +24,7 @@
 
 define('NO_OUTPUT_BUFFERING', true);
 
-require('../../../config.php');
+require(__DIR__ . '/../../../config.php');
 
 // Basic security checks.
 require_admin();

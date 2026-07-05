@@ -26,8 +26,8 @@
  */
 
 global $CFG;
-require_once($CFG->libdir . '/form/group.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once(__DIR__ . '/group.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Class for a group of elements used to input a date.

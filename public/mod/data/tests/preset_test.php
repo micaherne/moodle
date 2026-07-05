@@ -500,11 +500,11 @@ final class preset_test extends \advanced_testcase {
 
         return [
             'Valid preset directory' => [
-                'directory' => $CFG->dirroot . '/mod/data/preset/imagegallery',
+                'directory' => \core\component::component_path('datapreset_imagegallery', ''),
                 'expected' => true,
             ],
             'Invalid preset directory' => [
-                'directory' => $CFG->dirroot . '/mod/data/field/checkbox',
+                'directory' => \core\component::component_path('datafield_checkbox', ''),
                 'expected' => false,
             ],
             'Unexisting preset directory' => [

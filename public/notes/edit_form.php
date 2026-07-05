@@ -18,7 +18,7 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
 }
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 class note_edit_form extends moodleform {
 

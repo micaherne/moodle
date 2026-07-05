@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once($CFG->dirroot.'/lib/gradelib.php');
-require_once($CFG->dirroot.'/grade/lib.php');
-require_once($CFG->dirroot.'/grade/export/grade_export_form.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(dirname(__DIR__) . '/lib.php');
+require_once(__DIR__ . '/grade_export_form.php');
 
 /**
  * Base export class

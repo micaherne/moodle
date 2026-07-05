@@ -21,7 +21,7 @@ use MoodleQuickForm_float;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/form/float.php');
+require_once(dirname(__DIR__) . '/float.php');
 
 /**
  * Unit tests for MoodleQuickForm_float

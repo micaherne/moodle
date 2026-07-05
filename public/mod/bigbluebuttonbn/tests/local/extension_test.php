@@ -315,7 +315,7 @@ final class extension_test extends \advanced_testcase {
      */
     public static function custom_completion_data_provider(): array {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
         return [
             'simple' => [
                 'customcompletionrules' => [

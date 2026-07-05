@@ -36,8 +36,8 @@ namespace moodle\mod\lti; // Using a namespace as the basicLTI module imports cl
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/lti/OAuth.php');
-require_once($CFG->dirroot . '/mod/lti/TrivialStore.php');
+require_once(__DIR__ . '/OAuth.php');
+require_once(__DIR__ . '/TrivialStore.php');
 
 /**
  *

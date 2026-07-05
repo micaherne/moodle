@@ -148,7 +148,7 @@ function recaptcha_get_challenge_html($apiurl, $pubkey, $lang = null, bool $comp
  */
 function recaptcha_check_response($verifyurl, $privkey, $remoteip, $response) {
     global $CFG;
-    require_once($CFG->libdir.'/filelib.php');
+    require_once(__DIR__ . '/filelib.php');
 
     // Check response - isvalid boolean, error string.
     $checkresponse = array('isvalid' => false, 'error' => 'check-not-started');

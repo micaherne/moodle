@@ -2649,7 +2649,7 @@ function require_login($courseorid = null, $autologinguest = true, $cm = null, $
         if ($preventredirect) {
             throw new moodle_exception('activityisscheduledfordeletion');
         }
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         redirect(course_get_url($course), get_string('activityisscheduledfordeletion', 'error'));
     }
 
@@ -3044,7 +3044,7 @@ function update_user_login_times() {
  */
 function user_not_fully_set_up($user, $strict = true) {
     global $CFG, $SESSION, $USER;
-    require_once($CFG->dirroot.'/user/profile/lib.php');
+    require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
     // If the user is setup then store this in the session to avoid re-checking.
     // Some edge cases are when the users email starts to bounce or the
@@ -3370,8 +3370,8 @@ function get_newuser_language() {
  */
 function create_user_record($username, $password, $auth = 'manual') {
     global $CFG, $DB, $SESSION;
-    require_once($CFG->dirroot.'/user/profile/lib.php');
-    require_once($CFG->dirroot.'/user/lib.php');
+    require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+    require_once(\core\component::component_path('core_user', 'lib.php'));
 
     // Just in case check text case.
     $username = trim(core_text::strtolower($username));
@@ -3450,8 +3450,8 @@ function update_user_record($username) {
  */
 function update_user_record_by_id($id) {
     global $DB, $CFG;
-    require_once($CFG->dirroot."/user/profile/lib.php");
-    require_once($CFG->dirroot.'/user/lib.php');
+    require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+    require_once(\core\component::component_path('core_user', 'lib.php'));
 
     $params = array('mnethostid' => $CFG->mnet_localhost_id, 'id' => $id, 'deleted' => 0);
     $oldinfo = $DB->get_record('user', $params, '*', MUST_EXIST);
@@ -3554,10 +3554,10 @@ function truncate_userinfo(array $info) {
  */
 function delete_user(stdClass $user) {
     global $CFG, $DB, $SESSION;
-    require_once($CFG->libdir.'/grouplib.php');
-    require_once($CFG->libdir.'/gradelib.php');
-    require_once($CFG->dirroot.'/message/lib.php');
-    require_once($CFG->dirroot.'/user/lib.php');
+    require_once(__DIR__ . '/grouplib.php');
+    require_once(__DIR__ . '/gradelib.php');
+    require_once(\core\component::component_path('core_message', 'lib.php'));
+    require_once(\core\component::component_path('core_user', 'lib.php'));
 
     // Make sure nobody sends bogus record type as parameter.
     if (!property_exists($user, 'id') or !property_exists($user, 'username')) {
@@ -3798,7 +3798,7 @@ function authenticate_user_login(
     string|bool $loginrecaptcha = false,
 ) {
     global $CFG, $DB, $PAGE, $SESSION;
-    require_once("$CFG->libdir/authlib.php");
+    require_once(__DIR__ . '/authlib.php');
 
     $logerror = function (
         string $warning,
@@ -4381,7 +4381,7 @@ function get_complete_user_data($field, $value, $mnethostid = null, $throwexcept
 
     // Add cohort theme.
     if (!empty($CFG->allowcohortthemes)) {
-        require_once($CFG->dirroot . '/cohort/lib.php');
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
         if ($cohorttheme = cohort_get_user_cohort_theme($user->id)) {
             $user->cohorttheme = $cohorttheme;
         }
@@ -4390,7 +4390,7 @@ function get_complete_user_data($field, $value, $mnethostid = null, $throwexcept
     // Add the custom profile fields to the user record.
     $user->profile = array();
     if (!isguestuser($user)) {
-        require_once($CFG->dirroot.'/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
         profile_load_custom_fields($user);
     }
 
@@ -4580,13 +4580,13 @@ function delete_course($courseorid, $showfeedback = true, bool $asyncpreferred =
 function remove_course_contents($courseid, $showfeedback = true, ?array $options = null, bool $coursedeletion = true) {
     global $CFG, $DB, $OUTPUT;
 
-    require_once($CFG->libdir.'/badgeslib.php');
-    require_once($CFG->libdir.'/completionlib.php');
-    require_once($CFG->libdir.'/questionlib.php');
-    require_once($CFG->libdir.'/gradelib.php');
-    require_once($CFG->dirroot.'/group/lib.php');
-    require_once($CFG->dirroot.'/rating/lib.php');
-    require_once($CFG->dirroot.'/notes/lib.php');
+    require_once(__DIR__ . '/badgeslib.php');
+    require_once(__DIR__ . '/completionlib.php');
+    require_once(__DIR__ . '/questionlib.php');
+    require_once(__DIR__ . '/gradelib.php');
+    require_once(\core\component::component_path('core_group', 'lib.php'));
+    require_once(\core\component::component_path('core_rating', 'lib.php'));
+    require_once(\core\component::component_path('core_notes', 'lib.php'));
 
     // Handle course badges.
     badges_handle_course_deletion($courseid);
@@ -4865,8 +4865,12 @@ function remove_course_contents($courseid, $showfeedback = true, ?array $options
  * @return bool success
  */
 function shift_course_mod_dates($modname, $fields, $timeshift, $courseid, $modid = 0) {
-    global $CFG, $DB;
-    include_once($CFG->dirroot.'/mod/'.$modname.'/lib.php');
+    global $DB;
+    $moddir = \core_component::get_plugin_directory('mod', $modname);
+    if ($moddir === null) {
+        throw new \coding_exception("Plugin not installed: mod_$modname");
+    }
+    include_once($moddir . '/lib.php');
 
     $return = true;
     $params = array($timeshift, $courseid);
@@ -4895,10 +4899,10 @@ function shift_course_mod_dates($modname, $fields, $timeshift, $courseid, $modid
  */
 function reset_course_userdata($data, ?\core_course\exception\reset_timeout $timeout = null, ?core\progress\base $progress = null) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
-    require_once($CFG->libdir.'/completionlib.php');
-    require_once($CFG->dirroot.'/completion/criteria/completion_criteria_date.php');
-    require_once($CFG->dirroot.'/group/lib.php');
+    require_once(__DIR__ . '/gradelib.php');
+    require_once(__DIR__ . '/completionlib.php');
+    require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_date.php'));
+    require_once(\core\component::component_path('core_group', 'lib.php'));
 
     $data->courseid = $data->id;
     $context = context_course::instance($data->courseid);
@@ -5017,7 +5021,7 @@ function reset_course_userdata($data, ?\core_course\exception\reset_timeout $tim
     }
 
     if (!empty($data->reset_notes)) {
-        require_once($CFG->dirroot.'/notes/lib.php');
+        require_once(\core\component::component_path('core_notes', 'lib.php'));
         $itemstr = get_string('deletenotes', 'notes');
         $progress->start_progress($itemstr);
         note_delete_all($data->courseid);
@@ -5027,7 +5031,7 @@ function reset_course_userdata($data, ?\core_course\exception\reset_timeout $tim
     }
 
     if (!empty($data->delete_blog_associations)) {
-        require_once($CFG->dirroot.'/blog/lib.php');
+        require_once(\core\component::component_path('core_blog', 'lib.php'));
         $itemstr = get_string('deleteblogassociations', 'blog');
         $progress->start_progress($itemstr);
         blog_remove_associations_for_course($data->courseid);
@@ -5208,9 +5212,13 @@ function reset_course_userdata($data, ?\core_course\exception\reset_timeout $tim
         $progress->start_progress(get_string('activities'), count($allmods));
         foreach ($allmods as $mod) {
             $modname = $mod->name;
-            $modfile = $CFG->dirroot.'/mod/'. $modname.'/lib.php';
+            $moddir = \core_component::get_plugin_directory('mod', $modname);
+            $modfile = null;
+            if ($moddir) {
+                $modfile = $moddir . '/lib.php';
+            }
             $moddeleteuserdata = $modname.'_reset_userdata';   // Function to delete user data.
-            if (file_exists($modfile)) {
+            if ($modfile && file_exists($modfile)) {
                 if (!$DB->count_records($modname, array('course' => $data->courseid))) {
                     continue; // Skip mods with no instances.
                 }
@@ -5350,7 +5358,7 @@ function get_mailer($action='get') {
             get_mailer('flush');
         }
 
-        require_once($CFG->libdir.'/phpmailer/moodle_phpmailer.php');
+        require_once(__DIR__ . '/phpmailer/moodle_phpmailer.php');
         $mailer = new moodle_phpmailer();
 
         $counter = 1;
@@ -5606,7 +5614,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '', 
     // wwwroot and modify the url to direct the user's browser to login at their
     // home site (identity provider - idp) before hitting the link itself.
     if (is_mnet_remote_user($user)) {
-        require_once($CFG->dirroot.'/mnet/lib.php');
+        require_once(\core\component::component_path('core_mnet', 'lib.php'));
 
         $jumpurl = mnet_get_idp_jump_url($user);
         $callback = partial('mnet_sso_apply_indirection', $jumpurl);
@@ -5726,7 +5734,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '', 
         }
 
         $originheader = $CFG->wwwroot . ' => ' . gethostname() . ':'
-             . str_replace($CFG->dirroot . '/', '', $origin['file']) . ':' . $origin['line'];
+             . \core\component::to_mono_path($origin['file'], leadingslash: false) . ':' . $origin['line'];
         $mail->addCustomHeader('X-Moodle-Originating-Script: ' . $originheader);
     }
 
@@ -5804,7 +5812,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '', 
             $temprecipients[] = array($supportuser->email, fullname($supportuser, true));
             $mail->addStringAttachment('Error in attachment.  User attempted to attach a filename with a unsafe name.', 'error.txt', '8bit', 'text/plain');
         } else {
-            require_once($CFG->libdir.'/filelib.php');
+            require_once(__DIR__ . '/filelib.php');
             $mimetype = mimeinfo('type', $attachname);
 
             // Before doing the comparison, make sure that the paths are correct (Windows uses slashes in the other direction).
@@ -6212,7 +6220,7 @@ function get_file_storage($reset = false) {
         return $fs;
     }
 
-    require_once("$CFG->libdir/filelib.php");
+    require_once(__DIR__ . '/filelib.php');
 
     $fs = new file_storage();
 
@@ -6233,7 +6241,7 @@ function get_file_browser() {
         return $fb;
     }
 
-    require_once("$CFG->libdir/filelib.php");
+    require_once(__DIR__ . '/filelib.php');
 
     $fb = new file_browser();
 
@@ -6273,7 +6281,7 @@ function get_file_packer($mimetype='application/zip') {
             return false;
     }
 
-    require_once("$CFG->libdir/filestorage/$classname.php");
+    require_once(__DIR__ . "/filestorage/{$classname}.php");
     $fp[$mimetype] = new $classname();
 
     return $fp[$mimetype];
@@ -7317,7 +7325,7 @@ function get_list_of_plugins($directory='mod', $exclude='', $basedir='') {
     $plugins = array();
 
     if (empty($basedir)) {
-        $basedir = $CFG->dirroot .'/'. $directory;
+        $basedir = \core\component::from_mono_path('/' . $directory);
 
     } else {
         $basedir = $basedir .'/'. $directory;
@@ -9485,7 +9493,7 @@ function is_mnet_remote_user($user) {
     global $CFG;
 
     if (!isset($CFG->mnet_localhost_id)) {
-        include_once($CFG->dirroot . '/mnet/lib.php');
+        include_once(\core\component::component_path('core_mnet', 'lib.php'));
         $env = new mnet_environment();
         $env->init();
         unset($env);
@@ -9722,7 +9730,7 @@ function partial(callable $callable, ...$initialargs): callable {
  */
 function get_mnet_environment() {
     global $CFG;
-    require_once($CFG->dirroot . '/mnet/lib.php');
+    require_once(\core\component::component_path('core_mnet', 'lib.php'));
     static $instance = null;
     if (empty($instance)) {
         $instance = new mnet_environment();

@@ -31,7 +31,7 @@ function xmldb_enrol_lti_install() {
     global $CFG, $OUTPUT;
 
     // LTI 1.3: Set a private key for this site (which is acting as a tool in LTI 1.3).
-    require_once($CFG->dirroot . '/enrol/lti/upgradelib.php');
+    require_once(dirname(__DIR__) . '/upgradelib.php');
 
     $warning = enrol_lti_verify_private_key();
     if (!empty($warning)) {

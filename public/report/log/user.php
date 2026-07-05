@@ -22,9 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../config.php');
-require_once($CFG->dirroot.'/report/log/locallib.php');
-require_once($CFG->dirroot.'/lib/tablelib.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 $userid   = required_param('id', PARAM_INT);
 $courseid = required_param('course', PARAM_INT);

@@ -231,12 +231,12 @@ function default_error_handler($errno, $errstr, $errfile, $errline) {
  * @return void
  */
 function abort_all_db_transactions() {
-    global $CFG, $DB, $SCRIPT;
+    global $DB, $SCRIPT;
 
     // default exception handler MUST not throw any exceptions!!
 
     if ($DB && $DB->is_transaction_started()) {
-        error_log('Database transaction aborted automatically in ' . $CFG->dirroot . $SCRIPT);
+        error_log('Database transaction aborted automatically in ' . \core\component::from_mono_path($SCRIPT));
         // note: transaction blocks should never change current $_SESSION
         $DB->force_transaction_rollback();
     }

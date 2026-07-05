@@ -343,7 +343,7 @@ function mnet_server_dispatch($payload) {
             }
 
             // The call stack holds the path to any include file
-            $includefile = $CFG->dirroot.'/'.$filename;
+            $includefile = \core\component::from_mono_path('/' . $filename);
 
             $response = mnet_server_invoke_dangerous_method($includefile, $functionname, $method, $payload);
             echo $response;
@@ -501,8 +501,8 @@ function mnet_server_invoke_plugin_method($method, $callstack, $rpcrecord, $payl
  */
 function mnet_server_invoke_dangerous_method($includefile, $methodname, $method, $payload) {
 
-    if (file_exists($CFG->dirroot . $includefile)) {
-        require_once $CFG->dirroot . $includefile;
+    if (file_exists(\core\component::from_mono_path($includefile))) {
+        require_once \core\component::from_mono_path($includefile);
         // $callprefix matches the rpc convention
         // of not having a leading slash
         $callprefix = preg_replace('!^/!', '', $includefile);
@@ -611,16 +611,16 @@ function mnet_setup_dummy_method($method, $callstack, $rpcrecord) {
     // verify that the callpath in the stack matches our records
     // callstack will look like array('mod', 'forum', 'lib.php', 'forum_add_instance');
     $path = core_component::get_plugin_directory($rpcrecord->plugintype, $rpcrecord->pluginname);
-    $path = substr($path, strlen($CFG->dirroot)+1); // this is a bit hacky and fragile, it is not guaranteed that plugins are in dirroot
+    $path = \core\component::to_mono_path($path, leadingslash: false); // this is a bit hacky and fragile, it is not guaranteed that plugins are in dirroot
     array_pop($callstack);
     $providedpath =  implode('/', $callstack);
     if ($providedpath != $path . '/' . $rpcrecord->filename) {
         throw new mnet_server_exception(705, "nosuchfile");
     }
-    if (!file_exists($CFG->dirroot . '/' . $providedpath)) {
+    if (!file_exists(\core\component::from_mono_path('/' . $providedpath))) {
         throw new mnet_server_exception(705, "nosuchfile");
     }
-    require_once($CFG->dirroot . '/' . $providedpath);
+    require_once(\core\component::from_mono_path('/' . $providedpath));
     if (!empty($rpcrecord->classname)) {
         if (!class_exists($rpcrecord->classname)) {
             throw new mnet_server_exception(708, 'nosuchclass');

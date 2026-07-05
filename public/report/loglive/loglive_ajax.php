@@ -23,7 +23,7 @@
  */
 
 define('AJAX_SCRIPT', true);
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 
 $id      = optional_param('id', 0, PARAM_INT);
 $page    = optional_param('page', 0, PARAM_INT);

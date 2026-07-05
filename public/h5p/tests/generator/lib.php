@@ -327,7 +327,7 @@ class core_h5p_generator extends \component_generator_base {
                         'activity' => item_activity::create_from_id($filerecord['contextid']),
                     ];
                     global $CFG;
-                    require_once($CFG->dirroot.'/lib/xapi/tests/helper.php');
+                    require_once(\core\component::component_path('core_xapi', 'tests/helper.php'));
                     \core_xapi\test_helper::create_state($params, true);
                 }
             }
@@ -504,7 +504,7 @@ class core_h5p_generator extends \component_generator_base {
         // We need the autoloader for H5P player.
         autoloader::register();
 
-        $path = $CFG->dirroot.'/h5p/tests/fixtures/'.$filename;
+        $path = dirname(__DIR__) . "/fixtures/{$filename}";
         $filerecord = [
             'contextid' => $contextid,
             'component' => $component,

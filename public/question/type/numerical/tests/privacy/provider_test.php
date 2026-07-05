@@ -32,7 +32,7 @@ use core_privacy\local\request\transform;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/numerical/questiontype.php');
+require_once(dirname(__DIR__, 2) . '/questiontype.php');
 
 /**
  * Privacy provider tests class.
