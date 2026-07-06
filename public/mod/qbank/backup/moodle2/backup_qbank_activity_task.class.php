@@ -17,7 +17,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/qbank/backup/moodle2/backup_qbank_stepslib.php');
+require_once(__DIR__ . '/backup_qbank_stepslib.php');
 
 /**
  * Qbank module backup task that provides all the settings and steps to perform one complete backup of the activity.

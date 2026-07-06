@@ -22,8 +22,8 @@ use enrol_self_plugin;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/enrol/self/lib.php');
-require_once($CFG->dirroot.'/enrol/self/locallib.php');
+require_once(dirname(__DIR__) . '/lib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * Self enrolment plugin tests.
@@ -730,7 +730,7 @@ final class self_test extends \advanced_testcase {
         $this->assertFalse($selfplugin->show_enrolme_link($instance11));
         $this->assertTrue($selfplugin->show_enrolme_link($instance12));
 
-        require_once("$CFG->dirroot/cohort/lib.php");
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
         cohort_add_member($cohort1->id, $user1->id);
 
         $this->assertTrue($selfplugin->show_enrolme_link($instance5));
@@ -896,7 +896,7 @@ final class self_test extends \advanced_testcase {
         $this->setGuestUser();
         $this->assertTrue($selfplugin->is_self_enrol_available($instance));
 
-        require_once("$CFG->dirroot/cohort/lib.php");
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
         cohort_add_member($cohort1->id, $user2->id);
 
         // Cohort test.
@@ -1107,7 +1107,7 @@ final class self_test extends \advanced_testcase {
 
         // Login as the teacher.
         $this->setUser($teacher);
-        require_once($CFG->dirroot . '/enrol/locallib.php');
+        require_once(\core\component::component_path('core_enrol', 'locallib.php'));
         $manager = new \course_enrolment_manager($PAGE, $course);
         $userenrolments = $manager->get_user_enrolments($student->id);
         $this->assertCount(1, $userenrolments);

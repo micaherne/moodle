@@ -88,7 +88,7 @@ class update_course extends external_api {
             ?int $targetsectionid = null, ?int $targetcmid = null): string {
         global $CFG;
 
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $params = external_api::validate_parameters(self::execute_parameters(), [
             'action' => $action,

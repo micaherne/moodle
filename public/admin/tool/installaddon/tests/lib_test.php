@@ -29,7 +29,7 @@ use core_course\local\entity\activity_chooser_footer;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/admin/tool/installaddon/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Test installaddon lib functions.

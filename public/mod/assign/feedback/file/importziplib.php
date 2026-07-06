@@ -347,7 +347,7 @@ class assignfeedback_file_zip_importer {
             }
         }
 
-        require_once($CFG->dirroot . '/mod/assign/feedback/file/renderable.php');
+        require_once(__DIR__ . '/renderable.php');
         $importsummary = new assignfeedback_file_import_summary($assignment->get_course_module()->id,
                                                             count($userswithnewfeedback),
                                                             $feedbackfilesadded,

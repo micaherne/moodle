@@ -38,7 +38,7 @@ use core_calendar\local\event\proxies\proxy_interface;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Event mapper test.

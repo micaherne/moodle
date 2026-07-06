@@ -22,7 +22,7 @@ use quizaccess_numattempts;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/accessrule/numattempts/rule.php');
+require_once(dirname(__DIR__) . '/rule.php');
 
 
 /**

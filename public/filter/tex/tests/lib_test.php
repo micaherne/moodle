@@ -30,7 +30,7 @@ namespace filter_tex;
 use advanced_testcase;
 
 global $CFG;
-require_once($CFG->dirroot . '/filter/tex/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Tex filter library functions tests

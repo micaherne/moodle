@@ -35,7 +35,7 @@ final class general_action_bar_test extends advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/grade/lib.php");
+        require_once(dirname(__DIR__, 2) . '/lib.php');
         parent::setUpBeforeClass();
     }
 

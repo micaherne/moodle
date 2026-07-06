@@ -26,7 +26,7 @@ use mod_quiz\output\navigation_panel_attempt;
 use mod_quiz\output\renderer;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(__DIR__ . '/locallib.php');
 
 $attemptid = required_param('attempt', PARAM_INT); // The attempt to summarise.
 $cmid = optional_param('cmid', null, PARAM_INT);

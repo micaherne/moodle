@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(\core\component::component_path('core_course', 'moodleform_mod.php'));
+require_once(__DIR__ . '/locallib.php');
 
 /**
  * Assignment settings form.

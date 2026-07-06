@@ -515,7 +515,7 @@ function rss_add_enclosures($item){
     $returnstring = '';
 
     // list of media file extensions and their respective mime types
-    include_once($CFG->libdir.'/filelib.php');
+    include_once(__DIR__ . '/filelib.php');
     $mediafiletypes = get_mimetypes_array();
 
     // take into account attachments (e.g. from forum) - with these, we are able to know the file size

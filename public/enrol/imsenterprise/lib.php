@@ -28,7 +28,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/group/lib.php');
+require_once(\core\component::component_path('core_group', 'lib.php'));
 
 /**
  * IMS Enterprise file enrolment plugin.
@@ -306,7 +306,7 @@ class enrol_imsenterprise_plugin extends enrol_plugin {
         $updatecourses          = $this->get_config('updatecourses');
 
         if ($createnewcourses) {
-            require_once("$CFG->dirroot/course/lib.php");
+            require_once(\core\component::component_path('core_course', 'lib.php'));
         }
 
         // Process tag contents.

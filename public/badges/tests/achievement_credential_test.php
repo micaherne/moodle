@@ -21,7 +21,7 @@ namespace core_badges;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("{$CFG->libdir}/badgeslib.php");
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 use core_badges_generator;
 

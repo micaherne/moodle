@@ -39,7 +39,7 @@ use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
 
-require_once($CFG->libdir . '/gradelib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
 
 /**
  * Data provider class.

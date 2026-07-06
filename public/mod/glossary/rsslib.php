@@ -204,7 +204,7 @@
       */
     function glossary_rss_delete_file($glossary) {
         global $CFG;
-        require_once("$CFG->libdir/rsslib.php");
+        require_once(\core\component::component_path('core', 'rsslib.php'));
 
         rss_delete_file('mod_glossary', $glossary);
     }

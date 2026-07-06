@@ -302,7 +302,7 @@ class grade_outcome extends grade_object {
      */
     public function get_description() {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(dirname(__DIR__) . '/filelib.php');
 
         $options = new stdClass;
         $options->noclean = true;

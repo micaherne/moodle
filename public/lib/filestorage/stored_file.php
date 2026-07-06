@@ -27,8 +27,8 @@ use Psr\Http\Message\StreamInterface;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/filestorage/file_progress.php');
-require_once($CFG->dirroot . '/lib/filestorage/file_system.php');
+require_once(__DIR__ . '/file_progress.php');
+require_once(__DIR__ . '/file_system.php');
 
 /**
  * Class representing local files stored in a sha1 file pool.
@@ -76,7 +76,7 @@ class stored_file {
         $this->file_record = clone($file_record); // prevent modifications
 
         if (!empty($file_record->repositoryid)) {
-            require_once("$CFG->dirroot/repository/lib.php");
+            require_once(\core\component::component_path('core_repository', 'lib.php'));
             $this->repository = repository::get_repository_by_id($file_record->repositoryid, SYSCONTEXTID);
             if ($this->repository->supported_returntypes() & FILE_REFERENCE != FILE_REFERENCE) {
                 // Repository cannot do file reference.
@@ -1065,7 +1065,7 @@ class stored_file {
      */
     public function generate_image_thumbnail($width, $height) {
         global $CFG;
-        require_once($CFG->libdir . '/gdlib.php');
+        require_once(dirname(__DIR__) . '/gdlib.php');
 
         if (empty($width) or empty($height)) {
             return false;
@@ -1095,7 +1095,7 @@ class stored_file {
      */
     public function resize_image($width, $height) {
         global $CFG;
-        require_once($CFG->libdir . '/gdlib.php');
+        require_once(dirname(__DIR__) . '/gdlib.php');
 
         $content = $this->get_content();
 

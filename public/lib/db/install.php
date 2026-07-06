@@ -295,7 +295,7 @@ function xmldb_main_install() {
     set_config('gdversion', 2);
 
     // Install licenses
-    require_once($CFG->libdir . '/licenselib.php');
+    require_once(dirname(__DIR__) . '/licenselib.php');
     license_manager::install_licenses();
 
     // Init profile pages defaults
@@ -326,14 +326,14 @@ function xmldb_main_install() {
     set_config('numerical_sortorder', 5, 'question');
     set_config('essay_sortorder', 6, 'question');
 
-    require_once($CFG->libdir . '/db/upgradelib.php');
+    require_once(__DIR__ . '/upgradelib.php');
     make_default_scale();
     make_competence_scale();
 
-    require_once($CFG->dirroot . '/badges/upgradelib.php'); // Core install and upgrade related functions only for badges.
+    require_once(\core\component::component_path('core_badges', 'upgradelib.php')); // Core install and upgrade related functions only for badges.
     badges_install_default_backpacks();
 
     // Create default core site admin presets.
-    require_once($CFG->dirroot . '/admin/presets/classes/helper.php');
+    require_once(\core\component::component_path('core_adminpresets', 'classes/helper.php'));
     \core_adminpresets\helper::create_default_presets();
 }

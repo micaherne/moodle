@@ -149,7 +149,7 @@ class mod_helper {
     protected static function process_post_save_event(stdClass $bigbluebuttonbn): void {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
         $eventid = $DB->get_field('event', 'id', [
             'modulename' => 'bigbluebuttonbn',
             'instance' => $bigbluebuttonbn->id,

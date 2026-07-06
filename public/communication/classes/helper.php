@@ -329,7 +329,7 @@ class helper {
      */
     public static function get_enrolled_users_for_course(stdClass $course, bool $onlyactive = true): array {
         global $CFG;
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
         return array_column(
             enrol_get_course_users(courseid: $course->id, onlyactive: $onlyactive),
             'id',

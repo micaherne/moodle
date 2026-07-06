@@ -44,8 +44,8 @@ use mod_quiz\output\edit_nav_actions;
 use mod_quiz\quiz_settings;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 $mdlscrollto = optional_param('mdlscrollto', '', PARAM_INT);
 

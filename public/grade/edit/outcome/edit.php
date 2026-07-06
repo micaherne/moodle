@@ -22,9 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once '../../../config.php';
-require_once $CFG->dirroot.'/grade/lib.php';
-require_once $CFG->dirroot.'/grade/report/lib.php';
+require_once __DIR__ . '/../../../config.php';
+require_once dirname(__DIR__, 2) . '/lib.php';
+require_once dirname(__DIR__, 2) . '/report/lib.php';
 require_once 'edit_form.php';
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
@@ -95,7 +95,7 @@ if ($id) {
 }
 
 if (!$courseid) {
-    require_once $CFG->libdir.'/adminlib.php';
+    require_once \core\component::component_path('core', 'adminlib.php');
     admin_externalpage_setup('outcomes');
 
     $PAGE->set_primary_active_tab('siteadminnode');

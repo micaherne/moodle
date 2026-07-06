@@ -35,9 +35,9 @@ use mod_data\preset;
 use mod_data\output\action_bar;
 use mod_data\output\preset_preview;
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/data/lib.php');
-require_once($CFG->dirroot.'/mod/data/preset_form.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/preset_form.php');
 
 // The course module id.
 $id = optional_param('id', 0, PARAM_INT);

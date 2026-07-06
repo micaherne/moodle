@@ -39,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once(dirname(__DIR__) . '/quiz_question_helper_test_trait.php');
 
 /**
  * Silly class to access mod_quiz_external internal methods.

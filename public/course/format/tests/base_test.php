@@ -29,10 +29,10 @@ final class base_test extends advanced_testcase {
      */
     public static function setupBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
-        require_once($CFG->dirroot . '/course/format/tests/fixtures/format_theunittest.php');
-        require_once($CFG->dirroot . '/course/format/tests/fixtures/format_theunittest_output_course_format_state.php');
-        require_once($CFG->dirroot . '/course/format/tests/fixtures/format_theunittest_output_course_format_invalidoutput.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
+        require_once(__DIR__ . '/fixtures/format_theunittest.php');
+        require_once(__DIR__ . '/fixtures/format_theunittest_output_course_format_state.php');
+        require_once(__DIR__ . '/fixtures/format_theunittest_output_course_format_invalidoutput.php');
     }
 
     /**

@@ -109,7 +109,7 @@ class blog extends base {
             ->set_is_sortable(true)
             ->add_callback(static function(?string $summary, stdClass $post): string {
                 global $CFG;
-                require_once("{$CFG->libdir}/filelib.php");
+                require_once(\core\component::component_path('core', 'filelib.php'));
 
                 if ($summary === null) {
                     return '';
@@ -133,7 +133,7 @@ class blog extends base {
             ->add_fields("{$postalias}.attachment, {$postalias}.id")
             ->add_callback(static function(?bool $attachment, stdClass $post): string {
                 global $CFG, $PAGE;
-                require_once("{$CFG->dirroot}/blog/locallib.php");
+                require_once(dirname(__DIR__, 4) . '/locallib.php');
 
                 if (!$attachment) {
                     return '';

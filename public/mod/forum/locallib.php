@@ -25,8 +25,8 @@
 // Event types.
 define('FORUM_EVENT_TYPE_DUE', 'due');
 
-require_once($CFG->dirroot . '/mod/forum/lib.php');
-require_once($CFG->libdir . '/portfolio/caller.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'portfolio/caller.php'));
 
 /**
  * @package   mod_forum
@@ -721,7 +721,7 @@ function mod_forum_get_tagged_posts($tag, $exclusivemode = false, $fromctx = 0, 
 function forum_update_calendar($forum, $cmid) {
     global $DB, $CFG;
 
-    require_once($CFG->dirroot.'/calendar/lib.php');
+    require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
     $event = new stdClass();
 

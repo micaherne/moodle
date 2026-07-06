@@ -24,9 +24,9 @@
 
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot . '/question/editlib.php');
-require_once($CFG->dirroot . '/question/format.php');
-require_once($CFG->dirroot . '/question/renderer.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
+require_once(\core\component::component_path('core_question', 'format.php'));
+require_once(\core\component::component_path('core_question', 'renderer.php'));
 
 use qbank_importquestions\form\question_import_form;
 
@@ -93,12 +93,12 @@ if ($form = $importform->get_data()) {
         throw new moodle_exception('uploadproblem');
     }
 
-    $formatfile = $CFG->dirroot . '/question/format/' . $form->format . '/format.php';
-    if (!is_readable($formatfile)) {
+    $qformatdir = \core_component::get_plugin_directory('qformat', $form->format);
+    if (!$qformatdir || !is_readable("$qformatdir/format.php")) {
         throw new moodle_exception('formatnotfound', 'question', '', $form->format);
     }
 
-    require_once($formatfile);
+    require_once("$qformatdir/format.php");
 
     $classname = 'qformat_' . $form->format;
     $qformat = new $classname();

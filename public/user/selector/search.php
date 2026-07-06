@@ -25,7 +25,7 @@
 define('AJAX_SCRIPT', true);
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/user/selector/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url('/user/selector/search.php');
@@ -54,7 +54,7 @@ unset($options['class']);
 $name = $options['name'];
 unset($options['name']);
 if (isset($options['file'])) {
-    require_once($CFG->dirroot . '/' . $options['file']);
+    require_once(\core\component::from_mono_path('/' . $options['file']));
     unset($options['file']);
 }
 $userselector = new $classname($name, $options);

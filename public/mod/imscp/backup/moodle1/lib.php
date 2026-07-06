@@ -128,7 +128,7 @@ class moodle1_mod_imscp_handler extends moodle1_resource_successor_handler {
             return null;
         }
 
-        require_once($CFG->dirroot.'/mod/imscp/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
         return imscp_parse_manifestfile($manifestfilecontents, $imscp, $context);
     }
 }

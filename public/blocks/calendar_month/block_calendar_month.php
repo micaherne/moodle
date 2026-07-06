@@ -38,7 +38,7 @@ class block_calendar_month extends block_base {
     public function get_content() {
         global $CFG;
 
-        require_once($CFG->dirroot.'/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         if ($this->content !== null) {
             return $this->content;

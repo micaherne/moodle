@@ -21,7 +21,7 @@ use filter_manager;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filterlib.php');
+require_once(dirname(__DIR__) . '/filterlib.php');
 
 /**
  * Test filters.
@@ -724,9 +724,9 @@ final class filterlib_test extends \advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
 
-        $this->assertFileExists("$CFG->dirroot/filter/emailprotect"); // Any standard filter.
-        $this->assertFileExists("$CFG->dirroot/filter/glossary");         // Any standard filter.
-        $this->assertFileDoesNotExist("$CFG->dirroot/filter/grgrggr");   // Any non-existent filter.
+        $this->assertFileExists(\core\component::component_path('filter_emailprotect', '')); // Any standard filter.
+        $this->assertFileExists(\core\component::component_path('filter_glossary', ''));         // Any standard filter.
+        $this->assertFileDoesNotExist(\core\component::component_path('core_filters', 'grgrggr'));   // Any non-existent filter.
 
         // Setup fixture.
         set_config('filterall', 0);
@@ -750,7 +750,7 @@ final class filterlib_test extends \advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
 
-        $this->assertFileExists("$CFG->dirroot/filter/glossary"); // Any standard filter.
+        $this->assertFileExists(\core\component::component_path('filter_glossary', '')); // Any standard filter.
 
         // Setup fixture.
         set_config('filterall', 1);
@@ -766,9 +766,9 @@ final class filterlib_test extends \advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
 
-        $this->assertFileExists("$CFG->dirroot/filter/emailprotect"); // Any standard filter.
-        $this->assertFileExists("$CFG->dirroot/filter/glossary");         // Any standard filter.
-        $this->assertFileExists("$CFG->dirroot/filter/multilang");    // Any standard filter.
+        $this->assertFileExists(\core\component::component_path('filter_emailprotect', '')); // Any standard filter.
+        $this->assertFileExists(\core\component::component_path('filter_glossary', ''));         // Any standard filter.
+        $this->assertFileExists(\core\component::component_path('filter_multilang', ''));    // Any standard filter.
 
         // Setup fixture.
         set_config('filterall', 1);

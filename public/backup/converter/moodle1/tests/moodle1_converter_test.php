@@ -29,7 +29,7 @@ use moodle1_convert_storage_exception;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/converter/moodle1/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Unit tests for the moodle1 converter
@@ -60,28 +60,28 @@ final class moodle1_converter_test extends \advanced_testcase {
         check_dir_exists("$this->tempdirpath/course_files/sub1");
         check_dir_exists("$this->tempdirpath/moddata/unittest/4/7");
         copy(
-            "$CFG->dirroot/backup/converter/moodle1/tests/fixtures/moodle.xml",
+            __DIR__ . '/fixtures/moodle.xml',
             "$this->tempdirpath/moodle.xml"
         );
         copy(
-            "$CFG->dirroot/backup/converter/moodle1/tests/fixtures/icon.gif",
+            __DIR__ . '/fixtures/icon.gif',
             "$this->tempdirpath/course_files/file1.gif"
         );
         copy(
-            "$CFG->dirroot/backup/converter/moodle1/tests/fixtures/icon.gif",
+            __DIR__ . '/fixtures/icon.gif',
             "$this->tempdirpath/course_files/sub1/file2.gif"
         );
         copy(
-            "$CFG->dirroot/backup/converter/moodle1/tests/fixtures/icon.gif",
+            __DIR__ . '/fixtures/icon.gif',
             "$this->tempdirpath/moddata/unittest/4/file1.gif"
         );
         copy(
-            "$CFG->dirroot/backup/converter/moodle1/tests/fixtures/icon.gif",
+            __DIR__ . '/fixtures/icon.gif',
             "$this->tempdirpath/moddata/unittest/4/icon.gif"
         );
         $this->iconhash = \file_storage::hash_from_path($this->tempdirpath.'/moddata/unittest/4/icon.gif');
         copy(
-            "$CFG->dirroot/backup/converter/moodle1/tests/fixtures/icon.gif",
+            __DIR__ . '/fixtures/icon.gif',
             "$this->tempdirpath/moddata/unittest/4/7/icon.gif"
         );
     }
@@ -570,7 +570,7 @@ as it is parsed from the backup file. <br /><br /><img border="0" width="110" vs
         $this->resetAfterTest(true);
 
         copy(
-            "$CFG->dirroot/backup/converter/moodle1/tests/fixtures/questions.xml",
+            __DIR__ . '/fixtures/questions.xml',
             "$this->tempdirpath/moodle.xml"
         );
         $converter = convert_factory::get_converter('moodle1', $this->tempdir);

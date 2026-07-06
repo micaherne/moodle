@@ -28,7 +28,7 @@ use mod_lti\local\ltiopenid\registration_helper;
 use mod_lti\local\ltiopenid\registration_exception;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once(__DIR__ . '/locallib.php');
 
 $code = 200;
 $message = '';

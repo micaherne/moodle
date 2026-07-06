@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/page/backup/moodle2/backup_page_stepslib.php');
+require_once(__DIR__ . '/backup_page_stepslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the Page instance

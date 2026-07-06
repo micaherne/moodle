@@ -33,7 +33,7 @@ function xmldb_tool_log_install() {
     $enabled = array();
 
     // Add data to new log only from now on.
-    if (file_exists("$CFG->dirroot/$CFG->admin/tool/log/store/standard")) {
+    if (file_exists(\core\component::component_path('logstore_standard', ''))) {
         $enabled[] = 'logstore_standard';
     }
 

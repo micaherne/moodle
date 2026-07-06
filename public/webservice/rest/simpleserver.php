@@ -30,8 +30,8 @@ define('NO_DEBUG_DISPLAY', true);
 
 define('WS_SERVER', true);
 
-require('../../config.php');
-require_once("$CFG->dirroot/webservice/rest/locallib.php");
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
 
 if (!webservice_protocol_is_enabled('rest')) {
     die;

@@ -240,7 +240,7 @@ final class matrix_user_manager_test extends \advanced_testcase {
      */
     public function test_create_matrix_user_profile_fields(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/user/profile/lib.php");
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         $this->resetAfterTest();
 

@@ -38,8 +38,8 @@ class hook_callbacks {
      */
     public static function quiz_structure_modified(structure_modified $hook) {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/quiz/report/statistics/statisticslib.php');
-        require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
+        require_once(dirname(__DIR__) . '/statisticslib.php');
+        require_once(dirname(__DIR__) . '/report.php');
         $quiz = $hook->get_structure()->get_quiz();
         $qubaids = quiz_statistics_qubaids_condition(
             $quiz->id,

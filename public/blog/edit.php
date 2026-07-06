@@ -24,9 +24,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->dirroot . '/blog/lib.php');
-require_once($CFG->dirroot . '/blog/locallib.php');
-require_once($CFG->dirroot . '/blog/edit_form.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/edit_form.php');
 
 $action   = required_param('action', PARAM_ALPHA);
 $id       = optional_param('entryid', 0, PARAM_INT);

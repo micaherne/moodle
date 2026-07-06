@@ -118,7 +118,7 @@ class url_finder {
     protected function process($replacing = false, $progress = null) {
         global $DB, $CFG;
 
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         // TODO: block_instances have HTML content as base64, need to decode then
         // search, currently just skipped. See MDL-60024.

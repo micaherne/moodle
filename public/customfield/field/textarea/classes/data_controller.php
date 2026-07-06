@@ -229,7 +229,7 @@ class data_controller extends \core_customfield\data_controller {
      */
     public function export_value() {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $value = $this->get_value();
         if ($this->is_empty($value)) {

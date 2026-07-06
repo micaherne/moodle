@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/questionbase.php');
-require_once($CFG->dirroot . '/question/type/numerical/question.php');
-require_once($CFG->dirroot . '/question/type/calculated/questiontype.php');
+require_once(\core\component::component_path('core_question', 'type/questionbase.php'));
+require_once(\core\component::component_path('qtype_numerical', 'question.php'));
+require_once(__DIR__ . '/questiontype.php');
 
 /**
  * Represents a calculated question.

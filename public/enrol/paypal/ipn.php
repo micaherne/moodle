@@ -33,10 +33,10 @@
 define('NO_DEBUG_DISPLAY', true);
 
 // This script does not require login.
-require("../../config.php"); // phpcs:ignore
+require(__DIR__ . '/../../config.php'); // phpcs:ignore
 require_once("lib.php");
-require_once($CFG->libdir.'/enrollib.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'enrollib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 // PayPal does not like when we return error messages here,
 // the custom handler just logs exceptions and stops.

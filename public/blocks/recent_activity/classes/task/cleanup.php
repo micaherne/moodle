@@ -51,7 +51,7 @@ class cleanup extends \core\task\scheduled_task {
      */
     public function execute() {
         global $CFG, $DB;
-        require_once("{$CFG->dirroot}/course/lib.php");
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         // Those entries will never be displayed as RECENT anyway.
         $DB->delete_records_select('block_recent_activity', 'timecreated < ?', [

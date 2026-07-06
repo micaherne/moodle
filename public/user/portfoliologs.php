@@ -28,8 +28,8 @@ if (empty($CFG->enableportfolios)) {
     throw new \moodle_exception('disabled', 'portfolio');
 }
 
-require_once($CFG->libdir . '/portfoliolib.php');
-require_once($CFG->libdir . '/portfolio/exporter.php');
+require_once(\core\component::component_path('core', 'portfoliolib.php'));
+require_once(\core\component::component_path('core', 'portfolio/exporter.php'));
 
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
 $page     = optional_param('page', 0, PARAM_INT);

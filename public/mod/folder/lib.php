@@ -232,7 +232,7 @@ function folder_get_file_info($browser, $areas, $course, $cm, $context, $fileare
             }
         }
 
-        require_once("$CFG->dirroot/mod/folder/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
         $urlbase = $CFG->wwwroot.'/pluginfile.php';
 
         // students may read files here

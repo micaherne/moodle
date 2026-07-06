@@ -24,9 +24,9 @@
 
 use core_grades\form\add_outcome;
 
-require_once '../../../config.php';
-require_once $CFG->dirroot.'/grade/lib.php';
-require_once $CFG->dirroot.'/grade/report/lib.php';
+require_once __DIR__ . '/../../../config.php';
+require_once dirname(__DIR__, 2) . '/lib.php';
+require_once dirname(__DIR__, 2) . '/report/lib.php';
 require_once 'outcomeitem_form.php';
 
 $courseid = required_param('courseid', PARAM_INT);

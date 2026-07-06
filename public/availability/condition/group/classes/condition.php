@@ -198,7 +198,7 @@ class condition extends \core_availability\condition {
             return $users;
         }
 
-        require_once($CFG->libdir . '/grouplib.php');
+        require_once(\core\component::component_path('core', 'grouplib.php'));
         $course = $info->get_course();
 
         // List users for this course who match the condition.

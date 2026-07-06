@@ -25,9 +25,9 @@
 namespace tool_lpmigrate\form;
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 \MoodleQuickForm::registerElementType('framework_autocomplete',
-    $CFG->dirroot . '/admin/tool/lp/classes/form/framework_autocomplete.php',
+    \core\component::component_path('tool_lp', 'classes/form/framework_autocomplete.php'),
     '\\tool_lp\\form\\framework_autocomplete');
 
 /**

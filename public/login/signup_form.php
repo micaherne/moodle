@@ -25,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/user/profile/lib.php');
-require_once($CFG->dirroot . '/user/editlib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+require_once(\core\component::component_path('core_user', 'editlib.php'));
 require_once('lib.php');
 
 class login_signup_form extends moodleform implements renderable, templatable {

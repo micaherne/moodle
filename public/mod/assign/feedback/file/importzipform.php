@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/mod/assign/feedback/file/importziplib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(__DIR__ . '/importziplib.php');
 
 /**
  * Import zip form

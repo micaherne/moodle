@@ -23,7 +23,7 @@ global $CFG;
 use context_course;
 use context_system;
 
-require_once($CFG->dirroot . '/user/selector/lib.php');
+require_once(\core\component::component_path('core_user', 'selector/lib.php'));
 
 /**
  * Abstract base class for badge award selectors.

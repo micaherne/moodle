@@ -162,14 +162,14 @@ class module extends context {
      * @return array
      */
     public function get_capabilities(string $sort = self::DEFAULT_CAPABILITY_SORT) {
-        global $DB, $CFG;
+        global $DB;
 
         $cm = $DB->get_record('course_modules', array('id' => $this->_instanceid));
         $module = $DB->get_record('modules', array('id' => $cm->module));
 
         $subcaps = array();
 
-        $modulepath = "{$CFG->dirroot}/mod/{$module->name}";
+        $moddir = \core_component::get_plugin_directory('mod', $module->name);
         $subplugins = \core\component::get_subplugins("mod_{$module->name}");
 
         if (!empty($subplugins)) {
@@ -180,9 +180,9 @@ class module extends context {
             }
         }
 
-        $modfile = "{$modulepath}/lib.php";
+        $modfile = $moddir ? "$moddir/lib.php" : null;
         $extracaps = array();
-        if (file_exists($modfile)) {
+        if ($modfile && file_exists($modfile)) {
             include_once($modfile);
             $modfunction = $module->name.'_get_extra_capabilities';
             if (function_exists($modfunction)) {

@@ -23,8 +23,8 @@
  */
 
 require(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot . '/admin/tool/mobile/lib.php');
-require_once($CFG->dirroot . '/webservice/lib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core_webservice', 'lib.php'));
 
 if (!$CFG->enablemobilewebservice) {
     throw new \moodle_exception('enablewsdescription', 'webservice');

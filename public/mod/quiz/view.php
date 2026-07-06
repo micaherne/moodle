@@ -32,10 +32,10 @@ use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->libdir.'/gradelib.php');
-require_once($CFG->dirroot.'/mod/quiz/locallib.php');
-require_once($CFG->libdir . '/completionlib.php');
-require_once($CFG->dirroot . '/course/format/lib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
+require_once(\core\component::component_path('core_courseformat', 'lib.php'));
 
 $id = optional_param('id', 0, PARAM_INT); // Course Module ID, or ...
 $q = optional_param('q',  0, PARAM_INT);  // Quiz ID.

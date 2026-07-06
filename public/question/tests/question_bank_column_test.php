@@ -23,8 +23,8 @@ use testable_core_question_column;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/editlib.php');
-require_once($CFG->dirroot . '/question/tests/fixtures/testable_core_question_column.php');
+require_once(dirname(__DIR__) . '/editlib.php');
+require_once(__DIR__ . '/fixtures/testable_core_question_column.php');
 
 /**
  * Unit tests for the question bank column class.

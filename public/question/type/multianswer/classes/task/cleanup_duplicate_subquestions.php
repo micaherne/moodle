@@ -67,7 +67,7 @@ class cleanup_duplicate_subquestions extends \core\task\adhoc_task {
     #[\Override]
     public function execute() {
         global $CFG, $DB;
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(\core\component::component_path('core', 'questionlib.php'));
 
         $duplicatedsubquestions = $this->find_duplicated_subquestions();
 

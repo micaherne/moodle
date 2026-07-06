@@ -37,7 +37,7 @@ use core_privacy\local\request\writer;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/workshop/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 /**
  * Privacy API implementation for the Workshop activity module.
@@ -589,7 +589,7 @@ class provider implements
      */
     public static function delete_data_for_all_users_in_context(\context $context) {
         global $CFG, $DB;
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         if ($context->contextlevel != CONTEXT_MODULE) {
             return;

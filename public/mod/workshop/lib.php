@@ -28,7 +28,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
 define('WORKSHOP_EVENT_TYPE_SUBMISSION_OPEN',   'opensubmission');
 define('WORKSHOP_EVENT_TYPE_SUBMISSION_CLOSE',  'closesubmission');
@@ -242,7 +242,7 @@ function workshop_update_instance(stdclass $workshop) {
  */
 function workshop_delete_instance($id) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     if (! $workshop = $DB->get_record('workshop', array('id' => $id))) {
         return false;
@@ -398,7 +398,7 @@ function workshop_get_post_actions() {
  */
 function workshop_user_outline($course, $user, $mod, $workshop) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $grades = grade_get_grades($course->id, 'mod', 'workshop', $workshop->id, $user->id);
 
@@ -452,7 +452,7 @@ function workshop_user_outline($course, $user, $mod, $workshop) {
 function workshop_user_complete($course, $user, $mod, $workshop) {
     global $CFG, $DB, $OUTPUT;
     require_once(__DIR__.'/locallib.php');
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $workshop   = new workshop($workshop, $mod, $course);
     $grades     = grade_get_grades($course->id, 'mod', 'workshop', $workshop->id, $user->id);
@@ -930,7 +930,7 @@ function workshop_get_recent_mod_activity(&$activities, &$index, $timestart, $co
     $workshopname = format_string($cm->name, true);
 
     if ($grader) {
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $grades = grade_get_grades($courseid, 'mod', 'workshop', $cm->instance, array_keys($users));
     }
 
@@ -1109,7 +1109,7 @@ function workshop_scale_used_anywhere($scaleid) {
  */
 function workshop_grade_item_update(stdclass $workshop, $submissiongrades=null, $assessmentgrades=null) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $a = new stdclass();
     $a->workshopname = clean_param($workshop->name, PARAM_NOTAGS);
@@ -1141,7 +1141,7 @@ function workshop_grade_item_update(stdclass $workshop, $submissiongrades=null, 
  */
 function workshop_update_grades(stdclass $workshop, $userid=0) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $whereuser = $userid ? ' AND authorid = :userid' : '';
     $params = array('workshopid' => $workshop->id, 'userid' => $userid);
@@ -1434,7 +1434,7 @@ function workshop_get_file_info($browser, $areas, $course, $cm, $context, $filea
 
         if (is_null($itemid)) {
             // no itemid (submissionid) passed, display the list of all submissions
-            require_once($CFG->dirroot . '/mod/workshop/fileinfolib.php');
+            require_once(__DIR__ . '/fileinfolib.php');
             return new workshop_file_info_submissions_container($browser, $course, $cm, $context, $areas, $filearea);
         }
 
@@ -1521,7 +1521,7 @@ function workshop_get_file_info($browser, $areas, $course, $cm, $context, $filea
 
         if (is_null($itemid)) {
             // No itemid (assessmentid) passed, display the list of all assessments.
-            require_once($CFG->dirroot . '/mod/workshop/fileinfolib.php');
+            require_once(__DIR__ . '/fileinfolib.php');
             return new workshop_file_info_overallfeedback_container($browser, $course, $cm, $context, $areas, $filearea);
         }
 
@@ -2042,7 +2042,7 @@ function workshop_reset_userdata(stdClass $data) {
         return $status;
     }
 
-    require_once($CFG->dirroot . '/mod/workshop/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $course = $DB->get_record('course', ['id' => $data->courseid], '*', MUST_EXIST);
 

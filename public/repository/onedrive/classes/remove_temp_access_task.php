@@ -32,7 +32,7 @@ use \core\oauth2\rest_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 /**
  * Simple task to delete temporary permission records.

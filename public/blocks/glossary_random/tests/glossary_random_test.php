@@ -31,7 +31,7 @@ use context_course;
  */
 final class glossary_random_test extends advanced_testcase {
     public static function setUpBeforeClass(): void {
-        require_once(__DIR__ . '/../../moodleblock.class.php');
+        require_once(\core\component::component_path('core_block', 'moodleblock.class.php'));
         require_once(__DIR__ . '/../block_glossary_random.php');
         parent::setUpBeforeClass();
     }

@@ -25,9 +25,9 @@
 
 use core\report_helper;
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/report/stats/locallib.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $courseid = optional_param('course', SITEID, PARAM_INT);
 $report   = optional_param('report', 0, PARAM_INT);

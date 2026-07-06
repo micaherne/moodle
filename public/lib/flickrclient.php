@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/oauthlib.php');
+require_once(__DIR__ . '/oauthlib.php');
 
 /**
  * Simple Flickr API client implementing the features needed by Moodle

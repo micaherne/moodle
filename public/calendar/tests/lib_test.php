@@ -32,7 +32,7 @@ final class lib_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/calendar/tests/helpers.php");
+        require_once(__DIR__ . '/helpers.php');
         parent::setUpBeforeClass();
     }
 
@@ -175,7 +175,7 @@ final class lib_test extends \advanced_testcase {
     public function test_add_subscription(): void {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/lib/bennu/bennu.inc.php');
+        require_once(\core\component::component_path('core', 'bennu/bennu.inc.php'));
 
         $this->resetAfterTest(true);
 
@@ -186,7 +186,7 @@ final class lib_test extends \advanced_testcase {
         $subscription->eventtype = 'site';
         $id = calendar_add_subscription($subscription);
 
-        $calendar = file_get_contents($CFG->dirroot . '/lib/tests/fixtures/ms_outlook_2010.ics');
+        $calendar = file_get_contents(\core\component::component_path('core', 'tests/fixtures/ms_outlook_2010.ics'));
         $ical = new \iCalendar();
         $ical->unserialize($calendar);
         $this->assertEquals($ical->parser_errors, array());
@@ -203,7 +203,7 @@ final class lib_test extends \advanced_testcase {
         $subscription->eventtype = 'site';
         $id = calendar_add_subscription($subscription);
 
-        $calendar = file_get_contents($CFG->dirroot . '/lib/tests/fixtures/osx_yosemite.ics');
+        $calendar = file_get_contents(\core\component::component_path('core', 'tests/fixtures/osx_yosemite.ics'));
         $ical = new \iCalendar();
         $ical->unserialize($calendar);
         $this->assertEquals($ical->parser_errors, array());
@@ -220,7 +220,7 @@ final class lib_test extends \advanced_testcase {
         $subscription->eventtype = 'site';
         $id = calendar_add_subscription($subscription);
 
-        $calendar = file_get_contents($CFG->dirroot . '/lib/tests/fixtures/google_gmail.ics');
+        $calendar = file_get_contents(\core\component::component_path('core', 'tests/fixtures/google_gmail.ics'));
         $ical = new \iCalendar();
         $ical->unserialize($calendar);
         $this->assertEquals($ical->parser_errors, array());
@@ -236,7 +236,7 @@ final class lib_test extends \advanced_testcase {
         $subscription->importfrom = CALENDAR_IMPORT_FROM_FILE;
         $subscription->eventtype = 'site';
         $id = calendar_add_subscription($subscription);
-        $calendar = file_get_contents($CFG->dirroot . '/lib/tests/fixtures/repeated_events.ics');
+        $calendar = file_get_contents(\core\component::component_path('core', 'tests/fixtures/repeated_events.ics'));
         $ical = new \iCalendar();
         $ical->unserialize($calendar);
         $this->assertEquals($ical->parser_errors, []);

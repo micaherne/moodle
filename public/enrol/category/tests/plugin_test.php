@@ -86,7 +86,7 @@ final class plugin_test extends \advanced_testcase {
 
     public function test_handler_sync(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/enrol/category/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
 
         $this->resetAfterTest();
 
@@ -159,7 +159,7 @@ final class plugin_test extends \advanced_testcase {
 
     public function test_sync_course(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/enrol/category/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
 
         $this->resetAfterTest();
 
@@ -253,7 +253,7 @@ final class plugin_test extends \advanced_testcase {
 
     public function test_sync_full(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/enrol/category/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
 
         $this->resetAfterTest();
 

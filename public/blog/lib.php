@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 /*
  * Library of functions and constants for blog
  */
-require_once($CFG->dirroot .'/blog/rsslib.php');
+require_once(__DIR__ . '/rsslib.php');
 
 /**
  * User can edit a blog entry if this is their own blog entry and they have
@@ -147,7 +147,7 @@ function blog_remove_associations_for_module($modcontextid) {
  */
 function blog_sync_external_entries($externalblog) {
     global $CFG, $DB;
-    require_once($CFG->libdir . '/simplepie/moodle_simplepie.php');
+    require_once(\core\component::component_path('core', 'simplepie/moodle_simplepie.php'));
 
     $rss = new moodle_simplepie();
     $rssfile = $rss->registry->create('File', array($externalblog->url));
@@ -1075,7 +1075,7 @@ function core_blog_myprofile_navigation(core_user\output\myprofile\tree $tree, $
  */
 function blog_get_tagged_posts($tag, $exclusivemode = false, $fromctx = 0, $ctx = 0, $rec = true, $page = 0) {
     global $CFG, $OUTPUT;
-    require_once($CFG->dirroot.'/user/lib.php');
+    require_once(\core\component::component_path('core_user', 'lib.php'));
 
     $systemcontext = context_system::instance();
     $perpage = $exclusivemode ? 20 : 5;
@@ -1092,7 +1092,7 @@ function blog_get_tagged_posts($tag, $exclusivemode = false, $fromctx = 0, $ctx 
         // No blog entries can be associated with category or block context.
         $totalpages = 0;
     } else {
-        require_once($CFG->dirroot.'/blog/locallib.php');
+        require_once(__DIR__ . '/locallib.php');
 
         $filters = array('tag' => $tag->id);
         if ($rec) {

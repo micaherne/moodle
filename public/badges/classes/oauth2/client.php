@@ -28,8 +28,8 @@ namespace core_badges\oauth2;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/oauthlib.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'oauthlib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 require_once('badge_backpack_oauth2.php');
 
 use moodle_url;

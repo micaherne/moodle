@@ -23,7 +23,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot. '/course/format/singleactivity/settingslib.php');
+require_once(__DIR__ . '/settingslib.php');
 
 if ($ADMIN->fulltree) {
     $settings->add(new format_singleactivity_admin_setting_activitytype('format_singleactivity/activitytype',

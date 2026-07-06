@@ -1,7 +1,7 @@
 <?php
 
-require_once($CFG->libdir . '/portfoliolib.php');
-require_once($CFG->libdir . '/portfolio/plugin.php');
+require_once(\core\component::component_path('core', 'portfoliolib.php'));
+require_once(\core\component::component_path('core', 'portfolio/plugin.php'));
 
 class portfolio_plugin_download extends portfolio_plugin_pull_base {
 

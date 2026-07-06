@@ -517,7 +517,7 @@ class restore_controller extends base_controller {
      */
     public function convert() {
         global $CFG;
-        require_once($CFG->dirroot . '/backup/util/helper/convert_helper.class.php');
+        require_once(dirname(__DIR__) . '/util/helper/convert_helper.class.php');
 
         // Basic/initial prevention against time/memory limits
         core_php_time_limit::raise(1 * 60 * 60); // 1 hour for 1 course initially granted

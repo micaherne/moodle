@@ -332,7 +332,7 @@ class user extends base {
                 return '';
             }
 
-            require_once("{$CFG->libdir}/filelib.php");
+            require_once(\core\component::component_path('core', 'filelib.php'));
 
             context_helper::preload_from_record(clone $row);
             $context = context::instance_by_id($row->ctxid);

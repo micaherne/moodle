@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $action = optional_param('action', '', PARAM_ALPHA);
 $filterpath = optional_param('filterpath', '', PARAM_PLUGIN);

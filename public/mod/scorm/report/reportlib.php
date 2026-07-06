@@ -29,13 +29,12 @@ defined('MOODLE_INTERNAL') || die();
  * @return array list of valid reports present
  */
 function scorm_report_list($context) {
-    global $CFG;
     static $reportlist;
     if (!empty($reportlist)) {
         return $reportlist;
     }
     $installed = core_component::get_plugin_list('scormreport');
-    foreach ($installed as $reportname => $notused) {
+    foreach ($installed as $reportname => $reportdir) {
 
         // Moodle 2.8+ style of autoloaded classes.
         $classname = "scormreport_$reportname\\report";
@@ -49,7 +48,7 @@ function scorm_report_list($context) {
         }
 
         // Legacy style of naming classes.
-        $pluginfile = $CFG->dirroot.'/mod/scorm/report/'.$reportname.'/report.php';
+        $pluginfile = $reportdir . '/report.php';
         if (is_readable($pluginfile)) {
             debugging("Please use autoloaded classnames for your plugin. Refer MDL-46469 for details", DEBUG_DEVELOPER);
             include_once($pluginfile);

@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/filterlib.php");
+require_once(\core\component::component_path('core', 'filterlib.php'));
 
 /**
  * Move up the displayh5p filter over urltolink and activitynames filters to works properly.

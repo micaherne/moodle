@@ -27,8 +27,8 @@ use tool_customlang\form\import;
 use tool_customlang\local\importer;
 
 require(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/customlang/locallib.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 require_login(SITEID, false);
 require_capability('tool/customlang:edit', context_system::instance());

@@ -237,7 +237,7 @@ abstract class preset_importer {
      * @return bool Wether the importing has been successful.
      */
     public function import(bool $overwritesettings): bool {
-        global $DB, $OUTPUT, $CFG;
+        global $DB, $OUTPUT;
 
         $settings = $this->settings->settings;
         $currentfields = $this->settings->currentfields;
@@ -261,12 +261,12 @@ abstract class preset_importer {
 
         foreach ($this->fieldstocreate as $newfield) {
             /* Make a new field */
-            $filepath = $CFG->dirroot."/mod/data/field/$newfield->type/field.class.php";
-            if (!file_exists($filepath)) {
+            $fielddir = \core_component::get_plugin_directory('datafield', $newfield->type);
+            if (!$fielddir || !file_exists("$fielddir/field.class.php")) {
                 $missingfieldtypes[] = $newfield->name;
                 continue;
             }
-            include_once($filepath);
+            include_once("$fielddir/field.class.php");
 
             if (!isset($newfield->description)) {
                 $newfield->description = '';

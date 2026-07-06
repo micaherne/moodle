@@ -31,7 +31,7 @@ use admin_setting_configtext;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/adminlib.php');
+require_once(dirname(__DIR__) . '/adminlib.php');
 
 /**
  * Provides the unit tests for admin tree functionality.
@@ -164,7 +164,7 @@ final class admintree_test extends \advanced_testcase {
         $executable = new admin_setting_configexecutable('test1', 'Text 1', 'Help Path', '');
 
         // Check for an invalid path.
-        $result = $executable->output_html($CFG->dirroot . '/lib/tests/other/file_does_not_exist');
+        $result = $executable->output_html(__DIR__ . '/other/file_does_not_exist');
         $this->assertMatchesRegularExpression('/class="text-danger"/', $result);
 
         // Check for a directory.
@@ -172,7 +172,7 @@ final class admintree_test extends \advanced_testcase {
         $this->assertMatchesRegularExpression('/class="text-danger"/', $result);
 
         // Check for a file which is not executable.
-        $result = $executable->output_html($CFG->dirroot . '/lib/upgrade.txt');
+        $result = $executable->output_html(dirname(__DIR__) . '/upgrade.txt');
         $this->assertMatchesRegularExpression('/class="text-danger"/', $result);
 
         // Check for an executable file using PHP_BINARY (the current PHP executable).

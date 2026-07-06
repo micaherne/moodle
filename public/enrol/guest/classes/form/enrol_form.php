@@ -42,7 +42,7 @@ class enrol_form extends dynamic_form {
      */
     protected function get_instance(): \stdClass {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/lib/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
         if ($this->instance === null) {
             $courseid = $this->optional_param('id', 0, PARAM_INT);
             $instanceid = $this->optional_param('instance', 0, PARAM_INT);
@@ -136,7 +136,7 @@ class enrol_form extends dynamic_form {
             $destination = $SESSION->wantsurl;
             unset($SESSION->wantsurl);
         } else {
-            require_once($CFG->dirroot . '/course/lib.php');
+            require_once(\core\component::component_path('core_course', 'lib.php'));
             $destination = course_get_url($instance->courseid);
         }
         return $destination;

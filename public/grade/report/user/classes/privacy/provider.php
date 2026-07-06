@@ -30,7 +30,7 @@ use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\transform;
 use \core_privacy\local\request\writer;
 
-require_once $CFG->libdir.'/grade/constants.php';
+require_once \core\component::component_path('core', 'grade/constants.php');
 
 
 /**

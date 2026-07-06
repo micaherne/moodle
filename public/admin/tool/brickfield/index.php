@@ -34,8 +34,8 @@ use tool_brickfield\registration;
 use tool_brickfield\scheduler;
 use tool_brickfield\task\process_analysis_requests;
 
-require('../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require(__DIR__ . '/../../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 // If this feature has been disabled, do nothing.
 accessibility::require_accessibility_enabled();

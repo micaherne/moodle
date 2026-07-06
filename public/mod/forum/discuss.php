@@ -24,7 +24,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 
 $d      = required_param('d', PARAM_INT);                // Discussion ID
 $parent = optional_param('parent', 0, PARAM_INT);        // If set, then display this post and all children.
@@ -87,7 +87,7 @@ $PAGE->set_supplementary_content(
 );
 
 // move this down fix for MDL-6926
-require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $modcontext = $forum->get_context();
 
@@ -97,7 +97,7 @@ if (
     $forum->get_rss_type() &&
     $forum->get_rss_articles()
 ) {
-    require_once("$CFG->libdir/rsslib.php");
+    require_once(\core\component::component_path('core', 'rsslib.php'));
 
     $rsstitle = format_string(
         $course->shortname,
@@ -215,7 +215,7 @@ if ($move > 0 && confirm_sesskey()) {
     $event->trigger();
 
     // Delete the RSS files for the 2 forums to force regeneration of the feeds
-    require_once($CFG->dirroot . '/mod/forum/rsslib.php');
+    require_once(__DIR__ . '/rsslib.php');
     forum_rss_delete_file($forumrecord);
     forum_rss_delete_file($forumto);
 

@@ -25,7 +25,7 @@
 use core\report_helper;
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $ruleid = optional_param('ruleid', 0, PARAM_INT);

@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 use tool_usertours\helper;
 use tool_usertours\tour;
 
-require_once($CFG->libdir . '/tablelib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * Table to show the list of tours.

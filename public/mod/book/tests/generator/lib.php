@@ -52,7 +52,7 @@ class mod_book_generator extends testing_module_generator {
 
     public function create_instance($record = null, ?array $options = null) {
         global $CFG;
-        require_once("$CFG->dirroot/mod/book/locallib.php");
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
 
         $record = (object)(array)$record;
 

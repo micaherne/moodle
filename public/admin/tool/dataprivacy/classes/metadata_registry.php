@@ -159,7 +159,7 @@ class metadata_registry {
         global $CFG;
 
         $list = \core_component::get_component_list();
-        $list['core']['core'] = "{$CFG->dirroot}/lib";
+        $list['core']['core'] = \core\component::component_path('core', '');
         $formattedlist = [];
         foreach ($list as $plugintype => $plugin) {
             $formattedlist[] = ['plugin_type' => $plugintype, 'plugins' => array_keys($plugin)];

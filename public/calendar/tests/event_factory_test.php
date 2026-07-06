@@ -22,7 +22,7 @@ use core_calendar\local\event\entities\event_interface;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Event factory test.

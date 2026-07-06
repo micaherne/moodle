@@ -61,7 +61,7 @@ class qtype_essay_renderer extends qtype_renderer {
             $answer .= html_writer::nonempty_tag('p', $question->get_word_count_message_for_review($step->get_qt_data()));
 
             if (!empty($CFG->enableplagiarism)) {
-                require_once($CFG->libdir . '/plagiarismlib.php');
+                require_once(\core\component::component_path('core', 'plagiarismlib.php'));
 
                 $answer .= plagiarism_get_links([
                     'context' => $options->context->id,
@@ -119,7 +119,7 @@ class qtype_essay_renderer extends qtype_renderer {
                 $this->output->pix_icon(file_file_icon($file), get_mimetype_description($file),
                     'moodle', array('class' => 'icon')) . ' ' . s($file->get_filename()));
             if (!empty($CFG->enableplagiarism)) {
-                require_once($CFG->libdir . '/plagiarismlib.php');
+                require_once(\core\component::component_path('core', 'plagiarismlib.php'));
 
                 $out .= plagiarism_get_links([
                     'context' => $options->context->id,
@@ -153,7 +153,7 @@ class qtype_essay_renderer extends qtype_renderer {
     public function files_input(question_attempt $qa, $numallowed,
             question_display_options $options) {
         global $CFG, $COURSE;
-        require_once($CFG->dirroot . '/lib/form/filemanager.php');
+        require_once(\core\component::component_path('core_form', 'filemanager.php'));
 
         $pickeroptions = new stdClass();
         $pickeroptions->mainfile = null;
@@ -320,7 +320,7 @@ class qtype_essay_format_editor_renderer extends qtype_essay_format_renderer_bas
 
     public function response_area_input($name, $qa, $step, $lines, $context) {
         global $CFG;
-        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $inputname = $qa->get_qt_field_name($name);
         $responseformat = $step->get_qt_var($name . 'format');

@@ -275,7 +275,7 @@ abstract class component_gradeitem {
      * @return grading_manager
      */
     protected function get_grading_manager(): ?grading_manager {
-        require_once(__DIR__ . '/../grading/lib.php');
+        require_once(\core\component::component_path('core_grading', 'lib.php'));
         return get_grading_manager($this->context, $this->component, $this->itemname);
 
     }
@@ -458,7 +458,7 @@ abstract class component_gradeitem {
      */
     public function get_grade_item(): \grade_item {
         global $CFG;
-        require_once("{$CFG->libdir}/gradelib.php");
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         [$itemtype, $itemmodule] = \core_component::normalize_component($this->component);
         $gradeitem = \grade_item::fetch([
@@ -489,7 +489,7 @@ abstract class component_gradeitem {
      */
     public function store_grade_from_formdata(stdClass $gradeduser, stdClass $grader, stdClass $formdata): bool {
         // Require gradelib for grade_floatval.
-        require_once(__DIR__ . '/../../lib/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $grade = $this->get_grade_for_user($gradeduser, $grader);
 
         if ($this->is_using_advanced_grading()) {

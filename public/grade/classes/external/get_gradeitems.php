@@ -28,7 +28,7 @@ use core_external\external_warnings;
 use core_external\restricted_context_exception;
 use grade_item;
 
-require_once($CFG->libdir . '/gradelib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
 
 /**
  * External grade get gradeitems API implementation

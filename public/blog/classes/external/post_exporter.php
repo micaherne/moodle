@@ -188,7 +188,7 @@ class post_exporter extends exporter {
 
     protected function get_other_values(renderer_base $output) {
         global $CFG;
-        require_once($CFG->dirroot . '/blog/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         $context = context_system::instance(); // Files always on site context.
 

@@ -27,10 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once(\core\component::component_path('core_question', 'engine/lib.php'));
+require_once(dirname(__DIR__, 2) . '/locallib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(dirname(__DIR__) . '/quiz_question_helper_test_trait.php');
 
 /**
  * Test repeatedly restoring a quiz into another course.

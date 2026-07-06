@@ -35,7 +35,7 @@ defined('MOODLE_INTERNAL') || die;
 function report_completion_extend_navigation_course($navigation, $course, $context) {
     global $CFG;
 
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     if (has_capability('report/completion:view', $context)) {
         $completion = new completion_info($course);

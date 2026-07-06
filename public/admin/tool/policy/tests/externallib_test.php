@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/user/externallib.php');
+require_once(\core\component::component_path('core_user', 'externallib.php'));
 
 /**
  * External policy webservice API tests.

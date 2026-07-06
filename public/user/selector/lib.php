@@ -772,7 +772,7 @@ abstract class groups_user_selector_base extends user_selector_base {
         parent::__construct($name, $options);
         $this->groupid = $options['groupid'];
         $this->courseid = $options['courseid'];
-        require_once($CFG->dirroot . '/group/lib.php');
+        require_once(\core\component::component_path('core_group', 'lib.php'));
     }
 
     /**

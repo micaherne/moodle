@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/authlib.php');
+require_once(\core\component::component_path('core', 'authlib.php'));
 
 /**
  * External database authentication plugin.
@@ -38,7 +38,7 @@ class auth_plugin_db extends auth_plugin_base {
      */
     function __construct() {
         global $CFG;
-        require_once($CFG->libdir.'/adodb/adodb.inc.php');
+        require_once(\core\component::component_path('core', 'adodb/adodb.inc.php'));
 
         $this->authtype = 'db';
         $this->config = get_config('auth_db');
@@ -291,7 +291,7 @@ class auth_plugin_db extends auth_plugin_base {
     function sync_users(progress_trace $trace, $do_updates=false) {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         // List external users.
         $userlist = $this->get_userlist();
@@ -473,7 +473,7 @@ class auth_plugin_db extends auth_plugin_base {
                 }
 
                 // Save custom profile fields here.
-                require_once($CFG->dirroot . '/user/profile/lib.php');
+                require_once(\core\component::component_path('core_user', 'profile/lib.php'));
                 $user->id = $id;
                 profile_save_data($user);
 

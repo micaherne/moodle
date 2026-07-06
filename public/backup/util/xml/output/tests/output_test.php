@@ -34,9 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/xml/output/xml_output.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/output/memory_xml_output.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/output/file_xml_output.class.php');
+require_once(dirname(__DIR__) . '/xml_output.class.php');
+require_once(dirname(__DIR__) . '/memory_xml_output.class.php');
+require_once(dirname(__DIR__) . '/file_xml_output.class.php');
 
 /**
  * xml_output tests (base, memory and file)

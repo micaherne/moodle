@@ -40,7 +40,7 @@ use core_external\external_value;
 use core_external\external_warnings;
 use stdClass;
 use moodle_exception;
-require_once($CFG->dirroot.'/grade/grading/form/rubric/lib.php');
+require_once(dirname(__DIR__, 5) . '/lib.php');
 
 /**
  * Web services relating to fetching of a rubric for the grading panel.
@@ -94,7 +94,7 @@ class fetch extends external_api {
      */
     public static function execute(string $component, int $contextid, string $itemname, int $gradeduserid): array {
         global $CFG, $USER;
-        require_once("{$CFG->libdir}/gradelib.php");
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         [
             'component' => $component,
             'contextid' => $contextid,

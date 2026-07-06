@@ -263,7 +263,7 @@ class user {
         $querylimit = 5
     ) {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         // Allow limits to be turned off.
         if (!$max) {
@@ -646,7 +646,7 @@ class user {
      */
     public static function update_picture(stdClass $usernew, $filemanageroptions = []) {
         global $CFG, $DB;
-        require_once("$CFG->libdir/gdlib.php");
+        require_once(dirname(__DIR__) . '/gdlib.php');
 
         $context = context_user::instance($usernew->id, MUST_EXIST);
         $user = self::get_user($usernew->id, 'id, picture', MUST_EXIST);

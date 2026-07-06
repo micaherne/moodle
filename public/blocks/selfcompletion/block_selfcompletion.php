@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->libdir.'/completionlib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Self course completion marking

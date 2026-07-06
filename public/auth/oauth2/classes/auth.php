@@ -35,9 +35,9 @@ use core\oauth2\issuer;
 use core\oauth2\client;
 
 global $CFG;
-require_once($CFG->libdir.'/authlib.php');
-require_once($CFG->dirroot.'/user/lib.php');
-require_once($CFG->dirroot.'/user/profile/lib.php');
+require_once(\core\component::component_path('core', 'authlib.php'));
+require_once(\core\component::component_path('core_user', 'lib.php'));
+require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 require_once($CFG->dirroot.'/login/lib.php');
 
 /**
@@ -231,9 +231,9 @@ class auth extends \auth_plugin_base {
     private function update_picture($user) {
         global $CFG, $DB, $USER;
 
-        require_once($CFG->libdir . '/filelib.php');
-        require_once($CFG->libdir . '/gdlib.php');
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
+        require_once(\core\component::component_path('core', 'gdlib.php'));
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         $fs = get_file_storage();
         $userid = $user->id;
@@ -568,7 +568,7 @@ class auth extends \auth_plugin_base {
                 } else {
                     \auth_oauth2\api::link_login($userinfo, $issuer, $moodleuser->id, true);
                     // We dont have profile loaded on $moodleuser, so load it.
-                    require_once($CFG->dirroot.'/user/profile/lib.php');
+                    require_once(\core\component::component_path('core_user', 'profile/lib.php'));
                     profile_load_custom_fields($moodleuser);
                     $userinfo = $this->update_user($userinfo, $moodleuser);
                     // No redirect, we will complete this login.

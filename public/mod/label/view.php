@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once("../../config.php");
+require_once(__DIR__ . '/../../config.php');
 
 $id = optional_param('id',0,PARAM_INT);    // Course Module ID, or
 $l = optional_param('l',0,PARAM_INT);     // Label ID

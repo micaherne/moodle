@@ -50,11 +50,11 @@ class sync_grades extends \core\task\scheduled_task {
     public function execute() {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/enrol/lti/ims-blti/OAuth.php');
-        require_once($CFG->dirroot . '/enrol/lti/ims-blti/OAuthBody.php');
-        require_once($CFG->dirroot . '/lib/completionlib.php');
-        require_once($CFG->libdir . '/gradelib.php');
-        require_once($CFG->dirroot . '/grade/querylib.php');
+        require_once(dirname(__DIR__, 2) . '/ims-blti/OAuth.php');
+        require_once(dirname(__DIR__, 2) . '/ims-blti/OAuthBody.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core_grades', 'querylib.php'));
 
         // Check if the authentication plugin is disabled.
         if (!\core\di::get(\core\authentication::class)->is_enabled('lti')) {

@@ -24,7 +24,7 @@ use file_system_filedir;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filestorage/file_system.php');
+require_once(dirname(__DIR__) . '/file_system.php');
 
 /**
  * Unit tests for file_system.

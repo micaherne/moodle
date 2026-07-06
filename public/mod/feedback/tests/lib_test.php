@@ -26,7 +26,7 @@ use mod_feedback_completion;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/mod/feedback/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Unit tests for (some of) mod/feedback/lib.php.
@@ -680,7 +680,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_get_valid_event_timestart_range_unknown_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -720,7 +720,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_get_valid_event_timestart_range_event_type_open(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -761,7 +761,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_get_valid_event_timestart_range_event_type_open_no_close(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -801,7 +801,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_get_valid_event_timestart_range_event_type_close(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -842,7 +842,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_get_valid_event_timestart_range_event_type_close_no_open(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -881,7 +881,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_feedback_core_calendar_event_timestart_updated_unknown_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -924,7 +924,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_feedback_core_calendar_event_timestart_updated_open_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -974,7 +974,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_feedback_core_calendar_event_timestart_updated_close_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1025,7 +1025,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_student_role_cant_update_time_close_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -1084,7 +1084,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_teacher_role_can_update_time_close_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
         $this->setAdminUser();

@@ -278,7 +278,7 @@ abstract class backup_activity_task extends backup_task {
      */
     protected function define_settings() {
         global $CFG;
-        require_once($CFG->libdir.'/questionlib.php');
+        require_once(\core\component::component_path('core', 'questionlib.php'));
 
         // All the settings related to this activity will include this prefix.
         $settingprefix = $this->modulename . '_' . $this->moduleid . '_';

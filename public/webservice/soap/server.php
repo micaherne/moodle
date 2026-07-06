@@ -30,8 +30,8 @@ define('NO_DEBUG_DISPLAY', true);
 
 define('WS_SERVER', true);
 
-require('../../config.php');
-require_once("$CFG->dirroot/webservice/soap/locallib.php");
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
 
 if (!webservice_protocol_is_enabled('soap')) {
     debugging('The server died because the web services or the SOAP protocol are not enable',
@@ -50,7 +50,7 @@ die;
  */
 function raise_early_ws_exception(Exception $ex): void {
     global $CFG;
-    require_once("$CFG->dirroot/webservice/soap/locallib.php");
+    require_once(__DIR__ . '/locallib.php');
     $server = new webservice_soap_server(WEBSERVICE_AUTHMETHOD_PERMANENT_TOKEN);
     $server->exception_handler($ex);
 }

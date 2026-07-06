@@ -38,7 +38,7 @@
 function qtype_ordering_pluginfile(stdClass $course, stdClass $cm, stdClass $context, string $filearea, array $args,
         bool $forcedownload, array $options = []) {
     global $CFG;
-    require_once($CFG->dirroot . '/lib/questionlib.php');
+    require_once(\core\component::component_path('core', 'questionlib.php'));
 
     question_pluginfile($course, $context, 'qtype_ordering', $filearea, $args, $forcedownload);
 }

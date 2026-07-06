@@ -136,14 +136,14 @@ class yui {
 
         // Attempt to get the metadata from the cache.
         $keyname = 'configfn_' . $file;
-        $fullpath = $CFG->dirroot . '/' . $file;
+        $fullpath = \core\component::from_mono_path('/' . $file);
         if (!isset($CFG->jsrev) || $CFG->jsrev == -1) {
             $cache->delete($keyname);
             $configfn = file_get_contents($fullpath);
         } else {
             $configfn = $cache->get($keyname);
             if ($configfn === false) {
-                require_once($CFG->libdir . '/jslib.php');
+                require_once(dirname(__DIR__, 3) . '/jslib.php');
                 $configfn = core_minify::js_files([$fullpath]);
                 $cache->set($keyname, $configfn);
             }

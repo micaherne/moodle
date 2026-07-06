@@ -66,7 +66,7 @@ final class attempt_test extends \advanced_testcase {
      */
     public function test_create_attempt(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot.'/lib/xapi/tests/helper.php');
+        require_once(\core\component::component_path('core_xapi', 'tests/helper.php'));
 
         [$cm, $student, $course] = $this->generate_testing_scenario();
         $student2 = $this->getDataGenerator()->create_and_enrol($course, 'student');

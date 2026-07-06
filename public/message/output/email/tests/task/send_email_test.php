@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/message/tests/messagelib_test.php');
+require_once(\core\component::component_path('core_message', 'tests/messagelib_test.php'));
 
 /**
  * Class for testing the send email task.

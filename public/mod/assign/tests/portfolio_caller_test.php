@@ -21,9 +21,9 @@ use mod_assign_testable_assign;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
-require_once($CFG->dirroot . '/mod/assign/tests/fixtures/testable_assign.php');
-require_once($CFG->dirroot . '/group/lib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(__DIR__ . '/fixtures/testable_assign.php');
+require_once(\core\component::component_path('core_group', 'lib.php'));
 
 /**
  * Class mod_assign_portfolio_caller_testcase

@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 use moodleform;
 use core\form\persistent;
 
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Template plans form class.

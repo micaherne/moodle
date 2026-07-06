@@ -37,8 +37,8 @@ use context_user;
 use Exception;
 
 global $CFG;
-require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_contenttype.php');
-require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_content.php');
+require_once(__DIR__ . '/fixtures/testable_contenttype.php');
+require_once(__DIR__ . '/fixtures/testable_content.php');
 
 /**
  * Test for extensions manager.
@@ -57,7 +57,7 @@ final class contentbank_test extends advanced_testcase {
     public static function setupBeforeClass(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_contenttype.php');
+        require_once(__DIR__ . '/fixtures/testable_contenttype.php');
     }
 
     /**
@@ -234,7 +234,7 @@ final class contentbank_test extends advanced_testcase {
         }
 
         // Add some content to the content bank.
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/filltheblanks.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p');
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         foreach ($contexts as $context) {
             $contextinstance = $existingcontexts[$context];
@@ -379,7 +379,7 @@ final class contentbank_test extends advanced_testcase {
             'filename' => $name,
             'userid' => $USER->id
         );
-        $path = $CFG->dirroot . '/h5p/tests/fixtures/' . $name;
+        $path = \core\component::component_path('core_h5p', "tests/fixtures/{$name}");
         $dummyh5pfile = \core_h5p\helper::create_fake_stored_file_from_path($path);
 
         $cb = new contentbank();

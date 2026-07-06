@@ -234,7 +234,7 @@ final class questionutils_test extends \advanced_testcase {
      */
     public function test_format_question_fragment(): void {
         global $CFG;
-        require_once($CFG->libdir . '/filterlib.php');
+        require_once(\core\component::component_path('core', 'filterlib.php'));
         $this->resetAfterTest();
         // Set few filters on.
         filter_set_global_state('multilang', TEXTFILTER_ON);

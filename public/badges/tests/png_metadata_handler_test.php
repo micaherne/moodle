@@ -38,7 +38,7 @@ final class png_metadata_handler_test extends \advanced_testcase {
     protected function create_test_png(): string {
         global $CFG;
 
-        $badgepath = $CFG->dirroot . '/badges/tests/behat/badge.png';
+        $badgepath = __DIR__ . '/behat/badge.png';
         return file_get_contents($badgepath);
     }
 
@@ -50,7 +50,7 @@ final class png_metadata_handler_test extends \advanced_testcase {
     protected function create_test_jpg(): string {
         global $CFG;
 
-        $badgepath = $CFG->dirroot . '/badges/tests/fixtures/badge.jpg';
+        $badgepath = __DIR__ . '/fixtures/badge.jpg';
         return file_get_contents($badgepath);
     }
 

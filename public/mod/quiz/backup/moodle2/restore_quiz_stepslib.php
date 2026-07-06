@@ -149,7 +149,7 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
         // The old review column from 2.0 need to be split into the seven new
         // review columns. See MDL-20636.
         if (isset($data->review)) {
-            require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+            require_once(dirname(__DIR__, 2) . '/locallib.php');
 
             if (!defined('QUIZ_OLD_IMMEDIATELY')) {
                 define('QUIZ_OLD_IMMEDIATELY', 0x3c003f);

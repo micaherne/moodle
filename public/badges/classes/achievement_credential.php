@@ -18,8 +18,8 @@ namespace core_badges;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/badgeslib.php');
-require_once($CFG->dirroot . '/badges/renderer.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
+require_once(dirname(__DIR__) . '/renderer.php');
 
 /**
  * Class that represents badge assertion, also known as achievement credential from OBv3.0 onwards.

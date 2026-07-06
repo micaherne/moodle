@@ -36,10 +36,10 @@ define('NO_OUTPUT_BUFFERING', true);
 putenv('BEHAT_CLI=0');
 
 require_once(__DIR__ .'/../../../../config.php');
-require_once(__DIR__.'/../../../../lib/clilib.php');
-require_once(__DIR__.'/../../../../lib/behat/lib.php');
-require_once(__DIR__.'/../../../../lib/behat/classes/behat_command.php');
-require_once(__DIR__.'/../../../../lib/behat/classes/behat_config_manager.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(\core\component::component_path('core', 'behat/lib.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_command.php'));
+require_once(\core\component::component_path('core', 'behat/classes/behat_config_manager.php'));
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');

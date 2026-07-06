@@ -133,7 +133,7 @@ class login implements renderable, templatable {
 
         // ReCaptcha.
         if (login_captcha_enabled()) {
-            require_once($CFG->libdir . '/recaptchalib_v2.php');
+            require_once(\core\component::component_path('core', 'recaptchalib_v2.php'));
             $this->recaptcha = recaptcha_get_challenge_html(RECAPTCHA_API_URL, $CFG->recaptchapublickey);
         }
 

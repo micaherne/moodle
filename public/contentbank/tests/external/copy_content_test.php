@@ -20,8 +20,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_contenttype.php');
-require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_content.php');
+require_once(dirname(__DIR__) . '/fixtures/testable_contenttype.php');
+require_once(dirname(__DIR__) . '/fixtures/testable_content.php');
 
 use core_external\external_api;
 
@@ -52,7 +52,7 @@ final class copy_content_test extends \core_external\tests\externallib_testcase 
 
         // Add some content to the content bank as teacher.
         $filename = 'filltheblanks.h5p';
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/' . $filename;
+        $filepath = \core\component::component_path('core_h5p', "tests/fixtures/{$filename}");
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         $contents = $generator->generate_contentbank_data('contenttype_h5p', 1, $teacher->id, null, true, $filepath);
         $content = array_shift($contents);
@@ -97,7 +97,7 @@ final class copy_content_test extends \core_external\tests\externallib_testcase 
         // Add some content to the content bank as teacher.
         $coursecontext = \context_course::instance($course->id);
         $filename = 'filltheblanks.h5p';
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/' . $filename;
+        $filepath = \core\component::component_path('core_h5p', "tests/fixtures/{$filename}");
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         $contents = $generator->generate_contentbank_data('contenttype_h5p', 1, $teacher->id, $coursecontext, true, $filepath);
         $content = array_shift($contents);

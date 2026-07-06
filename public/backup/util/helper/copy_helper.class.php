@@ -19,7 +19,7 @@ use core\hook\manager;
 use core_backup\hook\copy_helper_process_formdata;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+require_once(dirname(__DIR__) . '/includes/restore_includes.php');
 
 /**
  * Copy helper class.

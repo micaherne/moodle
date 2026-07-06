@@ -93,7 +93,7 @@ class wiki_parser_proxy {
         global $CFG;
         $type = clean_param($type, PARAM_ALPHA);
         if (empty(self::$parsers[$type])) {
-            $path = "$CFG->dirroot/mod/wiki/parser/markups/$type.php";
+            $path = __DIR__ . "/markups/{$type}.php";
             if (!file_exists($path)) {
                 throw new moodle_exception("Parser type $type not found");
             }

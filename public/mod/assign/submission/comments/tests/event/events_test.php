@@ -29,9 +29,9 @@ use mod_assign_test_generator;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/lib.php');
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(\core\component::component_path('mod_assign', 'lib.php'));
+require_once(\core\component::component_path('mod_assign', 'locallib.php'));
+require_once(\core\component::component_path('mod_assign', 'tests/generator.php'));
 
 /**
  * Events tests class.

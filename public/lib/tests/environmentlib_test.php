@@ -32,7 +32,7 @@ final class environmentlib_test extends \advanced_testcase {
      */
     public function test_environment_check_status(): void {
         global $CFG;
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(dirname(__DIR__) . '/environmentlib.php');
 
         $results = check_moodle_environment(normalize_version($CFG->release), ENV_SELECT_RELEASE);
 
@@ -48,7 +48,7 @@ final class environmentlib_test extends \advanced_testcase {
      */
     public static function environment_provider(): array {
         global $CFG;
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(dirname(__DIR__) . '/environmentlib.php');
 
         $results = check_moodle_environment(normalize_version($CFG->release), ENV_SELECT_RELEASE);
         // The second element of the results array contains the list of environment results.
@@ -121,7 +121,7 @@ final class environmentlib_test extends \advanced_testcase {
      */
     public function test_get_list_of_environment_versions(): void {
         global $CFG;
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(dirname(__DIR__) . '/environmentlib.php');
         // Build a sample xmlised environment.xml.
         $xml = <<<END
 <COMPATIBILITY_MATRIX>
@@ -168,7 +168,7 @@ END;
     public function test_verify_plugin(): void {
         global $CFG;
         $xmlparser = new \core\xml_parser();
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(dirname(__DIR__) . '/environmentlib.php');
         // Build sample xmlised environment file fragments.
         $plugin1xml = <<<END
 <PLUGIN name="block_testcase">
@@ -198,7 +198,7 @@ END;
      */
     public function test_restrict_php_version_greater_than_restricted_version(): void {
         global $CFG;
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(dirname(__DIR__) . '/environmentlib.php');
 
         $result = new environment_results('php');
         $delimiter = '.';
@@ -223,7 +223,7 @@ END;
      */
     public function test_restrict_php_version_equal_to_restricted_version(): void {
         global $CFG;
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(dirname(__DIR__) . '/environmentlib.php');
 
         $result = new environment_results('php');
         // Get the current PHP version.
@@ -244,7 +244,7 @@ END;
      */
     public function test_restrict_php_version_less_than_restricted_version(): void {
         global $CFG;
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(dirname(__DIR__) . '/environmentlib.php');
 
         $result = new environment_results('php');
         $delimiter = '.';

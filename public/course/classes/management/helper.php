@@ -28,7 +28,7 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Course and category management interface helper class.

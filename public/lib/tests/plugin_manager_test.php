@@ -37,8 +37,8 @@ final class plugin_manager_test extends \advanced_testcase {
 
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/lib/tests/fixtures/testable_plugin_manager.php');
-        require_once($CFG->dirroot . '/lib/tests/fixtures/testable_plugininfo_base.php');
+        require_once(__DIR__ . '/fixtures/testable_plugin_manager.php');
+        require_once(__DIR__ . '/fixtures/testable_plugininfo_base.php');
         parent::setUpBeforeClass();
     }
 
@@ -203,7 +203,7 @@ final class plugin_manager_test extends \advanced_testcase {
         global $CFG;
 
         // Any standard plugin with subplugins is suitable.
-        $this->assertFileExists("$CFG->dirroot/lib/editor/tiny", 'TinyMCE is not present.');
+        $this->assertFileExists(\core\component::component_path('editor_tiny', ''), 'TinyMCE is not present.');
 
         $subplugins = core_plugin_manager::instance()->get_subplugins_of_plugin('editor_tiny');
         foreach ($subplugins as $component => $info) {
@@ -221,7 +221,7 @@ final class plugin_manager_test extends \advanced_testcase {
         global $CFG;
 
         // Any standard plugin with subplugins is suitable.
-        $this->assertFileExists("$CFG->dirroot/lib/editor/tiny", 'TinyMCE is not present.');
+        $this->assertFileExists(\core\component::component_path('editor_tiny', ''), 'TinyMCE is not present.');
 
         $parent = core_plugin_manager::instance()->get_parent_of_subplugin('tiny');
         $this->assertSame('editor_tiny', $parent);
@@ -231,7 +231,7 @@ final class plugin_manager_test extends \advanced_testcase {
         global $CFG;
 
         // Any standard plugin is suitable.
-        $this->assertFileExists("$CFG->dirroot/lib/editor/tiny", 'TinyMCE is not present.');
+        $this->assertFileExists(\core\component::component_path('editor_tiny', ''), 'TinyMCE is not present.');
 
         $name = core_plugin_manager::instance()->plugin_name('editor_tiny');
         $this->assertSame(get_string('pluginname', 'editor_tiny'), $name);
@@ -261,7 +261,7 @@ final class plugin_manager_test extends \advanced_testcase {
         global $CFG;
 
         // Any standard plugin is suitable.
-        $this->assertFileExists("$CFG->dirroot/lib/editor/tiny", 'TinyMCE is not present.');
+        $this->assertFileExists(\core\component::component_path('editor_tiny', ''), 'TinyMCE is not present.');
 
         $info = core_plugin_manager::instance()->get_plugin_info('editor_tiny');
         $this->assertInstanceOf('\core\plugininfo\editor', $info);
@@ -271,8 +271,8 @@ final class plugin_manager_test extends \advanced_testcase {
         global $CFG;
 
         // Any standard plugin that is required by some other standard plugin is ok.
-        $this->assertFileExists("$CFG->dirroot/report/competency", 'competency report is not present');
-        $this->assertFileExists("$CFG->dirroot/$CFG->admin/tool/lp", 'tool lp is not present');
+        $this->assertFileExists(\core\component::component_path('report_competency', ''), 'competency report is not present');
+        $this->assertFileExists(\core\component::component_path('tool_lp', ''), 'tool lp is not present');
 
         $this->assertFalse(core_plugin_manager::instance()->can_uninstall_plugin('tool_lp'));
         $this->assertTrue(core_plugin_manager::instance()->can_uninstall_plugin('report_competency'));
@@ -283,11 +283,11 @@ final class plugin_manager_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         // Any standard plugin that is ok.
-        $this->assertFileExists("$CFG->dirroot/mod/assign", 'assign module is not present');
-        $this->assertFileExists("$CFG->dirroot/mod/forum", 'forum module is not present');
-        $this->assertFileExists("$CFG->dirroot/$CFG->admin/tool/phpunit", 'phpunit tool is not present');
+        $this->assertFileExists(\core\component::component_path('mod_assign', ''), 'assign module is not present');
+        $this->assertFileExists(\core\component::component_path('mod_forum', ''), 'forum module is not present');
+        $this->assertFileExists(\core\component::component_path('tool_phpunit', ''), 'phpunit tool is not present');
         $this->assertFileDoesNotExist("$CFG->dirroot/mod/xxxxxxx");
-        $this->assertFileDoesNotExist("$CFG->dirroot/enrol/autorize");
+        $this->assertFileDoesNotExist(\core\component::component_path('core_enrol', 'autorize'));
 
         // Ready for upgrade.
         $assignversion = get_config('mod_assign', 'version');

@@ -182,7 +182,7 @@
      */
     public function get_feed($feedrecord, $maxentries, $showtitle) {
         global $CFG;
-        require_once($CFG->libdir.'/simplepie/moodle_simplepie.php');
+        require_once(\core\component::component_path('core', 'simplepie/moodle_simplepie.php'));
 
         if ($feedrecord->skipuntil) {
             // Last attempt to gather this feed via cron failed - do not try to fetch it now.

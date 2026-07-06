@@ -79,7 +79,7 @@ class api {
      */
     public static function get_plugins_supporting_mobile() {
         global $CFG;
-        require_once($CFG->libdir . '/adminlib.php');
+        require_once(\core\component::component_path('core', 'adminlib.php'));
 
         $cachekey = 'mobileplugins';
         if (!isloggedin()) {
@@ -171,7 +171,7 @@ class api {
      */
     public static function get_public_config() {
         global $CFG, $SITE, $PAGE, $OUTPUT;
-        require_once($CFG->libdir . '/authlib.php');
+        require_once(\core\component::component_path('core', 'authlib.php'));
 
         $context = context_system::instance();
         // We need this to make work the format text functions.
@@ -277,7 +277,7 @@ class api {
         $isadmin = has_capability('moodle/site:config', $context);
 
         if (empty($section) or $section == 'frontpagesettings') {
-            require_once($CFG->dirroot . '/course/format/lib.php');
+            require_once(\core\component::component_path('core_courseformat', 'lib.php'));
             // First settings that anyone can deduce.
             $settings->fullname = \core_external\util::format_string($SITE->fullname, $context->id);
             $settings->shortname = \core_external\util::format_string($SITE->shortname, $context->id);
@@ -310,7 +310,7 @@ class api {
         }
 
         if (empty($section) or $section == 'gradessettings') {
-            require_once($CFG->dirroot . '/user/lib.php');
+            require_once(\core\component::component_path('core_user', 'lib.php'));
             $settings->mygradesurl = user_mygrades_url();
             // The previous function may return moodle_url instances or plain string URLs.
             if ($settings->mygradesurl instanceof moodle_url) {
@@ -496,7 +496,7 @@ class api {
      */
     public static function get_features_list() {
         global $CFG;
-        require_once($CFG->libdir . '/authlib.php');
+        require_once(\core\component::component_path('core', 'authlib.php'));
 
         $general = new lang_string('general');
         $mainmenu = new lang_string('mainmenu', 'tool_mobile');
@@ -693,8 +693,8 @@ class api {
      */
     public static function get_potential_config_issues() {
         global $CFG;
-        require_once($CFG->dirroot . "/lib/filelib.php");
-        require_once($CFG->dirroot . '/message/lib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
+        require_once(\core\component::component_path('core_message', 'lib.php'));
 
         $warnings = [];
 
@@ -817,7 +817,7 @@ class api {
     public static function get_subscription_information($forcecache = false, $ignorecache = false, $timeout = 10): ?array {
         global $CFG;
 
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $timeout = min(30, $timeout);
         // Manage cache of the subscription information to avoid requesting it too often to the Moodle Apps Portal.

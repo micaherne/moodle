@@ -25,7 +25,7 @@ use stored_file;
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/matrix_test_helper_trait.php');
-require_once(__DIR__ . '/../../../tests/communication_test_helper_trait.php');
+require_once(\core\component::component_path('core_communication', 'tests/communication_test_helper_trait.php'));
 
 /**
  * Class communication_feature_test to test the matrix features implemented using the core interfaces.

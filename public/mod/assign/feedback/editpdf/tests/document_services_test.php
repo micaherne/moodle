@@ -19,7 +19,7 @@ namespace assignfeedback_editpdf;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(\core\component::component_path('mod_assign', 'tests/generator.php'));
 
 /**
  * Unit tests for document services.
@@ -76,7 +76,7 @@ final class document_services_test extends \advanced_testcase {
 
         $method = new \ReflectionMethod('\assignfeedback_editpdf\document_services', 'save_rotated_image_file');
 
-        $imagecontent = file_get_contents($CFG->dirroot . '/lib/filestorage/tests/fixtures/testimage.png');
+        $imagecontent = file_get_contents(\core\component::component_path('core', 'filestorage/tests/fixtures/testimage.png'));
         $imageresource = imagecreatefromstring($imagecontent);
 
         // Invoke the method and confirm, that the file is saved.
@@ -150,7 +150,7 @@ final class document_services_test extends \advanced_testcase {
         // This is needed to make sure that this image will be rotated by stored_file::rotate_image()
         // and stored as a new rotated file.
         $filename = 'testimage_rotated.jpg';
-        $filepath = $CFG->dirroot . '/lib/filestorage/tests/fixtures/' . $filename;
+        $filepath = \core\component::component_path('core', "filestorage/tests/fixtures/{$filename}");
         $filerecord = [
             'contextid' => $assign->get_context()->id,
             'component' => 'assignsubmission_file',

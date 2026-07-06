@@ -28,8 +28,8 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->dirroot . '/my/lib.php');
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 redirect_if_major_upgrade_required();
 

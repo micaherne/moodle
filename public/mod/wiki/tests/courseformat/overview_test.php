@@ -104,7 +104,7 @@ final class overview_test extends \advanced_testcase {
      */
     private function setup_users_and_activity(int $groupmode = NOGROUPS, string $mode = 'collaborative'): array {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/wiki/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
         $users = [];
         $generator = $this->getDataGenerator();
         $courseparams = [];

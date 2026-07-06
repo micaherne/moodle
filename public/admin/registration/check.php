@@ -25,7 +25,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 // Get public key.
 $key = download_file_content(HUB_STATSPUBLICKEY);

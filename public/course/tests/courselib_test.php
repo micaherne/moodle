@@ -52,7 +52,7 @@ defined('MOODLE_INTERNAL') or die();
 
 // Require library globally because it's constants are used within dataProvider methods, executed before setUpBeforeClass.
 global $CFG;
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Course related unit tests
@@ -70,8 +70,8 @@ final class courselib_test extends advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/course/tests/fixtures/course_capability_assignment.php');
-        require_once($CFG->dirroot . '/enrol/imsenterprise/tests/imsenterprise_test.php');
+        require_once(__DIR__ . '/fixtures/course_capability_assignment.php');
+        require_once(\core\component::component_path('enrol_imsenterprise', 'tests/imsenterprise_test.php'));
         parent::setUpBeforeClass();
     }
 
@@ -214,7 +214,11 @@ final class courselib_test extends advanced_testcase {
         $this->setAdminUser();
 
         // Warnings: you'll need to change this line if ever you come to test a module not following Moodle standard.
-        require_once($CFG->dirroot.'/mod/'. $modulename .'/lib.php');
+        $moddir = \core_component::get_plugin_directory('mod', $modulename);
+        if ($moddir === null) {
+            throw new \coding_exception("Plugin not installed: mod_{$modulename}");
+        }
+        require_once("$moddir/lib.php");
 
         // Enable avaibility.
         // If not enabled all conditional fields will be ignored.
@@ -253,7 +257,7 @@ final class courselib_test extends advanced_testcase {
         // Sometimes optional generic values for some modules.
         $moduleinfo->name = 'My test module';
         $moduleinfo->showdescription = 1; // standard boolean
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $gradecats = grade_get_categories_menu($moduleinfo->course, false);
         $gradecatid = current(array_keys($gradecats)); // Retrieve the first key of $gradecats
         $moduleinfo->gradecat = $gradecatid;
@@ -278,7 +282,7 @@ final class courselib_test extends advanced_testcase {
         $moduleinfo->conditioncompletiongroup = array(array('conditionsourcecmid' => $assigncm->id, 'conditionrequiredcompletion' => COMPLETION_COMPLETE)); // "conditionsourcecmid == 0" => none
 
         // Grading and Advanced grading.
-        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
         $moduleinfo->assessed = RATING_AGGREGATE_AVERAGE;
         $moduleinfo->scale = 10; // Note: it could be minus (for specific course scale). It is a signed number.
         $moduleinfo->assesstimestart = time();
@@ -388,7 +392,7 @@ final class courselib_test extends advanced_testcase {
         $DB->insert_record('tag_instance', array('tagid' => $tag->id, 'itemtype' => 'user',
             'component' => 'core', 'itemid' => $post->id, 'ordering' => 0));
 
-        require_once($CFG->dirroot . '/blog/locallib.php');
+        require_once(\core\component::component_path('core_blog', 'locallib.php'));
         $blog = new blog_entry($post->id);
         $blog->add_association($modulecontext->id);
 
@@ -490,7 +494,11 @@ final class courselib_test extends advanced_testcase {
         $this->setAdminUser();
 
         // Warnings: you'll need to change this line if ever you come to test a module not following Moodle standard.
-        require_once($CFG->dirroot.'/mod/'. $modulename .'/lib.php');
+        $moddir = \core_component::get_plugin_directory('mod', $modulename);
+        if ($moddir === null) {
+            throw new \coding_exception("Plugin not installed: mod_{$modulename}");
+        }
+        require_once("$moddir/lib.php");
 
         // Enable avaibility.
         // If not enabled all conditional fields will be ignored.
@@ -538,7 +546,7 @@ final class courselib_test extends advanced_testcase {
         // Sometimes optional generic values for some modules.
         $moduleinfo->name = 'My test module';
         $moduleinfo->showdescription = 1; // standard boolean
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $gradecats = grade_get_categories_menu($moduleinfo->course, false);
         $gradecatid = current(array_keys($gradecats)); // Retrieve the first key of $gradecats
         $moduleinfo->gradecat = $gradecatid;
@@ -564,7 +572,7 @@ final class courselib_test extends advanced_testcase {
                 \availability_completion\condition::get_json($assigncm->id, COMPLETION_COMPLETE)), '&'));
 
         // Grading and Advanced grading.
-        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
         $moduleinfo->assessed = RATING_AGGREGATE_AVERAGE;
         $moduleinfo->scale = 10; // Note: it could be minus (for specific course scale). It is a signed number.
         $moduleinfo->assesstimestart = time();
@@ -2146,7 +2154,7 @@ final class courselib_test extends advanced_testcase {
         $c2 = $dg->create_course();
         $backupid = 'test-restore-course-special-cases';
         $tempdir = make_backup_temp_directory($backupid);
-        require_once(__DIR__ . '/../../backup/util/includes/backup_includes.php');
+        require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
         $bc = new \backup_controller(
             \backup::TYPE_1COURSE,
             $c2->id,
@@ -2163,7 +2171,7 @@ final class courselib_test extends advanced_testcase {
         $bc->destroy();
 
         // Restore backup into c1, but do not run adhoc tasks yet.
-        require_once(__DIR__ . '/../../backup/util/includes/restore_includes.php');
+        require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
         $rc = new \restore_controller(
             $backupid,
             $c1->id,
@@ -2200,8 +2208,8 @@ final class courselib_test extends advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        require_once(__DIR__ . '/../../backup/util/includes/backup_includes.php');
-        require_once(__DIR__ . '/../../backup/util/includes/restore_includes.php');
+        require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
+        require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 
         $user = get_admin();
         $dg = $this->getDataGenerator();
@@ -3363,7 +3371,7 @@ final class courselib_test extends advanced_testcase {
      */
     public function test_update_module_name_inplace(): void {
         global $CFG, $DB, $PAGE;
-        require_once($CFG->dirroot . '/lib/external/externallib.php');
+        require_once(\core\component::component_path('core_external', 'externallib.php'));
 
         $this->setUser($this->getDataGenerator()->create_user());
 
@@ -3784,7 +3792,7 @@ final class courselib_test extends advanced_testcase {
     public function test_course_dates_reset($startdate, $enddate, $resetstartdate, $resetenddate, $resultingstartdate, $resultingenddate): void {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_date.php');
+        require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_date.php'));
 
         $this->resetAfterTest(true);
 
@@ -3972,7 +3980,7 @@ final class courselib_test extends advanced_testcase {
      */
     public function test_course_reset_timeout(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/notes/lib.php');
+        require_once(\core\component::component_path('core_notes', 'lib.php'));
 
         $this->resetAfterTest();
 
@@ -4022,8 +4030,8 @@ final class courselib_test extends advanced_testcase {
 
     public function test_course_check_module_updates_since(): void {
         global $CFG, $DB, $USER;
-        require_once($CFG->dirroot . '/mod/glossary/lib.php');
-        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once(\core\component::component_path('mod_glossary', 'lib.php'));
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
 
         $this->resetAfterTest(true);
 
@@ -4274,7 +4282,7 @@ final class courselib_test extends advanced_testcase {
     public function test_classify_course_for_timeline(): void {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_self.php');
+        require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_self.php'));
 
         set_config('enablecompletion', COMPLETION_ENABLED);
         set_config('coursegraceperiodbefore', 0);
@@ -5260,7 +5268,7 @@ final class courselib_test extends advanced_testcase {
      */
     public static function get_course_filter_courses_by_customfield_test_cases(): array {
         global $CFG;
-        require_once($CFG->dirroot.'/blocks/myoverview/lib.php');
+        require_once(\core\component::component_path('block_myoverview', 'lib.php'));
         $coursedata = [
             [
                 'shortname' => 'C1',
@@ -5729,7 +5737,7 @@ final class courselib_test extends advanced_testcase {
      */
     public function test_core_course_core_calendar_get_valid_event_timestart_range_no_enddate(): void {
         global $CFG;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -5754,7 +5762,7 @@ final class courselib_test extends advanced_testcase {
      */
     public function test_core_course_core_calendar_get_valid_event_timestart_range_with_enddate(): void {
         global $CFG;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -7457,7 +7465,7 @@ final class courselib_test extends advanced_testcase {
             'itemid' => 0,
             'filepath' => '/',
             'filename' => 'logo.png',
-        ], "{$CFG->dirroot}/lib/tests/fixtures/gd-logo.png");
+        ], \core\component::component_path('core', 'tests/fixtures/gd-logo.png'));
 
         $image = course_get_courseimage($course);
         $this->assertInstanceOf(\stored_file::class, $image);

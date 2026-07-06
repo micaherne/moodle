@@ -207,7 +207,7 @@ final class sync_members_test extends \lti_advantage_testcase {
      */
     protected function verify_course_enrolments(\stdClass $course, array $ltiusers) {
         global $CFG;
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
         $enrolledusers = get_enrolled_users(\context_course::instance($course->id));
         $this->assertCount(count($ltiusers), $enrolledusers);
         $enrolleduserids = array_map(function($stringid) {
@@ -798,7 +798,7 @@ final class sync_members_test extends \lti_advantage_testcase {
      */
     public static function member_sync_data_provider(): array {
         global $CFG;
-        require_once($CFG->dirroot . '/auth/lti/auth.php');
+        require_once(\core\component::component_path('auth_lti', 'auth.php'));
         return [
             'Migrated tool, user ids changed, new and existing users present in sync' => [
                 'legacydata' => [

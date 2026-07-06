@@ -20,9 +20,9 @@
  * if a course id is specified then the entries from that course are shown
  * if a user id is specified only notes related to that user are shown
  */
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 require_once('lib.php');
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 $courseid     = optional_param('course', SITEID, PARAM_INT);
 $userid       = optional_param('user', 0, PARAM_INT);

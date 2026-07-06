@@ -24,7 +24,7 @@
  */
 
 require_once(__DIR__.'/../../config.php');
-require_once("{$CFG->libdir}/completionlib.php");
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 // Load data.
 $id = required_param('course', PARAM_INT);

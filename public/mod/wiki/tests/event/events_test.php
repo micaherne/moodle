@@ -27,7 +27,7 @@ namespace mod_wiki\event;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot.'/mod/wiki/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 /**
  * Events tests class.
  *

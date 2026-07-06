@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/book/backup/moodle2/restore_book_stepslib.php'); // Because it exists (must)
+require_once(__DIR__ . '/restore_book_stepslib.php'); // Because it exists (must)
 
 class restore_book_activity_task extends restore_activity_task {
 

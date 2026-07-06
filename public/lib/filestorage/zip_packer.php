@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/filestorage/file_packer.php");
-require_once("$CFG->libdir/filestorage/zip_archive.php");
+require_once(__DIR__ . '/file_packer.php');
+require_once(__DIR__ . '/zip_archive.php');
 
 /**
  * Utility class - handles all zipping and unzipping operations.

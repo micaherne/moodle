@@ -20,7 +20,7 @@ use cachestore_redis;
 use core_cache\definition;
 use core_cache\store;
 
-require_once(__DIR__.'/../../../tests/fixtures/stores.php');
+require_once(\core\component::component_path('core_cache', 'tests/fixtures/stores.php'));
 require_once(__DIR__.'/../lib.php');
 
 /**

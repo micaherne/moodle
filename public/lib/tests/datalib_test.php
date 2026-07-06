@@ -401,8 +401,8 @@ final class datalib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser(); // Some generators have bogus access control.
 
-        $this->assertFileExists("$CFG->dirroot/mod/folder/lib.php");
-        $this->assertFileExists("$CFG->dirroot/mod/glossary/lib.php");
+        $this->assertFileExists(\core\component::component_path('mod_folder', 'lib.php'));
+        $this->assertFileExists(\core\component::component_path('mod_glossary', 'lib.php'));
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
@@ -467,8 +467,8 @@ final class datalib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser(); // Some generators have bogus access control.
 
-        $this->assertFileExists("$CFG->dirroot/mod/folder/lib.php");
-        $this->assertFileExists("$CFG->dirroot/mod/glossary/lib.php");
+        $this->assertFileExists(\core\component::component_path('mod_folder', 'lib.php'));
+        $this->assertFileExists(\core\component::component_path('mod_glossary', 'lib.php'));
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
@@ -531,9 +531,9 @@ final class datalib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser(); // Some generators have bogus access control.
 
-        $this->assertFileExists("$CFG->dirroot/mod/folder/lib.php");
-        $this->assertFileExists("$CFG->dirroot/mod/glossary/lib.php");
-        $this->assertFileExists("$CFG->dirroot/mod/label/lib.php");
+        $this->assertFileExists(\core\component::component_path('mod_folder', 'lib.php'));
+        $this->assertFileExists(\core\component::component_path('mod_glossary', 'lib.php'));
+        $this->assertFileExists(\core\component::component_path('mod_label', 'lib.php'));
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
@@ -600,8 +600,8 @@ final class datalib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser(); // Some generators have bogus access control.
 
-        $this->assertFileExists("$CFG->dirroot/mod/folder/lib.php");
-        $this->assertFileExists("$CFG->dirroot/mod/glossary/lib.php");
+        $this->assertFileExists(\core\component::component_path('mod_folder', 'lib.php'));
+        $this->assertFileExists(\core\component::component_path('mod_glossary', 'lib.php'));
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
@@ -655,8 +655,8 @@ final class datalib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser(); // Some generators have bogus access control.
 
-        $this->assertFileExists("$CFG->dirroot/mod/folder/lib.php");
-        $this->assertFileExists("$CFG->dirroot/mod/glossary/lib.php");
+        $this->assertFileExists(\core\component::component_path('mod_folder', 'lib.php'));
+        $this->assertFileExists(\core\component::component_path('mod_glossary', 'lib.php'));
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();

@@ -17,7 +17,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/admin/presets/tests/generator/lib.php');
+require_once(\core\component::component_path('core_adminpresets', 'tests/generator/lib.php'));
 
 /**
  * Data generator the admin_presets tool.

@@ -25,7 +25,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../../course/tests/behat/behat_course.php');
+require_once(\core\component::component_path('core_course', 'tests/behat/behat_course.php'));
 
 /**
  * Course-related step definition overrides for the Classic theme.

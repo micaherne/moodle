@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php');
-require_once($CFG->dirroot . '/mod/lesson/mod_form.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(__DIR__ . '/mod_form.php');
 
 
 /**

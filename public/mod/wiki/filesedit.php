@@ -25,8 +25,8 @@
 require(__DIR__.'/../../config.php');
 require_once('lib.php');
 require_once('locallib.php');
-require_once("$CFG->dirroot/mod/wiki/filesedit_form.php");
-require_once("$CFG->dirroot/repository/lib.php");
+require_once(__DIR__ . '/filesedit_form.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 $subwikiid = required_param('subwiki', PARAM_INT);
 // not being used for file management, we use it to generate navbar link
