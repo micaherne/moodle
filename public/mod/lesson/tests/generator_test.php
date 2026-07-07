@@ -227,8 +227,8 @@ final class generator_test extends \advanced_testcase {
      */
     public function test_create_cluster_pages(string $type): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/lesson/locallib.php');
-        require_once($CFG->dirroot . '/mod/lesson/pagetypes/cluster.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
+        require_once(dirname(__DIR__) . '/pagetypes/cluster.php');
         $this->resetAfterTest();
         $this->setAdminUser();
 

@@ -107,7 +107,7 @@ class store extends external_api {
     public static function execute(string $component, int $contextid, string $itemname, int $gradeduserid,
             bool $notifyuser, string $formdata): array {
         global $USER, $CFG;
-        require_once("{$CFG->libdir}/gradelib.php");
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         [
             'component' => $component,
             'contextid' => $contextid,

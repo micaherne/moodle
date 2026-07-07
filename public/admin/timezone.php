@@ -1,6 +1,6 @@
 <?php
 
-    require_once('../config.php');
+    require_once(__DIR__ . '/../config.php');
 
     $zone = optional_param('zone', '', PARAM_RAW);
 
@@ -38,7 +38,7 @@
         $current = 99;
     }
 
-    require_once($CFG->dirroot.'/calendar/lib.php');
+    require_once(\core\component::component_path('core_calendar', 'lib.php'));
     $timezones = core_date::get_list_of_timezones(null, true);
 
     echo '<center><form action="timezone.php" method="post">';

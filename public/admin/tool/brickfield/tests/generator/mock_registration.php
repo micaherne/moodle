@@ -28,7 +28,7 @@ namespace tool_brickfield;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/admin/tool/brickfield/tests/generator/mock_brickfieldconnect.php');
+require_once(__DIR__ . '/mock_brickfieldconnect.php');
 
 /**
  * Mock registration.

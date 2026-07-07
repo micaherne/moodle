@@ -25,8 +25,8 @@
 
 define('NO_OUTPUT_BUFFERING', true);
 
-require_once('../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $action  = required_param('action', PARAM_ALPHANUMEXT);
 $enrol   = required_param('enrol', PARAM_PLUGIN);
@@ -108,7 +108,7 @@ switch ($action) {
 
         echo $OUTPUT->heading(get_string('uninstallmigrating', 'enrol', 'enrol_'.$enrol));
 
-        require_once("$CFG->dirroot/enrol/manual/locallib.php");
+        require_once(\core\component::component_path('enrol_manual', 'locallib.php'));
         enrol_manual_migrate_plugin_enrolments($enrol);
 
         echo $OUTPUT->notification(get_string('success'), 'notifysuccess');

@@ -28,9 +28,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/bank.php');
-require_once($CFG->dirroot . '/question/engine/upgrade/logger.php');
-require_once($CFG->dirroot . '/question/engine/upgrade/behaviourconverters.php');
+require_once(dirname(__DIR__) . '/bank.php');
+require_once(__DIR__ . '/logger.php');
+require_once(__DIR__ . '/behaviourconverters.php');
 
 
 /**

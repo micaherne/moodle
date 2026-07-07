@@ -31,8 +31,8 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff.
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+require_once(dirname(__DIR__, 2) . '/util/includes/backup_includes.php');
+require_once(dirname(__DIR__, 2) . '/util/includes/restore_includes.php');
 
 /**
  * Tests for the backup and restore controller classes.
@@ -233,7 +233,7 @@ final class controller_test extends \advanced_testcase {
         $foldername = 'deadlock';
         $fp = get_file_packer('application/vnd.moodle.backup');
         $tempdir = make_backup_temp_directory($foldername);
-        $files = $fp->extract_to_pathname($CFG->dirroot . '/backup/controller/tests/fixtures/deadlock.mbz', $tempdir);
+        $files = $fp->extract_to_pathname(__DIR__ . '/fixtures/deadlock.mbz', $tempdir);
 
         $this->setAdminUser();
         $controller = new restore_controller(

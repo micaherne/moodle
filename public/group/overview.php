@@ -23,8 +23,8 @@
  * @package    core_group
  */
 
-require_once('../config.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 define('OVERVIEW_NO_GROUP', -1); // The fake group for users not in a group.
 define('OVERVIEW_GROUPING_GROUP_NO_GROUPING', -1); // The fake grouping for groups that have no grouping.

@@ -69,7 +69,7 @@ class helper {
     public static function apply_penalty_to_user(int $assignid, int $userid): void {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
 
         // Check if penalty is enabled for this assignment.
         if (!self::is_penalty_enabled($assignid)) {

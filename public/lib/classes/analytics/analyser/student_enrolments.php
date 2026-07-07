@@ -26,7 +26,7 @@ namespace core\analytics\analyser;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/enrollib.php');
+require_once(dirname(__DIR__, 3) . '/enrollib.php');
 
 /**
  * Student enrolments analyser.

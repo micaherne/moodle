@@ -22,7 +22,7 @@
  * @package mod_feedback
  */
 
-require_once("../../config.php");
+require_once(__DIR__ . '/../../config.php');
 require_once("lib.php");
 
 $itemid = optional_param('id', false, PARAM_INT);

@@ -27,7 +27,7 @@
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 admin_externalpage_setup('adhoctasks');
 
@@ -120,7 +120,7 @@ echo $OUTPUT->footer();
 echo $OUTPUT->select_element_for_append();
 
 // Prepare to handle output via mtrace.
-require_once("{$CFG->dirroot}/{$CFG->admin}/tool/task/lib.php");
+require_once(__DIR__ . '/lib.php');
 $CFG->mtrace_wrapper = 'tool_task_mtrace_wrapper';
 
 // Run the specified tasks.

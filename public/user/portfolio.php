@@ -28,8 +28,8 @@ if (empty($CFG->enableportfolios)) {
     throw new \moodle_exception('disabled', 'portfolio');
 }
 
-require_once($CFG->libdir . '/portfoliolib.php');
-require_once($CFG->libdir . '/portfolio/forms.php');
+require_once(\core\component::component_path('core', 'portfoliolib.php'));
+require_once(\core\component::component_path('core', 'portfolio/forms.php'));
 
 $config   = optional_param('config', 0, PARAM_INT);
 $hide     = optional_param('hide', 0, PARAM_INT);

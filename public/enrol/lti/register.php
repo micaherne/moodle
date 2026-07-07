@@ -44,7 +44,7 @@ use enrol_lti\local\ltiadvantage\service\application_registration_service;
 
 require_once(__DIR__."/../../config.php");
 global $OUTPUT, $PAGE, $CFG, $SITE;
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('popup');

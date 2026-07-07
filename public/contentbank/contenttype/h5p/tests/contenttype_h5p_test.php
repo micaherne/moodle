@@ -43,7 +43,7 @@ final class contenttype_h5p_test extends \advanced_testcase {
         $this->setUser($manager);
 
         // Add an H5P file to the content bank.
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/filltheblanks.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p');
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         $contents = $generator->generate_contentbank_data('contenttype_h5p', 2, $USER->id, $systemcontext, true, $filepath);
         $content1 = array_shift($contents);
@@ -113,13 +113,13 @@ final class contenttype_h5p_test extends \advanced_testcase {
         $contenttype = new contenttype($systemcontext);
 
         // Add an H5P fill the blanks file to the content bank.
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/filltheblanks.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p');
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         $contents = $generator->generate_contentbank_data('contenttype_h5p', 1, 0, $systemcontext, true, $filepath);
         $filltheblanks = array_shift($contents);
 
         // Add an H5P find the words file to the content bank.
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/find-the-words.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/find-the-words.h5p');
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         $contents = $generator->generate_contentbank_data('contenttype_h5p', 1, 0, $systemcontext, true, $filepath);
         $findethewords = array_shift($contents);
@@ -156,7 +156,7 @@ final class contenttype_h5p_test extends \advanced_testcase {
 
         // Add an H5P fill the blanks file to the content bank.
         $filename = 'filltheblanks.h5p';
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/' . $filename;
+        $filepath = \core\component::component_path('core_h5p', "tests/fixtures/{$filename}");
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         $contents = $generator->generate_contentbank_data('contenttype_h5p', 1, 0, $systemcontext, true, $filepath);
         $filltheblanks = array_shift($contents);

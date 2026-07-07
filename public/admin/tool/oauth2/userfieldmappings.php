@@ -23,8 +23,8 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/tablelib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 $PAGE->set_url('/admin/tool/oauth2/userfieldmappings.php', ['issuerid' => required_param('issuerid', PARAM_INT)]);
 $PAGE->set_context(context_system::instance());

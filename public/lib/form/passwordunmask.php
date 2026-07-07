@@ -30,7 +30,7 @@ if (!defined('MOODLE_INTERNAL')) {
 }
 
 global $CFG;
-require_once($CFG->libdir.'/form/password.php');
+require_once(__DIR__ . '/password.php');
 
 /**
  * Password type form element with unmask option

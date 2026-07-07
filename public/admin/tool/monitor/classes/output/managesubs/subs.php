@@ -26,7 +26,7 @@ namespace tool_monitor\output\managesubs;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir . '/tablelib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * Renderable class to display a set of subscriptions in the manage subscriptions page.

@@ -13,9 +13,9 @@
  * @package mnet
  */
 require(__DIR__.'/../../config.php');
-require_once $CFG->dirroot.'/mnet/xmlrpc/client.php';
-require_once($CFG->libdir.'/adminlib.php');
-include_once($CFG->dirroot.'/mnet/lib.php');
+require_once \core\component::component_path('core_mnet', 'xmlrpc/client.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+include_once(\core\component::component_path('core_mnet', 'lib.php'));
 
 if ($CFG->mnet_dispatcher_mode === 'off') {
     throw new \moodle_exception('mnetdisabled', 'mnet');

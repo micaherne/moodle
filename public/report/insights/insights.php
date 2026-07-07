@@ -25,7 +25,7 @@
 use core\report_helper;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $contextid = required_param('contextid', PARAM_INT);
 $modelid = optional_param('modelid', false, PARAM_INT);

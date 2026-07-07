@@ -27,7 +27,7 @@ namespace mod_forum\local\factories;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/rating/lib.php');
+require_once(\core\component::component_path('core_rating', 'lib.php'));
 
 use mod_forum\local\entities\forum as forum_entity;
 use mod_forum\local\managers\capability as capability_manager;

@@ -31,10 +31,10 @@ use core_courseformat\formatactions;
 use core_courseformat\sectiondelegate;
 use core\output\local\action_menu\subpanel as action_menu_subpanel;
 
-require_once($CFG->libdir.'/completionlib.php');
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->libdir.'/datalib.php');
-require_once($CFG->dirroot.'/course/format/lib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'datalib.php'));
+require_once(\core\component::component_path('core_courseformat', 'lib.php'));
 
 define('COURSE_MAX_LOGS_PER_PAGE', 1000);       // Records.
 define('COURSE_MAX_RECENT_PERIOD', 172800);     // Two days, in seconds.
@@ -401,12 +401,13 @@ function course_integrity_check($courseid, $rawmods = null, $sections = null, $f
  */
 function get_module_types_names($plural = false, $resetcache = false) {
     static $modnames = null;
-    global $DB, $CFG;
+    global $DB;
     if ($modnames === null || empty($modnames[0]) || $resetcache) {
         $modnames = array(0 => array(), 1 => array());
         if ($allmods = $DB->get_records("modules")) {
             foreach ($allmods as $mod) {
-                if (file_exists("$CFG->dirroot/mod/$mod->name/lib.php") && $mod->visible) {
+                $moddir = \core_component::get_plugin_directory('mod', $mod->name);
+                if ($moddir && file_exists("$moddir/lib.php") && $mod->visible) {
                     $modnames[0][$mod->name] = get_string("modulename", "$mod->name", null, true);
                     $modnames[1][$mod->name] = get_string("modulenameplural", "$mod->name", null, true);
                 }
@@ -912,11 +913,12 @@ function course_module_bulk_update_calendar_events($modulename, $courseid = 0) {
  * @since  Moodle 3.3.4
  */
 function course_module_calendar_event_update_process($instance, $cm): void {
-    global $CFG;
-
     // We need to call *_refresh_events() first because some modules delete 'old' events at the end of the code which
     // will remove the completion events.
-    include_once("$CFG->dirroot/mod/$cm->modname/lib.php");
+    $moddir = \core_component::get_plugin_directory('mod', $cm->modname);
+    if ($moddir !== null) {
+        include_once("$moddir/lib.php");
+    }
     $refresheventsfunction = $cm->modname . '_refresh_events';
     if (function_exists($refresheventsfunction)) {
         call_user_func($refresheventsfunction, $cm->course, $instance, $cm);
@@ -2331,7 +2333,7 @@ function include_course_ajax($course, $usedmodules = [], $enabledmodules = null,
         }
 
         // Load drag and drop upload AJAX.
-        require_once($CFG->dirroot.'/course/dnduploadlib.php');
+        require_once(__DIR__ . '/dnduploadlib.php');
         dndupload_add_to_course($course, $enabledmodules);
 
         $PAGE->requires->js_call_amd('core_course/actions', 'initCoursePage', [$course->format]);
@@ -2433,7 +2435,7 @@ function course_get_url($courseorid, $section = null, $options = array()) {
 function create_module($moduleinfo) {
     global $DB, $CFG;
 
-    require_once($CFG->dirroot . '/course/modlib.php');
+    require_once(__DIR__ . '/modlib.php');
 
     // Check manadatory attributs.
     $mandatoryfields = array('modulename', 'course', 'section', 'visible');
@@ -2471,7 +2473,7 @@ function create_module($moduleinfo) {
 function update_module($moduleinfo) {
     global $DB, $CFG;
 
-    require_once($CFG->dirroot . '/course/modlib.php');
+    require_once(__DIR__ . '/modlib.php');
 
     // Check the course module exists.
     $cm = get_coursemodule_from_id('', $moduleinfo->coursemodule, 0, false, MUST_EXIST);
@@ -3045,7 +3047,7 @@ function course_get_user_navigation_options($context, $course = null) {
                 // This only needs to be calculated if the user can't manage badges (to improve performance).
                 $canview = has_capability('moodle/badges:viewbadges', $context);
                 if ($canview) {
-                    require_once($CFG->dirroot.'/lib/badgeslib.php');
+                    require_once(\core\component::component_path('core', 'badgeslib.php'));
                     if (is_null($course)) {
                         $totalbadges = count(badges_get_badges(BADGE_TYPE_SITE, 0, '', '', 0, 0, $USER->id));
                     } else {
@@ -3699,7 +3701,7 @@ function course_check_module_updates_since($cm, $from, $fileareas = array(), $fi
     $supportgrades = plugin_supports('mod', $cm->modname, FEATURE_GRADE_HAS_GRADE);
     $supportgrades = $supportgrades or plugin_supports('mod', $cm->modname, FEATURE_GRADE_OUTCOMES);
     if ($supportgrades and (empty($filter) or (in_array('gradeitems', $filter) or in_array('outcomes', $filter)))) {
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $grades = grade_get_grades($course->id, 'mod', $cm->modname, $mod->id, $USER->id);
 
         if (empty($filter) or in_array('gradeitems', $filter)) {
@@ -3740,7 +3742,7 @@ function course_check_module_updates_since($cm, $from, $fileareas = array(), $fi
     // Check ratings.
     if (plugin_supports('mod', $cm->modname, FEATURE_RATE) and (empty($filter) or in_array('ratings', $filter))) {
         $updates->ratings = (object) array('updated' => false);
-        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
         $manager = new rating_manager();
         $ratings = $manager->get_component_ratings_since($context, $component, $from);
         if (!empty($ratings)) {

@@ -16,9 +16,9 @@
 
 // This page prints a particular instance of aicc/scorm package.
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/scorm/locallib.php');
-require_once($CFG->libdir . '/completionlib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 $id = optional_param('cm', '', PARAM_INT);                          // Course Module ID, or
 $a = optional_param('a', '', PARAM_INT);                            // scorm ID
@@ -140,10 +140,10 @@ if (!$available) {
 
 // TOC processing
 $scorm->version = strtolower(clean_param($scorm->version, PARAM_SAFEDIR));   // Just to be safe.
-if (!file_exists($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'lib.php')) {
+if (!file_exists(__DIR__ . "/datamodels/{$scorm->version}lib.php")) {
     $scorm->version = 'scorm_12';
 }
-require_once($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'lib.php');
+require_once(__DIR__ . "/datamodels/{$scorm->version}lib.php");
 
 $result = scorm_get_toc($USER, $scorm, $cm->id, TOCJSLINK, $currentorg, $scoid, $mode, $attempt, true, true);
 $sco = $result->sco;
@@ -201,7 +201,7 @@ $PAGE->requires->data_for_js('scormplayerdata', Array('launch' => false,
 $PAGE->requires->js('/mod/scorm/request.js', true);
 $PAGE->requires->js('/lib/cookies.js', true);
 
-if (file_exists($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'.js')) {
+if (file_exists(__DIR__ . "/datamodels/{$scorm->version}.js")) {
     $PAGE->requires->js('/mod/scorm/datamodels/'.$scorm->version.'.js', true);
 } else {
     $PAGE->requires->js('/mod/scorm/datamodels/scorm_12.js', true);
@@ -311,10 +311,10 @@ if (!empty($forcejs)) {
     echo html_writer::tag('noscript', $message);
 }
 
-if (file_exists($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'.php')) {
-    include_once($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'.php');
+if (file_exists(__DIR__ . "/datamodels/{$scorm->version}.php")) {
+    include_once(__DIR__ . "/datamodels/{$scorm->version}.php");
 } else {
-    include_once($CFG->dirroot.'/mod/scorm/datamodels/scorm_12.php');
+    include_once(__DIR__ . '/datamodels/scorm_12.php');
 }
 
 // Add the keepalive system to keep checking for a connection.

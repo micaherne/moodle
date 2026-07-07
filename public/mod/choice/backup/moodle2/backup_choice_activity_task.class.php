@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/choice/backup/moodle2/backup_choice_stepslib.php');
-require_once($CFG->dirroot . '/mod/choice/backup/moodle2/backup_choice_settingslib.php');
+require_once(__DIR__ . '/backup_choice_stepslib.php');
+require_once(__DIR__ . '/backup_choice_settingslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the Choice instance

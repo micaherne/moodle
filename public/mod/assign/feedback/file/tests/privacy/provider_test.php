@@ -34,7 +34,7 @@ final class provider_test extends \mod_assign\tests\provider_testcase {
         global $CFG;
 
         parent::setUpBeforeClass();
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(\core\component::component_path('mod_assign', 'locallib.php'));
     }
 
     /**

@@ -92,7 +92,7 @@ class tool_generator_site_backend extends tool_generator_backend {
      * @return int Course id
      */
     public function make() {
-        global $DB, $CFG;
+        global $DB;
 
         raise_memory_limit(MEMORY_EXTRA);
 
@@ -103,8 +103,6 @@ class tool_generator_site_backend extends tool_generator_backend {
         $entirestart = microtime(true);
 
         // Create courses.
-        $prevchdir = getcwd();
-        chdir($CFG->dirroot);
         $ncourse = self::get_last_testcourse_id();
         foreach (self::$sitecourses as $coursesize => $ncourses) {
             for ($i = 1; $i <= $ncourses[$this->size]; $i++) {
@@ -113,7 +111,6 @@ class tool_generator_site_backend extends tool_generator_backend {
                 $this->run_create_course(self::SHORTNAMEPREFIX . $ncourse, $coursesize);
             }
         }
-        chdir($prevchdir);
 
         // Store last course id to return it (will be the bigger one).
         $lastcourseid = $DB->get_field('course', 'id', array('shortname' => self::SHORTNAMEPREFIX . $ncourse));
@@ -137,8 +134,7 @@ class tool_generator_site_backend extends tool_generator_backend {
      */
     protected function run_create_course($shortname, $coursesize) {
 
-        // We are in $CFG->dirroot.
-        $command = 'php admin/tool/generator/cli/maketestcourse.php';
+        $command = 'php ' . escapeshellarg(\core\component::component_path('tool_generator', 'cli/maketestcourse.php'));
 
         $options = array(
             '--shortname="' . $shortname . '"',

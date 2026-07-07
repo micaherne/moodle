@@ -1368,7 +1368,7 @@ class renderer extends plugin_renderer_base {
             return '';
         }
 
-        require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+        require_once(dirname(__DIR__, 2) . '/report/reportlib.php');
         $url = new moodle_url('/mod/quiz/report.php', [
                 'id' => $cm->id, 'mode' => quiz_report_default_report($context)]);
         return html_writer::link($url, $summary);

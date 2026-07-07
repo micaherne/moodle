@@ -83,15 +83,15 @@ class runner {
         }
 
         // Behat utilities.
-        require_once($CFG->libdir . '/behat/classes/util.php');
-        require_once($CFG->libdir . '/behat/classes/behat_command.php');
-        require_once($CFG->libdir . '/behat/behat_base.php');
-        require_once("{$CFG->libdir}/tests/behat/behat_data_generators.php");
-        require_once("{$CFG->dirroot}/admin/tests/behat/behat_admin.php");
-        require_once("{$CFG->dirroot}/course/lib.php");
-        require_once("{$CFG->dirroot}/course/tests/behat/behat_course.php");
-        require_once("{$CFG->dirroot}/lib/tests/behat/behat_general.php");
-        require_once("{$CFG->dirroot}/user/tests/behat/behat_user.php");
+        require_once(\core\component::component_path('core', 'behat/classes/util.php'));
+        require_once(\core\component::component_path('core', 'behat/classes/behat_command.php'));
+        require_once(\core\component::component_path('core', 'behat/behat_base.php'));
+        require_once(\core\component::component_path('core', 'tests/behat/behat_data_generators.php'));
+        require_once(\core\component::component_path('core_admin', 'tests/behat/behat_admin.php'));
+        require_once(\core\component::component_path('core_course', 'lib.php'));
+        require_once(\core\component::component_path('core_course', 'tests/behat/behat_course.php'));
+        require_once(\core\component::component_path('core', 'tests/behat/behat_general.php'));
+        require_once(\core\component::component_path('core_user', 'tests/behat/behat_user.php'));
         return true;
     }
 

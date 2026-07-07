@@ -3,8 +3,8 @@
 // Allows the admin to control user logins from remote moodles.
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-include_once($CFG->dirroot.'/mnet/lib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+include_once(\core\component::component_path('core_mnet', 'lib.php'));
 
 $sort         = optional_param('sort', 'username', PARAM_ALPHAEXT);
 $dir          = optional_param('dir', 'ASC', PARAM_ALPHA);

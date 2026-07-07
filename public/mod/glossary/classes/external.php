@@ -37,7 +37,7 @@ use core_external\util;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/glossary/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Glossary module external functions.

@@ -22,8 +22,8 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 /**
  * repository_filesystem class
@@ -714,7 +714,7 @@ class repository_filesystem extends repository {
         if (!($file = $fs->get_file(SYSCONTEXTID, 'repository_filesystem', $thumbsize, $this->id, '/' . $filepath . '/',
                 $filename))) {
             // Thumbnail not found . Generate and store thumbnail.
-            require_once($CFG->libdir . '/gdlib.php');
+            require_once(\core\component::component_path('core', 'gdlib.php'));
             if ($thumbsize === 'thumb') {
                 $size = 90;
             } else {

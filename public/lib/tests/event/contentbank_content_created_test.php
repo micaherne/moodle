@@ -42,8 +42,8 @@ final class contentbank_content_created_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_contenttype.php');
-        require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_content.php');
+        require_once(\core\component::component_path('core_contentbank', 'tests/fixtures/testable_contenttype.php'));
+        require_once(\core\component::component_path('core_contentbank', 'tests/fixtures/testable_content.php'));
         parent::setUpBeforeClass();
     }
 

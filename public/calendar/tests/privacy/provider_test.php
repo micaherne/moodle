@@ -27,8 +27,8 @@ namespace core_calendar\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot . '/calendar/lib.php');
-require_once($CFG->dirroot . '/calendar/tests/externallib_test.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
+require_once(dirname(__DIR__) . '/externallib_test.php');
 
 use core_calendar\privacy\provider;
 use core_privacy\local\metadata\collection;

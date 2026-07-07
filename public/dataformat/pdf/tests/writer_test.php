@@ -46,7 +46,7 @@ final class writer_test extends \advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        $imagefixture = "{$CFG->dirroot}/lib/filestorage/tests/fixtures/testimage.jpg";
+        $imagefixture = \core\component::component_path('core', 'filestorage/tests/fixtures/testimage.jpg');
         $image = get_file_storage()->create_file_from_pathname([
             'contextid' => context_system::instance()->id,
             'component' => 'dataformat_pdf',

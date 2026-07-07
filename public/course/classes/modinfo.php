@@ -697,7 +697,8 @@ class modinfo {
 
             // Skip modules which don't exist.
             if (!array_key_exists($mod->mod, $modexists)) {
-                $modexists[$mod->mod] = file_exists("$CFG->dirroot/mod/$mod->mod/lib.php");
+                $moddir = \core_component::get_plugin_directory('mod', $mod->mod);
+                $modexists[$mod->mod] = $moddir && file_exists("$moddir/lib.php");
             }
             if (!$modexists[$mod->mod]) {
                 continue;
@@ -841,7 +842,7 @@ class modinfo {
      */
     protected static function inner_build_course_cache(stdClass $course, bool $partialrebuild = false): stdClass {
         global $DB, $CFG;
-        require_once("{$CFG->dirroot}/course/lib.php");
+        require_once(dirname(__DIR__) . '/lib.php');
 
         $cachekey = $course->id;
         $cachecoursemodinfo = cache::make('core', 'coursemodinfo');
@@ -1105,11 +1106,12 @@ class modinfo {
                         $modname = $mods[$cmid]->mod;
                         $functionname = $modname . "_get_coursemodule_info";
 
-                        if (!file_exists("$CFG->dirroot/mod/$modname/lib.php")) {
+                        $moddir = \core_component::get_plugin_directory('mod', $modname);
+                        if (!$moddir || !file_exists("$moddir/lib.php")) {
                             continue;
                         }
 
-                        include_once("$CFG->dirroot/mod/$modname/lib.php");
+                        include_once("$moddir/lib.php");
 
                         if ($hasfunction = function_exists($functionname)) {
                             if ($info = $functionname($rawmods[$cmid])) {

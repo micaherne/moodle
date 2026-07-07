@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/course/externallib.php');
+require_once(\core\component::component_path('core_course', 'externallib.php'));
 
 /**
  * Tests for the orderinging question type backup and restore logic.

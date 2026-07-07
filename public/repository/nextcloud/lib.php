@@ -27,8 +27,8 @@ use repository_nextcloud\ocs_client;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->libdir . '/webdavlib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(\core\component::component_path('core', 'webdavlib.php'));
 
 /**
  * Nextcloud repository class.

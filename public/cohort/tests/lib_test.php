@@ -22,7 +22,7 @@ use core_customfield\data_controller;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("$CFG->dirroot/cohort/lib.php");
+require_once(dirname(__DIR__) . '/lib.php');
 
 
 /**

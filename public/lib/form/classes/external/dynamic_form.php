@@ -106,7 +106,7 @@ class dynamic_form extends external_api {
             \block_manager::get_block_edit_form_class($matches[1]);
         }
         if ($formclass === 'block_edit_form') {
-            require_once($CFG->dirroot . '/blocks/edit_form.php');
+            require_once(\core\component::component_path('core_block', 'edit_form.php'));
         }
     }
 

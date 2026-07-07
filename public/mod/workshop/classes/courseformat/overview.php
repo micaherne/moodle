@@ -50,7 +50,7 @@ class overview extends \core_courseformat\activityoverviewbase {
     ) {
         global $CFG, $USER;
 
-        require_once($CFG->dirroot . '/mod/workshop/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
 
         parent::__construct($cm);
         $this->workshop = new workshop(

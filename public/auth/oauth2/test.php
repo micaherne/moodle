@@ -24,7 +24,7 @@
 
 // Require_login is not needed here.
 // phpcs:disable moodle.Files.RequireLogin.Missing
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 
 require_sesskey();
 

@@ -27,8 +27,8 @@ namespace mod_scorm\event;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/scorm/locallib.php');
-require_once($CFG->dirroot . '/mod/scorm/lib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Test class for various events related to Scorm.

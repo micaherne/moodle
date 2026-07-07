@@ -18,7 +18,7 @@ namespace core_badges;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 use cache;
 use coding_exception;

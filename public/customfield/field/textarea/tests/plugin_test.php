@@ -120,7 +120,7 @@ final class plugin_test extends \advanced_testcase {
      */
     public function test_instance_form(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/customfield/tests/fixtures/test_instance_form.php');
+        require_once(\core\component::component_path('core_customfield', 'tests/fixtures/test_instance_form.php'));
         $this->setAdminUser();
         $handler = $this->cfcat->get_handler();
 
@@ -150,7 +150,7 @@ final class plugin_test extends \advanced_testcase {
     public function test_instance_form_save_clear(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/customfield/tests/fixtures/test_instance_form.php");
+        require_once(\core\component::component_path('core_customfield', 'tests/fixtures/test_instance_form.php'));
 
         $this->setAdminUser();
 
@@ -210,7 +210,7 @@ final class plugin_test extends \advanced_testcase {
      */
     public function test_embedded_file_backup_and_restore(): void {
         global $CFG, $USER, $DB;
-        require_once($CFG->dirroot . '/customfield/tests/fixtures/test_instance_form.php');
+        require_once(\core\component::component_path('core_customfield', 'tests/fixtures/test_instance_form.php'));
         $this->setAdminUser();
         $handler = $this->cfcat->get_handler();
 

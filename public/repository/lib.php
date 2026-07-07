@@ -24,8 +24,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir . '/filelib.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 define('FILE_EXTERNAL',  1);
 define('FILE_INTERNAL',  2);
@@ -614,8 +614,9 @@ abstract class repository implements cacheable_object {
         }
 
         $type = $record->repositorytype;
-        if (file_exists($CFG->dirroot . "/repository/$type/lib.php")) {
-            require_once($CFG->dirroot . "/repository/$type/lib.php");
+        $typedir = \core_component::get_plugin_directory('repository', $type);
+        if ($typedir && file_exists($typedir . "/lib.php")) {
+            require_once($typedir . "/lib.php");
             $classname = 'repository_' . $type;
             $options['type'] = $type;
             $options['typeid'] = $record->typeid;
@@ -719,7 +720,8 @@ abstract class repository implements cacheable_object {
                 foreach($records as $type) {
                     if (($repositorytype = $cache->get('typename:'. $type->type)) === false) {
                         // Create new instance of repository_type.
-                        if (file_exists($CFG->dirroot . '/repository/'. $type->type .'/lib.php')) {
+                        $repotypedir = \core_component::get_plugin_directory('repository', $type->type);
+                        if ($repotypedir && file_exists($repotypedir . '/lib.php')) {
                             $repositorytype = new repository_type($type->type, (array)get_config($type->type), $type->visible, $type->sortorder);
                             $cache->set('typeid:'. $type->id, $repositorytype);
                             $cache->set('typename:'. $type->type, $repositorytype);
@@ -1114,7 +1116,8 @@ abstract class repository implements cacheable_object {
         $sortorder = 1;
         foreach ($records as $record) {
             $cache->set('i:'. $record->id, $record);
-            if (!file_exists($CFG->dirroot . '/repository/'. $record->repositorytype.'/lib.php')) {
+            $repotypedir = \core_component::get_plugin_directory('repository', $record->repositorytype);
+            if (!$repotypedir || !file_exists($repotypedir . '/lib.php')) {
                 continue;
             }
             $repository = self::get_repository_by_id($record->id, $current_context);
@@ -1175,11 +1178,11 @@ abstract class repository implements cacheable_object {
      * @return mixed
      */
     public static function static_function($plugin, $function) {
-        global $CFG;
+        global $CFG; // Needed in scope for included repository plugin files.
 
         //check that the plugin exists
-        $typedirectory = $CFG->dirroot . '/repository/'. $plugin . '/lib.php';
-        if (!file_exists($typedirectory)) {
+        $typedirectory = \core_component::get_plugin_directory('repository', $plugin);
+        if (!$typedirectory || !file_exists($typedirectory . '/lib.php')) {
             //throw new repository_exception('invalidplugin', 'repository');
             return false;
         }
@@ -1192,7 +1195,7 @@ abstract class repository implements cacheable_object {
             array_shift($args);
         }
 
-        require_once($typedirectory);
+        require_once($typedirectory . '/lib.php');
         return call_user_func_array(array('repository_' . $plugin, $function), $args);
     }
 
@@ -1942,9 +1945,13 @@ abstract class repository implements cacheable_object {
      * @return mixed
      */
     public static function create($type, $userid, $context, $params, $readonly=0) {
-        global $CFG, $DB;
+        global $CFG, $DB; // $CFG needed in scope for included repository plugin files.
         $params = (array)$params;
-        require_once($CFG->dirroot . '/repository/'. $type . '/lib.php');
+        $typedir = \core_component::get_plugin_directory('repository', $type);
+        if ($typedir === null) {
+            throw new \coding_exception("Plugin not installed: repository_$type");
+        }
+        require_once($typedir . '/lib.php');
         $classname = 'repository_' . $type;
         if ($repo = $DB->get_record('repository', array('type'=>$type))) {
             $record = new stdClass();
@@ -3001,7 +3008,8 @@ final class repository_type_form extends moodleform {
      * Definition of the moodleform
      */
     public function definition() {
-        global $CFG;
+        global $CFG; // Needed in scope for included repository plugin files.
+
         // type of plugin, string
         $this->plugin = $this->_customdata['plugin'];
         $this->instance = (isset($this->_customdata['instance'])
@@ -3020,7 +3028,11 @@ final class repository_type_form extends moodleform {
 
         // let the plugin add its specific fields
         $classname = 'repository_' . $this->plugin;
-        require_once($CFG->dirroot . '/repository/' . $this->plugin . '/lib.php');
+        $plugindir = \core_component::get_plugin_directory('repository', $this->plugin);
+        if ($plugindir === null) {
+            throw new \coding_exception("Plugin not installed: repository_" . $this->plugin);
+        }
+        require_once($plugindir . '/lib.php');
         //add "enable course/user instances" checkboxes if multiple instances are allowed
         $instanceoptionnames = repository::static_function($this->plugin, 'get_instance_option_names');
 
@@ -3109,7 +3121,7 @@ final class repository_type_form extends moodleform {
 function initialise_filepicker($args) {
     global $CFG, $USER, $PAGE;
     static $templatesinitialized = array();
-    require_once($CFG->libdir . '/licenselib.php');
+    require_once(\core\component::component_path('core', 'licenselib.php'));
 
     $return = new stdClass();
 

@@ -43,7 +43,7 @@ class mobile {
 
         return [
             'templates' => [],
-            'javascript' => file_get_contents($CFG->dirroot . '/mod/subsection/mobileapp/init.js'),
+            'javascript' => file_get_contents(dirname(__DIR__, 2) . '/mobileapp/init.js'),
         ];
     }
 }

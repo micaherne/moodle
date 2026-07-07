@@ -19,7 +19,7 @@ namespace core_form;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/form/course.php');
+require_once(dirname(__DIR__) . '/course.php');
 
 /**
  * Unit tests for MoodleQuickForm_course

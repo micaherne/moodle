@@ -32,7 +32,7 @@ final class renderer_test extends \advanced_testcase {
     public function test_course_filter_selector_names(): void {
         global $PAGE, $CFG;
 
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(dirname(__DIR__) . '/lib.php');
         $this->resetAfterTest();
 
         // Create 2 courses.

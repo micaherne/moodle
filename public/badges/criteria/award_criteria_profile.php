@@ -25,7 +25,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . "/user/lib.php");
+require_once(\core\component::component_path('core_user', 'lib.php'));
 
 /**
  * Profile completion badge award criteria
@@ -65,7 +65,7 @@ class award_criteria_profile extends award_criteria {
      */
     public function get_options(&$mform) {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         $none = true;
         $existing = array();
@@ -148,7 +148,7 @@ class award_criteria_profile extends award_criteria {
      */
     public function get_details($short = '') {
         global $OUTPUT, $CFG;
-        require_once($CFG->dirroot.'/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         $output = array();
         foreach ($this->params as $p) {

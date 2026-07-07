@@ -27,7 +27,7 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/grade/grading/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 // identify gradable area by its id
 $areaid     = optional_param('areaid', null, PARAM_INT);

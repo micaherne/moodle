@@ -42,7 +42,7 @@ final class manager_test extends core_reportbuilder_testcase {
      */
     public function test_get_report_from_persistent(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_available.php");
+        require_once(__DIR__ . '/fixtures/system_report_available.php');
 
         $this->resetAfterTest();
 
@@ -113,7 +113,7 @@ final class manager_test extends core_reportbuilder_testcase {
      */
     public function test_get_report_from_persistent_unavailable(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_unavailable.php");
+        require_once(__DIR__ . '/fixtures/system_report_unavailable.php');
 
         $this->resetAfterTest();
 
@@ -132,7 +132,7 @@ final class manager_test extends core_reportbuilder_testcase {
     public function test_report_source_exists(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_available.php");
+        require_once(__DIR__ . '/fixtures/system_report_available.php');
         $this->assertTrue(manager::report_source_exists(system_report_available::class));
 
         $this->assertFalse(manager::report_source_exists(stdClass::class));
@@ -144,10 +144,10 @@ final class manager_test extends core_reportbuilder_testcase {
     public function test_report_source_available(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_available.php");
+        require_once(__DIR__ . '/fixtures/system_report_available.php');
         $this->assertTrue(manager::report_source_available(system_report_available::class));
 
-        require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_unavailable.php");
+        require_once(__DIR__ . '/fixtures/system_report_unavailable.php');
         $this->assertFalse(manager::report_source_available(system_report_unavailable::class));
     }
 
@@ -156,7 +156,7 @@ final class manager_test extends core_reportbuilder_testcase {
      */
     public function test_create_report_persistent(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_available.php");
+        require_once(__DIR__ . '/fixtures/system_report_available.php');
 
         $this->resetAfterTest();
 

@@ -95,7 +95,7 @@ class lineitem extends resource_base {
             if ($item === false) {
                 throw new \Exception('Line item does not exist', 404);
             }
-            require_once($CFG->libdir.'/gradelib.php');
+            require_once(\core\component::component_path('core', 'gradelib.php'));
             switch ($response->get_request_method()) {
                 case self::HTTP_GET:
                     $this->get_request($response, $item, $typeid);
@@ -322,7 +322,7 @@ class lineitem extends resource_base {
         global $COURSE, $CFG;
         if (strpos($value, '$LineItem.url') !== false) {
             $resolved = '';
-            require_once($CFG->libdir . '/gradelib.php');
+            require_once(\core\component::component_path('core', 'gradelib.php'));
 
             $this->params['context_id'] = $COURSE->id;
             if ($tool = $this->get_service()->get_type()) {

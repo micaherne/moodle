@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/user/selector/lib.php');
-require_once($CFG->dirroot . '/enrol/locallib.php');
+require_once(\core\component::component_path('core_user', 'selector/lib.php'));
+require_once(\core\component::component_path('core_enrol', 'locallib.php'));
 
 
 /**
@@ -298,7 +298,7 @@ class enrol_manual_editselectedusers_operation extends enrol_bulk_enrolment_oper
      */
     public function get_form($defaultaction = null, $defaultcustomdata = null) {
         global $CFG;
-        require_once($CFG->dirroot.'/enrol/manual/bulkchangeforms.php');
+        require_once(__DIR__ . '/bulkchangeforms.php');
         return new enrol_manual_editselectedusers_form($defaultaction, $defaultcustomdata);
     }
 }
@@ -341,7 +341,7 @@ class enrol_manual_deleteselectedusers_operation extends enrol_bulk_enrolment_op
      */
     public function get_form($defaultaction = null, $defaultcustomdata = null) {
         global $CFG;
-        require_once($CFG->dirroot.'/enrol/manual/bulkchangeforms.php');
+        require_once(__DIR__ . '/bulkchangeforms.php');
         if (!array($defaultcustomdata)) {
             $defaultcustomdata = array();
         }
@@ -493,7 +493,7 @@ function enrol_manual_migrate_plugin_enrolments($enrol) {
  */
 function enrol_manual_get_potential_cohorts($context, $enrolid, $search = '', $page = 0, $perpage = 25, $addedenrollment = 0) {
     global $CFG;
-    require_once($CFG->dirroot . '/cohort/lib.php');
+    require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
     $allcohorts = cohort_get_available_cohorts($context, COHORT_WITH_NOTENROLLED_MEMBERS_ONLY, 0, 0, $search);
     $totalcohorts = count($allcohorts);

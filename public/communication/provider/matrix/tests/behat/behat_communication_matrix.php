@@ -21,8 +21,8 @@ use communication_matrix\matrix_test_helper_trait;
 use Moodle\BehatExtension\Exception\SkippedException;
 
 require_once(__DIR__ . '/../matrix_test_helper_trait.php');
-require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
-require_once(__DIR__ . '/../../../../tests/communication_test_helper_trait.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
+require_once(\core\component::component_path('core_communication', 'tests/communication_test_helper_trait.php'));
 
 /**
  * Class behat_communication_matrix for behat custom steps and configuration for matrix.

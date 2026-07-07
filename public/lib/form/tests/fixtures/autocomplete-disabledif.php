@@ -22,7 +22,7 @@
  */
 
 require_once(__DIR__ . '/../../../../config.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 if (!defined('BEHAT_SITE_RUNNING')) {
     throw new coding_exception('This fixture can only be used in Behat tests.');

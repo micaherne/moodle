@@ -29,7 +29,7 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/filelib.php');
+require_once(dirname(__DIR__, 2) . '/filelib.php');
 
 /**
  * Rest API base class mapping rest api methods to endpoints with http methods, args and post body.

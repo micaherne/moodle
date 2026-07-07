@@ -19,7 +19,7 @@ namespace mod_forum\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 use core_external\external_api;
 use mod_forum\external\set_forum_tracking;

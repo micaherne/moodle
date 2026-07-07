@@ -67,9 +67,9 @@ class hook_listener {
     #[\core\attribute\deprecated('core_courseformat\hook\hook_listener::before_course_viewed', since: '5.0', mdl: 'MDL-83764')]
     public static function before_course_viewed(before_course_viewed $hook): void {
         global $CFG;
-        if (file_exists($CFG->dirroot . '/course/externservercourse.php')) {
+        if (file_exists(\core\component::component_path('core_course', 'externservercourse.php'))) {
             \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
-            include($CFG->dirroot . '/course/externservercourse.php');
+            include(\core\component::component_path('core_course', 'externservercourse.php'));
             if (function_exists('extern_server_course')) {
                 if ($externurl = extern_server_course($hook->course)) {
                     redirect($externurl);

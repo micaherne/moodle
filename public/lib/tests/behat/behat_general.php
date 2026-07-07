@@ -1911,7 +1911,7 @@ EOF;
             $filepath = $CFG->admin . DIRECTORY_SEPARATOR . substr($filepath, 6);
         }
         $filepath = str_replace('/', DIRECTORY_SEPARATOR, $filepath);
-        $filepath = $CFG->dirroot . DIRECTORY_SEPARATOR . $filepath;
+        $filepath = \core\component::from_mono_path(DIRECTORY_SEPARATOR . $filepath);
         if (!is_readable($filepath)) {
             throw new ExpectationException('The file to compare to does not exist.', $this->getSession());
         }
@@ -2588,7 +2588,7 @@ EOF;
      */
     public function the_site_is_running_moodle_version_or_higher(string $minversion): void {
         global $CFG;
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(dirname(__DIR__, 2) . '/environmentlib.php');
 
         $currentversion = normalize_version(get_config('', 'release'));
 
@@ -2607,7 +2607,7 @@ EOF;
      */
     public function the_site_is_running_moodle_version_or_lower(string $maxversion): void {
         global $CFG;
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(dirname(__DIR__, 2) . '/environmentlib.php');
 
         $currentversion = normalize_version(get_config('', 'release'));
 
@@ -2865,7 +2865,7 @@ EOF;
      */
     public function the_time_is_frozen_at(string $datetime): void {
         global $CFG;
-        require_once($CFG->libdir . '/testing/classes/frozen_clock.php');
+        require_once(dirname(__DIR__, 2) . '/testing/classes/frozen_clock.php');
 
         $timestamp = strtotime($datetime);
         // The config variable is used to set up a frozen clock in each Behat web request.

@@ -27,9 +27,9 @@ defined('MOODLE_INTERNAL') || die;
 
 use core\url;
 
-require_once("$CFG->libdir/filelib.php");
-require_once("$CFG->libdir/resourcelib.php");
-require_once("$CFG->dirroot/mod/resource/lib.php");
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'resourcelib.php'));
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Redirected to migrated resource if needed,

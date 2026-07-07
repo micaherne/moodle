@@ -27,7 +27,7 @@ namespace core_rating\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/rating/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 use core_rating\privacy\provider;
 use core_privacy\local\request\writer;

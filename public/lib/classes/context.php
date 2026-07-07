@@ -584,7 +584,7 @@ abstract class context extends stdClass implements IteratorAggregate {
 
         \core_comment\manager::delete_comments(['contextid' => $this->_id]);
 
-        require_once($CFG->dirroot.'/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
         $delopt = new stdclass();
         $delopt->contextid = $this->_id;
         $rm = new \rating_manager();
@@ -595,11 +595,11 @@ abstract class context extends stdClass implements IteratorAggregate {
         $fs->delete_area_files($this->_id);
 
         // Delete all repository instances attached to this context.
-        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
         \repository::delete_all_for_context($this->_id);
 
         // Delete all advanced grading data attached to this context.
-        require_once($CFG->dirroot.'/grade/grading/lib.php');
+        require_once(\core\component::component_path('core_grading', 'lib.php'));
         \grading_manager::delete_all_for_context($this->_id);
 
         // Now delete stuff from role related tables, role_unassign_all

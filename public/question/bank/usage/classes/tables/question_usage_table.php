@@ -17,7 +17,7 @@
 namespace qbank_usage\tables;
 
 global $CFG;
-require_once($CFG->libdir.'/tablelib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 use context_course;
 use html_writer;

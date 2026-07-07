@@ -803,7 +803,7 @@ function bigbluebuttonbn_is_branded(): bool {
  */
 function bigbluebuttonbn_grade_item_update(stdClass $bigbluebuttonbn, array|object|string|null $grades=null): int {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
     $params = ['itemname' => $bigbluebuttonbn->name];
     if ($bigbluebuttonbn->grade == 0) {
         $params['gradetype'] = GRADE_TYPE_NONE;
@@ -867,7 +867,7 @@ function bigbluebuttonbn_reset_gradebook(int $courseid): void {
  */
 function bigbluebuttonbn_grade_item_delete(stdClass $bigbluebuttonbn): int {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
     return grade_update(
         source: 'mod/bigbluebuttonbn',
         courseid: $bigbluebuttonbn->course,

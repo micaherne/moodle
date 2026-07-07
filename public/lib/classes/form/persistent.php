@@ -29,7 +29,7 @@ use coding_exception;
 use moodleform;
 use stdClass;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(dirname(__DIR__, 2) . '/formslib.php');
 
 /**
  * Persistent form abstract class.

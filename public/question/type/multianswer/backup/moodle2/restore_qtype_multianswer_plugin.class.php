@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/multianswer/questiontype.php');
+require_once(dirname(__DIR__, 2) . '/questiontype.php');
 /**
  * restore plugin class that provides the necessary information
  * needed to restore one multianswer qtype plugin

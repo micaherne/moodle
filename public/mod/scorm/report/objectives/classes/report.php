@@ -25,7 +25,7 @@ namespace scormreport_objectives;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/scorm/report/objectives/responsessettings_form.php');
+require_once(dirname(__DIR__) . '/responsessettings_form.php');
 
 /**
  * Objectives report class
@@ -250,7 +250,7 @@ class report extends \mod_scorm\report {
                 // Start working -- this is necessary as soon as the niceties are over.
                 $table->setup();
             } else if ($download == 'ODS') {
-                require_once("$CFG->libdir/odslib.class.php");
+                require_once(\core\component::component_path('core', 'odslib.class.php'));
 
                 $filename .= ".ods";
                 // Creating a workbook.
@@ -289,7 +289,7 @@ class report extends \mod_scorm\report {
                 }
                 $rownum = 1;
             } else if ($download == 'Excel') {
-                require_once("$CFG->libdir/excellib.class.php");
+                require_once(\core\component::component_path('core', 'excellib.class.php'));
 
                 $filename .= ".xls";
                 // Creating a workbook.

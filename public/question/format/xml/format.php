@@ -32,7 +32,7 @@ if (!class_exists('qformat_default')) {
     // include the proper base class conditionally like this. (We have to include
     // the base class like this, otherwise it breaks third-party question types.)
     // This may be reviewd, and a better fix found one day.
-    require_once($CFG->dirroot . '/question/format.php');
+    require_once(\core\component::component_path('core_question', 'format.php'));
 }
 
 

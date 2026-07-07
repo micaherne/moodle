@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/backup/util/xml/parser/processors/progressive_parser_processor.class.php');
+require_once(__DIR__ . '/progressive_parser_processor.class.php');
 
 /**
  * Abstract xml parser processor to to simplify and dispatch parsed chunks

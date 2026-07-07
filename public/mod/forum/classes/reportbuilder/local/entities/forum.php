@@ -120,7 +120,7 @@ class forum extends course_module_base {
             ->set_is_sortable(true)
             ->set_callback(static function (?string $type): string {
                 global $CFG;
-                require_once("{$CFG->dirroot}/mod/forum/lib.php");
+                require_once(dirname(__DIR__, 4) . '/lib.php');
 
                 $types = forum_get_forum_types_all();
                 if ($type === null || !array_key_exists($type, $types)) {
@@ -190,7 +190,7 @@ class forum extends course_module_base {
         ))
             ->set_options_callback(static function (): array {
                 global $CFG;
-                require_once("{$CFG->dirroot}/mod/forum/lib.php");
+                require_once(dirname(__DIR__, 4) . '/lib.php');
 
                 return forum_get_forum_types_all();
             });

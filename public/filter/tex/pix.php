@@ -7,15 +7,15 @@
 define('NO_DEBUG_DISPLAY', true);
 define('NO_MOODLE_COOKIES', true); // Because it interferes with caching
 
-    require_once('../../config.php');
+    require_once(__DIR__ . '/../../config.php');
 
     if (!filter_is_enabled('tex')) {
         throw new \moodle_exception('filternotenabled');
     }
 
-    require_once($CFG->libdir.'/filelib.php');
-    require_once($CFG->dirroot.'/filter/tex/lib.php');
-    require_once($CFG->dirroot.'/filter/tex/latex.php');
+    require_once(\core\component::component_path('core', 'filelib.php'));
+    require_once(__DIR__ . '/lib.php');
+    require_once(__DIR__ . '/latex.php');
 
     $relativepath = get_file_argument();
 

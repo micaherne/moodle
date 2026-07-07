@@ -249,7 +249,7 @@ class behat_config_manager {
             if (!empty($CFG->behat_parallel_run['behat_wwwroot'][$i - 1]['behat_wwwroot'])) {
                 continue;
             }
-            $link = $CFG->dirroot . '/' . BEHAT_PARALLEL_SITE_NAME . $i;
+            $link = \core\component::from_mono_path('/' . BEHAT_PARALLEL_SITE_NAME . $i);
             if (file_exists($link) && is_link($link)) {
                 @unlink($link);
             }
@@ -274,7 +274,7 @@ class behat_config_manager {
             if (!empty($CFG->behat_parallel_run['behat_wwwroot'][$i - 1]['behat_wwwroot'])) {
                 continue;
             }
-            $link = $CFG->dirroot.'/'.BEHAT_PARALLEL_SITE_NAME.$i;
+            $link = \core\component::from_mono_path('/' . BEHAT_PARALLEL_SITE_NAME . $i);
             clearstatcache();
             if (file_exists($link)) {
                 if (!is_link($link) || !is_dir($link)) {

@@ -49,7 +49,7 @@ class manager {
 
         // Add core nodes.
 
-        require_once($CFG->libdir . "/myprofilelib.php");
+        require_once(\core\component::component_path('core', 'myprofilelib.php'));
         core_myprofile_navigation($tree, $user, $iscurrentuser, $course);
 
         // Core components.

@@ -158,7 +158,7 @@ trait backup_questions_attempt_data_trait {
      */
     protected function add_question_usages($element, $usageidname, $nameprefix = '') {
         global $CFG;
-        require_once($CFG->dirroot . '/question/engine/lib.php');
+        require_once(\core\component::component_path('core_question', 'engine/lib.php'));
 
         // Check $element is one nested_backup_element
         if (! $element instanceof backup_nested_element) {
@@ -983,7 +983,7 @@ class backup_badges_structure_step extends backup_structure_step {
     protected function define_structure() {
         global $CFG;
 
-        require_once($CFG->libdir . '/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
         // Define each element separated.
 
         $badges = new backup_nested_element('badges');
@@ -2927,7 +2927,7 @@ class backup_activity_grades_structure_step extends backup_structure_step {
     protected function define_structure() {
         global $CFG;
 
-        require_once($CFG->libdir . '/grade/constants.php');
+        require_once(\core\component::component_path('core', 'grade/constants.php'));
 
         // To know if we are including userinfo
         $userinfo = $this->get_setting_value('userinfo');
@@ -3023,7 +3023,7 @@ class backup_activity_grade_history_structure_step extends backup_structure_step
     protected function define_structure() {
         global $CFG;
 
-        require_once($CFG->libdir . '/grade/constants.php');
+        require_once(\core\component::component_path('core', 'grade/constants.php'));
 
         // Settings to use.
         $userinfo = $this->get_setting_value('userinfo');

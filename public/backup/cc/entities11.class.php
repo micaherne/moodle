@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') or die('Direct access to this script is forbidden.');
 
-require_once($CFG->dirroot . '/backup/cc/entities.class.php');
+require_once(__DIR__ . '/entities.class.php');
 
 class entities11 extends entities {
 
@@ -68,7 +68,7 @@ class entities11 extends entities {
                 mkdir($dpath, $CFG->directorypermissions, true);
             }
             //copy the folder.gif file
-            $folder_gif = "{$CFG->dirroot}/pix/i/files.gif";
+            $folder_gif = dirname(__DIR__, 2) . '/pix/i/files.gif';
             copy($folder_gif, $fpath);
             $all_files[] = $rfpath;
         }

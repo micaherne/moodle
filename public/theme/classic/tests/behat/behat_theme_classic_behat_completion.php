@@ -16,7 +16,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../../completion/tests/behat/behat_completion.php');
+require_once(\core\component::component_path('core_completion', 'tests/behat/behat_completion.php'));
 
 /**
  * Step definitions related to blocks overrides for the Classic theme.

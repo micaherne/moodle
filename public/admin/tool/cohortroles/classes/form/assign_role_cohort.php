@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 use moodleform;
 use context_system;
 
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Assign role to cohort form.

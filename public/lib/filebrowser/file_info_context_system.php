@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/filebrowser/file_info_context_coursecat.php');
+require_once(__DIR__ . '/file_info_context_coursecat.php');
 
 /**
  * Represents the system context in the tree navigated by {@link file_browser}.

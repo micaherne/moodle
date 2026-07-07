@@ -50,7 +50,7 @@ final class activity_custom_completion_test extends advanced_testcase {
      */
     public static function overall_completion_state_provider(): array {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
         return [
             'First incomplete, second complete' => [
                 ['completionsubmit', 'completioncreate'],

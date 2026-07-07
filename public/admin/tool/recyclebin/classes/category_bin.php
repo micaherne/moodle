@@ -201,7 +201,7 @@ class category_bin extends base_bin {
         global $CFG, $OUTPUT, $PAGE;
 
         require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $user = get_admin();
 

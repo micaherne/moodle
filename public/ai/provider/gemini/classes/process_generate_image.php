@@ -102,7 +102,7 @@ class process_generate_image extends abstract_processor {
     private function base64_to_file(int $userid, string $base64image): \stored_file {
         global $CFG;
 
-        require_once("{$CFG->libdir}/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         // Decode the base64 image into a binary format we can use.
         $binarydata = base64_decode($base64image);

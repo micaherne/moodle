@@ -100,10 +100,10 @@ require(__DIR__ . '/../../../../lib/phpunit/bootstrap.php');
 
 // From now on this is a regular moodle CLI_SCRIPT.
 
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/upgradelib.php');
-require_once($CFG->libdir.'/clilib.php');
-require_once($CFG->libdir.'/installlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'upgradelib.php'));
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(\core\component::component_path('core', 'installlib.php'));
 
 if ($unrecognized) {
     $unrecognized = implode("\n  ", $unrecognized);

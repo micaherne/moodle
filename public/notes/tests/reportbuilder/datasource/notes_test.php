@@ -38,7 +38,7 @@ final class notes_test extends core_reportbuilder_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/notes/lib.php");
+        require_once(dirname(__DIR__, 3) . '/lib.php');
         parent::setUpBeforeClass();
     }
 

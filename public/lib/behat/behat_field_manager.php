@@ -107,10 +107,10 @@ class behat_field_manager {
         $classname = 'behat_form_' . $type;
 
         // Fallsback on the type guesser if nothing specific exists.
-        $classpath = $CFG->libdir . '/behat/form_field/' . $classname . '.php';
+        $classpath = __DIR__ . "/form_field/{$classname}.php";
         if (!file_exists($classpath)) {
             $classname = 'behat_form_field';
-            $classpath = $CFG->libdir . '/behat/form_field/' . $classname . '.php';
+            $classpath = __DIR__ . "/form_field/{$classname}.php";
         }
 
         // Returns the instance.

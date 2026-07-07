@@ -818,7 +818,7 @@ abstract class handler {
      */
     public function get_description_text_options(): array {
         global $CFG;
-        require_once($CFG->libdir.'/formslib.php');
+        require_once(\core\component::component_path('core', 'formslib.php'));
         return [
             'maxfiles' => EDITOR_UNLIMITED_FILES,
             'maxbytes' => $CFG->maxbytes,

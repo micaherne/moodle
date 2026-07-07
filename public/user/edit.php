@@ -22,12 +22,12 @@
  * @package core_user
  */
 
-require_once('../config.php');
-require_once($CFG->libdir.'/gdlib.php');
-require_once($CFG->dirroot.'/user/edit_form.php');
-require_once($CFG->dirroot.'/user/editlib.php');
-require_once($CFG->dirroot.'/user/profile/lib.php');
-require_once($CFG->dirroot.'/user/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'gdlib.php'));
+require_once(__DIR__ . '/edit_form.php');
+require_once(__DIR__ . '/editlib.php');
+require_once(__DIR__ . '/profile/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $userid = optional_param('id', $USER->id, PARAM_INT);    // User id.
 $course = optional_param('course', SITEID, PARAM_INT);   // Course id (defaults to Site).

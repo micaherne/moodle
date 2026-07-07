@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once(dirname(__DIR__, 2) . '/formslib.php');
 
 $sections = optional_param('sections', 2, PARAM_INT);
 require_login();

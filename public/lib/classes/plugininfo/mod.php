@@ -251,7 +251,7 @@ class mod extends base {
         $DB->delete_records('modules', array('name' => $module->name));
 
         // Cleanup the gradebook.
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(dirname(__DIR__, 2) . '/gradelib.php');
         grade_uninstalled_module($module->name);
 
         // Do not look for legacy $module->name . '_uninstall any more,

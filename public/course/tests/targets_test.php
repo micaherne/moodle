@@ -19,12 +19,12 @@ namespace core_course;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot . '/completion/criteria/completion_criteria.php');
-require_once($CFG->dirroot . '/completion/criteria/completion_criteria_activity.php');
-require_once($CFG->dirroot . '/lib/grade/grade_item.php');
-require_once($CFG->dirroot . '/lib/grade/grade_grade.php');
-require_once($CFG->dirroot . '/lib/grade/grade_category.php');
-require_once($CFG->dirroot . '/lib/grade/constants.php');
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria.php'));
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_activity.php'));
+require_once(\core\component::component_path('core', 'grade/grade_item.php'));
+require_once(\core\component::component_path('core', 'grade/grade_grade.php'));
+require_once(\core\component::component_path('core', 'grade/grade_category.php'));
+require_once(\core\component::component_path('core', 'grade/constants.php'));
 
 /**
  * Unit tests for core targets.

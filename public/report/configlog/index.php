@@ -28,7 +28,7 @@ use core_reportbuilder\local\filters\text;
 use report_configlog\reportbuilder\local\systemreports\config_changes;
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 // Allow searching by setting when providing parameter directly.
 $search = optional_param('search', '', PARAM_TEXT);

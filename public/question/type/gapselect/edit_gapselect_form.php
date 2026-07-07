@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/gapselect/edit_form_base.php');
+require_once(__DIR__ . '/edit_form_base.php');
 
 
 /**

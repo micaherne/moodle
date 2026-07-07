@@ -35,8 +35,8 @@ use enrol_lti\local\ltiadvantage\service\tool_deployment_service;
 
 require_once(__DIR__ . '/../../config.php');
 global $CFG, $OUTPUT;
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/enrol/lti/lib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/lib.php');
 
 $action = required_param('action', PARAM_ALPHA);
 $registrationid = required_param('registrationid', PARAM_INT);

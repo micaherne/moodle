@@ -23,10 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 require_once('user_bulk_cohortadd_form.php');
-require_once("$CFG->dirroot/cohort/lib.php");
+require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
 $sort = optional_param('sort', 'fullname', PARAM_ALPHA);
 $dir  = optional_param('dir', 'asc', PARAM_ALPHA);

@@ -76,7 +76,7 @@ class moodle1_mod_resource_handler extends moodle1_mod_handler {
      */
     public function process_resource(array $data, array $raw) {
         global $CFG;
-        require_once("$CFG->libdir/resourcelib.php");
+        require_once(\core\component::component_path('core', 'resourcelib.php'));
 
         // replay the upgrade step 2009042001
         if ($CFG->texteditors !== 'textarea') {
@@ -115,7 +115,10 @@ class moodle1_mod_resource_handler extends moodle1_mod_handler {
             $plugin = new stdClass();
             $plugin->version = null;
             $module = $plugin;
-            include $CFG->dirroot.'/mod/'.$successor->get_modname().'/version.php';
+            $moddir = \core_component::get_plugin_directory('mod', $successor->get_modname());
+            if ($moddir) {
+                include "$moddir/version.php";
+            }
             $cminfo['version'] = $plugin->version;
 
             // stash the new course module information for this successor

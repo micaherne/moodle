@@ -25,7 +25,7 @@ use question_engine;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * Tests for the quiz_attempt class.

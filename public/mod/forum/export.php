@@ -24,8 +24,8 @@
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/calendar/externallib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core_calendar', 'externallib.php'));
 
 $forumid = required_param('id', PARAM_INT);
 $userids = optional_param_array('userids', [], PARAM_INT);

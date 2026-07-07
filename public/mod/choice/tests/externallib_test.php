@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/choice/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * External choice functions unit tests

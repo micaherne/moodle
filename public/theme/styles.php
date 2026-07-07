@@ -27,8 +27,8 @@
 define('NO_DEBUG_DISPLAY', true);
 
 define('ABORT_AFTER_CONFIG', true);
-require('../config.php');
-require_once($CFG->dirroot.'/lib/csslib.php');
+require(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'csslib.php'));
 
 if ($slashargument = min_get_slash_argument()) {
     $slashargument = ltrim($slashargument, '/');
@@ -106,7 +106,7 @@ define('ABORT_AFTER_CONFIG_CANCEL', true);
 define('NO_MOODLE_COOKIES', true); // Session not used here.
 define('NO_UPGRADE_CHECK', true);  // Ignore upgrade check.
 
-require("$CFG->dirroot/lib/setup.php");
+require(\core\component::component_path('core', 'setup.php'));
 
 $theme = theme_config::load($themename);
 $theme->force_svg_use($usesvg);
@@ -205,7 +205,7 @@ if ($sendaftergeneration || $lock) {
  */
 function theme_styles_generate_and_store($theme, $rev, $themesubrev, $candidatedir) {
     global $CFG;
-    require_once("{$CFG->libdir}/filelib.php");
+    require_once(\core\component::component_path('core', 'filelib.php'));
 
     // Generate the content first.
     if (!$csscontent = $theme->get_css_cached_content()) {

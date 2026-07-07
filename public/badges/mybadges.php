@@ -25,8 +25,8 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 $page        = optional_param('page', 0, PARAM_INT);
 $search      = optional_param('search', '', PARAM_CLEAN);

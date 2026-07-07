@@ -50,7 +50,7 @@ final class provider_test extends provider_testcase {
      */
     public static function setupBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_content.php');
+        require_once(dirname(__DIR__) . '/fixtures/testable_content.php');
     }
 
     /**

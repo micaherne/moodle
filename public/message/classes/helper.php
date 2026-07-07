@@ -22,7 +22,7 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/message/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Helper class for the message area.
@@ -210,7 +210,7 @@ class helper {
     public static function show_online_status($user) {
         global $CFG;
 
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         if ($lastaccess = user_get_user_details($user, null, array('lastaccess'))) {
             if (isset($lastaccess['lastaccess'])) {
@@ -655,7 +655,7 @@ class helper {
      */
     public static function search_get_user_details(stdClass $user, array $userfields = []): array {
         global $CFG, $USER;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         if ($CFG->messagingallusers || $user->id == $USER->id) {
             return \user_get_user_details_courses($user, $userfields) ?? []; // This checks visibility of site and course profiles.

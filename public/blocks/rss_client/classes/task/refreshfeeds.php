@@ -68,7 +68,7 @@ class refreshfeeds extends \core\task\scheduled_task {
      */
     public function execute() {
         global $CFG, $DB;
-        require_once("{$CFG->libdir}/simplepie/moodle_simplepie.php");
+        require_once(\core\component::component_path('core', 'simplepie/moodle_simplepie.php'));
 
         // We are going to measure execution times.
         $starttime = microtime();

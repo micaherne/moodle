@@ -33,7 +33,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         global $CFG;
 
         parent::setUpBeforeClass();
-        require_once($CFG->dirroot . '/notes/externallib.php');
+        require_once(dirname(__DIR__) . '/externallib.php');
     }
 
     /**

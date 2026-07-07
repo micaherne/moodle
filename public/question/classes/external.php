@@ -37,9 +37,9 @@ use core_question\local\bank\filter_condition_manager;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/question/engine/datalib.php');
-require_once($CFG->libdir . '/questionlib.php');
+require_once(dirname(__DIR__) . '/engine/lib.php');
+require_once(dirname(__DIR__) . '/engine/datalib.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
 
 /**
  * Question external functions

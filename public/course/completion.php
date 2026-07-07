@@ -26,18 +26,18 @@
  */
 
 require_once(__DIR__.'/../config.php');
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->libdir.'/completionlib.php');
-require_once($CFG->dirroot.'/completion/criteria/completion_criteria_self.php');
-require_once($CFG->dirroot.'/completion/criteria/completion_criteria_date.php');
-require_once($CFG->dirroot.'/completion/criteria/completion_criteria_unenrol.php');
-require_once($CFG->dirroot.'/completion/criteria/completion_criteria_activity.php');
-require_once($CFG->dirroot.'/completion/criteria/completion_criteria_duration.php');
-require_once($CFG->dirroot.'/completion/criteria/completion_criteria_grade.php');
-require_once($CFG->dirroot.'/completion/criteria/completion_criteria_role.php');
-require_once($CFG->dirroot.'/completion/criteria/completion_criteria_course.php');
-require_once $CFG->libdir.'/gradelib.php';
-require_once($CFG->dirroot.'/course/completion_form.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_self.php'));
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_date.php'));
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_unenrol.php'));
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_activity.php'));
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_duration.php'));
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_grade.php'));
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_role.php'));
+require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_course.php'));
+require_once \core\component::component_path('core', 'gradelib.php');
+require_once(__DIR__ . '/completion_form.php');
 
 $id = required_param('id', PARAM_INT);       // course id
 

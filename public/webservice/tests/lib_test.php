@@ -33,7 +33,7 @@ use webservice;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/webservice/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Unit tests for the webservice component.

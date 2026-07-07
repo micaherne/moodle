@@ -35,7 +35,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/wiki/edit_form.php');
+require_once(__DIR__ . '/edit_form.php');
 
 /**
  * Class page_wiki contains the common code between all pages
@@ -623,7 +623,7 @@ class page_wiki_comments extends page_wiki {
 
     function print_content() {
         global $CFG, $OUTPUT, $USER, $PAGE;
-        require_once($CFG->dirroot . '/mod/wiki/locallib.php');
+        require_once(__DIR__ . '/locallib.php');
 
         $page = $this->page;
         $subwiki = $this->subwiki;
@@ -769,7 +769,7 @@ class page_wiki_editcomment extends page_wiki {
 
     function set_action($action, $comment) {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/wiki/comments_form.php');
+        require_once(__DIR__ . '/comments_form.php');
 
         $this->action = $action;
         $this->comment = $comment;
@@ -812,7 +812,7 @@ class page_wiki_editcomment extends page_wiki {
 
     private function add_comment_form() {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/wiki/editors/wiki_editor.php');
+        require_once(__DIR__ . '/editors/wiki_editor.php');
 
         $pageid = $this->page->id;
 
@@ -829,8 +829,8 @@ class page_wiki_editcomment extends page_wiki {
 
     private function edit_comment_form($com) {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/wiki/comments_form.php');
-        require_once($CFG->dirroot . '/mod/wiki/editors/wiki_editor.php');
+        require_once(__DIR__ . '/comments_form.php');
+        require_once(__DIR__ . '/editors/wiki_editor.php');
 
         if ($this->format == 'html') {
             $com->action = 'edit';
@@ -2369,7 +2369,7 @@ class page_wiki_handlecomments extends page_wiki {
 
     private function add_comment($content, $idcomment) {
         global $CFG, $PAGE;
-        require_once($CFG->dirroot . "/mod/wiki/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
 
         $pageid = $this->page->id;
 

@@ -26,7 +26,7 @@ namespace core_calendar\local\event\mappers;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(dirname(__DIR__, 4) . '/lib.php');
 
 /**
  * Interface for a create_update_form_mapper class

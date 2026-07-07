@@ -773,13 +773,13 @@ class core_renderer extends renderer_base {
             unset($SESSION->justloggedin);
             if (!isguestuser()) {
                 // Include this file only when required.
-                require_once($CFG->dirroot . '/user/lib.php');
+                require_once(\core\component::component_path('core_user', 'lib.php'));
                 if (($count = user_count_login_failures($USER)) && !empty($CFG->displayloginfailures)) {
                     $loggedinas .= '<div class="loginfailures">';
                     $a = new stdClass();
                     $a->attempts = $count;
                     $loggedinas .= get_string('failedloginattempts', '', $a);
-                    if (file_exists("$CFG->dirroot/report/log/index.php") and has_capability('report/log:view', context_system::instance())) {
+                    if (file_exists(\core\component::component_path('report_log', 'index.php')) and has_capability('report/log:view', context_system::instance())) {
                         $loggedinas .= ' (' . html_writer::link(new moodle_url('/report/log/index.php', [
                             'chooselog' => 1,
                             'id' => 0,
@@ -927,7 +927,7 @@ class core_renderer extends renderer_base {
         }
 
         if (isset($SESSION->justloggedin) && !empty($CFG->displayloginfailures)) {
-            require_once($CFG->dirroot . '/user/lib.php');
+            require_once(\core\component::component_path('core_user', 'lib.php'));
             // Set second parameter to false as we do not want reset the counter, the same message appears on footer.
             if ($count = user_count_login_failures($USER, false)) {
                 $this->page->add_body_class('loginfailures');
@@ -1162,7 +1162,7 @@ class core_renderer extends renderer_base {
             return $output;
         }
 
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $functioncalled = true;
         $courseformat = course_get_format($this->page->course);
         if (($obj = $courseformat->course_content_header()) !== null) {
@@ -1190,7 +1190,7 @@ class core_renderer extends renderer_base {
             return '';
         }
         $functioncalled = true;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $courseformat = course_get_format($this->page->course);
         if (($obj = $courseformat->course_content_footer()) !== null) {
             return html_writer::div($courseformat->get_renderer($this->page)->render($obj), 'course-content-footer');
@@ -1210,7 +1210,7 @@ class core_renderer extends renderer_base {
             // return immediately and do not include /course/lib.php if not necessary
             return '';
         }
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $courseformat = course_get_format($this->page->course);
         if (($obj = $courseformat->course_header()) !== null) {
             return $courseformat->get_renderer($this->page)->render($obj);
@@ -1230,7 +1230,7 @@ class core_renderer extends renderer_base {
             // return immediately and do not include /course/lib.php if not necessary
             return '';
         }
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $courseformat = course_get_format($this->page->course);
         if (($obj = $courseformat->course_footer()) !== null) {
             return $courseformat->get_renderer($this->page)->render($obj);
@@ -3204,7 +3204,7 @@ EOD;
      */
     public function user_menu($user = null, $withlinks = null) {
         global $USER, $CFG;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         if (is_null($user)) {
             $user = $USER;
@@ -4219,7 +4219,7 @@ EOD;
 
     public function context_header($headerinfo = null, $headinglevel = 1) {
         global $DB, $USER, $CFG, $SITE;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
         $context = $this->page->context;
         $heading = null;
         $imagedata = null;

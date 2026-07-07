@@ -181,7 +181,7 @@ class schedule {
     public static function get_schedule_report_file(model $schedule): stored_file {
         global $CFG, $USER;
 
-        require_once("{$CFG->libdir}/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $table = custom_report_table_view::create($schedule->get('reportid'));
         $table->setup();

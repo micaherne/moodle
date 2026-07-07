@@ -42,6 +42,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 function qtype_randomsamatch_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     global $DB, $CFG;
-    require_once($CFG->libdir . '/questionlib.php');
+    require_once(\core\component::component_path('core', 'questionlib.php'));
     question_pluginfile($course, $context, 'qtype_randomsamatch', $filearea, $args, $forcedownload, $options);
 }

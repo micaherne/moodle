@@ -28,7 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot.'/mod/workshop/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $grades = workshop::available_maxgrades_list();
 

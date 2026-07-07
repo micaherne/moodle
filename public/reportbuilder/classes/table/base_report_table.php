@@ -33,7 +33,7 @@ use core\output\notification;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("{$CFG->libdir}/tablelib.php");
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * Base report dynamic table class

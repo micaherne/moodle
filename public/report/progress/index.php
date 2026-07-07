@@ -26,8 +26,8 @@
 use core\report_helper;
 use \report_progress\local\helper;
 
-require('../../config.php');
-require_once($CFG->libdir . '/completionlib.php');
+require(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 // Get course
 $id = required_param('course',PARAM_INT);

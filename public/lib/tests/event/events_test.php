@@ -354,7 +354,7 @@ final class events_test extends \advanced_testcase {
     public function test_database_text_field_content_replaced(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/lib/adminlib.php');
+        require_once(dirname(__DIR__, 2) . '/adminlib.php');
 
         // Trigger and capture the event for finding and replacing strings in the database.
         $sink = $this->redirectEvents();

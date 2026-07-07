@@ -22,10 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../config.php');
-require_once("$CFG->dirroot/enrol/locallib.php");
-require_once("$CFG->dirroot/enrol/renderer.php");
-require_once("$CFG->dirroot/group/lib.php");
+require(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/renderer.php');
+require_once(\core\component::component_path('core_group', 'lib.php'));
 
 $id      = required_param('id', PARAM_INT); // course id
 $action  = optional_param('action', '', PARAM_ALPHANUMEXT);

@@ -22,9 +22,9 @@ use mod_quiz\quiz_settings;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . "/phpunit/classes/restore_date_testcase.php");
-require_once($CFG->libdir . "/badgeslib.php");
-require_once($CFG->dirroot . '/mod/assign/tests/base_test.php');
+require_once(\core\component::component_path('core', 'phpunit/classes/restore_date_testcase.php'));
+require_once(\core\component::component_path('core', 'badgeslib.php'));
+require_once(\core\component::component_path('mod_assign', 'tests/base_test.php'));
 
 /**
  * Restore date tests.

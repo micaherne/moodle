@@ -3,7 +3,7 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once ($CFG->dirroot.'/lib/formslib.php');
+require_once (\core\component::component_path('core', 'formslib.php'));
 
 class mod_glossary_entry_form extends moodleform {
 

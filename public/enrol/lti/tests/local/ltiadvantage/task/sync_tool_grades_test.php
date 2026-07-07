@@ -76,8 +76,8 @@ final class sync_tool_grades_test extends \lti_advantage_testcase {
     protected function set_user_grade_for_resource(int $userid, float $grade, \stdClass $resource): float {
 
         global $CFG;
-        require_once($CFG->libdir . '/accesslib.php');
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'accesslib.php'));
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $context = \context::instance_by_id($resource->contextid);
 
         if ($context->contextlevel == CONTEXT_COURSE) {
@@ -123,9 +123,9 @@ final class sync_tool_grades_test extends \lti_advantage_testcase {
             bool $complete): void {
 
         global $CFG;
-        require_once($CFG->libdir . '/accesslib.php');
-        require_once($CFG->libdir . '/completionlib.php');
-        require_once($CFG->libdir . '/datalib.php');
+        require_once(\core\component::component_path('core', 'accesslib.php'));
+        require_once(\core\component::component_path('core', 'completionlib.php'));
+        require_once(\core\component::component_path('core', 'datalib.php'));
         $this->setAdminUser();
         $context = \context::instance_by_id($resource->contextid);
         $completion = new \completion_info(get_course($resource->courseid));
@@ -488,7 +488,7 @@ final class sync_tool_grades_test extends \lti_advantage_testcase {
     public function test_sync_grades_completion_required(): void {
         $this->resetAfterTest();
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         [
             $course,

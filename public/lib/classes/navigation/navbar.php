@@ -248,7 +248,7 @@ class navbar extends navigation_node {
      */
     private function get_course_categories() {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $categories = [];
         $cap = 'moodle/category:viewhiddencategories';

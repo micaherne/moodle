@@ -26,8 +26,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/group/externallib.php');
-require_once($CFG->dirroot . '/group/lib.php');
+require_once(dirname(__DIR__) . '/externallib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Group external PHPunit tests

@@ -90,7 +90,7 @@ class enrol_category_plugin extends enrol_plugin {
         }
 
         // Sync category enrols.
-        require_once("$CFG->dirroot/enrol/category/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
         enrol_category_sync_course($course);
     }
 
@@ -101,7 +101,7 @@ class enrol_category_plugin extends enrol_plugin {
      */
     public function restore_sync_course($course) {
         global $CFG;
-        require_once("$CFG->dirroot/enrol/category/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
         enrol_category_sync_course($course);
     }
 }

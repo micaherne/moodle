@@ -24,9 +24,9 @@
 
 define('NO_MOODLE_COOKIES', true);
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/calendar/lib.php');
-require_once($CFG->libdir.'/bennu/bennu.inc.php');
+require_once(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'bennu/bennu.inc.php'));
 
 raise_memory_limit(MEMORY_HUGE);
 

@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/bank.php');
+require_once(\core\component::component_path('core_question', 'engine/bank.php'));
 
 /**
  * Class extending restore_qtype_plugin in order to use extra fields method

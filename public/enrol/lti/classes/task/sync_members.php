@@ -36,7 +36,7 @@ use IMSGlobal\LTI\ToolProvider\ToolConsumer;
 use IMSGlobal\LTI\ToolProvider\User;
 use stdClass;
 
-require_once($CFG->dirroot . '/user/lib.php');
+require_once(\core\component::component_path('core_user', 'lib.php'));
 
 /**
  * Task for synchronising members using the enrolment LTI.

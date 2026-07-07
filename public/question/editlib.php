@@ -27,7 +27,7 @@ use core\output\datafilter;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/questionlib.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
 
 define('DEFAULT_QUESTIONS_PER_PAGE', 100);
 define('MAXIMUM_QUESTIONS_PER_PAGE', 4000);

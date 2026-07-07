@@ -148,8 +148,7 @@ class qtype_ddimageortext_test_helper extends question_test_helper {
         $filerecord->itemid = $bgdraftitemid;
         $filerecord->filepath = '/';
         $filerecord->filename = 'oceanfloorbase.jpg';
-        $fs->create_file_from_pathname($filerecord, $CFG->dirroot .
-                '/question/type/ddimageortext/tests/fixtures/oceanfloorbase.jpg');
+        $fs->create_file_from_pathname($filerecord, __DIR__ . '/fixtures/oceanfloorbase.jpg');
 
         $fromform->name = 'Geography cross-section';
         $fromform->questiontext = array(
@@ -272,8 +271,7 @@ class qtype_ddimageortext_test_helper extends question_test_helper {
         $filerecord->itemid = $bgdraftitemid;
         $filerecord->filepath = '/';
         $filerecord->filename = 'oceanfloorbase.jpg';
-        $fs->create_file_from_pathname($filerecord, $CFG->dirroot .
-            '/question/type/ddimageortext/tests/fixtures/oceanfloorbase.jpg');
+        $fs->create_file_from_pathname($filerecord, __DIR__ . '/fixtures/oceanfloorbase.jpg');
         $fromform->name = 'Drag-and-drop words into image question with equation';
         $fromform->questiontext = ['text' => 'Fill in the correct mathjax equation: y = 2, x =4', 'format' => FORMAT_HTML];
         $fromform->defaultmark = 1.0;

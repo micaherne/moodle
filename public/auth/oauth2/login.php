@@ -22,7 +22,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 
 $issuerid = required_param('id', PARAM_INT);
 $wantsurl = optional_param('wantsurl', '', PARAM_LOCALURL);

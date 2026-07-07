@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 define('FLICKR_DEV_KEY', '4fddbdd7ff2376beec54d7f6afad425e');
 define('DEFAULT_NUMBER_OF_PHOTOS', 6);
 
-require_once("{$CFG->libdir}/flickrclient.php");
+require_once(\core\component::component_path('core', 'flickrclient.php'));
 
 class block_tag_flickr extends block_base {
 
@@ -50,7 +50,7 @@ class block_tag_flickr extends block_base {
         global $CFG, $USER;
 
         //note: do NOT include files at the top of this file
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         if ($this->content !== NULL) {
             return $this->content;

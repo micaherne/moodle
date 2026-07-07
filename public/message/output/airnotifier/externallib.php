@@ -94,7 +94,7 @@ class message_airnotifier_external extends external_api {
     public static function are_notification_preferences_configured($userids) {
         global $CFG, $USER, $DB;
 
-        require_once($CFG->dirroot . '/message/lib.php');
+        require_once(\core\component::component_path('core_message', 'lib.php'));
         $params = self::validate_parameters(self::are_notification_preferences_configured_parameters(),
                 array('userids' => $userids));
 

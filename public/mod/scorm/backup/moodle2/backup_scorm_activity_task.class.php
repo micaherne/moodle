@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/scorm/backup/moodle2/backup_scorm_stepslib.php');
+require_once(__DIR__ . '/backup_scorm_stepslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the SCORM instance

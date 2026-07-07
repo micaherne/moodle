@@ -389,7 +389,7 @@ class calendar_event {
     protected function get_description() {
         global $CFG;
 
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         if ($this->_description === null) {
             // Check if we have already resolved the context for this event.
@@ -2468,8 +2468,8 @@ function calendar_delete_subscription($subscription) {
 function calendar_get_icalendar($url) {
     global $CFG;
 
-    require_once($CFG->libdir . '/filelib.php');
-    require_once($CFG->libdir . '/bennu/bennu.inc.php');
+    require_once(\core\component::component_path('core', 'filelib.php'));
+    require_once(\core\component::component_path('core', 'bennu/bennu.inc.php'));
 
     $curl = new \curl();
     $curl->setopt(array('CURLOPT_FOLLOWLOCATION' => 1, 'CURLOPT_MAXREDIRS' => 5));
@@ -2996,7 +2996,7 @@ function calendar_get_view(\calendar_information $calendar, $view, $includenavig
  */
 function calendar_output_fragment_event_form($args) {
     global $CFG, $OUTPUT, $USER;
-    require_once($CFG->libdir . '/grouplib.php');
+    require_once(\core\component::component_path('core', 'grouplib.php'));
     $html = '';
     $data = [];
     $eventid = isset($args['eventid']) ? clean_param($args['eventid'], PARAM_INT) : null;

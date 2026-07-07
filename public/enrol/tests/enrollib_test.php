@@ -582,7 +582,7 @@ final class enrollib_test extends advanced_testcase {
     public function test_enrol_get_shared_courses_different_methods(): void {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/enrol/self/externallib.php');
+        require_once(\core\component::component_path('enrol_self', 'externallib.php'));
 
         $this->resetAfterTest();
 
@@ -1729,7 +1729,7 @@ final class enrollib_test extends advanced_testcase {
         $this->setGuestUser();
         $this->assertTrue(enrol_selfenrol_available($course->id));
 
-        require_once("$CFG->dirroot/cohort/lib.php");
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
         cohort_add_member($cohort1->id, $user2->id);
 
         // Cohort test.

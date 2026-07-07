@@ -289,7 +289,7 @@ final class provider_test extends provider_testcase {
      */
     protected function h5pactivity_setup_test_scenario_data(bool $extrauser = false): void {
         global $CFG, $USER;
-        require_once($CFG->dirroot.'/lib/xapi/tests/helper.php');
+        require_once(\core\component::component_path('core_xapi', 'tests/helper.php'));
 
         $generator = $this->getDataGenerator();
 

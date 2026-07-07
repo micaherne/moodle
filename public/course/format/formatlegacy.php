@@ -235,11 +235,10 @@ class format_legacy extends core_courseformat\base {
      *     each of values is an array of block names (for left and right side columns)
      */
     public function get_default_blocks() {
-        global $CFG;
-        $formatconfig = $CFG->dirroot.'/course/format/'.$this->format.'/config.php';
+        $formatdir = \core_component::get_plugin_directory('format', $this->format);
         $format = array(); // initialize array in external file
-        if (is_readable($formatconfig)) {
-            include($formatconfig);
+        if ($formatdir && is_readable($formatdir . '/config.php')) {
+            include($formatdir . '/config.php');
         }
         if (!empty($format['defaultblocks'])) {
             return blocks_parse_default_blocks_list($format['defaultblocks']);

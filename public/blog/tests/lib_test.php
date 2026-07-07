@@ -29,8 +29,8 @@ use blog_listing;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/blog/locallib.php');
-require_once($CFG->dirroot . '/blog/lib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Test functions that rely on the DB tables

@@ -3,16 +3,16 @@
       // If not, it obtains the corresponding TeX expression from the cache_filters db table
       // and uses LaTeX to create the image file.
 
-    require_once("../../config.php");
+    require_once(__DIR__ . '/../../config.php');
 
     if (!filter_is_enabled('algebra')) {
         throw new \moodle_exception('filternotenabled');
     }
 
-    require_once($CFG->libdir.'/filelib.php');
-    require_once($CFG->dirroot.'/filter/tex/lib.php');
-    require_once($CFG->dirroot . '/filter/algebra/lib.php');
-    require_once($CFG->dirroot . '/filter/tex/latex.php');
+    require_once(\core\component::component_path('core', 'filelib.php'));
+    require_once(\core\component::component_path('filter_tex', 'lib.php'));
+    require_once(__DIR__ . '/lib.php');
+    require_once(\core\component::component_path('filter_tex', 'latex.php'));
 
     $action = optional_param('action', '', PARAM_ALPHANUM);
     $algebra = optional_param('algebra', '', PARAM_RAW);
@@ -77,7 +77,6 @@
     }
 
 function algebra2tex($algebra) {
-  global $CFG;
   $algebra = str_replace('&lt;','<',$algebra);
   $algebra = str_replace('&gt;','>',$algebra);
   $algebra = str_replace('<>','#',$algebra);
@@ -95,35 +94,35 @@ function algebra2tex($algebra) {
   $algebra = escapeshellarg($algebra);
 
   if ( (PHP_OS == "WINNT") || (PHP_OS == "WIN32") || (PHP_OS == "Windows") ) {
-    $cmd  = "cd $CFG->dirroot\\filter\\algebra & algebra2tex.pl x/2";
+    $cmd  = "cd " . escapeshellarg(__DIR__) . " & algebra2tex.pl x/2";
     $test = `$cmd`;
     if ($test != '\frac{x}{2}') {
       echo "There is a problem with either Perl or the script algebra2tex.pl<br/>";
       $ecmd = $cmd . " 2>&1";
       echo `$ecmd` . "<br/>\n";
       echo "The shell command<br/>$cmd<br/>returned status = $status<br/>\n";
-      $commandpath = "$CFG->dirroot\\filter\\algebra\\algebra2tex.pl";
+      $commandpath = __DIR__ . '/algebra2tex.pl';
       if (file_exists($commandpath)) {
         echo "The file permissions of algebra2tex.pl are: " . decoct(fileperms($commandpath)) . "<br/>";
       }
       die;
     }
-    $cmd  = "cd $CFG->dirroot\\filter\\algebra & algebra2tex.pl $algebra";
+    $cmd  = "cd " . escapeshellarg(__DIR__) . " & algebra2tex.pl $algebra";
   } else {
-    $cmd  = "cd $CFG->dirroot/filter/algebra; ./algebra2tex.pl x/2";
+    $cmd  = "cd " . escapeshellarg(__DIR__) . "; ./algebra2tex.pl x/2";
     $test = `$cmd`;
     if ($test != '\frac{x}{2}') {
       echo "There is a problem with either Perl or the script algebra2tex.pl<br/>";
       $ecmd = $cmd . " 2>&1";
       echo `$ecmd` . "<br/>\n";
       echo "The shell command<br/>$cmd<br/>returned status = $status<br/>\n";
-      $commandpath = "$CFG->dirroot/filter/algebra/algebra2tex.pl";
+      $commandpath = __DIR__ . '/algebra2tex.pl';
       if (file_exists($commandpath)) {
         echo "The file permissions of algebra2tex.pl are: " . decoct(fileperms($commandpath)) . "<br/>";
       }
       die;
     }
-    $cmd  = "cd $CFG->dirroot/filter/algebra; ./algebra2tex.pl $algebra";
+    $cmd  = "cd " . escapeshellarg(__DIR__) . "; ./algebra2tex.pl $algebra";
   }
   $texexp = `$cmd`;
   return $texexp;

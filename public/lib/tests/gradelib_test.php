@@ -19,7 +19,7 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/gradelib.php');
+require_once(dirname(__DIR__) . '/gradelib.php');
 
 /**
  * Unit tests for /lib/gradelib.php.

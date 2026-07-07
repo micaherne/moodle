@@ -19,7 +19,7 @@ namespace core_completion\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/completion/tests/fixtures/completion_creation.php');
+require_once(dirname(__DIR__) . '/fixtures/completion_creation.php');
 
 /**
  * Tests for the \core_completion API's provider functionality.
