@@ -65,7 +65,7 @@ class delete_index extends XMLDBAction {
 
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
         $tableparam = required_param('table', PARAM_PATH);
         $indexparam = required_param('index', PARAM_PATH);
 
@@ -78,11 +78,11 @@ class delete_index extends XMLDBAction {
             $o.= '    <p class="centerpara">' . $this->str['confirmdeleteindex'] . '<br /><br />' . $indexparam . '</p>';
             $o .= '    <table class="table-reboot w-100" cellpadding="20"><tr><td class="text-end">';
             $o.= '      <div class="singlebutton">';
-            $o.= '        <form action="index.php?action=delete_index&amp;sesskey=' . sesskey() . '&amp;confirmed=yes&amp;postaction=edit_table&amp;index=' . $indexparam . '&amp;table=' . $tableparam . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '" method="post"><fieldset class="invisiblefieldset">';
+            $o.= '        <form action="index.php?action=delete_index&amp;sesskey=' . sesskey() . '&amp;confirmed=yes&amp;postaction=edit_table&amp;index=' . $indexparam . '&amp;table=' . $tableparam . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '" method="post"><fieldset class="invisiblefieldset">';
             $o.= '          <input type="submit" value="'. $this->str['yes'] .'" /></fieldset></form></div>';
             $o.= '      </td><td>';
             $o.= '      <div class="singlebutton">';
-            $o.= '        <form action="index.php?action=edit_table&amp;table=' . $tableparam . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '" method="post"><fieldset class="invisiblefieldset">';
+            $o.= '        <form action="index.php?action=edit_table&amp;table=' . $tableparam . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '" method="post"><fieldset class="invisiblefieldset">';
             $o.= '          <input type="submit" value="'. $this->str['no'] .'" /></fieldset></form></div>';
             $o.= '      </td></tr>';
             $o.= '    </table>';

@@ -30,7 +30,7 @@ use moodle_exception;
 use moodleform;
 use stdClass;
 
-require_once($CFG->libdir . '/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Form to import questions into the question bank.
@@ -124,7 +124,6 @@ class question_import_form extends moodleform {
      * @throws moodle_exception
      */
     protected function validate_uploaded_file($data, $errors) {
-        global $CFG;
 
         if (empty($data['newfile'])) {
             $errors['newfile'] = get_string('required');
@@ -142,12 +141,12 @@ class question_import_form extends moodleform {
             return $errors;
         }
 
-        $formatfile = $CFG->dirroot . '/question/format/' . $data['format'] . '/format.php';
-        if (!is_readable($formatfile)) {
+        $qformatdir = \core_component::get_plugin_directory('qformat', $data['format']);
+        if (!$qformatdir || !is_readable("$qformatdir/format.php")) {
             throw new moodle_exception('formatnotfound', 'question', '', $data['format']);
         }
 
-        require_once($formatfile);
+        require_once("$qformatdir/format.php");
 
         $classname = 'qformat_' . $data['format'];
         $qformat = new $classname();

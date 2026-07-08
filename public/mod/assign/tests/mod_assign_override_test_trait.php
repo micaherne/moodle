@@ -43,8 +43,8 @@ trait mod_assign_override_test_trait {
         $mockedcomponent = new ReflectionClass(core_component::class);
         $mockedplugins = $mockedcomponent->getProperty('plugins');
         $plugins = $mockedplugins->getValue();
-        $plugins['gradepenalty'] = ["fake_deduction" => "{$CFG->dirroot}/mod/assign/tests/fixtures/fakeplugins/fake_deduction"];
-        require_once($CFG->dirroot . '/mod/assign/tests/fixtures/fakeplugins/fake_deduction/classes/penalty_calculator.php');
+        $plugins['gradepenalty'] = ["fake_deduction" => __DIR__ . '/fixtures/fakeplugins/fake_deduction'];
+        require_once(__DIR__ . '/fixtures/fakeplugins/fake_deduction/classes/penalty_calculator.php');
         $mockedplugins->setValue(null, $plugins);
         gradepenalty::enable_plugin('fake_deduction', true);
 

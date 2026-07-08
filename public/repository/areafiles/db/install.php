@@ -25,7 +25,7 @@
 function xmldb_repository_areafiles_install() {
     global $CFG;
     $result = true;
-    require_once($CFG->dirroot.'/repository/lib.php');
+    require_once(\core\component::component_path('core_repository', 'lib.php'));
     $areafiles_plugin = new repository_type('areafiles', array(), true);
     if(!$id = $areafiles_plugin->create(true)) {
         $result = false;

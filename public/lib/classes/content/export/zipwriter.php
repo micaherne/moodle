@@ -308,7 +308,7 @@ class zipwriter {
 
         $this->archive->addFileFromPath(
             $this->get_context_path($this->rootcontext, $pathinzip),
-            "{$CFG->dirroot}/{$dirrootpath}"
+            \core\component::from_mono_path('/' . $dirrootpath)
         );
     }
 

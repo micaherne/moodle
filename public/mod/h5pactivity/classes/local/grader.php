@@ -64,7 +64,7 @@ class grader {
      */
     public function grade_item_delete(): ?int {
         global $CFG;
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         return grade_update('mod/h5pactivity', $this->instance->course, 'mod', 'h5pactivity',
                 $this->instance->id, 0, null, ['deleted' => 1]);
@@ -78,7 +78,7 @@ class grader {
      */
     public function grade_item_update($grades = null): int {
         global $CFG;
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         $item = [];
         $item['itemname'] = clean_param($this->instance->name, PARAM_NOTAGS);

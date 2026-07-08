@@ -1398,7 +1398,7 @@ abstract class sql_generator {
 
         foreach($generators as $generator) {
             $class = $generator . '_sql_generator';
-            require_once("$CFG->libdir/ddl/$class.php");
+            require_once(__DIR__ . "/{$class}.php");
             foreach (call_user_func(array($class, 'getReservedWords')) as $word) {
                 $reserved_words[$word][] = $generator;
             }

@@ -21,8 +21,8 @@ use portfolio_admin_form;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/portfoliolib.php');
-require_once($CFG->libdir . '/portfolio/forms.php');
+require_once(\core\component::component_path('core', 'portfoliolib.php'));
+require_once(\core\component::component_path('core', 'portfolio/forms.php'));
 
 /**
  * Googledocs portfolio functional test.

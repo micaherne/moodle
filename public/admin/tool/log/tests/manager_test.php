@@ -35,7 +35,7 @@ final class manager_test extends \advanced_testcase {
         $this->assertIsArray($stores);
         $this->assertCount(0, $stores);
 
-        $this->assertFileExists("$CFG->dirroot/$CFG->admin/tool/log/store/standard/version.php");
+        $this->assertFileExists(\core\component::component_path('logstore_standard', 'version.php'));
 
         set_config('enabled_stores', 'logstore_standard', 'tool_log');
         $manager = get_log_manager(true);

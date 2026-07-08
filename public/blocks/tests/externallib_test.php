@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/my/lib.php');
+require_once(\core\component::component_path('core_my', 'lib.php'));
 
 /**
  * External block functions unit tests

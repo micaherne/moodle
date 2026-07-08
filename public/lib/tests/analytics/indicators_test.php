@@ -18,8 +18,8 @@ namespace core\analytics;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../../../analytics/tests/fixtures/test_target_shortname.php');
-require_once(__DIR__ . '/../../../admin/tool/log/store/standard/tests/fixtures/event.php');
+require_once(\core\component::component_path('core_analytics', 'tests/fixtures/test_target_shortname.php'));
+require_once(\core\component::component_path('logstore_standard', 'tests/fixtures/event.php'));
 require_once(__DIR__ . '/../../../lib/enrollib.php');
 
 /**

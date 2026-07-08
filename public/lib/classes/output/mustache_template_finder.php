@@ -38,7 +38,7 @@ class mustache_template_finder {
      * @return string[] List of valid directories for templates for this component. Directories are not checked for existence.
      */
     public static function get_template_directories_for_component($component, $themename = '', $themeoverrides = true) {
-        global $CFG, $PAGE;
+        global $PAGE;
 
         // Default the param.
         if ($themename == '') {
@@ -67,16 +67,16 @@ class mustache_template_finder {
             }
 
             // First check the theme.
-            $dirs[] = $CFG->dirroot . '/theme/' . $themename . '/templates/' . $component . '/';
-            if (isset($CFG->themedir)) {
-                $dirs[] = $CFG->themedir . '/' . $themename . '/templates/' . $component . '/';
+            $themedir = \core_component::get_plugin_directory('theme', $themename);
+            if ($themedir) {
+                $dirs[] = $themedir . '/templates/' . $component . '/';
             }
             // Now check the parent themes.
             // Search each of the parent themes second.
             foreach ($parents as $parent) {
-                $dirs[] = $CFG->dirroot . '/theme/' . $parent . '/templates/' . $component . '/';
-                if (isset($CFG->themedir)) {
-                    $dirs[] = $CFG->themedir . '/' . $parent . '/templates/' . $component . '/';
+                $parentdir = \core_component::get_plugin_directory('theme', $parent);
+                if ($parentdir) {
+                    $dirs[] = $parentdir . '/templates/' . $component . '/';
                 }
             }
         }

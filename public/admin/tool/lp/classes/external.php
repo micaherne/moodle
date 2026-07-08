@@ -24,7 +24,7 @@
 namespace tool_lp;
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/grade/grade_scale.php");
+require_once(\core\component::component_path('core', 'grade/grade_scale.php'));
 
 use context_course;
 use context_system;
@@ -917,7 +917,7 @@ class external extends external_api {
      */
     public static function search_users_returns() {
         global $CFG;
-        require_once($CFG->dirroot . '/user/externallib.php');
+        require_once(\core\component::component_path('core_user', 'externallib.php'));
         return new external_single_structure(array(
             'users' => new external_multiple_structure(user_summary_exporter::get_read_structure()),
             'count' => new external_value(PARAM_INT, 'Total number of results.')

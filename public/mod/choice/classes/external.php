@@ -34,7 +34,7 @@ use core_external\external_warnings;
 use core_external\util;
 
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/mod/choice/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Choice module external functions

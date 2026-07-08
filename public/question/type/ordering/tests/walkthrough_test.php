@@ -23,8 +23,8 @@ use qtype_ordering_test_helper;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/type/ddwtos/tests/helper.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(\core\component::component_path('qtype_ddwtos', 'tests/helper.php'));
 
 /**
  * Unit tests for the ordering question type.

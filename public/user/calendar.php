@@ -22,10 +22,10 @@
  * @package core_user
  */
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/calendar/lib.php');
-require_once($CFG->dirroot.'/user/editlib.php');
-require_once($CFG->dirroot.'/user/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core_calendar', 'lib.php'));
+require_once(__DIR__ . '/editlib.php');
+require_once(__DIR__ . '/lib.php');
 
 $userid = optional_param('id', $USER->id, PARAM_INT);    // User id.
 

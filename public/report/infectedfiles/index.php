@@ -24,7 +24,7 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 use \core\antivirus\quarantine;
 
 admin_externalpage_setup('reportinfectedfiles', '', null, '', array('pagelayout' => 'report'));

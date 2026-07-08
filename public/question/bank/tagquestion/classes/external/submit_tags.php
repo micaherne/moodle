@@ -18,9 +18,9 @@ namespace qbank_tagquestion\external;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/question/engine/datalib.php');
-require_once($CFG->libdir . '/questionlib.php');
+require_once(\core\component::component_path('core_question', 'engine/lib.php'));
+require_once(\core\component::component_path('core_question', 'engine/datalib.php'));
+require_once(\core\component::component_path('core', 'questionlib.php'));
 
 use core_tag_tag;
 use core_external\external_api;

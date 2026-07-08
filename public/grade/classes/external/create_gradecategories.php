@@ -25,8 +25,8 @@ use core_external\external_warnings;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("$CFG->libdir/gradelib.php");
-require_once("$CFG->dirroot/grade/edit/tree/lib.php");
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(dirname(__DIR__, 2) . '/edit/tree/lib.php');
 
 /**
  * Create gradecategories webservice.

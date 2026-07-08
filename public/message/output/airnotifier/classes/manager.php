@@ -124,7 +124,7 @@ class message_airnotifier_manager {
     public function request_accesskey() {
         global $CFG, $USER;
 
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         // Sending the request access key request to Airnotifier.
         $serverurl = $CFG->airnotifierurl . ':' . $CFG->airnotifierport . '/accesskeys/';
@@ -164,7 +164,7 @@ class message_airnotifier_manager {
             return false;
         }
 
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $serverurl = $CFG->airnotifierurl . ':' . $CFG->airnotifierport . '/tokens/' . $token;
         $header = array('Accept: application/json', 'X-AN-APP-NAME: ' . $CFG->airnotifierappname,
@@ -250,7 +250,7 @@ class message_airnotifier_manager {
         }
 
         // Check Mobile notifications enabled.
-        require_once($CFG->dirroot . '/message/lib.php');
+        require_once(\core\component::component_path('core_message', 'lib.php'));
         $processors = get_message_processors();
         $enabled = false;
         foreach ($processors as $processor => $status) {
@@ -381,7 +381,7 @@ class message_airnotifier_manager {
      */
     public function send_test_notification(stdClass $user): void {
         global $CFG;
-        require_once($CFG->dirroot . '/message/output/airnotifier/message_output_airnotifier.php');
+        require_once(dirname(__DIR__) . '/message_output_airnotifier.php');
 
         $data = new stdClass;
         $data->userto = clone $user;

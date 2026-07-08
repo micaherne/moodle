@@ -30,7 +30,7 @@ use core\external\exporter;
 use renderer_base;
 use stdClass;
 
-require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once(dirname(__DIR__, 3) . '/lib.php');
 
 /**
  * Group exporter.

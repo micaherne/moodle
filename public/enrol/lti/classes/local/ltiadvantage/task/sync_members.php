@@ -135,7 +135,7 @@ class sync_members extends scheduled_task {
             $appregistration->get_clientid()
         );
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
         $sc = new LtiServiceConnector(new launch_cache_session(), new http_client());
 
         $nrps = $resourcelink->get_names_and_roles_service();

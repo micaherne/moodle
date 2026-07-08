@@ -22,10 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../config.php');
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->dirroot.'/cohort/lib.php');
-require_once($CFG->dirroot.'/cohort/edit_form.php');
+require(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/edit_form.php');
 
 $id        = optional_param('id', 0, PARAM_INT);
 $contextid = optional_param('contextid', 0, PARAM_INT);

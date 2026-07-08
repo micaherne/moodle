@@ -391,7 +391,7 @@ function validate_email($address) {
         return false;
     }
 
-    require_once("{$CFG->libdir}/phpmailer/moodle_phpmailer.php");
+    require_once(__DIR__ . '/phpmailer/moodle_phpmailer.php');
 
     return moodle_phpmailer::validateAddress($address ?? '') && !preg_match('/[<>]/', $address);
 }
@@ -500,7 +500,7 @@ function format_text($text, $format = FORMAT_MOODLE, $options = null, $courseidd
     global $CFG;
 
     // Manually include the formatting class for now until after the release after 4.5 LTS.
-    require_once("{$CFG->libdir}/classes/formatting.php");
+    require_once(__DIR__ . '/classes/formatting.php');
 
     if ($format === FORMAT_WIKI) {
         // This format was deprecated in Moodle 1.5.
@@ -670,7 +670,7 @@ function format_string($string, $striplinks = true, $options = null) {
     global $CFG;
 
     // Manually include the formatting class for now until after the release after 4.5 LTS.
-    require_once("{$CFG->libdir}/classes/formatting.php");
+    require_once(__DIR__ . '/classes/formatting.php');
 
     $params = [
         'string' => $string,
@@ -867,7 +867,7 @@ function format_text_email($text, $format) {
  */
 function format_module_intro($module, $activity, $cmid, $filter=true) {
     global $CFG;
-    require_once("$CFG->libdir/filelib.php");
+    require_once(__DIR__ . '/filelib.php');
     $context = context_module::instance($cmid);
     $options = array('noclean' => true, 'para' => false, 'filter' => $filter, 'context' => $context, 'overflowdiv' => true);
     $intro = file_rewrite_pluginfile_urls($activity->intro, 'pluginfile.php', $context->id, 'mod_'.$module, 'intro', null);
@@ -1102,8 +1102,8 @@ function purify_html($text, $options = array()) {
     }
 
     if (empty($purifiers[$type])) {
-        require_once $CFG->libdir.'/htmlpurifier/HTMLPurifier.safe-includes.php';
-        require_once $CFG->libdir.'/htmlpurifier/locallib.php';
+        require_once __DIR__ . '/htmlpurifier/HTMLPurifier.safe-includes.php';
+        require_once __DIR__ . '/htmlpurifier/locallib.php';
         $config = HTMLPurifier_Config::createDefault();
 
         $config->set('HTML.DefinitionID', 'moodlehtml');
@@ -1288,7 +1288,7 @@ function markdown_to_html($text) {
 function html_to_text($html, $width = 75, $dolinks = true) {
     global $CFG;
 
-    require_once($CFG->libdir .'/html2text/lib.php');
+    require_once(__DIR__ . '/html2text/lib.php');
 
     $options = array(
         'width'     => $width,
@@ -2235,7 +2235,7 @@ function redirect($url, $message='', $delay=null, $messagetype = \core\output\no
         $redirectby = 'Moodle';
         if (debugging('', DEBUG_DEVELOPER)) {
             $origin = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
-            $redirectby .= ' /' . str_replace($CFG->dirroot . '/', '', $origin['file']) . ':' . $origin['line'];
+            $redirectby .= ' /' . \core\component::to_mono_path($origin['file'], leadingslash: false) . ':' . $origin['line'];
         }
         @header("X-Redirect-By: $redirectby");
 

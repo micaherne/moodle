@@ -16,12 +16,12 @@
 
 // This script uses installed report plugins to print scorm reports.
 
-require_once("../../config.php");
-require_once($CFG->libdir.'/tablelib.php');
-require_once($CFG->dirroot.'/mod/scorm/locallib.php');
-require_once($CFG->dirroot.'/mod/scorm/reportsettings_form.php');
-require_once($CFG->dirroot.'/mod/scorm/report/reportlib.php');
-require_once($CFG->libdir.'/formslib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/reportsettings_form.php');
+require_once(__DIR__ . '/report/reportlib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 define('SCORM_REPORT_DEFAULT_PAGE_SIZE', 20);
 define('SCORM_REPORT_ATTEMPTS_ALL_STUDENTS', 0);

@@ -34,7 +34,7 @@ final class update_private_files_test extends \advanced_testcase {
      */
     public function test_execute(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/files/externallib.php');
+        require_once(\core\component::component_path('core_files', 'externallib.php'));
 
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();

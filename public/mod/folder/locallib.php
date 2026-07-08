@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->dirroot/mod/folder/lib.php");
-require_once("$CFG->libdir/filelib.php");
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 /**
  * File browsing support class

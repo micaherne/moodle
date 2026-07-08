@@ -309,8 +309,8 @@ function user_get_default_fields() {
  */
 function user_get_user_details($user, $course = null, array $userfields = array()) {
     global $USER, $DB, $CFG, $PAGE;
-    require_once($CFG->dirroot . "/user/profile/lib.php"); // Custom field library.
-    require_once($CFG->dirroot . "/lib/filelib.php");      // File handling on description and friends.
+    require_once(__DIR__ . '/profile/lib.php'); // Custom field library.
+    require_once(\core\component::component_path('core', 'filelib.php'));      // File handling on description and friends.
 
     $defaultfields = user_get_default_fields();
 

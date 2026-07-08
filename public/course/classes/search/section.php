@@ -86,7 +86,7 @@ class section extends \core_search\base {
      */
     public function get_document($record, $options = array()) {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Get the context, modinfo, and section.
         try {

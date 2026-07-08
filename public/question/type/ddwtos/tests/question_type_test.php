@@ -24,8 +24,8 @@ use question_possible_response;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/type/ddwtos/tests/helper.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(__DIR__ . '/helper.php');
 
 
 /**

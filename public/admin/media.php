@@ -23,8 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../config.php');
-require_once("{$CFG->libdir}/adminlib.php");
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $action = required_param('action', PARAM_ALPHANUMEXT);
 $plugin = required_param('plugin', PARAM_PLUGIN);

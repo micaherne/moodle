@@ -18,7 +18,7 @@
 function xmldb_repository_user_install() {
     global $CFG;
     $result = true;
-    require_once($CFG->dirroot.'/repository/lib.php');
+    require_once(\core\component::component_path('core_repository', 'lib.php'));
     $user_plugin = new repository_type('user', array(), true);
     if(!$id = $user_plugin->create(true)) {
         $result = false;

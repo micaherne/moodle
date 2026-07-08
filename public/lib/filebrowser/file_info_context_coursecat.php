@@ -190,7 +190,7 @@ class file_info_context_coursecat extends file_info {
      */
     protected function get_courses($hiddencats) {
         global $DB, $CFG;
-        require_once($CFG->libdir.'/modinfolib.php');
+        require_once(dirname(__DIR__) . '/modinfolib.php');
 
         // Let's retrieve only minimum number of fields from course table -
         // what is needed to check access or call get_fast_modinfo().

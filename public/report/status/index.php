@@ -24,8 +24,8 @@
 
 define('NO_OUTPUT_BUFFERING', true);
 
-require('../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 admin_externalpage_setup('reportstatus', '', null, '', ['pagelayout' => 'report']);
 

@@ -34,7 +34,7 @@ final class baseactions_test extends \advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         parent::setUpBeforeClass();
     }
 

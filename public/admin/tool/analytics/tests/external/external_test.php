@@ -30,8 +30,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/analytics/tests/fixtures/test_indicator_max.php');
-require_once($CFG->dirroot . '/analytics/tests/fixtures/test_target_course_level_shortname.php');
+require_once(\core\component::component_path('core_analytics', 'tests/fixtures/test_indicator_max.php'));
+require_once(\core\component::component_path('core_analytics', 'tests/fixtures/test_target_course_level_shortname.php'));
 
 /**
  * Tool analytics external functions tests

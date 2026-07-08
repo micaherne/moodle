@@ -67,11 +67,11 @@ class create_xml_file extends XMLDBAction {
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
         $plugintype = $this->get_plugin_type($dirpath);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
         $file = $dirpath . '/install.xml';
 
         // Some variables
-        $xmlpath = dirname(str_replace($CFG->dirroot . '/', '', $file));
+        $xmlpath = dirname(\core\component::to_mono_path($file, false));
         $xmlversion = userdate(time(), '%Y%m%d', 99, false);
         $xmlcomment = 'XMLDB file for Moodle ' . dirname($xmlpath);
 
@@ -117,7 +117,7 @@ class create_xml_file extends XMLDBAction {
      */
     function get_plugin_type($dirpath) {
         global $CFG;
-        $dirpath = $CFG->dirroot.$dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
         // Reverse order so that we get subplugin matches.
         $plugintypes = array_reverse(core_component::get_plugin_types());
         foreach ($plugintypes as $plugintype => $pluginbasedir) {

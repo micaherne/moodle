@@ -191,7 +191,7 @@ class behat_form_field implements behat_session_interface {
         }
 
         $classname = 'behat_form_' . $type;
-        $classpath = $CFG->dirroot . '/lib/behat/form_field/' . $classname . '.php';
+        $classpath = __DIR__ . "/{$classname}.php";
         require_once($classpath);
 
         return new $classname($this->session, $element);

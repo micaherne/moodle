@@ -47,7 +47,7 @@ final class pgsql_native_moodle_database_test extends \advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->libdir.'/dml/pgsql_native_moodle_database.php');
+        require_once(dirname(__DIR__) . '/pgsql_native_moodle_database.php');
         parent::setUpBeforeClass();
     }
 

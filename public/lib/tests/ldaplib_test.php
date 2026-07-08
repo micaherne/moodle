@@ -19,7 +19,7 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/ldaplib.php');
+require_once(dirname(__DIR__) . '/ldaplib.php');
 
 /**
  * ldap tests.

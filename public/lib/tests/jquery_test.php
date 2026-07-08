@@ -36,13 +36,13 @@ final class jquery_test extends \basic_testcase {
         global $CFG;
 
         $plugins = null;
-        require($CFG->libdir . '/jquery/plugins.php');
+        require(dirname(__DIR__) . '/jquery/plugins.php');
         $this->assertIsArray($plugins);
         $this->assertEquals(array('jquery', 'ui', 'ui-css'), array_keys($plugins));
 
         foreach ($plugins as $type => $files) {
             foreach ($files['files'] as $file) {
-                $this->assertFileExists($CFG->libdir . '/jquery/' . $file);
+                $this->assertFileExists(dirname(__DIR__) . "/jquery/{$file}");
             }
         }
     }

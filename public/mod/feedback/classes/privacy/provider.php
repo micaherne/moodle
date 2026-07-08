@@ -38,7 +38,7 @@ use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
-require_once($CFG->dirroot . '/mod/feedback/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Data provider class.

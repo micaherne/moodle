@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 define('NO_MOODLE_COOKIES', true); // session not used here
-require_once '../../../config.php';
+require_once __DIR__ . '/../../../config.php';
 
 $id = required_param('id', PARAM_INT); // course id
 if (!$course = $DB->get_record('course', array('id'=>$id))) {

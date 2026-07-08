@@ -28,7 +28,7 @@ namespace core_files\external\delete;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -78,7 +78,7 @@ class draft extends external_api {
      */
     public static function execute(int $draftitemid, array $files): array {
         global $CFG, $USER;
-        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $params = self::validate_parameters(self::execute_parameters(), compact('draftitemid', 'files'));
         [$draftitemid, $files] = array_values($params);

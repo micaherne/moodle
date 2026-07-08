@@ -27,7 +27,7 @@ namespace mod_imscp;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/imscp/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Unit tests for (some of) mod/imscp/lib.php.

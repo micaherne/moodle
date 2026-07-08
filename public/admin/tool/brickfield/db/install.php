@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die;
 function xmldb_tool_brickfield_install() {
     global $DB, $CFG;
 
-    $filepath = $CFG->dirroot . "/admin/tool/brickfield/json/checks.json";
+    $filepath = dirname(__DIR__) . '/json/checks.json';
     $checksjson = file_get_contents($filepath);
     $records = json_decode($checksjson);
 

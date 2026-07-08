@@ -30,5 +30,5 @@ require_once(__DIR__.'/../../../../../../config.php');
 // Only continue for behat site.
 defined('BEHAT_SITE_RUNNING') ||  die();
 
-require_once($CFG->libdir.'/behat/classes/util.php');
+require_once(\core\component::component_path('core', 'behat/classes/util.php'));
 echo json_encode(behat_util::get_environment(), true);

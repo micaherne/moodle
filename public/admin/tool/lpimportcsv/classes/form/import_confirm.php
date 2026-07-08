@@ -30,7 +30,7 @@ use moodleform;
 use core_competency\api;
 use tool_lpimportcsv\framework_importer;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Import Competency framework form.

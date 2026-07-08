@@ -78,7 +78,7 @@ $toolproxiesurl = new moodle_url('/mod/lti/toolproxies.php');
 $toolproxiesurl = $toolproxiesurl->out();
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot.'/mod/lti/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $configuredtoolshtml = '';
     $pendingtoolshtml = '';

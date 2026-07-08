@@ -47,7 +47,7 @@ class completion_daily_task extends scheduled_task {
         global $CFG, $DB;
 
         if ($CFG->enablecompletion) {
-            require_once($CFG->libdir . "/completionlib.php");
+            require_once(dirname(__DIR__, 2) . '/completionlib.php');
 
             if (debugging()) {
                 mtrace('Marking users as started');

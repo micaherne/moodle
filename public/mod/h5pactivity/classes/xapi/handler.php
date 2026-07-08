@@ -28,7 +28,7 @@ use moodle_exception;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/mod/h5pactivity/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Class xapi_handler for H5P statements and states.

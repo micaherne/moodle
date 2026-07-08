@@ -26,9 +26,9 @@
 
 use core\report_helper;
 
-require('../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/course/lib.php');
+require(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core_course', 'lib.php'));
 global $SITE, $PAGE;
 
 $id = optional_param('id', 0, PARAM_INT);

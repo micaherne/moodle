@@ -26,9 +26,9 @@ use core_cohort\reportbuilder\local\systemreports\cohorts;
 use core_reportbuilder\local\filters\text;
 use core_reportbuilder\system_report_factory;
 
-require('../config.php');
-require_once($CFG->dirroot.'/cohort/lib.php');
-require_once($CFG->libdir.'/adminlib.php');
+require(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $contextid = optional_param('contextid', 0, PARAM_INT);
 $searchquery  = optional_param('search', '', PARAM_RAW);

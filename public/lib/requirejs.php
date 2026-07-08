@@ -28,9 +28,9 @@ define('NO_DEBUG_DISPLAY', true);
 
 // We need just the values from config.php and minlib.php.
 define('ABORT_AFTER_CONFIG', true);
-require('../config.php'); // This stops immediately at the beginning of lib/setup.php.
-require_once("$CFG->dirroot/lib/jslib.php");
-require_once("$CFG->dirroot/lib/classes/requirejs.php");
+require(__DIR__ . '/../config.php'); // This stops immediately at the beginning of lib/setup.php.
+require_once(__DIR__ . '/jslib.php');
+require_once(__DIR__ . '/classes/requirejs.php');
 
 $slashargument = min_get_slash_argument();
 if (!$slashargument) {
@@ -163,7 +163,6 @@ $jsfiles = core_requirejs::find_one_amd_module($component, $module);
 if (!empty($jsfiles)) {
     $modulename = array_keys($jsfiles)[0];
     $jsfile = $jsfiles[$modulename];
-    $shortfilename = str_replace($CFG->dirroot, '', $jsfile);
     $mapfile = $jsfile . '.map';
 
     if (file_exists($mapfile)) {

@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /** @see evalmath/evalmath.class.php */
-require_once $CFG->dirroot.'/lib/evalmath/evalmath.class.php';
+require_once __DIR__ . '/evalmath/evalmath.class.php';
 
 /**
  * This class abstracts evaluation of spreadsheet formulas.

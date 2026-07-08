@@ -48,7 +48,7 @@ class course_delete_modules extends \core\task\adhoc_task {
      */
     public function execute() {
         global $CFG;
-        require_once($CFG->dirroot. '/course/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Set the proper user.
         if ($this->get_custom_data()->userid !== $this->get_custom_data()->realuserid) {

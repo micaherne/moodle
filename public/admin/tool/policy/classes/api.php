@@ -574,7 +574,7 @@ class api {
      */
     public static function policy_summary_field_options() {
         global $CFG;
-        require_once($CFG->libdir.'/formslib.php');
+        require_once(\core\component::component_path('core', 'formslib.php'));
 
         return [
             'subdirs' => false,
@@ -591,7 +591,7 @@ class api {
      */
     public static function policy_content_field_options() {
         global $CFG;
-        require_once($CFG->libdir.'/formslib.php');
+        require_once(\core\component::component_path('core', 'formslib.php'));
 
         return [
             'subdirs' => false,
@@ -997,7 +997,7 @@ class api {
      */
     public static function update_policyagreed($user = null) {
         global $DB, $USER, $CFG;
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         if (!$user || (is_numeric($user) && $user == $USER->id)) {
             $user = $USER;

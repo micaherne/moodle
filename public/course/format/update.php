@@ -22,8 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 use core\url;
 use core\exception\moodle_exception;

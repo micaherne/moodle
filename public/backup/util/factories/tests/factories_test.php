@@ -27,14 +27,14 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/interfaces/checksumable.class.php');
-require_once($CFG->dirroot . '/backup/backup.class.php');
-require_once($CFG->dirroot . '/backup/util/loggers/base_logger.class.php');
-require_once($CFG->dirroot . '/backup/util/loggers/error_log_logger.class.php');
-require_once($CFG->dirroot . '/backup/util/loggers/output_indented_logger.class.php');
-require_once($CFG->dirroot . '/backup/util/loggers/database_logger.class.php');
-require_once($CFG->dirroot . '/backup/util/loggers/file_logger.class.php');
-require_once($CFG->dirroot . '/backup/util/factories/backup_factory.class.php');
+require_once(dirname(__DIR__, 2) . '/interfaces/checksumable.class.php');
+require_once(dirname(__DIR__, 3) . '/backup.class.php');
+require_once(dirname(__DIR__, 2) . '/loggers/base_logger.class.php');
+require_once(dirname(__DIR__, 2) . '/loggers/error_log_logger.class.php');
+require_once(dirname(__DIR__, 2) . '/loggers/output_indented_logger.class.php');
+require_once(dirname(__DIR__, 2) . '/loggers/database_logger.class.php');
+require_once(dirname(__DIR__, 2) . '/loggers/file_logger.class.php');
+require_once(dirname(__DIR__) . '/backup_factory.class.php');
 
 /**
  * @package    core_backup

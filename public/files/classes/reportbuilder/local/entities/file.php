@@ -126,7 +126,7 @@ class file extends base {
             ->set_is_sortable(true)
             ->add_callback(static function($mimetype, stdClass $fileinfo): string {
                 global $CFG;
-                require_once("{$CFG->libdir}/filelib.php");
+                require_once(\core\component::component_path('core', 'filelib.php'));
 
                 // Absent mime type and/or directory has pre-determined output.
                 if ($fileinfo->mimetype === null && !$fileinfo->directory) {
@@ -150,7 +150,7 @@ class file extends base {
             ->set_disabled_aggregation_all()
             ->add_callback(static function($mimetype, stdClass $fileinfo): string {
                 global $CFG, $OUTPUT;
-                require_once("{$CFG->libdir}/filelib.php");
+                require_once(\core\component::component_path('core', 'filelib.php'));
 
                 if ($fileinfo->mimetype === null && !$fileinfo->directory) {
                     return '';
@@ -188,7 +188,7 @@ class file extends base {
             ->set_is_sortable(true)
             ->add_callback(static function(?string $license): string {
                 global $CFG;
-                require_once("{$CFG->libdir}/licenselib.php");
+                require_once(\core\component::component_path('core', 'licenselib.php'));
 
                 $licenses = license_manager::get_licenses();
                 if ($license === null || !array_key_exists($license, $licenses)) {
@@ -333,7 +333,7 @@ class file extends base {
         ))
             ->set_options_callback(static function(): array {
                 global $CFG;
-                require_once("{$CFG->libdir}/licenselib.php");
+                require_once(\core\component::component_path('core', 'licenselib.php'));
 
                 $licenses = license_manager::get_licenses();
 

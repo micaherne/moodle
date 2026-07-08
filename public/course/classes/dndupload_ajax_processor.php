@@ -228,7 +228,7 @@ class dndupload_ajax_processor {
      */
     protected function create_course_module() {
         global $CFG;
-        require_once($CFG->dirroot . '/course/modlib.php');
+        require_once(dirname(__DIR__) . '/modlib.php');
         [$module, $context, $cw, $cm, $data] = prepare_new_moduleinfo_data($this->course, $this->module->name, $this->section);
 
         $data->coursemodule = $data->id = add_course_module($data);
@@ -341,7 +341,7 @@ class dndupload_ajax_processor {
     private function load_repository(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/repository/lib.php");
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
     }
 
 }

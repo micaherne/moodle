@@ -16,7 +16,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../../grade/grading/tests/behat/behat_grading.php');
+require_once(\core\component::component_path('core_grading', 'tests/behat/behat_grading.php'));
 
 /**
  * Step definitions related to blocks overrides for the Classic theme.

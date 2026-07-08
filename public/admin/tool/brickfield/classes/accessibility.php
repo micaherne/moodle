@@ -86,9 +86,7 @@ class accessibility {
      * @return  string
      */
     public static function get_file_path(string $path): string {
-        global $CFG;
-
-        return implode(DIRECTORY_SEPARATOR, [$CFG->dirroot, $CFG->admin, self::$pluginpath, $path, ]);
+        return \core\component::component_path('tool_brickfield', $path);
     }
 
     /**

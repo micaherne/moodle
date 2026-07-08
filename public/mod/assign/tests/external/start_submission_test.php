@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/assign/tests/externallib_advanced_testcase.php');
+require_once(dirname(__DIR__) . '/externallib_advanced_testcase.php');
 
 /**
  * Test the start_submission external function.

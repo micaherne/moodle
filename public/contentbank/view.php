@@ -24,7 +24,7 @@
 
 use core_contentbank\content;
 
-require('../config.php');
+require(__DIR__ . '/../config.php');
 
 require_login();
 

@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+require_once(dirname(__DIR__, 2) . '/includes/restore_includes.php');
 
 /**
  * @package    core_backup

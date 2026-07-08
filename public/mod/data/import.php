@@ -23,9 +23,9 @@
  * @package mod_data
  */
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 require_once('lib.php');
-require_once($CFG->libdir.'/csvlib.class.php');
+require_once(\core\component::component_path('core', 'csvlib.class.php'));
 require_once('import_form.php');
 
 $id              = optional_param('id', 0, PARAM_INT);  // course module id

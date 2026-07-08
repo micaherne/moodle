@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->libdir.'/completionlib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 // Horrible backwards compatible parameter aliasing..
 if ($week = optional_param('week', 0, PARAM_INT)) {

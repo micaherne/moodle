@@ -27,7 +27,7 @@ use report_themeusage\form\theme_usage_form;
 use report_themeusage\reportbuilder\local\systemreports\theme_usage_report;
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 require_login();
 admin_externalpage_setup('reportthemeusage');

@@ -24,7 +24,7 @@
  */
 
 require_once(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/grade/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 $id = required_param('id', PARAM_INT); // course id
 

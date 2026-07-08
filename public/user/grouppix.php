@@ -29,8 +29,8 @@
 define('NO_DEBUG_DISPLAY', true);
 define('NO_MOODLE_COOKIES', true); // Session not used here.
 
-require_once('../config.php');
-require_once($CFG->libdir.'/filelib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 $relativepath = get_file_argument();
 

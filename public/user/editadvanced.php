@@ -22,14 +22,14 @@
  * @package core_user
  */
 
-require_once('../config.php');
-require_once($CFG->libdir.'/gdlib.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/user/editadvanced_form.php');
-require_once($CFG->dirroot.'/user/editlib.php');
-require_once($CFG->dirroot.'/user/profile/lib.php');
-require_once($CFG->dirroot.'/user/lib.php');
-require_once($CFG->dirroot.'/webservice/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'gdlib.php'));
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/editadvanced_form.php');
+require_once(__DIR__ . '/editlib.php');
+require_once(__DIR__ . '/profile/lib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core_webservice', 'lib.php'));
 
 $id     = optional_param('id', $USER->id, PARAM_INT);    // User id; -1 if creating new user.
 $course = optional_param('course', SITEID, PARAM_INT);   // Course id (defaults to Site).

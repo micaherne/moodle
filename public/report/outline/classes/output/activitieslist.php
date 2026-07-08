@@ -117,7 +117,7 @@ class activitieslist extends coursestructure {
 
         if ($this->showblogs) {
             $cell = ['activityclass' => 'blog'];
-            require_once($CFG->dirroot.'/blog/lib.php');
+            require_once(\core\component::component_path('core_blog', 'lib.php'));
             if ($blogcount = blog_get_associated_count($cm->get_course()->id, $cm->id)) {
                 $blogurl = new \moodle_url('/blog/index.php', ['modid' => $cm->id]);
                 $cell['link']  = new \action_link($blogurl, $blogcount);

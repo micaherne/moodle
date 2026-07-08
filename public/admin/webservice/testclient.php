@@ -24,9 +24,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot . "/" . $CFG->admin . "/webservice/testclient_forms.php");
+require(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/testclient_forms.php');
 
 $function = optional_param('function', '', PARAM_PLUGIN);
 $protocol = optional_param('protocol', '', PARAM_ALPHA);
@@ -49,9 +49,9 @@ $allfunctions = $DB->get_records('external_functions', array(), 'name ASC');
 $functions = array();
 foreach ($allfunctions as $f) {
     $finfo = \core_external\external_api::external_function_info($f);
-    if (!empty($finfo->testclientpath) and file_exists($CFG->dirroot.'/'.$finfo->testclientpath)) {
+    if (!empty($finfo->testclientpath) and file_exists(\core\component::from_mono_path('/' . $finfo->testclientpath))) {
         //some plugins may want to have own test client forms
-        include_once($CFG->dirroot.'/'.$finfo->testclientpath);
+        include_once(\core\component::from_mono_path('/' . $finfo->testclientpath));
     }
     $class = $f->name.'_testclient_form';
     if (class_exists($class)) {
@@ -117,7 +117,11 @@ if ($mform->is_cancelled()) {
     $functioninfo = \core_external\external_api::external_function_info($function);
 
     // first load lib of selected protocol
-    require_once("$CFG->dirroot/webservice/$protocol/locallib.php");
+    $protocoldir = \core_component::get_plugin_directory('webservice', $protocol);
+    if ($protocoldir === null) {
+        throw new \coding_exception('Unknown webservice protocol: ' . $protocol);
+    }
+    require_once($protocoldir . '/locallib.php');
 
     $testclientclass = "webservice_{$protocol}_test_client";
     if (!class_exists($testclientclass)) {

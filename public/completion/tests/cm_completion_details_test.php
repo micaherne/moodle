@@ -33,7 +33,7 @@ use completion_info;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/completionlib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Class for unit testing core_completion/cm_completion_details.

@@ -35,7 +35,7 @@ defined('MOODLE_INTERNAL') || die;
 function report_progress_extend_navigation_course($navigation, $course, $context) {
     global $CFG, $OUTPUT;
 
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     $showonnavigation = has_capability('report/progress:view', $context);
     $group = groups_get_course_group($course,true); // Supposed to verify group

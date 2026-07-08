@@ -28,8 +28,8 @@
 global $CFG;
 
 require_once('HTML/QuickForm/element.php');
-require_once($CFG->dirroot.'/lib/filelib.php');
-require_once($CFG->dirroot.'/repository/lib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 require_once('templatable_form_element.php');
 
 /**
@@ -293,7 +293,7 @@ class MoodleQuickForm_editor extends HTML_QuickForm_element implements templatab
      */
     function toHtml() {
         global $CFG, $PAGE, $OUTPUT;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         if ($this->_flagFrozen) {
             return $this->getFrozenHtml();
@@ -335,7 +335,7 @@ class MoodleQuickForm_editor extends HTML_QuickForm_element implements templatab
         if ($maxfiles != 0 ) {
             if (empty($draftitemid)) {
                 // no existing area info provided - let's use fresh new draft area
-                require_once("$CFG->libdir/filelib.php");
+                require_once(\core\component::component_path('core', 'filelib.php'));
                 $this->setValue(array('itemid'=>file_get_unused_draft_itemid()));
                 $draftitemid = $this->_values['itemid'];
             }

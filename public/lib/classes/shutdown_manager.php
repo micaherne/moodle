@@ -280,7 +280,7 @@ class shutdown_manager {
                         $ts += $fs;
                         $hfs = display_size($fs);
                         // phpcs:ignore moodle.PHP.ForbiddenFunctions.FoundWithAlternative
-                        error_log(substr($f, strlen($CFG->dirroot)) . " size: $fs ($hfs)");
+                        error_log(\core\component::to_mono_path($f, leadingslash: true) . " size: $fs ($hfs)");
                     } else {
                         // phpcs:ignore moodle.PHP.ForbiddenFunctions.FoundWithAlternative
                         error_log($f);

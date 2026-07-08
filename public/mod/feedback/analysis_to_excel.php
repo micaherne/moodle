@@ -22,9 +22,9 @@
  * @package mod_feedback
  */
 
-require_once("../../config.php");
+require_once(__DIR__ . '/../../config.php');
 require_once("lib.php");
-require_once("$CFG->libdir/excellib.class.php");
+require_once(\core\component::component_path('core', 'excellib.class.php'));
 
 $id = required_param('id', PARAM_INT); // Course module id.
 $courseid = optional_param('courseid', '0', PARAM_INT);

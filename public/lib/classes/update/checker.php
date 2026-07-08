@@ -233,7 +233,7 @@ class checker {
      */
     protected function get_response() {
         global $CFG;
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(dirname(__DIR__, 2) . '/filelib.php');
 
         $curl = new \curl(array('proxy' => true));
         $response = $curl->post($this->prepare_request_url(), $this->prepare_request_params(), $this->prepare_request_options());

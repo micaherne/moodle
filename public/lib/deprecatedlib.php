@@ -48,7 +48,6 @@ defined('MOODLE_INTERNAL') || die();
 #[\core\attribute\deprecated('core_component::get_core_subsystems', since: '4.5', mdl: 'MDL-82287')]
 function get_core_subsystems($fullpaths = false) {
     \core\deprecation::emit_deprecation(__FUNCTION__);
-    global $CFG;
 
     $subsystems = core_component::get_core_subsystems();
 
@@ -58,13 +57,11 @@ function get_core_subsystems($fullpaths = false) {
 
     debugging('Short paths are deprecated when using get_core_subsystems(), please fix the code to use fullpaths instead.', DEBUG_DEVELOPER);
 
-    $dlength = strlen($CFG->dirroot);
-
     foreach ($subsystems as $k => $v) {
         if ($v === null) {
             continue;
         }
-        $subsystems[$k] = substr($v, $dlength+1);
+        $subsystems[$k] = \core\component::to_mono_path($v, leadingslash: false);
     }
 
     return $subsystems;

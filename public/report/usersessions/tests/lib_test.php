@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot. '/report/usersessions/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Class report_stats_lib_testcase

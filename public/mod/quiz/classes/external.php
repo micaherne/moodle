@@ -40,7 +40,7 @@ use mod_quiz\quiz_settings;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * Quiz external functions
@@ -733,7 +733,7 @@ class mod_quiz_external extends external_api {
      */
     public static function get_user_best_grade($quizid, $userid = 0) {
         global $DB, $USER, $CFG;
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         $warnings = [];
 

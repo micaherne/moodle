@@ -21,8 +21,8 @@
  */
 defined('MOODLE_INTERNAL') or die('Direct access to this script is forbidden.');
 
-require_once($CFG->dirroot . '/backup/cc/includes/constants.php');
-require_once($CFG->dirroot . '/backup/cc/cc2moodle.php');
+require_once(__DIR__ . '/includes/constants.php');
+require_once(__DIR__ . '/cc2moodle.php');
 
 function cc_convert ($dir) {
     global $OUTPUT;

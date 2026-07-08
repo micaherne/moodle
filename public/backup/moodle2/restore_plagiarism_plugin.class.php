@@ -41,7 +41,7 @@ abstract class restore_plagiarism_plugin extends restore_plugin {
         }
 
         //check if enabled at site level and plugin is enabled.
-        require_once($CFG->libdir . '/plagiarismlib.php');
+        require_once(\core\component::component_path('core', 'plagiarismlib.php'));
         $enabledplugins = plagiarism_load_available_plugins();
         if (!array_key_exists($this->pluginname, $enabledplugins)) {
             return array();

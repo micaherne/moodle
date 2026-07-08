@@ -59,7 +59,7 @@ class calendar_fix_orphaned_events extends adhoc_task {
     protected function update_events_wrong_userid_remaining(): bool {
         global $CFG;
 
-        require_once($CFG->libdir . '/db/upgradelib.php');
+        require_once(dirname(__DIR__, 2) . '/db/upgradelib.php');
 
         // Default the max runtime to 60 seconds, unless overridden in config.php.
         $maxseconds = $CFG->calendareventsmaxseconds ?? MINSECS;

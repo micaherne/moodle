@@ -51,7 +51,7 @@ class enrol_self_external extends external_api {
     public static function get_instance_info($instanceid) {
         global $DB, $CFG;
 
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
 
         $params = self::validate_parameters(self::get_instance_info_parameters(), array('instanceid' => $instanceid));
 
@@ -125,7 +125,7 @@ class enrol_self_external extends external_api {
     public static function enrol_user($courseid, $password = '', $instanceid = 0) {
         global $CFG;
 
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
 
         $params = self::validate_parameters(self::enrol_user_parameters(),
                                             array(
@@ -180,7 +180,7 @@ class enrol_self_external extends external_api {
 
                     // Check if we are using group enrolment keys.
                     if ($instance->customint1) {
-                        require_once($CFG->dirroot . "/enrol/self/locallib.php");
+                        require_once(__DIR__ . '/locallib.php');
 
                         if (!enrol_self_check_group_enrolment_key($course->id, $params['password'])) {
                             $warnings[] = array(

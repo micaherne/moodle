@@ -91,7 +91,7 @@ class tool_customlang_utils {
     public static function checkout($lang, ?progress_bar $progressbar = null) {
         global $DB, $CFG;
 
-        require_once("{$CFG->libdir}/adminlib.php");
+        require_once(\core\component::component_path('core', 'adminlib.php'));
 
         // For behat executions we are going to load only a few components in the
         // language customisation structures. Using the whole "en" langpack is
@@ -222,7 +222,7 @@ class tool_customlang_utils {
      */
     public static function checkin($lang) {
         global $DB, $USER, $CFG;
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         if ($lang !== clean_param($lang, PARAM_LANG)) {
             return false;

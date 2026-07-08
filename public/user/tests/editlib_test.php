@@ -19,7 +19,7 @@ namespace core_user;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/user/editlib.php');
+require_once(dirname(__DIR__) . '/editlib.php');
 
 /**
  * Unit tests for user editlib api.

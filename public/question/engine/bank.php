@@ -250,15 +250,15 @@ abstract class question_bank {
      * @param string $qtypename the question type name. For example 'multichoice' or 'shortanswer'.
      */
     public static function load_question_definition_classes($qtypename) {
-        global $CFG;
+        global $CFG; // Needed in scope for question.php files that include parent qtypes using $CFG.
         if (isset(self::$loadedqdefs[$qtypename])) {
             return;
         }
-        $file = $CFG->dirroot . '/question/type/' . $qtypename . '/question.php';
-        if (!is_readable($file)) {
+        $qtypedir = \core_component::get_plugin_directory('qtype', $qtypename);
+        if (!$qtypedir || !is_readable("$qtypedir/question.php")) {
             throw new coding_exception('Unknown question type (no definition) ' . $qtypename);
         }
-        include_once($file);
+        include_once("$qtypedir/question.php");
         self::$loadedqdefs[$qtypename] = 1;
     }
 

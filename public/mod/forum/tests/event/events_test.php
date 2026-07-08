@@ -1864,7 +1864,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_created(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -1919,7 +1919,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_created_validation(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -1978,7 +1978,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_created_validation_contextlevel(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2033,7 +2033,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_created_validation_discussion(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2085,7 +2085,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_created_validation_forumid(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2137,7 +2137,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_created_validation_relateduserid(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2191,7 +2191,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_deleted(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2246,7 +2246,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_deleted_validation(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2329,7 +2329,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_deleted_validation_contextlevel(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2384,7 +2384,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_deleted_validation_discussion(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2436,7 +2436,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_deleted_validation_forumid(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2488,7 +2488,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_discussion_subscription_deleted_validation_relateduserid(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2543,7 +2543,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_forum_subscription_page_context_valid(): void {
         global $CFG, $PAGE;
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
@@ -2744,7 +2744,7 @@ final class events_test extends \advanced_testcase {
     public function test_observers(): void {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         $forumgen = $this->getDataGenerator()->get_plugin_generator('mod_forum');
 

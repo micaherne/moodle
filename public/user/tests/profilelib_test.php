@@ -30,7 +30,7 @@ final class profilelib_test extends \advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/user/profile/lib.php");
+        require_once(dirname(__DIR__) . '/profile/lib.php');
         parent::setUpBeforeClass();
     }
 
@@ -87,7 +87,7 @@ final class profilelib_test extends \advanced_testcase {
      */
     public function test_default_constructor(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/user/profile/definelib.php');
+        require_once(dirname(__DIR__) . '/profile/definelib.php');
         $datatypes = profile_list_datatypes();
         foreach ($datatypes as $datatype => $datatypename) {
             require_once($CFG->dirroot . '/user/profile/field/' .
@@ -145,7 +145,7 @@ final class profilelib_test extends \advanced_testcase {
      */
     public function test_profile_has_required_custom_fields_set(): void {
         global $CFG;
-        require_once($CFG->dirroot.'/mnet/lib.php');
+        require_once(\core\component::component_path('core_mnet', 'lib.php'));
 
         $this->resetAfterTest();
 
@@ -213,7 +213,7 @@ final class profilelib_test extends \advanced_testcase {
      */
     public function test_profile_fields_in_generator(): void {
         global $CFG;
-        require_once($CFG->dirroot.'/mnet/lib.php');
+        require_once(\core\component::component_path('core_mnet', 'lib.php'));
 
         $this->resetAfterTest();
 

@@ -31,7 +31,7 @@ use html_writer;
 use moodle_url;
 
 global $CFG;
-require_once($CFG->libdir . '/formslib.php');
+require_once(dirname(__DIR__, 2) . '/formslib.php');
 
 /**
  * The site registration form. Information will be sent to the sites directory.

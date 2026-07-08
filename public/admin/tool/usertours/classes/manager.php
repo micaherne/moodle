@@ -918,7 +918,7 @@ class manager {
         helper::reset_tour_sortorder();
 
         foreach (array_reverse($shippedtours) as $filename => $version) {
-            $filepath = $CFG->dirroot . "/{$CFG->admin}/tool/usertours/tours/" . $filename;
+            $filepath = dirname(__DIR__) . "/tours/{$filename}";
             $tourjson = file_get_contents($filepath);
             $tour = self::import_tour_from_json($tourjson);
 

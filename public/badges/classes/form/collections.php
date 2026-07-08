@@ -18,8 +18,8 @@ namespace core_badges\form;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 use html_writer;
 use moodleform;

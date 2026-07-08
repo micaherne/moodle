@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(dirname(__DIR__) . '/engine/tests/helpers.php');
 
 /**
  * Question external functions tests

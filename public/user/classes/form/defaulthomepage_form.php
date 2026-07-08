@@ -18,7 +18,7 @@ namespace core_user\form;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Form to allow user to set their default home page
@@ -37,7 +37,7 @@ class defaulthomepage_form extends \moodleform {
 
         $mform = $this->_form;
 
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

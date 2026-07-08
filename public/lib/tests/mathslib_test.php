@@ -21,7 +21,7 @@ use calc_formula;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/mathslib.php');
+require_once(dirname(__DIR__) . '/mathslib.php');
 
 /**
  * Unit tests of mathslib wrapper and underlying EvalMath library.

@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 function xmldb_filter_urltolink_install() {
     global $CFG;
-    require_once($CFG->libdir . "/filterlib.php");
+    require_once(\core\component::component_path('core', 'filterlib.php'));
 
     filter_set_global_state('urltolink', TEXTFILTER_ON, -1);
 }

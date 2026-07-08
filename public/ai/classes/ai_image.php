@@ -237,7 +237,7 @@ class ai_image {
         }
         if (empty($options)) {
             $options = [
-                'font' => $CFG->libdir . '/default.ttf',
+                'font' => \core\component::component_path('core', 'default.ttf'),
                 'fontsize' => '20',
                 'angle' => 0,
                 'ttf' => true,

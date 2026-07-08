@@ -211,7 +211,7 @@ class standard_action_bar implements renderable, templatable {
         if (!empty($CFG->enablerssfeeds) && !empty($CFG->glossary_enablerssfeeds)
                 && $this->module->rsstype && $this->module->rssarticles
                 && has_capability('mod/glossary:view', $this->context)) {
-            require_once("$CFG->libdir/rsslib.php");
+            require_once(\core\component::component_path('core', 'rsslib.php'));
             $string = get_string('rssfeed', 'glossary');
             $url = new moodle_url(rss_get_url($this->context->id, $USER->id, 'mod_glossary', $this->cm->instance));
             $buttons[$string] = $url->out(false);

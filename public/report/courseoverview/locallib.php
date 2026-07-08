@@ -23,8 +23,8 @@
  */
 defined('MOODLE_INTERNAL') || die;
 
-require_once('../../config.php');
-require_once($CFG->dirroot . '/lib/statslib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'statslib.php'));
 
 /**
  * Gather course overview data and print the chart.

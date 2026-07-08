@@ -27,10 +27,10 @@
  */
 
 global $CFG;
-require_once "$CFG->libdir/form/select.php";
+require_once __DIR__ . '/select.php';
 require_once("HTML/QuickForm/element.php");
-require_once($CFG->dirroot.'/lib/form/group.php');
-require_once($CFG->dirroot.'/lib/grade/grade_scale.php');
+require_once(__DIR__ . '/group.php');
+require_once(\core\component::component_path('core', 'grade/grade_scale.php'));
 
 /**
  * Drop down form element to select the grade

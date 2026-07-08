@@ -41,8 +41,8 @@ class frontend extends \core_availability\frontend {
     protected function get_javascript_init_params($course, ?\cm_info $cm = null,
             ?\section_info $section = null) {
         global $DB, $CFG;
-        require_once($CFG->libdir . '/gradelib.php');
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         // Get grades as basic associative array.
         $gradeoptions = array();

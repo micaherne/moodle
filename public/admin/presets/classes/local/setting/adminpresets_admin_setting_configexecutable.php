@@ -47,7 +47,7 @@ class adminpresets_admin_setting_configexecutable extends adminpresets_admin_set
         // Validate non-empty paths: the target must be an existing, non-directory,
         // executable file.
         if (!empty($execpath)) {
-            require_once($CFG->libdir . '/filelib.php');
+            require_once(\core\component::component_path('core', 'filelib.php'));
             if (!file_exists($execpath) || is_dir($execpath) || !file_is_executable($execpath)) {
                 return false;
             }

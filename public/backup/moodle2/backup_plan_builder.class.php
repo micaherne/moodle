@@ -27,30 +27,30 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/backup/moodle2/backup_root_task.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_activity_task.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_section_task.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_course_task.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_final_task.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_block_task.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_default_block_task.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_xml_transformer.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_qbank_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_qtype_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_qtype_extrafields_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_gradingform_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_format_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_local_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_theme_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_report_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_coursereport_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_plagiarism_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_enrol_plugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_subplugin.class.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_settingslib.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_stepslib.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_custom_fields.php');
+require_once(__DIR__ . '/backup_root_task.class.php');
+require_once(__DIR__ . '/backup_activity_task.class.php');
+require_once(__DIR__ . '/backup_section_task.class.php');
+require_once(__DIR__ . '/backup_course_task.class.php');
+require_once(__DIR__ . '/backup_final_task.class.php');
+require_once(__DIR__ . '/backup_block_task.class.php');
+require_once(__DIR__ . '/backup_default_block_task.class.php');
+require_once(__DIR__ . '/backup_xml_transformer.class.php');
+require_once(__DIR__ . '/backup_plugin.class.php');
+require_once(__DIR__ . '/backup_qbank_plugin.class.php');
+require_once(__DIR__ . '/backup_qtype_plugin.class.php');
+require_once(__DIR__ . '/backup_qtype_extrafields_plugin.class.php');
+require_once(__DIR__ . '/backup_gradingform_plugin.class.php');
+require_once(__DIR__ . '/backup_format_plugin.class.php');
+require_once(__DIR__ . '/backup_local_plugin.class.php');
+require_once(__DIR__ . '/backup_theme_plugin.class.php');
+require_once(__DIR__ . '/backup_report_plugin.class.php');
+require_once(__DIR__ . '/backup_coursereport_plugin.class.php');
+require_once(__DIR__ . '/backup_plagiarism_plugin.class.php');
+require_once(__DIR__ . '/backup_enrol_plugin.class.php');
+require_once(__DIR__ . '/backup_subplugin.class.php');
+require_once(__DIR__ . '/backup_settingslib.php');
+require_once(__DIR__ . '/backup_stepslib.php');
+require_once(__DIR__ . '/backup_custom_fields.php');
 
 // Load all the activity tasks for moodle2 format
 $mods = core_component::get_plugin_list('mod');

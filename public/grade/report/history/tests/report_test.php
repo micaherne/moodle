@@ -324,7 +324,7 @@ final class report_test extends \advanced_testcase {
     public function test_get_users_with_profile_fields(string $showuseridentity, string $searchstring,
             array $expectedusernames): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
         $this->resetAfterTest();
 
         // Create a couple of custom profile fields, which are in user identity.

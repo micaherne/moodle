@@ -36,7 +36,7 @@ use theme_config;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 /**
  * Course entity class implementation
@@ -351,7 +351,7 @@ class course extends base {
      */
     public static function get_options_for_format(): array {
         global $CFG;
-        require_once($CFG->dirroot.'/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $options = [];
 

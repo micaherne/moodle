@@ -25,7 +25,7 @@ use moodle_recordset;
 use question_display_options;
 use mod_quiz\question\display_options;
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 /**
  * Cron Quiz Notify Attempts Graded Task.

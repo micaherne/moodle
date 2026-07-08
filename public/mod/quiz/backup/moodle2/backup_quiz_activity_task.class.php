@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/backup_quiz_stepslib.php');
+require_once(__DIR__ . '/backup_quiz_stepslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the Quiz instance

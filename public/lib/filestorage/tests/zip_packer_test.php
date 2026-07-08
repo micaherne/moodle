@@ -23,7 +23,7 @@ use zip_archive;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filestorage/file_progress.php');
+require_once(dirname(__DIR__) . '/file_progress.php');
 
 /**
  * Unit tests for /lib/filestorage/zip_packer.php and zip_archive.php

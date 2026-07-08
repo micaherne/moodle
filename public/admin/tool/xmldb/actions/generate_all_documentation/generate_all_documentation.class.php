@@ -95,7 +95,7 @@ class generate_all_documentation extends XMLDBAction {
                     continue;
                 }
 
-                $dir = trim(dirname(str_replace($CFG->dirroot, '', $path)), '/');
+                $dir = trim(dirname(\core\component::to_mono_path($path, true)), '/');
                 $index .= '<a href="#file_' . str_replace('/', '_', $dir) . '">' . $dir . '</a>, ';
                 $docs .= '<div class="file" id="file_' . str_replace('/', '_', $dir) . '">';
                 $docs .= '<h2>' . $dir . '</h2>';

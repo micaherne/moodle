@@ -26,7 +26,7 @@
  */
 
 global $CFG;
-require_once($CFG->libdir . '/form/autocomplete.php');
+require_once(__DIR__ . '/autocomplete.php');
 
 /**
  * Form field type for selecting from a list of options.

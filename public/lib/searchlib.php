@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /** @see lexer.php */
-require_once($CFG->libdir.'/lexer.php');
+require_once(__DIR__ . '/lexer.php');
 
 /** Constants for the various types of tokens */
 

@@ -59,7 +59,7 @@ final class data_controller_test extends advanced_testcase {
     public function test_form_validation(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/customfield/tests/fixtures/test_instance_form.php");
+        require_once(\core\component::component_path('core_customfield', 'tests/fixtures/test_instance_form.php'));
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -96,7 +96,7 @@ final class data_controller_test extends advanced_testcase {
     public function test_form_save(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/customfield/tests/fixtures/test_instance_form.php");
+        require_once(\core\component::component_path('core_customfield', 'tests/fixtures/test_instance_form.php'));
 
         $this->resetAfterTest();
         $this->setAdminUser();

@@ -19,7 +19,7 @@ namespace aiplacement_courseassist;
 use core_ai\ai_test_trait;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__ . '/../../../tests/ai_test_trait.php');
+require_once(\core\component::component_path('core_ai', 'tests/ai_test_trait.php'));
 
 /**
  * AI Placement course assist utils test.

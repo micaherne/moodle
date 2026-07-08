@@ -33,7 +33,7 @@ use mod_quiz\quiz_attempt;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/tests/privacy_helper.php');
+require_once(\core\component::component_path('core_question', 'tests/privacy_helper.php'));
 
 /**
  * Privacy provider tests class.

@@ -22,11 +22,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once("../config.php");
-require_once($CFG->dirroot.'/user/profile/lib.php');
-require_once($CFG->dirroot.'/user/lib.php');
-require_once($CFG->libdir . '/filelib.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/profile/lib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 $id             = optional_param('id', 0, PARAM_INT); // User id.
 $courseid       = optional_param('course', SITEID, PARAM_INT); // course id (defaults to Site).

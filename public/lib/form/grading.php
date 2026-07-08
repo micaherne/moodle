@@ -27,7 +27,7 @@
 
 global $CFG;
 require_once("HTML/QuickForm/element.php");
-require_once($CFG->dirroot.'/grade/grading/form/lib.php');
+require_once(\core\component::component_path('core_grading', 'form/lib.php'));
 require_once('templatable_form_element.php');
 
 if (class_exists('HTML_QuickForm')) {

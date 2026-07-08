@@ -26,8 +26,8 @@
 define('CLI_SCRIPT', 1);
 
 require_once(__DIR__ . '/../../../../config.php');
-require_once($CFG->libdir.'/clilib.php');
-require_once($CFG->dirroot . '/lib/filelib.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 list($options, $unrecognized) = cli_get_params(array(
     'help' => false,
@@ -74,7 +74,7 @@ foreach ($map as $name => $icon) {
     }
     $icons[] = $i;
 }
-$jsonfile = $CFG->dirroot . '/admin/tool/componentlibrary/hugo/site/data/fontawesomeicons.json';
+$jsonfile = dirname(__DIR__) . '/hugo/site/data/fontawesomeicons.json';
 if (($fh = @fopen($jsonfile, 'w')) !== false) {
     fwrite($fh, json_encode($icons));
     fclose($fh);

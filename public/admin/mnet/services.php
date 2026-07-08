@@ -26,8 +26,8 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot . '/' . $CFG->admin . '/mnet/services_form.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/services_form.php');
 $mnet = get_mnet_environment();
 
 admin_externalpage_setup('mnetpeers');
@@ -79,7 +79,7 @@ if ($formdata = $mform->get_data()) {
 
 echo $OUTPUT->header();
 $currenttab = 'mnetservices';
-require_once($CFG->dirroot . '/' . $CFG->admin . '/mnet/tabs.php');
+require_once(__DIR__ . '/tabs.php');
 echo $OUTPUT->box_start();
 $s = mnet_get_service_info($mnet_peer, false); // basic data only
 $mform->set_data($s);

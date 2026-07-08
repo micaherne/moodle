@@ -27,8 +27,8 @@
 // TODO: it is wrong when core lib references ANY plugin lang strings, maybe more login could be moved here (skodak)
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir . '/xhprof/xhprof_moodle.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'xhprof/xhprof_moodle.php'));
 
 define('PROFILING_RUNSPERPAGE', 50);
 

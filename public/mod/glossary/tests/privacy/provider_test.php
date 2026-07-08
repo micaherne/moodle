@@ -31,7 +31,7 @@ use mod_glossary\privacy\provider;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/rating/lib.php');
+require_once(\core\component::component_path('core_rating', 'lib.php'));
 
 /**
  * Privacy provider tests class.

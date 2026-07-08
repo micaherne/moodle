@@ -47,8 +47,8 @@ final class content_test extends \advanced_testcase {
     public static function setupBeforeClass(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_contenttype.php');
-        require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_content.php');
+        require_once(__DIR__ . '/fixtures/testable_contenttype.php');
+        require_once(__DIR__ . '/fixtures/testable_content.php');
     }
 
     /**

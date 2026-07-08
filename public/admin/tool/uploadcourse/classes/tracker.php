@@ -23,7 +23,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir . '/weblib.php');
+require_once(\core\component::component_path('core', 'weblib.php'));
 
 /**
  * Class output tracker.

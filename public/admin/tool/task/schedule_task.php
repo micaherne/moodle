@@ -26,7 +26,7 @@
 
 define('NO_OUTPUT_BUFFERING', true);
 
-require('../../../config.php');
+require(__DIR__ . '/../../../config.php');
 
 // Allow execution of single task. This requires login and has different rules.
 $taskname = required_param('task', PARAM_RAW_TRIMMED);
@@ -94,7 +94,7 @@ echo $OUTPUT->footer();
 echo $OUTPUT->select_element_for_append();
 
 // Prepare to handle output via mtrace.
-require_once("{$CFG->dirroot}/{$CFG->admin}/tool/task/lib.php");
+require_once(__DIR__ . '/lib.php');
 echo html_writer::start_tag('pre', ['class' => 'task-output', 'style' => 'min-height: 24lh']);
 $CFG->mtrace_wrapper = 'tool_task_mtrace_wrapper';
 

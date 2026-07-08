@@ -22,7 +22,7 @@
  * @package tool_dataprivacy
  */
 
-require_once('../../../config.php');
+require_once(__DIR__ . '/../../../config.php');
 
 $requestid = required_param('requestid', PARAM_INT);
 $confirm = optional_param('confirm', null, PARAM_INT);

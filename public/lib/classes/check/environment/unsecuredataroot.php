@@ -55,7 +55,7 @@ class unsecuredataroot extends \core\check\check {
     public function get_result(): result {
 
         global $CFG;
-        require_once($CFG->libdir.'/adminlib.php');
+        require_once(dirname(__DIR__, 3) . '/adminlib.php');
 
         $details = get_string('check_unsecuredataroot_details', 'report_security');
 

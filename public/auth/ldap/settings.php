@@ -33,12 +33,12 @@ if ($ADMIN->fulltree) {
     } else {
 
         // We use a couple of custom admin settings since we need to massage the data before it is inserted into the DB.
-        require_once($CFG->dirroot.'/auth/ldap/classes/admin_setting_special_lowercase_configtext.php');
-        require_once($CFG->dirroot.'/auth/ldap/classes/admin_setting_special_contexts_configtext.php');
-        require_once($CFG->dirroot.'/auth/ldap/classes/admin_setting_special_ntlm_configtext.php');
+        require_once(__DIR__ . '/classes/admin_setting_special_lowercase_configtext.php');
+        require_once(__DIR__ . '/classes/admin_setting_special_contexts_configtext.php');
+        require_once(__DIR__ . '/classes/admin_setting_special_ntlm_configtext.php');
 
         // We need to use some of the Moodle LDAP constants / functions to create the list of options.
-        require_once($CFG->dirroot.'/auth/ldap/auth.php');
+        require_once(__DIR__ . '/auth.php');
 
         // Introductory explanation.
         $settings->add(new admin_setting_heading('auth_ldap/pluginname', '',

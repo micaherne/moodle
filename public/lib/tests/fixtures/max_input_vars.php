@@ -23,7 +23,7 @@
  */
 
 require(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once(dirname(__DIR__, 2) . '/formslib.php');
 
 // Behat test fixture only.
 defined('BEHAT_SITE_RUNNING') || die('Only available on Behat test server');

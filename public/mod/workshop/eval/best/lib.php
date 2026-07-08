@@ -27,8 +27,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../lib.php');  // interface definition
-require_once($CFG->libdir . '/gradelib.php');
+require_once(\core\component::component_path('mod_workshop', 'eval/lib.php'));  // interface definition
+require_once(\core\component::component_path('core', 'gradelib.php'));
 
 /**
  * Defines the computation login of the grading evaluation subplugin

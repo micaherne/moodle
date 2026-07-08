@@ -120,6 +120,6 @@ $PAGE->set_pagelayout('popup');
 $renderer = $PAGE->get_renderer('auth_lti');
 
 echo $OUTPUT->header();
-require_once($CFG->dirroot . '/auth/lti/auth.php');
+require_once(__DIR__ . '/auth.php');
 echo $renderer->render_account_binding_options_page($SESSION->auth_lti->provisioningmode);
 echo $OUTPUT->footer();

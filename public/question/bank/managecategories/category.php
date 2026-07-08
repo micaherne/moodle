@@ -24,7 +24,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 use core_question\output\qbank_actionbar;
 use core_question\category_manager;

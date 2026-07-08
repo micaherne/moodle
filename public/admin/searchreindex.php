@@ -27,7 +27,7 @@ define('NO_OUTPUT_BUFFERING', true);
 require(__DIR__ . '/../config.php');
 
 // Check access.
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 admin_externalpage_setup('searchareas', '', null, (new moodle_url('/admin/searchreindex.php'))->out(false));
 

@@ -69,7 +69,7 @@ class new_table_from_mysql extends XMLDBAction {
         // Do the job, setting result as needed
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         // Get the correct dirs
         if (!empty($XMLDB->dbdirs)) {
@@ -111,14 +111,14 @@ class new_table_from_mysql extends XMLDBAction {
             // Now build the form
             $o = '<form id="form" action="index.php" method="post">';
             $o .= '<div>';
-            $o.= '    <input type="hidden" name ="dir" value="' . str_replace($CFG->dirroot, '', $dirpath) . '" />';
+            $o.= '    <input type="hidden" name ="dir" value="' . \core\component::to_mono_path($dirpath, true) . '" />';
             $o.= '    <input type="hidden" name ="action" value="new_table_from_mysql" />';
             $o.= '    <input type="hidden" name ="postaction" value="edit_table" />';
             $o.= '    <input type="hidden" name ="sesskey" value="' . sesskey() . '" />';
             $o .= '   <table id="formelements" class="table-reboot" cellpadding="5">';
             $o.= '      <tr><td><label for="menutable" accesskey="t">' . $this->str['createtable'] .' </label>' . html_writer::select($selecttables, 'table') . '<label for="menuafter" accesskey="a">' . $this->str['aftertable'] . ' </label>' .html_writer::select($aftertables, 'after') . '</td></tr>';
             $o.= '      <tr><td colspan="2" align="center"><input type="submit" value="' .$this->str['create'] . '" /></td></tr>';
-            $o.= '      <tr><td colspan="2" align="center"><a href="index.php?action=edit_xml_file&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['back'] . ']</a></td></tr>';
+            $o.= '      <tr><td colspan="2" align="center"><a href="index.php?action=edit_xml_file&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['back'] . ']</a></td></tr>';
             $o.= '    </table>';
             $o.= '</div></form>';
 

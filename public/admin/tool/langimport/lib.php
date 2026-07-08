@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die;
  */
 function tool_langimport_preupgrade_update($lang) {
     global $CFG, $OUTPUT;
-    require_once($CFG->libdir.'/componentlib.class.php');
+    require_once(\core\component::component_path('core', 'componentlib.class.php'));
 
     echo $OUTPUT->heading(get_string('langimport', 'tool_langimport').': '.$lang);
 

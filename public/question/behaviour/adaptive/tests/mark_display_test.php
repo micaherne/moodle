@@ -23,7 +23,7 @@ use question_state;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once(__DIR__ . '/../../../engine/lib.php');
+require_once(\core\component::component_path('core_question', 'engine/lib.php'));
 require_once(__DIR__ . '/../behaviour.php');
 
 /**

@@ -23,7 +23,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/workshop/backup/moodle2/restore_workshop_stepslib.php'); // Because it exists (must)
+require_once(__DIR__ . '/restore_workshop_stepslib.php'); // Because it exists (must)
 
 /**
  * workshop restore task that provides all the settings and steps to perform one

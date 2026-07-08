@@ -34,7 +34,7 @@ use core_external\util;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . "/message/lib.php");
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Message external functions
@@ -1894,14 +1894,14 @@ class core_message_external extends external_api {
      */
     public static function search_contacts($searchtext, $onlymycourses = false) {
         global $CFG, $USER, $PAGE;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         // Check if messaging is enabled.
         if (empty($CFG->messaging)) {
             throw new moodle_exception('disabled', 'message');
         }
 
-        require_once($CFG->libdir . '/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
 
         $params = array('searchtext' => $searchtext, 'onlymycourses' => $onlymycourses);
         $params = self::validate_parameters(self::search_contacts_parameters(), $params);
@@ -3420,7 +3420,7 @@ class core_message_external extends external_api {
         }
 
         // Filter the user IDs, removing the IDs of the users that the current user cannot view.
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
         $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
         $userfields = $userfieldsapi->get_sql('', false, '', '', false)->selects;
         $users = $DB->get_records_list('user', 'id', $userids, '', $userfields, 0, 100);

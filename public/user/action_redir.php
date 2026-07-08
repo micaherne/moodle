@@ -22,8 +22,8 @@
  * @package core_user
  */
 
-require_once("../config.php");
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 $formaction = required_param('formaction', PARAM_LOCALURL);
 $id = required_param('id', PARAM_INT);
@@ -47,7 +47,7 @@ if ($formaction == 'bulkchange.php') {
     // This awful code is adapting from the participant page with it's param names and values
     // to the values expected by the bulk enrolment changes forms.
     $formaction = required_param('formaction', PARAM_URL);
-    require_once($CFG->dirroot . '/enrol/locallib.php');
+    require_once(\core\component::component_path('core_enrol', 'locallib.php'));
 
     $url = new moodle_url($formaction);
     // Get the enrolment plugin type and bulk action from the url.

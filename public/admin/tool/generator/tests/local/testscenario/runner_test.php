@@ -41,7 +41,7 @@ final class runner_test extends \advanced_testcase {
         $runner = new runner();
         $runner->init();
 
-        $featurefile = $CFG->dirroot . '/admin/tool/generator/tests/fixtures/testscenario/scenario.feature';
+        $featurefile = dirname(__DIR__, 2) . '/fixtures/testscenario/scenario.feature';
         $contents = file_get_contents($featurefile);
         $feature = $runner->parse_feature($contents);
 
@@ -92,7 +92,7 @@ final class runner_test extends \advanced_testcase {
         $runner = new runner();
         $runner->init();
 
-        $featurefile = $CFG->dirroot . '/admin/tool/generator/tests/fixtures/testscenario/scenario_wrongstep.feature';
+        $featurefile = dirname(__DIR__, 2) . '/fixtures/testscenario/scenario_wrongstep.feature';
         $contents = file_get_contents($featurefile);
         $feature = $runner->parse_feature($contents);
 
@@ -120,7 +120,7 @@ final class runner_test extends \advanced_testcase {
         $runner = new runner();
         $runner->init();
 
-        $featurefile = $CFG->dirroot . '/admin/tool/generator/tests/fixtures/testscenario/scenario_outline.feature';
+        $featurefile = dirname(__DIR__, 2) . '/fixtures/testscenario/scenario_outline.feature';
         $contents = file_get_contents($featurefile);
         $feature = $runner->parse_feature($contents);
 

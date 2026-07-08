@@ -27,8 +27,8 @@ use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/classes/question_helper_test_trait.php');
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(__DIR__ . '/classes/question_helper_test_trait.php');
 
 /**
  * Unit tests for the quiz class

@@ -91,7 +91,7 @@ function choice_user_complete($course, $user, $mod, $choice) {
  */
 function choice_add_instance($choice) {
     global $DB, $CFG;
-    require_once($CFG->dirroot . '/mod/choice/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $choice->timemodified = time();
 
@@ -133,7 +133,7 @@ function choice_add_instance($choice) {
  */
 function choice_update_instance($choice) {
     global $DB, $CFG;
-    require_once($CFG->dirroot . '/mod/choice/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $choice->id = $choice->instance;
     $choice->timemodified = time();
@@ -299,7 +299,7 @@ function choice_modify_responses($userids, $answerids, $newoptionid, $choice, $c
  */
 function choice_user_submit_response($formanswer, $choice, $userid, $course, $cm) {
     global $DB, $CFG, $USER;
-    require_once($CFG->libdir . '/completionlib.php');
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     $continueurl = new moodle_url('/mod/choice/view.php', ['id' => $cm->id]);
 
@@ -559,7 +559,7 @@ function prepare_choice_show_results($choice, $course, $cm, $allresponses) {
  */
 function choice_delete_responses($attemptids, $choice, $cm, $course) {
     global $DB, $CFG, $USER;
-    require_once($CFG->libdir . '/completionlib.php');
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     if (!is_array($attemptids) || empty($attemptids)) {
         return false;
@@ -1018,7 +1018,7 @@ function choice_get_availability_status($choice) {
  */
 function choice_refresh_events($courseid = 0, $instance = null, $cm = null) {
     global $DB, $CFG;
-    require_once($CFG->dirroot . '/mod/choice/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     // If we have instance information then we can just update the one event instead of updating all events.
     if (isset($instance)) {

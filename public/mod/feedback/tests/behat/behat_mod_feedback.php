@@ -25,7 +25,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
 
 use Behat\Gherkin\Node\TableNode as TableNode,
     Behat\Mink\Exception\ExpectationException as ExpectationException;
@@ -140,7 +140,7 @@ class behat_mod_feedback extends behat_base {
             $exception
         );
 
-        $this->compare_exports(file_get_contents($CFG->dirroot . '/' . $filename), $result);
+        $this->compare_exports(file_get_contents(\core\component::from_mono_path('/' . $filename)), $result);
     }
 
     /**

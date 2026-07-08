@@ -185,7 +185,7 @@ class condition extends \core_availability\condition {
     private static function get_cached_grade_name($courseid, $gradeitemid) {
         global $DB, $CFG;
 
-        require_once("{$CFG->dirroot}/grade/lib.php");
+        require_once(\core\component::component_path('core_grades', 'lib.php'));
 
         // Get all grade item names from cache, or using db query.
         $cache = \cache::make('availability_grade', 'items');

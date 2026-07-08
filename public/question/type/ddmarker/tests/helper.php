@@ -146,8 +146,7 @@ class qtype_ddmarker_test_helper extends question_test_helper {
         $filerecord->itemid = $bgdraftitemid;
         $filerecord->filepath = '/';
         $filerecord->filename = 'mkmap.png';
-        $fs->create_file_from_pathname($filerecord, $CFG->dirroot .
-                '/question/type/ddmarker/tests/fixtures/mkmap.png');
+        $fs->create_file_from_pathname($filerecord, __DIR__ . '/fixtures/mkmap.png');
 
         $fromform->name = 'Milton Keynes landmarks';
         $fromform->questiontext = array(
@@ -217,8 +216,7 @@ class qtype_ddmarker_test_helper extends question_test_helper {
         $filerecord->itemid = $bgdraftitemid;
         $filerecord->filepath = '/';
         $filerecord->filename = 'mkmap.png';
-        $fs->create_file_from_pathname($filerecord, $CFG->dirroot .
-            '/question/type/ddmarker/tests/fixtures/mkmap.png');
+        $fs->create_file_from_pathname($filerecord, __DIR__ . '/fixtures/mkmap.png');
 
         $fromform->name = 'Drag-and-drop into maker question with equation';
         $fromform->questiontext = ['text' => 'Fill in the correct mathjax equation: y = 2, x =4', 'format' => FORMAT_HTML];
@@ -262,8 +260,7 @@ class qtype_ddmarker_test_helper extends question_test_helper {
         $filerecord->itemid = $bgdraftitemid;
         $filerecord->filepath = '/';
         $filerecord->filename = 'mkmap.png';
-        $fs->create_file_from_pathname($filerecord, $CFG->dirroot .
-                '/question/type/ddmarker/tests/fixtures/mkmap.png');
+        $fs->create_file_from_pathname($filerecord, __DIR__ . '/fixtures/mkmap.png');
 
         $fromform->name = 'Drag digits';
         $fromform->questiontext = array(

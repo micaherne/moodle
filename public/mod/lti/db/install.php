@@ -31,7 +31,7 @@ function xmldb_lti_install() {
     global $CFG, $OUTPUT;
 
     // Create the private key.
-    require_once($CFG->dirroot . '/mod/lti/upgradelib.php');
+    require_once(dirname(__DIR__) . '/upgradelib.php');
 
     $warning = mod_lti_verify_private_key();
     if (!empty($warning)) {

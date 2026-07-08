@@ -49,7 +49,7 @@ final class generator_test extends \advanced_testcase {
         // 1. As path to the file in filesystem.
         $params = array(
             'course' => $course->id,
-            'packagefilepath' => $CFG->dirroot.'/mod/scorm/tests/packages/singlescobasic.zip'
+            'packagefilepath' => __DIR__ . '/packages/singlescobasic.zip'
         );
         $scorm = $this->getDataGenerator()->create_module('scorm', $params);
 
@@ -63,7 +63,7 @@ final class generator_test extends \advanced_testcase {
         $filerecord = array('component' => 'user', 'filearea' => 'draft',
                 'contextid' => $usercontext->id, 'itemid' => $params['packagefile'],
                 'filename' => 'singlescobasic.zip', 'filepath' => '/');
-        $fs->create_file_from_pathname($filerecord, $CFG->dirroot.'/mod/scorm/tests/packages/singlescobasic.zip');
+        $fs->create_file_from_pathname($filerecord, __DIR__ . '/packages/singlescobasic.zip');
         $scorm = $this->getDataGenerator()->create_module('scorm', $params);
     }
 

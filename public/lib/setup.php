@@ -599,7 +599,7 @@ if (\core\shutdown_manager::is_initialized() === false) {
 
 // Early profiling start, based exclusively on config.php $CFG settings.
 if (!empty($CFG->earlyprofilingenabled) && !defined('ABORT_AFTER_CONFIG_CANCEL')) {
-    require_once($CFG->libdir . '/xhprof/xhprof_moodle.php');
+    require_once(__DIR__ . '/xhprof/xhprof_moodle.php');
     profiling_start();
 }
 
@@ -618,30 +618,30 @@ if (defined('ABORT_AFTER_CONFIG')) {
         } else {
             ini_set('display_errors', '1');
         }
-        require_once("$CFG->dirroot/lib/configonlylib.php");
+        require_once(__DIR__ . '/configonlylib.php');
         return;
     }
 }
 
-require_once($CFG->libdir .'/setuplib.php');        // Functions that MUST be loaded first.
+require_once(__DIR__ . '/setuplib.php');        // Functions that MUST be loaded first.
 
 // Load up standard libraries.
-require_once($CFG->libdir .'/filterlib.php');       // Functions for filtering test as it is output.
-require_once($CFG->libdir .'/weblib.php');          // Functions relating to HTTP and content.
-require_once($CFG->libdir .'/outputlib.php');       // Functions for generating output.
-require_once($CFG->libdir .'/dmllib.php');          // Database access.
-require_once($CFG->libdir .'/datalib.php');         // Legacy lib with a big-mix of functions..
-require_once($CFG->libdir .'/accesslib.php');       // Access control functions.
-require_once($CFG->libdir .'/deprecatedlib.php');   // Deprecated functions included for backward compatibility.
-require_once($CFG->libdir .'/moodlelib.php');       // Other general-purpose functions.
-require_once($CFG->libdir .'/enrollib.php');        // Enrolment related functions.
-require_once($CFG->libdir .'/pagelib.php');         // Library that defines the moodle_page class, used for $PAGE.
-require_once($CFG->libdir .'/blocklib.php');        // Library for controlling blocks.
-require_once($CFG->libdir .'/grouplib.php');        // Groups functions.
-require_once($CFG->libdir .'/sessionlib.php');      // All session and cookie related stuff.
-require_once($CFG->libdir .'/editorlib.php');       // All text editor related functions and classes.
-require_once($CFG->libdir .'/messagelib.php');      // Messagelib functions.
-require_once($CFG->libdir .'/modinfolib.php');      // Cached information on course-module instances.
+require_once(__DIR__ . '/filterlib.php');       // Functions for filtering test as it is output.
+require_once(__DIR__ . '/weblib.php');          // Functions relating to HTTP and content.
+require_once(__DIR__ . '/outputlib.php');       // Functions for generating output.
+require_once(__DIR__ . '/dmllib.php');          // Database access.
+require_once(__DIR__ . '/datalib.php');         // Legacy lib with a big-mix of functions..
+require_once(__DIR__ . '/accesslib.php');       // Access control functions.
+require_once(__DIR__ . '/deprecatedlib.php');   // Deprecated functions included for backward compatibility.
+require_once(__DIR__ . '/moodlelib.php');       // Other general-purpose functions.
+require_once(__DIR__ . '/enrollib.php');        // Enrolment related functions.
+require_once(__DIR__ . '/pagelib.php');         // Library that defines the moodle_page class, used for $PAGE.
+require_once(__DIR__ . '/blocklib.php');        // Library for controlling blocks.
+require_once(__DIR__ . '/grouplib.php');        // Groups functions.
+require_once(__DIR__ . '/sessionlib.php');      // All session and cookie related stuff.
+require_once(__DIR__ . '/editorlib.php');       // All text editor related functions and classes.
+require_once(__DIR__ . '/messagelib.php');      // Messagelib functions.
+require_once(__DIR__ . '/modinfolib.php');      // Cached information on course-module instances.
 
 // Increase memory limits if possible.
 raise_memory_limit(MEMORY_STANDARD);
@@ -666,7 +666,7 @@ if (defined('BEHAT_SITE_RUNNING') && !defined('BEHAT_TEST') && !defined('BEHAT_U
 }
 
 if (defined('WS_SERVER') && WS_SERVER) {
-    require_once($CFG->dirroot . '/webservice/lib.php');
+    require_once(\core\component::component_path('core_webservice', 'lib.php'));
     set_exception_handler('early_ws_exception_handler');
 }
 
@@ -822,7 +822,7 @@ ini_set('pcre.backtrack_limit', 20971520);  // 20 MB
 core_date::set_default_server_timezone();
 
 // Location of standard files
-$CFG->wordlist = $CFG->libdir .'/wordlist.txt';
+$CFG->wordlist = __DIR__ . '/wordlist.txt';
 $CFG->moddata  = 'moddata';
 
 // neutralise nasty chars in PHP_SELF
@@ -908,7 +908,7 @@ unset($USER->ignoresesskey);
 
 if (!empty($CFG->proxylogunsafe) || !empty($CFG->proxyfixunsafe)) {
     if (!empty($CFG->proxyfixunsafe)) {
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(__DIR__ . '/filelib.php');
 
         $proxyurl = get_moodle_proxy_url();
         // This fixes stream handlers inside php.
@@ -960,7 +960,7 @@ if (!isset($CFG->filelifetime)) {
 
 // Late profiling, only happening if early one wasn't started
 if (!empty($CFG->profilingenabled)) {
-    require_once($CFG->libdir . '/xhprof/xhprof_moodle.php');
+    require_once(__DIR__ . '/xhprof/xhprof_moodle.php');
     profiling_start();
 }
 
@@ -1074,7 +1074,7 @@ set_access_log_user();
 
 if (CLI_SCRIPT && !empty($CFG->version)) {
     // Allow auth plugins to optionally authenticate users on the CLI.
-    require_once($CFG->libdir. '/authlib.php');
+    require_once(__DIR__ . '/authlib.php');
     auth_plugin_base::login_cli_admin_user();
 }
 
@@ -1168,7 +1168,7 @@ if (isset($CFG->maintenance_later) and $CFG->maintenance_later <= time()) {
     $USER->id = 0;
 
     if (!file_exists("$CFG->dataroot/climaintenance.html")) {
-        require_once("$CFG->libdir/adminlib.php");
+        require_once(__DIR__ . '/adminlib.php');
         set_config('maintenance_enabled', 'cli mode', null, true);
         enable_cli_maintenance_mode();
     }

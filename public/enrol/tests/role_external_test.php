@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/enrol/externallib.php');
+require_once(dirname(__DIR__) . '/externallib.php');
 
 /**
  * Role external PHPunit tests
@@ -37,7 +37,7 @@ final class role_external_test extends \core_external\tests\externallib_testcase
      */
     protected function setUp(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/enrol/externallib.php');
+        require_once(dirname(__DIR__) . '/externallib.php');
         parent::setUp();
     }
 

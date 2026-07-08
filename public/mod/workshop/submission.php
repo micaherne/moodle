@@ -208,7 +208,7 @@ if (trim($workshop->instructauthors)) {
 
 if ($edit) {
     if (!empty($CFG->enableplagiarism)) {
-        require_once($CFG->libdir.'/plagiarismlib.php');
+        require_once(\core\component::component_path('core', 'plagiarismlib.php'));
         echo plagiarism_print_disclosure($cm->id);
     }
     $mform->display();
@@ -354,7 +354,7 @@ if (!$edit and $canoverride) {
 if (!empty($CFG->enableportfolios)) {
     if (!$delete and !$edit and !$seenaspublished and $submission->id and ($ownsubmission or $canviewall or $isreviewer)) {
         if (has_capability('mod/workshop:exportsubmissions', $workshop->context)) {
-            require_once($CFG->libdir.'/portfoliolib.php');
+            require_once(\core\component::component_path('core', 'portfoliolib.php'));
 
             $button = new portfolio_add_button();
             $button->set_callback_options('mod_workshop_portfolio_caller', array(

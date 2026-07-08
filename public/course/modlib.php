@@ -32,7 +32,7 @@ use core\hook;
 use core_courseformat\formatactions;
 use core_grades\component_gradeitems;
 
-require_once($CFG->dirroot.'/course/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Add course module.
@@ -247,7 +247,7 @@ function plugin_extend_coursemodule_edit_post_actions($moduleinfo, $course) {
  */
 function edit_module_post_actions($moduleinfo, $course) {
     global $CFG, $USER;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $modcontext = context_module::instance($moduleinfo->coursemodule);
     $hasgrades = plugin_supports('mod', $moduleinfo->modulename, FEATURE_GRADE_HAS_GRADE, false);
@@ -321,7 +321,7 @@ function edit_module_post_actions($moduleinfo, $course) {
         }
     }
 
-    require_once($CFG->libdir.'/grade/grade_outcome.php');
+    require_once(\core\component::component_path('core', 'grade/grade_outcome.php'));
     // Add outcomes if requested.
     if ($hasoutcomes && $outcomes = grade_outcome::fetch_all_available($course->id)) {
         // Outcome grade_item.itemnumber start at 1000, there is nothing above outcomes.
@@ -387,7 +387,7 @@ function edit_module_post_actions($moduleinfo, $course) {
 
     if (plugin_supports('mod', $moduleinfo->modulename, FEATURE_ADVANCED_GRADING, false)
             and has_capability('moodle/grade:managegradingforms', $modcontext)) {
-        require_once($CFG->dirroot.'/grade/grading/lib.php');
+        require_once(\core\component::component_path('core_grading', 'lib.php'));
         $gradingman = get_grading_manager($modcontext, 'mod_'.$moduleinfo->modulename);
         $showgradingmanagement = false;
         foreach ($gradingman->get_available_areas() as $areaname => $aretitle) {
@@ -830,12 +830,11 @@ function update_moduleinfo($cm, $moduleinfo, $course, $mform = null) {
  * @throws moodle_exception if lib.php file for the module does not exist
  */
 function include_modulelib($modulename): void {
-    global $CFG;
-    $modlib = "$CFG->dirroot/mod/$modulename/lib.php";
-    if (file_exists($modlib)) {
-        include_once($modlib);
+    $moddir = \core_component::get_plugin_directory('mod', $modulename);
+    if ($moddir && file_exists("$moddir/lib.php")) {
+        include_once("$moddir/lib.php");
     } else {
-        throw new moodle_exception('modulemissingcode', '', '', $modlib);
+        throw new moodle_exception('modulemissingcode', '', '', $moddir ? "$moddir/lib.php" : "mod/$modulename/lib.php");
     }
 }
 
@@ -849,7 +848,7 @@ function include_modulelib($modulename): void {
  */
 function get_moduleinfo_data($cm, $course) {
     global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     list($cm, $context, $module, $data, $cw) = can_update_moduleinfo($cm);
 
@@ -886,7 +885,7 @@ function get_moduleinfo_data($cm, $course) {
 
     if (plugin_supports('mod', $data->modulename, FEATURE_ADVANCED_GRADING, false)
             and has_capability('moodle/grade:managegradingforms', $context)) {
-        require_once($CFG->dirroot.'/grade/grading/lib.php');
+        require_once(\core\component::component_path('core_grading', 'lib.php'));
         $gradingman = get_grading_manager($context, 'mod_'.$data->modulename);
         $data->_advancedgradingdata['methods'] = $gradingman->get_available_methods();
         $areas = $gradingman->get_available_areas();
@@ -996,7 +995,7 @@ function prepare_new_moduleinfo_data($course, $modulename, $section, string $suf
 
     if (plugin_supports('mod', $data->modulename, FEATURE_ADVANCED_GRADING, false)
             and has_capability('moodle/grade:managegradingforms', $context)) {
-        require_once($CFG->dirroot.'/grade/grading/lib.php');
+        require_once(\core\component::component_path('core_grading', 'lib.php'));
 
         $data->_advancedgradingdata['methods'] = grading_manager::available_methods();
         $areas = grading_manager::available_areas('mod_'.$module->name);

@@ -30,8 +30,8 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/questionlib.php');
-require_once($CFG->dirroot . '/course/modlib.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(\core\component::component_path('core_course', 'modlib.php'));
 
 /**
  * Helper class for qbank sharing.
