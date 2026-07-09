@@ -33,7 +33,7 @@ use core_reportbuilder\output\dynamictabs\editor;
 use core_reportbuilder\output\dynamictabs\schedules;
 
 require_once(__DIR__ . '/../config.php');
-require_once("{$CFG->libdir}/adminlib.php");
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $reportid = required_param('id', PARAM_INT);
 

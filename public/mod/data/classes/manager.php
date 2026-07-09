@@ -81,12 +81,11 @@ class manager {
      * @param stdClass $instance activity instance object.
      */
     public function __construct(cm_info $cm, stdClass $instance) {
-        global $CFG;
         $this->cm = $cm;
         $this->instance = $instance;
         $this->context = context_module::instance($cm->id);
         $this->instance->cmidnumber = $cm->idnumber;
-        $this->path = $CFG->dirroot . '/mod/' . self::MODULE;
+        $this->path = \core_component::get_plugin_directory('mod', self::MODULE);
     }
 
     /**
@@ -176,7 +175,7 @@ class manager {
      */
     public function set_module_viewed(stdClass $course) {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         // Trigger module viewed event.
         $event = course_module_viewed::create([

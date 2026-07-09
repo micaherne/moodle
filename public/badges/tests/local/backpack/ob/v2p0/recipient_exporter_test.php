@@ -38,7 +38,7 @@ class recipient_exporter_test extends \advanced_testcase {
     protected static function load_requirements(): void {
         global $CFG;
 
-        require_once($CFG->libdir . '/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
     }
 
     /**

@@ -22,7 +22,7 @@ use core_external\external_value;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/grade/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Web service to return the grade tree structure for a given course.

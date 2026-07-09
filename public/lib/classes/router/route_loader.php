@@ -150,7 +150,6 @@ class route_loader extends abstract_route_loader implements route_loader_interfa
             $cachedata = $this->get_all_routes_in_namespace(
                 namespace: 'route\shim',
                 componentpathcallback: function (string $component): string {
-                    global $CFG;
                     if ($component === 'core') {
                         // The core component is a special case.
                         // It can place routes _anywhere_ in the codebase.
@@ -158,9 +157,9 @@ class route_loader extends abstract_route_loader implements route_loader_interfa
                     }
 
                     // Use the component directory path listed in \core\componnet.
-                    return substr(
+                    return \core\component::to_mono_path(
                         \core_component::get_component_directory($component),
-                        strlen($CFG->dirroot) + 1,
+                        leadingslash: false,
                     );
                 },
             );

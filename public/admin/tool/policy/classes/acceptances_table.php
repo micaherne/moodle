@@ -33,7 +33,7 @@ use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/lib/tablelib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * Class acceptances_table

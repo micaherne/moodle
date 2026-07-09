@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../config.php');
+require(__DIR__ . '/../config.php');
 require_once('lib.php');
 
 redirect_if_major_upgrade_required();
@@ -107,10 +107,10 @@ $PAGE->navbar->add($loginsite);
 if ($user !== false or $frm !== false or $errormsg !== '') {
     // some auth plugin already supplied full user, fake form data or prevented user login with error message
 
-} else if (!empty($SESSION->wantsurl) && file_exists($CFG->dirroot.'/login/weblinkauth.php')) {
+} else if (!empty($SESSION->wantsurl) && file_exists(__DIR__ . '/weblinkauth.php')) {
     // Handles the case of another Moodle site linking into a page on this site
     //TODO: move weblink into own auth plugin
-    include($CFG->dirroot.'/login/weblinkauth.php');
+    include(__DIR__ . '/weblinkauth.php');
     if (function_exists('weblink_auth')) {
         $user = weblink_auth($SESSION->wantsurl);
     }

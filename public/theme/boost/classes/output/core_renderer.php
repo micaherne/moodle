@@ -104,7 +104,7 @@ class core_renderer extends \core_renderer {
      */
     public function context_header($headerinfo = null, $headinglevel = 1): string {
         global $DB, $USER, $CFG;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
         $context = $this->page->context;
         $heading = null;
         $imagedata = null;

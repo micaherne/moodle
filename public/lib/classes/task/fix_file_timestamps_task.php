@@ -17,7 +17,7 @@
 namespace core\task;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir . '/db/upgradelib.php');
+require_once(dirname(__DIR__, 2) . '/db/upgradelib.php');
 
 /**
  * Retroactively fixes file timestamps that are older than the containing folder record.

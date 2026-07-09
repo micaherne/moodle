@@ -41,7 +41,7 @@ class transfer_questions extends adhoc_task {
     public function execute() {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot . '/question/engine/lib.php');
+        require_once(\core\component::component_path('core_question', 'engine/lib.php'));
 
         $data = $this->get_custom_data();
 

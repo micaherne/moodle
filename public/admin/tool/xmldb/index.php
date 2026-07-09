@@ -24,9 +24,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/ddllib.php');
+require(__DIR__ . '/../../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'ddllib.php'));
 // Add required XMLDB action classes
 require_once('actions/XMLDBAction.class.php');
 require_once('actions/XMLDBCheckAction.class.php');
@@ -53,7 +53,7 @@ $PAGE->set_primary_active_tab('siteadminnode');
 $action = optional_param ('action', 'main_view', PARAM_ALPHAEXT);
 
 // Get the action path and invoke it
-$actionsroot = "$CFG->dirroot/$CFG->admin/tool/xmldb/actions";
+$actionsroot = __DIR__ . '/actions';
 $actionclass = $action . '.class.php';
 $actionpath = "$actionsroot/$action/$actionclass";
 
@@ -76,13 +76,13 @@ if (file_exists($actionpath) && is_readable($actionpath)) {
                     // If the js exists, load it
                     if ($action) {
                         $script = $CFG->admin . '/tool/xmldb/actions/' . $action . '/' . $action . '.js';
-                        $file = $CFG->dirroot . '/' . $script;
+                        $file = \core\component::from_mono_path('/' . $script);
                         if (file_exists($file) && is_readable($file)) {
                             $PAGE->requires->js('/'.$script);
                         } else if ($postaction) {
                             // Try to load the postaction javascript if exists
                             $script = $CFG->admin . '/tool/xmldb/actions/' . $postaction . '/' . $postaction . '.js';
-                            $file = $CFG->dirroot . '/' . $script;
+                            $file = \core\component::from_mono_path('/' . $script);
                             if (file_exists($file) && is_readable($file)) {
                                 $PAGE->requires->js('/'.$script);
                             }

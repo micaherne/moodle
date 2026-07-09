@@ -27,10 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once(\core\component::component_path('core_question', 'engine/lib.php'));
+require_once(dirname(__DIR__, 2) . '/locallib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(dirname(__DIR__) . '/quiz_question_helper_test_trait.php');
 
 /**
  * Test repeatedly restoring a quiz into another course.
@@ -595,11 +595,12 @@ final class repeated_restore_test extends advanced_testcase {
      * @return array
      */
     public static function get_qtype_generators(): array {
-        global $CFG;
+        global $CFG; // Needed in scope for the required qtype test helper.php.
         $generators = [];
         foreach (\core\plugin_manager::instance()->get_plugins_of_type('qtype') as $qtype) {
-            $helperpath = "{$CFG->dirroot}/question/type/{$qtype->name}/tests/helper.php";
-            if (!file_exists($helperpath)) {
+            $dir = \core_component::get_plugin_directory('qtype', $qtype->name);
+            $helperpath = $dir ? "$dir/tests/helper.php" : null;
+            if ($helperpath === null || !file_exists($helperpath)) {
                 continue;
             }
             require_once($helperpath);

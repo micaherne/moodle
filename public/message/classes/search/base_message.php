@@ -26,7 +26,7 @@ namespace core_message\search;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/message/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Search area base class for messages.

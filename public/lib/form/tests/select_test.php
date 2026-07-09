@@ -21,7 +21,7 @@ use MoodleQuickForm_select;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/form/select.php');
+require_once(dirname(__DIR__) . '/select.php');
 
 /**
  * Unit tests for MoodleQuickForm_select

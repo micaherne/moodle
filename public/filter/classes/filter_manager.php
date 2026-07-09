@@ -124,15 +124,14 @@ class filter_manager {
      *      not recognised or could not be created.
      */
     protected function make_filter_object($filtername, $context, $localconfig) {
-        global $CFG;
-
         $filterclass = "\\filter_{$filtername}\\text_filter";
         if (class_exists($filterclass)) {
             return new $filterclass($context, $localconfig);
         }
 
-        $path = $CFG->dirroot . '/filter/' . $filtername . '/filter.php';
-        if (!is_readable($path)) {
+        $filterdir = \core_component::get_plugin_directory('filter', $filtername);
+        $path = $filterdir ? $filterdir . '/filter.php' : null;
+        if (!$path || !is_readable($path)) {
             return null;
         }
         include_once($path);

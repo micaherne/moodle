@@ -69,7 +69,7 @@ class frontend extends \core_availability\frontend {
      */
     protected function get_all_groups($courseid) {
         global $CFG;
-        require_once($CFG->libdir . '/grouplib.php');
+        require_once(\core\component::component_path('core', 'grouplib.php'));
 
         if ($courseid != $this->allgroupscourseid) {
             $this->allgroups = groups_get_all_groups($courseid, 0, 0, 'g.id, g.name, g.visibility');

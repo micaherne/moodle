@@ -29,8 +29,8 @@ define('NO_DEBUG_DISPLAY', true);
 
 // we need just the values from config.php and minlib.php
 define('ABORT_AFTER_CONFIG', true);
-require('../config.php'); // this stops immediately at the beginning of lib/setup.php
-require_once("$CFG->dirroot/lib/jslib.php");
+require(__DIR__ . '/../config.php'); // this stops immediately at the beginning of lib/setup.php
+require_once(\core\component::component_path('core', 'jslib.php'));
 
 if ($slashargument = min_get_slash_argument()) {
     $slashargument = ltrim($slashargument, '/');
@@ -60,9 +60,8 @@ if ($type !== 'head' and $type !== 'footer') {
     die('Theme was not found, sorry.');
 }
 
-if (file_exists("$CFG->dirroot/theme/$themename/config.php")) {
-    // exists
-} else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/$themename/config.php")) {
+$themedir = \core_component::get_plugin_directory('theme', $themename);
+if ($themedir && file_exists("$themedir/config.php")) {
     // exists
 } else {
     header('HTTP/1.0 404 not found');
@@ -88,7 +87,7 @@ define('ABORT_AFTER_CONFIG_CANCEL', true);
 define('NO_MOODLE_COOKIES', true); // Session not used here
 define('NO_UPGRADE_CHECK', true);  // Ignore upgrade check
 
-require("$CFG->dirroot/lib/setup.php");
+require(\core\component::component_path('core', 'setup.php'));
 
 $theme = theme_config::load($themename);
 $themerev = theme_get_revision();

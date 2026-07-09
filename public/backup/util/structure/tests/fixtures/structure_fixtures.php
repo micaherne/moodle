@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
+require_once(dirname(__DIR__, 3) . '/includes/backup_includes.php');
 
 /**
  * helper extended base_attribute class that implements some methods for instantiating and testing

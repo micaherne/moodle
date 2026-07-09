@@ -28,7 +28,7 @@ use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/user/profile/lib.php');
+require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
 /**
  * Helper class for user profile fields.

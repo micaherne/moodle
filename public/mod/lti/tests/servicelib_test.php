@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/mod/lti/servicelib.php');
+require_once(dirname(__DIR__) . '/servicelib.php');
 
 /**
  * Tests for servicelib.php

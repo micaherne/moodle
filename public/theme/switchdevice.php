@@ -24,7 +24,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../config.php');
+require(__DIR__ . '/../config.php');
 
 $url       = required_param('url', PARAM_LOCALURL);
 $newdevice = required_param('device', PARAM_TEXT);

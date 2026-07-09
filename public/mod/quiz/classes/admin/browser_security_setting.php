@@ -36,7 +36,7 @@ class browser_security_setting extends \admin_setting_configselect_with_advanced
             return true;
         }
 
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
         $this->choices = access_manager::get_browser_security_choices();
 
         return true;

@@ -25,7 +25,7 @@
 namespace mod_quiz;
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * Group observers class.

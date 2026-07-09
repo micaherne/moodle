@@ -112,7 +112,7 @@ class testing_repository_generator extends component_generator_base {
      */
     public function create_instance($record = null, ?array $options = null) {
         global $CFG, $DB, $PAGE;
-        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $this->instancecount++;
         $record = (array) $record;
@@ -175,7 +175,7 @@ class testing_repository_generator extends component_generator_base {
      */
     public function create_type($record = null, ?array $options = null) {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $record = (array) $record;
         $type = $this->get_typename();

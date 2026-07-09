@@ -318,7 +318,7 @@ function label_generate_resized_image(stored_file $file, $maxwidth, $maxheight) 
         if ($width != $imginfo['width']) {
             $mimetype = $file->get_mimetype();
             if ($mimetype === 'image/gif' or $mimetype === 'image/jpeg' or $mimetype === 'image/png') {
-                require_once($CFG->libdir.'/gdlib.php');
+                require_once(\core\component::component_path('core', 'gdlib.php'));
                 $data = $file->generate_image_thumbnail($width, $height);
 
                 if (!empty($data)) {

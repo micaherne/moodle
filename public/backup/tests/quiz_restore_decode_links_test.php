@@ -20,9 +20,9 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff.
 global $CFG;
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(dirname(__DIR__) . '/util/includes/restore_includes.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
 
 /**
  * Decode links quiz restore tests.

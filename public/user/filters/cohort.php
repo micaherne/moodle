@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/user/filters/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Generic filter for cohort membership.

@@ -606,7 +606,7 @@ final class taglib_test extends \advanced_testcase {
      */
     protected function prepare_move_tags() {
         global $CFG;
-        require_once($CFG->dirroot.'/blog/locallib.php');
+        require_once(\core\component::component_path('core_blog', 'locallib.php'));
         $this->setUser($this->getDataGenerator()->create_user());
 
         $collid1 = core_tag_collection::get_default();

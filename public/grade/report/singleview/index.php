@@ -24,10 +24,10 @@
 
 define('NO_OUTPUT_BUFFERING', true);
 
-require_once('../../../config.php');
-require_once($CFG->dirroot.'/lib/gradelib.php');
-require_once($CFG->dirroot.'/grade/lib.php');
-require_once($CFG->dirroot.'/grade/report/lib.php');
+require_once(__DIR__ . '/../../../config.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(\core\component::component_path('core_grades', 'lib.php'));
+require_once(\core\component::component_path('core_grades', 'report/lib.php'));
 
 // This report may require a lot of memory and time on large courses.
 raise_memory_limit(MEMORY_HUGE);

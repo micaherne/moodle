@@ -21,7 +21,7 @@ use core_adminpresets\manager;
 use core_adminpresets\helper;
 
 global $CFG;
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 /**
  * Data generator for adminpresets component.

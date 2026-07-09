@@ -21,9 +21,9 @@ use mod_forum_generator;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/forum/lib.php');
-require_once($CFG->dirroot . '/mod/forum/locallib.php');
-require_once($CFG->dirroot . '/rating/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(\core\component::component_path('core_rating', 'lib.php'));
 
 /**
  * The mod_forum lib.php tests.
@@ -3816,7 +3816,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_forum_core_calendar_get_valid_event_timestart_range_unknown_event(): void {
         global $CFG;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -3852,7 +3852,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_forum_core_calendar_get_valid_event_timestart_range_due_no_limit(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -3888,7 +3888,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_forum_core_calendar_get_valid_event_timestart_range_due_with_limits(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -3927,7 +3927,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_forum_core_calendar_event_timestart_updated_unknown_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -3969,7 +3969,7 @@ final class lib_test extends \advanced_testcase {
      */
     public function test_mod_forum_core_calendar_event_timestart_updated_due_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();

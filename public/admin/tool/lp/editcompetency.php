@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $id = optional_param('id', 0, PARAM_INT);
 $competencyframeworkid = optional_param('competencyframeworkid', 0, PARAM_INT);

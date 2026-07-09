@@ -46,9 +46,9 @@
  * @package calendar
  */
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->dirroot.'/calendar/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(__DIR__ . '/lib.php');
 
 if (empty($CFG->enablecalendarexport)) {
     die('no export');

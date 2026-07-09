@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 define('FEEDBACK_ITEM_NAME_TEXTBOX_SIZE', 80);
 define('FEEDBACK_ITEM_LABEL_TEXTBOX_SIZE', 20);

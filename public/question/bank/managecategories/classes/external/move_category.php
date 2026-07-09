@@ -105,7 +105,7 @@ class move_category extends external_api {
         // Update category location.
         global $DB, $CFG;
 
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(\core\component::component_path('core', 'questionlib.php'));
 
         $context = context::instance_by_id($pagecontextid);
         self::validate_context($context);

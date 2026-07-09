@@ -26,8 +26,8 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../../config.php');
-require_once("$CFG->libdir/clilib.php");
-require_once("$CFG->dirroot/$CFG->admin/tool/customlang/locallib.php");
+require_once(\core\component::component_path('core', 'clilib.php'));
+require_once(dirname(__DIR__) . '/locallib.php');
 
 $usage = <<<EOF
 "Export custom language files to a target folder.

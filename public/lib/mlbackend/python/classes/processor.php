@@ -27,8 +27,8 @@ namespace mlbackend_python;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/analytics/tests/classes/mlbackend_helper_trait.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core_analytics', 'tests/classes/mlbackend_helper_trait.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 use core_analytics\tests\mlbackend_helper_trait;
 

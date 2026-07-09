@@ -30,7 +30,7 @@ use moodleform;
 use context_system;
 use core_competency\api;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Export Competency framework form.

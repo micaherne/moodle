@@ -125,7 +125,7 @@ class factory {
                 self::$instance = new disabled_factory();
             } else if ((defined('PHPUNIT_TEST') && PHPUNIT_TEST) || defined('BEHAT_SITE_RUNNING')) {
                 // We're using the test factory.
-                require_once($CFG->dirroot . '/cache/tests/fixtures/lib.php');
+                require_once(dirname(__DIR__) . '/tests/fixtures/lib.php');
                 self::$instance = new cache_phpunit_factory();
                 if (defined('CACHE_DISABLE_STORES') && CACHE_DISABLE_STORES !== false) {
                     // The cache stores have been disabled.
@@ -360,7 +360,7 @@ class factory {
 
         // Check if this is a PHPUnit test and redirect to the phpunit config classes if it is.
         if ($testing) {
-            require_once($CFG->dirroot . '/cache/tests/fixtures/lib.php');
+            require_once(dirname(__DIR__) . '/tests/fixtures/lib.php');
             // We have just a single class for PHP unit tests. We don't care enough about its
             // performance to do otherwise and having a single method allows us to inject things into it
             // while testing.
@@ -482,7 +482,7 @@ class factory {
      * @return lockable_cache_interface
      */
     public function create_lock_instance(array $config) {
-        global $CFG;
+        global $CFG; // Needed in scope for the required lock lib.php.
         if (!array_key_exists('name', $config) || !array_key_exists('type', $config)) {
             throw new coding_exception('Invalid cache lock instance provided');
         }
@@ -493,8 +493,9 @@ class factory {
 
         if (!isset($this->lockplugins[$type])) {
             $pluginname = substr($type, 10);
-            $file = $CFG->dirroot . "/cache/locks/{$pluginname}/lib.php";
-            if (file_exists($file) && is_readable($file)) {
+            $plugindir = \core_component::get_plugin_directory('cachelock', $pluginname);
+            $file = $plugindir ? "$plugindir/lib.php" : null;
+            if ($file !== null && file_exists($file) && is_readable($file)) {
                 require_once($file);
             }
             if (!class_exists($type)) {

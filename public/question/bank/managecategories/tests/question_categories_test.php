@@ -19,7 +19,7 @@ namespace qbank_managecategories;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/bank/managecategories/tests/manage_category_test_base.php');
+require_once(__DIR__ . '/manage_category_test_base.php');
 
 /**
  * Unit tests for question_categories

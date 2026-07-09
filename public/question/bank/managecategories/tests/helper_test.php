@@ -22,8 +22,8 @@ use core_question\category_manager;
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once($CFG->dirroot . '/question/bank/managecategories/tests/manage_category_test_base.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once(__DIR__ . '/manage_category_test_base.php');
+require_once(\core\component::component_path('mod_quiz', 'tests/quiz_question_helper_test_trait.php'));
 
 /**
  * Unit tests for helper class.

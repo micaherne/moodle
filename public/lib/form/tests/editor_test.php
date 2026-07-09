@@ -22,7 +22,7 @@ use MoodleQuickForm_editor;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("{$CFG->libdir}/form/editor.php");
+require_once(dirname(__DIR__) . '/editor.php');
 
 /**
  * Tests for the editor form element

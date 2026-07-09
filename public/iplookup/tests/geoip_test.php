@@ -31,8 +31,8 @@ final class geoip_test extends \advanced_testcase {
 
         parent::setUpBeforeClass();
 
-        require_once("{$CFG->libdir}/filelib.php");
-        require_once("{$CFG->dirroot}/iplookup/lib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
+        require_once(dirname(__DIR__) . '/lib.php');
     }
 
     /**
@@ -40,7 +40,7 @@ final class geoip_test extends \advanced_testcase {
      */
     public function setup_geoip2file(): void {
         global $CFG;
-        $CFG->geoip2file = "$CFG->dirroot/iplookup/tests/fixtures/GeoIP2-City-Test.mmdb";
+        $CFG->geoip2file = __DIR__ . '/fixtures/GeoIP2-City-Test.mmdb';
     }
 
     /**

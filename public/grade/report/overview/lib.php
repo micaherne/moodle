@@ -22,8 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot . '/grade/report/lib.php');
-require_once($CFG->libdir.'/tablelib.php');
+require_once(\core\component::component_path('core_grades', 'report/lib.php'));
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * Class providing an API for the overview report building and displaying.

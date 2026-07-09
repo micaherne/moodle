@@ -87,8 +87,8 @@ final class content_item_readonly_repository_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/mod/lti/tests/generator/lib.php');
-        require_once($CFG->dirroot . '/mod/lti/locallib.php');
+        require_once(\core\component::component_path('mod_lti', 'tests/generator/lib.php'));
+        require_once(\core\component::component_path('mod_lti', 'locallib.php'));
 
         // We'll compare our results to those which are course-specific, using mod_lti as an example.
         $course = $this->getDataGenerator()->create_course();

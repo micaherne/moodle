@@ -24,10 +24,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/blog/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/lib.php');
 require_once('preferences_form.php');
-require_once($CFG->dirroot.'/user/editlib.php');
+require_once(\core\component::component_path('core_user', 'editlib.php'));
 
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
 $modid    = optional_param('modid', null, PARAM_INT);

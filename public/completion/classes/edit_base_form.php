@@ -16,8 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/course/modlib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('core_course', 'modlib.php'));
 
 /**
  * Base form for changing completion rules. Used in bulk editing activity completion and editing default activity completion

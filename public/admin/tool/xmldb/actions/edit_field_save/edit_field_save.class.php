@@ -81,7 +81,7 @@ class edit_field_save extends XMLDBAction {
 
         // Get parameters
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         $tableparam = strtolower(required_param('table', PARAM_PATH));
         $fieldparam = strtolower(required_param('field', PARAM_PATH));
@@ -216,7 +216,7 @@ class edit_field_save extends XMLDBAction {
             $o = '<p>' .implode(', ', $errors) . '</p>
                   <p>' . $name . ': ' . $tempfield->readableInfo() . '</p>';
             $o.= '<a href="index.php?action=edit_field&amp;field=' . $field->getName() . '&amp;table=' . $table->getName() .
-                 '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['back'] . ']</a>';
+                 '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['back'] . ']</a>';
             $this->output = $o;
         }
 

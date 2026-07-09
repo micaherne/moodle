@@ -58,7 +58,7 @@ final class cli_test extends \advanced_testcase {
         $g1 = $this->getDataGenerator()->create_group(['courseid' => $course->id, 'name' => 'Section 1', 'idnumber' => 'S1']);
         $g2 = $this->getDataGenerator()->create_group(['courseid' => $course->id, 'name' => 'Section 3', 'idnumber' => 'S3']);
 
-        $filepath = $CFG->dirroot.'/lib/tests/fixtures/upload_users.csv';
+        $filepath = \core\component::component_path('core', 'tests/fixtures/upload_users.csv');
 
         $clihelper = $this->construct_helper(["--file=$filepath"]);
         ob_start();
@@ -95,7 +95,7 @@ final class cli_test extends \advanced_testcase {
         $g1 = $this->getDataGenerator()->create_group(['courseid' => $course->id, 'name' => 'Section 1', 'idnumber' => 'S1']);
         $g2 = $this->getDataGenerator()->create_group(['courseid' => $course->id, 'name' => 'Section 3', 'idnumber' => 'S3']);
 
-        $filepath = $CFG->dirroot.'/lib/tests/fixtures/upload_users.csv';
+        $filepath = \core\component::component_path('core', 'tests/fixtures/upload_users.csv');
 
         $clihelper = $this->construct_helper(["--file=$filepath", '--city=Brighton', '--department=Purchasing']);
         ob_start();
@@ -127,7 +127,7 @@ final class cli_test extends \advanced_testcase {
             'shortname' => 'superfield', 'name' => 'Super field',
             'datatype' => 'text', 'signup' => 1, 'visible' => 1, 'required' => 1, 'sortorder' => 1]);
 
-        $filepath = $CFG->dirroot.'/lib/tests/fixtures/upload_users_profile.csv';
+        $filepath = \core\component::component_path('core', 'tests/fixtures/upload_users_profile.csv');
 
         $clihelper = $this->construct_helper(["--file=$filepath"]);
         ob_start();
@@ -181,7 +181,7 @@ final class cli_test extends \advanced_testcase {
         // Create a user with username jonest.
         $user1 = $this->getDataGenerator()->create_user(['username' => 'jonest', 'email' => 'jonest@someplace.edu']);
 
-        $filepath = $CFG->dirroot.'/lib/tests/fixtures/upload_users.csv';
+        $filepath = \core\component::component_path('core', 'tests/fixtures/upload_users.csv');
 
         $clihelper = $this->construct_helper(["--file=$filepath"]);
         ob_start();
@@ -205,7 +205,7 @@ final class cli_test extends \advanced_testcase {
      */
     public function test_enrolments_when_user_exists(): void {
         global $CFG;
-        require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/uploaduser/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
 
         $this->resetAfterTest();
         set_config('passwordpolicy', 0);
@@ -219,7 +219,7 @@ final class cli_test extends \advanced_testcase {
         $this->getDataGenerator()->create_user(['username' => 'jonest', 'email' => 'jonest@someplace.edu',
             'firstname' => 'OLDNAME']);
 
-        $filepath = $CFG->dirroot.'/lib/tests/fixtures/upload_users.csv';
+        $filepath = \core\component::component_path('core', 'tests/fixtures/upload_users.csv');
 
         $clihelper = $this->construct_helper(["--file=$filepath", '--uutype='.UU_USER_UPDATE]);
         ob_start();
@@ -247,7 +247,7 @@ final class cli_test extends \advanced_testcase {
      */
     public function test_udpate_user(): void {
         global $CFG;
-        require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/uploaduser/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
 
         $this->resetAfterTest();
         set_config('passwordpolicy', 0);
@@ -261,7 +261,7 @@ final class cli_test extends \advanced_testcase {
         $this->getDataGenerator()->create_user(['username' => 'jonest',
             'email' => 'jonest@someplace.edu', 'firstname' => 'OLDNAME']);
 
-        $filepath = $CFG->dirroot.'/lib/tests/fixtures/upload_users.csv';
+        $filepath = \core\component::component_path('core', 'tests/fixtures/upload_users.csv');
 
         $clihelper = $this->construct_helper(["--file=$filepath", '--uutype='.UU_USER_UPDATE,
             '--uuupdatetype='.UU_UPDATE_FILEOVERRIDE]);

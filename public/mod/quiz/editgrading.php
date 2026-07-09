@@ -33,8 +33,8 @@ use mod_quiz\quiz_settings;
 // The require_login check is done in question_edit_setup, but the automated checker can't see this.
 // phpcs:ignore moodle.Files.RequireLogin.Missing
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 list($thispageurl, $contexts, $cmid, $cm, $quiz, $pagevars) =
         question_edit_setup('editq', '/mod/quiz/editgrading.php');

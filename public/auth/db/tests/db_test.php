@@ -46,7 +46,7 @@ final class db_test extends \advanced_testcase {
 
     protected function init_auth_database() {
         global $DB, $CFG;
-        require_once("$CFG->dirroot/auth/db/auth.php");
+        require_once(dirname(__DIR__) . '/auth.php');
 
         // Discard error logs from AdoDB.
         $this->oldlog = ini_get('error_log');
@@ -167,7 +167,7 @@ final class db_test extends \advanced_testcase {
 
     public function test_plugin(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         $this->resetAfterTest(true);
 
@@ -438,9 +438,9 @@ final class db_test extends \advanced_testcase {
      */
     public function test_adodb_colonscope(): void {
         global $CFG;
-        require_once($CFG->libdir.'/adodb/adodb.inc.php');
-        require_once($CFG->libdir.'/adodb/drivers/adodb-odbc.inc.php');
-        require_once($CFG->libdir.'/adodb/drivers/adodb-db2ora.inc.php');
+        require_once(\core\component::component_path('core', 'adodb/adodb.inc.php'));
+        require_once(\core\component::component_path('core', 'adodb/drivers/adodb-odbc.inc.php'));
+        require_once(\core\component::component_path('core', 'adodb/drivers/adodb-db2ora.inc.php'));
 
         $this->resetAfterTest(false);
 

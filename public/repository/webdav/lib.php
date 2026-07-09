@@ -23,8 +23,8 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->libdir.'/webdavlib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(\core\component::component_path('core', 'webdavlib.php'));
 
 /**
  * repository_webdav class

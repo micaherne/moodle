@@ -1116,7 +1116,7 @@ class mod_feedback_external extends external_api {
             $courseid = 0) {
 
         global $CFG;
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(dirname(__DIR__) . '/lib.php');
 
         $params = array('feedbackid' => $feedbackid, 'groupid' => $groupid, 'sort' => $sort, 'page' => $page,
             'perpage' => $perpage, 'courseid' => $courseid);

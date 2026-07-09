@@ -31,7 +31,7 @@ final class myoverview_test extends \advanced_testcase {
      */
     public function test_get_block_config_for_external(): void {
         global $PAGE, $CFG, $OUTPUT;
-        require_once($CFG->dirroot . '/my/lib.php');
+        require_once(\core\component::component_path('core_my', 'lib.php'));
 
         $this->resetAfterTest(true);
 

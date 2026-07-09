@@ -261,7 +261,7 @@ class issuer extends persistent {
      */
     protected function validate_baseurl($value) {
         global $CFG;
-        include_once($CFG->dirroot . '/lib/validateurlsyntax.php');
+        include_once(dirname(__DIR__, 2) . '/validateurlsyntax.php');
         if (!empty($value) && !validateUrlSyntax($value, 'S+')) {
             return new lang_string('sslonlyaccess', 'error');
         }

@@ -19,8 +19,8 @@ namespace qtype_description;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
 
 /**
  * This file contains tests that walks a description question through its interaction model.

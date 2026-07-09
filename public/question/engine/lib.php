@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 require_once(__DIR__ . '/questionusage.php');
 require_once(__DIR__ . '/questionattempt.php');
 require_once(__DIR__ . '/questionattemptstep.php');
@@ -40,7 +40,7 @@ require_once(__DIR__ . '/../type/rendererbase.php');
 require_once(__DIR__ . '/../behaviour/behaviourtypebase.php');
 require_once(__DIR__ . '/../behaviour/behaviourbase.php');
 require_once(__DIR__ . '/../behaviour/rendererbase.php');
-require_once($CFG->libdir . '/questionlib.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
 
 
 /**
@@ -243,15 +243,14 @@ abstract class question_engine {
      * @param string $qtypename the question type name. For example 'multichoice' or 'shortanswer'.
      */
     public static function load_behaviour_class($behaviour) {
-        global $CFG;
         if (isset(self::$loadedbehaviours[$behaviour])) {
             return;
         }
-        $file = $CFG->dirroot . '/question/behaviour/' . $behaviour . '/behaviour.php';
-        if (!is_readable($file)) {
+        $behaviourdir = \core_component::get_plugin_directory('qbehaviour', $behaviour);
+        if (!$behaviourdir || !is_readable("$behaviourdir/behaviour.php")) {
             throw new coding_exception('Unknown question behaviour ' . $behaviour);
         }
-        include_once($file);
+        include_once("$behaviourdir/behaviour.php");
 
         $class = 'qbehaviour_' . $behaviour;
         if (!class_exists($class)) {
@@ -301,16 +300,16 @@ abstract class question_engine {
      * @param string $behaviour the behaviour name. For example 'interactive' or 'deferredfeedback'.
      */
     protected static function load_behaviour_type_class($behaviour) {
-        global $CFG;
         if (isset(self::$behaviourtypes[$behaviour])) {
             return;
         }
-        $file = $CFG->dirroot . '/question/behaviour/' . $behaviour . '/behaviourtype.php';
-        if (!is_readable($file)) {
+        $behaviourdir = \core_component::get_plugin_directory('qbehaviour', $behaviour);
+        if (!$behaviourdir || !is_readable("$behaviourdir/behaviourtype.php")) {
             debugging('Question behaviour ' . $behaviour .
                     ' is missing the behaviourtype.php file.', DEBUG_DEVELOPER);
+            return;
         }
-        include_once($file);
+        include_once("$behaviourdir/behaviourtype.php");
     }
 
     /**

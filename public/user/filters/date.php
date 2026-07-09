@@ -23,7 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/user/filters/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Generic filter based on a date.

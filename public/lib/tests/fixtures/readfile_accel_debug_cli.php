@@ -27,7 +27,7 @@
 define('CLI_SCRIPT', true);
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(dirname(__DIR__, 2) . '/filelib.php');
 
 if (!defined('PHPUNIT_READFILE_ACCEL_TEST')) {
     echo 'This script is only intended to be run via PHPUnit.';

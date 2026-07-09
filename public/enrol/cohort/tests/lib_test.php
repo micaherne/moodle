@@ -21,8 +21,8 @@ use core\plugininfo\enrol;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/cohort/lib.php');
-require_once($CFG->dirroot.'/group/lib.php');
+require_once(\core\component::component_path('core_cohort', 'lib.php'));
+require_once(\core\component::component_path('core_group', 'lib.php'));
 
 /**
  * Contains tests for the cohort library.
@@ -112,7 +112,7 @@ final class lib_test extends \advanced_testcase {
 
         // Teachers don't have enrol/cohort:unenrol capability by default. Login as admin for simplicity.
         $this->setAdminUser();
-        require_once($CFG->dirroot . '/enrol/locallib.php');
+        require_once(\core\component::component_path('core_enrol', 'locallib.php'));
         $manager = new \course_enrolment_manager($PAGE, $course);
 
         $userenrolments = $manager->get_user_enrolments($student->id);

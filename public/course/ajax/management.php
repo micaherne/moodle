@@ -26,8 +26,8 @@
 
 define('AJAX_SCRIPT', true);
 
-require_once('../../config.php');
-require_once($CFG->dirroot.'/course/lib.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 $action = required_param('action', PARAM_ALPHA);
 require_sesskey(); // Gotta have the sesskey.

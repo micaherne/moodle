@@ -27,8 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/util/helper/restore_structure_parser_processor.class.php');
+require_once(dirname(__DIR__, 2) . '/includes/backup_includes.php');
+require_once(dirname(__DIR__) . '/restore_structure_parser_processor.class.php');
 
 /**
  * Tests for restore_structure_parser_processor class.

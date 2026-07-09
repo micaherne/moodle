@@ -26,7 +26,7 @@
 define('NO_DEBUG_DISPLAY', true);
 define('NOMOODLECOOKIE', 1);
 
-require('../config.php');
+require(__DIR__ . '/../config.php');
 
 $PAGE->set_url('/user/pix.php');
 $PAGE->set_context(null);

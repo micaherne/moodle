@@ -28,8 +28,8 @@ namespace editor_tiny;
 define('NO_DEBUG_DISPLAY', true);
 
 // This stops immediately at the beginning of lib/setup.php.
-require('../../../config.php');
-require_once("$CFG->dirroot/lib/configonlylib.php");
+require(__DIR__ . '/../../../config.php');
+require_once(\core\component::component_path('core', 'configonlylib.php'));
 
 /**
  * An anonymous class to handle loading and serving TinyMCE JavaScript.
@@ -140,7 +140,7 @@ class loader {
     protected function get_filepath_from_dirroot(): ?string {
         global $CFG;
 
-        $rootdir = "{$CFG->dirroot}/lib/editor/tiny";
+        $rootdir = __DIR__ . '/';
         if ($this->component) {
             $rootdir .= "/plugins/{$this->component}/js";
         } else {
@@ -151,7 +151,7 @@ class loader {
         if ($packagesource == manager::PACKAGE_SOURCE_STANDALONE) {
             $packagesourcepath = get_config('editor_tiny', 'package_source_standalone_path');
             $packagesourcepath = trim($packagesourcepath, '/'); // Kill leading slash.
-            $rootdir = "{$CFG->dirroot}/{$packagesourcepath}";
+            $rootdir = \core\component::from_mono_path('/' . $packagesourcepath);
         }
 
         $filepath = "{$rootdir}/{$this->filepath}";

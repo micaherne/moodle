@@ -31,10 +31,10 @@ final class formatactions_test extends \advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/course/format/tests/fixtures/format_theunittest.php');
-        require_once($CFG->dirroot . '/course/format/tests/fixtures/format_theunittest_courseactions.php');
-        require_once($CFG->dirroot . '/course/format/tests/fixtures/format_theunittest_sectionactions.php');
-        require_once($CFG->dirroot . '/course/format/tests/fixtures/format_theunittest_cmactions.php');
+        require_once(__DIR__ . '/fixtures/format_theunittest.php');
+        require_once(__DIR__ . '/fixtures/format_theunittest_courseactions.php');
+        require_once(__DIR__ . '/fixtures/format_theunittest_sectionactions.php');
+        require_once(__DIR__ . '/fixtures/format_theunittest_cmactions.php');
         parent::setUpBeforeClass();
     }
 

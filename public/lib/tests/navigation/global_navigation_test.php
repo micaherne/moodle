@@ -61,7 +61,7 @@ final class global_navigation_test extends navigation_testcase {
      */
     public function test_load_section_activities_navigation_hidden_subsection_visibility(): void {
         global $PAGE, $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $this->resetAfterTest();
         $this->setAdminUser();

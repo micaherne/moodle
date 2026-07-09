@@ -47,7 +47,7 @@ class csv_entries_exporter extends entries_exporter {
      */
     public function get_data_file_content(): string {
         global $CFG;
-        require_once($CFG->libdir . '/csvlib.class.php');
+        require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
         return csv_export_writer::print_array($this->exportdata, $this->delimitername, '"', true);
     }

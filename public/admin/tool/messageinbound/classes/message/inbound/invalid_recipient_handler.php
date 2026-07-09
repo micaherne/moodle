@@ -27,7 +27,7 @@ namespace tool_messageinbound\message\inbound;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 /**
  * A Handler to re-process messages which previously failed sender verification.

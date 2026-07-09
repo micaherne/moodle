@@ -24,8 +24,8 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include the necessary evils.
 global $CFG;
-require_once($CFG->dirroot.'/cache/tests/fixtures/stores.php');
-require_once($CFG->dirroot.'/cache/stores/apcu/lib.php');
+require_once(\core\component::component_path('core_cache', 'tests/fixtures/stores.php'));
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * APC unit test class.

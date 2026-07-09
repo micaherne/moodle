@@ -31,7 +31,7 @@ class editor_tiny_admin_setting_package_source extends admin_setting_configdirec
         global $CFG, $OUTPUT;
         $default = $this->get_defaultsetting();
         $valid = false;
-        $path = $CFG->dirroot . DIRECTORY_SEPARATOR . $data;
+        $path = \core\component::from_mono_path(DIRECTORY_SEPARATOR . $data);
         $pathtotiny = $path . DIRECTORY_SEPARATOR . 'tinymce.js';
         if (!empty($data) && file_exists($path) && file_exists($pathtotiny) && is_dir($path) && is_readable($path)) {
             $valid = true;
@@ -69,7 +69,7 @@ class editor_tiny_admin_setting_package_source extends admin_setting_configdirec
         }
 
         $data = trim($data, '/'); // Kill leading slash.
-        $path = $CFG->dirroot . DIRECTORY_SEPARATOR . $data;
+        $path = \core\component::from_mono_path(DIRECTORY_SEPARATOR . $data);
         $pathtotiny = $path . DIRECTORY_SEPARATOR . 'tinymce.js';
         if (!empty($data) && (!file_exists($path) || !file_exists($pathtotiny) || !is_dir($path) || !is_readable($path))) {
             // The directory must exist and be writable.

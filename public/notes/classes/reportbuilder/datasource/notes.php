@@ -26,7 +26,7 @@ use core_notes\reportbuilder\local\entities\note;
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once("{$CFG->dirroot}/notes/lib.php");
+require_once(dirname(__DIR__, 3) . '/lib.php');
 
 /**
  * Notes datasource

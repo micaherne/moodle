@@ -25,7 +25,7 @@
 use enrol_lti\local\ltiadvantage\table\published_resources_table;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot.'/enrol/lti/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $courseid = required_param('courseid', PARAM_INT);
 $action = optional_param('action', '', PARAM_ALPHA);

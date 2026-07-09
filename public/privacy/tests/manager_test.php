@@ -21,12 +21,12 @@ use core_privacy\local\request\approved_contextlist;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/privacy/tests/fixtures/mock_null_provider.php');
-require_once($CFG->dirroot . '/privacy/tests/fixtures/mock_provider.php');
-require_once($CFG->dirroot . '/privacy/tests/fixtures/mock_plugin_subplugin_provider.php');
-require_once($CFG->dirroot . '/privacy/tests/fixtures/mock_mod_with_user_data_provider.php');
-require_once($CFG->dirroot . '/privacy/tests/fixtures/provider_a.php');
-require_once($CFG->dirroot . '/privacy/tests/fixtures/provider_throwing_exception.php');
+require_once(__DIR__ . '/fixtures/mock_null_provider.php');
+require_once(__DIR__ . '/fixtures/mock_provider.php');
+require_once(__DIR__ . '/fixtures/mock_plugin_subplugin_provider.php');
+require_once(__DIR__ . '/fixtures/mock_mod_with_user_data_provider.php');
+require_once(__DIR__ . '/fixtures/provider_a.php');
+require_once(__DIR__ . '/fixtures/provider_throwing_exception.php');
 
 /**
  * Privacy manager unit tests.

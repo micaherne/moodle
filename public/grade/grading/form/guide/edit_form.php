@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 require_once(__DIR__.'/guideeditor.php');
-MoodleQuickForm::registerElementType('guideeditor', $CFG->dirroot.'/grade/grading/form/guide/guideeditor.php',
+MoodleQuickForm::registerElementType('guideeditor', __DIR__ . '/guideeditor.php',
     'moodlequickform_guideeditor');
 
 /**

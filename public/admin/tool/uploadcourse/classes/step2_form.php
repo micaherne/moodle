@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 /**
  * Specify course upload details.

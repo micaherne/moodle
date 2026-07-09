@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/enrol/locallib.php');
-require_once($CFG->dirroot . '/cohort/lib.php');
+require_once(\core\component::component_path('core_enrol', 'locallib.php'));
+require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
 
 /**
@@ -42,7 +42,7 @@ class enrol_cohort_handler {
      */
     public static function member_added(\core\event\cohort_member_added $event) {
         global $DB, $CFG;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(\core\component::component_path('core_group', 'lib.php'));
 
         if (!enrol_is_enabled('cohort')) {
             return true;
@@ -166,7 +166,7 @@ class enrol_cohort_handler {
  */
 function enrol_cohort_sync(progress_trace $trace, $courseid = NULL) {
     global $CFG, $DB;
-    require_once("$CFG->dirroot/group/lib.php");
+    require_once(\core\component::component_path('core_group', 'lib.php'));
 
     // Purge all roles if cohort sync disabled, those can be recreated later here by cron or CLI.
     if (!enrol_is_enabled('cohort')) {

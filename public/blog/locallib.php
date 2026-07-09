@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 use core\url;
 
@@ -274,7 +274,7 @@ class blog_entry implements renderable {
 
         global $CFG;
 
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $syscontext = context_system::instance();
 

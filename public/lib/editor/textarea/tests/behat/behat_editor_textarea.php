@@ -23,8 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . '/../../../../behat/behat_base.php');
-require_once(__DIR__ . '/../../../../behat/classes/settable_editor.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
+require_once(\core\component::component_path('core', 'behat/classes/settable_editor.php'));
 
 class behat_editor_textarea extends behat_base implements \core_behat\settable_editor {
 

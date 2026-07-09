@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 
 $PAGE->set_url('/login/logout.php');
 $PAGE->set_context(context_system::instance());

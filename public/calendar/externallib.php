@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 use core_calendar\local\api as local_api;
 use core_calendar\local\event\container as event_container;
@@ -882,7 +882,7 @@ class core_calendar_external extends external_api {
      */
     public static function submit_create_update_form($formdata) {
         global $USER, $PAGE, $CFG;
-        require_once($CFG->libdir."/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         // Parameter validation.
         $params = self::validate_parameters(self::submit_create_update_form_parameters(), ['formdata' => $formdata]);
@@ -914,7 +914,7 @@ class core_calendar_external extends external_api {
 
         $formoptions['eventtypes'] = $allowedeeventtypes;
         if ($courseid) {
-            require_once($CFG->libdir . '/grouplib.php');
+            require_once(\core\component::component_path('core', 'grouplib.php'));
             $groupcoursedata = groups_get_all_groups($courseid);
             if (!empty($groupcoursedata)) {
                 $formoptions['groups'] = [];

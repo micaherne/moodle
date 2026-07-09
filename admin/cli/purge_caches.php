@@ -27,7 +27,7 @@ define('CLI_SCRIPT', true);
 define('IGNORE_COMPONENT_CACHE', true);
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/clilib.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
 
 $longoptions = [
     'help' => false,

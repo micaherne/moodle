@@ -70,7 +70,7 @@ class get_available_in_context extends external_api {
     public static function execute($contexts) {
         global $CFG;
 
-        require_once($CFG->libdir . '/filterlib.php');
+        require_once(\core\component::component_path('core', 'filterlib.php'));
 
         $params = self::validate_parameters(self::execute_parameters(), ['contexts' => $contexts]);
         $filters = $warnings = [];

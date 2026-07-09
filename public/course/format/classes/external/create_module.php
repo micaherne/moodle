@@ -78,7 +78,7 @@ class create_module extends external_api {
     ): string {
         global $CFG;
 
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         [
             'courseid' => $courseid,

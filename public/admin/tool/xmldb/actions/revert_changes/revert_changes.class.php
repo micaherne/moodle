@@ -65,7 +65,7 @@ class revert_changes extends XMLDBAction {
 
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         $confirmed = optional_param('confirmed', false, PARAM_BOOL);
 
@@ -76,7 +76,7 @@ class revert_changes extends XMLDBAction {
             $o.= '    <p class="centerpara">' . $this->str['confirmrevertchanges'] . '<br /><br />' . $dirpath . '</p>';
             $o .= '   <table class="table-reboot w-100" cellpadding="20"><tr><td class="text-end">';
             $o.= '      <div class="singlebutton">';
-            $o.= '        <form action="index.php?action=revert_changes&amp;sesskey=' . sesskey() . '&amp;confirmed=yes&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;postaction=main_view#lastused" method="post"><fieldset class="invisiblefieldset">';
+            $o.= '        <form action="index.php?action=revert_changes&amp;sesskey=' . sesskey() . '&amp;confirmed=yes&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;postaction=main_view#lastused" method="post"><fieldset class="invisiblefieldset">';
             $o.= '          <input type="submit" value="'. $this->str['yes'] .'" /></fieldset></form></div>';
             $o.= '      </td><td>';
             $o.= '      <div class="singlebutton">';

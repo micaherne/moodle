@@ -26,9 +26,9 @@
 use mod_assign\override_manager;
 
 require_once(dirname(__FILE__) . '/../../config.php');
-require_once($CFG->dirroot.'/mod/assign/lib.php');
-require_once($CFG->dirroot.'/mod/assign/locallib.php');
-require_once($CFG->dirroot.'/mod/assign/override_form.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/override_form.php');
 
 $overrideid = required_param('id', PARAM_INT);
 $confirm = optional_param('confirm', false, PARAM_BOOL);

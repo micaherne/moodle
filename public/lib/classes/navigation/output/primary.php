@@ -269,7 +269,7 @@ class primary implements renderable, templatable {
      */
     public function get_user_menu(renderer_base $output): array {
         global $CFG, $USER, $PAGE;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         $usermenudata = [];
         $submenusdata = [];

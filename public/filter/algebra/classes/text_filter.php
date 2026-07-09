@@ -42,7 +42,7 @@ use stdClass;
 class text_filter extends \core_filters\text_filter {
     #[\Override]
     public function filter($text, array $options = []) {
-        global $CFG, $DB;
+        global $DB;
 
         // Do a quick check using stripos to avoid unnecessary work.
         if (!preg_match('/<algebra/i', $text) && !strstr($text, '@@')) {
@@ -108,9 +108,9 @@ class text_filter extends \core_filters\text_filter {
                 $algebra = preg_replace('!\r\n?!', ' ', $algebra);
                 $algebra = escapeshellarg($algebra);
                 if ((PHP_OS == "WINNT") || (PHP_OS == "WIN32") || (PHP_OS == "Windows")) {
-                    $cmd  = "cd $CFG->dirroot\\filter\\algebra & algebra2tex.pl $algebra";
+                    $cmd  = "cd " . escapeshellarg(dirname(__DIR__)) . " & algebra2tex.pl $algebra";
                 } else {
-                    $cmd  = "cd $CFG->dirroot/filter/algebra; ./algebra2tex.pl $algebra";
+                    $cmd  = "cd " . escapeshellarg(dirname(__DIR__)) . "; ./algebra2tex.pl $algebra";
                 }
                 $texexp = `$cmd`;
                 if (preg_match('/parsehilight/', $texexp)) {

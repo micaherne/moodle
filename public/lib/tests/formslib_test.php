@@ -35,10 +35,10 @@ use MoodleQuickForm_text;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/formslib.php');
-require_once($CFG->libdir . '/form/radio.php');
-require_once($CFG->libdir . '/form/select.php');
-require_once($CFG->libdir . '/form/text.php');
+require_once(dirname(__DIR__) . '/formslib.php');
+require_once(\core\component::component_path('core_form', 'radio.php'));
+require_once(\core\component::component_path('core_form', 'select.php'));
+require_once(\core\component::component_path('core_form', 'text.php'));
 
 /**
  * Unit tests for /lib/formslib.php.

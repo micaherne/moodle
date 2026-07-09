@@ -17,7 +17,7 @@
 use core_courseformat\sectiondelegate;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot. '/course/format/lib.php');
+require_once(\core\component::component_path('core_courseformat', 'lib.php'));
 
 /**
  * Main class for the singleactivity course format
@@ -242,7 +242,6 @@ class format_singleactivity extends core_courseformat\base implements core_cours
      * @return bool
      */
     protected function can_add_activity() {
-        global $CFG;
         if (!($modname = $this->get_activitytype())) {
             return false;
         }
@@ -252,8 +251,8 @@ class format_singleactivity extends core_courseformat\base implements core_cours
         if (!course_allowed_module($this->get_course(), $modname)) {
             return false;
         }
-        $libfile = "$CFG->dirroot/mod/$modname/lib.php";
-        if (!file_exists($libfile)) {
+        $moddir = \core_component::get_plugin_directory('mod', $modname);
+        if (!$moddir || !file_exists("$moddir/lib.php")) {
             return false;
         }
         return true;

@@ -140,10 +140,10 @@ final class installer_test extends \advanced_testcase {
 
         $installer = tool_installaddon_installer::instance();
 
-        $zipfile = $CFG->libdir.'/tests/fixtures/update_validator/zips/bar.zip';
+        $zipfile = \core\component::component_path('core', 'tests/fixtures/update_validator/zips/bar.zip');
         $this->assertEquals('foo_bar', $installer->detect_plugin_component($zipfile));
 
-        $zipfile = $CFG->libdir.'/tests/fixtures/update_validator/zips/invalidroot.zip';
+        $zipfile = \core\component::component_path('core', 'tests/fixtures/update_validator/zips/invalidroot.zip');
         $this->assertFalse($installer->detect_plugin_component($zipfile));
     }
 
@@ -151,7 +151,7 @@ final class installer_test extends \advanced_testcase {
         global $CFG;
 
         $installer = testable_tool_installaddon_installer::instance();
-        $fixtures = $CFG->libdir.'/tests/fixtures/update_validator/';
+        $fixtures = \core\component::component_path('core', 'tests/fixtures/update_validator/');
 
         $this->assertEquals('bar_bar_conan', $installer->testable_detect_plugin_component_from_versionphp('
 $plugin->version  = 2014121300;

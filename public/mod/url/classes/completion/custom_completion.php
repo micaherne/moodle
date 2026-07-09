@@ -69,7 +69,7 @@ class custom_completion extends activity_custom_completion {
      */
     public function manual_completion_always_shown(): bool {
         global $CFG;
-        require_once($CFG->libdir.'/resourcelib.php');
+        require_once(\core\component::component_path('core', 'resourcelib.php'));
 
         $display = $this->cm->customdata['display'] ?? null;
 

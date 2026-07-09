@@ -297,10 +297,11 @@ class administration_display_helper extends \core_cache\administration_helper {
      * @throws coding_exception
      */
     public function get_store_configuration_from_data(stdClass $data): array {
-        global $CFG;
-        $file = $CFG->dirroot . '/cache/stores/' . $data->plugin . '/lib.php';
-        if (!file_exists($file)) {
-            throw new coding_exception('Invalid cache plugin provided. ' . $file);
+        global $CFG; // Needed in scope for the required store lib.php.
+        $plugindir = core_component::get_plugin_directory('cachestore', $data->plugin);
+        $file = $plugindir ? "$plugindir/lib.php" : null;
+        if ($file === null || !file_exists($file)) {
+            throw new coding_exception('Invalid cache plugin provided. cachestore_' . $data->plugin);
         }
         require_once($file);
         $class = 'cachestore_' . $data->plugin;
@@ -374,10 +375,11 @@ class administration_display_helper extends \core_cache\administration_helper {
      * @throws coding_exception
      */
     public function get_lock_configuration_from_data(string $plugin, stdClass $data): array {
-        global $CFG;
-        $file = $CFG->dirroot . '/cache/locks/' . $plugin . '/lib.php';
-        if (!file_exists($file)) {
-            throw new coding_exception('Invalid cache plugin provided. ' . $file);
+        global $CFG; // Needed in scope for the required lock lib.php.
+        $plugindir = core_component::get_plugin_directory('cachelock', $plugin);
+        $file = $plugindir ? "$plugindir/lib.php" : null;
+        if ($file === null || !file_exists($file)) {
+            throw new coding_exception('Invalid cache plugin provided. cachelock_' . $plugin);
         }
         require_once($file);
         $class = 'cachelock_' . $plugin;

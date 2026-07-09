@@ -4,9 +4,9 @@
 // - https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPLogoutInitiator
 // - https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPNotify
 
-require_once("../../config.php");
+require_once(__DIR__ . '/../../config.php');
 
-require_once($CFG->dirroot."/auth/shibboleth/auth.php");
+require_once(__DIR__ . '/auth.php');
 
 $action = optional_param('action', '', PARAM_ALPHA);
 $redirect = optional_param('return', '', PARAM_URL);

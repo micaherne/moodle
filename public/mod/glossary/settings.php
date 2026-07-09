@@ -3,7 +3,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot.'/mod/glossary/lib.php');
+    require_once(__DIR__ . '/lib.php');
 
     $settings->add(new admin_setting_heading('glossary_normal_header', get_string('glossaryleveldefaultsettings', 'glossary'), ''));
 

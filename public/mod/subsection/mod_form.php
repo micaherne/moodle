@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once(\core\component::component_path('core_course', 'moodleform_mod.php'));
 
 use mod_subsection\manager;
 

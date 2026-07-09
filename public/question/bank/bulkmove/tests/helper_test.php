@@ -21,7 +21,7 @@ use core_question\local\bank\question_edit_contexts;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(\core\component::component_path('core_question', 'editlib.php'));
 
 /**
  * Bulk move helper tests.

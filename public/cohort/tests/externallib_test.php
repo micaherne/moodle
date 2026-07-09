@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/cohort/externallib.php');
+require_once(dirname(__DIR__) . '/externallib.php');
 
 /**
  * External cohort API

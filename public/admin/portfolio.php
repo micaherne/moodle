@@ -1,9 +1,9 @@
 <?php
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/portfoliolib.php');
-require_once($CFG->libdir . '/portfolio/forms.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core', 'portfoliolib.php'));
+require_once(\core\component::component_path('core', 'portfolio/forms.php'));
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $portfolio     = optional_param('pf', '', PARAM_ALPHANUMEXT);
 $action        = optional_param('action', '', PARAM_ALPHA);

@@ -25,10 +25,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/question/format/xml/format.php');
-require_once($CFG->dirroot . '/question/type/gapselect/questiontypebase.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(\core\component::component_path('core_question', 'engine/lib.php'));
+require_once(\core\component::component_path('qformat_xml', 'format.php'));
+require_once(\core\component::component_path('qtype_gapselect', 'questiontypebase.php'));
 
 /**
  * The drag-and-drop onto image question type class.

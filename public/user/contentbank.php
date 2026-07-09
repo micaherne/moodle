@@ -22,9 +22,9 @@
  * @package core_user
  */
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/user/editlib.php');
-require_once($CFG->dirroot.'/user/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/editlib.php');
+require_once(__DIR__ . '/lib.php');
 
 require_login();
 

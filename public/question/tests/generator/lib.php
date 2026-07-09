@@ -150,7 +150,7 @@ class core_question_generator extends component_generator_base {
      */
     public function update_question($question, $which = null, $overrides = null) {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+        require_once(dirname(__DIR__, 2) . '/engine/tests/helpers.php');
         $question = clone($question);
 
         $qtype = $question->qtype;

@@ -29,7 +29,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $action = required_param('action', PARAM_ALPHA);
 if (!in_array($action, array('add', 'export', 'edit', 'reset', 'view'))) {

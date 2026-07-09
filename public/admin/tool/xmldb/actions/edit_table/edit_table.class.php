@@ -89,7 +89,7 @@ class edit_table extends XMLDBAction {
         // Do the job, setting result as needed
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         // Get the correct dirs
         if (!empty($XMLDB->dbdirs)) {
@@ -121,7 +121,7 @@ class edit_table extends XMLDBAction {
         // Add the main form
         $o = '<form id="form" action="index.php" method="post">';
         $o.= '<div>';
-        $o.= '    <input type="hidden" name ="dir" value="' . str_replace($CFG->dirroot, '', $dirpath) . '" />';
+        $o.= '    <input type="hidden" name ="dir" value="' . \core\component::to_mono_path($dirpath, true) . '" />';
         $o.= '    <input type="hidden" name ="table" value="' . $tableparam .'" />';
         $o.= '    <input type="hidden" name ="action" value="edit_table_save" />';
         $o.= '    <input type="hidden" name ="sesskey" value="' . sesskey() .'" />';
@@ -155,48 +155,48 @@ class edit_table extends XMLDBAction {
         $b = ' <p class="centerpara buttons">';
         // The view original XML button
         if ($origstructure->getTable($tableparam)) {
-            $b .= '&nbsp;<a href="index.php?action=view_table_xml&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;select=original&amp;table=' . $tableparam . '">[' . $this->str['vieworiginal'] . ']</a>';
+            $b .= '&nbsp;<a href="index.php?action=view_table_xml&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;select=original&amp;table=' . $tableparam . '">[' . $this->str['vieworiginal'] . ']</a>';
         } else {
             $b .= '&nbsp;[' . $this->str['vieworiginal'] . ']';
         }
         // The view edited XML button
         if ($table->hasChanged()) {
-            $b .= '&nbsp;<a href="index.php?action=view_table_xml&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;select=edited&amp;table=' . $tableparam . '">[' . $this->str['viewedited'] . ']</a>';
+            $b .= '&nbsp;<a href="index.php?action=view_table_xml&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;select=edited&amp;table=' . $tableparam . '">[' . $this->str['viewedited'] . ']</a>';
         } else {
             $b .= '&nbsp;[' . $this->str['viewedited'] . ']';
         }
         // The new field button
-        $b .= '&nbsp;<a href="index.php?action=new_field&amp;sesskey=' . sesskey() . '&amp;postaction=edit_field&amp;table=' . $tableparam . '&amp;field=changeme&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['newfield'] . ']</a>';
+        $b .= '&nbsp;<a href="index.php?action=new_field&amp;sesskey=' . sesskey() . '&amp;postaction=edit_field&amp;table=' . $tableparam . '&amp;field=changeme&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['newfield'] . ']</a>';
         // The new key button
-        $b .= '&nbsp;<a href="index.php?action=new_key&amp;sesskey=' . sesskey() . '&amp;postaction=edit_key&amp;table=' . $tableparam . '&amp;key=changeme&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['newkey'] . ']</a>';
+        $b .= '&nbsp;<a href="index.php?action=new_key&amp;sesskey=' . sesskey() . '&amp;postaction=edit_key&amp;table=' . $tableparam . '&amp;key=changeme&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['newkey'] . ']</a>';
         // The new index button
-        $b .= '&nbsp;<a href="index.php?action=new_index&amp;sesskey=' . sesskey() . '&amp;postaction=edit_index&amp;table=' . $tableparam . '&amp;index=changeme&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['newindex'] . ']</a>';
+        $b .= '&nbsp;<a href="index.php?action=new_index&amp;sesskey=' . sesskey() . '&amp;postaction=edit_index&amp;table=' . $tableparam . '&amp;index=changeme&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['newindex'] . ']</a>';
         $b .= '</p>';
 
         $b .= ' <p class="centerpara buttons">';
         // The view sql code button
-        $b .= '<a href="index.php?action=view_table_sql&amp;table=' . $tableparam . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' .$this->str['viewsqlcode'] . ']</a>';
+        $b .= '<a href="index.php?action=view_table_sql&amp;table=' . $tableparam . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' .$this->str['viewsqlcode'] . ']</a>';
         // The view php code button
-        $b .= '&nbsp;<a href="index.php?action=view_table_php&amp;table=' . $tableparam . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['viewphpcode'] . ']</a>';
+        $b .= '&nbsp;<a href="index.php?action=view_table_php&amp;table=' . $tableparam . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['viewphpcode'] . ']</a>';
         // The add persistent fields button.
         $url = new \moodle_url('/admin/tool/xmldb/index.php', [
             'action' => 'add_persistent_mandatory',
             'sesskey' => sesskey(),
             'table' => $tableparam,
-            'dir'=> str_replace($CFG->dirroot, '', $dirpath)
+            'dir'=> \core\component::to_mono_path($dirpath, true)
         ]);
         $b .= '&nbsp;' . \html_writer::link($url, '[' . $this->str['addpersistent'] . ']');
 
         // The save button (if possible)
         if ($cansavenow) {
-            $b .= '&nbsp;<a href="index.php?action=save_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;time=' . time() . '&amp;unload=false&amp;postaction=edit_table&amp;table=' . $tableparam . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['save'] . ']</a>';
+            $b .= '&nbsp;<a href="index.php?action=save_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;time=' . time() . '&amp;unload=false&amp;postaction=edit_table&amp;table=' . $tableparam . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['save'] . ']</a>';
         }
         // The back to edit xml file button
-        $b .= '&nbsp;<a href="index.php?action=edit_xml_file&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['back'] . ']</a>';
+        $b .= '&nbsp;<a href="index.php?action=edit_xml_file&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['back'] . ']</a>';
         $b .= '</p>';
         $o .= $e . $b;
 
-        require_once("$CFG->libdir/ddl/sql_generator.php");
+        require_once(\core\component::component_path('core', 'ddl/sql_generator.php'));
         $reserved_words = sql_generator::getAllReservedWords();
 
         // Delete any 'changeme' field/key/index
@@ -219,7 +219,7 @@ class edit_table extends XMLDBAction {
                     ),
                     attributes: [
                         'data-action' => 'move_updown_field',
-                        'data-dir' => str_replace($CFG->dirroot, '', $dirpath),
+                        'data-dir' => \core\component::to_mono_path($dirpath, true),
                         'data-table' => $table->getName(),
                         'data-field' => $field->getName(),
                     ]
@@ -227,7 +227,7 @@ class edit_table extends XMLDBAction {
                 $move = (count($fields) > 1) ? $draghandle : '';
                 // The field name (link to edit - if the field has no uses)
                 if (!$structure->getFieldUses($table->getName(), $field->getName())) {
-                    $f = '<a href="index.php?action=edit_field&amp;field=' .$field->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">' . $field->getName() . '</a>';
+                    $f = '<a href="index.php?action=edit_field&amp;field=' .$field->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">' . $field->getName() . '</a>';
                 } else {
                     $f = $field->getName();
                 }
@@ -235,7 +235,7 @@ class edit_table extends XMLDBAction {
                 $b = '</td><td class="button cell">';
                 // The edit button (if the field has no uses)
                 if (!$structure->getFieldUses($table->getName(), $field->getName())) {
-                    $b .= '<a href="index.php?action=edit_field&amp;field=' .$field->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['edit'] . ']</a>';
+                    $b .= '<a href="index.php?action=edit_field&amp;field=' .$field->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['edit'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['edit'] . ']';
                 }
@@ -243,13 +243,13 @@ class edit_table extends XMLDBAction {
                 // The delete button (if we have more than one and it isn't used
                 if (count($fields) > 1 &&
                 !$structure->getFieldUses($table->getName(), $field->getName())) {
-                    $b .= '<a href="index.php?action=delete_field&amp;sesskey=' . sesskey() . '&amp;field=' . $field->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['delete'] . ']</a>';
+                    $b .= '<a href="index.php?action=delete_field&amp;sesskey=' . sesskey() . '&amp;field=' . $field->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['delete'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['delete'] . ']';
                 }
                 $b .= '</td><td class="button cell">';
                 // The view xml button
-                $b .= '<a href="index.php?action=view_field_xml&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;field=' . $field->getName() . '&amp;table=' . $table->getName() . '&amp;select=edited">[' . $this->str['viewxml'] . ']</a>';
+                $b .= '<a href="index.php?action=view_field_xml&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;field=' . $field->getName() . '&amp;table=' . $table->getName() . '&amp;select=edited">[' . $this->str['viewxml'] . ']</a>';
                 // Detect if the table name is a reserved word
                 if (array_key_exists($field->getName(), $reserved_words)) {
                     $b .= '&nbsp;<a href="index.php?action=view_reserved_words"><span class="error">' . $this->str['reserved'] . '</span></a>';
@@ -279,7 +279,7 @@ class edit_table extends XMLDBAction {
                     ),
                     attributes: [
                         'data-action' => 'move_updown_key',
-                        'data-dir' => str_replace($CFG->dirroot, '', $dirpath),
+                        'data-dir' => \core\component::to_mono_path($dirpath, true),
                         'data-table' => $table->getName(),
                         'data-key' => $key->getName(),
                     ]
@@ -287,7 +287,7 @@ class edit_table extends XMLDBAction {
                 $move = (count($keys) > 1) ? $draghandle : '';
                 // The key name (link to edit - if the key has no uses)
                 if (!$structure->getKeyUses($table->getName(), $key->getName())) {
-                    $k = '<a href="index.php?action=edit_key&amp;key=' .$key->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">' . $key->getName() . '</a>';
+                    $k = '<a href="index.php?action=edit_key&amp;key=' .$key->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">' . $key->getName() . '</a>';
                 } else {
                     $k = $key->getName();
                 }
@@ -295,20 +295,20 @@ class edit_table extends XMLDBAction {
                 $b = '</td><td class="button cell">';
                 // The edit button (if the key hasn't uses)
                 if (!$structure->getKeyUses($table->getName(), $key->getName())) {
-                    $b .= '<a href="index.php?action=edit_key&amp;key=' .$key->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['edit'] . ']</a>';
+                    $b .= '<a href="index.php?action=edit_key&amp;key=' .$key->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['edit'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['edit'] . ']';
                 }
                 $b .= '</td><td class="button cell">';
                 // The delete button (if the key hasn't uses)
                 if (!$structure->getKeyUses($table->getName(), $key->getName())) {
-                    $b .= '<a href="index.php?action=delete_key&amp;sesskey=' . sesskey() . '&amp;key=' . $key->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['delete'] . ']</a>';
+                    $b .= '<a href="index.php?action=delete_key&amp;sesskey=' . sesskey() . '&amp;key=' . $key->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['delete'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['delete'] . ']';
                 }
                 $b .= '</td><td class="button cell">';
                 // The view xml button
-                $b .= '<a href="index.php?action=view_key_xml&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;key=' . $key->getName() . '&amp;table=' . $table->getName() . '&amp;select=edited">[' . $this->str['viewxml'] . ']</a>';
+                $b .= '<a href="index.php?action=view_key_xml&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;key=' . $key->getName() . '&amp;table=' . $table->getName() . '&amp;select=edited">[' . $this->str['viewxml'] . ']</a>';
                 // The readable info
                 $r = '</td><td class="readableinfo cell">' . $key->readableInfo() . '</td>';
                 // Print table row
@@ -334,24 +334,24 @@ class edit_table extends XMLDBAction {
                     ),
                     attributes: [
                         'data-action' => 'move_updown_index',
-                        'data-dir' => str_replace($CFG->dirroot, '', $dirpath),
+                        'data-dir' => \core\component::to_mono_path($dirpath, true),
                         'data-table' => $table->getName(),
                         'data-index' => $index->getName(),
                     ]
                 );
                 $move = (count($indexes) > 1) ? $draghandle : '';
                 // The index name (link to edit)
-                $i = '<a href="index.php?action=edit_index&amp;index=' .$index->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">' . $index->getName() . '</a>';
+                $i = '<a href="index.php?action=edit_index&amp;index=' .$index->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">' . $index->getName() . '</a>';
                 // Calculate buttons
                 $b = '</td><td class="button cell">';
                 // The edit button
-                $b .= '<a href="index.php?action=edit_index&amp;index=' .$index->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['edit'] . ']</a>';
+                $b .= '<a href="index.php?action=edit_index&amp;index=' .$index->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['edit'] . ']</a>';
                 $b .= '</td><td class="button cell">';
                 // The delete button
-                    $b .= '<a href="index.php?action=delete_index&amp;sesskey=' . sesskey() . '&amp;index=' . $index->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['delete'] . ']</a>';
+                    $b .= '<a href="index.php?action=delete_index&amp;sesskey=' . sesskey() . '&amp;index=' . $index->getName() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['delete'] . ']</a>';
                 $b .= '</td><td class="button cell">';
                 // The view xml button
-                $b .= '<a href="index.php?action=view_index_xml&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;index=' . $index->getName() . '&amp;table=' . $table->getName() . '&amp;select=edited">[' . $this->str['viewxml'] . ']</a>';
+                $b .= '<a href="index.php?action=view_index_xml&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;index=' . $index->getName() . '&amp;table=' . $table->getName() . '&amp;select=edited">[' . $this->str['viewxml'] . ']</a>';
                 // The readable info
                 $r = '</td><td class="readableinfo cell">' . $index->readableInfo() . '</td>';
                 // Print table row

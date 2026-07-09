@@ -22,10 +22,10 @@ use qtype_description_edit_form;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/description/questiontype.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/type/edit_question_form.php');
-require_once($CFG->dirroot . '/question/type/description/edit_description_form.php');
+require_once(dirname(__DIR__) . '/questiontype.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(\core\component::component_path('core_question', 'type/edit_question_form.php'));
+require_once(dirname(__DIR__) . '/edit_description_form.php');
 
 
 /**

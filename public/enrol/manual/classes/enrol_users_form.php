@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 class enrol_manual_enrol_users_form extends moodleform {
 
@@ -38,7 +38,7 @@ class enrol_manual_enrol_users_form extends moodleform {
         global $PAGE, $DB, $CFG;
 
 
-        require_once($CFG->dirroot . '/enrol/locallib.php');
+        require_once(\core\component::component_path('core_enrol', 'locallib.php'));
 
         $context = $this->_customdata->context;
 
@@ -105,7 +105,7 @@ class enrol_manual_enrol_users_form extends moodleform {
             // Ideally it would be better to call external_api::call_external_function('core_cohort_search_cohorts')
             // (which is used to populate the select box) instead of duplicating logic but there is an issue with globals
             // being borked (in this case $PAGE) when combining the usage of fragments and call_external_function().
-            require_once($CFG->dirroot . '/cohort/lib.php');
+            require_once(\core\component::component_path('core_cohort', 'lib.php'));
             $availablecohorts = cohort_get_cohorts($context->id, 0, 1, '');
             $availablecohorts = $availablecohorts['cohorts'];
             if (!($context instanceof context_system)) {

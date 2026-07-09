@@ -33,7 +33,7 @@ final class context_block_test extends \advanced_testcase {
      */
     public function setUp(): void {
         global $CFG;
-        require_once("{$CFG->libdir}/accesslib.php");
+        require_once(dirname(__DIR__) . '/accesslib.php');
         parent::setUp();
     }
 

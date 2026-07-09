@@ -27,12 +27,12 @@
 
 define('AJAX_SCRIPT', true);
 
-require('../../config.php');
-require_once($CFG->dirroot.'/enrol/locallib.php');
-require_once($CFG->dirroot.'/group/lib.php');
-require_once($CFG->dirroot.'/enrol/manual/locallib.php');
-require_once($CFG->dirroot.'/cohort/lib.php');
-require_once($CFG->dirroot . '/enrol/manual/classes/enrol_users_form.php');
+require(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core_enrol', 'locallib.php'));
+require_once(\core\component::component_path('core_group', 'lib.php'));
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core_cohort', 'lib.php'));
+require_once(__DIR__ . '/classes/enrol_users_form.php');
 
 $id      = required_param('id', PARAM_INT); // Course id.
 $action  = required_param('action', PARAM_ALPHANUMEXT);

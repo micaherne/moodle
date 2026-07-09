@@ -64,7 +64,7 @@ class MoodleQuickForm_url extends HTML_QuickForm_text implements templatable {
      */
     public function __construct($elementName=null, $elementLabel=null, $attributes=null, $options=null) {
         global $CFG;
-        require_once("$CFG->dirroot/repository/lib.php");
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
         $options = (array)$options;
         foreach ($options as $name=>$value) {
             $this->_options[$name] = $value;

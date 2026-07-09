@@ -29,8 +29,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/course/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/lib.php');
 
 $id         = required_param('id', PARAM_INT);
 $switchrole = optional_param('switchrole', -1, PARAM_INT);

@@ -1,10 +1,10 @@
 <?php
 
 /// This page prints a particular instance of glossary
-require_once("../../config.php");
+require_once(__DIR__ . '/../../config.php');
 require_once("lib.php");
-require_once($CFG->libdir . '/completionlib.php');
-require_once("$CFG->libdir/rsslib.php");
+require_once(\core\component::component_path('core', 'completionlib.php'));
+require_once(\core\component::component_path('core', 'rsslib.php'));
 
 $id = optional_param('id', 0, PARAM_INT);           // Course Module ID
 $g  = optional_param('g', 0, PARAM_INT);            // Glossary ID
@@ -397,7 +397,7 @@ if ($allentries) {
     echo '</div>';
 
     //load ratings
-    require_once($CFG->dirroot.'/rating/lib.php');
+    require_once(\core\component::component_path('core_rating', 'lib.php'));
     if ($glossary->assessed != RATING_AGGREGATE_NONE) {
         $ratingoptions = new stdClass;
         $ratingoptions->context = $context;

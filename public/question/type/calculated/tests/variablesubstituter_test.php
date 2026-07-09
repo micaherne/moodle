@@ -21,8 +21,8 @@ use qtype_calculated_variable_substituter;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/calculated/question.php');
-require_once($CFG->dirroot . '/question/type/calculated/questiontype.php');
+require_once(dirname(__DIR__) . '/question.php');
+require_once(dirname(__DIR__) . '/questiontype.php');
 
 /**
  * Unit tests for {@link qtype_calculated_variable_substituter}.

@@ -24,6 +24,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../config.php');
+require(__DIR__ . '/../../config.php');
 
 redirect(new moodle_url('/user/files.php'));

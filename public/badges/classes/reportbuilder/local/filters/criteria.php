@@ -56,7 +56,7 @@ class criteria extends select {
      */
     protected function get_select_options(): array {
         global $CFG;
-        require_once("{$CFG->libdir}/badgeslib.php");
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         $options = [];
         foreach (badges_list_criteria() as $index => $criteria) {

@@ -109,7 +109,7 @@ class field_controller extends \core_customfield\field_controller {
      */
     public function value_editor_options(?\context $context = null) {
         global $CFG;
-        require_once($CFG->libdir.'/formslib.php');
+        require_once(\core\component::component_path('core', 'formslib.php'));
 
         if (!$context) {
             $context = $this->get_handler()->get_configuration_context();

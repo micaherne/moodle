@@ -37,7 +37,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/fixtures/structure_fixtures.php');
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/xml/output/memory_xml_output.class.php');
+require_once(dirname(__DIR__, 2) . '/xml/output/memory_xml_output.class.php');
 
 /**
  * Unit test case the all the backup structure classes. Note: Uses database

@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/formslib.php");
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * A base class that can be used to easily construct a form for use with bulk operations

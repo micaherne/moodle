@@ -24,7 +24,7 @@
 
 namespace tool_monitor;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * The mform for creating and editing a rule.

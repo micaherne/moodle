@@ -24,8 +24,8 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 // Used only for creating new badge.
 $courseid = optional_param('courseid', 0, PARAM_INT);

@@ -163,7 +163,7 @@ class qformat_xhtml extends qformat_default {
         global $CFG;
 
         // Get css bit.
-        $csslines = file( "{$CFG->dirroot}/question/format/xhtml/xhtml.css" );
+        $csslines = file( __DIR__ . '/xhtml.css' );
         $css = implode( ' ', $csslines );
 
         $xp =  "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n";

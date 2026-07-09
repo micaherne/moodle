@@ -413,7 +413,7 @@ final class core_media_manager {
 
             // Clean up url.
             $url = fix_utf8($url);
-            include_once($CFG->dirroot . '/lib/validateurlsyntax.php');
+            include_once(\core\component::component_path('core', 'validateurlsyntax.php'));
             if (!validateUrlSyntax($url, 's?H?S?F?R?E?u-P-a?I?p?f?q?r?')) {
                 continue;
             }

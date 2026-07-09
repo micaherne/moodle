@@ -29,8 +29,8 @@ use mod_lti\local\ltiopenid\jwks_helper;
 use mod_lti\local\ltiopenid\registration_helper;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->libdir.'/weblib.php');
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once(\core\component::component_path('core', 'weblib.php'));
+require_once(__DIR__ . '/locallib.php');
 
 require_login();
 $context = context_system::instance();

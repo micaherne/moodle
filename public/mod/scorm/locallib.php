@@ -22,8 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once("$CFG->dirroot/mod/scorm/lib.php");
-require_once("$CFG->libdir/filelib.php");
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 // Constants and settings for module scorm.
 define('SCORM_UPDATE_NEVER', '0');
@@ -288,20 +288,20 @@ function scorm_parse($scorm, $full) {
             return;
         }
         if ($packagefileimsmanifest) {
-            require_once("$CFG->dirroot/mod/scorm/datamodels/scormlib.php");
+            require_once(__DIR__ . '/datamodels/scormlib.php');
             // Direct link to imsmanifest.xml file.
             if (!scorm_parse_scorm($scorm, $packagefile)) {
                 $scorm->version = 'ERROR';
             }
 
         } else if ($manifest = $fs->get_file($context->id, 'mod_scorm', 'content', 0, '/', 'imsmanifest.xml')) {
-            require_once("$CFG->dirroot/mod/scorm/datamodels/scormlib.php");
+            require_once(__DIR__ . '/datamodels/scormlib.php');
             // SCORM.
             if (!scorm_parse_scorm($scorm, $manifest)) {
                 $scorm->version = 'ERROR';
             }
         } else {
-            require_once("$CFG->dirroot/mod/scorm/datamodels/aicclib.php");
+            require_once(__DIR__ . '/datamodels/aicclib.php');
             // AICC.
             $result = scorm_parse_aicc($scorm);
             if (!$result) {
@@ -312,7 +312,7 @@ function scorm_parse($scorm, $full) {
         }
 
     } else if ($scorm->scormtype === SCORM_TYPE_EXTERNAL and $cfgscorm->allowtypeexternal) {
-        require_once("$CFG->dirroot/mod/scorm/datamodels/scormlib.php");
+        require_once(__DIR__ . '/datamodels/scormlib.php');
         // SCORM only, AICC can not be external.
         if (!scorm_parse_scorm($scorm, $scorm->reference)) {
             $scorm->version = 'ERROR';
@@ -320,7 +320,7 @@ function scorm_parse($scorm, $full) {
         $newhash = sha1($scorm->reference);
 
     } else if ($scorm->scormtype === SCORM_TYPE_AICCURL  and $cfgscorm->allowtypeexternalaicc) {
-        require_once("$CFG->dirroot/mod/scorm/datamodels/aicclib.php");
+        require_once(__DIR__ . '/datamodels/aicclib.php');
         // AICC.
         $result = scorm_parse_aicc($scorm);
         if (!$result) {
@@ -563,7 +563,7 @@ function scorm_insert_track($userid, $scormid, $scoid, $attemptornumber, $elemen
         (in_array($element, ['cmi.completion_status', 'cmi.core.lesson_status', 'cmi.success_status'])
          && in_array($value, ['completed', 'passed']))) {
         $scorm = $DB->get_record('scorm', array('id' => $scormid));
-        include_once($CFG->dirroot.'/mod/scorm/lib.php');
+        include_once(__DIR__ . '/lib.php');
         scorm_update_grades($scorm, $userid);
     }
 
@@ -975,10 +975,10 @@ function scorm_print_launch($user, $scorm, $action, $cm) {
     }
 
     $scorm->version = strtolower(clean_param($scorm->version, PARAM_SAFEDIR));   // Just to be safe.
-    if (!file_exists($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'lib.php')) {
+    if (!file_exists(__DIR__ . "/datamodels/{$scorm->version}lib.php")) {
         $scorm->version = 'scorm_12';
     }
-    require_once($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'lib.php');
+    require_once(__DIR__ . "/datamodels/{$scorm->version}lib.php");
 
     $result = scorm_get_toc($user, $scorm, $cm->id, TOCFULLURL, $orgidentifier);
     $incomplete = $result->incomplete;
@@ -2294,7 +2294,7 @@ function scorm_get_sco_and_launch_url($scorm, $scoid, $context) {
     }
 
     if ($version == 'AICC') {
-        require_once("$CFG->dirroot/mod/scorm/datamodels/aicclib.php");
+        require_once(__DIR__ . '/datamodels/aicclib.php');
         $aiccsid = scorm_aicc_get_hacp_session($scorm->id);
         if (empty($aiccsid)) {
             $aiccsid = sesskey();
@@ -2468,7 +2468,7 @@ function scorm_eval_prerequisites($prerequisites, $usertracks) {
 function scorm_update_calendar(stdClass $scorm, $cmid) {
     global $DB, $CFG;
 
-    require_once($CFG->dirroot.'/calendar/lib.php');
+    require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
     // Scorm start calendar events.
     $event = new stdClass();

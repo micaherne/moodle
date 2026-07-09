@@ -40,8 +40,8 @@ TODO:
 
 */
 
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/dtllib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'dtllib.php'));
 
 /**
  * Initiate database export.
@@ -96,7 +96,7 @@ function tool_dbtransfer_transfer_database(moodle_database $sourcedb, moodle_dat
  */
 function tool_dbtransfer_rebuild_target_log_actions(moodle_database $target, ?progress_trace $feedback = null) {
     global $DB, $CFG;
-    require_once("$CFG->libdir/upgradelib.php");
+    require_once(\core\component::component_path('core', 'upgradelib.php'));
 
     $feedback->output(get_string('convertinglogdisplay', 'tool_dbtransfer'));
 
@@ -129,7 +129,7 @@ function tool_dbtransfer_rebuild_target_log_actions(moodle_database $target, ?pr
 function tool_dbtransfer_get_drivers() {
     global $CFG;
 
-    $files = new RegexIterator(new DirectoryIterator("$CFG->libdir/dml"), '|^.*_moodle_database\.php$|');
+    $files = new RegexIterator(new DirectoryIterator(\core\component::component_path('core', 'dml')), '|^.*_moodle_database\.php$|');
     $drivers = array();
 
     foreach ($files as $file) {

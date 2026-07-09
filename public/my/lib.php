@@ -32,7 +32,7 @@ define('MY_PAGE_PRIVATE', 1);
 define('MY_PAGE_DEFAULT', '__default');
 define('MY_PAGE_COURSES', '__courses');
 
-require_once("$CFG->libdir/blocklib.php");
+require_once(\core\component::component_path('core', 'blocklib.php'));
 
 /**
  * For a given user, this returns the $page information for their My Moodle page

@@ -45,7 +45,7 @@ class enrol_form extends dynamic_form {
      */
     protected function get_plugin(): \enrol_self_plugin {
         global $CFG;
-        require_once($CFG->dirroot . '/lib/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
         if ($this->plugin === null) {
             $this->plugin = enrol_get_plugin('self');
         }
@@ -59,7 +59,7 @@ class enrol_form extends dynamic_form {
      */
     protected function get_instance(): \stdClass {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/lib/enrollib.php');
+        require_once(\core\component::component_path('core', 'enrollib.php'));
         if ($this->instance === null) {
             // Method enrol_get_instances() will also validate that the enrolment method and the instance are enabled.
             $courseid = $this->optional_param('id', 0, PARAM_INT);
@@ -114,7 +114,7 @@ class enrol_form extends dynamic_form {
     #[\Override]
     public function validation($data, $files) {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/enrol/self/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
 
         $errors = parent::validation($data, $files);
         $instance = $this->get_instance();
@@ -190,7 +190,7 @@ class enrol_form extends dynamic_form {
             $destination = $SESSION->wantsurl;
             unset($SESSION->wantsurl);
         } else {
-            require_once($CFG->dirroot . '/course/lib.php');
+            require_once(\core\component::component_path('core_course', 'lib.php'));
             $destination = course_get_url($this->get_instance()->courseid);
         }
 

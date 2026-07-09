@@ -534,7 +534,7 @@ function upgrade_delete_orphaned_file_records() {
 function upgrade_core_licenses() {
     global $CFG, $DB;
 
-    $expectedlicenses = json_decode(file_get_contents($CFG->dirroot . '/lib/licenses.json'))->licenses;
+    $expectedlicenses = json_decode(file_get_contents(dirname(__DIR__) . '/licenses.json'))->licenses;
     if (!is_array($expectedlicenses)) {
         $expectedlicenses = [];
     }
@@ -1059,13 +1059,13 @@ function upgrade_calendar_action_events_fix(stdClass $info, bool $output = true,
 function upgrade_calendar_override_events_fix(stdClass $info, bool $output = true, int $endtime = 0): bool {
     global $CFG, $DB;
 
-    include_once($CFG->dirroot. '/course/lib.php');
-    include_once($CFG->dirroot. '/mod/assign/lib.php');
-    include_once($CFG->dirroot. '/mod/assign/locallib.php');
-    include_once($CFG->dirroot. '/mod/lesson/lib.php');
-    include_once($CFG->dirroot. '/mod/lesson/locallib.php');
-    include_once($CFG->dirroot. '/mod/quiz/lib.php');
-    include_once($CFG->dirroot. '/mod/quiz/locallib.php');
+    include_once(\core\component::component_path('core_course', 'lib.php'));
+    include_once(\core\component::component_path('mod_assign', 'lib.php'));
+    include_once(\core\component::component_path('mod_assign', 'locallib.php'));
+    include_once(\core\component::component_path('mod_lesson', 'lib.php'));
+    include_once(\core\component::component_path('mod_lesson', 'locallib.php'));
+    include_once(\core\component::component_path('mod_quiz', 'lib.php'));
+    include_once(\core\component::component_path('mod_quiz', 'locallib.php'));
 
     $return = false; // Let's assume the function is going to finish by default.
     $status = "Finished!"; // To decide the message to be presented on return.
@@ -2126,8 +2126,8 @@ function moodlenet_migrate_profile_field(): void {
         return;
     }
 
-    require_once($CFG->dirroot . '/user/profile/definelib.php');
-    require_once($CFG->dirroot . '/user/profile/field/text/define.class.php');
+    require_once(\core\component::component_path('core_user', 'profile/definelib.php'));
+    require_once(\core\component::component_path('profilefield_text', 'define.class.php'));
 
     // Get or create the MoodleNet category.
     $categoryname = 'MoodleNet';

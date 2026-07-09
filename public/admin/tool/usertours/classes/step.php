@@ -563,7 +563,7 @@ class step {
      */
     public function persist($force = false) {
         global $CFG, $DB;
-        require_once("{$CFG->libdir}/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         if (!$this->dirty && !$force) {
             return $this;
@@ -721,7 +721,7 @@ class step {
      */
     public function prepare_data_for_form() {
         global $CFG;
-        require_once("{$CFG->libdir}/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $data = $this->to_record();
         foreach (self::get_config_keys() as $key) {

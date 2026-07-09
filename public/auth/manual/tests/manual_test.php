@@ -21,7 +21,7 @@ use auth_plugin_manual;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/auth/manual/auth.php');
+require_once(dirname(__DIR__) . '/auth.php');
 
 /**
  * Manual authentication tests class.

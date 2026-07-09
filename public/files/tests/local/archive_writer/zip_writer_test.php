@@ -39,7 +39,7 @@ final class zip_writer_test extends advanced_testcase {
         global $CFG;
 
         $pathtofileinzip = '/some/made/up/name.txt';
-        $filetoadd = $CFG->dirroot . '/files/tests/fixtures/awesome_file.txt';
+        $filetoadd = dirname(__DIR__, 2) . '/fixtures/awesome_file.txt';
 
         $zipwriter = archive_writer::get_file_writer('test.zip', archive_writer::ZIP_WRITER);
         $zipwriter->add_file_from_filepath($pathtofileinzip, $filetoadd);

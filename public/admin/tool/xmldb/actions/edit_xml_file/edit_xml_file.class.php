@@ -85,7 +85,7 @@ class edit_xml_file extends XMLDBAction {
 
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         // Get the correct dir
         if (!empty($XMLDB->dbdirs)) {
@@ -110,7 +110,7 @@ class edit_xml_file extends XMLDBAction {
                 // Add the main form
                 $o = '<form id="form" action="index.php" method="post">';
                 $o.= '<div>';
-                $o.= '    <input type="hidden" name ="dir" value="' . str_replace($CFG->dirroot, '', $dirpath) . '" />';
+                $o.= '    <input type="hidden" name ="dir" value="' . \core\component::to_mono_path($dirpath, true) . '" />';
                 $o.= '    <input type="hidden" name ="action" value="edit_xml_file_save" />';
                 $o.= '    <input type="hidden" name ="postaction" value="edit_xml_file" />';
                 $o.= '    <input type="hidden" name ="path" value="' . s($structure->getPath()) .'" />';
@@ -140,29 +140,29 @@ class edit_xml_file extends XMLDBAction {
                 // Calculate the buttons
                 $b = ' <p class="centerpara buttons">';
                 // The view original XML button
-                $b .= '&nbsp;<a href="index.php?action=view_structure_xml&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;select=original">[' . $this->str['vieworiginal'] . ']</a>';
+                $b .= '&nbsp;<a href="index.php?action=view_structure_xml&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;select=original">[' . $this->str['vieworiginal'] . ']</a>';
                 // The view edited XML button
                 if ($structure->hasChanged()) {
-                    $b .= '&nbsp;<a href="index.php?action=view_structure_xml&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;select=edited">[' . $this->str['viewedited'] . ']</a>';
+                    $b .= '&nbsp;<a href="index.php?action=view_structure_xml&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;select=edited">[' . $this->str['viewedited'] . ']</a>';
                 } else {
                     $b .= '&nbsp;[' . $this->str['viewedited'] . ']';
                 }
                 // The new table button
-                $b .= '&nbsp;<a href="index.php?action=new_table&amp;sesskey=' . sesskey() . '&amp;postaction=edit_table&amp;table=changeme&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['newtable'] . ']</a>';
+                $b .= '&nbsp;<a href="index.php?action=new_table&amp;sesskey=' . sesskey() . '&amp;postaction=edit_table&amp;table=changeme&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['newtable'] . ']</a>';
                 // The new from MySQL button
                 if ($DB->get_dbfamily() == 'mysql') {
-                    $b .= '&nbsp;<a href="index.php?action=new_table_from_mysql&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['newtablefrommysql'] . ']</a>';
+                    $b .= '&nbsp;<a href="index.php?action=new_table_from_mysql&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['newtablefrommysql'] . ']</a>';
                 } else {
                     $b .= '&nbsp;[' . $this->str['newtablefrommysql'] . ']';
                 }
 
                 // The view sql code button
-                $b .= '<a href="index.php?action=view_structure_sql&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' .$this->str['viewsqlcode'] . ']</a>';
+                $b .= '<a href="index.php?action=view_structure_sql&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' .$this->str['viewsqlcode'] . ']</a>';
                 // The view php code button
-                $b .= '&nbsp;<a href="index.php?action=view_structure_php&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['viewphpcode'] . ']</a>';
+                $b .= '&nbsp;<a href="index.php?action=view_structure_php&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['viewphpcode'] . ']</a>';
                 // The save button (if possible)
                 if ($cansavenow) {
-                    $b .= '&nbsp;<a href="index.php?action=save_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;time=' . time() . '&amp;unload=false&amp;postaction=edit_xml_file&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['save'] . ']</a>';
+                    $b .= '&nbsp;<a href="index.php?action=save_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;time=' . time() . '&amp;unload=false&amp;postaction=edit_xml_file&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['save'] . ']</a>';
                 }
 
                 // The back to main menu button
@@ -172,7 +172,7 @@ class edit_xml_file extends XMLDBAction {
 
                 // Join all the reserved words into one big array
                 // Calculate list of available SQL generators
-                require_once("$CFG->libdir/ddl/sql_generator.php");
+                require_once(\core\component::component_path('core', 'ddl/sql_generator.php'));
                 $reserved_words = sql_generator::getAllReservedWords();
 
                 // Add the tables list
@@ -190,28 +190,28 @@ class edit_xml_file extends XMLDBAction {
                             ),
                             attributes: [
                                 'data-action' => 'move_updown_table',
-                                'data-dir' => str_replace($CFG->dirroot, '', $dirpath),
+                                'data-dir' => \core\component::to_mono_path($dirpath, true),
                                 'data-table' => $table->getName(),
                             ]
                         );
                         // The table name (link to edit table)
-                        $t = '<a href="index.php?action=edit_table&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">' . $table->getName() . '</a>';
+                        $t = '<a href="index.php?action=edit_table&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">' . $table->getName() . '</a>';
                         // Calculate buttons
                         $b = '</td><td class="button cell">';
                         // The edit button
-                        $b .= '<a href="index.php?action=edit_table&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['edit'] . ']</a>';
+                        $b .= '<a href="index.php?action=edit_table&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['edit'] . ']</a>';
                         $b .= '</td><td class="button cell">';
                         // The delete button (if we have more than one and it isn't used)
                         if (count($tables) > 1 &&
                             !$structure->getTableUses($table->getName())) {
                                 // !$structure->getTableUses($table->getName())) {
-                            $b .= '<a href="index.php?action=delete_table&amp;sesskey=' . sesskey() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['delete'] . ']</a>';
+                            $b .= '<a href="index.php?action=delete_table&amp;sesskey=' . sesskey() . '&amp;table=' . $table->getName() . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['delete'] . ']</a>';
                         } else {
                             $b .= '[' . $this->str['delete'] . ']';
                         }
                         $b .= '</td><td class="button cell">';
                         // The view xml button
-                        $b .= '<a href="index.php?action=view_table_xml&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;table=' . $table->getName() . '&amp;select=edited">[' . $this->str['viewxml'] . ']</a>';
+                        $b .= '<a href="index.php?action=view_table_xml&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;table=' . $table->getName() . '&amp;select=edited">[' . $this->str['viewxml'] . ']</a>';
                         // Detect if the table name is a reserved word
                          if (array_key_exists($table->getName(), $reserved_words)) {
                              $b .= '&nbsp;<a href="index.php?action=view_reserved_words"><span class="error">' . $this->str['reserved'] . '</span></a>';

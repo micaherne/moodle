@@ -124,10 +124,10 @@ class main_view extends XMLDBAction {
             foreach ($XMLDB->dbdirs as $key => $dbdir) {
                 // Detect if this is the lastused dir
                 $hithis = false;
-                if (str_replace($CFG->dirroot, '', $key) == $lastused) {
+                if (\core\component::to_mono_path($key, true) == $lastused) {
                     $hithis = true;
                 }
-                $elementtext = str_replace($CFG->dirroot . '/', '', $key);
+                $elementtext = \core\component::to_mono_path($key, false);
                 // Calculate the dbdir has_changed field if needed
                 if (!isset($dbdir->has_changed) && isset($dbdir->xml_loaded)) {
                     $dbdir->xml_changed = false;
@@ -148,7 +148,7 @@ class main_view extends XMLDBAction {
                     is_readable($key . '/install.xml') &&
                     is_readable($key) &&
                     !empty($dbdir->xml_loaded)) {
-                    $f = '<a href="index.php?action=edit_xml_file&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $key)) . '">' . $elementtext . '</a>';
+                    $f = '<a href="index.php?action=edit_xml_file&amp;dir=' . urlencode(\core\component::to_mono_path($key, true)) . '">' . $elementtext . '</a>';
                 } else {
                     $f = $elementtext;
                 }
@@ -158,7 +158,7 @@ class main_view extends XMLDBAction {
                 if ($dbdir->path_exists &&
                     !file_exists($key . '/install.xml') &&
                     is_writeable($key)) {
-                    $b .= '<a href="index.php?action=create_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $key)) . '&amp;time=' . time() . '&amp;postaction=main_view#lastused">[' . $this->str['create'] . ']</a>';
+                    $b .= '<a href="index.php?action=create_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(\core\component::to_mono_path($key, true)) . '&amp;time=' . time() . '&amp;postaction=main_view#lastused">[' . $this->str['create'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['create'] . ']';
                 }
@@ -168,7 +168,7 @@ class main_view extends XMLDBAction {
                     file_exists($key . '/install.xml') &&
                     is_readable($key . '/install.xml') &&
                     empty($dbdir->xml_loaded)) {
-                    $b .= '<a href="index.php?action=load_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $key)) . '&amp;time=' . time() . '&amp;postaction=main_view#lastused">[' . $this->str['load'] . ']</a>';
+                    $b .= '<a href="index.php?action=load_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(\core\component::to_mono_path($key, true)) . '&amp;time=' . time() . '&amp;postaction=main_view#lastused">[' . $this->str['load'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['load'] . ']';
                 }
@@ -179,7 +179,7 @@ class main_view extends XMLDBAction {
                     is_readable($key . '/install.xml') &&
                     is_readable($key) &&
                     !empty($dbdir->xml_loaded)) {
-                    $b .= '<a href="index.php?action=edit_xml_file&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $key)) . '">[' . $this->str['edit'] . ']</a>';
+                    $b .= '<a href="index.php?action=edit_xml_file&amp;dir=' . urlencode(\core\component::to_mono_path($key, true)) . '">[' . $this->str['edit'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['edit'] . ']';
                 }
@@ -191,7 +191,7 @@ class main_view extends XMLDBAction {
                     is_writeable($key) &&
                     !empty($dbdir->xml_loaded) &&
                     !empty($dbdir->xml_changed)) {
-                    $b .= '<a href="index.php?action=save_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $key)) . '&amp;time=' . time() . '&amp;postaction=main_view#lastused">[' . $this->str['save'] . ']</a>';
+                    $b .= '<a href="index.php?action=save_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(\core\component::to_mono_path($key, true)) . '&amp;time=' . time() . '&amp;postaction=main_view#lastused">[' . $this->str['save'] . ']</a>';
                     // Check if the file has been manually edited while being modified in the editor
                     if ($dbdir->filemtime != filemtime($key . '/install.xml')) {
                         // File manually modified. Add to action error, will be displayed inline.
@@ -206,7 +206,7 @@ class main_view extends XMLDBAction {
                     file_exists($key . '/install.xml') &&
                     is_readable($key . '/install.xml') &&
                     is_readable($key)) {
-                    $b .= '<a href="index.php?action=generate_documentation&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $key)) . '">[' . $this->str['doc'] . ']</a>';
+                    $b .= '<a href="index.php?action=generate_documentation&amp;dir=' . urlencode(\core\component::to_mono_path($key, true)) . '">[' . $this->str['doc'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['doc'] . ']';
                 }
@@ -215,7 +215,7 @@ class main_view extends XMLDBAction {
                 if ($dbdir->path_exists &&
                     file_exists($key . '/install.xml') &&
                     is_readable($key . '/install.xml')) {
-                    $b .= '<a href="index.php?action=view_xml&amp;file=' . urlencode(str_replace($CFG->dirroot, '', $key) . '/install.xml') . '">[' . $this->str['viewxml'] . ']</a>';
+                    $b .= '<a href="index.php?action=view_xml&amp;file=' . urlencode(\core\component::to_mono_path($key, true) . '/install.xml') . '">[' . $this->str['viewxml'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['viewxml'] . ']';
                 }
@@ -227,7 +227,7 @@ class main_view extends XMLDBAction {
                     is_writeable($key) &&
                     !empty($dbdir->xml_loaded) &&
                     !empty($dbdir->xml_changed)) {
-                    $b .= '<a href="index.php?action=revert_changes&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $key)) . '">[' . $this->str['revert'] . ']</a>';
+                    $b .= '<a href="index.php?action=revert_changes&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(\core\component::to_mono_path($key, true)) . '">[' . $this->str['revert'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['revert'] . ']';
                 }
@@ -238,7 +238,7 @@ class main_view extends XMLDBAction {
                     is_readable($key . '/install.xml') &&
                     !empty($dbdir->xml_loaded) &&
                     empty($dbdir->xml_changed)) {
-                    $b .= '<a href="index.php?action=unload_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $key)) . '&amp;time=' . time() . '&amp;postaction=main_view#lastused">[' . $this->str['unload'] . ']</a>';
+                    $b .= '<a href="index.php?action=unload_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(\core\component::to_mono_path($key, true)) . '&amp;time=' . time() . '&amp;postaction=main_view#lastused">[' . $this->str['unload'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['unload'] . ']';
                 }
@@ -249,7 +249,7 @@ class main_view extends XMLDBAction {
                     is_readable($key . '/install.xml') &&
                     is_writeable($key) &&
                     empty($dbdir->xml_loaded)) {
-                    $b .= '<a href="index.php?action=delete_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $key)) . '">[' . $this->str['delete'] . ']</a>';
+                    $b .= '<a href="index.php?action=delete_xml_file&amp;sesskey=' . sesskey() . '&amp;dir=' . urlencode(\core\component::to_mono_path($key, true)) . '">[' . $this->str['delete'] . ']</a>';
                 } else {
                     $b .= '[' . $this->str['delete'] . ']';
                 }

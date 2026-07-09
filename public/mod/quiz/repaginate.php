@@ -25,7 +25,7 @@
 use mod_quiz\quiz_settings;
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(__DIR__ . '/locallib.php');
 
 $quizid = required_param('quizid', PARAM_INT);
 $slotnumber = required_param('slot', PARAM_INT);

@@ -34,7 +34,7 @@ class helper {
      */
     public static function bulk_move_questions(string $movequestionselected, \stdClass $tocategory): void {
         global $DB, $CFG;
-        require_once($CFG->libdir .'/questionlib.php');
+        require_once(\core\component::component_path('core', 'questionlib.php'));
         if ($questionids = explode(',', $movequestionselected)) {
             [$usql, $params] = $DB->get_in_or_equal($questionids);
             $sql = "SELECT q.*, c.contextid

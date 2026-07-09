@@ -24,7 +24,7 @@
 namespace core_question\external;
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/engine/bank.php');
+require_once(dirname(__DIR__, 2) . '/engine/bank.php');
 
 /**
  * Class for exporting a question from an stdClass.

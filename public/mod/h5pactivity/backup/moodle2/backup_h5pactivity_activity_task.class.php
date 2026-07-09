@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/h5pactivity/backup/moodle2/backup_h5pactivity_stepslib.php');
+require_once(__DIR__ . '/backup_h5pactivity_stepslib.php');
 
 /**
  * The class provides all the settings and steps to perform one complete backup of mod_h5pactivity.

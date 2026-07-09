@@ -31,7 +31,7 @@ class moodle1_block_html_handler extends moodle1_block_handler {
     private $fileman = null;
     protected function convert_configdata(array $olddata) {
         global $CFG;
-        require_once($CFG->libdir . '/db/upgradelib.php');
+        require_once(\core\component::component_path('core', 'db/upgradelib.php'));
         $instanceid = $olddata['id'];
         $contextid  = $this->converter->get_contextid(CONTEXT_BLOCK, $olddata['id']);
         $decodeddata = base64_decode($olddata['configdata']);

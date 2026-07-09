@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 use core_badges\local\backpack\helper;
 

@@ -33,7 +33,7 @@ use core_reportbuilder\local\report\{column, filter};
 defined('MOODLE_INTERNAL') or die;
 
 global $CFG;
-require_once("{$CFG->libdir}/badgeslib.php");
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 /**
  * Badge entity

@@ -382,7 +382,7 @@ final class stateupdates_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        require_once($CFG->libdir . '/tests/fixtures/sectiondelegatetest.php');
+        require_once(\core\component::component_path('core', 'tests/fixtures/sectiondelegatetest.php'));
 
         $course = $this->getDataGenerator()->create_course();
         $activity = $this->getDataGenerator()->create_module(

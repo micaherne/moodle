@@ -27,8 +27,8 @@
  */
 
 define('NO_OUTPUT_BUFFERING', true);
-require('../config.php');
-require_once($CFG->libdir . '/gradelib.php');
+require(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
 
 $cmid = required_param('id', PARAM_INT);
 $urlpath = required_param('url', PARAM_LOCALURL);

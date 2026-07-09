@@ -487,7 +487,7 @@ final class dml_test extends \database_driver_testcase {
         global $CFG;
         $DB = $this->tdb;
 
-        require_once($CFG->dirroot . '/lib/dml/tests/fixtures/test_dml_sql_debugging_fixture.php');
+        require_once(__DIR__ . '/fixtures/test_dml_sql_debugging_fixture.php');
         $databasemock = $this->getMockBuilder(\moodle_database::class)->getMock();
         $fixture = new \test_dml_sql_debugging_fixture($databasemock);
 

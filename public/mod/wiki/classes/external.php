@@ -37,8 +37,8 @@ use core_external\util;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/wiki/lib.php');
-require_once($CFG->dirroot . '/mod/wiki/locallib.php');
+require_once(dirname(__DIR__) . '/lib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * Wiki module external functions.

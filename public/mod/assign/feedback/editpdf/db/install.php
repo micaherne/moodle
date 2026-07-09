@@ -48,6 +48,6 @@ function xmldb_assignfeedback_editpdf_install() {
     foreach ($defaultstamps as $stamp) {
         $filerecord->filename = $stamp;
         $fs->create_file_from_pathname($filerecord,
-            $CFG->dirroot . '/mod/assign/feedback/editpdf/pix/' . $filerecord->filename);
+            dirname(__DIR__) . "/pix/{$filerecord->filename}");
     }
 }

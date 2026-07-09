@@ -21,7 +21,7 @@ use tool_uploadcourse_processor;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/csvlib.class.php');
+require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
 /**
  * Processor test case.

@@ -23,7 +23,7 @@
  * @package   core_group
  */
 
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 require_once('lib.php');
 
 $groupingid = required_param('id', PARAM_INT);

@@ -22,7 +22,7 @@ use core\tests\session\mock_handler;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/webservice/externallib.php');
+require_once(dirname(__DIR__) . '/externallib.php');
 
 /**
  * External course functions unit tests

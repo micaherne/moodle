@@ -23,8 +23,8 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir . '/xhprof/xhprof_moodle.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'xhprof/xhprof_moodle.php'));
 
 // Page parameters.
 $runid = required_param('runid', PARAM_ALPHANUM);

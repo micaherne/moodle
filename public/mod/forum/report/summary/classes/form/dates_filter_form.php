@@ -26,7 +26,7 @@ namespace forumreport_summary\form;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * The mform class for creating the forum summary report dates filter.

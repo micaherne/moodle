@@ -25,7 +25,7 @@ use core_courseformat\local\sectionactions;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
+require_once(dirname(__DIR__) . '/util/includes/backup_includes.php');
 
 /**
  * Tests related to the default backup filename feature.

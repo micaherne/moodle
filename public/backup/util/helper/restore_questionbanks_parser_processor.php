@@ -16,7 +16,7 @@
 
 defined('MOODLE_INTERNAL' || die());
 
-require_once($CFG->dirroot . '/backup/util/xml/parser/processors/grouped_parser_processor.class.php');
+require_once(dirname(__DIR__) . '/xml/parser/processors/grouped_parser_processor.class.php');
 
 /**
  * Parse and store activity data for activities that publish questions.

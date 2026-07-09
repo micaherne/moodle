@@ -59,7 +59,7 @@ class mod_resource_external extends external_api {
      */
     public static function view_resource($resourceid) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . "/mod/resource/lib.php");
+        require_once(dirname(__DIR__) . '/lib.php');
 
         $params = self::validate_parameters(self::view_resource_parameters(),
                                             array(

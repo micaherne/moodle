@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/forum/backup/moodle2/backup_forum_stepslib.php');
-require_once($CFG->dirroot . '/mod/forum/backup/moodle2/backup_forum_settingslib.php');
+require_once(__DIR__ . '/backup_forum_stepslib.php');
+require_once(__DIR__ . '/backup_forum_settingslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the Forum instance

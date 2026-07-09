@@ -34,7 +34,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/filestorage/file_packer.php");
+require_once(__DIR__ . '/file_packer.php');
 
 /**
  * Utility class - handles all packing/unpacking of .mbz files.
@@ -146,7 +146,7 @@ class mbz_packer extends file_packer {
      */
     protected function get_packer_for_archive_operation() {
         global $CFG;
-        require_once($CFG->dirroot . '/lib/filestorage/tgz_packer.php');
+        require_once(__DIR__ . '/tgz_packer.php');
 
         if (!empty($CFG->usezipbackups)) {
             // Allow forced use of zip backups.
@@ -164,7 +164,7 @@ class mbz_packer extends file_packer {
      */
     protected function get_packer_for_read_operation($archivefile) {
         global $CFG;
-        require_once($CFG->dirroot . '/lib/filestorage/tgz_packer.php');
+        require_once(__DIR__ . '/tgz_packer.php');
 
         if (tgz_packer::is_tgz_file($archivefile)) {
             return get_file_packer('application/x-gzip');

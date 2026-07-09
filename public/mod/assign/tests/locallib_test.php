@@ -33,8 +33,8 @@ use mod_assign_testable_assign;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(__DIR__ . '/generator.php');
 
 /**
  * Unit tests for (some of) mod/assign/locallib.php.
@@ -2849,7 +2849,7 @@ You can see it appended to your <a href="' . $assignurl .
 
         // Now hide the grade in gradebook.
         $this->setUser($teacher);
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $gradeitem = new \grade_item([
             'itemtype'      => 'mod',
             'itemmodule'    => 'assign',
@@ -3686,7 +3686,7 @@ Anchor link 2:<a title=\"bananas\" href=\"../logo-240x60.gif\">Link text</a>
         $this->setUser($teacher);
 
         $data = new \stdClass();
-        require_once($CFG->dirroot . '/mod/assign/gradeform.php');
+        require_once(dirname(__DIR__) . '/gradeform.php');
         $pagination = [
             'userid' => $student->id,
             'rownum' => 0,

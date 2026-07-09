@@ -26,7 +26,7 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/clilib.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
 
 // Get cli options.
 list($options, $unrecognized) = cli_get_params(
@@ -94,7 +94,7 @@ if (!$coursescount) {
 }
 echo "Checking $coursescount courses...\n\n";
 
-require_once($CFG->dirroot. '/course/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 $problems = array();
 $courses = $DB->get_fieldset_sql('SELECT id FROM {course} '. $where, $params);

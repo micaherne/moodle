@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 /** Include required files */
 require_once(__DIR__ . '/deprecatedlib.php');
-require_once($CFG->libdir.'/filelib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 /// CONSTANTS ///////////////////////////////////////////////////////////
 
@@ -90,7 +90,7 @@ define('FORUM_DISCUSSION_UNPINNED', 0);
 function forum_add_instance($forum, $mform = null) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot.'/mod/forum/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $forum->timemodified = time();
 
@@ -171,7 +171,7 @@ function forum_instance_created($context, $forum) {
 function forum_update_instance($forum, $mform) {
     global $CFG, $DB, $OUTPUT, $USER;
 
-    require_once($CFG->dirroot.'/mod/forum/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $forum->timemodified = time();
     $forum->id           = $forum->instance;
@@ -401,7 +401,7 @@ function forum_get_email_message_id($postid, $usertoid) {
  */
 function forum_user_outline($course, $user, $mod, $forum) {
     global $CFG;
-    require_once("$CFG->libdir/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $gradeinfo = '';
     $gradetime = 0;
@@ -464,7 +464,7 @@ function forum_user_outline($course, $user, $mod, $forum) {
  */
 function forum_user_complete($course, $user, $mod, $forum) {
     global $CFG, $USER;
-    require_once("$CFG->libdir/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $getgradeinfo = function($grades, string $type) use ($course): string {
         global $OUTPUT;
@@ -737,11 +737,11 @@ function forum_print_recent_activity($course, $viewfullnames, $timestart) {
  */
 function forum_update_grades($forum, $userid = 0): void {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $ratings = null;
     if ($forum->assessed) {
-        require_once($CFG->dirroot.'/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
 
         $cm = get_coursemodule_from_instance('forum', $forum->id);
 
@@ -805,7 +805,7 @@ EOF;
  */
 function forum_grade_item_update($forum, $ratings = null, $forumgrades = null): void {
     global $CFG;
-    require_once("{$CFG->libdir}/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     // Update the rating.
     $item = [
@@ -863,7 +863,7 @@ function forum_grade_item_update($forum, $ratings = null, $forumgrades = null): 
  */
 function forum_grade_item_delete($forum) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     grade_update('mod/forum', $forum->course, 'mod', 'forum', $forum->id, 0, null, ['deleted' => 1]);
     grade_update('mod/forum', $forum->course, 'mod', 'forum', $forum->id, 1, null, ['deleted' => 1]);
@@ -994,7 +994,7 @@ function forum_get_all_discussion_posts($discussionid, $sort, $tracking = false)
 function forum_get_readable_forums($userid, $courseid=0) {
 
     global $CFG, $DB, $USER;
-    require_once($CFG->dirroot.'/course/lib.php');
+    require_once(\core\component::component_path('core_course', 'lib.php'));
 
     if (!$forummod = $DB->get_record('modules', array('name' => 'forum'))) {
         throw new \moodle_exception('notinstalled', 'forum');
@@ -1094,7 +1094,7 @@ function forum_get_readable_forums($userid, $courseid=0) {
 function forum_search_posts($searchterms, $courseid, $limitfrom, $limitnum,
                             &$totalcount, $extrasql='') {
     global $CFG, $DB, $USER;
-    require_once($CFG->libdir.'/searchlib.php');
+    require_once(\core\component::component_path('core', 'searchlib.php'));
 
     $forums = forum_get_readable_forums($USER->id, $courseid);
 
@@ -1544,7 +1544,7 @@ function forum_count_discussions($forum, $cm, $course) {
         return $cachedcounts[$forum->id];
     }
 
-    require_once($CFG->dirroot.'/course/lib.php');
+    require_once(\core\component::component_path('core_course', 'lib.php'));
 
     $modinfo = get_fast_modinfo($course);
 
@@ -2133,7 +2133,7 @@ function forum_get_course_forum($courseid, $type) {
     $mod->module = $module->id;
     $mod->instance = $forum->id;
     $mod->section = 0;
-    include_once("$CFG->dirroot/course/lib.php");
+    include_once(\core\component::component_path('core_course', 'lib.php'));
     if (! $mod->coursemodule = add_course_module($mod) ) {
         echo $OUTPUT->notification("Could not add a new course module to the course '" . $courseid . "'");
         return false;
@@ -2567,7 +2567,7 @@ function forum_print_attachments($post, $cm, $type) {
     $canexport = !empty($CFG->enableportfolios) && (has_capability('mod/forum:exportpost', $context) || ($post->userid == $USER->id && has_capability('mod/forum:exportownpost', $context)));
 
     if ($canexport) {
-        require_once($CFG->libdir.'/portfoliolib.php');
+        require_once(\core\component::component_path('core', 'portfoliolib.php'));
     }
 
     // We retrieve all files according to the time that they were created.  In the case that several files were uploaded
@@ -2632,7 +2632,7 @@ function forum_print_attachments($post, $cm, $type) {
             }
 
             if (!empty($CFG->enableplagiarism)) {
-                require_once($CFG->libdir.'/plagiarismlib.php');
+                require_once(\core\component::component_path('core', 'plagiarismlib.php'));
                 $output .= plagiarism_get_links(array('userid' => $post->userid,
                     'file' => $file,
                     'cmid' => $cm->id,
@@ -2708,7 +2708,7 @@ function forum_get_file_info($browser, $areas, $course, $cm, $context, $filearea
     }
 
     if (is_null($itemid)) {
-        require_once($CFG->dirroot.'/mod/forum/locallib.php');
+        require_once(__DIR__ . '/locallib.php');
         return new forum_file_info_container($browser, $course, $cm, $context, $areas, $filearea);
     }
 
@@ -3155,7 +3155,7 @@ function forum_add_discussion($discussion, $mform=null, $unused=null, $userid=nu
  */
 function forum_delete_discussion($discussion, $fulldelete, $course, $cm, $forum) {
     global $DB, $CFG;
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     $result = true;
 
@@ -3224,7 +3224,7 @@ function forum_delete_discussion($discussion, $fulldelete, $course, $cm, $forum)
  */
 function forum_delete_post($post, $children, $course, $cm, $forum, $skipcompletion=false) {
     global $DB, $CFG, $USER;
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     $context = context_module::instance($cm->id);
 
@@ -3239,7 +3239,7 @@ function forum_delete_post($post, $children, $course, $cm, $forum, $skipcompleti
     }
 
     // Delete ratings.
-    require_once($CFG->dirroot.'/rating/lib.php');
+    require_once(\core\component::component_path('core_rating', 'lib.php'));
     $delopt = new stdClass;
     $delopt->contextid = $context->id;
     $delopt->component = 'mod_forum';
@@ -3255,7 +3255,7 @@ function forum_delete_post($post, $children, $course, $cm, $forum, $skipcompleti
 
     // Delete cached RSS feeds.
     if (!empty($CFG->enablerssfeeds)) {
-        require_once($CFG->dirroot.'/mod/forum/rsslib.php');
+        require_once(__DIR__ . '/rsslib.php');
         forum_rss_delete_file($forum);
     }
 
@@ -4506,7 +4506,7 @@ function forum_tp_count_forum_unread_posts($cm, $course, $resetreadcache = false
         return $readcache[$course->id][$forumid];
     }
 
-    require_once($CFG->dirroot.'/course/lib.php');
+    require_once(\core\component::component_path('core_course', 'lib.php'));
 
     $modinfo = get_fast_modinfo($course);
 
@@ -5019,7 +5019,7 @@ function forum_reset_gradebook($courseid, $type='') {
  */
 function forum_reset_userdata($data) {
     global $CFG, $DB;
-    require_once($CFG->dirroot.'/rating/lib.php');
+    require_once(\core\component::component_path('core_rating', 'lib.php'));
 
     $componentstr = get_string('modulenameplural', 'forum');
     $status = [];
@@ -5517,7 +5517,7 @@ function forum_extend_settings_navigation(settings_navigation $settingsnav, navi
     if ($enablerssfeeds && $forumobject->rsstype && $forumobject->rssarticles && $hascourseaccess) {
 
         if (!function_exists('rss_get_url')) {
-            require_once("$CFG->libdir/rsslib.php");
+            require_once(\core\component::component_path('core', 'rsslib.php'));
         }
 
         if ($forumobject->rsstype == 1) {
@@ -6636,7 +6636,7 @@ function forum_user_can_reply_privately(\context_module $context, \stdClass $par
 function mod_forum_core_calendar_get_valid_event_timestart_range(\calendar_event $event, \stdClass $forum) {
     global $CFG;
 
-    require_once($CFG->dirroot . '/mod/forum/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $mindate = null;
     $maxdate = null;
@@ -6667,7 +6667,7 @@ function mod_forum_core_calendar_get_valid_event_timestart_range(\calendar_event
 function mod_forum_core_calendar_event_timestart_updated(\calendar_event $event, \stdClass $forum) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot . '/mod/forum/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if ($event->eventtype != FORUM_EVENT_TYPE_DUE) {
         return;
@@ -6871,7 +6871,7 @@ function forum_grading_areas_list() {
  */
 function mod_forum_core_calendar_get_event_action_string(string $eventtype): string {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/forum/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $modulename = get_string('modulename', 'forum');
 
@@ -6894,7 +6894,7 @@ function forum_refresh_events(int $courseid, stdClass $instance, stdClass $cm): 
     global $CFG;
 
     // This function is called by cron and we need to include the locallib for calls further down.
-    require_once($CFG->dirroot . '/mod/forum/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     forum_update_calendar($instance, $cm->id);
 }

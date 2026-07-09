@@ -27,8 +27,8 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->libdir.'/formslib.php');
+require_once(__DIR__ . '/lib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 class recent_form extends moodleform {
     function definition() {
@@ -120,8 +120,9 @@ class recent_form extends moodleform {
         }
 
         foreach ($modsused as $modname=>$unused) {
-            $libfile = "$CFG->dirroot/mod/$modname/lib.php";
-            if (!file_exists($libfile)) {
+            $moddir = \core_component::get_plugin_directory('mod', $modname);
+            $libfile = $moddir ? "{$moddir}/lib.php" : null;
+            if (!$libfile || !file_exists($libfile)) {
                 unset($modsused[$modname]);
                 continue;
             }

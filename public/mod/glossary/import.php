@@ -1,9 +1,9 @@
 <?php
 
-require_once("../../config.php");
+require_once(__DIR__ . '/../../config.php');
 require_once("lib.php");
-require_once("$CFG->dirroot/course/lib.php");
-require_once("$CFG->dirroot/course/modlib.php");
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(\core\component::component_path('core_course', 'modlib.php'));
 require_once('import_form.php');
 
 $id = required_param('id', PARAM_INT);    // Course Module ID

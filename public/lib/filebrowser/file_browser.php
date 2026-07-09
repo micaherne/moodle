@@ -25,18 +25,18 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/filebrowser/file_info.php");
+require_once(__DIR__ . '/file_info.php');
 
 // general area types
-require_once("$CFG->libdir/filebrowser/file_info_stored.php");
-require_once("$CFG->libdir/filebrowser/virtual_root_file.php");
+require_once(__DIR__ . '/file_info_stored.php');
+require_once(__DIR__ . '/virtual_root_file.php');
 
 // description of available areas in each context level
-require_once("$CFG->libdir/filebrowser/file_info_context_system.php");
-require_once("$CFG->libdir/filebrowser/file_info_context_user.php");
-require_once("$CFG->libdir/filebrowser/file_info_context_coursecat.php");
-require_once("$CFG->libdir/filebrowser/file_info_context_course.php");
-require_once("$CFG->libdir/filebrowser/file_info_context_module.php");
+require_once(__DIR__ . '/file_info_context_system.php');
+require_once(__DIR__ . '/file_info_context_user.php');
+require_once(__DIR__ . '/file_info_context_coursecat.php');
+require_once(__DIR__ . '/file_info_context_course.php');
+require_once(__DIR__ . '/file_info_context_module.php');
 
 /**
  * This class provides the main entry point for other code wishing to get information about files.

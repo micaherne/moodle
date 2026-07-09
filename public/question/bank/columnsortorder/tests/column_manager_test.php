@@ -26,8 +26,8 @@ use core_question\local\bank\view;
 use moodle_url;
 
 global $CFG;
-require_once($CFG->dirroot . '/question/tests/fixtures/testable_core_question_column.php');
-require_once($CFG->dirroot . '/question/classes/external.php');
+require_once(\core\component::component_path('core_question', 'tests/fixtures/testable_core_question_column.php'));
+require_once(\core\component::component_path('core_question', 'classes/external.php'));
 
 /**
  * Test class for columnsortorder feature.

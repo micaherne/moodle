@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 function qbank_usage_output_fragment_question_usage(array $args): string {
     global $PAGE, $CFG;
-    require_once($CFG->dirroot . '/question/engine/bank.php');
+    require_once(\core\component::component_path('core_question', 'engine/bank.php'));
     $displaydata = [];
 
     $question = question_bank::load_question($args['questionid']);

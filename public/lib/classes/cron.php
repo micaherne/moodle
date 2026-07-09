@@ -71,7 +71,7 @@ class cron {
             exit(1);
         }
 
-        require_once($CFG->libdir . '/adminlib.php');
+        require_once(dirname(__DIR__) . '/adminlib.php');
 
         if (!empty($CFG->showcronsql)) {
             $DB->set_debug(true);
@@ -576,7 +576,7 @@ class cron {
     public static function set_process_title(string $title) {
         global $CFG;
         if (CLI_SCRIPT) {
-            require_once($CFG->libdir . '/clilib.php');
+            require_once(dirname(__DIR__) . '/clilib.php');
             $datetime = userdate(time(), '%b %d, %H:%M:%S');
             cli_set_process_title_suffix("$datetime $title");
         }

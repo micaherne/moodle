@@ -9,7 +9,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once $CFG->dirroot.'/mnet/lib.php';
+require_once __DIR__ . '/lib.php';
 
 if ($CFG->mnet_dispatcher_mode === 'off') {
     throw new \moodle_exception('mnetdisabled', 'mnet');

@@ -29,7 +29,7 @@ use core_message\tests\helper as testhelper;
 final class messagelib_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/message/lib.php');
+        require_once(dirname(__DIR__) . '/lib.php');
 
         parent::setUpBeforeClass();
     }

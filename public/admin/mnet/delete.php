@@ -28,7 +28,7 @@
  */
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $step   = optional_param('step', 'verify', PARAM_ALPHA);
 $hostid = required_param('hostid', PARAM_INT);

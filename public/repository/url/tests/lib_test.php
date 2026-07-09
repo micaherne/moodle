@@ -26,7 +26,7 @@ namespace repository_url;
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once($CFG->dirroot . '/repository/url/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 
 /**

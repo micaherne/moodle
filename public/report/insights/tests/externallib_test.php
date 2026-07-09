@@ -26,8 +26,8 @@ namespace report_insights;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../../../analytics/tests/fixtures/test_indicator_max.php');
-require_once(__DIR__ . '/../../../analytics/tests/fixtures/test_target_shortname.php');
+require_once(\core\component::component_path('core_analytics', 'tests/fixtures/test_indicator_max.php'));
+require_once(\core\component::component_path('core_analytics', 'tests/fixtures/test_target_shortname.php'));
 
 /**
  * Unit tests for report_insights externallib.

@@ -18,7 +18,7 @@ namespace core\aws;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/adminlib.php');
+require_once(dirname(__DIR__, 2) . '/adminlib.php');
 
 /**
  * Admin setting for a list of AWS regions.
@@ -52,7 +52,7 @@ class admin_settings_aws_region extends \admin_setting_configtext {
         $options = [];
         // We do require() not require_once() here, as the file returns a value and we may need to get
         // this value more than once.
-        $all = require($CFG->dirroot . '/lib/aws-sdk/src/data/endpoints.json.php');
+        $all = require(dirname(__DIR__, 2) . '/aws-sdk/src/data/endpoints.json.php');
         $ends = $all['partitions'][0]['regions'];
         if ($ends) {
             foreach ($ends as $key => $value) {

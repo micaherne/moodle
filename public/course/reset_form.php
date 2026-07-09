@@ -16,8 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Defines the course reset settings form.
@@ -32,7 +32,7 @@ class course_reset_form extends moodleform {
      * Form definition.
      */
     public function definition() {
-        global $CFG, $COURSE, $DB;
+        global $COURSE, $DB;
 
         $mform = $this->_form;
 
@@ -84,14 +84,14 @@ class course_reset_form extends moodleform {
         if ($allmods = $DB->get_records('modules') ) {
             foreach ($allmods as $mod) {
                 $modname = $mod->name;
-                $modfile = $CFG->dirroot."/mod/$modname/lib.php";
+                $moddir = \core_component::get_plugin_directory('mod', $modname);
                 $modresetcourseformdefinition = $modname.'_reset_course_form_definition';
                 $modresetuserdata = $modname.'_reset_userdata';
-                if (file_exists($modfile)) {
+                if ($moddir && file_exists("$moddir/lib.php")) {
                     if (!$DB->count_records($modname, ['course' => $COURSE->id])) {
                         continue; // Skip mods with no instances.
                     }
-                    include_once($modfile);
+                    include_once("$moddir/lib.php");
                     if (function_exists($modresetcourseformdefinition)) {
                         $modresetcourseformdefinition($mform);
                     } else if (!function_exists($modresetuserdata)) {
@@ -161,7 +161,7 @@ class course_reset_form extends moodleform {
      * Method to load default values for the reset course form.
      */
     public function load_defaults() {
-        global $CFG, $COURSE, $DB;
+        global $COURSE, $DB;
 
         $mform = $this->_form;
 
@@ -180,10 +180,10 @@ class course_reset_form extends moodleform {
         if ($allmods = $DB->get_records('modules') ) {
             foreach ($allmods as $mod) {
                 $modname = $mod->name;
-                $modfile = $CFG->dirroot."/mod/$modname/lib.php";
+                $moddir = \core_component::get_plugin_directory('mod', $modname);
                 $modresetcourseformdefaults = $modname.'_reset_course_form_defaults';
-                if (file_exists($modfile)) {
-                    @include_once($modfile);
+                if ($moddir && file_exists("$moddir/lib.php")) {
+                    @include_once("$moddir/lib.php");
                     if (function_exists($modresetcourseformdefaults)) {
                         if ($moddefs = $modresetcourseformdefaults($COURSE)) {
                             $defaults = $defaults + $moddefs;
