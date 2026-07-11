@@ -144,7 +144,7 @@ function tool_lp_coursemodule_standard_elements($formwrapper, $mform) {
     $mform->addElement('header', 'competenciessection', get_string('competencies', 'core_competency'));
 
     MoodleQuickForm::registerElementType('course_competencies',
-                                         "$CFG->dirroot/$CFG->admin/tool/lp/classes/course_competencies_form_element.php",
+                                         __DIR__ . '/classes/course_competencies_form_element.php',
                                          'tool_lp_course_competencies_form_element');
     $cmid = null;
     if ($cm = $formwrapper->get_coursemodule()) {
@@ -157,12 +157,12 @@ function tool_lp_coursemodule_standard_elements($formwrapper, $mform) {
     $mform->addElement('course_competencies', 'competencies', get_string('modcompetencies', 'tool_lp'), $options);
     $mform->addHelpButton('competencies', 'modcompetencies', 'tool_lp');
     MoodleQuickForm::registerElementType('course_competency_rule',
-                                         "$CFG->dirroot/$CFG->admin/tool/lp/classes/course_competency_rule_form_element.php",
+                                         __DIR__ . '/classes/course_competency_rule_form_element.php',
                                          'tool_lp_course_competency_rule_form_element');
     // Reuse the same options.
     $mform->addElement('course_competency_rule', 'competency_rule', get_string('uponcoursemodulecompletion', 'tool_lp'), $options);
 
-    $overrideelementfile = "$CFG->dirroot/$CFG->admin/tool/lp/classes/course_competency_overridegrade_form_element.php";
+    $overrideelementfile = __DIR__ . '/classes/course_competency_overridegrade_form_element.php';
     MoodleQuickForm::registerElementType('course_competency_overridegrade', $overrideelementfile,
                                          'tool_lp_course_competency_overridegrade_form_element');
     $mform->addElement('course_competency_overridegrade', 'override_grade', get_string('overridegrade', 'tool_lp'), $options);
@@ -278,7 +278,7 @@ function tool_lp_competency_picker($mform, $courseid, $context, $elementname) {
         }
 
         MoodleQuickForm::registerElementType('site_competencies',
-                                             "$CFG->dirroot/$CFG->admin/tool/lp/classes/site_competencies_form_element.php",
+                                             __DIR__ . '/classes/site_competencies_form_element.php',
                                              'tool_lp_site_competencies_form_element');
         $mform->addElement('site_competencies', $elementname);
     } else {
@@ -287,7 +287,7 @@ function tool_lp_competency_picker($mform, $courseid, $context, $elementname) {
         }
 
         MoodleQuickForm::registerElementType('course_competencies',
-                                             "$CFG->dirroot/$CFG->admin/tool/lp/classes/course_competencies_form_element.php",
+                                             __DIR__ . '/classes/course_competencies_form_element.php',
                                              'tool_lp_course_competencies_form_element');
         $options = array(
             'courseid' => $COURSE->id

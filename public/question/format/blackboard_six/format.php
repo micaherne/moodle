@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/format/blackboard_six/formatbase.php');
-require_once($CFG->dirroot . '/question/format/blackboard_six/formatqti.php');
-require_once($CFG->dirroot . '/question/format/blackboard_six/formatpool.php');
+require_once(__DIR__ . '/formatbase.php');
+require_once(__DIR__ . '/formatqti.php');
+require_once(__DIR__ . '/formatpool.php');
 
 /**
  * Class to represent a Blackboard file.

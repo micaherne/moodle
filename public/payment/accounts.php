@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $showarchived = optional_param('showarchived', false, PARAM_BOOL);
 

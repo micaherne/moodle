@@ -207,7 +207,7 @@ final class lib_test extends \lti_advantage_testcase {
         // Teachers don't have enrol/lti:unenrol capability by default. Login as admin for simplicity.
         $this->setAdminUser();
 
-        require_once($CFG->dirroot . '/enrol/locallib.php');
+        require_once(\core\component::component_path('core_enrol', 'locallib.php'));
         $manager = new course_enrolment_manager($PAGE, $course);
         $userenrolments = $manager->get_user_enrolments($student->id);
         $this->assertCount(1, $userenrolments);

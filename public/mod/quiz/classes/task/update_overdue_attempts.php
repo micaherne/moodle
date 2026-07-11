@@ -31,7 +31,7 @@ use moodle_recordset;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 /**
  * Update Overdue Attempts Task

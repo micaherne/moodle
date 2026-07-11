@@ -27,8 +27,8 @@ use Behat\Mink\Exception\ExpectationException;
 use Behat\Gherkin\Node\{PyStringNode};
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
-require_once(__DIR__ . '/../../../../tests/behat/editor_tiny_helpers.php');
-require_once(__DIR__ . '/../../../../../../behat/behat_base.php');
+require_once(\core\component::component_path('editor_tiny', 'tests/behat/editor_tiny_helpers.php'));
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
 
 /**
  * TinyMCE HTML plugin custom behat steps definitions.

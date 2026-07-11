@@ -69,7 +69,7 @@ class view_xml extends XMLDBAction {
         // Get the file parameter
         $file = required_param('file', PARAM_PATH);
 
-        $fullpath = $CFG->dirroot . $file;
+        $fullpath = \core\component::from_mono_path($file);
         // File param must start with / and end with /db/install.xml to be safe.
         if (substr($file, 0, 1) == '/' &&
             substr($file, -15, 15) == '/db/install.xml') {

@@ -625,7 +625,7 @@ class grade_item extends grade_object {
         global $CFG;
 
         // Override for any grade items belonging to activities which are in the process of being deleted.
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         if (course_module_instance_pending_deletion($this->courseid, $this->itemmodule, $this->iteminstance)) {
             return true;
         }
@@ -1519,7 +1519,7 @@ class grade_item extends grade_object {
      */
     public function get_name($fulltotal=false, $escape = true) {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         if (strval($this->itemname) !== '') {
             // MDL-10557
 
@@ -2191,7 +2191,7 @@ class grade_item extends grade_object {
             return false;
         }
 
-        require_once($CFG->libdir.'/mathslib.php');
+        require_once(dirname(__DIR__) . '/mathslib.php');
 
         if ($this->is_locked()) {
             return true; // no need to recalculate locked items
@@ -2424,7 +2424,7 @@ class grade_item extends grade_object {
      */
     public function validate_formula($formulastr) {
         global $CFG, $DB;
-        require_once($CFG->libdir.'/mathslib.php');
+        require_once(dirname(__DIR__) . '/mathslib.php');
 
         $formulastr = grade_item::normalize_formula($formulastr, $this->courseid);
 

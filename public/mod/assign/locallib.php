@@ -97,17 +97,17 @@ define('ASSIGN_MULTIMARKING_AVERAGE_ROUND_UP', 3);
 define('ASSIGN_MULTIMARKING_MAX_MARKERS', 10);
 define('ASSIGN_MULTIMARKING_DEFAULT_MARKERS', 2);
 
-require_once($CFG->libdir . '/accesslib.php');
-require_once($CFG->libdir . '/formslib.php');
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->dirroot . '/mod/assign/mod_form.php');
-require_once($CFG->libdir . '/gradelib.php');
-require_once($CFG->dirroot . '/grade/grading/lib.php');
-require_once($CFG->dirroot . '/mod/assign/feedbackplugin.php');
-require_once($CFG->dirroot . '/mod/assign/submissionplugin.php');
-require_once($CFG->dirroot . '/mod/assign/renderable.php');
-require_once($CFG->dirroot . '/mod/assign/gradingtable.php');
-require_once($CFG->libdir . '/portfolio/caller.php');
+require_once(\core\component::component_path('core', 'accesslib.php'));
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(__DIR__ . '/mod_form.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(\core\component::component_path('core_grading', 'lib.php'));
+require_once(__DIR__ . '/feedbackplugin.php');
+require_once(__DIR__ . '/submissionplugin.php');
+require_once(__DIR__ . '/renderable.php');
+require_once(__DIR__ . '/gradingtable.php');
+require_once(\core\component::component_path('core', 'portfolio/caller.php'));
 
 use core\deprecation;
 use mod_assign\downloader;
@@ -1291,7 +1291,7 @@ class assign {
                 $DB->delete_records_select('assign_mark', "assignment $sql", $params);
                 $DB->delete_records_select('assign_allocated_marker', "assignment $sql", $params);
                 // Remove all grades from gradebook.
-                require_once($CFG->dirroot . '/mod/assign/lib.php');
+                require_once(__DIR__ . '/lib.php');
                 assign_reset_gradebook($data->courseid);
             }
 
@@ -1408,7 +1408,7 @@ class assign {
     public function update_gradebook($reset, $coursemoduleid) {
         global $CFG;
 
-        require_once($CFG->dirroot.'/mod/assign/lib.php');
+        require_once(__DIR__ . '/lib.php');
         $assign = clone $this->get_instance();
         $assign->cmidnumber = $coursemoduleid;
 
@@ -1465,7 +1465,7 @@ class assign {
      */
     public function update_calendar($coursemoduleid) {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         // Special case for add_instance as the coursemodule has not been set yet.
         $instance = $this->get_instance();
@@ -3388,7 +3388,7 @@ class assign {
      */
     protected function view_grant_extension($mform) {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/assign/extensionform.php');
+        require_once(__DIR__ . '/extensionform.php');
 
         $o = '';
 
@@ -3835,7 +3835,7 @@ class assign {
         $result .= format_text($finaltext, $format, $params);
 
         if ($CFG->enableportfolios && has_capability('mod/assign:exportownsubmission', $this->context)) {
-            require_once($CFG->libdir . '/portfoliolib.php');
+            require_once(\core\component::component_path('core', 'portfoliolib.php'));
 
             $button = new portfolio_add_button();
             $portfolioparams = array('cmid' => $this->get_course_module()->id,
@@ -4298,7 +4298,7 @@ class assign {
 
         $o = '';
 
-        require_once($CFG->dirroot . '/mod/assign/gradeform.php');
+        require_once(__DIR__ . '/gradeform.php');
 
         // Need submit permission to submit an assignment.
         require_capability('mod/assign:grade', $this->context);
@@ -4473,7 +4473,7 @@ class assign {
         $o = '';
         $instance = $this->get_instance();
 
-        require_once($CFG->dirroot . '/mod/assign/gradeform.php');
+        require_once(__DIR__ . '/gradeform.php');
 
         // Need submit permission to submit an assignment.
         require_capability('mod/assign:grade', $this->context);
@@ -4789,7 +4789,7 @@ class assign {
     protected function view_grading_table() {
         global $USER, $CFG, $SESSION, $PAGE, $OUTPUT;
 
-        require_once($CFG->dirroot . '/mod/assign/quickgradingform.php');
+        require_once(__DIR__ . '/quickgradingform.php');
 
         $submittedfilter = optional_param('status', null, PARAM_ALPHA);
         if (isset($submittedfilter)) {
@@ -5047,7 +5047,7 @@ class assign {
         $o = '';
         // Need submit permission to submit an assignment.
         $this->require_view_grades();
-        require_once($CFG->dirroot . '/mod/assign/gradeform.php');
+        require_once(__DIR__ . '/gradeform.php');
 
         $this->add_grade_notices();
 
@@ -5071,7 +5071,7 @@ class assign {
         $o = '';
 
         if (!empty($CFG->enableplagiarism)) {
-            require_once($CFG->libdir . '/plagiarismlib.php');
+            require_once(\core\component::component_path('core', 'plagiarismlib.php'));
 
             $o .= plagiarism_print_disclosure($this->get_course_module()->id);
         }
@@ -5147,7 +5147,7 @@ class assign {
         global $CFG, $USER, $DB, $PAGE, $OUTPUT;
 
         $o = '';
-        require_once($CFG->dirroot . '/mod/assign/submission_form.php');
+        require_once(__DIR__ . '/submission_form.php');
         // Need submit permission to submit an assignment.
         $userid = optional_param('userid', 0, PARAM_INT);
         $blindid = optional_param('blindid', 0, PARAM_INT);
@@ -5455,7 +5455,7 @@ class assign {
     protected function view_batch_set_workflow_state() {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/mod/assign/batchsetmarkingworkflowstateform.php');
+        require_once(__DIR__ . '/batchsetmarkingworkflowstateform.php');
 
         $o = '';
 
@@ -5523,7 +5523,7 @@ class assign {
         require_capability('mod/assign:manageallocations', $this->context);
 
         // Include batch marking allocation form.
-        require_once($CFG->dirroot . '/mod/assign/batchsetallocatedmarkerform.php');
+        require_once(__DIR__ . '/batchsetallocatedmarkerform.php');
 
         $o = '';
 
@@ -5597,7 +5597,7 @@ class assign {
     protected function check_submit_for_grading($mform) {
         global $USER, $CFG;
 
-        require_once($CFG->dirroot . '/mod/assign/submissionconfirmform.php');
+        require_once(__DIR__ . '/submissionconfirmform.php');
 
         // Check that all of the submission plugins are ready for this submission.
         // Also check whether there is something to be submitted as well against atleast one.
@@ -5763,8 +5763,8 @@ class assign {
     public function get_assign_feedback_status_renderable($user) {
         global $CFG, $DB, $PAGE;
 
-        require_once($CFG->libdir.'/gradelib.php');
-        require_once($CFG->dirroot.'/grade/grading/lib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core_grading', 'lib.php'));
 
         $instance = $this->get_instance();
         $grade = $this->get_user_grade($user->id, false);
@@ -6473,7 +6473,7 @@ class assign {
     protected function gradebook_item_update($submission=null, $grade=null) {
         global $CFG;
 
-        require_once($CFG->dirroot.'/mod/assign/lib.php');
+        require_once(__DIR__ . '/lib.php');
         // Do not push grade to gradebook if blind marking is active as
         // the gradebook would reveal the students.
         if ($this->is_blind_marking() && !$this->is_marking_anonymous()) {
@@ -7359,7 +7359,7 @@ class assign {
     protected function process_submit_for_grading($mform, &$notices) {
         global $CFG;
 
-        require_once($CFG->dirroot . '/mod/assign/submissionconfirmform.php');
+        require_once(__DIR__ . '/submissionconfirmform.php');
         require_sesskey();
 
         if (!$this->submissions_open()) {
@@ -7408,7 +7408,7 @@ class assign {
      */
     public function save_user_extension($userid, $extensionduedate) {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         // Need submit permission to submit an assignment.
         require_capability('mod/assign:grantextension', $this->context);
@@ -7494,7 +7494,7 @@ class assign {
         global $DB, $CFG;
 
         // Include extension form.
-        require_once($CFG->dirroot . '/mod/assign/extensionform.php');
+        require_once(__DIR__ . '/extensionform.php');
         require_sesskey();
 
         $users = optional_param('userid', 0, PARAM_INT);
@@ -8234,7 +8234,7 @@ class assign {
         global $CFG, $USER;
 
         // Include submission form.
-        require_once($CFG->dirroot . '/mod/assign/submission_form.php');
+        require_once(__DIR__ . '/submission_form.php');
 
         $userid = optional_param('userid', $USER->id, PARAM_INT);
         // Need submit permission to submit an assignment.
@@ -9011,7 +9011,7 @@ class assign {
     protected function process_set_batch_marking_workflow_state() {
         global $CFG, $DB, $USER;
         // Include batch marking workflow form.
-        require_once($CFG->dirroot . '/mod/assign/batchsetmarkingworkflowstateform.php');
+        require_once(__DIR__ . '/batchsetmarkingworkflowstateform.php');
 
         $formparams = array(
             'userscount' => 0,  // This form is never re-displayed, so we don't need to
@@ -9106,7 +9106,7 @@ class assign {
         require_capability('mod/assign:manageallocations', $this->context);
 
         // Include batch marking allocation form.
-        require_once($CFG->dirroot . '/mod/assign/batchsetallocatedmarkerform.php');
+        require_once(__DIR__ . '/batchsetallocatedmarkerform.php');
 
         $formparams = array(
             'userscount' => 0,
@@ -9483,7 +9483,7 @@ class assign {
             return;
         }
 
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         $data = array();
         $gradinginfo = grade_get_grades($this->get_course()->id,
@@ -9619,7 +9619,7 @@ class assign {
     protected function process_save_grade(&$mform) {
         global $CFG, $SESSION;
         // Include grade form.
-        require_once($CFG->dirroot . '/mod/assign/gradeform.php');
+        require_once(__DIR__ . '/gradeform.php');
 
         require_sesskey();
 
@@ -10885,7 +10885,7 @@ class assign_portfolio_caller extends portfolio_module_caller_base {
             return null;
         }
 
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(__DIR__ . '/locallib.php');
 
         $context = context_module::instance($this->cmid);
 

@@ -680,7 +680,7 @@ function h5pactivity_get_recent_mod_activity(array &$activities, int &$index, in
     }
 
     if ($grader) {
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $userids = [];
         foreach ($recentactivity as $id => $submission) {
             $userids[] = $submission->userid;

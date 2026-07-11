@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/user/profile/definelib.php');
+require_once(\core\component::component_path('core_user', 'profile/definelib.php'));
 
 /**
  * Tests the events related to the user profile fields and categories.

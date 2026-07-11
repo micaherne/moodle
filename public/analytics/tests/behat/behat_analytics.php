@@ -18,7 +18,7 @@
 
 use Moodle\BehatExtension\Exception\SkippedException;
 
-require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
 
 /**
  * Steps definitions related to Analytics.

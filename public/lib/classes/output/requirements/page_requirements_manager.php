@@ -611,8 +611,8 @@ class page_requirements_manager {
             } else {
                 // This is not really good, we need slasharguments for relative links, this means no caching...
                 $path = realpath("$componentdir/jquery/$file");
-                if (strpos($path, $CFG->dirroot) === 0) {
-                    $url = $CFG->wwwroot . preg_replace('/^' . preg_quote($CFG->dirroot, '/') . '/', '', $path);
+                if (\core\component::is_inside_codebase($path, '')) {
+                    $url = $CFG->wwwroot . \core\component::to_mono_path($path, leadingslash: true);
                     // Replace all occurences of backslashes characters in url to forward slashes.
                     $url = str_replace('\\', '/', $url);
                     $url = new moodle_url($url);
@@ -762,7 +762,7 @@ class page_requirements_manager {
             }
             if (debugging()) {
                 // Check file existence only when in debug mode.
-                if (!file_exists($CFG->dirroot . strtok($url, '?'))) {
+                if (!file_exists(\core\component::from_mono_path(strtok($url, '?')))) {
                     throw new coding_exception('Attempt to require a JavaScript file that does not exist.', $url);
                 }
             }
@@ -790,7 +790,7 @@ class page_requirements_manager {
      * @return array description of module or null if not found
      */
     protected function find_module($component) {
-        global $CFG, $PAGE;
+        global $PAGE;
 
         $module = null;
 
@@ -889,8 +889,8 @@ class page_requirements_manager {
         } else {
             if ($dir = core_component::get_component_directory($component)) {
                 if (file_exists("$dir/module.js")) {
-                    if (strpos($dir, $CFG->dirroot . '/') === 0) {
-                        $dir = substr($dir, strlen($CFG->dirroot));
+                    if (\core\component::is_inside_codebase($dir)) {
+                        $dir = \core\component::to_mono_path($dir, leadingslash: true);
                         $module = ['name' => $component, 'fullpath' => "$dir/module.js", 'requires' => []];
                     }
                 }
@@ -1513,7 +1513,7 @@ class page_requirements_manager {
         $requirejsloader = new moodle_url('/lib/requirejs.php');
         $requirejsloader->set_slashargument('/' . $jsrev . '/');
 
-        $requirejsconfig = file_get_contents($CFG->dirroot . '/lib/requirejs/moodle-config.js');
+        $requirejsconfig = file_get_contents(dirname(__DIR__, 3) . '/requirejs/moodle-config.js');
 
         // No extension required unless slash args is disabled.
         $jsextension = '.js';

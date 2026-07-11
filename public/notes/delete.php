@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 require_once('lib.php');
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 $noteid = required_param('id', PARAM_INT);
 

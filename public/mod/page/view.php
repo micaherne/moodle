@@ -23,10 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../config.php');
-require_once($CFG->dirroot.'/mod/page/lib.php');
-require_once($CFG->dirroot.'/mod/page/locallib.php');
-require_once($CFG->libdir.'/completionlib.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 $id      = optional_param('id', 0, PARAM_INT); // Course Module ID
 $p       = optional_param('p', 0, PARAM_INT);  // Page instance ID

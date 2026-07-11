@@ -132,8 +132,8 @@ class matrix_user_manager {
     public static function create_matrix_user_profile_fields(): string {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/user/profile/definelib.php');
-        require_once($CFG->dirroot . '/user/profile/field/text/define.class.php');
+        require_once(\core\component::component_path('core_user', 'profile/definelib.php'));
+        require_once(\core\component::component_path('profilefield_text', 'define.class.php'));
 
         // Check if communication category exists.
         $categoryname = get_string('communication', 'core_communication');
@@ -205,6 +205,6 @@ class matrix_user_manager {
     protected static function load_requirements(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/user/profile/lib.php");
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
     }
 }

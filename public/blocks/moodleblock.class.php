@@ -586,7 +586,7 @@ class block_base {
      */
     function user_can_addto($page) {
         global $CFG;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
 
         // List of formats this block supports.
         $formats = $this->applicable_formats();

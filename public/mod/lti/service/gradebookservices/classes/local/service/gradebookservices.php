@@ -36,7 +36,7 @@ use moodle_url;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once(\core\component::component_path('mod_lti', 'locallib.php'));
 
 /**
  * A service implementing LTI Gradebook Services.
@@ -390,7 +390,7 @@ class gradebookservices extends service_base {
     public function get_lineitem($courseid, $itemid, $typeid) {
         global $DB, $CFG;
 
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $lineitem = \grade_item::fetch(array('id' => $itemid));
         if ($lineitem) {
             $gbs = $this->find_ltiservice_gradebookservice_for_lineitem($itemid);
@@ -502,7 +502,7 @@ class gradebookservices extends service_base {
         if ($DB->get_record('user', array('id' => $userid)) === false) {
             throw new \Exception(null, 400);
         }
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
         $finalgrade = null;
         $timemodified = null;
         if (isset($score->scoreGiven)) {

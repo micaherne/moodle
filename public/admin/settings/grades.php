@@ -12,7 +12,7 @@ $ADMIN->add('grades', new admin_category('gradepenalty', new lang_string('gradep
 if (has_capability('moodle/grade:manage', $systemcontext)
  or has_capability('moodle/grade:manageletters', $systemcontext)) { // speedup for non-admins, add all caps used on this page
 
-    require_once $CFG->libdir.'/grade/constants.php';
+    require_once \core\component::component_path('core', 'grade/constants.php');
     $display_types = array(GRADE_DISPLAY_TYPE_REAL => new lang_string('real', 'grades'),
                            GRADE_DISPLAY_TYPE_PERCENTAGE => new lang_string('percentage', 'grades'),
                            GRADE_DISPLAY_TYPE_LETTER => new lang_string('letter', 'grades'),

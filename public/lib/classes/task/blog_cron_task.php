@@ -47,7 +47,7 @@ class blog_cron_task extends scheduled_task {
         $timenow = time();
         // Run external blog cron if needed.
         if (!empty($CFG->enableblogs) && $CFG->useexternalblogs) {
-            require_once($CFG->dirroot . '/blog/lib.php');
+            require_once(\core\component::component_path('core_blog', 'lib.php'));
             $sql = "timefetched < ? OR timefetched = 0";
             $externalblogs = $DB->get_records_select('blog_external', $sql, array($timenow - $CFG->externalblogcrontime));
 
@@ -57,7 +57,7 @@ class blog_cron_task extends scheduled_task {
         }
         // Run blog associations cleanup.
         if (!empty($CFG->enableblogs) && $CFG->useblogassociations) {
-            require_once($CFG->dirroot . '/blog/lib.php');
+            require_once(\core\component::component_path('core_blog', 'lib.php'));
             // Delete entries whose contextids no longer exists.
             $DB->delete_records_select('blog_association', 'contextid NOT IN (SELECT id FROM {context})');
         }

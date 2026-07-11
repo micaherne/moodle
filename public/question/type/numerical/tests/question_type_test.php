@@ -23,10 +23,10 @@ use question_possible_response;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/numerical/questiontype.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/type/edit_question_form.php');
-require_once($CFG->dirroot . '/question/type/numerical/edit_numerical_form.php');
+require_once(dirname(__DIR__) . '/questiontype.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(\core\component::component_path('core_question', 'type/edit_question_form.php'));
+require_once(dirname(__DIR__) . '/edit_numerical_form.php');
 
 /**
  * Unit tests for question/type/numerical/questiontype.php.

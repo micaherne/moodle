@@ -393,7 +393,7 @@ final class badgeslib_test extends badges_testcase {
      */
     public function test_badge_activity_criteria_with_a_huge_number_of_coursemodules(): void {
         global $CFG;
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_activity.php');
+        require_once(\core\component::component_path('core_completion', 'criteria/completion_criteria_activity.php'));
 
         if (!PHPUNIT_LONGTEST) {
             $this->markTestSkipped('PHPUNIT_LONGTEST is not defined');
@@ -542,7 +542,7 @@ final class badgeslib_test extends badges_testcase {
      */
     public function test_badges_observer_profile_criteria_review(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot.'/user/profile/lib.php');
+        require_once(\core\component::component_path('core_user', 'profile/lib.php'));
 
         // Add a custom field of textarea type.
         $customprofileid = $this->getDataGenerator()->create_custom_profile_field(array(
@@ -584,7 +584,7 @@ final class badgeslib_test extends badges_testcase {
     public function test_badges_observer_any_cohort_criteria_review(): void {
         global $CFG;
 
-        require_once("$CFG->dirroot/cohort/lib.php");
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
         $cohort1 = $this->getDataGenerator()->create_cohort();
         $cohort2 = $this->getDataGenerator()->create_cohort();
@@ -687,7 +687,7 @@ final class badgeslib_test extends badges_testcase {
     public function test_badges_observer_all_cohort_criteria_review(): void {
         global $CFG;
 
-        require_once("$CFG->dirroot/cohort/lib.php");
+        require_once(\core\component::component_path('core_cohort', 'lib.php'));
 
         $cohort1 = $this->getDataGenerator()->create_cohort();
         $cohort2 = $this->getDataGenerator()->create_cohort();

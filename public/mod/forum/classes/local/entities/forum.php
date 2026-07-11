@@ -27,8 +27,8 @@ namespace mod_forum\local\entities;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/forum/lib.php');
-require_once($CFG->dirroot . '/rating/lib.php');
+require_once(dirname(__DIR__, 3) . '/lib.php');
+require_once(\core\component::component_path('core_rating', 'lib.php'));
 
 use mod_forum\local\entities\discussion as discussion_entity;
 use context;

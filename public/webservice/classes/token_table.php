@@ -26,9 +26,9 @@ namespace core_webservice;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->libdir . '/tablelib.php');
-require_once($CFG->dirroot . '/webservice/lib.php');
-require_once($CFG->dirroot . '/user/lib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
+require_once(dirname(__DIR__) . '/lib.php');
+require_once(\core\component::component_path('core_user', 'lib.php'));
 
 /**
  * Class for the displaying the participants table.

@@ -148,8 +148,12 @@ final class grading_external_test extends \core_external\tests\externallib_testc
         $this->assertEquals($rubricdefinition['method'], $definition['method']);
         $this->assertEquals($USER->id, $definition['usercreated']);
 
-        require_once("$CFG->dirroot/grade/grading/lib.php");
-        require_once($CFG->dirroot.'/grade/grading/form/'.$rubricdefinition['method'].'/lib.php');
+        require_once(\core\component::component_path('core_grading', 'lib.php'));
+        $formdir = \core_component::get_plugin_directory('gradingform', $rubricdefinition['method']);
+        if ($formdir === null) {
+            throw new \coding_exception("Plugin not installed: gradingform_" . $rubricdefinition['method']);
+        }
+        require_once($formdir . '/lib.php');
 
         $gradingmanager = get_grading_manager($areaid);
 

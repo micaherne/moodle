@@ -28,7 +28,7 @@ use admin_externalpage;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("{$CFG->libdir}/adminlib.php");
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 /**
  * Admin externalpage class

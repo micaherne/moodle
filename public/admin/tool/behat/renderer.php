@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/behat/classes/behat_generator_base.php');
+require_once(\core\component::component_path('core', 'behat/classes/behat_generator_base.php'));
 
 /**
  * Renderer for behat tool web features
@@ -44,7 +44,7 @@ class tool_behat_renderer extends plugin_renderer_base {
      */
     public function render_stepsdefinitions($stepsdefinitions, $form) {
         global $CFG;
-        require_once($CFG->libdir . '/behat/classes/behat_selectors.php');
+        require_once(\core\component::component_path('core', 'behat/classes/behat_selectors.php'));
 
         $html = $this->output->header();
         $html .= $this->output->heading(get_string('pluginname', 'tool_behat'));

@@ -19,7 +19,7 @@ namespace tool_brickfield;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/admin/tool/brickfield/tests/area_test_base.php');
+require_once(__DIR__ . '/area_test_base.php');
 
 /**
  * Class tool_brickfield_area_testcase

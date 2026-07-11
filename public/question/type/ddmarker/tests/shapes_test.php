@@ -23,7 +23,7 @@ use qtype_ddmarker_shape_rectangle;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot . '/question/type/ddmarker/shapes.php');
+require_once(dirname(__DIR__) . '/shapes.php');
 
 /**
  * Unit tests for the drag-and-drop words shape code.

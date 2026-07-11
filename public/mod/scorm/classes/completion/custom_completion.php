@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core_completion\activity_custom_completion;
 
-require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 /**
  * Activity custom completion subclass for the scorm activity.

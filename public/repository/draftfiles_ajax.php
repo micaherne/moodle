@@ -26,10 +26,10 @@
 
 define('AJAX_SCRIPT', true);
 
-require('../config.php');
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot.'/repository/lib.php');
+require(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/lib.php');
 $PAGE->set_context(context_system::instance());
 require_login();
 if (isguestuser()) {

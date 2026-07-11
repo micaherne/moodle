@@ -66,7 +66,7 @@ class view_table_sql extends XMLDBAction {
         // Do the job, setting result as needed
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         // Get the correct dirs
         if (!empty($XMLDB->dbdirs)) {
@@ -88,7 +88,7 @@ class view_table_sql extends XMLDBAction {
 
         // The back to edit table button
         $b = ' <p class="centerpara buttons">';
-        $b .= '<a href="index.php?action=edit_table&amp;table=' . $tableparam . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['back'] . ']</a>';
+        $b .= '<a href="index.php?action=edit_table&amp;table=' . $tableparam . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['back'] . ']</a>';
         $b .= '</p>';
         $o = $b;
 

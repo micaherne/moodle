@@ -28,7 +28,7 @@ namespace core_grades\event;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/grade/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Unit tests for grade events.

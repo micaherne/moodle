@@ -28,7 +28,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/user/filters/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Generic filter based for checkbox and can be used for disabling items

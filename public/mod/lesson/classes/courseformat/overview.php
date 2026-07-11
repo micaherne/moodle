@@ -55,7 +55,7 @@ class overview extends \core_courseformat\activityoverviewbase {
         protected readonly \core_string_manager $stringmanager,
     ) {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/lesson/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
         parent::__construct($cm);
         $this->lesson = new lesson($this->cm->get_instance_record());
         $this->deadlines = lesson_get_user_deadline($this->cm->get_course()->id);

@@ -27,8 +27,8 @@ namespace tool_langimport;
 use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->libdir.'/componentlib.class.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'componentlib.class.php'));
 
 /**
  * Lang import controller

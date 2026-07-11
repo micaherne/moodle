@@ -28,7 +28,7 @@ namespace tool_brickfield\local\tool;
 use tool_brickfield\accessibility;
 
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->libdir . '/pdflib.php');
+require_once(\core\component::component_path('core', 'pdflib.php'));
 
 /**
  * tool_brickfield bfpdf

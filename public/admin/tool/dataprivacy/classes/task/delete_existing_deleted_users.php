@@ -30,7 +30,7 @@ use tool_dataprivacy\data_request;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/dataprivacy/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Scheduled task to create delete data request for pre-existing deleted users.

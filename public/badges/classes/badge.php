@@ -21,7 +21,7 @@ use core_badges\local\backpack\ob_factory;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/lib/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 use context_system;
 use context_course;

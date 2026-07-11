@@ -28,8 +28,8 @@ define('NO_DEBUG_DISPLAY', true);
 define('NO_UPGRADE_CHECK', true);
 define('NO_MOODLE_COOKIES', true);
 
-require('../config.php');
-require_once($CFG->dirroot.'/lib/csslib.php');
+require(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'csslib.php'));
 
 $themename = optional_param('theme', 'standard', PARAM_SAFEDIR);
 $type      = optional_param('type', '', PARAM_SAFEDIR);
@@ -38,11 +38,7 @@ $sheet     = optional_param('sheet', '', PARAM_SAFEDIR);
 $usesvg    = optional_param('svg', 1, PARAM_BOOL);
 $rtl       = optional_param('rtl', false, PARAM_BOOL);
 
-if (file_exists("$CFG->dirroot/theme/$themename/config.php")) {
-    // The theme exists in standard location - ok.
-} else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/$themename/config.php")) {
-    // Alternative theme location contains this theme - ok.
-} else {
+if (\core_component::get_plugin_directory('theme', $themename) === null) {
     css_send_css_not_found();
 }
 

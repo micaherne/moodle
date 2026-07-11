@@ -31,7 +31,7 @@ use core_competency\api;
 use core_text;
 use csv_import_reader;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Import Competency framework form.
@@ -47,7 +47,7 @@ class import extends moodleform {
      */
     public function definition() {
         global $CFG;
-        require_once($CFG->libdir . '/csvlib.class.php');
+        require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
         $mform = $this->_form;
         $element = $mform->createElement('filepicker', 'importfile', get_string('importfile', 'tool_lpimportcsv'));

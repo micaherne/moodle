@@ -39,7 +39,7 @@ final class stored_file_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $filename = 'testimage.jpg';
-        $filepath = $CFG->dirroot . '/lib/filestorage/tests/fixtures/' . $filename;
+        $filepath = __DIR__ . "/fixtures/{$filename}";
         $filerecord = [
             'contextid' => context_system::instance()->id,
             'component' => 'core',
@@ -71,7 +71,7 @@ final class stored_file_test extends advanced_testcase {
         // This is needed to make sure that this image will be rotated by stored_file::rotate_image()
         // and stored as a new rotated file.
         $filename = 'testimage_rotated.jpg';
-        $filepath = $CFG->dirroot . '/lib/filestorage/tests/fixtures/' . $filename;
+        $filepath = __DIR__ . "/fixtures/{$filename}";
         $filerecord = [
             'contextid' => context_system::instance()->id,
             'component' => 'core',
@@ -98,7 +98,7 @@ final class stored_file_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $filename = 'testimage.jpg';
-        $filepath = $CFG->dirroot . '/lib/filestorage/tests/fixtures/' . $filename;
+        $filepath = __DIR__ . "/fixtures/{$filename}";
         $filerecord = [
             'contextid' => context_system::instance()->id,
             'component' => 'core',

@@ -44,8 +44,8 @@ final class contentbank_content_uploaded_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_contenttype.php');
-        require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_content.php');
+        require_once(\core\component::component_path('core_contentbank', 'tests/fixtures/testable_contenttype.php'));
+        require_once(\core\component::component_path('core_contentbank', 'tests/fixtures/testable_content.php'));
         parent::setUpBeforeClass();
     }
 
@@ -70,7 +70,7 @@ final class contentbank_content_uploaded_test extends \advanced_testcase {
             'filepath' => '/',
             'filename' => 'dummy_h5p.h5p'
         );
-        $path = $CFG->dirroot . '/h5p/tests/fixtures/greeting-card.h5p';
+        $path = \core\component::component_path('core_h5p', 'tests/fixtures/greeting-card.h5p');
         $dummyh5pfile = \core_h5p\helper::create_fake_stored_file_from_path($path);
 
         // Trigger and capture the event when creating content from a file.

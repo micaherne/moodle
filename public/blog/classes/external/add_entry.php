@@ -80,8 +80,8 @@ class add_entry extends external_api {
             array $options = []): array {
 
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/blog/lib.php');
-        require_once($CFG->dirroot . '/blog/locallib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
+        require_once(dirname(__DIR__, 2) . '/locallib.php');
 
         $params = self::validate_parameters(self::execute_parameters(), compact('subject', 'summary',
             'summaryformat', 'options'));

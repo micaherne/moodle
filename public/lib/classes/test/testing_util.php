@@ -149,7 +149,7 @@ abstract class testing_util {
         global $CFG;
 
         if (is_null(self::$generator)) {
-            require_once($CFG->libdir . '/testing/generator/lib.php');
+            require_once(dirname(__DIR__, 2) . '/testing/generator/lib.php');
             self::$generator = new \testing_data_generator();
         }
         return self::$generator;
@@ -725,7 +725,7 @@ abstract class testing_util {
         $output .= "\n";
 
         // Add php version.
-        require_once($CFG->libdir . '/environmentlib.php');
+        require_once(dirname(__DIR__, 2) . '/environmentlib.php');
         $output .= "Php: " . normalize_version($env['phpversion']);
 
         // Add database type and version.

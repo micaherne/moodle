@@ -197,7 +197,7 @@ abstract class moodle_database {
         global $CFG;
 
         $classname = $type.'_'.$library.'_moodle_database';
-        $libfile   = "$CFG->libdir/dml/$classname.php";
+        $libfile   = __DIR__ . "/{$classname}.php";
 
         if (!file_exists($libfile)) {
             return null;
@@ -896,7 +896,7 @@ abstract class moodle_database {
     public function fix_sql_params($sql, ?array $params=null) {
         global $CFG;
 
-        require_once($CFG->libdir . '/ddllib.php');
+        require_once(dirname(__DIR__) . '/ddllib.php');
 
         $params = (array)$params; // mke null array if needed
         $allowed_types = $this->allowed_param_types();
@@ -1246,10 +1246,10 @@ abstract class moodle_database {
         global $CFG;
 
         if (!$this->database_manager) {
-            require_once($CFG->libdir.'/ddllib.php');
+            require_once(dirname(__DIR__) . '/ddllib.php');
 
             $classname = $this->get_dbfamily().'_sql_generator';
-            require_once("$CFG->libdir/ddl/$classname.php");
+            require_once(dirname(__DIR__) . "/ddl/{$classname}.php");
             $generator = new $classname($this, $this->temptables);
 
             $this->database_manager = new database_manager($this, $generator);

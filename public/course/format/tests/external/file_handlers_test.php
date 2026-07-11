@@ -34,7 +34,7 @@ final class file_handlers_test extends \core_external\tests\externallib_testcase
      */
     public static function setupBeforeClass(): void { // phpcs:ignore
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
     }
 
     /**

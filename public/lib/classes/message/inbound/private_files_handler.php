@@ -26,7 +26,7 @@ namespace core\message\inbound;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/filelib.php');
+require_once(dirname(__DIR__, 3) . '/filelib.php');
 
 /**
  * A Handler to store attachments sent in e-mails as private files.

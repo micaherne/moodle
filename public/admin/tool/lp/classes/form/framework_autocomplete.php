@@ -30,7 +30,7 @@ use MoodleQuickForm_autocomplete;
 use \core_competency\competency_framework;
 
 global $CFG;
-require_once($CFG->libdir . '/form/autocomplete.php');
+require_once(\core\component::component_path('core_form', 'autocomplete.php'));
 
 
 /**

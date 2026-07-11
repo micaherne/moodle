@@ -47,7 +47,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/lti/backup/moodle2/restore_lti_stepslib.php');
+require_once(__DIR__ . '/restore_lti_stepslib.php');
 
 /**
  * basiclti restore task that provides all the settings and steps to perform one

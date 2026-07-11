@@ -26,7 +26,7 @@ namespace core_question\statistics\questions;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/engine/lib.php');
+require_once(dirname(__DIR__, 3) . '/engine/lib.php');
 
 /**
  * Class calculated_question_summary

@@ -81,7 +81,7 @@ function lti_supports($feature) {
  **/
 function lti_add_instance($lti, $mform) {
     global $DB, $CFG;
-    require_once($CFG->dirroot.'/mod/lti/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (!isset($lti->toolurl)) {
         $lti->toolurl = '';
@@ -138,7 +138,7 @@ function lti_add_instance($lti, $mform) {
  **/
 function lti_update_instance($lti, $mform) {
     global $DB, $CFG;
-    require_once($CFG->dirroot.'/mod/lti/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     lti_load_tool_if_cartridge($lti);
 
@@ -190,7 +190,7 @@ function lti_update_instance($lti, $mform) {
  **/
 function lti_delete_instance($id) {
     global $DB, $CFG;
-    require_once($CFG->dirroot.'/mod/lti/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (! $basiclti = $DB->get_record("lti", array("id" => $id))) {
         return false;
@@ -233,7 +233,7 @@ function lti_delete_instance($id) {
 function lti_get_course_content_items(\core_course\local\entity\content_item $defaultmodulecontentitem, \stdClass $user,
         \stdClass $course) {
     global $CFG, $OUTPUT;
-    require_once($CFG->dirroot.'/mod/lti/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $types = [];
 
@@ -282,7 +282,7 @@ function lti_get_course_content_items(\core_course\local\entity\content_item $de
  */
 function mod_lti_get_all_content_items(\core_course\local\entity\content_item $defaultmodulecontentitem): array {
     global $OUTPUT, $CFG;
-    require_once($CFG->dirroot . '/mod/lti/locallib.php'); // For access to constants.
+    require_once(__DIR__ . '/locallib.php'); // For access to constants.
 
     $types = [];
 
@@ -340,7 +340,7 @@ function mod_lti_get_all_content_items(\core_course\local\entity\content_item $d
  */
 function lti_get_coursemodule_info($coursemodule) {
     global $DB, $CFG;
-    require_once($CFG->dirroot.'/mod/lti/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (!$lti = $DB->get_record('lti', array('id' => $coursemodule->instance),
             'icon, secureicon, intro, introformat, name, typeid, toolurl, launchcontainer')) {
@@ -531,8 +531,8 @@ function lti_get_lti_types_from_proxy_id($toolproxyid) {
  */
 function lti_grade_item_update($basiclti, $grades = null) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
-    require_once($CFG->dirroot.'/mod/lti/servicelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
+    require_once(__DIR__ . '/servicelib.php');
 
     if (!lti_accepts_grades($basiclti)) {
         return 0;
@@ -570,7 +570,7 @@ function lti_grade_item_update($basiclti, $grades = null) {
  */
 function lti_update_grades($basiclti, $userid=0, $nullifnone=true) {
     global $CFG;
-    require_once($CFG->dirroot.'/mod/lti/servicelib.php');
+    require_once(__DIR__ . '/servicelib.php');
     // LTI doesn't have its own grade table so the only thing to do is update the grade item.
     if (lti_accepts_grades($basiclti)) {
         lti_grade_item_update($basiclti);
@@ -586,7 +586,7 @@ function lti_update_grades($basiclti, $userid=0, $nullifnone=true) {
  */
 function lti_grade_item_delete($basiclti) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     return grade_update('mod/lti', $basiclti->course, 'mod', 'lti', $basiclti->id, 0, null, array('deleted' => 1));
 }

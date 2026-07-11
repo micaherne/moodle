@@ -66,7 +66,7 @@ class view_structure_xml extends XMLDBAction {
         $select = required_param('select', PARAM_ALPHA); //original/edited
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         // Get the correct dir
         if ($select == 'original') {

@@ -27,10 +27,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../config.php');
-require_once("$CFG->dirroot/enrol/locallib.php"); // Required for the course enrolment manager.
-require_once("$CFG->dirroot/enrol/renderer.php"); // Required for the course enrolment users table.
-require_once("$CFG->dirroot/enrol/editenrolment_form.php"); // Forms for this page.
+require(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/locallib.php'); // Required for the course enrolment manager.
+require_once(__DIR__ . '/renderer.php'); // Required for the course enrolment users table.
+require_once(__DIR__ . '/editenrolment_form.php'); // Forms for this page.
 
 $ueid   = required_param('ue', PARAM_INT);
 $filter = optional_param('ifilter', 0, PARAM_INT); // Table filter for return url.

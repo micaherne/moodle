@@ -29,7 +29,7 @@
 define('NO_DEBUG_DISPLAY', true);
 
 define('ABORT_AFTER_CONFIG', true);
-require('../config.php');
+require(__DIR__ . '/../config.php');
 
 if ($slashargument = min_get_slash_argument()) {
     $slashargument = ltrim($slashargument, '/');
@@ -96,10 +96,9 @@ if (preg_match('/^[a-z0-9_-]+(?:\/[a-z0-9_-]+)*\.woff2$/i', $font, $matches)) {
     font_not_found();
 }
 
-if (file_exists("$CFG->dirroot/theme/$themename/config.php")) {
-    // Normal theme exists.
-} else if (!empty($CFG->themedir) and file_exists("$CFG->themedir/$themename/config.php")) {
-    // Theme exists in alternative location.
+$themedir = \core_component::get_plugin_directory('theme', $themename);
+if ($themedir && file_exists("$themedir/config.php")) {
+    // Theme exists.
 } else {
     font_not_found();
 }
@@ -135,7 +134,7 @@ define('ABORT_AFTER_CONFIG_CANCEL', true);
 define('NO_MOODLE_COOKIES', true); // Session not used here.
 define('NO_UPGRADE_CHECK', true);  // Ignore upgrade check.
 
-require("$CFG->dirroot/lib/setup.php");
+require(\core\component::component_path('core', 'setup.php'));
 
 $theme = theme_config::load($themename);
 $themerev = theme_get_revision();
@@ -184,7 +183,7 @@ send_uncached_font($fontfile, $font, $mimetype);
 
 function send_cached_font($fontpath, $etag, $font, $mimetype) {
     global $CFG;
-    require("$CFG->dirroot/lib/xsendfilelib.php");
+    require(\core\component::component_path('core', 'xsendfilelib.php'));
 
     // 90 days only - based on Moodle point release cadence being every 3 months.
     $lifetime = 60 * 60 * 24 * 90;

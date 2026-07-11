@@ -142,7 +142,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
         $content = format_text($content, $submission->contentformat, array('overflowdiv'=>true));
         if (!empty($content)) {
             if (!empty($CFG->enableplagiarism)) {
-                require_once($CFG->libdir.'/plagiarismlib.php');
+                require_once(\core\component::component_path('core', 'plagiarismlib.php'));
                 $content .= plagiarism_get_links(array('userid' => $submission->authorid,
                     'content' => $submission->content,
                     'cmid' => $this->page->cm->id,
@@ -900,7 +900,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
      */
     protected function helper_submission_attachments($submissionid, $format = 'html') {
         global $CFG;
-        require_once($CFG->libdir.'/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $fs     = get_file_storage();
         $ctx    = $this->page->context;
@@ -942,7 +942,7 @@ class mod_workshop_renderer extends plugin_renderer_base {
             }
 
             if (!empty($CFG->enableplagiarism)) {
-                require_once($CFG->libdir.'/plagiarismlib.php');
+                require_once(\core\component::component_path('core', 'plagiarismlib.php'));
                 $outputfiles .= plagiarism_get_links(array('userid' => $file->get_userid(),
                     'file' => $file,
                     'cmid' => $this->page->cm->id,

@@ -28,8 +28,8 @@ define('NO_DEBUG_DISPLAY', true);
 
 // we need just the values from config.php and minlib.php
 define('ABORT_AFTER_CONFIG', true);
-require('../config.php'); // this stops immediately at the beginning of lib/setup.php
-require_once("$CFG->dirroot/lib/jslib.php");
+require(__DIR__ . '/../config.php'); // this stops immediately at the beginning of lib/setup.php
+require_once(__DIR__ . '/jslib.php');
 
 if ($slashargument = min_get_slash_argument()) {
     $slashargument = ltrim($slashargument, '/');
@@ -56,7 +56,7 @@ if (!min_is_revision_valid_and_current($rev)) {
 $jsfiles = array();
 $files = explode(',', $file);
 foreach ($files as $fsfile) {
-    $jsfile = realpath($CFG->dirroot.$fsfile);
+    $jsfile = realpath(\core\component::from_mono_path($fsfile));
     if ($jsfile === false) {
         // does not exist
         continue;
@@ -65,7 +65,7 @@ foreach ($files as $fsfile) {
         // Some shared hosting sites serve files directly from '/',
         // this is NOT supported, but at least allow JS when showing
         // errors and warnings.
-    } else if (strpos($jsfile, $CFG->dirroot . DIRECTORY_SEPARATOR) !== 0) {
+    } else if (!\core\component::is_inside_codebase($jsfile, DIRECTORY_SEPARATOR)) {
         // hackers - not in dirroot
         continue;
     }
@@ -103,7 +103,7 @@ if ($rev > 0) {
         define('NO_MOODLE_COOKIES', true); // Session not used here.
         define('NO_UPGRADE_CHECK', true);  // Ignore upgrade check.
 
-        require("$CFG->dirroot/lib/setup.php");
+        require(__DIR__ . '/setup.php');
 
         js_write_cache_file_content($candidate, core_minify::js_files($jsfiles));
         // verify nothing failed in cache file creation

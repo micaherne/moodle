@@ -23,7 +23,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Form for filtering the strings to customize

@@ -35,10 +35,9 @@ class authentication {
      * @return bool
      */
     public function plugin_exists(string $auth): bool {
-        global $CFG;
-
-        if (file_exists("{$CFG->dirroot}/auth/$auth/auth.php")) {
-            return is_readable("{$CFG->dirroot}/auth/$auth/auth.php");
+        $authdir = \core_component::get_plugin_directory('auth', $auth);
+        if ($authdir && file_exists("$authdir/auth.php")) {
+            return is_readable("$authdir/auth.php");
         }
         return false;
     }
@@ -67,13 +66,11 @@ class authentication {
      * @throws \moodle_exception If the plugin does not exist
      */
     public function get_plugin(string $auth): \auth_plugin_base {
-        global $CFG;
-
         if (!$this->plugin_exists($auth)) {
             throw new \moodle_exception('authpluginnotfound', 'debug', '', $auth);
         }
 
-        require_once("{$CFG->dirroot}/auth/$auth/auth.php");
+        require_once(\core_component::get_plugin_directory('auth', $auth) . '/auth.php');
         $class = "auth_plugin_$auth";
         return new $class();
     }

@@ -129,7 +129,7 @@ class page_viewdoc implements renderable, templatable {
         ]);
 
         if ($this->manage) {
-            require_once($CFG->libdir.'/adminlib.php');
+            require_once(\core\component::component_path('core', 'adminlib.php'));
             admin_externalpage_setup('tool_policy_managedocs', '', null, $myurl);
             require_capability('tool/policy:managedocs', context_system::instance());
             $PAGE->navbar->add(format_string($this->policy->name),

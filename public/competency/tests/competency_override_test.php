@@ -279,7 +279,7 @@ final class competency_override_test extends \advanced_testcase {
      */
     public function test_override_backup_restore(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/course/externallib.php');
+        require_once(\core\component::component_path('core_course', 'externallib.php'));
 
         // Set one to override grade and another to not override grade.
         $coursemodulecomps = api::list_course_module_competencies_in_course_module($this->cm);

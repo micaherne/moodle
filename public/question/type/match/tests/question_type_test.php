@@ -24,10 +24,10 @@ use question_possible_response;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/type/match/questiontype.php');
-require_once($CFG->dirroot . '/question/type/edit_question_form.php');
-require_once($CFG->dirroot . '/question/type/match/edit_match_form.php');
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
+require_once(dirname(__DIR__) . '/questiontype.php');
+require_once(\core\component::component_path('core_question', 'type/edit_question_form.php'));
+require_once(dirname(__DIR__) . '/edit_match_form.php');
 
 
 /**

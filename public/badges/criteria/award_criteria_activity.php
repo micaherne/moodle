@@ -25,7 +25,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir . '/completionlib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Badge award criteria -- award on activity completion

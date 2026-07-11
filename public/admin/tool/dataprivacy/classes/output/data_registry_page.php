@@ -30,8 +30,8 @@ use stdClass;
 use templatable;
 use tool_dataprivacy\data_registry;
 
-require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/dataprivacy/lib.php');
-require_once($CFG->libdir . '/blocklib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
+require_once(\core\component::component_path('core', 'blocklib.php'));
 
 /**
  * Class containing the data registry renderable

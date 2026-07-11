@@ -22,8 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../../config.php');
-require_once($CFG->libdir . '/filelib.php');
+require(__DIR__ . '/../../../config.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 $pageurl = new moodle_url('/message/output/airnotifier/checkconfiguration.php');
 $PAGE->set_url($pageurl);

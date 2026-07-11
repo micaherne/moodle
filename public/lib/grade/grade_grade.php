@@ -1188,7 +1188,7 @@ class grade_grade extends grade_object {
             \availability_grade\callbacks::grade_changed($this->userid);
         }
 
-        require_once($CFG->libdir.'/completionlib.php');
+        require_once(dirname(__DIR__) . '/completionlib.php');
 
         // Bail out immediately if completion is not enabled for site (saves loading
         // grade item & requiring the restore stuff).

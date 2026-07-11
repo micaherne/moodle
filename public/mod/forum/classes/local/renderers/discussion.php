@@ -52,8 +52,8 @@ use single_select;
 use stdClass;
 use url_select;
 
-require_once($CFG->dirroot . '/mod/forum/lib.php');
-require_once($CFG->dirroot . '/mod/forum/locallib.php');
+require_once(dirname(__DIR__, 3) . '/lib.php');
+require_once(dirname(__DIR__, 3) . '/locallib.php');
 
 /**
  * Discussion renderer class.

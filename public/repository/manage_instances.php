@@ -27,7 +27,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $edit    = optional_param('edit', 0, PARAM_INT);
 $new     = optional_param('new', '', PARAM_ALPHANUMEXT);

@@ -29,7 +29,7 @@ global $CFG;
 
 use core_competency\api;
 use core_competency\external\competency_exporter;
-require_once($CFG->libdir . '/form/autocomplete.php');
+require_once(\core\component::component_path('core_form', 'autocomplete.php'));
 
 /**
  * Course competencies element.

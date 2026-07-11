@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->libdir . '/filestorage/zip_archive.php');
+require_once(dirname(__DIR__) . '/filestorage/zip_archive.php');
 
 /**
  * Unit tests for /lib/filestorage/zip_archive.php.

@@ -93,7 +93,7 @@ if (PHP_INT_SIZE > 4) {
 define('MOODLE_INTERNAL', true);
 
 require_once(__DIR__.'/lib/classes/component.php');
-require_once(__DIR__.'/lib/installlib.php');
+require_once(\core\component::component_path('core', 'installlib.php'));
 
 // TODO: add lang detection here if empty $_REQUEST['lang']
 
@@ -164,7 +164,7 @@ $CFG = new stdClass();
 $CFG->lang                 = $config->lang;
 $CFG->dirroot              = __DIR__;
 $CFG->root                 = dirname(__DIR__);
-$CFG->libdir               = "$CFG->dirroot/lib";
+$CFG->libdir               = \core\component::component_path('core', '');
 $CFG->wwwroot              = install_guess_wwwroot(); // can not be changed - ppl must use the real address when installing
 $CFG->httpswwwroot         = $CFG->wwwroot;
 $CFG->dataroot             = $config->dataroot;
@@ -187,7 +187,7 @@ $CFG->debugdisplay         = true;
 $CFG->debugdeveloper       = true;
 
 // Require all needed libs
-require_once($CFG->libdir.'/setuplib.php');
+require_once(\core\component::component_path('core', 'setuplib.php'));
 
 // we need to make sure we have enough memory to load all libraries
 $memlimit = @ini_get('memory_limit');
@@ -208,19 +208,19 @@ ini_set('include_path', $CFG->libdir.'/pear' . PATH_SEPARATOR . ini_get('include
 \core\component::register_autoloader();
 
 // Continue with lib loading.
-require_once($CFG->libdir.'/classes/text.php');
-require_once($CFG->libdir.'/classes/string_manager.php');
-require_once($CFG->libdir.'/classes/string_manager_install.php');
-require_once($CFG->libdir.'/classes/string_manager_standard.php');
-require_once($CFG->libdir.'/weblib.php');
-require_once($CFG->libdir.'/outputlib.php');
-require_once($CFG->libdir.'/dmllib.php');
-require_once($CFG->libdir.'/moodlelib.php');
-require_once($CFG->libdir .'/pagelib.php');
-require_once($CFG->libdir.'/deprecatedlib.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/environmentlib.php');
-require_once($CFG->libdir.'/componentlib.class.php');
+require_once(\core\component::component_path('core', 'classes/text.php'));
+require_once(\core\component::component_path('core', 'classes/string_manager.php'));
+require_once(\core\component::component_path('core', 'classes/string_manager_install.php'));
+require_once(\core\component::component_path('core', 'classes/string_manager_standard.php'));
+require_once(\core\component::component_path('core', 'weblib.php'));
+require_once(\core\component::component_path('core', 'outputlib.php'));
+require_once(\core\component::component_path('core', 'dmllib.php'));
+require_once(\core\component::component_path('core', 'moodlelib.php'));
+require_once(\core\component::component_path('core', 'pagelib.php'));
+require_once(\core\component::component_path('core', 'deprecatedlib.php'));
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'environmentlib.php'));
+require_once(\core\component::component_path('core', 'componentlib.class.php'));
 
 require('version.php');
 $CFG->target_release = $release;
@@ -345,7 +345,7 @@ if ($config->stage == INSTALL_DOWNLOADLANG) {
         $config->stage = INSTALL_PATHS;
     }
 
-    if ($config->admin === '' or !file_exists($CFG->dirroot.'/'.$config->admin.'/environment.xml')) {
+    if ($config->admin === '' or !file_exists(\core\component::from_mono_path('/'.$config->admin.'/environment.xml'))) {
         $hint_admindir = get_string('pathswrongadmindir', 'install');
         $config->stage = INSTALL_PATHS;
     }
@@ -562,7 +562,7 @@ if ($config->stage == INSTALL_PATHS) {
     foreach ($paths as $path=>$name) {
         $sub .= '<dt>'.$name.'</dt><dd>'.get_string('pathssub'.$path, 'install').'</dd>';
     }
-    if (!file_exists("$CFG->dirroot/admin/environment.xml")) {
+    if (!file_exists(\core\component::component_path('core_admin', 'environment.xml'))) {
         $sub .= '<dt>'.get_string('admindirname', 'install').'</dt><dd>'.get_string('pathssubadmindir', 'install').'</dd>';
     }
     $sub .= '</dl>';
@@ -611,7 +611,7 @@ if ($config->stage == INSTALL_PATHS) {
     }
 
 
-    if (!file_exists("$CFG->dirroot/admin/environment.xml")) {
+    if (!file_exists(\core\component::component_path('core_admin', 'environment.xml'))) {
         echo '<div class="row mb-4">';
         echo '<div class="col-md-3 text-md-end pt-1"><label for="id_admin">'.$paths['admindir'].'</label></div>';
         echo '<div class="col-md-9" data-fieldtype="text">';

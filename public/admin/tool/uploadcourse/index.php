@@ -23,8 +23,8 @@
  */
 
 require(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/csvlib.class.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'csvlib.class.php'));
 
 $importid         = optional_param('importid', '', PARAM_INT);
 $categoryid = optional_param('categoryid', 0, PARAM_INT);

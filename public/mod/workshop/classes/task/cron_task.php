@@ -59,7 +59,7 @@ class cron_task extends \core\task\scheduled_task {
 
         if (!empty($workshops)) {
             mtrace('Processing automatic assessment phase switch in ' . count($workshops) . ' workshop(s) ... ', '');
-            require_once($CFG->dirroot . '/mod/workshop/locallib.php');
+            require_once(dirname(__DIR__, 2) . '/locallib.php');
             foreach ($workshops as $workshop) {
                 $cm = get_coursemodule_from_instance('workshop', $workshop->id, $workshop->course, false, MUST_EXIST);
                 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);

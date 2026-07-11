@@ -126,7 +126,7 @@ class di {
 
                 // Web requests to the Behat site can use a frozen clock if configured.
                 if (defined('BEHAT_SITE_RUNNING') && !empty($CFG->behat_frozen_clock)) {
-                    require_once($CFG->libdir . '/testing/classes/frozen_clock.php');
+                    require_once(dirname(__DIR__) . '/testing/classes/frozen_clock.php');
                     return new \frozen_clock((int)$CFG->behat_frozen_clock);
                 }
                 return new \core\system_clock();

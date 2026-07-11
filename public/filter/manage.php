@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $contextid = required_param('contextid', PARAM_INT);
 $forfilter = optional_param('filter', '', PARAM_SAFEDIR);
@@ -82,7 +82,7 @@ if ($forfilter) {
     if (!filter_has_local_settings($forfilter)) {
         throw new \moodle_exception('filterdoesnothavelocalconfig', 'error', $forfilter);
     }
-    require_once($CFG->dirroot . '/filter/' . $forfilter . '/filterlocalsettings.php');
+    require_once(\core_component::get_plugin_directory('filter', $forfilter) . '/filterlocalsettings.php');
     $formname = $forfilter . '_filter_local_settings_form';
     $settingsform = new $formname($CFG->wwwroot . '/filter/manage.php', $forfilter, $context);
     if ($settingsform->is_cancelled()) {

@@ -52,7 +52,7 @@ class cache_config_testing extends cache_config_writer {
      *     Returns a configuration array if it could not be saved. This is a bad situation. Check your error logs.
      */
     public static function create_default_configuration($forcesave = false) {
-        global $CFG;
+        global $CFG; // Needed in scope for the required store lib.php.
         // HACK ALERT.
         // We probably need to come up with a better way to create the default stores, or at least ensure 100% that the
         // default store plugins are protected from deletion.
@@ -64,9 +64,10 @@ class cache_config_testing extends cache_config_writer {
         $appdefine = defined('TEST_CACHE_USING_APPLICATION_STORE') ? TEST_CACHE_USING_APPLICATION_STORE : false;
         if ($appdefine !== false && preg_match('/^[a-zA-Z][a-zA-Z0-9_]+$/', $appdefine)) {
             $expectedstore = $appdefine;
-            $file = $CFG->dirroot . '/cache/stores/' . $appdefine . '/lib.php';
+            $plugindir = \core_component::get_plugin_directory('cachestore', $appdefine);
+            $file = $plugindir ? "$plugindir/lib.php" : null;
             $class = 'cachestore_' . $appdefine;
-            if (file_exists($file)) {
+            if ($file !== null && file_exists($file)) {
                 require_once($file);
             }
             if (class_exists($class) && $class::ready_to_be_used_for_testing()) {

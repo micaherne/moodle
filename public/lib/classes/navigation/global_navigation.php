@@ -989,7 +989,7 @@ class global_navigation extends navigation_node {
      */
     protected function load_course_sections(stdClass $course, navigation_node $coursenode, $sectionnum = null, $cm = null) {
         global $CFG, $SITE;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         if (isset($cm->sectionnum)) {
             $sectionnum = $cm->sectionnum;
         }
@@ -1015,7 +1015,7 @@ class global_navigation extends navigation_node {
      */
     protected function generate_sections_and_activities(stdClass $course) {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $modinfo = get_fast_modinfo($course);
         $sections = $modinfo->get_section_info_all();
@@ -1090,7 +1090,7 @@ class global_navigation extends navigation_node {
      */
     public function load_generic_course_sections(stdClass $course, navigation_node $coursenode) {
         global $CFG, $DB, $USER, $SITE;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $format = course_get_format($course->id);
         [$sections, $activities] = $this->generate_sections_and_activities($course);
@@ -1409,11 +1409,11 @@ class global_navigation extends navigation_node {
         }
         $activity->nodetype = navigation_node::NODETYPE_LEAF;
         $activity->make_active();
-        $file = $CFG->dirroot . '/mod/' . $cm->modname . '/lib.php';
+        $moddir = \core_component::get_plugin_directory('mod', $cm->modname);
         $function = $cm->modname . '_extend_navigation';
 
-        if (file_exists($file)) {
-            require_once($file);
+        if ($moddir && file_exists("$moddir/lib.php")) {
+            require_once("$moddir/lib.php");
             if (function_exists($function)) {
                 $activtyrecord = $DB->get_record($cm->modname, ['id' => $cm->instance], '*', MUST_EXIST);
                 $function($activity, $course, $activtyrecord, $cm);
@@ -1423,7 +1423,7 @@ class global_navigation extends navigation_node {
         // Allow the active advanced grading method plugin to append module navigation.
         $featuresfunc = $cm->modname . '_supports';
         if (function_exists($featuresfunc) && $featuresfunc(FEATURE_ADVANCED_GRADING)) {
-            require_once($CFG->dirroot . '/grade/grading/lib.php');
+            require_once(\core\component::component_path('core_grading', 'lib.php'));
             $gradingman = get_grading_manager($cm->context, 'mod_' . $cm->modname);
             $gradingman->extend_navigation($this, $activity);
         }
@@ -1442,7 +1442,7 @@ class global_navigation extends navigation_node {
     protected function load_for_user($user = null, $forceforcontext = false) {
         global $DB, $CFG, $USER, $SITE;
 
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         if ($user === null) {
             // We can't require login here but if the user isn't logged in we don't want to show anything.
@@ -1506,7 +1506,7 @@ class global_navigation extends navigation_node {
         // Only reveal user details if $user is the current user, or a user to which the current user has access.
         $viewprofile = true;
         if (!$iscurrentuser) {
-            require_once($CFG->dirroot . '/user/lib.php');
+            require_once(\core\component::component_path('core_user', 'lib.php'));
             if ($this->page->context->contextlevel == CONTEXT_USER && !has_capability('moodle/user:viewdetails', $usercontext)) {
                 $viewprofile = false;
             } else if ($this->page->context->contextlevel != CONTEXT_USER && !user_can_view_profile($user, $course, $usercontext)) {
@@ -1547,7 +1547,7 @@ class global_navigation extends navigation_node {
             // Add blog nodes.
             if (!empty($CFG->enableblogs)) {
                 if (!$this->cache->cached('userblogoptions' . $user->id)) {
-                    require_once($CFG->dirroot . '/blog/lib.php');
+                    require_once(\core\component::component_path('core_blog', 'lib.php'));
                     // Get all options for the user.
                     $options = blog_get_options_for_user($user);
                     $this->cache->set('userblogoptions' . $user->id, $options);
@@ -1606,7 +1606,7 @@ class global_navigation extends navigation_node {
 
             // Show the grades node.
             if (($issitecourse && $iscurrentuser) || has_capability('moodle/user:viewdetails', $usercontext)) {
-                require_once($CFG->dirroot . '/user/lib.php');
+                require_once(\core\component::component_path('core_user', 'lib.php'));
                 // Set the grades node to link to the "Grades" page.
                 if ($course->id == SITEID) {
                     $url = user_mygrades_url($user->id, $course->id);
@@ -1722,14 +1722,13 @@ class global_navigation extends navigation_node {
      * @return bool
      */
     public static function module_extends_navigation($modname) {
-        global $CFG;
         static $extendingmodules = [];
         if (!array_key_exists($modname, $extendingmodules)) {
             $extendingmodules[$modname] = false;
-            $file = $CFG->dirroot . '/mod/' . $modname . '/lib.php';
-            if (file_exists($file)) {
+            $moddir = \core_component::get_plugin_directory('mod', $modname);
+            if ($moddir && file_exists("$moddir/lib.php")) {
                 $function = $modname . '_extend_navigation';
-                require_once($file);
+                require_once("$moddir/lib.php");
                 $extendingmodules[$modname] = (function_exists($function));
             }
         }
@@ -1926,7 +1925,7 @@ class global_navigation extends navigation_node {
      */
     public function add_course_essentials($coursenode, stdClass $course) {
         global $CFG, $SITE;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         if ($course->id == $SITE->id) {
             return $this->add_front_page_course_essentials($coursenode, $course);
@@ -2065,7 +2064,7 @@ class global_navigation extends navigation_node {
      */
     public function add_front_page_course_essentials(navigation_node $coursenode, stdClass $course) {
         global $CFG, $USER, $COURSE, $SITE;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         if ($coursenode == false || $coursenode->get('frontpageloaded', navigation_node::TYPE_CUSTOM)) {
             return true;

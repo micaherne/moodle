@@ -191,7 +191,7 @@ class mod_feedback_structure {
      */
     public function page_after_submit() {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $pageaftersubmit = $this->get_feedback()->page_after_submit;
         if (empty($pageaftersubmit)) {

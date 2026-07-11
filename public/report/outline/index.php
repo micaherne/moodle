@@ -25,8 +25,8 @@
 
 use core\report_helper;
 
-require('../../config.php');
-require_once($CFG->dirroot.'/report/outline/locallib.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
 
 $id = required_param('id',PARAM_INT);       // course id
 $startdate = optional_param('startdate', null, PARAM_INT);

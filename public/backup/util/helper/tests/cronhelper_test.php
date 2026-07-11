@@ -31,9 +31,9 @@ use backup_cron_automated_helper;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/helper/backup_cron_helper.class.php');
-require_once($CFG->dirroot . '/backup/util/interfaces/checksumable.class.php');
-require_once("$CFG->dirroot/backup/backup.class.php");
+require_once(dirname(__DIR__) . '/backup_cron_helper.class.php');
+require_once(dirname(__DIR__, 2) . '/interfaces/checksumable.class.php');
+require_once(dirname(__DIR__, 3) . '/backup.class.php');
 
 /**
  * Unit tests for backups cron helper.

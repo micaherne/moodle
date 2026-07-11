@@ -87,7 +87,7 @@ class frontend extends \core_availability\frontend {
     protected function get_javascript_init_params($course, ?\cm_info $cm = null,
             ?\section_info $section = null) {
         global $CFG, $OUTPUT;
-        require_once($CFG->libdir . '/formslib.php');
+        require_once(\core\component::component_path('core', 'formslib.php'));
 
         // Support internationalised calendars.
         $calendartype = \core_calendar\type_factory::get_calendar_instance();

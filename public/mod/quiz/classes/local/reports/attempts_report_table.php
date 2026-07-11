@@ -18,7 +18,7 @@ namespace mod_quiz\local\reports;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/tablelib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 use coding_exception;
 use context_module;
@@ -357,7 +357,7 @@ abstract class attempts_report_table extends \table_sql {
                 ['title' => get_string('reviewresponse', 'quiz')]);
 
         if (!empty($CFG->enableplagiarism)) {
-            require_once($CFG->libdir . '/plagiarismlib.php');
+            require_once(\core\component::component_path('core', 'plagiarismlib.php'));
             $output .= plagiarism_get_links([
                 'context' => $this->context->id,
                 'component' => 'qtype_'.$this->questions[$slot]->qtype,

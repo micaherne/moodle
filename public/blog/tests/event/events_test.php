@@ -28,8 +28,8 @@ namespace core_blog\event;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/blog/locallib.php');
-require_once($CFG->dirroot . '/blog/lib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Unit tests for the blog events.

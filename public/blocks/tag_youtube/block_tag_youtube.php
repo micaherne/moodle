@@ -61,7 +61,7 @@ class block_tag_youtube extends block_base {
         global $CFG;
 
         //note: do NOT include files at the top of this file
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         if ($this->content !== NULL) {
             return $this->content;
@@ -234,7 +234,7 @@ class block_tag_youtube extends block_base {
 
         // Wrapped in an if in case we call different get_videos_* multiple times.
         if (!isset($this->service)) {
-            require_once($CFG->libdir . '/google/lib.php');
+            require_once(\core\component::component_path('core', 'google/lib.php'));
             $client = get_google_client();
             $client->setDeveloperKey($apikey);
             $client->setScopes(array(Google_Service_YouTube::YOUTUBE_READONLY));

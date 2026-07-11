@@ -50,7 +50,7 @@ final class post_statement_test extends \core_external\tests\externallib_testcas
      */
     public static function setupBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot.'/lib/xapi/tests/helper.php');
+        require_once(dirname(__DIR__) . '/helper.php');
     }
 
     /**

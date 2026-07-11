@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/choice/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Choice module library functions tests
@@ -847,7 +847,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_mod_choice_core_calendar_event_timestart_updated_unknown_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -890,7 +890,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_mod_choice_core_calendar_event_timestart_updated_open_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -951,7 +951,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_mod_choice_core_calendar_event_timestart_updated_close_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1011,7 +1011,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_mod_choice_core_calendar_get_valid_event_timestart_range_unknown_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1049,7 +1049,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_mod_choice_core_calendar_get_valid_event_timestart_range_open_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -1096,7 +1096,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
      */
     public function test_mod_choice_core_calendar_get_valid_event_timestart_range_close_event(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . "/calendar/lib.php");
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest(true);
         $this->setAdminUser();

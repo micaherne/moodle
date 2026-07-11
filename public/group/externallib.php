@@ -26,7 +26,7 @@ use core_group\visibility;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/group/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Group external functions
@@ -101,7 +101,7 @@ class core_group_external extends external_api {
      */
     public static function create_groups($groups) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::create_groups_parameters(), array('groups'=>$groups));
 
@@ -372,7 +372,7 @@ class core_group_external extends external_api {
      */
     public static function delete_groups($groupids) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::delete_groups_parameters(), array('groupids'=>$groupids));
 
@@ -511,7 +511,7 @@ class core_group_external extends external_api {
      */
     public static function add_group_members($members) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::add_group_members_parameters(), array('members'=>$members));
 
@@ -588,7 +588,7 @@ class core_group_external extends external_api {
      */
     public static function delete_group_members($members) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::delete_group_members_parameters(), array('members'=>$members));
 
@@ -668,7 +668,7 @@ class core_group_external extends external_api {
      */
     public static function create_groupings($groupings) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::create_groupings_parameters(), array('groupings'=>$groupings));
 
@@ -774,7 +774,7 @@ class core_group_external extends external_api {
      */
     public static function update_groupings($groupings) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::update_groupings_parameters(), array('groupings'=>$groupings));
 
@@ -867,8 +867,8 @@ class core_group_external extends external_api {
      */
     public static function get_groupings($groupingids, $returngroups = false) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
-        require_once("$CFG->libdir/filelib.php");
+        require_once(__DIR__ . '/lib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $params = self::validate_parameters(self::get_groupings_parameters(),
                                             array('groupingids' => $groupingids,
@@ -992,8 +992,8 @@ class core_group_external extends external_api {
      */
     public static function get_course_groupings($courseid) {
         global $CFG;
-        require_once("$CFG->dirroot/group/lib.php");
-        require_once("$CFG->libdir/filelib.php");
+        require_once(__DIR__ . '/lib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $params = self::validate_parameters(self::get_course_groupings_parameters(), array('courseid'=>$courseid));
 
@@ -1067,7 +1067,7 @@ class core_group_external extends external_api {
      */
     public static function delete_groupings($groupingids) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::delete_groupings_parameters(), array('groupingids'=>$groupingids));
 
@@ -1138,7 +1138,7 @@ class core_group_external extends external_api {
      */
     public static function assign_grouping($assignments) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::assign_grouping_parameters(), array('assignments'=>$assignments));
 
@@ -1214,7 +1214,7 @@ class core_group_external extends external_api {
      */
     public static function unassign_grouping($unassignments) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::unassign_grouping_parameters(), array('unassignments'=>$unassignments));
 
@@ -1617,7 +1617,7 @@ class core_group_external extends external_api {
      */
     public static function update_groups($groups) {
         global $CFG, $DB;
-        require_once("$CFG->dirroot/group/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::update_groups_parameters(), array('groups' => $groups));
 

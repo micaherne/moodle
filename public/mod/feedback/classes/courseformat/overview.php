@@ -94,7 +94,7 @@ class overview extends \core_courseformat\activityoverviewbase {
             return null;
         }
 
-        require_once($CFG->dirroot . '/mod/feedback/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
 
         $submissions = feedback_get_completeds_count(
             $this->cm->get_instance_record(),

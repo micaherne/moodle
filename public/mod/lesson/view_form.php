@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
  * Include formslib if it has not already been included
  */
 
-require_once($CFG->libdir.'/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Lesson page without answers

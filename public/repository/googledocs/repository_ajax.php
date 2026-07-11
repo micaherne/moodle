@@ -25,8 +25,8 @@
 define('AJAX_SCRIPT', true);
 
 require(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/lib/filelib.php');
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 
 $action    = required_param('action', PARAM_ALPHA);

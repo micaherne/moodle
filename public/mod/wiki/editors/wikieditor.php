@@ -26,9 +26,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/lib/formslib.php');
-require_once($CFG->dirroot.'/lib/form/textarea.php');
-require_once($CFG->dirroot.'/lib/form/templatable_form_element.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('core_form', 'textarea.php'));
+require_once(\core\component::component_path('core_form', 'templatable_form_element.php'));
 
 class MoodleQuickForm_wikieditor extends MoodleQuickForm_textarea {
     use templatable_form_element {
@@ -185,4 +185,4 @@ class MoodleQuickForm_wikieditor extends MoodleQuickForm_textarea {
 }
 
 //register wikieditor
-MoodleQuickForm::registerElementType('wikieditor', $CFG->dirroot."/mod/wiki/editors/wikieditor.php", 'MoodleQuickForm_wikieditor');
+MoodleQuickForm::registerElementType('wikieditor', __DIR__ . '/wikieditor.php', 'MoodleQuickForm_wikieditor');

@@ -26,7 +26,7 @@ use mod_data\preset;
 
 define('NO_MOODLE_COOKIES', true); // Session not used here.
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 
 $id = optional_param('id', 0, PARAM_INT); // Course module id.
 $d = optional_param('d', 0, PARAM_INT); // Database id.

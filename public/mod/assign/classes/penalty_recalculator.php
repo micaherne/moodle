@@ -31,7 +31,7 @@ class penalty_recalculator extends \core_grades\penalty_recalculator {
     public static function recalculate_penalty(context $context, int $usermodified): void {
         global $CFG, $DB;
 
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
 
         switch ($context->contextlevel) {
             case CONTEXT_MODULE:

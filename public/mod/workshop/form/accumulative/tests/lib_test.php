@@ -31,8 +31,8 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include the code to test
 global $CFG;
-require_once($CFG->dirroot . '/mod/workshop/locallib.php');
-require_once($CFG->dirroot . '/mod/workshop/form/accumulative/lib.php');
+require_once(\core\component::component_path('mod_workshop', 'locallib.php'));
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Unit tests for Accumulative grading strategy lib.php

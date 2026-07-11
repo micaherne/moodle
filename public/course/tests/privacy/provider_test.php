@@ -26,7 +26,7 @@ namespace core_course\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/completion/tests/fixtures/completion_creation.php');
+require_once(\core\component::component_path('core_completion', 'tests/fixtures/completion_creation.php'));
 
 use core_privacy\local\request\transform;
 

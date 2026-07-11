@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 $context = context_system::instance();
 $PAGE->set_context($context);
 

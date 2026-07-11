@@ -24,8 +24,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/lib/rsslib.php');
-require_once($CFG->dirroot .'/blog/lib.php');
+require_once(\core\component::component_path('core', 'rsslib.php'));
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Build the URL for the RSS feed
@@ -201,7 +201,7 @@ function blog_rss_get_feed($context, $args) {
     }
 
     // Get all the entries from the database.
-    require_once($CFG->dirroot .'/blog/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     $blogheaders = blog_get_headers($courseid, $groupid, $userid, $tagid);
 
     $bloglisting = new blog_listing($blogheaders['filters']);

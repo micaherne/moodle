@@ -21,7 +21,7 @@ use templatable;
 use renderable;
 use question_bank;
 
-require_once($CFG->dirroot . '/question/engine/bank.php');
+require_once(dirname(__DIR__, 2) . '/engine/bank.php');
 
 /**
  * A UI widget to select other versions of a particular question.

@@ -38,7 +38,7 @@ final class events_test extends \advanced_testcase {
      */
     protected function setUp(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(dirname(__DIR__, 2) . '/lib.php');
         parent::setUp();
         $this->resetAfterTest();
     }

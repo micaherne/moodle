@@ -34,8 +34,8 @@ final class upgradelib_test extends \advanced_testcase {
     public function setUp(): void {
         global $CFG;
 
-        require_once("{$CFG->libdir}/db/upgradelib.php");
-        require_once("{$CFG->dirroot}/my/lib.php");
+        require_once(dirname(__DIR__, 2) . '/db/upgradelib.php');
+        require_once(\core\component::component_path('core_my', 'lib.php'));
         parent::setUp();
     }
 

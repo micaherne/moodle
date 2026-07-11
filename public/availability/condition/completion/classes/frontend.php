@@ -91,7 +91,7 @@ class frontend extends \core_availability\frontend {
         global $CFG;
 
         // Check if completion is enabled for the course.
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
         $info = new \completion_info($course);
         if (!$info->is_enabled()) {
             return false;

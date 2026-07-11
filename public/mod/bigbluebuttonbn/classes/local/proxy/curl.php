@@ -28,7 +28,7 @@ use SimpleXMLElement;
 
 defined('MOODLE_INTERNAL') || die;
 global $CFG;
-require_once("{$CFG->libdir}/filelib.php");
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 /**
  * A curl wrapper for bbb.

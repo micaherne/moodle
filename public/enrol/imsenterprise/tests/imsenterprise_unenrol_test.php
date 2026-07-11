@@ -23,8 +23,8 @@ use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/enrol/imsenterprise/locallib.php');
-require_once($CFG->dirroot . '/enrol/imsenterprise/lib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * IMS Enterprise test case

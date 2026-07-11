@@ -37,7 +37,7 @@ use core_tag_tag;
 use renderer_base;
 use stdClass;
 
-require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once(dirname(__DIR__, 3) . '/lib.php');
 
 /**
  * Post exporter class.
@@ -545,7 +545,7 @@ class post extends exporter {
         $message = $post->get_message();
 
         if (!empty($CFG->enableplagiarism)) {
-            require_once($CFG->libdir . '/plagiarismlib.php');
+            require_once(\core\component::component_path('core', 'plagiarismlib.php'));
             $forum = $this->related['forum'];
             $message .= plagiarism_get_links([
                 'userid' => $post->get_author_id(),
@@ -577,7 +577,7 @@ class post extends exporter {
         $context = $this->related['context'];
 
         if ($enableplagiarism) {
-            require_once($CFG->libdir . '/plagiarismlib.php' );
+            require_once(\core\component::component_path('core', 'plagiarismlib.php') );
         }
 
         return array_map(function($attachment) use (

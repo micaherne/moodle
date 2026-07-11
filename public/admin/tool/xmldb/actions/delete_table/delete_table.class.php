@@ -65,7 +65,7 @@ class delete_table extends XMLDBAction {
 
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
         $tableparam = required_param('table', PARAM_CLEAN);
 
         $confirmed = optional_param('confirmed', false, PARAM_BOOL);
@@ -77,11 +77,11 @@ class delete_table extends XMLDBAction {
             $o.= '    <p class="centerpara">' . $this->str['confirmdeletetable'] . '<br /><br />' . $tableparam . '</p>';
             $o .= '    <table class="table-reboot w-100" cellpadding="20"><tr><td class="text-end">';
             $o.= '      <div class="singlebutton">';
-            $o.= '        <form action="index.php?action=delete_table&amp;sesskey=' . sesskey() . '&amp;confirmed=yes&amp;postaction=edit_xml_file&amp;table=' . $tableparam . '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '" method="post"><fieldset class="invisiblefieldset">';
+            $o.= '        <form action="index.php?action=delete_table&amp;sesskey=' . sesskey() . '&amp;confirmed=yes&amp;postaction=edit_xml_file&amp;table=' . $tableparam . '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '" method="post"><fieldset class="invisiblefieldset">';
             $o.= '          <input type="submit" value="'. $this->str['yes'] .'" /></fieldset></form></div>';
             $o.= '      </td><td>';
             $o.= '      <div class="singlebutton">';
-            $o.= '        <form action="index.php?action=edit_xml_file&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '" method="post"><fieldset class="invisiblefieldset">';
+            $o.= '        <form action="index.php?action=edit_xml_file&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '" method="post"><fieldset class="invisiblefieldset">';
             $o.= '          <input type="submit" value="'. $this->str['no'] .'" /></fieldset></form></div>';
             $o.= '      </td></tr>';
             $o.= '    </table>';

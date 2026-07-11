@@ -377,7 +377,7 @@ class fields {
             if (preg_match(self::PROFILE_FIELD_REGEX, $field, $matches)) {
                 $allowed = false;
                 if ($allowcustom) {
-                    require_once($CFG->dirroot . '/user/profile/lib.php');
+                    require_once(dirname(__DIR__) . '/profile/lib.php');
 
                     // Ensure the field exists (it may have been deleted since user identity was configured).
                     $field = profile_get_custom_field_data_by_shortname($matches[1], false);
@@ -640,7 +640,7 @@ class fields {
 
         // Custom fields have special handling.
         if (preg_match(self::PROFILE_FIELD_REGEX, $field, $matches)) {
-            require_once($CFG->dirroot . '/user/profile/lib.php');
+            require_once(dirname(__DIR__) . '/profile/lib.php');
             $fieldinfo = profile_get_custom_field_data_by_shortname($matches[1], false);
             // Use format_string so it can be translated with multilang filter if necessary.
             return $fieldinfo ? format_string($fieldinfo->name) : $field;

@@ -40,7 +40,7 @@ use core\output\notification;
 use mod_forum\local\data_mappers\legacy\forum;
 use mod_forum\local\factories\builder as builder_factory;
 
-require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once(dirname(__DIR__, 3) . '/lib.php');
 
 /**
  * The discussion list renderer.

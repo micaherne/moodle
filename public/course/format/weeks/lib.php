@@ -24,8 +24,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot. '/course/format/lib.php');
-require_once($CFG->dirroot. '/course/lib.php');
+require_once(\core\component::component_path('core_courseformat', 'lib.php'));
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 use core\lang_string;
 use core_courseformat\local\linearnavigationsettings;
@@ -662,7 +662,7 @@ class format_weeks extends core_courseformat\base {
  */
 function format_weeks_inplace_editable($itemtype, $itemid, $newvalue) {
     global $DB, $CFG;
-    require_once($CFG->dirroot . '/course/lib.php');
+    require_once(\core\component::component_path('core_course', 'lib.php'));
     if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
         $section = $DB->get_record_sql(
             'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',

@@ -19,7 +19,7 @@ namespace core_user;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/user/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Unit tests for user lib api.

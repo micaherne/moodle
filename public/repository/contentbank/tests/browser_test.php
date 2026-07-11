@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once("$CFG->dirroot/repository/lib.php");
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 /**
  * Tests for the content bank browser class.
@@ -60,7 +60,7 @@ final class browser_test extends \advanced_testcase {
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         // Add some content bank files in the system context.
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/filltheblanks.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p');
         $contentbankcontents = $generator->generate_contentbank_data('contenttype_h5p', 3, $admin->id,
             $systemcontext, true, $filepath);
 
@@ -172,7 +172,7 @@ final class browser_test extends \advanced_testcase {
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         // Add some content bank files in the course category context.
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/filltheblanks.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p');
         $contentbankcontents = $generator->generate_contentbank_data('contenttype_h5p', 3, $admin->id,
             $coursecatcontext, true, $filepath);
 
@@ -290,7 +290,7 @@ final class browser_test extends \advanced_testcase {
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         // Add some content bank files in the course context.
-        $filepath = $CFG->dirroot . '/h5p/tests/fixtures/filltheblanks.h5p';
+        $filepath = \core\component::component_path('core_h5p', 'tests/fixtures/filltheblanks.h5p');
         $contentbankcontents = $generator->generate_contentbank_data('contenttype_h5p', 3, $admin->id,
             $coursecontext, true, $filepath);
 

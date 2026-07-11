@@ -72,7 +72,7 @@ class edit_table_save extends XMLDBAction {
 
         // Get parameters
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         $tableparam = strtolower(required_param('table', PARAM_PATH));
         $name = substr(trim(strtolower(required_param('name', PARAM_PATH))),0,xmldb_table::NAME_MAX_LENGTH);
@@ -107,7 +107,7 @@ class edit_table_save extends XMLDBAction {
             $o = '<p>' .implode(', ', $errors) . '</p>
                   <p>' . $temptable->getName() . '</p>';
             $o.= '<a href="index.php?action=edit_table&amp;table=' . $tableparam .
-                 '&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '">[' . $this->str['back'] . ']</a>';
+                 '&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '">[' . $this->str['back'] . ']</a>';
             $this->output = $o;
 
 

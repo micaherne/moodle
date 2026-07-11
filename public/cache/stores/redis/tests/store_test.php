@@ -22,7 +22,7 @@ use cachestore_redis;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/../../../tests/fixtures/stores.php');
+require_once(\core\component::component_path('core_cache', 'tests/fixtures/stores.php'));
 require_once(__DIR__.'/../lib.php');
 
 /**

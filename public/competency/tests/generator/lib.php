@@ -43,7 +43,7 @@ use core_competency\user_evidence_competency;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/grade/grade_scale.php');
+require_once(\core\component::component_path('core', 'grade/grade_scale.php'));
 
 /**
  * Competency data generator class.

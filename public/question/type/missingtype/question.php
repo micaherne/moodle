@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/questionbase.php');
+require_once(\core\component::component_path('core_question', 'type/questionbase.php'));
 
 /**
  * This question definition class is used when the actual question type of this

@@ -32,8 +32,8 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->dirroot . '/' . $CFG->admin . '/roles/lib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/lib.php');
 
 $action = optional_param('action', '', PARAM_ALPHA);
 if ($action) {

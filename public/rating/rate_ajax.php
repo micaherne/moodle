@@ -27,8 +27,8 @@
 
 define('AJAX_SCRIPT', true);
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/rating/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/lib.php');
 
 $contextid         = required_param('contextid', PARAM_INT);
 $component         = required_param('component', PARAM_COMPONENT);

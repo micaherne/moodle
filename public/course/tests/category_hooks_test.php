@@ -28,7 +28,7 @@ namespace core_course;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/course/tests/fixtures/mock_hooks.php');
+require_once(__DIR__ . '/fixtures/mock_hooks.php');
 
 use PHPUnit\Framework\MockObject\MockObject;
 use core_course\test\mock_hooks;

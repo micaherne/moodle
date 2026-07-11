@@ -21,10 +21,10 @@
  * @copyright  Moodle Pty Ltd
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once('../config.php');
-require_once($CFG->libdir . '/bennu/bennu.inc.php');
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/calendar/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'bennu/bennu.inc.php'));
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(__DIR__ . '/lib.php');
 
 $courseid = optional_param('course', SITEID, PARAM_INT);
 $groupcourseid  = optional_param('groupcourseid', 0, PARAM_INT);
@@ -87,7 +87,7 @@ $PAGE->navbar->add($heading, $pageurl);
 // Populate the 'group' select box based on the given 'groupcourseid', if necessary.
 $groups = [];
 if (!empty($groupcourseid)) {
-    require_once($CFG->libdir . '/grouplib.php');
+    require_once(\core\component::component_path('core', 'grouplib.php'));
     $groupcoursedata = groups_get_course_data($groupcourseid);
     if (!empty($groupcoursedata->groups)) {
         foreach ($groupcoursedata->groups as $groupid => $groupdata) {

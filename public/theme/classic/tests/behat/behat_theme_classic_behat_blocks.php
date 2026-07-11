@@ -26,7 +26,7 @@ use Behat\Gherkin\Node\TableNode;
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../../blocks/tests/behat/behat_blocks.php');
+require_once(\core\component::component_path('core_block', 'tests/behat/behat_blocks.php'));
 
 /**
  * Blocks management step definitions for the Classic theme.

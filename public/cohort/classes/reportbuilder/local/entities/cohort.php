@@ -150,7 +150,7 @@ class cohort extends base {
             ->set_is_sortable(true)
             ->add_callback(static function(?string $description, stdClass $cohort): string {
                 global $CFG;
-                require_once("{$CFG->libdir}/filelib.php");
+                require_once(\core\component::component_path('core', 'filelib.php'));
 
                 if ($description === null || $cohort->ctxid === null) {
                     return '';

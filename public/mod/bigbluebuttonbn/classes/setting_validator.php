@@ -18,7 +18,7 @@ namespace mod_bigbluebuttonbn;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 /**
  * Helper class for validating settings used HTML for settings.php.

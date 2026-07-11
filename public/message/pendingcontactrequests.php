@@ -24,7 +24,7 @@
 
 // Disable moodle specific debug messages since we're just redirecting.
 define('NO_DEBUG_DISPLAY', true);
-require('../config.php');
+require(__DIR__ . '/../config.php');
 
 require_login(null, false);
 

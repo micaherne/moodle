@@ -73,7 +73,7 @@ class view_table_php extends XMLDBAction {
         // Do the job, setting result as needed
         // Get the dir containing the file
         $dirpath = required_param('dir', PARAM_PATH);
-        $dirpath = $CFG->dirroot . $dirpath;
+        $dirpath = \core\component::from_mono_path($dirpath);
 
         // Get the correct dirs
         if (!empty($XMLDB->dbdirs)) {
@@ -106,7 +106,7 @@ class view_table_php extends XMLDBAction {
 
         // The back to edit xml button
         $b = ' <p class="centerpara buttons">';
-        $b .= '<a href="index.php?action=edit_table&amp;dir=' . urlencode(str_replace($CFG->dirroot, '', $dirpath)) . '&amp;table=' . $tableparam . '">[' . $this->str['back'] . ']</a>';
+        $b .= '<a href="index.php?action=edit_table&amp;dir=' . urlencode(\core\component::to_mono_path($dirpath, true)) . '&amp;table=' . $tableparam . '">[' . $this->str['back'] . ']</a>';
         $b .= '</p>';
         $o = $b;
 
@@ -159,7 +159,7 @@ class view_table_php extends XMLDBAction {
         // Now build the form
         $o.= '<form id="form" action="index.php" method="post">';
         $o.= '<div>';
-        $o.= '    <input type="hidden" name ="dir" value="' . str_replace($CFG->dirroot, '', $dirpath) . '" />';
+        $o.= '    <input type="hidden" name ="dir" value="' . \core\component::to_mono_path($dirpath, true) . '" />';
         $o.= '    <input type="hidden" name ="table" value="' . s($tableparam) . '" />';
         $o.= '    <input type="hidden" name ="action" value="view_table_php" />';
         $o .= '   <table id="formelements" class="table-reboot" cellpadding="5">';

@@ -30,8 +30,8 @@ use core\output\html_writer;
 use core_course\form\reject_course_request as reject_course_request_form;
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(__DIR__ . '/lib.php');
 
 $approve = optional_param('approve', 0, PARAM_INT);
 $reject = optional_param('reject', 0, PARAM_INT);

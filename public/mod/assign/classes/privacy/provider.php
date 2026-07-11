@@ -26,7 +26,7 @@ namespace mod_assign\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\contextlist;

@@ -87,7 +87,7 @@ define('K_TCPDF_EXTERNAL_CONFIG', 1);
 function tcpdf_init_k_font_path() {
     global $CFG;
 
-    $defaultfonts = $CFG->dirroot.'/lib/tcpdf/fonts/';
+    $defaultfonts = __DIR__ . '/tcpdf/fonts/';
 
     if (!defined('K_PATH_FONTS')) {
         if (is_dir(PDF_CUSTOM_FONT_PATH)) {
@@ -123,7 +123,7 @@ function tcpdf_init_k_font_path() {
 tcpdf_init_k_font_path();
 
 /** tcpdf installation path */
-define('K_PATH_MAIN', $CFG->dirroot.'/lib/tcpdf/');
+define('K_PATH_MAIN', __DIR__ . '/tcpdf/');
 
 /** URL path to tcpdf installation folder */
 define('K_PATH_URL', $CFG->wwwroot . '/lib/tcpdf/');

@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/dataprivacy/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $url = new moodle_url('/' . $CFG->admin . '/tool/dataprivacy/summary.php');
 $title = get_string('summary', 'tool_dataprivacy');

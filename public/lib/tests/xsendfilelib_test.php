@@ -30,7 +30,7 @@ namespace core;
 final class xsendfilelib_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->libdir . '/xsendfilelib.php');
+        require_once(dirname(__DIR__) . '/xsendfilelib.php');
         parent::setUpBeforeClass();
     }
 

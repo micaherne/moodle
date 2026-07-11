@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/grade/constants.php');
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(\core\component::component_path('core', 'grade/constants.php'));
+require_once(\core\component::component_path('core_course', 'lib.php'));
 
 define('B_ACTIVITYRESULTS_NAME_FORMAT_FULL', 1);
 define('B_ACTIVITYRESULTS_NAME_FORMAT_ID',   2);

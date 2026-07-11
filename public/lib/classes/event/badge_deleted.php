@@ -24,7 +24,7 @@
 
 namespace core\event;
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(dirname(__DIR__, 2) . '/badgeslib.php');
 
 
 /**

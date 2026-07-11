@@ -48,8 +48,8 @@ define('CLI_SCRIPT', true);
 define('WEB_CRON_EMULATED_CLI', 'defined'); // ugly ugly hack, do not use elsewhere please
 define('NO_OUTPUT_BUFFERING', true);
 
-require('../config.php');
-require_once($CFG->libdir . '/clilib.php');
+require(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'clilib.php'));
 
 // extra safety
 \core\session\manager::write_close();

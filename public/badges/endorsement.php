@@ -27,7 +27,7 @@
 use core_badges\form\endorsement;
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 $badgeid = required_param('id', PARAM_INT);
 

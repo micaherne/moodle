@@ -18,7 +18,7 @@ namespace core_badges\output;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->libdir . '/badgeslib.php');
+require_once(\core\component::component_path('core', 'badgeslib.php'));
 
 /**
  * Class manage_badge_action_bar_test

@@ -150,7 +150,7 @@ final class info_test extends \advanced_testcase {
      */
     public function test_is_user_visible(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $this->resetAfterTest();
         $CFG->enableavailability = 0;
 
@@ -389,7 +389,7 @@ final class info_test extends \advanced_testcase {
      */
     public function test_filter_user_list(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $this->resetAfterTest();
         $CFG->enableavailability = true;
 

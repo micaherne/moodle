@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php'); // parent class definition
+require_once(\core\component::component_path('core', 'formslib.php')); // parent class definition
 
 /**
  * Base class for all assessment forms

@@ -35,7 +35,7 @@ final class template_test extends \advanced_testcase {
      */
     public static function setupBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once(\core\component::component_path('core_rating', 'lib.php'));
     }
 
     /**

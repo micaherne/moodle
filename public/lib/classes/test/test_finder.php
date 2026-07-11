@@ -91,8 +91,8 @@ class test_finder {
 
         // Hack the list a bit to cover some well-known ones.
         $subsystems['backup'] = $CFG->dirroot . '/backup';
-        $subsystems['db-dml'] = $CFG->dirroot . '/lib/dml';
-        $subsystems['db-ddl'] = $CFG->dirroot . '/lib/ddl';
+        $subsystems['db-dml'] = dirname(__DIR__, 2) . '/dml';
+        $subsystems['db-ddl'] = dirname(__DIR__, 2) . '/ddl';
 
         ksort($subsystems);
         foreach ($subsystems as $subsys => $fullsubsys) {

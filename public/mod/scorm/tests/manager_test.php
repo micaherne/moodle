@@ -365,7 +365,7 @@ final class manager_test extends \advanced_testcase {
      */
     public static function get_grading_method_data(): array {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/scorm/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
         return [
             'Max attempt 1, gradehighest' => [
                 'scormparams' => ['maxattempt' => 1, 'grademethod' => GRADEHIGHEST],
@@ -411,7 +411,7 @@ final class manager_test extends \advanced_testcase {
      */
     private function setup_users_and_activity(int $groupmode = NOGROUPS): array {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/scorm/locallib.php');
+        require_once(dirname(__DIR__) . '/locallib.php');
         $users = [];
         $generator = $this->getDataGenerator();
         $courseparams = [];

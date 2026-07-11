@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 require_once('award_criteria_course.php');
-require_once($CFG->libdir . '/completionlib.php');
-require_once($CFG->dirroot . '/grade/querylib.php');
-require_once($CFG->libdir . '/gradelib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
+require_once(\core\component::component_path('core_grades', 'querylib.php'));
+require_once(\core\component::component_path('core', 'gradelib.php'));
 
 /**
  * Badge award criteria -- award on courseset completion
@@ -75,7 +75,7 @@ class award_criteria_courseset extends award_criteria {
 
     public function get_courses(&$mform) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $buttonarray = array();
 
         $hasselectablecourses = core_course_category::search_courses(['onlywithcompletion' => true], ['limit' => 1]);

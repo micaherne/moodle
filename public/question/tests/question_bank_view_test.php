@@ -21,7 +21,7 @@ use core_question\local\bank\question_edit_contexts;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/editlib.php');
+require_once(dirname(__DIR__) . '/editlib.php');
 
 /**
  * Unit tests for the question own question bank view class.

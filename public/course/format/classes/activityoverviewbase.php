@@ -246,7 +246,7 @@ abstract class activityoverviewbase {
         if (!plugin_supports('mod', $this->cm->modname, FEATURE_GRADE_HAS_GRADE, false)) {
             return [];
         }
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         $items = grade_item::fetch_all([
                 'itemtype' => 'mod',

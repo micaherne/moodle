@@ -163,8 +163,8 @@ function wiki_delete_instance($id) {
  */
 function wiki_reset_userdata($data) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/wiki/pagelib.php');
-    require_once($CFG->dirroot . "/mod/wiki/locallib.php");
+    require_once(__DIR__ . '/pagelib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $componentstr = get_string('modulenameplural', 'wiki');
     $status = [];
@@ -319,7 +319,7 @@ function wiki_print_recent_activity($course, $viewfullnames, $timestart) {
     if (!$pages = $DB->get_records_sql($sql, array($timestart, $course->id))) {
         return false;
     }
-    require_once($CFG->dirroot . "/mod/wiki/locallib.php");
+    require_once(__DIR__ . '/locallib.php');
 
     $wikis = array();
 
@@ -414,7 +414,7 @@ function wiki_pluginfile($course, $cm, $context, $filearea, $args, $forcedownloa
 
     require_login($course, true, $cm);
 
-    require_once($CFG->dirroot . "/mod/wiki/locallib.php");
+    require_once(__DIR__ . '/locallib.php');
 
     if ($filearea == 'attachments') {
         $swid = (int) array_shift($args);
@@ -481,7 +481,7 @@ function wiki_search_form($cm, $search = '', $subwiki = null) {
 function wiki_extend_navigation(navigation_node $navref, stdClass $course, stdClass $instance, cm_info $cm) {
     global $CFG, $USER;
 
-    require_once($CFG->dirroot . '/mod/wiki/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $context = context_module::instance($cm->id);
     $userid = ($instance->wikimode == 'individual') ? $USER->id : 0;
@@ -591,7 +591,7 @@ function wiki_comment_permissions($comment_param) {
  */
 function wiki_comment_validate($comment_param) {
     global $DB, $CFG;
-    require_once($CFG->dirroot . '/mod/wiki/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     // validate comment area
     if ($comment_param->commentarea != 'wiki_page') {
         throw new comment_exception('invalidcommentarea');
@@ -742,7 +742,7 @@ function wiki_page_view($wiki, $page, $course, $cm, $context, $uid = null, $othe
  */
 function wiki_check_updates_since(cm_info $cm, $from, $filter = array()) {
     global $DB, $CFG;
-    require_once($CFG->dirroot . '/mod/wiki/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $updates = new stdClass();
     if (!has_capability('mod/wiki:viewpage', $cm->context)) {

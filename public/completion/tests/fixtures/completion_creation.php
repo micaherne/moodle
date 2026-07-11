@@ -27,9 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/completion/criteria/completion_criteria.php');
-require_once($CFG->dirroot . '/completion/criteria/completion_criteria_activity.php');
-require_once($CFG->dirroot . '/completion/criteria/completion_criteria_role.php');
+require_once(dirname(__DIR__, 2) . '/criteria/completion_criteria.php');
+require_once(dirname(__DIR__, 2) . '/criteria/completion_criteria_activity.php');
+require_once(dirname(__DIR__, 2) . '/criteria/completion_criteria_role.php');
 
 /**
  * Trait for unit tests and completion.

@@ -35,10 +35,10 @@ use pix_icon;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/authlib.php');
-require_once($CFG->libdir.'/enrollib.php');
-require_once($CFG->dirroot.'/user/lib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'authlib.php'));
+require_once(\core\component::component_path('core', 'enrollib.php'));
+require_once(\core\component::component_path('core_user', 'lib.php'));
 
 /**
  * Browse users system report class implementation

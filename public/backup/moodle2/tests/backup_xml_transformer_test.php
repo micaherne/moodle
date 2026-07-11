@@ -21,8 +21,8 @@ use backup_xml_transformer;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot . '/backup/moodle2/backup_plan_builder.class.php');
+require_once(dirname(__DIR__, 2) . '/util/includes/backup_includes.php');
+require_once(dirname(__DIR__) . '/backup_plan_builder.class.php');
 
 /**
  * Tests for backup_xml_transformer.

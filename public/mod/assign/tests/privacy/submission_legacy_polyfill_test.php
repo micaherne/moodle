@@ -28,8 +28,8 @@ namespace mod_assign\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/submissionplugin.php');
-require_once($CFG->dirroot . '/mod/assign/submission/comments/locallib.php');
+require_once(dirname(__DIR__, 2) . '/submissionplugin.php');
+require_once(\core\component::component_path('assignsubmission_comments', 'locallib.php'));
 
 /**
  * Unit tests for the assignment submission subplugins API's privacy legacy_polyfill.

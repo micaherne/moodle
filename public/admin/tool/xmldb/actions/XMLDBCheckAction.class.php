@@ -138,7 +138,7 @@ abstract class XMLDBCheckAction extends XMLDBAction {
                     // Arriving here, everything is ok, get the XMLDB structure
                     $structure = $xmldb_file->getStructure();
 
-                    $o.='    <li>' . str_replace($CFG->dirroot . '/', '', $dbdir->path . '/install.xml');
+                    $o.='    <li>' . \core\component::to_mono_path($dbdir->path . '/install.xml', false);
                     // Getting tables
                     if ($xmldb_tables = $structure->getTables()) {
                         $o.='        <ul>';

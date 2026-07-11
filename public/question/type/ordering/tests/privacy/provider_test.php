@@ -22,7 +22,7 @@ use core_privacy\local\request\writer;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/ordering/classes/privacy/provider.php');
+require_once(dirname(__DIR__, 2) . '/classes/privacy/provider.php');
 
 /**
  * Privacy provider tests.
