@@ -150,10 +150,10 @@ class plugin_misplaced_exception extends moodle_exception {
             }
         }
         if (strpos($expected, '$CFG->dirroot') !== 0) {
-            $expected = str_replace($CFG->dirroot, '$CFG->dirroot', $expected);
+            $expected = '$CFG->dirroot' . \core\component::to_mono_path($expected, leadingslash: true);
         }
         if (strpos($current, '$CFG->dirroot') !== 0) {
-            $current = str_replace($CFG->dirroot, '$CFG->dirroot', $current);
+            $current = '$CFG->dirroot' . \core\component::to_mono_path($current, leadingslash: true);
         }
         $a = new stdClass();
         $a->component = $component;
@@ -608,7 +608,7 @@ function upgrade_stale_php_files_present(): bool {
     ];
 
     foreach ($someexamplesofremovedfiles as $file) {
-        if (file_exists($CFG->dirroot.$file)) {
+        if (file_exists(\core\component::from_mono_path($file))) {
             return true;
         }
     }
@@ -979,7 +979,7 @@ function upgrade_plugins_modules($startcallback, $endcallback, $verbose) {
 function upgrade_plugins_blocks($startcallback, $endcallback, $verbose) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot.'/blocks/moodleblock.class.php');
+    require_once(\core\component::component_path('core_block', 'moodleblock.class.php'));
 
     $blocktitles   = array(); // we do not want duplicate titles
 
@@ -1750,7 +1750,7 @@ function upgrade_language_pack($lang = null) {
         return;
     }
 
-    if (!file_exists("$CFG->dirroot/$CFG->admin/tool/langimport/lib.php")) {
+    if (!file_exists(\core\component::component_path('tool_langimport', 'lib.php'))) {
         // weird, somebody uninstalled the import utility
         return;
     }
@@ -1771,7 +1771,7 @@ function upgrade_language_pack($lang = null) {
 
     upgrade_started(false);
 
-    require_once("$CFG->dirroot/$CFG->admin/tool/langimport/lib.php");
+    require_once(\core\component::component_path('tool_langimport', 'lib.php'));
     tool_langimport_preupgrade_update($lang);
 
     get_string_manager()->reset_caches();
@@ -1786,7 +1786,7 @@ function upgrade_language_pack($lang = null) {
 function upgrade_themes() {
     global $CFG;
 
-    require_once("{$CFG->libdir}/outputlib.php");
+    require_once(__DIR__ . '/outputlib.php');
 
     // Build the current theme so that the user can immediately
     // browse the site without having to wait for the theme to build.
@@ -1833,13 +1833,13 @@ function install_core($version, $verbose) {
         core_php_time_limit::raise(600);
         print_upgrade_part_start('moodle', true, $verbose); // does not store upgrade running flag
 
-        $DB->get_manager()->install_from_xmldb_file("$CFG->libdir/db/install.xml");
+        $DB->get_manager()->install_from_xmldb_file(__DIR__ . '/db/install.xml');
         core_upgrade_time::record_detail('install.xml');
         upgrade_started();     // we want the flag to be stored in config table ;-)
         core_upgrade_time::record_detail('upgrade_started');
 
         // set all core default records and default settings
-        require_once("$CFG->libdir/db/install.php");
+        require_once(__DIR__ . '/db/install.php');
         core_upgrade_time::record_detail('install.php');
         xmldb_main_install(); // installs the capabilities too
         core_upgrade_time::record_detail('xmldb_main_install');
@@ -1878,7 +1878,7 @@ function upgrade_core($version, $verbose) {
 
     raise_memory_limit(MEMORY_EXTRA);
 
-    require_once($CFG->libdir.'/db/upgrade.php');    // Defines upgrades
+    require_once(__DIR__ . '/db/upgrade.php');    // Defines upgrades
 
     try {
         // If we are in maintenance, we can purge all our caches here.
@@ -2506,7 +2506,7 @@ function check_sixtyfour_bits(environment_results $result) {
 function check_db_prefix_length(environment_results $result) {
     global $CFG;
 
-    require_once($CFG->libdir.'/ddllib.php');
+    require_once(__DIR__ . '/ddllib.php');
     $prefixlen = strlen($CFG->prefix) ?? 0;
     if ($prefixlen > xmldb_table::PREFIX_MAX_LENGTH) {
         $parameters = (object)['current' => $prefixlen, 'maximum' => xmldb_table::PREFIX_MAX_LENGTH];

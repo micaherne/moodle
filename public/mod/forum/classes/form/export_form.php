@@ -26,8 +26,8 @@ namespace mod_forum\form;
 
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 
-require_once($CFG->dirroot.'/mod/forum/lib.php');
-require_once($CFG->libdir.'/formslib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 /**
  * Export discussion form.

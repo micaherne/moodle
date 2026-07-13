@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die;
 
 // Make sure the code being tested is accessible.
 global $CFG;
-require_once($CFG->dirroot . '/mod/scorm/locallib.php'); // Include the code to test.
+require_once(dirname(__DIR__) . '/locallib.php'); // Include the code to test.
 
 /**
  * Unit tests for scorm_formatduration function from locallib.php

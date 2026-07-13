@@ -32,9 +32,9 @@ use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
-require_once($CFG->dirroot . '/mod/assign/tests/fixtures/event_mod_assign_fixtures.php');
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(dirname(__DIR__) . '/generator.php');
+require_once(dirname(__DIR__) . '/fixtures/event_mod_assign_fixtures.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 /**
  * Contains the event tests for the module assign.
@@ -275,7 +275,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_extension_granted(): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/calendar/lib.php');
+        require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
         $this->resetAfterTest();
 

@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 /**
  * Test subclass that makes all the protected methods we want to test public.
@@ -69,7 +69,7 @@ class mod_assign_testable_assign extends assign {
 
     public function testable_process_set_batch_marking_allocation($selectedusers, $markerid) {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/assign/batchsetallocatedmarkerform.php');
+        require_once(dirname(__DIR__, 2) . '/batchsetallocatedmarkerform.php');
 
         // Simulate the form submission.
         $data = array();
@@ -84,7 +84,7 @@ class mod_assign_testable_assign extends assign {
 
     public function testable_process_set_batch_marking_workflow_state($selectedusers, $state) {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/assign/batchsetmarkingworkflowstateform.php');
+        require_once(dirname(__DIR__, 2) . '/batchsetmarkingworkflowstateform.php');
 
         // Simulate the form submission.
         $data = array();

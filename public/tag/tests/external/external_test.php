@@ -148,7 +148,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
      */
     public function test_update_inplace_editable(): void {
         global $CFG, $DB, $PAGE;
-        require_once($CFG->dirroot . '/lib/external/externallib.php');
+        require_once(\core\component::component_path('core_external', 'externallib.php'));
 
         $this->resetAfterTest(true);
         $tag = $this->getDataGenerator()->create_tag();

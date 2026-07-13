@@ -27,8 +27,8 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 
-require_once("{$CFG->dirroot}/calendar/externallib.php");
-require_once("{$CFG->dirroot}/course/externallib.php");
+require_once(\core\component::component_path('core_calendar', 'externallib.php'));
+require_once(dirname(__DIR__, 2) . '/externallib.php');
 
 /**
  * Class for fetching courses which have action event(s) and match given filter parameters.

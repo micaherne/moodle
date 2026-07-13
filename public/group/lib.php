@@ -409,7 +409,7 @@ function groups_create_grouping($data, $editoroptions=null) {
  */
 function groups_update_group_icon($group, $data, $editform) {
     global $CFG, $DB;
-    require_once("$CFG->libdir/gdlib.php");
+    require_once(\core\component::component_path('core', 'gdlib.php'));
 
     $fs = get_file_storage();
     $context = context_course::instance($group->courseid, MUST_EXIST);
@@ -590,7 +590,7 @@ function groups_update_grouping($data, $editoroptions=null) {
  */
 function groups_delete_group($grouporid) {
     global $CFG, $DB;
-    require_once("$CFG->libdir/gdlib.php");
+    require_once(\core\component::component_path('core', 'gdlib.php'));
 
     if (is_object($grouporid)) {
         $groupid = $grouporid->id;

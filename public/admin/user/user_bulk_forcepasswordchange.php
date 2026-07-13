@@ -3,9 +3,9 @@
 * script for bulk user force password change
 */
 
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
 require_once('lib.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
 

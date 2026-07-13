@@ -23,8 +23,8 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once("$CFG->libdir/formslib.php");
-require_once("$CFG->libdir/filestorage/file_storage.php");
+require_once(\core\component::component_path('core', 'formslib.php'));
+require_once(\core\component::component_path('core', 'filestorage/file_storage.php'));
 
 require_login(null, false);
 

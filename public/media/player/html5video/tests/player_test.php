@@ -69,7 +69,7 @@ final class player_test extends \advanced_testcase {
      */
     public function test_list_supported_urls(): void {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $nativeextensions = file_get_typegroup('extension', 'html_video');
 

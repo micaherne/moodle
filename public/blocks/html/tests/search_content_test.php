@@ -75,7 +75,7 @@ final class search_content_test extends \advanced_testcase {
      */
     public function test_search_area(): void {
         global $CFG, $USER, $DB;
-        require_once($CFG->dirroot . '/search/tests/fixtures/testable_core_search.php');
+        require_once(\core\component::component_path('core_search', 'tests/fixtures/testable_core_search.php'));
 
         $this->resetAfterTest();
         $this->setAdminUser();

@@ -30,8 +30,8 @@ use qformat_default;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/format.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(dirname(__DIR__) . '/format.php');
 
 /**
  * Subclass to make it easier to test qformat_default.

@@ -50,10 +50,10 @@ define('DRAFT_AREA_BUCKET_CAPACITY', 50);
  */
 define('DRAFT_AREA_BUCKET_LEAK', 0.2);
 
-require_once("$CFG->libdir/filestorage/file_exceptions.php");
-require_once("$CFG->libdir/filestorage/file_storage.php");
-require_once("$CFG->libdir/filestorage/zip_packer.php");
-require_once("$CFG->libdir/filebrowser/file_browser.php");
+require_once(__DIR__ . '/filestorage/file_exceptions.php');
+require_once(__DIR__ . '/filestorage/file_storage.php');
+require_once(__DIR__ . '/filestorage/zip_packer.php');
+require_once(__DIR__ . '/filebrowser/file_browser.php');
 
 /**
  * Detects if area contains subdirs,
@@ -2227,7 +2227,7 @@ function readfile_accel($file, $mimetype, $accelerate) {
             }
         } else {
             if (!empty($CFG->xsendfile)) {
-                require_once("$CFG->libdir/xsendfilelib.php");
+                require_once(__DIR__ . '/xsendfilelib.php');
                 if (xsendfile($file)) {
                     return;
                 }
@@ -3286,8 +3286,8 @@ class curl {
 
         // Windows PHP does not have any certs, we need to use something.
         if ($CFG->ostype === 'WINDOWS') {
-            if (is_readable("$CFG->libdir/cacert.pem")) {
-                return realpath("$CFG->libdir/cacert.pem");
+            if (is_readable(__DIR__ . '/cacert.pem')) {
+                return realpath(__DIR__ . '/cacert.pem');
             }
         }
 
@@ -4524,7 +4524,7 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
     // ========================================================================================================================
     } else if ($component === 'grade') {
 
-        require_once($CFG->libdir . '/grade/constants.php');
+        require_once(__DIR__ . '/grade/constants.php');
 
         if (($filearea === 'outcome' or $filearea === 'scale') and $context->contextlevel == CONTEXT_SYSTEM) {
             // Global gradebook files
@@ -4604,7 +4604,7 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
         }
     // ========================================================================================================================
     } else if ($component === 'badges') {
-        require_once($CFG->libdir . '/badgeslib.php');
+        require_once(__DIR__ . '/badgeslib.php');
 
         $badgeid = (int)array_shift($args);
         $badge = new badge($badgeid);
@@ -4849,7 +4849,7 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
             $userid = $context->instanceid;
 
             if (!empty($CFG->forceloginforprofiles)) {
-                require_once("{$CFG->dirroot}/user/lib.php");
+                require_once(\core\component::component_path('core_user', 'lib.php'));
 
                 require_login();
 
@@ -4878,7 +4878,7 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
             }
 
             if (!empty($CFG->forceloginforprofiles)) {
-                require_once("{$CFG->dirroot}/user/lib.php");
+                require_once(\core\component::component_path('core_user', 'lib.php'));
 
                 require_login();
 
@@ -5188,7 +5188,7 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
 
     // ========================================================================================================================
     } else if ($component === 'question') {
-        require_once($CFG->libdir . '/questionlib.php');
+        require_once(__DIR__ . '/questionlib.php');
         question_pluginfile($course, $context, 'question', $filearea, $args, $forcedownload, $sendfileoptions);
         send_file_not_found();
 
@@ -5283,10 +5283,11 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
         }
     } else if (strpos($component, 'mod_') === 0) {
         $modname = substr($component, 4);
-        if (!file_exists("$CFG->dirroot/mod/$modname/lib.php")) {
+        $moddir = \core_component::get_plugin_directory('mod', $modname);
+        if (!$moddir || !file_exists("$moddir/lib.php")) {
             send_file_not_found();
         }
-        require_once("$CFG->dirroot/mod/$modname/lib.php");
+        require_once("$moddir/lib.php");
 
         if ($context->contextlevel == CONTEXT_MODULE) {
             if ($cm->modname !== $modname) {
@@ -5339,10 +5340,11 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
     } else if (strpos($component, 'block_') === 0) {
         $blockname = substr($component, 6);
         // note: no more class methods in blocks please, that is ....
-        if (!file_exists("$CFG->dirroot/blocks/$blockname/lib.php")) {
+        $blockdir = \core_component::get_plugin_directory('block', $blockname);
+        if (!$blockdir || !file_exists("$blockdir/lib.php")) {
             send_file_not_found();
         }
-        require_once("$CFG->dirroot/blocks/$blockname/lib.php");
+        require_once("$blockdir/lib.php");
 
         if ($context->contextlevel == CONTEXT_BLOCK) {
             $birecord = $DB->get_record('block_instances', array('id'=>$context->instanceid), '*',MUST_EXIST);

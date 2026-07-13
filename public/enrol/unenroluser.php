@@ -25,9 +25,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../config.php');
-require_once("$CFG->dirroot/enrol/locallib.php");
-require_once("$CFG->dirroot/enrol/renderer.php");
+require(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/renderer.php');
 
 $ueid    = required_param('ue', PARAM_INT); // user enrolment id
 $confirm = optional_param('confirm', false, PARAM_BOOL);

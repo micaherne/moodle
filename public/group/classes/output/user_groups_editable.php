@@ -31,7 +31,7 @@ use coding_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/group/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Class to display list of user groups.

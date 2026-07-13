@@ -22,7 +22,7 @@
  * @package course
  */
 
-require_once("../config.php");
+require_once(__DIR__ . '/../config.php');
 require_once("lib.php");
 
 $id      = required_param('id',PARAM_INT);       // course id
@@ -137,7 +137,7 @@ switch ($mode) {
     case "grade":
         // Change the navigation to point to the my grade node (If we are a student).
         if ($USER->id == $user->id) {
-            require_once($CFG->dirroot . '/user/lib.php');
+            require_once(\core\component::component_path('core_user', 'lib.php'));
             // Get the correct 'Grades' url to point to.
             $activeurl = user_mygrades_url();
             $navbar = $PAGE->navbar->add(get_string('grades', 'grades'), $activeurl, navigation_node::TYPE_SETTING, null, 'grades');
@@ -190,12 +190,17 @@ switch ($mode) {
             echo $OUTPUT->heading(get_string('grades', 'moodle'), 2, 'main mt-4 mb-4');
         }
 
-        if (empty($CFG->grade_profilereport) or !file_exists($CFG->dirroot.'/grade/report/'.$CFG->grade_profilereport.'/lib.php')) {
-            $CFG->grade_profilereport = 'user';
+        $gradereportdir = null;
+        if (!empty($CFG->grade_profilereport)) {
+            $gradereportdir = \core_component::get_plugin_directory('gradereport', $CFG->grade_profilereport);
         }
-        require_once $CFG->libdir.'/gradelib.php';
-        require_once $CFG->dirroot.'/grade/lib.php';
-        require_once $CFG->dirroot.'/grade/report/'.$CFG->grade_profilereport.'/lib.php';
+        if (!$gradereportdir || !file_exists($gradereportdir . '/lib.php')) {
+            $CFG->grade_profilereport = 'user';
+            $gradereportdir = \core_component::get_plugin_directory('gradereport', 'user');
+        }
+        require_once \core\component::component_path('core', 'gradelib.php');
+        require_once \core\component::component_path('core_grades', 'lib.php');
+        require_once $gradereportdir . '/lib.php';
 
         // User must be able to view this grade report.
         if (!$viewasuser) {

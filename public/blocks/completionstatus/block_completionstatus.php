@@ -28,7 +28,7 @@ class block_completionstatus extends block_base {
     public function init() {
         global $CFG;
 
-        require_once("{$CFG->libdir}/completionlib.php");
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         $this->title = get_string('pluginname', 'block_completionstatus');
     }

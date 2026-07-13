@@ -32,7 +32,7 @@ use lang_installer_exception;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/componentlib.class.php');
+require_once(dirname(__DIR__) . '/componentlib.class.php');
 
 /**
  * Unit tests for /lib/componentlib.class.php.

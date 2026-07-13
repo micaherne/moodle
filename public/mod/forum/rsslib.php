@@ -25,7 +25,7 @@
  */
 
 /* Include the core RSS lib */
-require_once($CFG->libdir.'/rsslib.php');
+require_once(\core\component::component_path('core', 'rsslib.php'));
 
 /**
  * Returns the path to the cached rss feed contents. Creates/updates the cache if necessary.

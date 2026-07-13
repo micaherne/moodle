@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/question/type/ddimageortext/questiontypebase.php');
+require_once(__DIR__ . '/questiontypebase.php');
 
 /**
  * The drag-and-drop onto image question type class.

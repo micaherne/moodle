@@ -25,7 +25,7 @@ use moodle_url;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
-require_once("{$CFG->libdir}/tablelib.php");
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * Plugin Management table.
@@ -52,7 +52,7 @@ abstract class plugin_management_table extends flexible_table implements dynamic
         global $CFG;
 
         parent::__construct($this->get_table_id());
-        require_once($CFG->libdir . '/adminlib.php');
+        require_once(\core\component::component_path('core', 'adminlib.php'));
 
         // Fetch the plugininfo class.
         $this->pluginmanager = core_plugin_manager::instance();

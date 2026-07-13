@@ -151,7 +151,7 @@ class user_repository {
         $ltiuserrecord = $this->lti_user_record_from_user($user);
         $timenow = time();
         global $CFG;
-        require_once($CFG->dirroot . '/user/lib.php');
+        require_once(\core\component::component_path('core_user', 'lib.php'));
         if ($exists) {
             $ltiuser = $DB->get_record($this->ltiuserstable, ['id' => $ltiuserrecord->id]);
             $userid = $ltiuser->userid;

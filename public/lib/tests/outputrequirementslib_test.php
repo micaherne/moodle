@@ -166,7 +166,7 @@ final class outputrequirementslib_test extends \advanced_testcase {
     public static function js_fix_url_moodle_url_provider(): array {
         global $CFG;
         $wwwroot = rtrim($CFG->wwwroot, '/');
-        $libdir = rtrim($CFG->libdir, '/');
+        $libdir = rtrim(dirname(__DIR__), '/');
         $admin = "/{$CFG->admin}/"; // Deprecated, just for coverage purposes.
 
         // Note: $CFG->slasharguments is enabled by default; it will be a forced setting one day (MDL-62640).

@@ -21,7 +21,7 @@ use core_external\external_api;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/lib/external/externallib.php');
+require_once(dirname(__DIR__) . '/externallib.php');
 
 /**
  * External library functions unit tests

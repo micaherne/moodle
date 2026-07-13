@@ -96,7 +96,7 @@ class course_viewed extends base {
         } else if (isset($this->other['coursesectionid'])) {
             $sectionnumber = $this->other['coursesectionid'];
         }
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         try {
             return course_get_url($this->courseid, $sectionnumber);
         } catch (\Exception $e) {

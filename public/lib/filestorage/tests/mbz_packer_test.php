@@ -19,7 +19,7 @@ namespace core;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filestorage/file_progress.php');
+require_once(dirname(__DIR__) . '/file_progress.php');
 
 /**
  * Unit tests for /lib/filestorage/mbz_packer.php.
@@ -36,7 +36,7 @@ final class mbz_packer_test extends \advanced_testcase {
 
         // Get backup packer.
         $packer = get_file_packer('application/vnd.moodle.backup');
-        require_once($CFG->dirroot . '/lib/filestorage/tgz_packer.php');
+        require_once(dirname(__DIR__) . '/tgz_packer.php');
 
         // Set up basic archive contents.
         $files = array('1.txt' => array('frog'));

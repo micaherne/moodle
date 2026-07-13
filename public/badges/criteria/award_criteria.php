@@ -171,7 +171,7 @@ abstract class award_criteria {
     public static function build($params) {
         global $CFG;
 
-        require_once($CFG->libdir . '/badgeslib.php');
+        require_once(\core\component::component_path('core', 'badgeslib.php'));
 
         $types = badges_list_criteria(false);
 
@@ -180,7 +180,7 @@ abstract class award_criteria {
         }
 
         $class = 'award_criteria_' . $types[$params['criteriatype']];
-        require_once($CFG->dirroot . '/badges/criteria/' . $class . '.php');
+        require_once(__DIR__ . "/{$class}.php");
 
         return new $class($params);
     }

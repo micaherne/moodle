@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__.'/lib.php');
-require_once($CFG->dirroot.'/mod/book/locallib.php');
+require_once(\core\component::component_path('mod_book', 'locallib.php'));
 
 /**
  * Export one book as IMSCP package

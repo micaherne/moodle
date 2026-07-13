@@ -144,7 +144,7 @@ function resourcelib_get_displayoptions(array $enabled, $current=null) {
  */
 function resourcelib_guess_url_mimetype($fullurl) {
     global $CFG;
-    require_once("$CFG->libdir/filelib.php");
+    require_once(__DIR__ . '/filelib.php');
 
     if ($fullurl instanceof moodle_url) {
         $fullurl = $fullurl->out(false);

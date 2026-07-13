@@ -27,10 +27,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/calculated/question.php');
-require_once($CFG->dirroot . '/question/type/numerical/question.php');
-require_once($CFG->dirroot . '/question/type/numerical/questiontype.php');
-require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
+require_once(dirname(__DIR__) . '/question.php');
+require_once(\core\component::component_path('qtype_numerical', 'question.php'));
+require_once(\core\component::component_path('qtype_numerical', 'questiontype.php'));
+require_once(\core\component::component_path('core_question', 'engine/tests/helpers.php'));
 
 
 /**

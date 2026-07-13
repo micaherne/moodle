@@ -71,7 +71,7 @@ class get_result_admintree extends external_api {
         self::validate_context($context);
         require_admin();
 
-        require_once($CFG->libdir . '/adminlib.php');
+        require_once(dirname(__DIR__, 3) . '/adminlib.php');
 
         // Find admin node so we can load the check object.
         $check = self::get_check_from_setting($admintreeid, $settingname, $admintree);

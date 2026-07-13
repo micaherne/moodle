@@ -22,8 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../config.php');
-require_once($CFG->dirroot.'/course/lib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/lib.php');
 
 $categoryid = optional_param('categoryid', null, PARAM_INT);
 $selectedcategoryid = optional_param('selectedcategoryid', null, PARAM_INT);

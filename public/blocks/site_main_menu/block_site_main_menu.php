@@ -15,8 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot. '/course/format/lib.php');
+require_once(\core\component::component_path('core_course', 'lib.php'));
+require_once(\core\component::component_path('core_courseformat', 'lib.php'));
 
 /**
  * Site main menu block.

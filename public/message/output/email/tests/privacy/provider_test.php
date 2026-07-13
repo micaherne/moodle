@@ -63,7 +63,7 @@ final class provider_test extends provider_testcase {
     public function test_export_user_preferences(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/message/externallib.php");
+        require_once(\core\component::component_path('core_message', 'externallib.php'));
 
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);

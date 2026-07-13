@@ -273,7 +273,7 @@ function load_environment_xml($env_select=ENV_SELECT_NEWER) {
 
     if (is_numeric($env_select)) {
         $file = $CFG->dataroot.'/environment/environment.xml';
-        $internalfile = $CFG->dirroot.'/'.$CFG->admin.'/environment.xml';
+        $internalfile = \core\component::component_path('core_admin', 'environment.xml');
         switch ($env_select) {
             case ENV_SELECT_NEWER:
                 if (!is_file($file) || !is_readable($file) || filemtime($file) < filemtime($internalfile) ||
@@ -735,7 +735,7 @@ function environment_custom_checks($version, $env_select) {
             $function = $check['@']['function'];
             $file = null;
             if (isset($check['@']['file'])) {
-                $file = $CFG->dirroot . '/' . $check['@']['file'];
+                $file = \core\component::from_mono_path('/' . $check['@']['file']);
                 if (is_readable($file)) {
                     include_once($file);
                 }

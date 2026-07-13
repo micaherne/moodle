@@ -23,7 +23,7 @@
  */
 
 require_once(dirname(__FILE__) . '/../../config.php');
-require_once($CFG->dirroot . '/lib/weblib.php');
+require_once(\core\component::component_path('core', 'weblib.php'));
 
 $toolid = null;
 $token = null;

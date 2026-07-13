@@ -30,7 +30,7 @@ use core_string_manager_standard;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/moodlelib.php');
+require_once(dirname(__DIR__) . '/moodlelib.php');
 
 /**
  * Tests for the API of the string_manager.

@@ -32,7 +32,7 @@ use mod_forum\local\exporters\post as post_exporter;
 use core\external\exporter;
 use renderer_base;
 
-require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once(dirname(__DIR__, 3) . '/lib.php');
 
 /**
  * Posts exporter class.

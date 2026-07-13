@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/bigbluebuttonbn/backup/moodle2/restore_bigbluebuttonbn_stepslib.php');
+require_once(__DIR__ . '/restore_bigbluebuttonbn_stepslib.php');
 
 /**
  * Restore task that provides all the settings and steps to perform one complete restore of the activity.

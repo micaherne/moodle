@@ -95,7 +95,7 @@ function page_get_post_actions() {
  */
 function page_add_instance($data, $mform = null) {
     global $CFG, $DB;
-    require_once("$CFG->libdir/resourcelib.php");
+    require_once(\core\component::component_path('core', 'resourcelib.php'));
 
     $cmid = $data->coursemodule;
 
@@ -140,7 +140,7 @@ function page_add_instance($data, $mform = null) {
  */
 function page_update_instance($data, $mform) {
     global $CFG, $DB;
-    require_once("$CFG->libdir/resourcelib.php");
+    require_once(\core\component::component_path('core', 'resourcelib.php'));
 
     $cmid        = $data->coursemodule;
     $draftitemid = $data->page['itemid'];
@@ -209,7 +209,7 @@ function page_delete_instance($id) {
  */
 function page_get_coursemodule_info($coursemodule) {
     global $CFG, $DB;
-    require_once("$CFG->libdir/resourcelib.php");
+    require_once(\core\component::component_path('core', 'resourcelib.php'));
 
     if (!$page = $DB->get_record('page', array('id'=>$coursemodule->instance),
             'id, name, display, displayoptions, intro, introformat')) {
@@ -294,7 +294,7 @@ function page_get_file_info($browser, $areas, $course, $cm, $context, $filearea,
                 return null;
             }
         }
-        require_once("$CFG->dirroot/mod/page/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
         return new page_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
     }
 
@@ -319,7 +319,7 @@ function page_get_file_info($browser, $areas, $course, $cm, $context, $filearea,
  */
 function page_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     global $CFG, $DB;
-    require_once("$CFG->libdir/resourcelib.php");
+    require_once(\core\component::component_path('core', 'resourcelib.php'));
 
     if ($context->contextlevel != CONTEXT_MODULE) {
         return false;

@@ -16,7 +16,7 @@
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
 
-require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
+require_once(\core\component::component_path('core', 'behat/behat_base.php'));
 require_once(__DIR__ . '/../../tests/communication_test_helper_trait.php');
 
 /**

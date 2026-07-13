@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/user/selector/lib.php');
+require_once(\core\component::component_path('core_user', 'selector/lib.php'));
 
 /**
  * Abstract class used by forum subscriber selection controls
@@ -75,9 +75,8 @@ abstract class mod_forum_subscriber_selector_base extends user_selector_base {
      * @return array
      */
     protected function get_options() {
-        global $CFG;
         $options = parent::get_options();
-        $options['file'] =  substr(__FILE__, strlen($CFG->dirroot.'/'));
+        $options['file'] = \core\component::to_mono_path(__FILE__, leadingslash: false);
         $options['context'] = $this->context;
         $options['currentgroup'] = $this->currentgroup;
         $options['forumid'] = $this->forumid;

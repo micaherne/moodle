@@ -19,7 +19,7 @@ namespace core_message\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/message/lib.php');
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 use core_external\external_api;
 use core_external\external_function_parameters;

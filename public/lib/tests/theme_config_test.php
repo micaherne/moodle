@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/outputlib.php');
+require_once(dirname(__DIR__) . '/outputlib.php');
 
 /**
  * Tests the theme config class.
@@ -132,7 +132,7 @@ final class theme_config_test extends advanced_testcase {
 
         $this->resetAfterTest();
         $theme = theme_config::load('boost');
-        $editorscss = $CFG->dirroot.'/theme/boost/scss/editor.scss';
+        $editorscss = \core\component::component_path('theme_boost', 'scss/editor.scss');
 
         $this->assertTrue(file_exists($editorscss));
         $compiler = new core_scss();
@@ -151,7 +151,7 @@ final class theme_config_test extends advanced_testcase {
 
         $this->resetAfterTest();
         $theme = theme_config::load('classic');
-        $editorscss = $CFG->dirroot.'/theme/boost/scss/editor.scss';
+        $editorscss = \core\component::component_path('theme_boost', 'scss/editor.scss');
 
         $this->assertTrue(file_exists($editorscss));
         $compiler = new core_scss();
@@ -186,7 +186,11 @@ final class theme_config_test extends advanced_testcase {
         global $CFG;
 
         $this->resetAfterTest();
-        $CFG->themedir = $CFG->dirroot . '/lib/tests/fixtures/themes/';
+        $CFG->themedir = __DIR__ . '/fixtures/themes/';
+        // The component cache is built once per process (before $CFG->themedir is set
+        // here), and theme locations are now resolved through core_component. Reset it
+        // so the themes under the just-set themedir are picked up.
+        \core_component::reset();
         $theme = theme_config::load('child');
         $layout = $theme->layouts['frontpage']; // This is missing in the config.php of the child theme, so we expect
         // it to be inherited from the parent theme.

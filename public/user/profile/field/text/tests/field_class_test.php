@@ -20,8 +20,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/user/profile/lib.php');
-require_once($CFG->dirroot.'/user/profile/field/text/field.class.php');
+require_once(\core\component::component_path('core_user', 'profile/lib.php'));
+require_once(dirname(__DIR__) . '/field.class.php');
 
 use profile_field_text;
 

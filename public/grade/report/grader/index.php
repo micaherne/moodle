@@ -22,11 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../../config.php');
-require_once($CFG->libdir.'/gradelib.php');
-require_once($CFG->dirroot.'/user/renderer.php');
-require_once($CFG->dirroot.'/grade/lib.php');
-require_once($CFG->dirroot.'/grade/report/grader/lib.php');
+require_once(__DIR__ . '/../../../config.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));
+require_once(\core\component::component_path('core_user', 'renderer.php'));
+require_once(\core\component::component_path('core_grades', 'lib.php'));
+require_once(__DIR__ . '/lib.php');
 
 // This report may require a lot of memory and time on large courses.
 raise_memory_limit(MEMORY_HUGE);

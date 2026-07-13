@@ -27,7 +27,7 @@ require_once(__DIR__ . '/../../../../config.php');
 defined('BEHAT_SITE_RUNNING') || die();
 
 global $CFG, $PAGE, $OUTPUT;
-require_once($CFG->libdir . '/adminlib.php');
+require_once(dirname(__DIR__, 3) . '/adminlib.php');
 $PAGE->set_url('/lib/tests/behat/fixtures/multiselect_hide_if_admin_settingspage.php');
 require_login();
 $PAGE->set_context(core\context\system::instance());

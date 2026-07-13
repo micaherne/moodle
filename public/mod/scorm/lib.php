@@ -98,7 +98,7 @@ function scorm_status_options($withstrings = false) {
 function scorm_add_instance($scorm, $mform=null) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (empty($scorm->timeopen)) {
         $scorm->timeopen = 0;
@@ -195,7 +195,7 @@ function scorm_add_instance($scorm, $mform=null) {
 function scorm_update_instance($scorm, $mform=null) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (empty($scorm->timeopen)) {
         $scorm->timeopen = 0;
@@ -290,7 +290,7 @@ function scorm_delete_instance($id) {
 
     $result = true;
 
-    require_once($CFG->dirroot . '/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     // Delete any dependent records.
     scorm_delete_tracks($scorm->id);
     if ($scoes = $DB->get_records('scorm_scoes', array('scorm' => $scorm->id))) {
@@ -347,9 +347,9 @@ function scorm_delete_instance($id) {
  */
 function scorm_user_outline($course, $user, $mod, $scorm) {
     global $CFG;
-    require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
-    require_once("$CFG->libdir/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
     $grades = grade_get_grades($course->id, 'mod', 'scorm', $scorm->id, $user->id);
     if (!empty($grades->items[0]->grades)) {
         $grade = reset($grades->items[0]->grades);
@@ -381,7 +381,7 @@ function scorm_user_outline($course, $user, $mod, $scorm) {
  */
 function scorm_user_complete($course, $user, $mod, $scorm) {
     global $CFG, $DB, $OUTPUT;
-    require_once("$CFG->libdir/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $liststyle = 'structlist';
     $now = time();
@@ -391,7 +391,7 @@ function scorm_user_complete($course, $user, $mod, $scorm) {
     $report = '';
 
     // First Access and Last Access dates for SCOs.
-    require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     $timetracks = scorm_get_sco_runtime($scorm->id, false, $user->id);
     $firstmodify = $timetracks->start;
     $lastmodify = $timetracks->finish;
@@ -542,7 +542,7 @@ function scorm_user_complete($course, $user, $mod, $scorm) {
 function scorm_cron_scheduled_task () {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $sitetimezone = core_date::get_server_timezone();
     // Now see if there are any scorm updates to be done.
@@ -587,7 +587,7 @@ function scorm_cron_scheduled_task () {
  */
 function scorm_get_user_grades($scorm, $userid=0) {
     global $CFG, $DB;
-    require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $grades = array();
     if (empty($userid)) {
@@ -631,8 +631,8 @@ function scorm_get_user_grades($scorm, $userid=0) {
  */
 function scorm_update_grades($scorm, $userid=0, $nullifnone=true) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
-    require_once($CFG->libdir.'/completionlib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
+    require_once(\core\component::component_path('core', 'completionlib.php'));
 
     if ($grades = scorm_get_user_grades($scorm, $userid)) {
         scorm_grade_item_update($scorm, $grades);
@@ -662,9 +662,9 @@ function scorm_update_grades($scorm, $userid=0, $nullifnone=true) {
  */
 function scorm_grade_item_update($scorm, $grades=null) {
     global $CFG, $DB;
-    require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
     if (!function_exists('grade_update')) { // Workaround for buggy PHP versions.
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
     }
 
     $params = array('itemname' => $scorm->name);
@@ -705,7 +705,7 @@ function scorm_grade_item_update($scorm, $grades=null) {
  */
 function scorm_grade_item_delete($scorm) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     return grade_update('mod/scorm', $scorm->course, 'mod', 'scorm', $scorm->id, 0, null, array('deleted' => 1));
 }
@@ -820,7 +820,7 @@ function scorm_reset_gradebook($courseid, $type='') {
  */
 function scorm_reset_userdata($data) {
     global $DB, $CFG;
-    require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $componentstr = get_string('modulenameplural', 'scorm');
     $status = [];
@@ -905,7 +905,7 @@ function scorm_get_file_info($browser, $areas, $course, $cm, $context, $filearea
                 return null;
             }
         }
-        require_once("$CFG->dirroot/mod/scorm/locallib.php");
+        require_once(__DIR__ . '/locallib.php');
         return new scorm_package_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, false, false);
 
     } else if ($filearea === 'package') {
@@ -957,7 +957,7 @@ function scorm_pluginfile($course, $cm, $context, $filearea, $args, $forcedownlo
 
     // Check SCORM availability.
     if (!$canmanageactivity) {
-        require_once($CFG->dirroot.'/mod/scorm/locallib.php');
+        require_once(__DIR__ . '/locallib.php');
 
         $scorm = $DB->get_record('scorm', array('id' => $cm->instance), 'id, timeopen, timeclose', MUST_EXIST);
         list($available, $warnings) = scorm_get_availability_status($scorm);
@@ -1399,7 +1399,7 @@ function scorm_view($scorm, $course, $cm, $context) {
  */
 function scorm_check_updates_since(cm_info $cm, $from, $filter = array()) {
     global $DB, $USER, $CFG;
-    require_once($CFG->dirroot . '/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $scorm = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
     $updates = new stdClass();
@@ -1482,7 +1482,7 @@ function mod_scorm_get_fontawesome_icon_map() {
 function scorm_refresh_events($courseid = 0, $instance = null, $cm = null) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot . '/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     // If we have instance information then we can just update the one event instead of updating all events.
     if (isset($instance)) {
@@ -1537,7 +1537,7 @@ function mod_scorm_core_calendar_provide_event_action(calendar_event $event,
                                                       \core_calendar\action_factory $factory, $userid = null) {
     global $CFG, $USER;
 
-    require_once($CFG->dirroot . '/mod/scorm/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (empty($userid)) {
         $userid = $USER->id;

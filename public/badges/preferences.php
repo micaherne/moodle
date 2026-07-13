@@ -25,7 +25,7 @@
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->dirroot . '/user/editlib.php');
+require_once(\core\component::component_path('core_user', 'editlib.php'));
 
 use core_badges\form\preferences;
 

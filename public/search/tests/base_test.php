@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once(__DIR__ . '/fixtures/testable_core_search.php');
-require_once($CFG->dirroot . '/search/tests/fixtures/mock_search_area.php');
+require_once(__DIR__ . '/fixtures/mock_search_area.php');
 
 /**
  * Search engine base unit tests.

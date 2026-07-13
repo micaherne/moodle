@@ -132,7 +132,7 @@ defined('MOODLE_INTERNAL') || die();
   * @name $CFG
   */
 global $CFG;
-require_once($CFG->libdir.'/filelib.php');
+require_once(__DIR__ . '/filelib.php');
 
 // Some needed constants
 define('COMPONENT_ERROR',           0);

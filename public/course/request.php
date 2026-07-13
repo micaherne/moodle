@@ -29,7 +29,7 @@ use core_course\form\request_course as request_course_form;
  */
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->dirroot . '/course/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 // Where we came from. Used in a number of redirects.
 $url = new url('/course/request.php');

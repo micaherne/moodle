@@ -20,7 +20,7 @@ use mod_data\external\record_exporter;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/data/locallib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
 
 /**
  * Unit tests for locallib.php

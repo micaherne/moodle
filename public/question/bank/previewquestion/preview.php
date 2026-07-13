@@ -29,7 +29,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir . '/questionlib.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
 
 use \core\notification;
 use qbank_previewquestion\form\preview_options_form;

@@ -21,7 +21,7 @@
  * @copyright 2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once('../config.php');
+require_once(__DIR__ . '/../config.php');
 
 if (empty($CFG->usecomments)) {
     throw new \core_comment\comment_exception('commentsnotenabled', 'moodle');

@@ -32,7 +32,7 @@ define('NO_DEBUG_DISPLAY', true);
 define('ABORT_AFTER_CONFIG', true);
 
 // This stops immediately at the beginning of lib/setup.php.
-require('../../../config.php');
+require(__DIR__ . '/../../../config.php');
 
 /**
  * An anonymous class to handle loading and serving lang files for TinyMCE.
@@ -135,7 +135,7 @@ class lang {
         // Ignore upgrade check.
         define('NO_UPGRADE_CHECK', true);
 
-        require("{$CFG->dirroot}/lib/setup.php");
+        require(\core\component::component_path('core', 'setup.php'));
         $this->fullyloaded = true;
     }
 

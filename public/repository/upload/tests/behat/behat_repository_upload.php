@@ -25,7 +25,7 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__ . '/../../../../lib/behat/core_behat_file_helper.php');
+require_once(\core\component::component_path('core', 'behat/core_behat_file_helper.php'));
 
 use Behat\Mink\Exception\DriverException as DriverException,
     Behat\Mink\Exception\ExpectationException as ExpectationException,
@@ -147,7 +147,7 @@ class behat_repository_upload extends behat_base {
         }
         $filepath = str_replace('/', DIRECTORY_SEPARATOR, $filepath);
         if (!is_readable($filepath)) {
-            $filepath = $CFG->dirroot . DIRECTORY_SEPARATOR . $filepath;
+            $filepath = \core\component::from_mono_path(DIRECTORY_SEPARATOR . $filepath);
             if (!is_readable($filepath)) {
                 throw new ExpectationException('The file to be uploaded does not exist.', $this->getSession());
             }

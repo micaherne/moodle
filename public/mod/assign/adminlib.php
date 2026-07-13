@@ -26,7 +26,7 @@ use core_admin\admin_search;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 /**
  * Admin external page that displays a list of the installed submission plugins.
@@ -174,7 +174,7 @@ class assign_plugin_manager {
      */
     private function view_plugins_table() {
         global $OUTPUT, $CFG;
-        require_once($CFG->libdir . '/tablelib.php');
+        require_once(\core\component::component_path('core', 'tablelib.php'));
 
         // Set up the table.
         $this->view_header();
@@ -190,7 +190,6 @@ class assign_plugin_manager {
         $table->setup();
 
         $plugins = $this->get_sorted_plugins_list();
-        $shortsubtype = substr($this->subtype, strlen('assign'));
 
         foreach ($plugins as $idx => $plugin) {
             $row = array();
@@ -219,7 +218,7 @@ class assign_plugin_manager {
             }
             $row[] = $movelinks;
 
-            $exists = file_exists($CFG->dirroot . '/mod/assign/' . $shortsubtype . '/' . $plugin . '/settings.php');
+            $exists = file_exists(\core\component::component_path($this->subtype . '_' . $plugin, 'settings.php'));
             if ($row[1] != '' && $exists) {
                 $row[] = html_writer::link(new moodle_url('/admin/settings.php',
                         array('section' => $this->subtype . '_' . $plugin)), get_string('settings'));

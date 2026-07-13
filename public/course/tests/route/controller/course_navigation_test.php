@@ -67,7 +67,7 @@ final class course_navigation_test extends route_testcase {
      */
     public static function cm_next_provider(): \Generator {
         global $CFG;
-        require_once("$CFG->libdir/resourcelib.php");
+        require_once(\core\component::component_path('core', 'resourcelib.php'));
 
         $emailavailability = '{"op":"&","c":[{"type":"profile","sf":"email","op":"isequalto","v":"';
         yield 'Simple case (teacher)' => [
@@ -854,7 +854,7 @@ final class course_navigation_test extends route_testcase {
      */
     public static function cm_previous_provider(): \Generator {
         global $CFG;
-        require_once("$CFG->libdir/resourcelib.php");
+        require_once(\core\component::component_path('core', 'resourcelib.php'));
 
         $emailavailability = '{"op":"&","c":[{"type":"profile","sf":"email","op":"isequalto","v":"';
         yield 'Simple case (teacher)' => [

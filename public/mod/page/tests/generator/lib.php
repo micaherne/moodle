@@ -38,7 +38,7 @@ class mod_page_generator extends testing_module_generator {
 
     public function create_instance($record = null, ?array $options = null) {
         global $CFG;
-        require_once($CFG->dirroot . '/lib/resourcelib.php');
+        require_once(\core\component::component_path('core', 'resourcelib.php'));
 
         $record = (object)(array)$record;
 

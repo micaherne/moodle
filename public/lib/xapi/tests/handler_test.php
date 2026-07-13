@@ -41,7 +41,7 @@ final class handler_test extends advanced_testcase {
      */
     public static function setUpBeforeClass(): void {
         global $CFG;
-        require_once($CFG->dirroot.'/lib/xapi/tests/helper.php');
+        require_once(__DIR__ . '/helper.php');
         parent::setUpBeforeClass();
     }
 

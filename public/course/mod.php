@@ -25,7 +25,7 @@
 
 use core_courseformat\formatactions;
 
-require("../config.php");
+require(__DIR__ . '/../config.php');
 require_once("lib.php");
 
 $sectionreturn = optional_param('sr', null, PARAM_INT);

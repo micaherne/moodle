@@ -25,7 +25,7 @@ namespace mod_lti\local\ltiopenid;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
+require_once(dirname(__DIR__, 3) . '/locallib.php');
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;

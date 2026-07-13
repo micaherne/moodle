@@ -100,7 +100,7 @@ final class cleanup_test extends \advanced_testcase {
         global $CFG, $DB;
 
         // This is required when running the unit test in isolation.
-        require_once($CFG->libdir . '/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         // Create a manual grade item for a course.
         $course = $this->getDataGenerator()->create_course();

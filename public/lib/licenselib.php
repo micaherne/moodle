@@ -376,7 +376,7 @@ class license_manager {
     public static function install_licenses() {
         global $CFG;
 
-        require_once($CFG->libdir . '/db/upgradelib.php');
+        require_once(__DIR__ . '/db/upgradelib.php');
 
         upgrade_core_licenses();
     }

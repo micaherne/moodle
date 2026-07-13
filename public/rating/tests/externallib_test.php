@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/rating/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * External rating functions unit tests

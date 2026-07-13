@@ -1,7 +1,7 @@
 <?php
       // Display all the interfaces for importing data into a specific course
 
-    require_once('../config.php');
+    require_once(__DIR__ . '/../config.php');
 
     $id = required_param('id', PARAM_INT);   // course id to import TO
     $course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);

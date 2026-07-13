@@ -36,9 +36,9 @@ use stored_file_creation_exception;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/filelib.php');
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->libdir . '/filestorage/stored_file.php');
+require_once(dirname(__DIR__, 2) . '/filelib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(dirname(__DIR__) . '/stored_file.php');
 
 /**
  * Unit tests for /lib/filestorage/file_storage.php
@@ -137,7 +137,7 @@ final class file_storage_test extends \advanced_testcase {
         // Number of files installed in the database on a fresh Moodle site.
         $installedfiles = $DB->count_records('files', array());
 
-        $filepath = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $filepath = __DIR__ . '/fixtures/testimage.jpg';
         $syscontext = \context_system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
@@ -216,7 +216,7 @@ final class file_storage_test extends \advanced_testcase {
 
         $this->resetAfterTest(false);
 
-        $filepath = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $filepath = __DIR__ . '/fixtures/testimage.jpg';
         $syscontext = \context_system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
@@ -1199,7 +1199,7 @@ final class file_storage_test extends \advanced_testcase {
 
         $this->resetAfterTest(false);
 
-        $filepath = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $filepath = __DIR__ . '/fixtures/testimage.jpg';
         $syscontext = \context_system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
@@ -1232,7 +1232,7 @@ final class file_storage_test extends \advanced_testcase {
 
         $this->resetAfterTest(false);
 
-        $filepath = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.png';
+        $filepath = __DIR__ . '/fixtures/testimage.png';
         $syscontext = \context_system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
@@ -1684,7 +1684,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_file_from_pathname_contextid_invalid(): void {
         global $CFG;
-        $path = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $path = __DIR__ . '/fixtures/testimage.jpg';
 
         $this->resetAfterTest(true);
 
@@ -1703,7 +1703,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_file_from_pathname_component_invalid(): void {
         global $CFG;
-        $path = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $path = __DIR__ . '/fixtures/testimage.jpg';
 
         $this->resetAfterTest(true);
 
@@ -1722,7 +1722,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_file_from_pathname_filearea_invalid(): void {
         global $CFG;
-        $path = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $path = __DIR__ . '/fixtures/testimage.jpg';
 
         $this->resetAfterTest(true);
 
@@ -1741,7 +1741,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_file_from_pathname_itemid_invalid(): void {
         global $CFG;
-        $path = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $path = __DIR__ . '/fixtures/testimage.jpg';
 
         $this->resetAfterTest(true);
 
@@ -1760,7 +1760,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_file_from_pathname_filepath_invalid(): void {
         global $CFG;
-        $path = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $path = __DIR__ . '/fixtures/testimage.jpg';
 
         $this->resetAfterTest(true);
 
@@ -1779,7 +1779,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_file_from_pathname_filename_invalid(): void {
         global $CFG;
-        $path = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $path = __DIR__ . '/fixtures/testimage.jpg';
 
         $this->resetAfterTest(true);
 
@@ -1798,7 +1798,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_file_from_pathname_timecreated_invalid(): void {
         global $CFG;
-        $path = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $path = __DIR__ . '/fixtures/testimage.jpg';
 
         $this->resetAfterTest(true);
 
@@ -1817,7 +1817,7 @@ final class file_storage_test extends \advanced_testcase {
      */
     public function test_create_file_from_pathname_timemodified_invalid(): void {
         global $CFG;
-        $path = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $path = __DIR__ . '/fixtures/testimage.jpg';
 
         $this->resetAfterTest(true);
 
@@ -1838,7 +1838,7 @@ final class file_storage_test extends \advanced_testcase {
         global $CFG;
         $this->resetAfterTest(true);
 
-        $path = $CFG->dirroot.'/lib/filestorage/tests/fixtures/testimage.jpg';
+        $path = __DIR__ . '/fixtures/testimage.jpg';
 
         $filerecord = $this->generate_file_record();
         $fs = get_file_storage();

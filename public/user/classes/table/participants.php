@@ -37,8 +37,8 @@ defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
 
-require_once($CFG->libdir . '/tablelib.php');
-require_once($CFG->dirroot . '/user/lib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
+require_once(dirname(__DIR__, 2) . '/lib.php');
 
 /**
  * Class for the displaying the participants table.
@@ -345,7 +345,7 @@ class participants extends \table_sql implements dynamic_table {
             $canviewfullnames = has_capability('moodle/site:viewfullnames', $this->context);
             $fullname = htmlspecialchars(fullname($data, $canviewfullnames), ENT_QUOTES, 'utf-8');
             $coursename = format_string($this->course->fullname, true, array('context' => $this->context));
-            require_once($CFG->dirroot . '/enrol/locallib.php');
+            require_once(\core\component::component_path('core_enrol', 'locallib.php'));
             $manager = new \course_enrolment_manager($PAGE, $this->course);
             $userenrolments = $manager->get_user_enrolments($data->id);
             foreach ($userenrolments as $ue) {
@@ -518,7 +518,7 @@ class participants extends \table_sql implements dynamic_table {
      */
     public function has_capability(): bool {
         global $CFG;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $context = $this->course->id == SITEID ? \context_system::instance() : $this->get_context();
         return course_can_view_participants($context);

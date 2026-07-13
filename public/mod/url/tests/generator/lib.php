@@ -37,7 +37,7 @@ class mod_url_generator extends testing_module_generator {
 
     public function create_instance($record = null, ?array $options = null) {
         global $CFG;
-        require_once($CFG->libdir.'/resourcelib.php');
+        require_once(\core\component::component_path('core', 'resourcelib.php'));
 
         // Add default values for url.
         $record = (array)$record + array(

@@ -58,7 +58,7 @@ class mod_url_external extends external_api {
      */
     public static function view_url($urlid) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . "/mod/url/lib.php");
+        require_once(dirname(__DIR__) . '/lib.php');
 
         $params = self::validate_parameters(self::view_url_parameters(),
                                             array(

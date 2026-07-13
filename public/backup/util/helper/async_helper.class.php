@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/user/lib.php');
+require_once(\core\component::component_path('core_user', 'lib.php'));
 
 /**
  * Helper functions for asynchronous backups and restores.
@@ -227,8 +227,8 @@ class async_helper  {
         $asyncpending = false;
 
         // Only check for pending async operations if async mode is enabled.
-        require_once($CFG->dirroot . '/backup/util/interfaces/checksumable.class.php');
-        require_once($CFG->dirroot . '/backup/backup.class.php');
+        require_once(dirname(__DIR__) . '/interfaces/checksumable.class.php');
+        require_once(dirname(__DIR__, 2) . '/backup.class.php');
 
         $select = 'userid = ? AND itemid = ? AND type = ? AND operation = ? AND execution = ? AND status < ? AND status > ?';
         $params = array(

@@ -19,7 +19,7 @@ namespace qtype_calculated;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/calculated/questiontype.php');
+require_once(dirname(__DIR__) . '/questiontype.php');
 
 /**
  * Unit tests for formula validation code.

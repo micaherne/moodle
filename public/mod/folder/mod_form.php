@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once ($CFG->dirroot.'/course/moodleform_mod.php');
+require_once (\core\component::component_path('core_course', 'moodleform_mod.php'));
 
 class mod_folder_mod_form extends moodleform_mod {
     function definition() {

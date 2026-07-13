@@ -29,7 +29,7 @@
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../config.php');
-require_once($CFG->libdir.'/clilib.php');      // cli only functions
+require_once(\core\component::component_path('core', 'clilib.php'));      // cli only functions
 
 // now get cli options
 list($options, $unrecognized) = cli_get_params(array('help'=>false),
@@ -67,8 +67,8 @@ if (moodle_needs_upgrading()) {
     exit(1);
 }
 
-require_once($CFG->libdir.'/adminlib.php');
-require_once($CFG->libdir.'/gradelib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
+require_once(\core\component::component_path('core', 'gradelib.php'));
 
 if (!empty($CFG->showcronsql)) {
     $DB->set_debug(true);
@@ -88,8 +88,8 @@ $timenow = time();
 mtrace("Server Time: ".date('r',$timenow)."\n\n");
 
 // Run automated backups if required.
-require_once($CFG->dirroot.'/backup/util/includes/backup_includes.php');
-require_once($CFG->dirroot.'/backup/util/helper/backup_cron_helper.class.php');
+require_once(dirname(__DIR__, 2) . '/public/backup/util/includes/backup_includes.php');
+require_once(dirname(__DIR__, 2) . '/public/backup/util/helper/backup_cron_helper.class.php');
 backup_cron_automated_helper::run_automated_backup(backup_cron_automated_helper::RUN_IMMEDIATELY);
 
 mtrace("Automated cron backups completed correctly");

@@ -457,7 +457,7 @@ final class external_api_test extends \advanced_testcase {
         $this->assertSame($beforecourse, $COURSE);
 
         // Test a function that triggers a PHP exception.
-        require_once($CFG->dirroot . '/lib/tests/fixtures/test_external_function_throwable.php');
+        require_once(\core\component::component_path('core', 'tests/fixtures/test_external_function_throwable.php'));
 
         // Call our test function.
         $result = \test_external_function_throwable::call_external_function('core_throw_exception', [], false);
@@ -476,7 +476,7 @@ final class external_api_test extends \advanced_testcase {
     public function test_external_api_deprecated_plugintype(): void {
         $this->resetAfterTest();
         global $CFG;
-        require_once($CFG->libdir . '/upgradelib.php'); // Needed for external_update_descriptions().
+        require_once(\core\component::component_path('core', 'upgradelib.php')); // Needed for external_update_descriptions().
 
         // Inject the 'fake' plugin type and deprecate it.
         // Note: this method of injection is required to ensure core_component fully builds all caches from the ground up,
@@ -508,7 +508,7 @@ final class external_api_test extends \advanced_testcase {
     public function test_external_api_deleted_plugintype(): void {
         $this->resetAfterTest();
         global $CFG;
-        require_once($CFG->libdir . '/upgradelib.php'); // Needed for external_update_descriptions().
+        require_once(\core\component::component_path('core', 'upgradelib.php')); // Needed for external_update_descriptions().
 
         // Inject the 'fake' plugin type and flag it as deleted.
         // Note: this method of injection is required to ensure core_component fully builds all caches from the ground up,

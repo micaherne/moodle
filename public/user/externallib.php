@@ -126,10 +126,10 @@ class core_user_external extends \core_external\external_api {
      */
     public static function create_users($users) {
         global $CFG, $DB;
-        require_once($CFG->dirroot."/lib/weblib.php");
-        require_once($CFG->dirroot."/user/lib.php");
-        require_once($CFG->dirroot."/user/editlib.php");
-        require_once($CFG->dirroot."/user/profile/lib.php"); // Required for customfields related function.
+        require_once(\core\component::component_path('core', 'weblib.php'));
+        require_once(__DIR__ . '/lib.php');
+        require_once(__DIR__ . '/editlib.php');
+        require_once(__DIR__ . '/profile/lib.php'); // Required for customfields related function.
 
         // Ensure the current user is allowed to run this function.
         $context = context_system::instance();
@@ -321,7 +321,7 @@ class core_user_external extends \core_external\external_api {
      */
     public static function delete_users($userids) {
         global $CFG, $DB, $USER;
-        require_once($CFG->dirroot."/user/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         // Ensure the current user is allowed to run this function.
         $context = context_system::instance();
@@ -396,9 +396,9 @@ class core_user_external extends \core_external\external_api {
     public static function update_user_preferences($userid = 0, $emailstop = null, $preferences = array()) {
         global $USER, $CFG;
 
-        require_once($CFG->dirroot . '/user/lib.php');
-        require_once($CFG->dirroot . '/user/editlib.php');
-        require_once($CFG->dirroot . '/message/lib.php');
+        require_once(__DIR__ . '/lib.php');
+        require_once(__DIR__ . '/editlib.php');
+        require_once(\core\component::component_path('core_message', 'lib.php'));
 
         if (empty($userid)) {
             $userid = $USER->id;
@@ -551,9 +551,9 @@ class core_user_external extends \core_external\external_api {
      */
     public static function update_users($users) {
         global $CFG, $DB, $USER;
-        require_once($CFG->dirroot."/user/lib.php");
-        require_once($CFG->dirroot."/user/profile/lib.php"); // Required for customfields related function.
-        require_once($CFG->dirroot.'/user/editlib.php');
+        require_once(__DIR__ . '/lib.php');
+        require_once(__DIR__ . '/profile/lib.php'); // Required for customfields related function.
+        require_once(__DIR__ . '/editlib.php');
 
         // Ensure the current user is allowed to run this function.
         $context = context_system::instance();
@@ -735,7 +735,7 @@ class core_user_external extends \core_external\external_api {
      */
     public static function get_users_by_field($field, $values) {
         global $CFG, $USER, $DB;
-        require_once($CFG->dirroot . "/user/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::get_users_by_field_parameters(),
                 array('field' => $field, 'values' => $values));
@@ -850,7 +850,7 @@ class core_user_external extends \core_external\external_api {
     public static function get_users($criteria = array()) {
         global $CFG, $USER, $DB;
 
-        require_once($CFG->dirroot . "/user/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::get_users_parameters(),
                 array('criteria' => $criteria));
@@ -1012,7 +1012,7 @@ class core_user_external extends \core_external\external_api {
      */
     public static function get_course_user_profiles($userlist) {
         global $CFG, $USER, $DB;
-        require_once($CFG->dirroot . "/user/lib.php");
+        require_once(__DIR__ . '/lib.php');
         $params = self::validate_parameters(self::get_course_user_profiles_parameters(), array('userlist' => $userlist));
 
         $userids = array();
@@ -1197,7 +1197,7 @@ class core_user_external extends \core_external\external_api {
      */
     public static function add_user_private_files($draftid) {
         global $CFG, $USER;
-        require_once($CFG->libdir . "/filelib.php");
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $params = self::validate_parameters(self::add_user_private_files_parameters(), array('draftid' => $draftid));
 
@@ -1284,7 +1284,7 @@ class core_user_external extends \core_external\external_api {
      */
     public static function add_user_device($appid, $name, $model, $platform, $version, $pushid, $uuid, $publickey = null) {
         global $CFG, $USER, $DB;
-        require_once($CFG->dirroot . "/user/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::add_user_device_parameters(),
                 array('appid' => $appid,
@@ -1383,7 +1383,7 @@ class core_user_external extends \core_external\external_api {
      */
     public static function remove_user_device($uuid, $appid = "") {
         global $CFG;
-        require_once($CFG->dirroot . "/user/lib.php");
+        require_once(__DIR__ . '/lib.php');
 
         $params = self::validate_parameters(self::remove_user_device_parameters(), array('uuid' => $uuid, 'appid' => $appid));
 
@@ -1450,8 +1450,8 @@ class core_user_external extends \core_external\external_api {
      */
     public static function view_user_list($courseid) {
         global $CFG;
-        require_once($CFG->dirroot . "/user/lib.php");
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(__DIR__ . '/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
 
         $params = self::validate_parameters(self::view_user_list_parameters(),
                                             array(
@@ -1524,7 +1524,7 @@ class core_user_external extends \core_external\external_api {
      */
     public static function view_user_profile($userid, $courseid = 0) {
         global $CFG, $USER;
-        require_once($CFG->dirroot . "/user/profile/lib.php");
+        require_once(__DIR__ . '/profile/lib.php');
 
         $params = self::validate_parameters(self::view_user_profile_parameters(),
                                             array(
@@ -2011,7 +2011,7 @@ class core_user_external extends \core_external\external_api {
      */
     public static function get_private_files_info($userid = 0) {
         global $CFG, $USER;
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $params = self::validate_parameters(self::get_private_files_info_parameters(), array('userid' => $userid));
         $warnings = array();

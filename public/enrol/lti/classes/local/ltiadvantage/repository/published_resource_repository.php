@@ -61,8 +61,8 @@ class published_resource_repository {
      */
     private function get_available_resources_from_records(array $resources, int $userid): array {
         global $CFG;
-        require_once($CFG->libdir . '/gradelib.php');
-        require_once($CFG->libdir . '/moodlelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
+        require_once(\core\component::component_path('core', 'moodlelib.php'));
 
         $availableresources = [];
 
@@ -129,11 +129,11 @@ class published_resource_repository {
      */
     public function find_all_for_user(int $userid): array {
         global $DB, $CFG;
-        require_once($CFG->libdir . '/accesslib.php');
-        require_once($CFG->libdir . '/enrollib.php');
-        require_once($CFG->libdir . '/moodlelib.php');
-        require_once($CFG->libdir . '/modinfolib.php');
-        require_once($CFG->libdir . '/weblib.php');
+        require_once(\core\component::component_path('core', 'accesslib.php'));
+        require_once(\core\component::component_path('core', 'enrollib.php'));
+        require_once(\core\component::component_path('core', 'moodlelib.php'));
+        require_once(\core\component::component_path('core', 'modinfolib.php'));
+        require_once(\core\component::component_path('core', 'weblib.php'));
 
         [$insql, $inparams] = $DB->get_in_or_equal(['LTI-1p3'], SQL_PARAMS_NAMED);
         $sql = "SELECT elt.id, elt.uuid, elt.enrolid, elt.contextid, elt.institution, elt.lang, elt.timezone,
@@ -177,11 +177,11 @@ class published_resource_repository {
             return [];
         }
 
-        require_once($CFG->libdir . '/accesslib.php');
-        require_once($CFG->libdir . '/enrollib.php');
-        require_once($CFG->libdir . '/moodlelib.php');
-        require_once($CFG->libdir . '/modinfolib.php');
-        require_once($CFG->libdir . '/weblib.php');
+        require_once(\core\component::component_path('core', 'accesslib.php'));
+        require_once(\core\component::component_path('core', 'enrollib.php'));
+        require_once(\core\component::component_path('core', 'moodlelib.php'));
+        require_once(\core\component::component_path('core', 'modinfolib.php'));
+        require_once(\core\component::component_path('core', 'weblib.php'));
 
         [$insql, $inparams] = $DB->get_in_or_equal(['LTI-1p3'], SQL_PARAMS_NAMED);
         [$idsinsql, $idsinparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);

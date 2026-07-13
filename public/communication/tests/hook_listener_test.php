@@ -26,7 +26,7 @@ use core_communication\processor as communication_processor;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/../provider/matrix/tests/matrix_test_helper_trait.php');
+require_once(\core\component::component_path('communication_matrix', 'tests/matrix_test_helper_trait.php'));
 require_once(__DIR__ . '/communication_test_helper_trait.php');
 
 /**

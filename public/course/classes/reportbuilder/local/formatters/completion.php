@@ -40,7 +40,7 @@ class completion {
      */
     public static function completion_progress(?string $value, stdClass $row): string {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         // Do not show progress if there is no userid.
         if (!$row->userid) {

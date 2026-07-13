@@ -45,7 +45,7 @@ class ods_entries_exporter extends entries_exporter {
      */
     public function get_data_file_content(): string {
         global $CFG;
-        require_once("$CFG->libdir/odslib.class.php");
+        require_once(\core\component::component_path('core', 'odslib.class.php'));
         $filearg = '-';
         $workbook = new MoodleODSWorkbook($filearg);
         $worksheet = [];

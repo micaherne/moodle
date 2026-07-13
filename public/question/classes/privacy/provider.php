@@ -35,10 +35,10 @@ use core_privacy\local\request\writer;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/format.php');
-require_once($CFG->dirroot . '/question/editlib.php');
-require_once($CFG->dirroot . '/question/engine/datalib.php');
+require_once(\core\component::component_path('core', 'questionlib.php'));
+require_once(dirname(__DIR__, 2) . '/format.php');
+require_once(dirname(__DIR__, 2) . '/editlib.php');
+require_once(dirname(__DIR__, 2) . '/engine/datalib.php');
 
 /**
  * Privacy Subsystem implementation for core_question.
@@ -436,7 +436,7 @@ class provider implements
      * @param   approved_contextlist    $contextlist    The approved contexts to export information for.
      */
     public static function export_user_data(approved_contextlist $contextlist) {
-        global $CFG, $DB, $SITE;
+        global $DB, $SITE;
         if (empty($contextlist)) {
             return;
         }
@@ -444,7 +444,11 @@ class provider implements
         // Use the Moodle XML Data format.
         // It is the only lossless format that we support.
         $format = "xml";
-        require_once($CFG->dirroot . "/question/format/{$format}/format.php");
+        $qformatdir = \core_component::get_plugin_directory('qformat', $format);
+        if ($qformatdir === null) {
+            throw new \coding_exception("Plugin not installed: qformat_{$format}");
+        }
+        require_once("$qformatdir/format.php");
 
         // THe export system needs questions in a particular format.
         // The easiest way to fetch these is with get_questions_category() which takes the details of a question

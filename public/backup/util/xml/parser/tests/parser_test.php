@@ -35,10 +35,10 @@ defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff
 global $CFG;
-require_once($CFG->dirroot . '/backup/util/xml/parser/progressive_parser.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/parser/processors/progressive_parser_processor.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/parser/processors/simplified_parser_processor.class.php');
-require_once($CFG->dirroot . '/backup/util/xml/parser/processors/grouped_parser_processor.class.php');
+require_once(dirname(__DIR__) . '/progressive_parser.class.php');
+require_once(dirname(__DIR__) . '/processors/progressive_parser_processor.class.php');
+require_once(dirname(__DIR__) . '/processors/simplified_parser_processor.class.php');
+require_once(dirname(__DIR__) . '/processors/grouped_parser_processor.class.php');
 
 /**
  * Test progressive_parser and progressive_parser_processor tests.
@@ -95,12 +95,12 @@ final class parser_test extends \advanced_testcase {
         $pp = new progressive_parser();
         $pr = new mock_parser_processor();
         $pp->set_processor($pr);
-        $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test1.xml');
+        $pp->set_file(__DIR__ . '/fixtures/test1.xml');
         $pp->process();
         $serfromfile = serialize($pr->get_chunks()); // Get serialized results (to compare later)
         // Set *unexisting* file from fixtures
         try {
-            $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test0.xml');
+            $pp->set_file(__DIR__ . '/fixtures/test0.xml');
             $this->assertTrue(false);
         } catch (\Exception $e) {
             $this->assertTrue($e instanceof progressive_parser_exception);
@@ -111,7 +111,7 @@ final class parser_test extends \advanced_testcase {
         $pp = new progressive_parser();
         $pr = new mock_parser_processor();
         $pp->set_processor($pr);
-        $pp->set_contents(file_get_contents($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test1.xml'));
+        $pp->set_contents(file_get_contents(__DIR__ . '/fixtures/test1.xml'));
         $pp->process();
         $serfrommemory = serialize($pr->get_chunks()); // Get serialized results (to compare later)
         // Set *empty* contents
@@ -130,7 +130,7 @@ final class parser_test extends \advanced_testcase {
         $pp = new progressive_parser(true);
         $pr = new mock_parser_processor();
         $pp->set_processor($pr);
-        $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test1.xml');
+        $pp->set_file(__DIR__ . '/fixtures/test1.xml');
         $pp->process();
         $chunks = $pr->get_chunks();
         $this->assertTrue($chunks[0]['path'] === '/FIRSTTAG');
@@ -141,7 +141,7 @@ final class parser_test extends \advanced_testcase {
         $pp = new progressive_parser(true);
         $pr = new mock_parser_processor();
         $pp->set_processor($pr);
-        $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test2.xml');
+        $pp->set_file(__DIR__ . '/fixtures/test2.xml');
         try {
             $pp->process();
         } catch (\Exception $e) {
@@ -153,7 +153,7 @@ final class parser_test extends \advanced_testcase {
         $pp = new progressive_parser(true);
         $pr = new mock_parser_processor();
         $pp->set_processor($pr);
-        $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test1.xml');
+        $pp->set_file(__DIR__ . '/fixtures/test1.xml');
         $pp->process();
         try { // Second process, will throw exception
             $pp->process();
@@ -178,7 +178,7 @@ final class parser_test extends \advanced_testcase {
         // Assign processor to parser
         $pp->set_processor($pr);
         // Set file from fixtures
-        $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test3.xml');
+        $pp->set_file(__DIR__ . '/fixtures/test3.xml');
         // Process the file, the autotest processor will perform a bunch of automatic tests
         $pp->process();
         // Get processor debug info
@@ -211,7 +211,7 @@ final class parser_test extends \advanced_testcase {
         // Assign processor to parser
         $pp->set_processor($pr);
         // Set file from fixtures
-        $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test4.xml');
+        $pp->set_file(__DIR__ . '/fixtures/test4.xml');
         // Process the file
         $pp->process();
         // Get processor debug info
@@ -368,7 +368,7 @@ final class parser_test extends \advanced_testcase {
         // Assign processor to parser
         $pp->set_processor($pr);
         // Set file from fixtures
-        $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test5.xml');
+        $pp->set_file(__DIR__ . '/fixtures/test5.xml');
         // Process the file
         $pp->process();
 
@@ -438,7 +438,7 @@ final class parser_test extends \advanced_testcase {
         // Assign processor to parser
         $pp->set_processor($pr);
         // Set file from fixtures
-        $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test4.xml');
+        $pp->set_file(__DIR__ . '/fixtures/test4.xml');
         // Process the file
         $pp->process();
         // Get processor debug info
@@ -610,7 +610,7 @@ final class parser_test extends \advanced_testcase {
         // Assign processor to parser
         $pp->set_processor($pr);
         // Set file from fixtures
-        $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test5.xml');
+        $pp->set_file(__DIR__ . '/fixtures/test5.xml');
         // Process the file
         $pp->process();
 
@@ -671,7 +671,7 @@ final class parser_test extends \advanced_testcase {
         // Assign processor to parser.
         $pp->set_processor($pr);
         // Set file from fixtures.
-        $pp->set_file($CFG->dirroot . '/backup/util/xml/parser/tests/fixtures/test6.xml');
+        $pp->set_file(__DIR__ . '/fixtures/test6.xml');
         // Process the file.
         $pp->process();
 

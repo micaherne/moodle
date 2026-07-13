@@ -40,7 +40,7 @@ use moodle_exception;
 use moodle_url;
 use stdClass;
 
-require_once($CFG->dirroot . '/user/lib.php');
+require_once(\core\component::component_path('core_user', 'lib.php'));
 
 /**
  * Extends the IMS Tool provider library for the LTI enrolment.
@@ -260,7 +260,7 @@ class tool_provider extends ToolProvider {
             $user = $DB->get_record('user', ['id' => $user->id]);
         } else {
             if ($dbuser->suspended) {
-                require_once($CFG->libdir . '/authlib.php');
+                require_once(\core\component::component_path('core', 'authlib.php'));
                 $failurereason = AUTH_LOGIN_SUSPENDED;
                 $event = \core\event\user_login_failed::create([
                     'userid' => $dbuser->id,

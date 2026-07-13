@@ -72,7 +72,7 @@ class mod_forum_observer {
         }
 
         // Forum lib required for the constant used below.
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
+        require_once(dirname(__DIR__) . '/lib.php');
 
         $userid = $event->relateduserid;
         $sql = "SELECT f.id, f.course as course, cm.id AS cmid, f.forcesubscribe
@@ -107,7 +107,7 @@ class mod_forum_observer {
 
         if ($event->other['modulename'] === 'forum') {
             // Include the forum library to make use of the forum_instance_created function.
-            require_once($CFG->dirroot . '/mod/forum/lib.php');
+            require_once(dirname(__DIR__) . '/lib.php');
 
             $forum = $event->get_record_snapshot('forum', $event->other['instanceid']);
             forum_instance_created($event->get_context(), $forum);
@@ -135,7 +135,7 @@ class mod_forum_observer {
         }
 
         if ($forumformat) {
-            require_once($CFG->dirroot . '/mod/forum/lib.php');
+            require_once(dirname(__DIR__) . '/lib.php');
 
             // Auto-create the course forum if necessary.
             forum_get_course_forum($event->objectid, $forumformat);
@@ -163,7 +163,7 @@ class mod_forum_observer {
         }
 
         if ($forumformat) {
-            require_once($CFG->dirroot . '/mod/forum/lib.php');
+            require_once(dirname(__DIR__) . '/lib.php');
 
             // Auto-create the course forum if necessary.
             forum_get_course_forum($event->objectid, $forumformat);

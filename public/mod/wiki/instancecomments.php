@@ -32,10 +32,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
-require_once($CFG->dirroot . "/mod/wiki/pagelib.php");
-require_once($CFG->dirroot . "/mod/wiki/locallib.php");
-require_once($CFG->dirroot . '/mod/wiki/comments_form.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/pagelib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(__DIR__ . '/comments_form.php');
 
 $pageid = required_param('pageid', PARAM_TEXT);
 $action = optional_param('action', '', PARAM_ALPHANUMEXT);

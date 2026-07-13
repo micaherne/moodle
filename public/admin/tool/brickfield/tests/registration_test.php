@@ -32,8 +32,8 @@ final class registration_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once($CFG->dirroot . '/admin/tool/brickfield/tests/generator/mock_registration.php');
-        require_once($CFG->dirroot . '/admin/tool/brickfield/tests/generator/mock_brickfieldconnect.php');
+        require_once(__DIR__ . '/generator/mock_registration.php');
+        require_once(__DIR__ . '/generator/mock_brickfieldconnect.php');
         parent::setUpBeforeClass();
     }
 

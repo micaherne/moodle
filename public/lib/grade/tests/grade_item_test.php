@@ -158,7 +158,7 @@ final class grade_item_test extends \grade_base_testcase {
      */
     protected function sub_test_grade_item_delete_disabled_modules(): void {
         global $CFG, $DB;
-        require_once($CFG->dirroot . '/course/lib.php');
+        require_once(\core\component::component_path('core_course', 'lib.php'));
         $grade_item = new \grade_item($this->grade_items[18], false); // Use a grade item not touched by previous (or future) tests.
         $this->assertTrue(method_exists($grade_item, 'delete'));
 
@@ -895,7 +895,7 @@ final class grade_item_test extends \grade_base_testcase {
      */
     private function insert_fake_grade_item_sortorder($courseid, $sortorder) {
         global $DB, $CFG;
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(dirname(__DIR__, 2) . '/gradelib.php');
 
         $item = new \stdClass();
         $item->courseid = $courseid;

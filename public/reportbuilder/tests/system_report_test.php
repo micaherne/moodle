@@ -36,7 +36,7 @@ final class system_report_test extends advanced_testcase {
      */
     public function test_actions(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_available.php");
+        require_once(__DIR__ . '/fixtures/system_report_available.php');
 
         $this->resetAfterTest();
 
@@ -58,7 +58,7 @@ final class system_report_test extends advanced_testcase {
      */
     public function test_parameters(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_available.php");
+        require_once(__DIR__ . '/fixtures/system_report_available.php');
 
         $this->resetAfterTest();
 
@@ -80,7 +80,7 @@ final class system_report_test extends advanced_testcase {
      */
     public function test_initial_sort_column(): void {
         global $CFG;
-        require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_available.php");
+        require_once(__DIR__ . '/fixtures/system_report_available.php');
 
         $this->resetAfterTest();
 

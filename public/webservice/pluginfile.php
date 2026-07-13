@@ -35,8 +35,8 @@ define('NO_MOODLE_COOKIES', true);
 
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->libdir . '/filelib.php');
-require_once($CFG->dirroot . '/webservice/lib.php');
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(__DIR__ . '/lib.php');
 
 // Allow CORS requests.
 header('Access-Control-Allow-Origin: *');

@@ -19,7 +19,7 @@ namespace core_cache\form;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/lib/formslib.php');
+require_once(\core\component::component_path('core', 'formslib.php'));
 
 use core_cache\administration_helper;
 use moodleform;

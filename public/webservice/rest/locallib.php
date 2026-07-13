@@ -27,7 +27,7 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 
-require_once("$CFG->dirroot/webservice/lib.php");
+require_once(\core\component::component_path('core_webservice', 'lib.php'));
 
 /**
  * REST service server implementation.

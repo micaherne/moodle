@@ -30,8 +30,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/lib.php');     // we extend this library here
-require_once($CFG->libdir . '/gradelib.php');   // we use some rounding and comparing routines here
-require_once($CFG->libdir . '/filelib.php');
+require_once(\core\component::component_path('core', 'gradelib.php'));   // we use some rounding and comparing routines here
+require_once(\core\component::component_path('core', 'filelib.php'));
 
 /**
  * Full-featured workshop API
@@ -1609,11 +1609,12 @@ class workshop {
             if (empty($this->strategy)) {
                 throw new coding_exception('Unknown grading strategy');
             }
-            $strategylib = __DIR__ . '/form/' . $this->strategy . '/lib.php';
-            if (is_readable($strategylib)) {
+            $strategydir = \core_component::get_plugin_directory('workshopform', $this->strategy);
+            $strategylib = $strategydir ? $strategydir . '/lib.php' : null;
+            if ($strategylib && is_readable($strategylib)) {
                 require_once($strategylib);
             } else {
-                throw new coding_exception('the grading forms subplugin must contain library ' . $strategylib);
+                throw new coding_exception('the grading forms subplugin workshopform_' . $this->strategy . ' must contain library lib.php');
             }
             $classname = 'workshop_' . $this->strategy . '_strategy';
             $this->strategyinstance = new $classname($this);
@@ -1635,9 +1636,10 @@ class workshop {
         global $DB;
 
         $method = clean_param($method, PARAM_PLUGIN);
-        $evaluationlib = __DIR__ . '/eval/' . $method . '/lib.php';
+        $evaluationdir = \core_component::get_plugin_directory('workshopeval', $method);
+        $evaluationlib = $evaluationdir ? $evaluationdir . '/lib.php' : null;
 
-        if (is_readable($evaluationlib)) {
+        if ($evaluationlib && is_readable($evaluationlib)) {
             $this->evaluationinstance = null;
             $this->evaluation = $method;
             $DB->set_field('workshop', 'evaluation', $method, array('id' => $this->id));
@@ -1659,18 +1661,20 @@ class workshop {
             if (empty($this->evaluation)) {
                 $this->evaluation = 'best';
             }
-            $evaluationlib = __DIR__ . '/eval/' . $this->evaluation . '/lib.php';
-            if (is_readable($evaluationlib)) {
+            $evaluationdir = \core_component::get_plugin_directory('workshopeval', $this->evaluation);
+            $evaluationlib = $evaluationdir ? $evaluationdir . '/lib.php' : null;
+            if ($evaluationlib && is_readable($evaluationlib)) {
                 require_once($evaluationlib);
             } else {
                 // Fall back in case the subplugin is not available.
                 $this->evaluation = 'best';
-                $evaluationlib = __DIR__ . '/eval/' . $this->evaluation . '/lib.php';
-                if (is_readable($evaluationlib)) {
+                $evaluationdir = \core_component::get_plugin_directory('workshopeval', $this->evaluation);
+                $evaluationlib = $evaluationdir ? $evaluationdir . '/lib.php' : null;
+                if ($evaluationlib && is_readable($evaluationlib)) {
                     require_once($evaluationlib);
                 } else {
                     // Fall back in case the subplugin is not available any more.
-                    throw new coding_exception('Missing default grading evaluation library ' . $evaluationlib);
+                    throw new coding_exception('Missing default grading evaluation library workshopeval_' . $this->evaluation);
                 }
             }
             $classname = 'workshop_' . $this->evaluation . '_evaluation';
@@ -1691,11 +1695,12 @@ class workshop {
     public function allocator_instance($method) {
         global $CFG;    // because we require other libs here
 
-        $allocationlib = __DIR__ . '/allocation/' . $method . '/lib.php';
-        if (is_readable($allocationlib)) {
+        $allocationdir = \core_component::get_plugin_directory('workshopallocation', $method);
+        $allocationlib = $allocationdir ? $allocationdir . '/lib.php' : null;
+        if ($allocationlib && is_readable($allocationlib)) {
             require_once($allocationlib);
         } else {
-            throw new coding_exception('Unable to find the allocation library ' . $allocationlib);
+            throw new coding_exception('Unable to find the allocation library workshopallocation_' . $method);
         }
         $classname = 'workshop_' . $method . '_allocator';
         return new $classname($this);
@@ -2623,7 +2628,7 @@ class workshop {
      */
     public function get_gradebook_grades($userid) {
         global $CFG;
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
 
         if (empty($userid)) {
             throw new coding_exception('User id expected, empty value given.');
@@ -2670,7 +2675,7 @@ class workshop {
      */
     public function submission_content_options() {
         global $CFG;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         return array(
             'trusttext' => true,
@@ -2689,7 +2694,7 @@ class workshop {
      */
     public function submission_attachment_options() {
         global $CFG;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $options = array(
             'subdirs' => true,
@@ -2711,7 +2716,7 @@ class workshop {
      */
     public function overall_feedback_content_options() {
         global $CFG;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         return array(
             'subdirs' => 0,
@@ -2730,7 +2735,7 @@ class workshop {
      */
     public function overall_feedback_attachment_options() {
         global $CFG;
-        require_once($CFG->dirroot.'/repository/lib.php');
+        require_once(\core\component::component_path('core_repository', 'lib.php'));
 
         $options = array(
             'subdirs' => 1,
@@ -2914,7 +2919,7 @@ class workshop {
      */
     public function set_module_viewed() {
         global $CFG;
-        require_once($CFG->libdir . '/completionlib.php');
+        require_once(\core\component::component_path('core', 'completionlib.php'));
 
         // Mark viewed.
         $completion = new completion_info($this->course);

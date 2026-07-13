@@ -665,13 +665,11 @@ abstract class base {
      * @return string
      */
     public function get_dir() {
-        global $CFG;
-
         if (!isset($this->rootdir)) {
             return '';
         }
 
-        return substr($this->rootdir, strlen($CFG->dirroot));
+        return \core\component::to_mono_path($this->rootdir, leadingslash: true);
     }
 
     /**

@@ -34,8 +34,8 @@
  * directory later by web service.
  */
 
-require('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+require(__DIR__ . '/../../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $newtoken = optional_param('newtoken', '', PARAM_ALPHANUM);
 $url = optional_param('url', '', PARAM_URL);

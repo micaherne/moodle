@@ -130,7 +130,7 @@ class scores extends resource_base {
                 }
             }
             $json = '[]';
-            require_once($CFG->libdir.'/gradelib.php');
+            require_once(\core\component::component_path('core', 'gradelib.php'));
             switch ($response->get_request_method()) {
                 case 'GET':
                     $response->set_code(405);
@@ -217,7 +217,7 @@ class scores extends resource_base {
         global $COURSE, $CFG;
 
         if (strpos($value, '$Scores.url') !== false) {
-            require_once($CFG->libdir . '/gradelib.php');
+            require_once(\core\component::component_path('core', 'gradelib.php'));
 
             $resolved = '';
             $this->params['context_id'] = $COURSE->id;

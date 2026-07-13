@@ -18,7 +18,6 @@ namespace core_cache;
 
 use core\lang_string;
 use core\exception\coding_exception;
-use DirectoryIterator;
 
 /**
  * The cache helper class.
@@ -162,36 +161,12 @@ class helper {
     }
 
     /**
-     * Returns an array of plugins without using core methods.
-     *
-     * This function explicitly does NOT use core functions as it will in some circumstances be called before Moodle has
-     * finished initialising. This happens when loading configuration for instance.
+     * Returns an array of cache store plugins, keyed by plugin name with the plugin directory as the value.
      *
      * @return array
      */
     public static function early_get_cache_plugins() {
-        global $CFG;
-        $result = [];
-        $ignored = ['CVS', '_vti_cnf', 'simpletest', 'db', 'yui', 'tests'];
-        $fulldir = $CFG->dirroot . '/cache/stores';
-        $items = new DirectoryIterator($fulldir);
-        foreach ($items as $item) {
-            if ($item->isDot() or !$item->isDir()) {
-                continue;
-            }
-            $pluginname = $item->getFilename();
-            if (in_array($pluginname, $ignored)) {
-                continue;
-            }
-            if (!is_valid_plugin_name($pluginname)) {
-                // Better ignore plugins with problematic names here.
-                continue;
-            }
-            $result[$pluginname] = $fulldir . '/' . $pluginname;
-            unset($item);
-        }
-        unset($items);
-        return $result;
+        return \core_component::get_plugin_list('cachestore');
     }
 
     /**

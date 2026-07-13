@@ -34,7 +34,7 @@ define('AJAX_SCRIPT', true);
 define('NO_MOODLE_COOKIES', true);
 
 require_once(__DIR__ . '/../config.php');
-require_once($CFG->dirroot . '/webservice/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 // Allow CORS requests.
 header('Access-Control-Allow-Origin: *');

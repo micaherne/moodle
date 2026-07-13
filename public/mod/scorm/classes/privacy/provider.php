@@ -19,7 +19,7 @@ namespace mod_scorm\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("{$CFG->dirroot}/mod/scorm/locallib.php");
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;

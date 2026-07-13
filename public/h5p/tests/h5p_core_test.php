@@ -42,7 +42,7 @@ final class h5p_core_test extends \advanced_testcase {
 
         autoloader::register();
 
-        require_once($CFG->libdir . '/tests/fixtures/testable_core_h5p.php');
+        require_once(\core\component::component_path('core', 'tests/fixtures/testable_core_h5p.php'));
 
         $factory = new h5p_test_factory();
         $this->core = $factory->get_core();

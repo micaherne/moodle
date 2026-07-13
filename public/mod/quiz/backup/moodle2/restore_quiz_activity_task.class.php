@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/restore_quiz_stepslib.php');
+require_once(__DIR__ . '/restore_quiz_stepslib.php');
 
 
 /**

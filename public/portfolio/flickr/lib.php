@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/portfolio/plugin.php');
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->libdir.'/flickrclient.php');
+require_once(\core\component::component_path('core', 'portfolio/plugin.php'));
+require_once(\core\component::component_path('core', 'filelib.php'));
+require_once(\core\component::component_path('core', 'flickrclient.php'));
 
 class portfolio_plugin_flickr extends portfolio_plugin_push_base {
 

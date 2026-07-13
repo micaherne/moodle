@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once($CFG->dirroot . '/grade/import/csv/classes/load_data.php');
-require_once($CFG->dirroot . '/grade/import/lib.php');
+require_once(dirname(__DIR__, 2) . '/classes/load_data.php');
+require_once(\core\component::component_path('core_grades', 'import/lib.php'));
 
 /**
  * Class to open up private methods in gradeimport_csv_load_data().

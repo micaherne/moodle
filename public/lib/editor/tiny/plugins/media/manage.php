@@ -23,8 +23,8 @@
  */
 
 require(__DIR__ . '/../../../../../config.php');
-require_once($CFG->libdir . '/filestorage/file_storage.php');
-require_once($CFG->dirroot . '/repository/lib.php');
+require_once(\core\component::component_path('core', 'filestorage/file_storage.php'));
+require_once(\core\component::component_path('core_repository', 'lib.php'));
 
 $itemid = required_param('itemid', PARAM_INT) ?? 0;
 $maxbytes = optional_param('maxbytes', 0, PARAM_INT);

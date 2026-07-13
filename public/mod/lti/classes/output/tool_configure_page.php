@@ -25,7 +25,7 @@ namespace mod_lti\output;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once(dirname(__DIR__, 2) . '/locallib.php');
 
 use moodle_url;
 use renderable;

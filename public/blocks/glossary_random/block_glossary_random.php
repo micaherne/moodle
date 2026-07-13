@@ -45,7 +45,7 @@ class block_glossary_random extends block_base {
     function specialization() {
         global $CFG, $DB;
 
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         $this->course = $this->page->course;
 

@@ -21,7 +21,7 @@ use core_calendar\local\event\strategies\raw_event_retrieval_strategy;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/calendar/tests/helpers.php');
+require_once(__DIR__ . '/helpers.php');
 
 /**
  * Raw event retrieval strategy tests.

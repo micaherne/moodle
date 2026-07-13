@@ -358,8 +358,8 @@ class user_picture implements renderable {
             // Find the best default image URL we can (MDL-35669).
             if (empty($CFG->gravatardefaulturl)) {
                 $absoluteimagepath = $page->theme->resolve_image_location('u/' . $filename, 'core');
-                if (strpos($absoluteimagepath, $CFG->dirroot) === 0) {
-                    $gravatardefault = $CFG->wwwroot . substr($absoluteimagepath, strlen($CFG->dirroot));
+                if (\core\component::is_inside_codebase($absoluteimagepath, '')) {
+                    $gravatardefault = $CFG->wwwroot . \core\component::to_mono_path($absoluteimagepath, leadingslash: true);
                 } else {
                     $gravatardefault = $CFG->wwwroot . '/pix/u/' . $filename . '.png';
                 }

@@ -28,7 +28,7 @@ use core\report_helper;
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once($CFG->libdir . '/tablelib.php');
+require_once(\core\component::component_path('core', 'tablelib.php'));
 
 /**
  * Table log class for displaying logs.

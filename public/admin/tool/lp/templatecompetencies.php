@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 $templateid = required_param('templateid', PARAM_INT);
 $pagecontextid = required_param('pagecontextid', PARAM_INT);  // Reference to the context we came from.

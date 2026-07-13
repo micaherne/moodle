@@ -121,7 +121,7 @@ class config {
      * @return boolean
      */
     public function load($configuration = false) {
-        global $CFG;
+        global $CFG; // Needed in scope for the required store lib.php.
 
         if ($configuration === false) {
             $configuration = $this->include_configuration();
@@ -178,8 +178,9 @@ class config {
                 debugging('Invalid cache store in config. Not an available plugin.', DEBUG_DEVELOPER);
                 continue;
             }
-            $file = $CFG->dirroot . '/cache/stores/' . $plugin . '/lib.php';
-            if (!class_exists($class) && file_exists($file)) {
+            $plugindir = \core_component::get_plugin_directory('cachestore', $plugin);
+            $file = $plugindir ? "$plugindir/lib.php" : null;
+            if (!class_exists($class) && $file !== null && file_exists($file)) {
                 require_once($file);
             }
             if (!class_exists($class)) {

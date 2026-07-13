@@ -111,8 +111,8 @@ function lesson_update_instance($data, $mform) {
 function lesson_update_events($lesson, $override = null) {
     global $CFG, $DB;
 
-    require_once($CFG->dirroot . '/mod/lesson/locallib.php');
-    require_once($CFG->dirroot . '/calendar/lib.php');
+    require_once(__DIR__ . '/locallib.php');
+    require_once(\core\component::component_path('core_calendar', 'lib.php'));
 
     // Load the old events relating to this lesson.
     $conds = array('modulename' => 'lesson',
@@ -353,7 +353,7 @@ function lesson_refresh_events($courseid = 0, $instance = null, $cm = null) {
  */
 function lesson_delete_instance($id) {
     global $DB, $CFG;
-    require_once($CFG->dirroot . '/mod/lesson/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $lesson = $DB->get_record("lesson", array("id"=>$id), '*', MUST_EXIST);
     $lesson = new lesson($lesson);
@@ -377,7 +377,7 @@ function lesson_delete_instance($id) {
 function lesson_user_outline($course, $user, $mod, $lesson) {
     global $CFG, $DB;
 
-    require_once("$CFG->libdir/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
     $grades = grade_get_grades($course->id, 'mod', 'lesson', $lesson->id, $user->id);
     $return = new stdClass();
 
@@ -433,7 +433,7 @@ function lesson_user_outline($course, $user, $mod, $lesson) {
 function lesson_user_complete($course, $user, $mod, $lesson) {
     global $DB, $OUTPUT, $CFG;
 
-    require_once("$CFG->libdir/gradelib.php");
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     $grades = grade_get_grades($course->id, 'mod', 'lesson', $lesson->id, $user->id);
 
@@ -628,7 +628,7 @@ function lesson_get_user_grades($lesson, $userid=0) {
  */
 function lesson_update_grades($lesson, $userid=0, $nullifnone=true) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once(\core\component::component_path('core', 'gradelib.php'));
 
     if ($lesson->grade == 0 || $lesson->practice) {
         lesson_grade_item_update($lesson);
@@ -660,7 +660,7 @@ function lesson_update_grades($lesson, $userid=0, $nullifnone=true) {
 function lesson_grade_item_update($lesson, $grades=null) {
     global $CFG;
     if (!function_exists('grade_update')) { //workaround for buggy PHP versions
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once(\core\component::component_path('core', 'gradelib.php'));
     }
 
     if (property_exists($lesson, 'cmidnumber')) { //it may not be always present
@@ -1418,7 +1418,7 @@ function mod_lesson_core_calendar_provide_event_action(calendar_event $event,
                                                        \core_calendar\action_factory $factory,
                                                        int $userid = 0) {
     global $DB, $CFG, $USER;
-    require_once($CFG->dirroot . '/mod/lesson/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     if (!$userid) {
         $userid = $USER->id;

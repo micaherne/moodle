@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../../config.php');
+require(__DIR__ . '/../../../config.php');
 
 $PAGE->set_url(new moodle_url('/message/output/airnotifier/requestaccesskey.php'));
 $PAGE->set_context(context_system::instance());

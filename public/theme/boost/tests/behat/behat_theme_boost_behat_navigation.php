@@ -17,7 +17,7 @@
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 // For that reason, we can't even rely on $CFG->admin being available here.
 
-require_once(__DIR__ . '/../../../../lib/tests/behat/behat_navigation.php');
+require_once(\core\component::component_path('core', 'tests/behat/behat_navigation.php'));
 
 use Behat\Mink\Exception\ElementNotFoundException as ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException as ExpectationException;

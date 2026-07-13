@@ -99,7 +99,7 @@ class reconcile_files extends XMLDBAction {
                 $current = $currentdom->saveXML();
 
                 if ($current !== $correct) {
-                    $relpath = str_replace($CFG->dirroot . '/', '', $key) . '/install.xml';
+                    $relpath = \core\component::to_mono_path($key, false) . '/install.xml';
                     $needfix[] = $relpath;
                     // Left here on purpose, as a quick way to fix problems. To be
                     // enabled and run by developers only, uncomment the next line:

@@ -25,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/repository/lib.php');
-require_once($CFG->libdir . '/filebrowser/file_browser.php');
-require_once($CFG->libdir . '/google/lib.php');
+require_once(\core\component::component_path('core_repository', 'lib.php'));
+require_once(\core\component::component_path('core', 'filebrowser/file_browser.php'));
+require_once(\core\component::component_path('core', 'google/lib.php'));
 
 use repository_googledocs\helper;
 use repository_googledocs\googledocs_content_search;

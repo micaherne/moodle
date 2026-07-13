@@ -38,7 +38,7 @@ use context_system;
 use stdClass;
 use moodle_exception;
 
-require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once(dirname(__DIR__, 3) . '/lib.php');
 
 /**
  * Capability manager for the forum.

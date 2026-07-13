@@ -51,7 +51,7 @@ class block_html extends block_base {
     function get_content() {
         global $CFG;
 
-        require_once($CFG->libdir . '/filelib.php');
+        require_once(\core\component::component_path('core', 'filelib.php'));
 
         if ($this->content !== NULL) {
             return $this->content;

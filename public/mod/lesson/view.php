@@ -26,8 +26,8 @@
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot.'/mod/lesson/locallib.php');
-require_once($CFG->libdir . '/grade/constants.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'grade/constants.php'));
 
 $id      = required_param('id', PARAM_INT);             // Course Module ID
 $pageid  = optional_param('pageid', null, PARAM_INT);   // Lesson Page ID

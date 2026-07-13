@@ -50,7 +50,7 @@ final class condition_test extends \advanced_testcase {
         \availability_profile\condition::wipe_static_cache();
 
         // Load the mock info class so that it can be used.
-        require_once($CFG->dirroot . '/availability/tests/fixtures/mock_info.php');
+        require_once(\core\component::component_path('core_availability', 'tests/fixtures/mock_info.php'));
     }
 
     /**

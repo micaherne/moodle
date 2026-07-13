@@ -28,7 +28,7 @@ use core_availability\info_module;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/completionlib.php');
+require_once(\core\component::component_path('core', 'completionlib.php'));
 
 /**
  * Contains the ajax update course module structure.

@@ -25,7 +25,7 @@
 namespace tool_mobile;
 
 defined('MOODLE_INTERNAL') || die();
-require_once("$CFG->dirroot/webservice/lib.php");
+require_once(\core\component::component_path('core_webservice', 'lib.php'));
 
 use core_external\external_api;
 use core_external\external_files;

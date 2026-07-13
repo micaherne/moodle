@@ -31,25 +31,25 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Require {@link ddllib.php}
-require_once($CFG->libdir.'/ddllib.php');
+require_once(__DIR__ . '/ddllib.php');
 // Require {@link database_exporter.php}
-require_once($CFG->libdir.'/dtl/database_exporter.php');
+require_once(__DIR__ . '/dtl/database_exporter.php');
 // Require {@link xml_database_exporter.php}
-require_once($CFG->libdir.'/dtl/xml_database_exporter.php');
+require_once(__DIR__ . '/dtl/xml_database_exporter.php');
 // Require {@link file_xml_database_exporter.php}
-require_once($CFG->libdir.'/dtl/file_xml_database_exporter.php');
+require_once(__DIR__ . '/dtl/file_xml_database_exporter.php');
 // Require {@link string_xml_database_exporter.php}
-require_once($CFG->libdir.'/dtl/string_xml_database_exporter.php');
+require_once(__DIR__ . '/dtl/string_xml_database_exporter.php');
 // Require {@link database_mover.php}
-require_once($CFG->libdir.'/dtl/database_mover.php');
+require_once(__DIR__ . '/dtl/database_mover.php');
 // Require {@link database_importer.php}
-require_once($CFG->libdir.'/dtl/database_importer.php');
+require_once(__DIR__ . '/dtl/database_importer.php');
 // Require {@link xml_database_importer.php}
-require_once($CFG->libdir.'/dtl/xml_database_importer.php');
+require_once(__DIR__ . '/dtl/xml_database_importer.php');
 // Require {@link file_xml_database_importer.php}
-require_once($CFG->libdir.'/dtl/file_xml_database_importer.php');
+require_once(__DIR__ . '/dtl/file_xml_database_importer.php');
 // Require {@link string_xml_database_importer.php}
-require_once($CFG->libdir.'/dtl/string_xml_database_importer.php');
+require_once(__DIR__ . '/dtl/string_xml_database_importer.php');
 
 /**
  * Exception class for db transfer

@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/formslib.php");
+require_once(\core\component::component_path('core', 'formslib.php'));
 class mod_scorm_report_interactions_settings extends moodleform {
 
     public function definition() {

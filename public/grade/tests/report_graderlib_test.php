@@ -23,8 +23,8 @@ use mod_quiz\quiz_settings;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/grade/lib.php');
-require_once($CFG->dirroot.'/grade/report/grader/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
+require_once(\core\component::component_path('gradereport_grader', 'lib.php'));
 
 /**
  * Tests grade_report_grader (the grader report)

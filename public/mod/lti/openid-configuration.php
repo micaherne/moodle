@@ -30,8 +30,8 @@ use mod_lti\local\ltiopenid\registration_helper;
 define('NO_DEBUG_DISPLAY', true);
 define('NO_MOODLE_COOKIES', true);
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/lti/locallib.php');
-require_once($CFG->libdir.'/weblib.php');
+require_once(__DIR__ . '/locallib.php');
+require_once(\core\component::component_path('core', 'weblib.php'));
 
 $scopes = registration_helper::get()->lti_get_service_scopes();
 $scopes[] = 'openid';

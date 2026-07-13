@@ -24,8 +24,8 @@
 
 use core\output\notification;
 
-require_once('../config.php');
-require_once($CFG->dirroot . '/lib/adminlib.php');
+require_once(__DIR__ . '/../config.php');
+require_once(\core\component::component_path('core', 'adminlib.php'));
 
 require_login();
 $context = context_system::instance();

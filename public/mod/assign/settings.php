@@ -25,15 +25,15 @@
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/assign/adminlib.php');
-require_once($CFG->dirroot . '/grade/lib.php');
+require_once(__DIR__ . '/adminlib.php');
+require_once(\core\component::component_path('core_grades', 'lib.php'));
 
 $ADMIN->add('modsettings', new admin_category('modassignfolder', new lang_string('pluginname', 'mod_assign'), $module->is_enabled() === false));
 
 $settings = new admin_settingpage($section, get_string('settings', 'mod_assign'), 'moodle/site:config', $module->is_enabled() === false);
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot . '/mod/assign/locallib.php');
+    require_once(__DIR__ . '/locallib.php');
 
     $menu = array();
     foreach (core_component::get_plugin_list('assignfeedback') as $type => $notused) {

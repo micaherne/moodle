@@ -19,9 +19,9 @@ namespace enrol_cohort;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/enrol/cohort/locallib.php');
-require_once($CFG->dirroot.'/cohort/lib.php');
-require_once($CFG->dirroot.'/group/lib.php');
+require_once(dirname(__DIR__) . '/locallib.php');
+require_once(\core\component::component_path('core_cohort', 'lib.php'));
+require_once(\core\component::component_path('core_group', 'lib.php'));
 
 /**
  * Cohort enrolment sync functional test.
