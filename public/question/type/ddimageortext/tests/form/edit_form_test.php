@@ -16,6 +16,8 @@
 
 namespace qtype_ddimageortext\form;
 
+use core\context\module;
+use core\url;
 use qtype_ddimageortext_edit_form;
 
 defined('MOODLE_INTERNAL') || die();
@@ -46,7 +48,7 @@ final class edit_form_test extends \advanced_testcase {
 
         $course = self::getDataGenerator()->create_course();
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $bankcontext = \context_module::instance($qbank->cmid);
+        $bankcontext = module::instance($qbank->cmid);
         $category = question_get_default_category($bankcontext->id, true);
         $fakequestion = new \stdClass();
         $fakequestion->qtype = 'ddimageortext';
@@ -61,7 +63,7 @@ final class edit_form_test extends \advanced_testcase {
         $fakequestion->formoptions->repeatelements = true;
         $fakequestion->inputs = null;
 
-        $form = new qtype_ddimageortext_edit_form(new \moodle_url('/'), $fakequestion, $category,
+        $form = new qtype_ddimageortext_edit_form(new url('/'), $fakequestion, $category,
                 new \core_question\local\bank\question_edit_contexts($bankcontext));
 
         return [$form, $category];

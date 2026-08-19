@@ -24,7 +24,7 @@
  */
 namespace mod_bigbluebuttonbn\privacy;
 
-use context_module;
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -106,7 +106,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(1, $contextlist);
 
         $contextformodule = $contextlist->current();
-        $cmcontext = context_module::instance($bigbluebuttonbn->cmid);
+        $cmcontext = module::instance($bigbluebuttonbn->cmid);
         $this->assertEquals($cmcontext->id, $contextformodule->id);
     }
 
@@ -131,7 +131,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
             ->create_log(['bigbluebuttonbnid' => $bigbluebuttonbn->id, 'userid' => $user2->id]);
 
         // Export all of the data for the context for user 1.
-        $cmcontext = context_module::instance($bigbluebuttonbn->cmid);
+        $cmcontext = module::instance($bigbluebuttonbn->cmid);
         $this->export_context_data_for_user($user1->id, $cmcontext, 'mod_bigbluebuttonbn');
         $writer = \core_privacy\local\request\writer::with_context($cmcontext);
 
@@ -167,7 +167,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
             ->create_log(['bigbluebuttonbnid' => $bigbluebuttonbn->id, 'userid' => $user2->id]);
 
         // Export all of the data for the context for user 1.
-        $cmcontext = context_module::instance($bigbluebuttonbn->cmid);
+        $cmcontext = module::instance($bigbluebuttonbn->cmid);
 
         $userlist = new userlist($cmcontext, 'mod_bigbluebuttonbn');
         provider::get_users_in_context($userlist);
@@ -194,7 +194,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals(3, $count);
 
         // Delete data based on context.
-        $cmcontext = context_module::instance($e['instance']->cmid);
+        $cmcontext = module::instance($e['instance']->cmid);
         provider::delete_data_for_all_users_in_context($cmcontext);
 
         // After deletion, the bigbluebuttonbn logs for that activity should have been deleted.
@@ -213,7 +213,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $e = $this->get_bigbluebuttonbn_environemnt();
 
         // Delete data for the first user.
-        $context = \context_module::instance($e['instance']->cmid);
+        $context = module::instance($e['instance']->cmid);
         $contextlist = new approved_contextlist($e['users'][0], 'bigbluebuttonbn',
             [$context->id]);
         provider::delete_data_for_user($contextlist);
@@ -245,7 +245,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $e = $this->get_bigbluebuttonbn_environemnt();
 
         // Delete user 1 and 2 data from chat 1 context only.
-        $context = \context_module::instance($e['instance']->cmid);
+        $context = module::instance($e['instance']->cmid);
         $approveduserids = [$e['users'][0]->id];
         $approvedlist = new approved_userlist($context, 'mod_bigbluebuttonbn', $approveduserids);
         provider::delete_data_for_users($approvedlist);

@@ -17,6 +17,7 @@
 namespace core\hook;
 
 use core\attribute_helper;
+use core\exception\coding_exception;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
@@ -93,7 +94,7 @@ final class manager implements
      */
     public static function phpunit_get_instance(array $componentfiles): manager {
         if (!PHPUNIT_TEST) {
-            throw new \coding_exception('Invalid call of manager::phpunit_get_instance() outside of tests');
+            throw new coding_exception('Invalid call of manager::phpunit_get_instance() outside of tests');
         }
         $instance = new self(
             phpunit: true,
@@ -125,7 +126,7 @@ final class manager implements
      */
     public function phpunit_redirect_hook(string $hookname, callable $callback): void {
         if (!PHPUNIT_TEST) {
-            throw new \coding_exception('Invalid call of manager::phpunit_redirect_hook() outside of tests');
+            throw new coding_exception('Invalid call of manager::phpunit_redirect_hook() outside of tests');
         }
         $this->redirectedcallbacks[$hookname] = $callback;
     }
@@ -135,7 +136,7 @@ final class manager implements
      */
     public function phpunit_stop_redirections(): void {
         if (!PHPUNIT_TEST) {
-            throw new \coding_exception('Invalid call of manager::phpunit_stop_redirections() outside of tests');
+            throw new coding_exception('Invalid call of manager::phpunit_stop_redirections() outside of tests');
         }
         $this->redirectedcallbacks = [];
     }

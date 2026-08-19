@@ -16,6 +16,9 @@
 
 namespace enrol_meta\external;
 
+use core\context\course;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
 use core_external\external_api;
 
 /**
@@ -41,7 +44,7 @@ final class delete_instances_test extends \core_external\tests\externallib_testc
      * Test delete_instances no instances.
      */
     public function test_delete_instances_no_instances(): void {
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         delete_instances::execute([]);
     }
 
@@ -55,7 +58,7 @@ final class delete_instances_test extends \core_external\tests\externallib_testc
         try {
             delete_instances::execute([['metacourseid' => 1000, 'courseid' => $course->id]]);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertStringContainsString(get_string('wsinvalidmetacourse', 'enrol_meta', 1000), $e->getMessage());
         }
 
@@ -63,7 +66,7 @@ final class delete_instances_test extends \core_external\tests\externallib_testc
         try {
             delete_instances::execute([['metacourseid' => $course->id, 'courseid' => 1000]]);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertStringContainsString(get_string('wsinvalidcourse', 'enrol_meta', 1000), $e->getMessage());
         }
     }
@@ -81,12 +84,12 @@ final class delete_instances_test extends \core_external\tests\externallib_testc
         try {
             delete_instances::execute([['metacourseid' => $metacourse->id, 'courseid' => $course->id]]);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertStringContainsString(get_string('wsinvalidmetacourse', 'enrol_meta', $metacourse->id), $e->getMessage());
         }
 
         // Add rights for metacourse.
-        $metacontext = \context_course::instance($metacourse->id);
+        $metacontext = course::instance($metacourse->id);
         $roleid = $this->assignUserCapability('enrol/meta:config', $metacontext->id);
         $this->assignUserCapability('moodle/course:view', $metacontext->id, $roleid);
         $this->assignUserCapability('moodle/course:enrolconfig', $metacontext->id, $roleid);

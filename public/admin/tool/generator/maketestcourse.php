@@ -24,6 +24,11 @@
 
 // Disable buffering so that the progress output displays gradually without
 // needing to call flush().
+use core\context\system;
+use core\navigation\navigation_cache;
+use core\output\html_writer;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require('../../../config.php');
@@ -38,7 +43,7 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('maketestcourse', 'tool_generator'));
 
 // Information message.
-$context = context_system::instance();
+$context = system::instance();
 echo $OUTPUT->box(format_text(get_string('courseexplanation', 'tool_generator'),
         FORMAT_MARKDOWN, array('context' => $context)));
 
@@ -77,7 +82,7 @@ if ($data = $mform->get_data()) {
     $id = $backend->make();
 
     echo html_writer::div(
-            html_writer::link(new moodle_url('/course/view.php', array('id' => $id)),
+            html_writer::link(new url('/course/view.php', array('id' => $id)),
                 get_string('continue')));
 } else {
     // Display form.

@@ -24,6 +24,11 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use \core_badges\badge;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -55,7 +60,7 @@ class award_criteria_overall extends award_criteria {
 
             $agg = $data->get_aggregation_methods();
             if (!$data->is_locked() && !$data->is_active()) {
-                $editurl = new moodle_url('/badges/criteria_settings.php',
+                $editurl = new url('/badges/criteria_settings.php',
                                array('badgeid' => $this->badgeid,
                                    'edit' => true,
                                    'type' => $this->criteriatype,
@@ -66,7 +71,7 @@ class award_criteria_overall extends award_criteria {
                               array('class' => 'criteria-action'));
                 echo $OUTPUT->box($editaction, array('criteria-header'));
 
-                $url = new moodle_url('criteria.php', array('id' => $data->id, 'sesskey' => sesskey()));
+                $url = new url('criteria.php', array('id' => $data->id, 'sesskey' => sesskey()));
                 echo $OUTPUT->single_select($url, 'update', $agg, $data->get_aggregation_method($this->criteriatype),
                     null, null, array('aria-describedby' => 'overall'));
                 echo html_writer::span(get_string('overallcrit', 'badges'), '', array('id' => 'overall'));

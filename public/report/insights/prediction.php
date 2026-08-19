@@ -22,13 +22,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+use core\user;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
 $predictionid = required_param('id', PARAM_INT);
 
 if (!\core_analytics\manager::is_analytics_enabled()) {
-    $PAGE->set_context(\context_system::instance());
+    $PAGE->set_context(system::instance());
     $renderer = $PAGE->get_renderer('report_insights');
     echo $renderer->render_analytics_disabled();
     exit(0);
@@ -41,15 +45,15 @@ if ($context->contextlevel < CONTEXT_COURSE) {
 }
 
 $params = array('id' => $prediction->get_prediction_data()->id);
-$url = new \moodle_url('/report/insights/prediction.php', $params);
+$url = new url('/report/insights/prediction.php', $params);
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');
 
-$navurl = new \moodle_url('/report/insights/insights.php', array('contextid' => $context->id));
+$navurl = new url('/report/insights/insights.php', array('contextid' => $context->id));
 if ($context->contextlevel === CONTEXT_SYSTEM) {
     admin_externalpage_setup('reportinsights', '', null, '', array('pagelayout' => 'report'));
 } else if ($context->contextlevel === CONTEXT_USER) {
-    $user = \core_user::get_user($context->instanceid, '*', MUST_EXIST);
+    $user = user::get_user($context->instanceid, '*', MUST_EXIST);
     $PAGE->navigation->extend_for_user($user);
 
     $modelinsightsurl = clone $navurl;

@@ -24,6 +24,9 @@
 
 namespace core\antivirus;
 
+use core\context\system;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -81,7 +84,7 @@ class manager {
 
                 // Log scan error event.
                 $params = [
-                    'context' => \context_system::instance(),
+                    'context' => system::instance(),
                     'relateduserid' => $USER->id,
                     'other' => ['filename' => $filename, 'incidentdetails' => $incidentdetails],
                 ];
@@ -113,7 +116,7 @@ class manager {
 
                 // Log file infected event.
                 $params = [
-                    'context' => \context_system::instance(),
+                    'context' => system::instance(),
                     'relateduserid' => $USER->id,
                     'other' => ['filename' => $filename, 'zipfile' => $zipfile, 'incidentdetails' => $incidentdetails],
                 ];
@@ -141,7 +144,7 @@ class manager {
 
                 // Log scan error event.
                 $params = [
-                    'context' => \context_system::instance(),
+                    'context' => system::instance(),
                     'relateduserid' => $USER->id,
                     'other' => ['filename' => $filename, 'incidentdetails' => $incidentdetails],
                 ];
@@ -177,7 +180,7 @@ class manager {
 
                 // Log scan error event.
                 $params = [
-                    'context' => \context_system::instance(),
+                    'context' => system::instance(),
                     'relateduserid' => $USER->id,
                     'other' => ['filename' => $filename, 'incidentdetails' => $incidentdetails],
                 ];
@@ -211,7 +214,7 @@ class manager {
 
                 // Log file infected event.
                 $params = [
-                    'context' => \context_system::instance(),
+                    'context' => system::instance(),
                     'relateduserid' => $USER->id,
                     'other' => ['filename' => $filename, 'zipfile' => $zipfile, 'incidentdetails' => $incidentdetails],
                 ];
@@ -235,7 +238,7 @@ class manager {
 
                 // Log scan error event.
                 $params = [
-                    'context' => \context_system::instance(),
+                    'context' => system::instance(),
                     'relateduserid' => $USER->id,
                     'other' => ['filename' => $filename, 'incidentdetails' => $incidentdetails],
                 ];
@@ -301,7 +304,7 @@ class manager {
             if (!empty($antivirus->get_scanning_notice()) &&
                 strpos($antivirus->get_scanning_notice(), $message->fullmessage) === false) {
                 // This is some extra information. We should append this to the end of the incident details.
-                $incidentdetails .= \html_writer::tag('pre', $message->fullmessage);
+                $incidentdetails .= html_writer::tag('pre', $message->fullmessage);
             }
 
             // Now update the message to the detailed version, and format.

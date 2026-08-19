@@ -16,6 +16,8 @@
 
 namespace core\plugininfo;
 
+use core\plugin_manager;
+
 /**
  * Defines classes used for plugin info.
  *
@@ -83,7 +85,7 @@ class auth extends base {
             // Remove stale sessions.
             \core\session\manager::gc();
             // Reset caches.
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;

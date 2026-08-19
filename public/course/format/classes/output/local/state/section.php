@@ -16,12 +16,13 @@
 
 namespace core_courseformat\output\local\state;
 
+use core\output\renderer_base;
 use core_availability\info_section;
 use core_courseformat\base as course_format;
-use section_info;
-use renderable;
+use core_course\section_info;
+use core\output\renderable;
 use stdClass;
-use context_course;
+use core\context\course;
 
 /**
  * Contains the ajax update section structure.
@@ -55,7 +56,7 @@ class section implements renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
         $format = $this->format;
         $course = $format->get_course();
         $section = $this->section;
@@ -130,7 +131,7 @@ class section implements renderable {
 
         $section = $this->section;
         $course = $this->format->get_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Hidden sections have no restriction indicator displayed.
         if (empty($section->visible) || empty($CFG->enableavailability)) {

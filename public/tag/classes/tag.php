@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -425,7 +432,7 @@ class core_tag_tag {
         if (!$rec) {
             $params['rec'] = 0;
         }
-        return new moodle_url($url, $params);
+        return new url($url, $params);
     }
 
     /**
@@ -475,7 +482,7 @@ class core_tag_tag {
 
         // We can not fire an event with 'null' as the contextid.
         if (is_null($taginstance->contextid)) {
-            $taginstance->contextid = context_system::instance()->id;
+            $taginstance->contextid = system::instance()->id;
         }
 
         // Trigger tag removed event.
@@ -539,7 +546,7 @@ class core_tag_tag {
         // Now remove all the tag instances.
         $DB->delete_records_list('tag_instance', 'id', $taginstanceids);
         // Save the system context in case the 'contextid' column in the 'tag_instance' table is null.
-        $syscontextid = context_system::instance()->id;
+        $syscontextid = system::instance()->id;
         // Loop through the tag instances and fire an 'tag_removed' event.
         foreach ($taginstances as $taginstance) {
             // We can not fire an event with 'null' as the contextid.
@@ -876,7 +883,7 @@ class core_tag_tag {
      * @param int $tiuserid tag instance user id, only needed for tag areas with user tagging (such as core/course)
      */
     public static function remove_all_item_tags($component, $itemtype, $itemid, $tiuserid = 0) {
-        $context = context_system::instance(); // Context will not be used.
+        $context = system::instance(); // Context will not be used.
         static::set_item_tags($component, $itemtype, $itemid, $context, null, $tiuserid);
     }
 
@@ -1106,7 +1113,7 @@ class core_tag_tag {
         $event = \core\event\tag_updated::create(array(
             'objectid' => $this->id,
             'relateduserid' => $this->userid,
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'other' => array(
                 'name' => $this->name,
                 'rawname' => $this->rawname
@@ -1133,7 +1140,7 @@ class core_tag_tag {
         $event = \core\event\tag_flagged::create(array(
             'objectid' => $this->id,
             'relateduserid' => $this->userid,
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'other' => array(
                 'name' => $this->name,
                 'rawname' => $this->rawname
@@ -1164,7 +1171,7 @@ class core_tag_tag {
         $event = \core\event\tag_unflagged::create(array(
             'objectid' => $this->id,
             'relateduserid' => $this->userid,
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'other' => array(
                 'name' => $this->name,
                 'rawname' => $this->rawname
@@ -1182,7 +1189,7 @@ class core_tag_tag {
      * @param array $tagnames
      */
     public function set_related_tags($tagnames) {
-        $context = context_system::instance();
+        $context = system::instance();
         $tagobjects = $tagnames ? static::create_if_missing($this->tagcollid, $tagnames) : array();
         unset($tagobjects[$this->name]); // Never link to itself.
 
@@ -1221,7 +1228,7 @@ class core_tag_tag {
      * @param array $tagnames
      */
     public function add_related_tags($tagnames) {
-        $context = context_system::instance();
+        $context = system::instance();
         $tagobjects = static::create_if_missing($this->tagcollid, $tagnames);
 
         $currenttags = static::get_item_tags('core', 'tag', $this->id);
@@ -1461,7 +1468,7 @@ class core_tag_tag {
         $options = empty($options) ? array() : (array)$options;
         $options += array('para' => false, 'overflowdiv' => true);
         $description = file_rewrite_pluginfile_urls($this->description, 'pluginfile.php',
-                context_system::instance()->id, 'tag', 'description', $this->id);
+                system::instance()->id, 'tag', 'description', $this->id);
         return format_text($description, $this->descriptionformat, $options);
     }
 
@@ -1479,17 +1486,17 @@ class core_tag_tag {
         }
 
         $tagname = $this->get_display_name();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         // Add a link for users to add/remove this from their interests.
         if (static::is_enabled('core', 'user') && core_tag_area::get_collection('core', 'user') == $this->tagcollid) {
             if (static::is_item_tagged_with('core', 'user', $USER->id, $this->name)) {
-                $url = new moodle_url('/tag/user.php', array('action' => 'removeinterest',
+                $url = new url('/tag/user.php', array('action' => 'removeinterest',
                     'sesskey' => sesskey(), 'tag' => $this->rawname));
                 $links[] = html_writer::link($url, get_string('removetagfrommyinterests', 'tag', $tagname),
                         array('class' => 'removefrommyinterests'));
             } else {
-                $url = new moodle_url('/tag/user.php', array('action' => 'addinterest',
+                $url = new url('/tag/user.php', array('action' => 'addinterest',
                     'sesskey' => sesskey(), 'tag' => $this->rawname));
                 $links[] = html_writer::link($url, get_string('addtagtomyinterests', 'tag', $tagname),
                         array('class' => 'addtomyinterests'));
@@ -1498,7 +1505,7 @@ class core_tag_tag {
 
         // Flag as inappropriate link.  Only people with moodle/tag:flag capability.
         if (has_capability('moodle/tag:flag', $systemcontext)) {
-            $url = new moodle_url('/tag/user.php', array('action' => 'flaginappropriate',
+            $url = new url('/tag/user.php', array('action' => 'flaginappropriate',
                 'sesskey' => sesskey(), 'id' => $this->id));
             $links[] = html_writer::link($url, get_string('flagasinappropriate', 'tag', $tagname),
                         array('class' => 'flagasinappropriate'));
@@ -1507,7 +1514,7 @@ class core_tag_tag {
         // Edit tag: Only people with moodle/tag:edit capability who either have it as an interest or can manage tags.
         if (has_capability('moodle/tag:edit', $systemcontext) ||
                 has_capability('moodle/tag:manage', $systemcontext)) {
-            $url = new moodle_url('/tag/edit.php', array('id' => $this->id));
+            $url = new url('/tag/edit.php', array('id' => $this->id));
             $links[] = html_writer::link($url, get_string('edittag', 'tag'),
                         array('class' => 'edittag'));
         }
@@ -1557,7 +1564,7 @@ class core_tag_tag {
             // Fire an event that these items were untagged.
             if ($taginstances) {
                 // Save the system context in case the 'contextid' column in the 'tag_instance' table is null.
-                $syscontextid = context_system::instance()->id;
+                $syscontextid = system::instance()->id;
                 // Loop through the tag instances and fire a 'tag_removed'' event.
                 foreach ($taginstances as $taginstance) {
                     // We can not fire an event with 'null' as the contextid.
@@ -1577,7 +1584,7 @@ class core_tag_tag {
 
             // Fire an event that these tags were deleted.
             if ($tags) {
-                $context = context_system::instance();
+                $context = system::instance();
                 foreach ($tags as $tag) {
                     // Delete all files associated with this tag.
                     $fs = get_file_storage();

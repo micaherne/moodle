@@ -28,6 +28,8 @@
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 
 use Behat\Gherkin\Node\TableNode;
+use core\context\module;
+use core\url;
 
 /**
  * Forum-related steps definitions.
@@ -457,7 +459,7 @@ class behat_mod_forum extends behat_base {
         foreach ($attachmentnames as $attachmentname) {
             $filestorage->create_file_from_string(
                 [
-                    'contextid' => context_module::instance($cm->id)->id,
+                    'contextid' => module::instance($cm->id)->id,
                     'component' => 'mod_forum',
                     'filearea'  => $filearea,
                     'itemid'    => $postid,
@@ -532,7 +534,7 @@ class behat_mod_forum extends behat_base {
     protected function goto_main_post_reply($postsubject) {
         global $DB;
         $post = $DB->get_record("forum_posts", array("subject" => $postsubject), 'id', MUST_EXIST);
-        $url = new moodle_url('/mod/forum/post.php', ['reply' => $post->id]);
+        $url = new url('/mod/forum/post.php', ['reply' => $post->id]);
         $this->execute('behat_general::i_visit', [$url]);
     }
 }

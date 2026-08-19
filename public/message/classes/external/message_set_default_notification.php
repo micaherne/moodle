@@ -16,7 +16,8 @@
 
 namespace core_message\external;
 
-use context_system;
+use core\context\system;
+use core\plugin_manager;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -70,7 +71,7 @@ class message_set_default_notification extends external_api {
             'state' => $state,
         ]);
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 
@@ -171,7 +172,7 @@ class message_set_default_notification extends external_api {
             set_config($preferencename, $value, 'message');
             $transaction->allow_commit();
 
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return [

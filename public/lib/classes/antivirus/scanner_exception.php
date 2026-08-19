@@ -24,6 +24,8 @@
 
 namespace core\antivirus;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -34,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2015 Ruslan Kabalin, Lancaster University.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class scanner_exception extends \moodle_exception {
+class scanner_exception extends moodle_exception {
     /**
      * Constructs a new exception
      *

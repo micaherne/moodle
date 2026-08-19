@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\require_login_exception;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 
 $userid = required_param('userid', PARAM_INT);
@@ -37,7 +40,7 @@ if (isguestuser()) {
 $params = array('userid' => $userid, 'competencyid' => $competencyid);
 $params['planid'] = $planid;
 $plan = \core_competency\api::read_plan($planid);
-$url = new moodle_url('/admin/tool/lp/user_competency_in_plan.php', $params);
+$url = new url('/admin/tool/lp/user_competency_in_plan.php', $params);
 $competency = new \core_competency\competency($competencyid);
 $framework = $competency->get_framework();
 
@@ -47,7 +50,7 @@ $output = $PAGE->get_renderer('tool_lp');
 echo $output->header();
 echo $output->heading($title);
 // User competency plan navigation.
-$baseurl = new moodle_url('/admin/tool/lp/user_competency_in_plan.php');
+$baseurl = new url('/admin/tool/lp/user_competency_in_plan.php');
 $nav = new \tool_lp\output\competency_plan_navigation($userid, $competencyid, $planid, $baseurl);
 
 echo $output->render($nav);

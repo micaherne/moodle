@@ -24,6 +24,9 @@
 
 namespace availability_grouping;
 
+use core\context\course;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -55,16 +58,16 @@ class condition extends \core_availability\condition {
             if (is_int($structure->id)) {
                 $this->groupingid = $structure->id;
             } else {
-                throw new \coding_exception('Invalid ->id for grouping condition');
+                throw new coding_exception('Invalid ->id for grouping condition');
             }
         } else if (isset($structure->activity)) {
             if (is_bool($structure->activity) && $structure->activity) {
                 $this->activitygrouping = true;
             } else {
-                throw new \coding_exception('Invalid ->activity for grouping condition');
+                throw new coding_exception('Invalid ->activity for grouping condition');
             }
         } else {
-            throw new \coding_exception('Missing ->id / ->activity for grouping condition');
+            throw new coding_exception('Missing ->id / ->activity for grouping condition');
         }
     }
 
@@ -79,7 +82,7 @@ class condition extends \core_availability\condition {
     }
 
     public function is_available($not, \core_availability\info $info, $grabthelot, $userid) {
-        $context = \context_course::instance($info->get_course()->id);
+        $context = course::instance($info->get_course()->id);
         $allow = true;
         if (!has_capability('moodle/site:accessallgroups', $context, $userid)) {
             // If the activity has 'group members only' and you don't have accessallgroups...
@@ -112,7 +115,7 @@ class condition extends \core_availability\condition {
         if ($this->activitygrouping) {
             $groupingid = $info->get_course_module()->groupingid;
             if (!$groupingid) {
-                throw new \coding_exception(
+                throw new coding_exception(
                         'Not supposed to be able to turn on activitygrouping when no grouping');
             }
             return $groupingid;

@@ -17,7 +17,7 @@
 namespace mod_bigbluebuttonbn\courseformat;
 
 use core_calendar\output\humandate;
-use cm_info;
+use core_course\cm_info;
 use core_courseformat\local\overview\overviewitem;
 use core\output\action_link;
 use core\output\local\properties\text_align;

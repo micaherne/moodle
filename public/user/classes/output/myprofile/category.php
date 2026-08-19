@@ -23,6 +23,9 @@
  */
 
 namespace core_user\output\myprofile;
+
+use core\exception\coding_exception;
+use core\output\renderable;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2015 onwards Ankit Agarwal
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class category implements \renderable {
+class category implements renderable {
 
     /**
      * @var string Name of the category after which this category should appear.
@@ -91,10 +94,10 @@ class category implements \renderable {
     public function add_node(node $node) {
         $name = $node->name;
         if (isset($this->nodes[$name])) {
-            throw new \coding_exception("Node with name $name already exists");
+            throw new coding_exception("Node with name $name already exists");
         }
         if ($node->parentcat !== $this->name) {
-            throw new \coding_exception("Node parent must match with the category it is added to");
+            throw new coding_exception("Node parent must match with the category it is added to");
         }
         $this->nodes[$node->name] = $node;
     }
@@ -131,7 +134,7 @@ class category implements \renderable {
 
         if (count($tempnodes) !== count($this->nodes)) {
             // Orphan nodes found.
-            throw new \coding_exception('Some of the nodes specified contains invalid \'after\' property');
+            throw new coding_exception('Some of the nodes specified contains invalid \'after\' property');
         }
         $this->nodes = $tempnodes;
     }
@@ -147,7 +150,7 @@ class category implements \renderable {
             $after = $node->after;
             if (!empty($after)) {
                 if (empty($nodearray[$after])) {
-                    throw new \coding_exception('node {$node->name} specified contains invalid \'after\' property');
+                    throw new coding_exception('node {$node->name} specified contains invalid \'after\' property');
                 } else {
                     // Valid node found.
                     $afternode = $nodearray[$after];
@@ -156,7 +159,7 @@ class category implements \renderable {
 
                     if ((empty($beforecontent) && !empty($aftercontent)) || (!empty($beforecontent) && empty($aftercontent))) {
                         // Only node with content are allowed after content nodes. Same goes for no content nodes.
-                        throw new \coding_exception('node {$node->name} specified contains invalid \'after\' property');
+                        throw new coding_exception('node {$node->name} specified contains invalid \'after\' property');
                     }
                 }
             }
@@ -194,6 +197,6 @@ class category implements \renderable {
         if (in_array($prop, $this->properties)) {
             return $this->$prop;
         }
-        throw new \coding_exception('Property "' . $prop . '" doesn\'t exist');
+        throw new coding_exception('Property "' . $prop . '" doesn\'t exist');
     }
 }

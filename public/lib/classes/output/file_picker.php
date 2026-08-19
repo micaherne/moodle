@@ -17,7 +17,7 @@
 namespace core\output;
 
 use core\context\user as context_user;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -81,7 +81,7 @@ class file_picker implements renderable {
                 $file = $fs->get_file($usercontext->id, 'user', 'draft', $options->itemid, $options->filepath, $options->filename);
             }
             if (!empty($file)) {
-                $options->currentfile = html_writer::link(moodle_url::make_draftfile_url(
+                $options->currentfile = html_writer::link(url::make_draftfile_url(
                     $file->get_itemid(),
                     $file->get_filepath(),
                     $file->get_filename(),

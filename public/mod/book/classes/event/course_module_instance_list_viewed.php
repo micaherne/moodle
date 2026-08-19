@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_book\event;
+
+use core\context\course;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -51,7 +53,7 @@ class course_module_instance_list_viewed extends \core\event\course_module_insta
      */
     public static function create_from_course(\stdClass $course) {
         $params = array(
-            'context' => \context_course::instance($course->id)
+            'context' => course::instance($course->id)
         );
         /** @var course_module_instance_list_viewed $event */
         $event = self::create($params);

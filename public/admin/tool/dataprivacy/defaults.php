@@ -22,12 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context_helper;
+use core\plugin_manager;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/dataprivacy/lib.php');
 
 require_login(null, false);
 
-$url = new \moodle_url('/admin/tool/dataprivacy/defaults.php');
+$url = new url('/admin/tool/dataprivacy/defaults.php');
 $title = get_string('setdefaults', 'tool_dataprivacy');
 
 \tool_dataprivacy\page_helper::setup($url, $title, 'dataregistry');
@@ -41,7 +45,7 @@ $category = get_config('tool_dataprivacy', $categoryvar);
 $otherdefaults = [];
 if ($mode == CONTEXT_MODULE) {
     // Get activity module plugin info.
-    $pluginmanager = core_plugin_manager::instance();
+    $pluginmanager = plugin_manager::instance();
     $modplugins = $pluginmanager->get_enabled_plugins('mod');
 
     foreach ($modplugins as $name) {

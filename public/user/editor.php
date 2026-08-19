@@ -22,6 +22,8 @@
  * @package core_user
  */
 
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/gdlib.php');
 require_once($CFG->dirroot.'/user/editor_form.php');
@@ -41,7 +43,7 @@ $editorform = new user_edit_editor_form();
 $user->preference_htmleditor = get_user_preferences( 'htmleditor', '', $user->id);
 $editorform->set_data($user);
 
-$redirect = new moodle_url("/user/preferences.php", array('userid' => $user->id));
+$redirect = new url("/user/preferences.php", array('userid' => $user->id));
 if ($editorform->is_cancelled()) {
     redirect($redirect);
 } else if ($data = $editorform->get_data()) {

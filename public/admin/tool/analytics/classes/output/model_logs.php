@@ -24,6 +24,11 @@
 
 namespace tool_analytics\output;
 
+use core\output\help_icon;
+use core\output\html_writer;
+use core\user;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/tablelib.php');
 
@@ -34,7 +39,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  2017 David Monllao {@link http://www.davidmonllao.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class model_logs extends \table_sql {
+class model_logs extends sql_table {
 
     /**
      * @var \core_analytics\model
@@ -75,7 +80,7 @@ class model_logs extends \table_sql {
             get_string('fullnameuser'),
         ));
 
-        $evaluationmodehelp = new \help_icon('evaluationmode', 'tool_analytics');
+        $evaluationmodehelp = new help_icon('evaluationmode', 'tool_analytics');
         $this->define_help_for_headers([null, null, $evaluationmodehelp, null, null, null, null, null]);
 
         $this->pageable(true);
@@ -184,7 +189,7 @@ class model_logs extends \table_sql {
             $info[] = get_string('predictorresultsin', 'tool_analytics', $log->dir);
         }
         $PAGE->requires->js_call_amd('tool_analytics/log_info', 'loadInfo', array($log->id, $info));
-        return \html_writer::link('#', get_string('view'), array('data-model-log-id' => $log->id));
+        return html_writer::link('#', get_string('view'), array('data-model-log-id' => $log->id));
     }
 
     /**
@@ -194,7 +199,7 @@ class model_logs extends \table_sql {
      * @return string HTML for the usermodified column
      */
     public function col_usermodified($log) {
-        $user = \core_user::get_user($log->usermodified);
+        $user = user::get_user($log->usermodified);
         return fullname($user);
     }
 

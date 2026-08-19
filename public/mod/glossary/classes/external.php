@@ -24,6 +24,10 @@
  * @since      Moodle 3.1
  */
 
+use core\context\module;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\output\user_picture;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_files;
@@ -183,7 +187,7 @@ class mod_glossary_external extends external_api {
         global $DB;
         $glossary = $DB->get_record('glossary', array('id' => $id), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($glossary, 'glossary');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
         return array($glossary, $context, $course, $cm);
     }
@@ -238,7 +242,7 @@ class mod_glossary_external extends external_api {
             // Get the glossaries in these courses, this function checks users visibility permissions.
             $glossaries = get_all_instances_in_courses('glossary', $courses);
             foreach ($glossaries as $glossary) {
-                $context = context_module::instance($glossary->coursemodule);
+                $context = module::instance($glossary->coursemodule);
                 helper_for_get_mods_by_courses::format_name_and_intro($glossary, 'mod_glossary');
 
                 // Make sure we have a number of entries per page.

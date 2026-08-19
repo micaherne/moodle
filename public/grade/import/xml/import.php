@@ -15,6 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once '../../../config.php';
 require_once 'lib.php';
 require_once $CFG->libdir.'/filelib.php';
@@ -23,18 +27,18 @@ $gradesurl = required_param('url', PARAM_URL); // only real urls here
 $id        = required_param('id', PARAM_INT); // course id
 $feedback  = optional_param('feedback', 0, PARAM_BOOL);
 
-$url = new moodle_url('/grade/import/xml/import.php', array('id' => $id,'url' => $gradesurl));
+$url = new url('/grade/import/xml/import.php', array('id' => $id,'url' => $gradesurl));
 if ($feedback !== 0) {
     $url->param('feedback', $feedback);
 }
 $PAGE->set_url($url);
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($id);
+$context = course::instance($id);
 
 require_capability('moodle/grade:import', $context);
 require_capability('gradeimport/xml:view', $context);
@@ -48,7 +52,7 @@ raise_memory_limit(MEMORY_EXTRA);
 
 $text = download_file_content($gradesurl);
 if ($text === false) {
-    throw new \moodle_exception('cannotreadfile', 'error',
+    throw new moodle_exception('cannotreadfile', 'error',
             $CFG->wwwroot . '/grade/import/xml/index.php?id=' . $id, $gradesurl);
 }
 
@@ -63,7 +67,7 @@ if ($importcode !== false) {
             echo 'ok';
             die;
         } else {
-            throw new \moodle_exception('cannotimportgrade'); // TODO: localize.
+            throw new moodle_exception('cannotimportgrade'); // TODO: localize.
         }
 
     } else {
@@ -76,6 +80,6 @@ if ($importcode !== false) {
     }
 
 } else {
-    throw new \moodle_exception('errorduringimport', 'gradeimport_xml',
+    throw new moodle_exception('errorduringimport', 'gradeimport_xml',
             $CFG->wwwroot . '/grade/import/xml/index.php?id=' . $id, $error);
 }

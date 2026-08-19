@@ -16,6 +16,7 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
 use enrol_lti\local\ltiadvantage\repository\legacy_consumer_repository;
 
 /**
@@ -129,7 +130,7 @@ final class migration_claim_test extends \advanced_testcase {
                 'nonce' => 'j45j2j5nnjn24544',
                 'stublegacyconsumerrepo' => false,
                 'expected' => [
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Missing 'oauth_consumer_key' property in lti1p1 migration claim."
                 ]
             ],
@@ -145,7 +146,7 @@ final class migration_claim_test extends \advanced_testcase {
                 'nonce' => 'j45j2j5nnjn24544',
                 'stublegacyconsumerrepo' => false,
                 'expected' => [
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Missing 'oauth_consumer_key_sign' property in lti1p1 migration claim."
                 ]
             ],
@@ -161,7 +162,7 @@ final class migration_claim_test extends \advanced_testcase {
                 'nonce' => 'j45j2j5nnjn24544',
                 'stublegacyconsumerrepo' => false,
                 'expected' => [
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid 'oauth_consumer_key_sign' signature in lti1p1 claim."
                 ]
             ],

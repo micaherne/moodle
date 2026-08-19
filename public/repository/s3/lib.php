@@ -23,6 +23,8 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+
 require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->dirroot . '/repository/s3/S3.php');
 

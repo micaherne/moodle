@@ -24,6 +24,11 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
@@ -36,8 +41,8 @@ if ($json) {
 $hash = required_param('hash', PARAM_ALPHANUM);
 $userid = required_param('user', PARAM_INT);
 
-$PAGE->set_url(new moodle_url('/badges/external.php', array('hash' => $hash, 'user' => $userid)));
-$PAGE->set_context(context_system::instance());
+$PAGE->set_url(new url('/badges/external.php', array('hash' => $hash, 'user' => $userid)));
+$PAGE->set_context(system::instance());
 
 // Using the same setting as user profile page.
 if (!empty($CFG->forceloginforprofiles)) {
@@ -55,7 +60,7 @@ $out = get_backpack_settings($userid);
 
 // If we didn't find any badges then print an error.
 if (is_null($out)) {
-    throw new \moodle_exception('error:externalbadgedoesntexist', 'badges');
+    throw new moodle_exception('error:externalbadgedoesntexist', 'badges');
 }
 
 $badges = $out->badges;
@@ -73,7 +78,7 @@ foreach ($badges as $b) {
 
 // If we didn't find the badge a user might be trying to replace the userid parameter.
 if (empty($badge)) {
-    throw new \moodle_exception('error:externalbadgedoesntexist', 'badges');
+    throw new moodle_exception('error:externalbadgedoesntexist', 'badges');
 }
 
 $output = $PAGE->get_renderer('core', 'badges');
@@ -92,9 +97,9 @@ if (!empty($badge->issued->assertion->badge->name)) {
 $PAGE->set_heading($badgename);
 $PAGE->navbar->add($badgename);
 if (isloggedin() && $USER->id == $userid) {
-    $url = new moodle_url('/badges/mybadges.php');
+    $url = new url('/badges/mybadges.php');
 } else {
-    $url = new moodle_url($CFG->wwwroot);
+    $url = new url($CFG->wwwroot);
 }
 navigation_node::override_active_url($url);
 

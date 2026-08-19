@@ -16,6 +16,7 @@
 
 namespace mod_h5pactivity\courseformat;
 
+use core\context\module;
 use core_courseformat\local\overview\overviewfactory;
 
 /**
@@ -85,7 +86,7 @@ final class overview_test extends \advanced_testcase {
         $activity = $this->getDataGenerator()->create_module('h5pactivity', $params);
         // Add filename and contextid to make easier the asserts.
         $activity->filename = $h5pfile;
-        $context = \context_module::instance($activity->cmid);
+        $context = module::instance($activity->cmid);
         $activity->contextid = $context->id;
 
         // Create a fake deploy H5P file.

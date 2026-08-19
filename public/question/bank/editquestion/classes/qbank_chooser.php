@@ -24,11 +24,11 @@
 
 namespace qbank_editquestion;
 
-use context;
-use context_course;
+use core\context;
+use core\context\course;
 use core\output\chooser_section;
-use lang_string;
-use moodle_url;
+use core\lang_string;
+use core\url;
 use question_bank;
 use stdClass;
 
@@ -64,7 +64,7 @@ class qbank_chooser extends \core\output\chooser {
                 }, $fake));
         }
 
-        parent::__construct(new moodle_url('/question/bank/editquestion/question.php'),
+        parent::__construct(new url('/question/bank/editquestion/question.php'),
                 new lang_string('chooseqtypetoadd', 'question'), $sections, 'qtype');
 
         $this->set_instructions(new lang_string('selectaqtypefordescription', 'question'));
@@ -99,7 +99,7 @@ class qbank_chooser extends \core\output\chooser {
             }
         }
 
-        return new static($realqtypes, $fakeqtypes, $course, $hiddenparams, context_course::instance($course->id));
+        return new static($realqtypes, $fakeqtypes, $course, $hiddenparams, course::instance($course->id));
     }
 
 }

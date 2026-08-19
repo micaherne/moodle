@@ -24,6 +24,8 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -103,13 +105,13 @@ class batch_set_marker_allocation_viewed extends base {
      */
     protected function validate_data() {
         if (self::$preventcreatecall) {
-            throw new \coding_exception('cannot call batch_set_marker_allocation_viewed::create() directly, use batch_set_marker_allocation_viewed::create_from_assign() instead.');
+            throw new coding_exception('cannot call batch_set_marker_allocation_viewed::create() directly, use batch_set_marker_allocation_viewed::create_from_assign() instead.');
         }
 
         parent::validate_data();
 
         if (!isset($this->other['assignid'])) {
-            throw new \coding_exception('The \'assignid\' value must be set in other.');
+            throw new coding_exception('The \'assignid\' value must be set in other.');
         }
     }
 

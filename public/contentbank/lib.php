@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\user;
 use \core_contentbank\content;
 
 /**
@@ -38,7 +39,7 @@ function core_contentbank_user_preferences(): array {
             'type' => PARAM_INT,
             'null' => NULL_NOT_ALLOWED,
             'default' => 0,
-            'permissioncallback' => [core_user::class, 'is_current_user'],
+            'permissioncallback' => [user::class, 'is_current_user'],
         ],
         'core_contentbank_visibility' => [
             'choices' => [content::VISIBILITY_UNLISTED, content::VISIBILITY_PUBLIC],
@@ -50,7 +51,7 @@ function core_contentbank_user_preferences(): array {
             'type' => PARAM_INT,
             'null' => NULL_NOT_ALLOWED,
             'default' => 0,
-            'permissioncallback' => [core_user::class, 'is_current_user'],
+            'permissioncallback' => [user::class, 'is_current_user'],
         ],
     ];
 }

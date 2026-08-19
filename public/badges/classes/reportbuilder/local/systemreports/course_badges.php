@@ -23,9 +23,9 @@ use core_badges\reportbuilder\local\entities\badge;
 use core_badges\reportbuilder\local\entities\badge_issued;
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\system_report;
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die;
@@ -140,7 +140,7 @@ class course_badges extends system_report {
                 }
                 $format = get_string('strftimedatefullshort', 'core_langconfig');
                 $date = $value ? userdate($value, $format) : '';
-                $badgeurl = new moodle_url('/badges/badge.php', ['hash' => $row->uniquehash]);
+                $badgeurl = new url('/badges/badge.php', ['hash' => $row->uniquehash]);
                 $icon = new pix_icon('i/valid', get_string('dateearned', 'badges', $date));
                 return $OUTPUT->action_icon($badgeurl, $icon, null, null, true);
             });

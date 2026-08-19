@@ -23,6 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\context\user;
+use core\output\html_writer;
+use core\url;
+use core_course\cached_cm_info;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die;
 
 /** LABEL_MAX_NAME_LENGTH = 50 */
@@ -39,7 +46,7 @@ function get_label_name($label) {
         return $label->name;
     }
 
-    $context = context_module::instance($label->coursemodule);
+    $context = module::instance($label->coursemodule);
     $intro = format_text($label->intro, $label->introformat, ['filter' => false, 'context' => $context]);
     $name = html_to_text(format_string($intro, true, ['context' => $context]));
     $name = preg_replace('/@@PLUGINFILE@@\/[[:^space:]]+/i', '', $name);
@@ -258,8 +265,8 @@ function label_dndupload_handle($uploadinfo) {
     // Extract the first (and only) file from the file area and add it to the label as an img tag.
     if (!empty($uploadinfo->draftitemid)) {
         $fs = get_file_storage();
-        $draftcontext = context_user::instance($USER->id);
-        $context = context_module::instance($uploadinfo->coursemodule);
+        $draftcontext = user::instance($USER->id);
+        $context = module::instance($uploadinfo->coursemodule);
         $files = $fs->get_area_files($draftcontext->id, 'user', 'draft', $uploadinfo->draftitemid, '', false);
         if ($file = reset($files)) {
             if (file_mimetype_in_typegroup($file->get_mimetype(), 'web_image')) {
@@ -268,7 +275,7 @@ function label_dndupload_handle($uploadinfo) {
                 $data->intro = label_generate_resized_image($file, $config->dndresizewidth, $config->dndresizeheight);
             } else {
                 // We aren't supposed to be supporting non-image types here, but fallback to adding a link, just in case.
-                $url = moodle_url::make_draftfile_url($file->get_itemid(), $file->get_filepath(), $file->get_filename());
+                $url = url::make_draftfile_url($file->get_itemid(), $file->get_filepath(), $file->get_filename());
                 $data->intro = html_writer::link($url, $file->get_filename());
             }
             $data->intro = file_save_draft_area_files($uploadinfo->draftitemid, $context->id, 'mod_label', 'intro', 0,
@@ -294,7 +301,7 @@ function label_dndupload_handle($uploadinfo) {
 function label_generate_resized_image(stored_file $file, $maxwidth, $maxheight) {
     global $CFG;
 
-    $fullurl = moodle_url::make_draftfile_url($file->get_itemid(), $file->get_filepath(), $file->get_filename());
+    $fullurl = url::make_draftfile_url($file->get_itemid(), $file->get_filepath(), $file->get_filename());
     $link = null;
     $attrib = array('alt' => $file->get_filename(), 'src' => $fullurl);
 
@@ -334,7 +341,7 @@ function label_generate_resized_image(stored_file $file, $maxwidth, $maxheight) 
                     $smallfile = $fs->create_file_from_string($record, $data);
 
                     // Replace the image 'src' with the resized file and link to the original
-                    $attrib['src'] = moodle_url::make_draftfile_url($smallfile->get_itemid(), $smallfile->get_filepath(),
+                    $attrib['src'] = url::make_draftfile_url($smallfile->get_itemid(), $smallfile->get_filepath(),
                                                                     $smallfile->get_filename());
                     $link = $fullurl;
                 }
@@ -400,7 +407,7 @@ function mod_label_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('view'),
-        new \moodle_url('/mod/label/view.php', ['id' => $cm->id]),
+        new url('/mod/label/view.php', ['id' => $cm->id]),
         1,
         true
     );

@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/feedback/lib.php');
@@ -60,9 +62,9 @@ class block_feedback extends block_list {
         }
 
         if ($feedbacks = feedback_get_feedbacks_from_sitecourse_map($courseid)) {
-            $baseurl = new moodle_url('/mod/feedback/view.php');
+            $baseurl = new url('/mod/feedback/view.php');
             foreach ($feedbacks as $feedback) {
-                $url = new moodle_url($baseurl);
+                $url = new url($baseurl);
                 $url->params(array('id'=>$feedback->cmid, 'courseid'=>$courseid));
                 $this->content->items[] = '<a href="'.$url->out().'">'.$icon.$feedback->name.'</a>';
             }

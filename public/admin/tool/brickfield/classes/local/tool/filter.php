@@ -16,6 +16,10 @@
 
 namespace tool_brickfield\local\tool;
 
+use core\context;
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
 use tool_brickfield\accessibility;
 use tool_brickfield\manager;
 
@@ -157,7 +161,7 @@ class filter {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function can_access(?\context $context = null, string $capability = ''): bool {
+    public function can_access(?context $context = null, string $capability = ''): bool {
         if ($capability == '') {
             if ($this->has_course_filters()) {
                 $capability = accessibility::get_capability_name('viewcoursetools');
@@ -176,18 +180,18 @@ class filter {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function has_capability_in_context(string $capability, ?\context $context = null): bool {
+    public function has_capability_in_context(string $capability, ?context $context = null): bool {
         $coursefiltersvalid = $this->has_course_filters();
         if ($context === null) {
             // If the filter is using a list of courses ($this->>courseids), use the system context.
             if ($coursefiltersvalid && !empty($this->courseid)) {
                 if (!empty($this->categoryid)) {
-                    $context = \context_coursecat::instance($this->categoryid);
+                    $context = coursecat::instance($this->categoryid);
                 } else {
-                    $context = \context_course::instance($this->courseid);
+                    $context = course::instance($this->courseid);
                 }
             } else {
-                $context = \context_system::instance();
+                $context = system::instance();
             }
         }
 

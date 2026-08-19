@@ -16,8 +16,18 @@
 
 namespace tool_dataprivacy;
 
+use core\context\block;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\context\user as context_user;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\required_capability_exception;
 use core\invalid_persistent_exception;
 use core\task\manager;
+use core\user as core_user;
 use testing_data_generator;
 use tool_dataprivacy\local\helper;
 use tool_dataprivacy\task\process_data_request_task;
@@ -55,7 +65,7 @@ final class api_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         api::check_can_manage_data_registry();
     }
 
@@ -69,8 +79,8 @@ final class api_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->expectException(\required_capability_exception::class);
-        api::check_can_manage_data_registry(\context_system::instance()->id);
+        $this->expectException(required_capability_exception::class);
+        api::check_can_manage_data_registry(system::instance()->id);
     }
 
     /**
@@ -83,8 +93,8 @@ final class api_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->expectException(\required_capability_exception::class);
-        api::check_can_manage_data_registry(\context_user::instance($user->id)->id);
+        $this->expectException(required_capability_exception::class);
+        api::check_can_manage_data_registry(context_user::instance($user->id)->id);
     }
 
     /**
@@ -161,7 +171,7 @@ final class api_test extends \advanced_testcase {
         $u1 = $generator->create_user();
         $u2 = $generator->create_user();
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Give the manager role with the capability to manage data requests.
         $managerroleid = $DB->get_field('role', 'id', array('shortname' => 'manager'));
@@ -202,7 +212,7 @@ final class api_test extends \advanced_testcase {
         // Confirm that the returned list is empty.
         $this->assertEmpty($roleids);
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Give the manager role with the capability to manage data requests.
         assign_capability('tool/dataprivacy:managedatarequests', CAP_ALLOW, $managerroleid, $context->id, true);
@@ -241,7 +251,7 @@ final class api_test extends \advanced_testcase {
         $s1 = $generator->create_user();
         $u1 = $generator->create_user();
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Manager role.
         $managerroleid = $DB->get_field('role', 'id', array('shortname' => 'manager'));
@@ -286,7 +296,7 @@ final class api_test extends \advanced_testcase {
         $s1 = $generator->create_user();
         $u1 = $generator->create_user();
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Manager role.
         $managerroleid = $DB->get_field('role', 'id', array('shortname' => 'manager'));
@@ -300,7 +310,7 @@ final class api_test extends \advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course([]);
 
-        $coursecontext1 = \context_course::instance($course->id);
+        $coursecontext1 = course::instance($course->id);
 
         $this->getDataGenerator()->enrol_user($s1->id, $course->id, 'student');
 
@@ -340,7 +350,7 @@ final class api_test extends \advanced_testcase {
 
         // Login as a user without DPO role.
         $this->setUser($teacher);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         api::approve_data_request($requestid);
     }
 
@@ -356,7 +366,7 @@ final class api_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
 
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - YEARSECS]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
@@ -401,8 +411,8 @@ final class api_test extends \advanced_testcase {
         $this->assertEquals(api::DATAREQUEST_STATUS_REJECTED, $request->get('status'));
 
         // Confirm they weren't deleted.
-        $user = \core_user::get_user($request->get('userid'));
-        \core_user::require_active_user($user);
+        $user = core_user::get_user($request->get('userid'));
+        core_user::require_active_user($user);
     }
 
     /**
@@ -440,7 +450,7 @@ final class api_test extends \advanced_testcase {
         $nondpocapable = $generator->create_user();
         $nondpoincapable = $generator->create_user();
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Manager role.
         $managerroleid = $DB->get_field('role', 'id', array('shortname' => 'manager'));
@@ -492,10 +502,10 @@ final class api_test extends \advanced_testcase {
         $child = $this->getDataGenerator()->create_user();
         $otheruser = $this->getDataGenerator()->create_user();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $parentrole = $this->getDataGenerator()->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $parentrole, $systemcontext);
-        role_assign($parentrole, $parent->id, \context_user::instance($child->id));
+        role_assign($parentrole, $parent->id, context_user::instance($child->id));
 
         $this->setUser($parent);
         $this->assertFalse(api::can_create_data_request_for_user($otheruser->id));
@@ -511,10 +521,10 @@ final class api_test extends \advanced_testcase {
         $parent = $this->getDataGenerator()->create_user();
         $child = $this->getDataGenerator()->create_user();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $parentrole = $this->getDataGenerator()->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $parentrole, $systemcontext);
-        role_assign($parentrole, $parent->id, \context_user::instance($child->id));
+        role_assign($parentrole, $parent->id, context_user::instance($child->id));
 
         $this->setUser($parent);
         $this->assertTrue(api::can_create_data_request_for_user($child->id));
@@ -546,10 +556,10 @@ final class api_test extends \advanced_testcase {
         $child = $this->getDataGenerator()->create_user();
         $otheruser = $this->getDataGenerator()->create_user();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $parentrole = $this->getDataGenerator()->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $parentrole, $systemcontext);
-        role_assign($parentrole, $parent->id, \context_user::instance($child->id));
+        role_assign($parentrole, $parent->id, context_user::instance($child->id));
 
         $this->setUser($parent);
         $this->expectException('required_capability_exception');
@@ -566,10 +576,10 @@ final class api_test extends \advanced_testcase {
         $parent = $this->getDataGenerator()->create_user();
         $child = $this->getDataGenerator()->create_user();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $parentrole = $this->getDataGenerator()->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $parentrole, $systemcontext);
-        role_assign($parentrole, $parent->id, \context_user::instance($child->id));
+        role_assign($parentrole, $parent->id, context_user::instance($child->id));
 
         $this->setUser($parent);
         $this->assertTrue(api::require_can_create_data_request_for_user($child->id));
@@ -589,11 +599,11 @@ final class api_test extends \advanced_testcase {
         $victim3 = $generator->create_user();
 
         // Assign a user as victim 1's parent.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $parentrole = $generator->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $parentrole, $systemcontext);
         $parent = $generator->create_user();
-        role_assign($parentrole, $parent->id, \context_user::instance($victim1->id));
+        role_assign($parentrole, $parent->id, context_user::instance($victim1->id));
 
         // Assign another user as data access wonder woman.
         $wonderrole = $generator->create_role();
@@ -762,8 +772,8 @@ final class api_test extends \advanced_testcase {
         $comment = 'sample comment';
 
         // Get the teacher role pretend it's the parent roles ;).
-        $systemcontext = \context_system::instance();
-        $usercontext = \context_user::instance($user->id);
+        $systemcontext = system::instance();
+        $usercontext = context_user::instance($user->id);
         $parentroleid = $DB->get_field('role', 'id', array('shortname' => 'teacher'));
         // Give the manager role with the capability to manage data requests.
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $parentroleid, $systemcontext->id, true);
@@ -973,9 +983,9 @@ final class api_test extends \advanced_testcase {
 
         $generator->create_discussion($record);
 
-        $coursecontext1 = \context_course::instance($course->id);
+        $coursecontext1 = course::instance($course->id);
 
-        $forumcontext1 = \context_module::instance($forum->cmid);
+        $forumcontext1 = module::instance($forum->cmid);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
@@ -1067,7 +1077,7 @@ final class api_test extends \advanced_testcase {
         $dpo = $generator->create_user();
         $nondpo = $generator->create_user();
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Manager role.
         $managerroleid = $DB->get_field('role', 'id', array('shortname' => 'manager'));
@@ -1239,8 +1249,8 @@ final class api_test extends \advanced_testcase {
 
         list($purposes, $categories, $courses, $modules) = $this->add_purposes_and_categories();
 
-        $coursecontext1 = \context_course::instance($courses[0]->id);
-        $coursecontext2 = \context_course::instance($courses[1]->id);
+        $coursecontext1 = course::instance($courses[0]->id);
+        $coursecontext2 = course::instance($courses[1]->id);
 
         $record1 = (object)['contextid' => $coursecontext1->id, 'purposeid' => $purposes[0]->get('id'),
             'categoryid' => $categories[0]->get('id')];
@@ -1314,7 +1324,7 @@ final class api_test extends \advanced_testcase {
         $this->assertEquals(false, $categoryid);
 
         list($purposevar, $categoryvar) = data_registry::var_names_from_context(
-            \context_helper::get_class_for_level(CONTEXT_SYSTEM)
+            context_helper::get_class_for_level(CONTEXT_SYSTEM)
         );
         set_config($purposevar, $purposes[0]->get('id'), 'tool_dataprivacy');
 
@@ -1324,7 +1334,7 @@ final class api_test extends \advanced_testcase {
 
         // Course defined values should have preference.
         list($purposevar, $categoryvar) = data_registry::var_names_from_context(
-            \context_helper::get_class_for_level(CONTEXT_COURSE)
+            context_helper::get_class_for_level(CONTEXT_COURSE)
         );
         set_config($purposevar, $purposes[1]->get('id'), 'tool_dataprivacy');
         set_config($categoryvar, $categories[0]->get('id'), 'tool_dataprivacy');
@@ -1354,8 +1364,8 @@ final class api_test extends \advanced_testcase {
      */
     public function test_get_effective_context_unset(): void {
         // Before setup, get_effective_contextlevel_purpose will return false.
-        $this->assertFalse(api::get_effective_context_category(\context_system::instance()));
-        $this->assertFalse(api::get_effective_context_purpose(\context_system::instance()));
+        $this->assertFalse(api::get_effective_context_category(system::instance()));
+        $this->assertFalse(api::get_effective_context_purpose(system::instance()));
     }
 
     /**
@@ -1366,7 +1376,7 @@ final class api_test extends \advanced_testcase {
      */
     public function test_set_contextlevel_invalid_contextlevels($contextlevel): void {
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         api::set_contextlevel((object) [
                 'contextlevel' => $contextlevel,
             ]);
@@ -1435,7 +1445,7 @@ final class api_test extends \advanced_testcase {
             'categoryid' => $category1->get('id'),
         ]);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         api::get_effective_contextlevel_purpose($contextlevel);
     }
 
@@ -1476,12 +1486,12 @@ final class api_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
 
-        $contextsystem = \context_system::instance();
-        $contextcat = \context_coursecat::instance($cat->id);
-        $contextsubcat = \context_coursecat::instance($subcat->id);
-        $contextcourse = \context_course::instance($course->id);
-        $contextforum = \context_module::instance($forumcm->id);
-        $contextuser = \context_user::instance($user->id);
+        $contextsystem = system::instance();
+        $contextcat = coursecat::instance($cat->id);
+        $contextsubcat = coursecat::instance($subcat->id);
+        $contextcourse = course::instance($course->id);
+        $contextforum = module::instance($forumcm->id);
+        $contextuser = context_user::instance($user->id);
 
         // Initially everything is set to Inherit.
         $this->assertEquals($systemdata->purpose, api::get_effective_context_purpose($contextsystem));
@@ -1754,11 +1764,11 @@ final class api_test extends \advanced_testcase {
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         list(, $forumcm) = get_course_and_cm_from_instance($forum->id, 'forum');
 
-        $contextsystem = \context_system::instance();
-        $contextcat = \context_coursecat::instance($cat->id);
-        $contextsubcat = \context_coursecat::instance($subcat->id);
-        $contextcourse = \context_course::instance($course->id);
-        $contextforum = \context_module::instance($forumcm->id);
+        $contextsystem = system::instance();
+        $contextcat = coursecat::instance($cat->id);
+        $contextsubcat = coursecat::instance($subcat->id);
+        $contextcourse = course::instance($course->id);
+        $contextforum = module::instance($forumcm->id);
 
         // Initially everything is set to Inherit.
         $this->assertEquals($systemdata->purpose, api::get_effective_context_purpose($contextsystem));
@@ -1774,7 +1784,7 @@ final class api_test extends \advanced_testcase {
         $this->assertEquals($systemdata->category, api::get_effective_context_category($contextforum));
 
         // Set a default value of inherit for CONTEXT_COURSECAT.
-        $classname = \context_helper::get_class_for_level(CONTEXT_COURSECAT);
+        $classname = context_helper::get_class_for_level(CONTEXT_COURSECAT);
         list($purposevar, $categoryvar) = data_registry::var_names_from_context($classname);
         set_config($purposevar, '-1', 'tool_dataprivacy');
         set_config($categoryvar, '-1', 'tool_dataprivacy');
@@ -1792,7 +1802,7 @@ final class api_test extends \advanced_testcase {
         $this->assertEquals($systemdata->category, api::get_effective_context_category($contextforum));
 
         // Set a default value of inherit for CONTEXT_COURSE.
-        $classname = \context_helper::get_class_for_level(CONTEXT_COURSE);
+        $classname = context_helper::get_class_for_level(CONTEXT_COURSE);
         list($purposevar, $categoryvar) = data_registry::var_names_from_context($classname);
         set_config($purposevar, '-1', 'tool_dataprivacy');
         set_config($categoryvar, '-1', 'tool_dataprivacy');
@@ -1810,7 +1820,7 @@ final class api_test extends \advanced_testcase {
         $this->assertEquals($systemdata->category, api::get_effective_context_category($contextforum));
 
         // Set a default value of inherit for CONTEXT_MODULE.
-        $classname = \context_helper::get_class_for_level(CONTEXT_MODULE);
+        $classname = context_helper::get_class_for_level(CONTEXT_MODULE);
         list($purposevar, $categoryvar) = data_registry::var_names_from_context($classname);
         set_config($purposevar, '-1', 'tool_dataprivacy');
         set_config($categoryvar, '-1', 'tool_dataprivacy');
@@ -1867,11 +1877,11 @@ final class api_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
 
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - YEARSECS]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         list(, $forumcm) = get_course_and_cm_from_instance($forum->id, 'forum');
-        $contextforum = \context_module::instance($forumcm->id);
+        $contextforum = module::instance($forumcm->id);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
@@ -1911,7 +1921,7 @@ final class api_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time() - YEARSECS]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
@@ -1944,7 +1954,7 @@ final class api_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time()]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
@@ -1977,7 +1987,7 @@ final class api_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course(['startdate' => time() - YEARSECS, 'enddate' => time()]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
@@ -2052,14 +2062,14 @@ final class api_test extends \advanced_testcase {
         $assign = $generator->create_module('assign', ['course' => $course->id]);
         $forum = $generator->create_module('forum', ['course' => $course->id]);
 
-        $coursecatcontext = \context_coursecat::instance($coursecat->id);
-        $coursecontext = \context_course::instance($course->id);
-        $blockcontext = \context_block::instance($block->id);
+        $coursecatcontext = coursecat::instance($coursecat->id);
+        $coursecontext = course::instance($course->id);
+        $blockcontext = block::instance($block->id);
 
         list($course, $assigncm) = get_course_and_cm_from_instance($assign->id, 'assign');
         list($course, $forumcm) = get_course_and_cm_from_instance($forum->id, 'forum');
-        $assigncontext = \context_module::instance($assigncm->id);
-        $forumcontext = \context_module::instance($forumcm->id);
+        $assigncontext = module::instance($assigncm->id);
+        $forumcontext = module::instance($forumcm->id);
 
         // Generate purposes and categories.
         $category1 = api::create_category((object)['name' => 'Test category 1']);
@@ -2210,7 +2220,7 @@ final class api_test extends \advanced_testcase {
             api::set_contextlevel($record);
         } else {
             list($purposevar, ) = data_registry::var_names_from_context(
-                    \context_helper::get_class_for_level(CONTEXT_COURSE)
+                    context_helper::get_class_for_level(CONTEXT_COURSE)
                 );
             set_config($purposevar, $purpose->get('id'), 'tool_dataprivacy');
         }
@@ -2349,7 +2359,7 @@ final class api_test extends \advanced_testcase {
 
         // Prohibit that capability.
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user'], MUST_EXIST);
-        assign_capability('tool/dataprivacy:downloadownrequest', CAP_PROHIBIT, $userrole, \context_user::instance($user->id));
+        assign_capability('tool/dataprivacy:downloadownrequest', CAP_PROHIBIT, $userrole, context_user::instance($user->id));
 
         $this->assertFalse(api::can_create_data_download_request_for_self());
     }
@@ -2364,8 +2374,8 @@ final class api_test extends \advanced_testcase {
         $this->resetAfterTest();
         $userid = $this->getDataGenerator()->create_user()->id;
         $roleid = $this->getDataGenerator()->create_role();
-        assign_capability('tool/dataprivacy:requestdelete', CAP_PROHIBIT, $roleid, \context_user::instance($userid));
-        role_assign($roleid, $userid, \context_user::instance($userid));
+        assign_capability('tool/dataprivacy:requestdelete', CAP_PROHIBIT, $roleid, context_user::instance($userid));
+        role_assign($roleid, $userid, context_user::instance($userid));
         $this->setUser($userid);
         $this->assertFalse(api::can_create_data_deletion_request_for_self());
     }
@@ -2434,7 +2444,7 @@ final class api_test extends \advanced_testcase {
         $this->resetAfterTest();
         $userid = $this->getDataGenerator()->create_user()->id;
         $roleid = $this->getDataGenerator()->create_role();
-        $contextsystem = \context_system::instance();
+        $contextsystem = system::instance();
         assign_capability('tool/dataprivacy:requestdeleteforotheruser', CAP_ALLOW, $roleid, $contextsystem);
         role_assign($roleid, $userid, $contextsystem);
         $this->setUser($userid);
@@ -2455,13 +2465,13 @@ final class api_test extends \advanced_testcase {
         $child = $this->getDataGenerator()->create_user();
         $otheruser = $this->getDataGenerator()->create_user();
 
-        $contextsystem = \context_system::instance();
+        $contextsystem = system::instance();
         $parentrole = $this->getDataGenerator()->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW,
             $parentrole, $contextsystem);
         assign_capability('tool/dataprivacy:makedatadeletionrequestsforchildren', CAP_ALLOW,
             $parentrole, $contextsystem);
-        role_assign($parentrole, $parent->id, \context_user::instance($child->id));
+        role_assign($parentrole, $parent->id, context_user::instance($child->id));
 
         $this->setUser($parent);
         $this->assertTrue(api::can_create_data_deletion_request_for_children($child->id));
@@ -2585,11 +2595,11 @@ final class api_test extends \advanced_testcase {
         $record->forum = $forum2->id;
         $generator->create_discussion($record);
 
-        $coursecontext1 = \context_course::instance($course->id);
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext1 = course::instance($course->id);
+        $coursecontext2 = course::instance($course2->id);
 
-        $forumcontext1 = \context_module::instance($forum->cmid);
-        $forumcontext2 = \context_module::instance($forum2->cmid);
+        $forumcontext1 = module::instance($forum->cmid);
+        $forumcontext2 = module::instance($forum2->cmid);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
         $this->getDataGenerator()->enrol_user($user->id, $course2->id, 'student');
@@ -2647,9 +2657,9 @@ final class api_test extends \advanced_testcase {
         $record->forum = $forum->id;
         $generator->create_discussion($record);
 
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
-        $forumcontext = \context_module::instance($forum->cmid);
+        $forumcontext = module::instance($forum->cmid);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
@@ -2690,8 +2700,8 @@ final class api_test extends \advanced_testcase {
         $record->course = $course->id;
         $record->userid = $user->id;
 
-        $coursecontext1 = \context_course::instance($course->id);
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext1 = course::instance($course->id);
+        $coursecontext2 = course::instance($course2->id);
 
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
         $this->getDataGenerator()->enrol_user($user->id, $course2->id, 'student');
@@ -2716,20 +2726,20 @@ final class api_test extends \advanced_testcase {
     public function test_validate_create_data_request(): void {
         $this->resetAfterTest();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $user = $this->getDataGenerator()->create_user();
         // User with permissions for doing requests for others.
         $requester = $this->getDataGenerator()->create_user();
         $role = $this->getDataGenerator()->create_role();
         assign_capability('tool/dataprivacy:makedatarequestsforchildren', CAP_ALLOW, $role, $systemcontext);
-        role_assign($role, $requester->id, \context_user::instance($user->id));
+        role_assign($role, $requester->id, context_user::instance($user->id));
         // User without permissions for doing requests.
         $nopermissionuser = $this->getDataGenerator()->create_user();
         $nopermissionrole = $this->getDataGenerator()->create_role();
-        assign_capability('tool/dataprivacy:requestdelete', CAP_PROHIBIT, $nopermissionrole, \context_user::instance($nopermissionuser->id));
-        assign_capability('tool/dataprivacy:downloadownrequest', CAP_PROHIBIT, $nopermissionrole, \context_user::instance($nopermissionuser->id));
+        assign_capability('tool/dataprivacy:requestdelete', CAP_PROHIBIT, $nopermissionrole, context_user::instance($nopermissionuser->id));
+        assign_capability('tool/dataprivacy:downloadownrequest', CAP_PROHIBIT, $nopermissionrole, context_user::instance($nopermissionuser->id));
         assign_capability('tool/dataprivacy:requestdeleteforotheruser', CAP_PROHIBIT, $nopermissionrole, $systemcontext);
-        role_assign($nopermissionrole, $nopermissionuser->id, \context_user::instance($nopermissionuser->id));
+        role_assign($nopermissionrole, $nopermissionuser->id, context_user::instance($nopermissionuser->id));
         role_assign($nopermissionrole, $nopermissionuser->id, $systemcontext);
 
         $this->setUser($user);

@@ -23,6 +23,8 @@
  */
 
 namespace mod_glossary\event;
+
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -60,7 +62,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
         if (!empty($this->other['mode'])) {
             $params['mode'] = $this->other['mode'];
         }
-        return new \moodle_url("/mod/$this->objecttable/view.php", $params);
+        return new url("/mod/$this->objecttable/view.php", $params);
     }
 
     public static function get_objectid_mapping() {

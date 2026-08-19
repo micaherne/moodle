@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot.'/cohort/lib.php');
 require_once($CFG->dirroot.'/cohort/upload_form.php');
@@ -34,16 +40,16 @@ require_login();
 if ($contextid) {
     $context = context::instance_by_id($contextid, MUST_EXIST);
 } else {
-    $context = context_system::instance();
+    $context = system::instance();
 }
 if ($context->contextlevel != CONTEXT_COURSECAT && $context->contextlevel != CONTEXT_SYSTEM) {
-    throw new \moodle_exception('invalidcontext');
+    throw new moodle_exception('invalidcontext');
 }
 
 require_capability('moodle/cohort:manage', $context);
 
 $PAGE->set_context($context);
-$baseurl = new moodle_url('/cohort/upload.php', array('contextid' => $context->id));
+$baseurl = new url('/cohort/upload.php', array('contextid' => $context->id));
 $PAGE->set_url($baseurl);
 $PAGE->set_pagelayout('admin');
 
@@ -56,13 +62,13 @@ if ($context->contextlevel == CONTEXT_COURSECAT) {
 
     $PAGE->set_secondary_active_tab('cohort');
 } else {
-    navigation_node::override_active_url(new moodle_url('/cohort/index.php', array()));
+    navigation_node::override_active_url(new url('/cohort/index.php', array()));
     $PAGE->set_heading($COURSE->fullname);
 }
 
 $uploadform = new cohort_upload_form(null, array('contextid' => $context->id));
 
-$returnurl = new moodle_url('/cohort/index.php', array('contextid' => $context->id));
+$returnurl = new url('/cohort/index.php', array('contextid' => $context->id));
 
 if ($uploadform->is_cancelled()) {
     redirect($returnurl);

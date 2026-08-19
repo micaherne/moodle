@@ -24,6 +24,9 @@
 
 namespace core_availability;
 
+use core\context\course;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -57,7 +60,7 @@ class mock_info extends info {
     }
 
     public function get_context() {
-        return \context_course::instance($this->get_course()->id);
+        return course::instance($this->get_course()->id);
     }
 
     protected function get_view_hidden_capability() {
@@ -71,7 +74,7 @@ class mock_info extends info {
         // Allow modinfo usage outside is_available etc., so we can use this
         // to directly call into condition is_available.
         if (!$this->userid) {
-            throw new \coding_exception('Need to set mock_info userid');
+            throw new coding_exception('Need to set mock_info userid');
         }
         return get_fast_modinfo($this->course, $this->userid);
     }

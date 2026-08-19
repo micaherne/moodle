@@ -23,7 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
 use core\output\datafilter;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -39,9 +44,9 @@ function get_module_from_cmid($cmid) {
                                     {modules} md
                                WHERE cm.id = ? AND
                                      md.id = cm.module", array($cmid))){
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     } elseif (!$modrec =$DB->get_record($cmrec->modname, array('id' => $cmrec->instance))) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     $modrec->instance = $modrec->id;
     $modrec->cmid = $cmrec->id;
@@ -196,7 +201,7 @@ function question_build_edit_resources($edittab, $baseurl, $params,
         $defaultquestionsperpage = DEFAULT_QUESTIONS_PER_PAGE) {
     global $DB;
 
-    $thispageurl = new moodle_url($baseurl);
+    $thispageurl = new url($baseurl);
     $thispageurl->remove_all_params(); // We are going to explicity add back everything important - this avoids unwanted params from being retained.
 
     $cleanparams = [
@@ -255,13 +260,13 @@ function question_build_edit_resources($edittab, $baseurl, $params,
     $cpage = $cleanparams['cpage'] ?: 1;
 
     if (is_null($cmid)) {
-        throw new \moodle_exception('Must provide a cmid');
+        throw new moodle_exception('Must provide a cmid');
     }
 
     list($module, $cm) = get_module_from_cmid($cmid);
     $courseid = $cm->course;
     $thispageurl->params(compact('cmid'));
-    $thiscontext = context_module::instance($cmid);
+    $thiscontext = module::instance($cmid);
 
     if (defined('AJAX_SCRIPT') && AJAX_SCRIPT) {
         // For AJAX, we don't need to set up the course page for output.
@@ -326,7 +331,7 @@ function question_build_edit_resources($edittab, $baseurl, $params,
                 // If this might be due to MDL-86691, return a message including fix instructions.
                 $exception = 'invalidcategoryeditq';
             }
-            throw new \moodle_exception($exception, 'question');
+            throw new moodle_exception($exception, 'question');
         }
     } else {
         $category = $defaultcategory;
@@ -431,12 +436,12 @@ function require_login_in_context($contextorid = null){
     } else if ($context && ($context->contextlevel == CONTEXT_MODULE)) {
         if ($cm = $DB->get_record('course_modules',array('id' =>$context->instanceid))) {
             if (!$course = $DB->get_record('course', array('id' => $cm->course))) {
-                throw new \moodle_exception('invalidcourseid');
+                throw new moodle_exception('invalidcourseid');
             }
             require_course_login($course, true, $cm);
 
         } else {
-            throw new \moodle_exception('invalidcoursemodule');
+            throw new moodle_exception('invalidcoursemodule');
         }
     } else if ($context && ($context->contextlevel == CONTEXT_SYSTEM)) {
         if (!empty($CFG->forcelogin)) {

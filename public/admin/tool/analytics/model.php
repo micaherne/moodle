@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/filelib.php');
 
@@ -34,15 +38,15 @@ $model = new \core_analytics\model($id);
 \core_analytics\manager::check_can_manage_models();
 
 if (!\core_analytics\manager::is_analytics_enabled()) {
-    $PAGE->set_context(\context_system::instance());
+    $PAGE->set_context(system::instance());
     $renderer = $PAGE->get_renderer('tool_analytics');
     echo $renderer->render_analytics_disabled();
     exit(0);
 }
 
-$returnurl = new \moodle_url('/admin/tool/analytics/index.php');
+$returnurl = new url('/admin/tool/analytics/index.php');
 $params = array('id' => $id, 'action' => $action);
-$url = new \moodle_url('/admin/tool/analytics/model.php', $params);
+$url = new url('/admin/tool/analytics/model.php', $params);
 
 switch ($action) {
 

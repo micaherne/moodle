@@ -25,6 +25,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\exception\invalid_dataroot_permissions;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\output\bootstrap_renderer;
+use core\output\core_renderer_ajax;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Debug levels - always keep the values in ascending order!
@@ -544,7 +552,7 @@ function setup_validate_php_configuration() {
    // this must be very fast - no slow checks here!!!
 
    if (ini_get_bool('session.auto_start')) {
-        throw new \moodle_exception('sessionautostartwarning', 'admin');
+        throw new moodle_exception('sessionautostartwarning', 'admin');
    }
 }
 
@@ -705,7 +713,7 @@ function initialise_fullme() {
             // Check that URL is under $CFG->wwwroot.
             if (strpos($rfullpath, $wwwroot['path']) === 0) {
                 $rfullpath = substr($rurl['fullpath'], strlen($wwwroot['path']) - 1);
-                $rfullpath = (new moodle_url($rfullpath))->out(false);
+                $rfullpath = (new url($rfullpath))->out(false);
             }
             redirect($rfullpath, get_string('wwwrootmismatch', 'error', $CFG->wwwroot), 3);
         }
@@ -725,7 +733,7 @@ function initialise_fullme() {
     if (empty($CFG->sslproxy)) {
         if ($rurl['scheme'] === 'http' and $wwwroot['scheme'] === 'https') {
             if (defined('REQUIRE_CORRECT_ACCESS') && REQUIRE_CORRECT_ACCESS) {
-                throw new \moodle_exception('sslonlyaccess', 'error');
+                throw new moodle_exception('sslonlyaccess', 'error');
             } else {
                 redirect($CFG->wwwroot, get_string('wwwrootmismatch', 'error', $CFG->wwwroot), 3);
             }
@@ -750,7 +758,7 @@ function initialise_fullme() {
     //   must leave the Host header pointing to the internal name of the server.
     // Port forwarding is allowed, though.
     if (!empty($CFG->reverseproxy) && $rurl['host'] === $wwwroot['host'] && (empty($wwwroot['port']) || $rurl['port'] === $wwwroot['port'])) {
-        throw new \moodle_exception('reverseproxyabused', 'error');
+        throw new moodle_exception('reverseproxyabused', 'error');
     }
 
     $hostandport = $rurl['scheme'] . '://' . $wwwroot['host'];
@@ -1700,7 +1708,7 @@ function require_phpunit_isolation(): void {
         return;
     }
 
-    throw new \coding_exception(
+    throw new coding_exception(
         'When including this file for a unit test, the test must be run in an isolated process. ' .
             'See the PHPUnit @runInSeparateProcess and @runTestsInSeparateProcesses annotations.'
     );

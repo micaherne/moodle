@@ -16,10 +16,11 @@
 
 namespace core_user\output;
 
-use context_course;
-use core_user;
+use core\context\course;
+use core\output\renderer_base;
+use core\user;
 use core_external\external_api;
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Class to display list of user roles.
@@ -107,7 +108,7 @@ class user_roles_editable extends \core\output\inplace_editable {
      * @param \renderer_base $output
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $listofroles = [];
         $roleids = json_decode($this->value);
         $viewableroleids = array_intersect($roleids, array_merge($this->viewableroles, $this->assignableroles));
@@ -153,7 +154,7 @@ class user_roles_editable extends \core\output\inplace_editable {
         }
 
         // Check user is enrolled in the course.
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
         external_api::validate_context($context);
 
         // Check permissions.
@@ -230,7 +231,7 @@ class user_roles_editable extends \core\output\inplace_editable {
         }
 
         $course = get_course($courseid);
-        $user = core_user::get_user($userid);
+        $user = user::get_user($userid);
         return new self($course, $context, $user, $allroles, $assignableroles, $profileroles, $userroles, $viewableroles);
     }
 }

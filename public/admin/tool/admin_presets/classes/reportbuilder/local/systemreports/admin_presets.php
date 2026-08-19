@@ -18,6 +18,10 @@ declare(strict_types=1);
 
 namespace tool_admin_presets\reportbuilder\local\systemreports;
 
+use core\context\system;
+use core\lang_string;
+use core\output\pix_icon;
+use core\url;
 use tool_admin_presets\reportbuilder\local\entities\admin_preset;
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\report\action;
@@ -66,7 +70,7 @@ class admin_presets extends system_report {
      * @return bool
      */
     protected function can_view(): bool {
-        return has_capability('moodle/site:config', \context_system::instance());
+        return has_capability('moodle/site:config', system::instance());
     }
 
     /**
@@ -105,27 +109,27 @@ class admin_presets extends system_report {
 
         // Review settings and apply.
         $this->add_action((new action(
-            new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'load', 'id' => ':id']),
-            new \pix_icon('t/play', '', 'core'),
+            new url('/admin/tool/admin_presets/index.php', ['action' => 'load', 'id' => ':id']),
+            new pix_icon('t/play', '', 'core'),
             [],
             false,
-            new \lang_string('applyaction', 'tool_admin_presets')
+            new lang_string('applyaction', 'tool_admin_presets')
         )));
 
         // Download.
         $this->add_action((new action(
-            new \moodle_url('/admin/tool/admin_presets/index.php',
+            new url('/admin/tool/admin_presets/index.php',
                 ['action' => 'export', 'mode' => 'download_xml', 'sesskey' => sesskey(), 'id' => ':id']),
-            new \pix_icon('t/download', '', 'core'),
+            new pix_icon('t/download', '', 'core'),
             [],
             false,
-            new \lang_string('download', 'core')
+            new lang_string('download', 'core')
         )));
 
         // Delete button won't be displayed for the pre-installed core "Starter" and "Full" presets.
         $this->add_action((new action(
-            new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'delete', 'id' => ':id']),
-            new \pix_icon('i/delete', '', 'core'),
+            new url('/admin/tool/admin_presets/index.php', ['action' => 'delete', 'id' => ':id']),
+            new pix_icon('i/delete', '', 'core'),
             [
                 'data-action' => 'admin-preset-delete',
                 'data-preset-name' => ':name',
@@ -133,18 +137,18 @@ class admin_presets extends system_report {
                 'data-preset-rollback' => ':appid',
             ],
             false,
-            new \lang_string('delete', 'core')
+            new lang_string('delete', 'core')
         ))->add_callback(function(\stdClass $row): bool {
             return (int)$row->iscore === \core_adminpresets\manager::NONCORE_PRESET;
         }));
 
         // Look for preset applications.
         $this->add_action((new action(
-            new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'rollback', 'id' => ':id']),
-            new \pix_icon('i/reload', '', 'core'),
+            new url('/admin/tool/admin_presets/index.php', ['action' => 'rollback', 'id' => ':id']),
+            new pix_icon('i/reload', '', 'core'),
             [],
             false,
-            new \lang_string('showhistory', 'tool_admin_presets')
+            new lang_string('showhistory', 'tool_admin_presets')
         ))->add_callback(function(\stdClass $row): bool {
             return (bool) $row->appid;
         }));

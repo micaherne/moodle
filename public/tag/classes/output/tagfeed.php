@@ -24,8 +24,8 @@
 
 namespace core_tag\output;
 
-use templatable;
-use renderer_base;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
 
 /**

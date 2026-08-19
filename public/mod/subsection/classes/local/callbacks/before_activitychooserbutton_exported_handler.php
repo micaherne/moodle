@@ -17,11 +17,11 @@
 namespace mod_subsection\local\callbacks;
 
 use core_course\hook\before_activitychooserbutton_exported;
-use action_link;
-use moodle_url;
+use core\output\action_link;
+use core\url;
 use mod_subsection\permission;
-use pix_icon;
-use section_info;
+use core\output\pix_icon;
+use core_course\section_info;
 
 /**
  * Class before activity choooser button export handler.
@@ -56,7 +56,7 @@ class before_activitychooserbutton_exported_handler {
         }
 
         $hook->get_activitychooserbutton()->add_action_link(new action_link(
-            new moodle_url('#'),
+            new url('#'),
             get_string('modulename', 'mod_subsection'),
             null,
             $attributes,

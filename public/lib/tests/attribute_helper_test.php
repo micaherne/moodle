@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\coding_exception;
+
 /**
  * Tests for the attribute_helper.
  *
@@ -158,13 +160,13 @@ final class attribute_helper_test extends \advanced_testcase {
     }
 
     public function test_get_attribute_too_many(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('More than one attribute found');
         attribute_helper::one_from(attribute_helper_example::class);
     }
 
     public function test_get_instance_too_many(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('More than one attribute found');
         attribute_helper::instance(attribute_helper_example::class);
     }

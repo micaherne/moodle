@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\output\html_writer;
+use core\url;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 $pageno = optional_param('p', 0, PARAM_INT);
@@ -34,7 +39,7 @@ if (empty($forum)) {
 }
 
 $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-$modcontext = context_module::instance($coursemodule->id);
+$modcontext = module::instance($coursemodule->id);
 
 $entityfactory = mod_forum\local\container::get_entity_factory();
 $forumentity = $entityfactory->get_forum_from_stdclass($forum, $modcontext, $coursemodule, $course);
@@ -50,7 +55,7 @@ if (trim($forum->intro) != '') {
         $stredit  = get_string('edit');
         $introcontent .= html_writer::start_div('editinglink');
         $introcontent .= html_writer::link(
-            new moodle_url('/course/modedit.php', [
+            new url('/course/modedit.php', [
                 'update' => $coursemodule->id,
                 'sesskey' => sesskey(),
             ]),
@@ -74,5 +79,5 @@ if ($numdiscussions < 1) {
 
 $rendererfactory = mod_forum\local\container::get_renderer_factory();
 $discussionsrenderer = $rendererfactory->get_social_discussion_list_renderer($forumentity);
-$cm = \cm_info::create($coursemodule);
+$cm = cm_info::create($coursemodule);
 echo $discussionsrenderer->render($USER, $cm, null, null, $pageno, $numdiscussions);

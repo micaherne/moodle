@@ -22,7 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
 use core\output\notification;
+use core\url;
 
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/lti/edit_form.php');
@@ -33,7 +36,7 @@ $typeid = optional_param('typeid', null, PARAM_INT);
 
 // Permissions etc.
 require_login($courseid, false);
-require_capability('mod/lti:addcoursetool', context_course::instance($courseid));
+require_capability('mod/lti:addcoursetool', course::instance($courseid));
 if (!empty($typeid)) {
     $type = lti_get_type_type_config($typeid);
     if ($type->course != $courseid || $type->course == get_site()->id) {
@@ -44,7 +47,7 @@ if (!empty($typeid)) {
 }
 
 // Page setup.
-$url = new moodle_url('/mod/lti/coursetooledit.php', ['courseid' => $courseid]);
+$url = new url('/mod/lti/coursetooledit.php', ['courseid' => $courseid]);
 $pageheading = !empty($typeid) ? get_string('courseexternaltooledit', 'mod_lti', $type->lti_typename) :
     get_string('courseexternaltooladd', 'mod_lti');
 
@@ -57,7 +60,7 @@ $PAGE->add_body_class('limitedwidth');
 $form = new mod_lti_edit_types_form($url, (object)array('id' => $typeid, 'clientid' => $type->lti_clientid, 'iscoursetool' => true));
 if ($form->is_cancelled()) {
 
-    redirect(new moodle_url('/mod/lti/coursetools.php', ['id' => $courseid]));
+    redirect(new url('/mod/lti/coursetools.php', ['id' => $courseid]));
 } else if ($data = $form->get_data()) {
 
     require_sesskey();
@@ -66,13 +69,13 @@ if ($form->is_cancelled()) {
         $type = (object) ['id' => $data->typeid];
         lti_load_type_if_cartridge($data);
         lti_update_type($type, $data);
-        $redirecturl = new moodle_url('/mod/lti/coursetools.php', ['id' => $courseid]);
+        $redirecturl = new url('/mod/lti/coursetools.php', ['id' => $courseid]);
         $notice = get_string('courseexternaltooleditsuccess', 'mod_lti');
     } else {
         $type = (object) ['state' => LTI_TOOL_STATE_CONFIGURED, 'course' => $data->course];
         lti_load_type_if_cartridge($data);
         lti_add_type($type, $data);
-        $redirecturl = new moodle_url('/mod/lti/coursetools.php', ['id' => $courseid]);
+        $redirecturl = new url('/mod/lti/coursetools.php', ['id' => $courseid]);
         $notice = get_string('courseexternaltooladdsuccess', 'mod_lti', $type->name);
     }
 

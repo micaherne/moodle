@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\output\progress_trace\html_list_progress_trace;
+use core\output\progress_trace\progress_trace_buffer;
+use core\output\progress_trace\text_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/weblib.php');
 

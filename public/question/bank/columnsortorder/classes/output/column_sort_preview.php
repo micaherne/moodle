@@ -16,9 +16,10 @@
 
 namespace qbank_columnsortorder\output;
 
-use moodle_url;
-use templatable;
-use renderable;
+use core\output\renderer_base;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
 use qbank_columnsortorder\column_manager;
 
 /**
@@ -44,9 +45,9 @@ class column_sort_preview implements renderable, templatable {
         $this->preview = $preview;
     }
 
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $context = [
-            'backurl' => new moodle_url('/question/bank/columnsortorder/sortcolumns.php'),
+            'backurl' => new url('/question/bank/columnsortorder/sortcolumns.php'),
             'preview' => $this->preview,
         ];
         return $context;

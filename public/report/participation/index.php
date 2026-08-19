@@ -23,7 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
 use core\report_helper;
+use core\url;
+use core_table\flexible_table;
 
 require('../../config.php');
 require_once($CFG->dirroot.'/lib/tablelib.php');
@@ -43,7 +48,7 @@ $page       = optional_param('page', 0, PARAM_INT);                     // which
 $perpage    = optional_param('perpage', DEFAULT_PAGE_SIZE, PARAM_INT);  // how many per page
 $currentgroup = optional_param('group', null, PARAM_INT); // Get the active group.
 
-$url = new moodle_url('/report/participation/index.php', array('id'=>$id));
+$url = new url('/report/participation/index.php', array('id'=>$id));
 if ($roleid !== 0) $url->param('roleid');
 if ($instanceid !== 0) $url->param('instanceid');
 if ($timefrom !== 0) $url->param('timefrom');
@@ -58,15 +63,15 @@ if ($action != 'view' and $action != 'post') {
 }
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception('invalidcourse');
+    throw new moodle_exception('invalidcourse');
 }
 
 if ($roleid != 0 and !$role = $DB->get_record('role', array('id'=>$roleid))) {
-    throw new \moodle_exception('invalidrole');
+    throw new moodle_exception('invalidrole');
 }
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('report/participation:view', $context);
 
 $strparticipation = get_string('participationreport');
@@ -103,7 +108,7 @@ $modinfo = get_fast_modinfo($course);
 // Print first controls.
 report_participation_print_filter_form($course, $timefrom, $minlog, $action, $roleid, $instanceid);
 
-$baseurl = new moodle_url('/report/participation/index.php', array(
+$baseurl = new url('/report/participation/index.php', array(
     'id' => $course->id,
     'roleid' => $roleid,
     'instanceid' => $instanceid,
@@ -329,7 +334,7 @@ if (!empty($instanceid) && !empty($roleid)) {
 
     foreach ($users as $u) {
         $data = array();
-        $data[] = html_writer::link(new moodle_url('/user/view.php', array('id' => $u->userid, 'course' => $course->id)),
+        $data[] = html_writer::link(new url('/user/view.php', array('id' => $u->userid, 'course' => $course->id)),
             fullname($u, true));
         $data[] = !empty($u->count) ? get_string('yes').' ('.$u->count.') ' : get_string('no');
 
@@ -351,12 +356,12 @@ if (!empty($instanceid) && !empty($roleid)) {
     $table->print_html();
 
     if ($perpage == SHOW_ALL_PAGE_SIZE) {
-        $perpageurl = new moodle_url($baseurl, array('perpage' => DEFAULT_PAGE_SIZE));
+        $perpageurl = new url($baseurl, array('perpage' => DEFAULT_PAGE_SIZE));
         echo html_writer::start_div('', array('id' => 'showall'));
         echo html_writer::link($perpageurl, get_string('showperpage', '', DEFAULT_PAGE_SIZE));
         echo html_writer::end_div();
     } else if ($matchcount > 0 && $perpage < $matchcount) {
-        $perpageurl = new moodle_url($baseurl, array('perpage' => SHOW_ALL_PAGE_SIZE));
+        $perpageurl = new url($baseurl, array('perpage' => SHOW_ALL_PAGE_SIZE));
         echo html_writer::start_div('', array('id' => 'showall'));
         echo html_writer::link($perpageurl, get_string('showall', '', $matchcount));
         echo html_writer::end_div();

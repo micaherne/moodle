@@ -16,6 +16,7 @@
 
 namespace core_courseformat\external;
 
+use core\context\system;
 use core_courseformat\output\local\overview\overviewdialog;
 
 /**
@@ -38,7 +39,7 @@ final class overviewdialog_exporter_test extends \advanced_testcase {
         $dialog->add_item('Item 1', 'Value 1');
         $dialog->add_item('Item 2', 'Value 2');
 
-        $exporter = new overviewdialog_exporter($dialog, ['context' => \context_system::instance()]);
+        $exporter = new overviewdialog_exporter($dialog, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('buttoncontent', $data);

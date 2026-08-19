@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 require_once($CFG->dirroot.'/course/lib.php');
 
 /**
@@ -127,7 +129,7 @@ class block_recent_activity extends block_base {
     protected function get_structural_changes() {
         global $DB;
         $course = $this->page->course;
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $canviewdeleted = has_capability('block/recent_activity:viewdeletemodule', $context);
         $canviewupdated = has_capability('block/recent_activity:viewaddupdatemodule', $context);
         if (!$canviewdeleted && !$canviewupdated) {
@@ -199,7 +201,7 @@ class block_recent_activity extends block_base {
      * @return array array of pairs moduletype => content
      */
     protected function get_modules_recent_activity() {
-        $context = context_course::instance($this->page->course->id);
+        $context = course::instance($this->page->course->id);
         $viewfullnames = has_capability('moodle/site:viewfullnames', $context);
         $hascontent = false;
 

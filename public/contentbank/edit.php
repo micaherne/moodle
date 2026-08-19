@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+
 require('../config.php');
 
 require_login();
@@ -35,12 +42,12 @@ $context = context::instance_by_id($contextid, MUST_EXIST);
 
 $cb = new \core_contentbank\contentbank();
 if (!$cb->is_context_allowed($context)) {
-    throw new \moodle_exception('contextnotallowed', 'core_contentbank');
+    throw new moodle_exception('contextnotallowed', 'core_contentbank');
 }
 
 require_capability('moodle/contentbank:access', $context);
 
-$returnurl = new \moodle_url('/contentbank/view.php', ['id' => $id]);
+$returnurl = new url('/contentbank/view.php', ['id' => $id]);
 
 if (!empty($id)) {
     $record = $DB->get_record('contentbank_content', ['id' => $id], '*', MUST_EXIST);
@@ -59,9 +66,9 @@ if (!empty($id)) {
 }
 
 // Check plugin is enabled.
-$plugin = core_plugin_manager::instance()->get_plugin_info($contenttypename);
+$plugin = plugin_manager::instance()->get_plugin_info($contenttypename);
 if (!$plugin || !$plugin->is_enabled()) {
-    throw new \moodle_exception('unsupported', 'core_contentbank', $returnurl);
+    throw new moodle_exception('unsupported', 'core_contentbank', $returnurl);
 }
 
 // Create content type instance.
@@ -69,12 +76,12 @@ $contenttypeclass = "$contenttypename\\contenttype";
 if (class_exists($contenttypeclass)) {
     $contenttype = new $contenttypeclass($context);
 } else {
-    throw new \moodle_exception('unsupported', 'core_contentbank', $returnurl);
+    throw new moodle_exception('unsupported', 'core_contentbank', $returnurl);
 }
 
 // Checks the user can edit this content and content type.
 if (!$contenttype->can_edit($content)) {
-    throw new \moodle_exception('contenttypenoedit', 'core_contentbank', $returnurl);
+    throw new moodle_exception('contenttypenoedit', 'core_contentbank', $returnurl);
 }
 
 $values = [
@@ -95,14 +102,14 @@ if ($context->contextlevel == CONTEXT_COURSECAT) {
     $PAGE->set_primary_active_tab('home');
 }
 
-$PAGE->set_url(new \moodle_url('/contentbank/edit.php', $values));
-if ($context->id == \context_system::instance()->id) {
-    $PAGE->set_context(context_course::instance($context->id));
+$PAGE->set_url(new url('/contentbank/edit.php', $values));
+if ($context->id == system::instance()->id) {
+    $PAGE->set_context(course::instance($context->id));
 } else {
     $PAGE->set_context($context);
 }
 if ($content) {
-    $PAGE->navbar->add($content->get_name(), new \moodle_url('/contentbank/view.php', ['id' => $id]));
+    $PAGE->navbar->add($content->get_name(), new url('/contentbank/view.php', ['id' => $id]));
 }
 $PAGE->navbar->add($breadcrumbtitle);
 $PAGE->set_title($title);
@@ -112,14 +119,14 @@ $PAGE->set_secondary_active_tab('contentbank');
 // Instantiate the content type form.
 $editorclass = "$contenttypename\\form\\editor";
 if (!class_exists($editorclass)) {
-    throw new \moodle_exception('noformdesc');
+    throw new moodle_exception('noformdesc');
 }
 
 $editorform = new $editorclass(null, $values);
 
 if ($editorform->is_cancelled()) {
     if (empty($id)) {
-        $returnurl = new \moodle_url('/contentbank/index.php', ['contextid' => $context->id]);
+        $returnurl = new url('/contentbank/index.php', ['contextid' => $context->id]);
     }
     redirect($returnurl);
 } else if ($data = $editorform->get_data()) {

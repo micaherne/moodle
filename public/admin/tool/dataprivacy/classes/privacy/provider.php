@@ -25,9 +25,9 @@
 namespace tool_dataprivacy\privacy;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use context;
-use context_user;
+use core\exception\coding_exception;
+use core\context;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use \core_privacy\local\request\approved_userlist;
@@ -124,7 +124,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!is_a($context, \context_user::class)) {
+        if (!is_a($context, user::class)) {
             return;
         }
 
@@ -156,7 +156,7 @@ class provider implements
 
         $user = $contextlist->get_user();
         $datarequests = api::get_data_requests($user->id);
-        $context = context_user::instance($user->id);
+        $context = user::instance($user->id);
         $contextdatatowrite = [];
         foreach ($datarequests as $request) {
             $record = $request->to_record();

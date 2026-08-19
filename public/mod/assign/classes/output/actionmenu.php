@@ -16,9 +16,11 @@
 
 namespace mod_assign\output;
 
-use templatable;
-use renderable;
-use moodle_url;
+use core\context\module;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\renderable;
+use core\url;
 
 /**
  * Output the actionbar for this activity.
@@ -52,16 +54,16 @@ class actionmenu implements templatable, renderable {
      * @param  \renderer_base $output renderer base output.
      * @return array Data to be used for a template.
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $return = [];
 
-        if (has_capability('mod/assign:grade', \context_module::instance($this->cmid))) {
+        if (has_capability('mod/assign:grade', module::instance($this->cmid))) {
             // If we are using multiple markers, then we'll have marker columns which need links to the marker page.
             if ($this->markingworkflow) {
-                $gradelink = new moodle_url('/mod/assign/view.php', ['id' => $this->cmid, 'action' => 'marker']);
+                $gradelink = new url('/mod/assign/view.php', ['id' => $this->cmid, 'action' => 'marker']);
                 $return['marklink'] = $gradelink->out(false);
             }
-            $gradelink = new moodle_url('/mod/assign/view.php', ['id' => $this->cmid, 'action' => 'grader']);
+            $gradelink = new url('/mod/assign/view.php', ['id' => $this->cmid, 'action' => 'grader']);
             $return['gradelink'] = $gradelink->out(false);
         }
 

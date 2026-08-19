@@ -16,6 +16,9 @@
 
 namespace mod_quiz\question\bank;
 
+use core\output\action_link;
+use core\output\pix_icon;
+
 /**
  * A column type for the add this question to the quiz action.
  *
@@ -52,12 +55,12 @@ class add_action_column extends \core_question\local\bank\column_base {
         if (!question_has_capability_on($question, 'use')) {
             return;
         }
-        $link = new \action_link(
+        $link = new action_link(
                 $this->qbank->add_to_quiz_url($question->id),
                 '',
                 null,
                 ['title' => $this->stradd],
-                new \pix_icon('t/add', $this->stradd));
+                new pix_icon('t/add', $this->stradd));
         echo $OUTPUT->render($link);
     }
 }

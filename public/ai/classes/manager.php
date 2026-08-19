@@ -16,10 +16,13 @@
 
 namespace core_ai;
 
+use core\context;
 use core\exception\coding_exception;
+use core\plugin_manager;
 use core_ai\aiactions\base;
 use core_ai\aiactions\responses;
 use core\plugininfo\aiprovider as aiproviderplugin;
+use core_cache\cache;
 /**
  * AI subsystem manager.
  *
@@ -226,7 +229,7 @@ class manager {
         ];
 
         if ($DB->insert_record('ai_policy_register', $record)) {
-            $policycache = \cache::make('core', 'ai_policy');
+            $policycache = cache::make('core', 'ai_policy');
             return $policycache->set($userid, true);
         } else {
             return false;
@@ -240,7 +243,7 @@ class manager {
      * @return bool True if the policy was accepted, false otherwise.
      */
     public static function get_user_policy_status(int $userid): bool {
-        $policycache = \cache::make('core', 'ai_policy');
+        $policycache = cache::make('core', 'ai_policy');
         return $policycache->get($userid);
     }
 
@@ -282,7 +285,7 @@ class manager {
             if ($oldvalue !== (bool)$enabled) {
                 set_config($actionbasename, $enabled, $plugin);
                 add_to_config_log('disabled', !$oldvalue, !$enabled, $plugin);
-                \core_plugin_manager::reset_caches();
+                plugin_manager::reset_caches();
                 return true;
             }
             return false;
@@ -346,7 +349,7 @@ class manager {
      * @param string $actionclass The action class name to check.
      * @return bool Return true enabled and allowed.
      */
-    public function is_action_enabled_in_context(\context $context, string $actionclass): bool {
+    public function is_action_enabled_in_context(context $context, string $actionclass): bool {
         // Only check if we are in a supported context.
         if (in_array($context->contextlevel, [CONTEXT_COURSE, CONTEXT_COURSECAT, CONTEXT_MODULE])) {
             // Return false if AI tools is not enabled at the course level.
@@ -410,7 +413,7 @@ class manager {
         ?array $actionconfig = null,
     ): provider {
         if (!class_exists($classname) || !is_a($classname, provider::class, true)) {
-            throw new \coding_exception("Provider class not valid: {$classname}");
+            throw new coding_exception("Provider class not valid: {$classname}");
         }
         $provider = new $classname(
             enabled: $enabled,
@@ -690,7 +693,7 @@ class manager {
         $this->set_provider_config(['provider_order' => implode(',', $order)], 'core_ai');
 
         \core\session\manager::gc(); // Remove stale sessions.
-        \core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
     }
 
     /**
@@ -765,7 +768,7 @@ class manager {
      * @param \context $context The context to check.
      * @return bool True if AI tools are enabled in the course, false otherwise.
      */
-    public static function is_ai_tools_enabled_in_course(\context $context): bool {
+    public static function is_ai_tools_enabled_in_course(context $context): bool {
         global $DB;
 
         if (in_array($context->contextlevel, [CONTEXT_COURSE, CONTEXT_COURSECAT])) {

@@ -20,6 +20,8 @@
  * @author Dan Poltawski <talktodan@gmail.com>
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+use core\url;
+
 require_once($CFG->libdir.'/portfolio/plugin.php');
 require_once($CFG->libdir . '/google/lib.php');
 
@@ -214,7 +216,7 @@ class portfolio_plugin_googledocs extends portfolio_plugin_push_base {
     public static function admin_config_form(&$mform) {
         $a = new stdClass;
         $a->docsurl = get_docs_url('Google_OAuth_2.0_setup');
-        $a->callbackurl = (new moodle_url(self::REDIRECTURL))->out(false);
+        $a->callbackurl = (new url(self::REDIRECTURL))->out(false);
 
         $mform->addElement('static', null, '', get_string('oauthinfo', 'portfolio_googledocs', $a));
 
@@ -229,8 +231,8 @@ class portfolio_plugin_googledocs extends portfolio_plugin_push_base {
     }
 
     private function initialize_oauth() {
-        $redirecturi = new moodle_url(self::REDIRECTURL);
-        $returnurl = new moodle_url('/portfolio/add.php');
+        $redirecturi = new url(self::REDIRECTURL);
+        $returnurl = new url('/portfolio/add.php');
         $returnurl->param('postcontrol', 1);
         $returnurl->param('id', $this->exporter->get('id'));
         $returnurl->param('sesskey', sesskey());

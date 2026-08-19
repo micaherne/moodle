@@ -25,6 +25,7 @@
 
 namespace ltiservice_gradebookservices\local\resources;
 
+use core\url;
 use ltiservice_gradebookservices\local\service\gradebookservices;
 use mod_lti\local\ltiservice\resource_base;
 
@@ -160,7 +161,7 @@ class lineitems extends resource_base {
             $limitlast = $totalcount - $limitnum + 1 >= 0 ? $totalcount - $limitnum + 1 : 0;
             $limitfrom += $limitnum;
 
-            $baseurl = new \moodle_url($this->get_endpoint());
+            $baseurl = new url($this->get_endpoint());
             if (isset($resourceid)) {
                 $baseurl->param('resource_id', $resourceid);
             }
@@ -174,24 +175,24 @@ class lineitems extends resource_base {
             if (is_null($typeid)) {
                 $baseurl->param('limit', $limitnum);
                 if (($limitfrom <= $totalcount - 1) && (!$outofrange)) {
-                    $nextpage = new \moodle_url($baseurl, ['from' => $limitfrom]);
+                    $nextpage = new url($baseurl, ['from' => $limitfrom]);
                 }
-                $firstpage = new \moodle_url($baseurl, ['from' => 0]);
-                $canonicalpage = new \moodle_url($baseurl, ['from' => $limitcurrent]);
-                $lastpage = new \moodle_url($baseurl, ['from' > $limitlast]);
+                $firstpage = new url($baseurl, ['from' => 0]);
+                $canonicalpage = new url($baseurl, ['from' => $limitcurrent]);
+                $lastpage = new url($baseurl, ['from' > $limitlast]);
                 if (($limitcurrent > 0) && (!$outofrange)) {
-                    $prevpage = new \moodle_url($baseurl, ['from' => $limitprev]);
+                    $prevpage = new url($baseurl, ['from' => $limitprev]);
                 }
             } else {
                 $baseurl->params(['type_id' => $typeid, 'limit' => $limitnum]);
                 if (($limitfrom <= $totalcount - 1) && (!$outofrange)) {
-                    $nextpage = new \moodle_url($baseurl, ['from' => $limitfrom]);
+                    $nextpage = new url($baseurl, ['from' => $limitfrom]);
                 }
-                $firstpage = new \moodle_url($baseurl, ['from' => 0]);
-                $canonicalpage = new \moodle_url($baseurl, ['from' => $limitcurrent]);
-                $lastpage = new \moodle_url($baseurl, ['from' => $limitlast]);
+                $firstpage = new url($baseurl, ['from' => 0]);
+                $canonicalpage = new url($baseurl, ['from' => $limitcurrent]);
+                $lastpage = new url($baseurl, ['from' => $limitlast]);
                 if (($limitcurrent > 0) && (!$outofrange)) {
-                    $prevpage = new \moodle_url($baseurl, ['from' => $limitprev]);
+                    $prevpage = new url($baseurl, ['from' => $limitprev]);
                 }
             }
         }

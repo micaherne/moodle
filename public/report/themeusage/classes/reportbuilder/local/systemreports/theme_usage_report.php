@@ -16,7 +16,7 @@
 
 namespace report_themeusage\reportbuilder\local\systemreports;
 
-use context_system;
+use core\context\system;
 use core_reportbuilder\local\entities\{course, user};
 use core_cohort\reportbuilder\local\entities\cohort;
 use core_course\reportbuilder\local\entities\course_category;
@@ -135,7 +135,7 @@ class theme_usage_report extends system_report {
      * @return bool
      */
     protected function can_view(): bool {
-        return has_capability('moodle/site:config', context_system::instance());
+        return has_capability('moodle/site:config', system::instance());
     }
 
     /**

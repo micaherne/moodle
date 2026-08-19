@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\coursecat;
+use core\context\system;
+use core\plugin_manager;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/repository/lib.php');
@@ -60,7 +66,7 @@ class repository_contentbank extends repository {
         // Return the current context if the context was not specified in the encoded path.
         // The current context should be an instance of context_system, context_coursecat or course related contexts.
         if (empty($context) && !empty($this->context)) {
-            if ($this->context instanceof \context_system || $this->context instanceof \context_coursecat) {
+            if ($this->context instanceof system || $this->context instanceof coursecat) {
                 $context = $this->context;
             } else if ($coursecontext = $this->context->get_course_context(false)) {
                 // Skip if front page context.
@@ -71,7 +77,7 @@ class repository_contentbank extends repository {
         }
         // If not, return the system context as a default context.
         if (empty($context)) {
-            $context = context_system::instance();
+            $context = system::instance();
         }
 
         $ret['list'] = [];
@@ -79,7 +85,7 @@ class repository_contentbank extends repository {
 
         // Get the content bank browser for the specified context.
         if ($browser = \repository_contentbank\helper::get_contentbank_browser($context)) {
-            $manageurl = new moodle_url('/contentbank/index.php', ['contextid' => $context->id]);
+            $manageurl = new url('/contentbank/index.php', ['contextid' => $context->id]);
             $canaccesscontent = has_capability('moodle/contentbank:access', $context);
             $ret['manage'] = $canaccesscontent ? $manageurl->out() : '';
             $ret['list'] = $browser->get_content();
@@ -142,11 +148,11 @@ class repository_contentbank extends repository {
         $contextid = clean_param($fileparams->contextid, PARAM_INT);
 
         $contentbankfile = $DB->get_record('contentbank_content', ['id' => $itemid]);
-        $plugin = \core_plugin_manager::instance()->get_plugin_info($contentbankfile->contenttype);
+        $plugin = plugin_manager::instance()->get_plugin_info($contentbankfile->contenttype);
 
         $managerclass = "\\$contentbankfile->contenttype\\content";
         if ($plugin && $plugin->is_enabled() && class_exists($managerclass)) {
-            $context = \context::instance_by_id($contextid);
+            $context = context::instance_by_id($contextid);
             $browser = \repository_contentbank\helper::get_contentbank_browser($context);
             return $browser->can_access_content();
         }

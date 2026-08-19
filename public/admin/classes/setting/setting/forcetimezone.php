@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+
 /**
  * Forced user timezone setting.
  *
@@ -30,8 +32,8 @@ class forcetimezone extends \core_admin\setting\setting\configselect {
     public function __construct() {
         parent::__construct(
             'forcetimezone',
-            new \lang_string('forcetimezone', 'core_admin'),
-            new \lang_string('helpforcetimezone', 'core_admin'),
+            new lang_string('forcetimezone', 'core_admin'),
+            new lang_string('helpforcetimezone', 'core_admin'),
             '99',
             null
         );
@@ -49,7 +51,7 @@ class forcetimezone extends \core_admin\setting\setting\configselect {
 
         $current = isset($CFG->forcetimezone) ? $CFG->forcetimezone : null;
         $this->choices = \core_date::get_list_of_timezones($current, true);
-        $this->choices['99'] = new \lang_string('timezonenotforced', 'core_admin');
+        $this->choices['99'] = new lang_string('timezonenotforced', 'core_admin');
 
         return true;
     }

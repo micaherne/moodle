@@ -25,6 +25,8 @@
 
 namespace gradereport_history\output;
 
+use core\output\plugin_renderer_base;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -36,7 +38,7 @@ defined('MOODLE_INTERNAL') || die;
  * @author     Adam Olley <adam.olley@netspot.com.au>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Render for the select user button.

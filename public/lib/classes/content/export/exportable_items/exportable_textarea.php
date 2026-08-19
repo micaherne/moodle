@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace core\content\export\exportable_items;
 
-use context;
+use core\context;
 use core\content\export\exportable_item;
 use core\content\export\exported_item;
 use core\content\export\zipwriter;

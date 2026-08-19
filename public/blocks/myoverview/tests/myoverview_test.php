@@ -16,6 +16,9 @@
 
 namespace block_myoverview;
 
+use core\context\user;
+use core\exception\moodle_exception;
+
 /**
  * Online users testcase
  *
@@ -55,10 +58,10 @@ final class myoverview_test extends \advanced_testcase {
         set_config('customfiltergrouping', $field->get('shortname'), 'block_myoverview');
 
         $this->setUser($user);
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         if (!$currentpage = my_get_page($user->id, MY_PAGE_PUBLIC, MY_PAGE_COURSES)) {
-            throw new \moodle_exception('mymoodlesetup');
+            throw new moodle_exception('mymoodlesetup');
         }
 
         $PAGE->set_url('/my/courses.php');    // Need this because some internal API calls require the $PAGE url to be set.

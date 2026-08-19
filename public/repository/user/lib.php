@@ -23,6 +23,9 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\user;
+use core\url;
+
 require_once($CFG->dirroot . '/repository/lib.php');
 
 /**
@@ -56,7 +59,7 @@ class repository_user extends repository {
         $ret['dynload'] = true;
         $ret['nosearch'] = true;
         $ret['nologin'] = true;
-        $manageurl = new moodle_url('/user/files.php');
+        $manageurl = new url('/user/files.php');
         $ret['manage'] = $manageurl->out();
         $list = array();
 
@@ -74,7 +77,7 @@ class repository_user extends repository {
         $filearea = 'private';
         $component = 'user';
         $itemid  = 0;
-        $context = context_user::instance($USER->id);
+        $context = user::instance($USER->id);
 
         try {
             $browser = get_file_browser();
@@ -123,7 +126,7 @@ class repository_user extends repository {
                             $node['originalmissing'] = true;
                         }
                         if ($imageinfo = $child->get_imageinfo()) {
-                            $fileurl = new moodle_url($child->get_url());
+                            $fileurl = new url($child->get_url());
                             $node['realthumbnail'] = $fileurl->out(false, array('preview' => 'thumb', 'oid' => $child->get_timemodified()));
                             $node['realicon'] = $fileurl->out(false, array('preview' => 'tinyicon', 'oid' => $child->get_timemodified()));
                             $node['image_width'] = $imageinfo['width'];

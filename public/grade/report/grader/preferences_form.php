@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -40,7 +42,7 @@ class grader_report_preferences_form extends moodleform {
         $mform    =& $this->_form;
         $course   = $this->_customdata['course'];
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $canviewhidden = has_capability('moodle/grade:viewhidden', $context);
 

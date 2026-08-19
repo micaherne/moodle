@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\external\reports;
 
-use context_system;
+use core\context\system;
 use core\output\pix_icon;
 use core_reportbuilder_generator;
 use core_external\external_api;
@@ -167,7 +167,7 @@ final class get_test extends \core_external\tests\externallib_testcase {
         $report = $generator->create_report(['name' => 'My report', 'source' => users::class]);
 
         $user = $this->getDataGenerator()->create_user();
-        $contextid = context_system::instance()->id;
+        $contextid = system::instance()->id;
         $roleid = create_role('Dummy role', 'dummyrole', 'dummy role description');
         assign_capability('moodle/reportbuilder:view', CAP_PROHIBIT, $roleid, $contextid);
         role_assign($roleid, $user->id, $contextid);

@@ -25,6 +25,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
 use mod_data\manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -48,7 +50,7 @@ defined('MOODLE_INTERNAL') || die();
         $dataid = clean_param($args[3], PARAM_INT);
         $cm = get_coursemodule_from_instance('data', $dataid, 0, false, MUST_EXIST);
         if ($cm) {
-            $modcontext = context_module::instance($cm->id);
+            $modcontext = module::instance($cm->id);
 
             //context id from db should match the submitted one
             if ($context->id != $modcontext->id || !has_capability('mod/data:viewentry', $modcontext)) {
@@ -115,7 +117,7 @@ defined('MOODLE_INTERNAL') || die();
                 array_push($items, $item);
             }
             $course = $DB->get_record('course', array('id'=>$data->course));
-            $coursecontext = context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
             $courseshortname = format_string($course->shortname, true, array('context' => $coursecontext));
 
             // First all rss feeds common headers.

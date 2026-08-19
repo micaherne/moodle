@@ -16,6 +16,9 @@
 
 namespace cachestore_redis\task;
 
+use core_cache\cache;
+use core_cache\factory;
+
 /**
  * Task deletes old data from Redis caches with TTL set.
  *
@@ -41,7 +44,7 @@ class ttl extends \core\task\scheduled_task {
      */
     public function execute(): void {
         // Find all Redis cache stores.
-        $factory = \cache_factory::instance();
+        $factory = factory::instance();
         $config = $factory->create_config_instance();
         $stores = $config->get_all_stores();
         $doneanything = false;
@@ -63,7 +66,7 @@ class ttl extends \core\task\scheduled_task {
                 $doneanything = true;
                 $definitionname = $definition['component'] . '/' . $definition['area'];
                 mtrace($definitionname, ': ');
-                \cache::make($definition['component'], $definition['area']);
+                cache::make($definition['component'], $definition['area']);
                 $definition = $factory->create_definition($definition['component'], $definition['area']);
                 $stores = $factory->get_store_instances_in_use($definition);
                 foreach ($stores as $store) {

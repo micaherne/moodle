@@ -24,6 +24,8 @@
  */
 namespace core\task;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -67,5 +69,5 @@ interface task_logger {
      * @param   string      $classname The task class to fetch for
      * @return  \moodle_url
      */
-    public static function get_url_for_task_class(string $classname): \moodle_url;
+    public static function get_url_for_task_class(string $classname): url;
 }

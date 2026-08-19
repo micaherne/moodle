@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\context\course;
 use core\task\manager;
 
 /**
@@ -56,7 +57,7 @@ final class cron_test extends \advanced_testcase {
 
         cron::setup_user();
         $this->assertSame($admin->id, $USER->id);
-        $this->assertSame($PAGE->context, \context_course::instance($SITE->id));
+        $this->assertSame($PAGE->context, course::instance($SITE->id));
         $this->assertSame($CFG->timezone, $USER->timezone);
         $this->assertSame('', $USER->lang);
         $this->assertSame('', $USER->theme);
@@ -70,7 +71,7 @@ final class cron_test extends \advanced_testcase {
 
         cron::setup_user(null, $course);
         $this->assertSame($admin->id, $USER->id);
-        $this->assertSame($PAGE->context, \context_course::instance($course->id));
+        $this->assertSame($PAGE->context, course::instance($course->id));
         $this->assertSame($adminsession, $SESSION);
         $this->assertSame($GLOBALS['SESSION'], $_SESSION['SESSION']);
         $this->assertSame($GLOBALS['SESSION'], $SESSION);
@@ -79,7 +80,7 @@ final class cron_test extends \advanced_testcase {
 
         cron::setup_user($user1);
         $this->assertSame($user1->id, $USER->id);
-        $this->assertSame($PAGE->context, \context_course::instance($SITE->id));
+        $this->assertSame($PAGE->context, course::instance($SITE->id));
         $this->assertNotSame($adminsession, $SESSION);
         $this->assertObjectNotHasProperty('test1', $SESSION);
         $this->assertEmpty((array)$SESSION);
@@ -92,7 +93,7 @@ final class cron_test extends \advanced_testcase {
 
         cron::setup_user($user1);
         $this->assertSame($user1->id, $USER->id);
-        $this->assertSame($PAGE->context, \context_course::instance($SITE->id));
+        $this->assertSame($PAGE->context, course::instance($SITE->id));
         $this->assertNotSame($adminsession, $SESSION);
         $this->assertSame($usersession1, $SESSION);
         $this->assertSame($GLOBALS['SESSION'], $_SESSION['SESSION']);
@@ -102,7 +103,7 @@ final class cron_test extends \advanced_testcase {
 
         cron::setup_user($user2);
         $this->assertSame($user2->id, $USER->id);
-        $this->assertSame($PAGE->context, \context_course::instance($SITE->id));
+        $this->assertSame($PAGE->context, course::instance($SITE->id));
         $this->assertNotSame($adminsession, $SESSION);
         $this->assertNotSame($usersession1, $SESSION);
         $this->assertEmpty((array)$SESSION);
@@ -115,7 +116,7 @@ final class cron_test extends \advanced_testcase {
 
         cron::setup_user($user2, $course);
         $this->assertSame($user2->id, $USER->id);
-        $this->assertSame($PAGE->context, \context_course::instance($course->id));
+        $this->assertSame($PAGE->context, course::instance($course->id));
         $this->assertNotSame($adminsession, $SESSION);
         $this->assertNotSame($usersession1, $SESSION);
         $this->assertSame($usersession2, $SESSION);
@@ -126,7 +127,7 @@ final class cron_test extends \advanced_testcase {
 
         cron::setup_user($user1);
         $this->assertSame($user1->id, $USER->id);
-        $this->assertSame($PAGE->context, \context_course::instance($SITE->id));
+        $this->assertSame($PAGE->context, course::instance($SITE->id));
         $this->assertNotSame($adminsession, $SESSION);
         $this->assertNotSame($usersession1, $SESSION);
         $this->assertEmpty((array)$SESSION);
@@ -137,7 +138,7 @@ final class cron_test extends \advanced_testcase {
 
         cron::setup_user();
         $this->assertSame($admin->id, $USER->id);
-        $this->assertSame($PAGE->context, \context_course::instance($SITE->id));
+        $this->assertSame($PAGE->context, course::instance($SITE->id));
         $this->assertSame($adminsession, $SESSION);
         $this->assertSame($adminuser, $USER);
         $this->assertSame($GLOBALS['SESSION'], $_SESSION['SESSION']);

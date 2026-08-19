@@ -24,6 +24,8 @@
 
 namespace repository_contentbank\browser;
 
+use core\context;
+
 /**
  * Base class for the content bank browsers.
  *
@@ -106,7 +108,7 @@ abstract class contentbank_browser {
         $childcontexts = $DB->get_records_select('context', $select, $params);
 
         return array_map(function($childcontext) {
-            return \context::instance_by_id($childcontext->id);
+            return context::instance_by_id($childcontext->id);
         }, $childcontexts);
     }
 

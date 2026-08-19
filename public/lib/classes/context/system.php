@@ -18,7 +18,7 @@ namespace core\context;
 
 use core\context;
 use stdClass;
-use coding_exception, moodle_url;
+use core\exception\coding_exception, core\url;
 
 /**
  * System context class
@@ -83,7 +83,7 @@ class system extends context {
      * @return moodle_url
      */
     public function get_url() {
-        return new moodle_url('/');
+        return new url('/');
     }
 
     /**
@@ -300,7 +300,7 @@ class system extends context {
      */
     public function set_locked(bool $locked) {
         if ($locked) {
-            throw new \coding_exception('It is not possible to lock the system context');
+            throw new coding_exception('It is not possible to lock the system context');
         }
         return parent::set_locked($locked);
     }

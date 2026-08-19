@@ -20,15 +20,15 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/question/editlib.php');
 
-use action_menu;
-use comment;
-use context_module;
-use context;
+use core\output\action_menu;
+use core_comment\manager;
+use core\context\module;
+use core\context;
 use core\plugininfo\qbank;
 use core_question\local\bank\edit_menu_column;
 use core_question\local\bank\view;
 use core_question\local\bank\question_edit_contexts;
-use moodle_url;
+use core\url;
 use question_bank;
 use question_definition;
 use question_display_options;
@@ -107,7 +107,7 @@ class helper {
      * @return moodle_url
      */
     public static function question_preview_action_url($questionid, $qubaid,
-            question_preview_options $options, $context, $returnurl = null, $restartversion = null): moodle_url {
+            question_preview_options $options, $context, $returnurl = null, $restartversion = null): url {
         $params = [
                 'id' => $questionid,
                 'previewid' => $qubaid,
@@ -126,7 +126,7 @@ class helper {
             $params['restartversion'] = $restartversion;
         }
         $params = array_merge($params, $options->get_url_params());
-        return new moodle_url('/question/bank/previewquestion/preview.php', $params);
+        return new url('/question/bank/previewquestion/preview.php', $params);
     }
 
     /**
@@ -138,7 +138,7 @@ class helper {
      * @param moodle_url $returnurl url of the page to return to
      * @return moodle_url
      */
-    public static function question_preview_form_url($questionid, $context, $previewid = null, $returnurl = null): moodle_url {
+    public static function question_preview_form_url($questionid, $context, $previewid = null, $returnurl = null): url {
         $params = [
                 'id' => $questionid,
         ];
@@ -155,7 +155,7 @@ class helper {
         if ($returnurl !== null) {
             $params['returnurl'] = $returnurl;
         }
-        return new moodle_url('/question/bank/previewquestion/preview.php', $params);
+        return new url('/question/bank/previewquestion/preview.php', $params);
     }
 
     /**
@@ -200,7 +200,7 @@ class helper {
      */
     public static function question_preview_url($questionid, $preferredbehaviour = null,
             $maxmark = null, $displayoptions = null, $variant = null, $context = null, $returnurl = null,
-            $restartversion = null): moodle_url {
+            $restartversion = null): url {
 
         $params = ['id' => $questionid];
 
@@ -243,7 +243,7 @@ class helper {
             $params['variant'] = $variant;
         }
 
-        return new moodle_url('/question/bank/previewquestion/preview.php', $params);
+        return new url('/question/bank/previewquestion/preview.php', $params);
     }
 
     /**

@@ -16,6 +16,8 @@
 
 namespace core_competency;
 
+use core\context\course;
+
 /**
  * Competency ruleoutcome override grade tests
  *
@@ -130,7 +132,7 @@ final class competency_override_test extends \advanced_testcase {
         $this->comp2 = $comp2;
         $this->cm = $cm;
         $this->completion = new \completion_info($c1);
-        $this->context = \context_course::instance($this->course->id);
+        $this->context = course::instance($this->course->id);
     }
 
     /**

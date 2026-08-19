@@ -25,18 +25,18 @@
 
 namespace tool_policy\output;
 
-use moodle_exception;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/filelib.php");
 
-use context_system;
-use moodle_url;
-use renderable;
-use renderer_base;
-use single_button;
-use templatable;
+use core\context\system;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\templatable;
 use tool_policy\api;
 use tool_policy\policy_version;
 
@@ -60,7 +60,7 @@ class page_viewalldoc implements renderable, templatable {
      */
     public function __construct($returnurl) {
         if (!empty($returnurl)) {
-            $this->returnurl = new moodle_url($returnurl);
+            $this->returnurl = new url($returnurl);
         }
 
         $this->prepare_global_page_access();
@@ -81,14 +81,14 @@ class page_viewalldoc implements renderable, templatable {
     protected function prepare_global_page_access() {
         global $PAGE, $SITE, $USER;
 
-        $myurl = new moodle_url('/admin/tool/policy/viewall.php', []);
+        $myurl = new url('/admin/tool/policy/viewall.php', []);
 
         // Disable notifications for new users, guests or users who haven't agreed to the policies.
         if (isguestuser() || empty($USER->id) || !$USER->policyagreed) {
             $PAGE->set_popup_notification_allowed(false);
         }
 
-        $PAGE->set_context(context_system::instance());
+        $PAGE->set_context(system::instance());
         $PAGE->set_pagelayout('popup');
         $PAGE->set_url($myurl);
         $PAGE->set_heading($SITE->fullname);
@@ -104,7 +104,7 @@ class page_viewalldoc implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
 
         $data = (object) [
-            'pluginbaseurl' => (new moodle_url('/admin/tool/policy'))->out(false),
+            'pluginbaseurl' => (new url('/admin/tool/policy'))->out(false),
         ];
 
         $data->policies = array_values($this->policies);

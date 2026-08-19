@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\output\single_select;
+use core\url;
+
 require('../../config.php');
 
 $contextid = required_param('contextid', PARAM_INT);
@@ -29,7 +36,7 @@ $roleid    = required_param('roleid', PARAM_INT);
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 
-$url = new moodle_url('/admin/roles/override.php', array('contextid' => $contextid, 'roleid' => $roleid));
+$url = new url('/admin/roles/override.php', array('contextid' => $contextid, 'roleid' => $roleid));
 
 if ($course) {
     $isfrontpage = ($course->id == SITEID);
@@ -58,18 +65,18 @@ $PAGE->set_pagelayout('admin');
 
 if ($context->contextlevel == CONTEXT_USER and $USER->id != $context->instanceid) {
     $PAGE->navigation->extend_for_user($user);
-    $PAGE->set_context(context_course::instance($course->id));
-    navigation_node::override_active_url(new moodle_url('/admin/roles/permissions.php',
+    $PAGE->set_context(course::instance($course->id));
+    navigation_node::override_active_url(new url('/admin/roles/permissions.php',
         array('contextid'=>$context->id, 'userid'=>$context->instanceid, 'courseid'=>$course->id)));
 
 } else {
     $PAGE->set_context($context);
-    navigation_node::override_active_url(new moodle_url('/admin/roles/permissions.php', array('contextid'=>$context->id)));
+    navigation_node::override_active_url(new url('/admin/roles/permissions.php', array('contextid'=>$context->id)));
 }
 
 $courseid = $course->id;
 
-$returnurl = new moodle_url('/admin/roles/permissions.php', array('contextid' => $context->id));
+$returnurl = new url('/admin/roles/permissions.php', array('contextid' => $context->id));
 
 // Handle the cancel button.
 if (optional_param('cancel', false, PARAM_BOOL)) {
@@ -95,7 +102,7 @@ $PAGE->activityheader->disable();
 $PAGE->navbar->add($straction);
 switch ($context->contextlevel) {
     case CONTEXT_SYSTEM:
-        throw new \moodle_exception('cannotoverridebaserole', 'error');
+        throw new moodle_exception('cannotoverridebaserole', 'error');
         break;
     case CONTEXT_USER:
         $fullname = fullname($user, has_capability('moodle/site:viewfullnames', $context));
@@ -126,7 +133,7 @@ if (empty($overridableroles[$roleid])) {
     $a = new stdClass;
     $a->roleid = $roleid;
     $a->context = $contextname;
-    throw new \moodle_exception('cannotoverriderolehere', '', $context->get_url(), $a);
+    throw new moodle_exception('cannotoverriderolehere', '', $context->get_url(), $a);
 }
 
 // If we are actually overriding a role, create the table object, and save changes if appropriate.

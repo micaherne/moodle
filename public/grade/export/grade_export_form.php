@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -52,7 +54,7 @@ class grade_export_form extends moodleform {
 
         if ($grade_items = $gseq->items) {
             $needs_multiselect = false;
-            $canviewhidden = has_capability('moodle/grade:viewhidden', context_course::instance($COURSE->id));
+            $canviewhidden = has_capability('moodle/grade:viewhidden', course::instance($COURSE->id));
 
             foreach ($grade_items as $grade_item) {
                 // Is the grade_item hidden? If so, can the user see hidden grade_items?
@@ -84,7 +86,7 @@ class grade_export_form extends moodleform {
         $mform->addElement('advcheckbox', 'export_feedback', get_string('exportfeedback', 'grades'));
         $exportfeedback = isset($CFG->grade_export_exportfeedback) ? $CFG->grade_export_exportfeedback : 0;
         $mform->setDefault('export_feedback', $exportfeedback);
-        $coursecontext = context_course::instance($COURSE->id);
+        $coursecontext = course::instance($COURSE->id);
         if (has_capability('moodle/course:viewsuspendedusers', $coursecontext)) {
             $mform->addElement('advcheckbox', 'export_onlyactive', get_string('exportonlyactive', 'grades'));
             $mform->setType('export_onlyactive', PARAM_BOOL);

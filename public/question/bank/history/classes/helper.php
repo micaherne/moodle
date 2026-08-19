@@ -16,6 +16,8 @@
 
 namespace qbank_history;
 
+use core\url;
+
 /**
  * Helper class for question history.
  *
@@ -38,7 +40,7 @@ class helper {
      * @todo MDL-82413 Final deprecation in Moodle 6.0.
      */
     #[\core\attribute\deprecated(replacement: 'qbank_history\helper::get_question_history_url', since: '5.0', mdl: 'MDL-71378')]
-    public static function question_history_url(int $entryid, string $returnrul, int $courseid, ?string $filter): \moodle_url {
+    public static function question_history_url(int $entryid, string $returnrul, int $courseid, ?string $filter): url {
         \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
         $params = [
             'entryid' => $entryid,
@@ -49,7 +51,7 @@ class helper {
             $params['filter'] = $filter;
         }
 
-        return new \moodle_url('/question/bank/history/history.php', $params);
+        return new url('/question/bank/history/history.php', $params);
     }
 
     /**
@@ -72,7 +74,7 @@ class helper {
             $params['filter'] = $filter;
         }
 
-        return new \moodle_url('/question/bank/history/history.php', $params);
+        return new url('/question/bank/history/history.php', $params);
     }
 
 }

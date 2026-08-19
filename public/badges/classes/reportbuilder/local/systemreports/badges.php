@@ -19,13 +19,14 @@ declare(strict_types=1);
 namespace core_badges\reportbuilder\local\systemreports;
 
 use core\context\{course, system};
+use core\exception\coding_exception;
 use core_badges\reportbuilder\local\entities\{badge, badge_issued};
 use core\lang_string;
 use core\output\{html_writer, pix_icon};
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\report\action;
 use core_reportbuilder\system_report;
-use moodle_url;
+use core\url;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die;
@@ -152,7 +153,7 @@ class badges extends system_report {
                         return (string) $count;
                     }
 
-                    return html_writer::link(new moodle_url('/badges/recipients.php', ['id' => $this->badgeid]), $count);
+                    return html_writer::link(new url('/badges/recipients.php', ['id' => $this->badgeid]), $count);
                 },
             ]);
 
@@ -169,7 +170,7 @@ class badges extends system_report {
                 }
                 $format = get_string('strftimedatefullshort', 'core_langconfig');
                 $date = $value ? userdate($value, $format) : '';
-                $badgeurl = new moodle_url('/badges/badge.php', ['hash' => $row->uniquehash]);
+                $badgeurl = new url('/badges/badge.php', ['hash' => $row->uniquehash]);
                 $icon = new pix_icon('i/valid', get_string('dateearned', 'badges', $date));
                 return $OUTPUT->action_icon($badgeurl, $icon, null, null, true);
             });
@@ -207,7 +208,7 @@ class badges extends system_report {
     protected function add_actions(): void {
         // Activate badge.
         $this->add_action((new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('t/show', '', 'core'),
             [
                 'data-action' => 'enablebadge',
@@ -229,7 +230,7 @@ class badges extends system_report {
 
         // Deactivate badge.
         $this->add_action((new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('t/hide', '', 'core'),
             [
                 'data-action' => 'disablebadge',
@@ -249,7 +250,7 @@ class badges extends system_report {
 
         // Award badge manually.
         $this->add_action((new action(
-            new moodle_url('/badges/award.php', [
+            new url('/badges/award.php', [
                 'id' => ':id',
             ]),
             new pix_icon('t/award', '', 'core'),
@@ -265,7 +266,7 @@ class badges extends system_report {
 
         // Edit action.
         $this->add_action((new action(
-            new moodle_url('/badges/edit.php', [
+            new url('/badges/edit.php', [
                 'id' => ':id',
                 'action' => 'badge',
             ]),
@@ -281,7 +282,7 @@ class badges extends system_report {
 
         // Duplicate action.
         $this->add_action((new action(
-            new moodle_url('/badges/action.php', [
+            new url('/badges/action.php', [
                 'id' => ':id',
                 'copy' => 1,
                 'sesskey' => sesskey(),
@@ -297,7 +298,7 @@ class badges extends system_report {
 
         // Delete action.
         $this->add_action((new action(
-            new moodle_url('/badges/index.php', [
+            new url('/badges/index.php', [
                 'delete' => ':id',
                 'type' => ':type',
                 'id' => ':courseid',
@@ -327,7 +328,7 @@ class badges extends system_report {
             case BADGE_TYPE_COURSE:
                 return course::instance($courseid);
             default:
-                throw new \coding_exception('Wrong context');
+                throw new coding_exception('Wrong context');
         }
     }
 

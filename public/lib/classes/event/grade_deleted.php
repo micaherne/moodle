@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\context\course;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -67,7 +70,7 @@ class grade_deleted extends base {
     public static function create_from_grade(\grade_grade $grade) {
         $event = self::create(array(
             'objectid'      => $grade->id,
-            'context'       => \context_course::instance($grade->grade_item->courseid),
+            'context'       => course::instance($grade->grade_item->courseid),
             'relateduserid' => $grade->userid,
             'other'         => array(
                 'itemid'     => $grade->itemid,
@@ -86,7 +89,7 @@ class grade_deleted extends base {
      */
     public function get_grade() {
         if ($this->is_restored()) {
-            throw new \coding_exception('get_grade() is intended for event observers only');
+            throw new coding_exception('get_grade() is intended for event observers only');
         }
         return $this->grade;
     }
@@ -120,15 +123,15 @@ class grade_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['itemid'])) {
-            throw new \coding_exception('The \'itemid\' value must be set in other.');
+            throw new coding_exception('The \'itemid\' value must be set in other.');
         }
 
         if (!isset($this->other['overridden'])) {
-            throw new \coding_exception('The \'overridden\' value must be set in other.');
+            throw new coding_exception('The \'overridden\' value must be set in other.');
         }
     }
 

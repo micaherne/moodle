@@ -16,6 +16,7 @@
 
 namespace core\router\schema\objects;
 
+use core\exception\invalid_parameter_exception;
 use core\param;
 use core\router\schema\specification;
 use core\tests\router\route_testcase;
@@ -83,7 +84,7 @@ final class array_of_strings_test extends route_testcase {
             valueparamtype: $valueparamtype,
         );
 
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
 
         $object->validate_data($data);
     }

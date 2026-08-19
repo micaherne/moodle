@@ -29,6 +29,11 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
 
 /**
  * Check the public access of various paths.
@@ -183,7 +188,7 @@ class publicpaths extends check {
         $c = new \curl();
         $paths = $this->get_pathsets();
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->align = ['center', 'right', 'left'];
         $table->size = ['1%', '1%', '1%', '1%', '1%', '99%'];
         $table->head = [
@@ -282,7 +287,7 @@ class publicpaths extends check {
                     } else {
                         $duplicates = 1;
                     }
-                    $detailcell = new \html_table_cell($rowdetail);
+                    $detailcell = new html_table_cell($rowdetail);
                     $detailcell->rowspan = $duplicates;
                     $rows = count($table->data);
                     $table->data[$rows - $duplicates][5] = $detailcell;
@@ -291,7 +296,7 @@ class publicpaths extends check {
             }
         }
 
-        $details .= \html_writer::table($table);
+        $details .= html_writer::table($table);
 
         return new result($status, $summary, $details);
     }
@@ -301,9 +306,9 @@ class publicpaths extends check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url(\get_docs_url('Installing_Moodle#Set_up_your_server')),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url(\get_docs_url('Installing_Moodle#Set_up_your_server')),
             get_string('moodledocs'));
     }
 

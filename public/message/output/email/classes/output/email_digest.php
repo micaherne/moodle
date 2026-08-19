@@ -24,6 +24,14 @@
 
 namespace message_email\output;
 
+use core\context\course;
+use core\output\html_writer;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\user_picture;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -32,7 +40,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2019 Mark Nelson <markn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class email_digest implements \renderable, \templatable {
+class email_digest implements renderable, templatable {
 
     /**
      * @var array The conversations
@@ -82,7 +90,7 @@ class email_digest implements \renderable, \templatable {
      * @param \renderer_base $renderer The render to be used for formatting the email
      * @return \stdClass The data ready for use in a mustache template
      */
-    public function export_for_template(\renderer_base $renderer) {
+    public function export_for_template(renderer_base $renderer) {
         global $PAGE;
 
         // Prepare the data we are going to send to the template.
@@ -97,7 +105,7 @@ class email_digest implements \renderable, \templatable {
                 continue;
             }
 
-            $viewallmessageslink = new \moodle_url('/message/index.php', ['convid' => $conversation->id]);
+            $viewallmessageslink = new url('/message/index.php', ['convid' => $conversation->id]);
 
             $group = new \stdClass();
             $group->id = $conversation->groupid;
@@ -108,7 +116,7 @@ class email_digest implements \renderable, \templatable {
                 $grouppictureurl = $url->out(false);
             }
 
-            $coursecontext = \context_course::instance($conversation->courseid);
+            $coursecontext = course::instance($conversation->courseid);
 
             $conversationformatted = new \stdClass();
             $conversationformatted->groupname = format_string($conversation->name, true, ['context' => $coursecontext]);
@@ -116,7 +124,7 @@ class email_digest implements \renderable, \templatable {
             $conversationformatted->coursename = format_string($conversation->coursename, true, ['context' => $coursecontext]);
             $conversationformatted->numberofunreadmessages = count($messages);
             $conversationformatted->messages = [];
-            $conversationformatted->viewallmessageslink = \html_writer::link($viewallmessageslink,
+            $conversationformatted->viewallmessageslink = html_writer::link($viewallmessageslink,
                 get_string('emaildigestviewallmessages', 'message_email'));
 
             // We only display the last 3 messages.
@@ -129,7 +137,7 @@ class email_digest implements \renderable, \templatable {
                 $user->email = $message->email;
                 $user->id = $message->useridfrom;
 
-                $userpicture = new \user_picture($user);
+                $userpicture = new user_picture($user);
                 $userpicture->includetoken = true;
                 $userpictureurl = $userpicture->get_url($PAGE)->out(false);
 

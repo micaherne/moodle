@@ -25,7 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
 use core_question\statistics\responses\analyser;
+use core_table\output\html_table;
 use mod_quiz\local\reports\report_base;
 use core_question\statistics\questions\all_calculated_for_qubaid_condition;
 
@@ -62,7 +68,7 @@ class quiz_statistics_report extends report_base {
 
         raise_memory_limit(MEMORY_HUGE);
 
-        $this->context = context_module::instance($cm->id);
+        $this->context = module::instance($cm->id);
 
         if (!quiz_has_questions($quiz->id)) {
             $this->print_header_and_tabs($cm, $course, $quiz, 'statistics');
@@ -85,7 +91,7 @@ class quiz_statistics_report extends report_base {
         $pageoptions['id'] = $cm->id;
         $pageoptions['mode'] = 'statistics';
 
-        $reporturl = new moodle_url('/mod/quiz/report.php', $pageoptions);
+        $reporturl = new url('/mod/quiz/report.php', $pageoptions);
 
         $mform = new quiz_statistics_settings_form($reporturl, compact('quiz'));
 
@@ -141,7 +147,7 @@ class quiz_statistics_report extends report_base {
             $report = get_string('questionstatsfilename', 'quiz_statistics');
         }
         $courseshortname = format_string($course->shortname, true,
-                ['context' => context_course::instance($course->id)]);
+                ['context' => course::instance($course->id)]);
         $filename = quiz_report_download_filename($report, $courseshortname, $quiz->name);
         $this->table->is_downloading($download, $filename,
                 get_string('quizstructureanalysis', 'quiz_statistics'));
@@ -212,7 +218,7 @@ class quiz_statistics_report extends report_base {
         } else if ($qid) {
             // Report on an individual sub-question indexed questionid.
             if (!$questionstats->has_subq($qid, $variantno)) {
-                throw new \moodle_exception('questiondoesnotexist', 'question');
+                throw new moodle_exception('questiondoesnotexist', 'question');
             }
 
             $this->output_individual_question_data($quiz, $questionstats->for_subq($qid, $variantno));
@@ -229,7 +235,7 @@ class quiz_statistics_report extends report_base {
         } else if ($slot) {
             // Report on an individual question indexed by position.
             if (!isset($questions[$slot])) {
-                throw new \moodle_exception('questiondoesnotexist', 'question');
+                throw new moodle_exception('questiondoesnotexist', 'question');
             }
 
             if ($variantno === null &&
@@ -239,7 +245,7 @@ class quiz_statistics_report extends report_base {
                     $number = $questionstats->for_slot($slot)->question->number;
                     echo $OUTPUT->heading(get_string('slotstructureanalysis', 'quiz_statistics', $number), 3);
                 }
-                $this->table->define_baseurl(new moodle_url($reporturl, ['slot' => $slot]));
+                $this->table->define_baseurl(new url($reporturl, ['slot' => $slot]));
                 $this->table->format_and_add_array_of_rows($questionstats->structure_analysis_for_one_slot($slot));
             } else {
                 $this->output_individual_question_data($quiz, $questionstats->for_slot($slot, $variantno));
@@ -809,7 +815,7 @@ class quiz_statistics_report extends report_base {
      * @param moodle_url $reporturl the base URL of the report.
      * @return string HTML.
      */
-    protected function everything_download_options(moodle_url $reporturl) {
+    protected function everything_download_options(url $reporturl) {
         global $OUTPUT;
         return $OUTPUT->download_dataformat_selector(get_string('downloadeverything', 'quiz_statistics'),
             $reporturl->out_omit_querystring(), 'download', $reporturl->params() + ['everything' => 1]);
@@ -853,7 +859,7 @@ class quiz_statistics_report extends report_base {
         $a->lastcalculated = format_time(time() - $lastcachetime);
         $a->count = $count;
 
-        $recalcualteurl = new moodle_url($reporturl,
+        $recalcualteurl = new url($reporturl,
                 ['recalculate' => 1, 'sesskey' => sesskey()]);
         $output = '';
         $output .= $OUTPUT->box_start(

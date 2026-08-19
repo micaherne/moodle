@@ -16,7 +16,7 @@
 
 namespace core_course\output\actionbar;
 
-use context;
+use core\context;
 use core\output\named_templatable;
 use core\output\renderable;
 use core\output\renderer_base;

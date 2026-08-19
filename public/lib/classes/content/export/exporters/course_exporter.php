@@ -23,11 +23,11 @@
  */
 namespace core\content\export\exporters;
 
-use context_course;
-use context_module;
+use core\context\course;
+use core\context\module;
 use core\content\export\exported_item;
 use core\content\export\zipwriter;
-use section_info;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -51,7 +51,7 @@ class course_exporter extends component_exporter {
      * @param   stdClass $user
      * @param   zipwriter $archive
      */
-    public function __construct(context_course $context, stdClass $user, zipwriter $archive) {
+    public function __construct(course $context, stdClass $user, zipwriter $archive) {
         $this->course = get_course($context->instanceid);
         $this->modinfo = get_fast_modinfo($this->course, $user->id);
 
@@ -220,7 +220,7 @@ class course_exporter extends component_exporter {
      * @param   context_module $modcontect
      * @param   exportable_item[] $export_exportables
      */
-    public function export_mod_content(context_module $modcontext, array $exportables): void {
+    public function export_mod_content(module $modcontext, array $exportables): void {
         $cm = $this->modinfo->get_cm($modcontext->instanceid);
         $modname = $cm->modname;
 
@@ -256,7 +256,7 @@ class course_exporter extends component_exporter {
      * @param   context_module $modcontect
      * @return  null|string The content of the intro area
      */
-    protected function get_mod_intro_data(context_module $modcontext): ?string {
+    protected function get_mod_intro_data(module $modcontext): ?string {
         global $DB;
 
         $cm = $this->modinfo->get_cm($modcontext->instanceid);

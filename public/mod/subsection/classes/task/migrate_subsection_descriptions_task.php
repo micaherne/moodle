@@ -16,6 +16,8 @@
 
 namespace mod_subsection\task;
 
+use core\context\course;
+use core\context\module;
 use core\task\adhoc_task;
 use core_courseformat\formatactions;
 
@@ -73,14 +75,14 @@ class migrate_subsection_descriptions_task extends adhoc_task {
             // Move the files from the subsection summary to the label intro.
             $fs = get_file_storage();
             $files = $fs->get_area_files(
-                contextid: \context_course::instance($subsection->course)->id,
+                contextid: course::instance($subsection->course)->id,
                 component: 'course',
                 filearea: 'section',
                 itemid: $subsection->id,
             );
             foreach ($files as $file) {
                 $filerecord = [
-                    'contextid' => \context_module::instance($label->coursemodule)->id,
+                    'contextid' => module::instance($label->coursemodule)->id,
                     'component' => 'mod_label',
                     'filearea' => 'intro',
                     'itemid' => 0,

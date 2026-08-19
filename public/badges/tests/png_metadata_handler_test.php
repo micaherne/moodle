@@ -16,6 +16,7 @@
 
 namespace core_badges;
 
+use core\exception\moodle_exception;
 use core_badges\png_metadata_handler;
 
 /**
@@ -129,7 +130,7 @@ final class png_metadata_handler_test extends \advanced_testcase {
         $content = $this->create_test_png();
         $handler = new png_metadata_handler($content);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage('Unsupported chunk type: zTXt');
 
         $handler->add_chunks('zTXt', 'openbadge', 'http://example.com/badge');

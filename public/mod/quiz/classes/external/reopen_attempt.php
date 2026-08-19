@@ -21,7 +21,7 @@ use core_external\external_description;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use mod_quiz\quiz_attempt;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Web service method for re-opening a quiz attempt.

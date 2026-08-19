@@ -22,13 +22,20 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configpasswordunmask;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\configtextarea;
+use core_cache\helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 $settings->add(
-    new admin_setting_configcheckbox(
+    new configcheckbox(
         name: 'cachestore_redis/test_clustermode',
         visiblename: get_string('clustermode', 'cachestore_redis'),
-        description: cache_helper::is_cluster_available() ?
+        description: helper::is_cluster_available() ?
             get_string('clustermode_help', 'cachestore_redis') :
             get_string('clustermodeunavailable', 'cachestore_redis'),
         defaultsetting: 0,
@@ -36,7 +43,7 @@ $settings->add(
 );
 
 $settings->add(
-    new admin_setting_configtextarea(
+    new configtextarea(
         name: 'cachestore_redis/test_server',
         visiblename: get_string('test_server', 'cachestore_redis'),
         description: get_string('test_server_desc', 'cachestore_redis'),
@@ -45,13 +52,13 @@ $settings->add(
     )
 );
 
-$settings->add(new admin_setting_configcheckbox(
+$settings->add(new configcheckbox(
         'cachestore_redis/test_encryption',
         get_string('encrypt_connection', 'cachestore_redis'),
         get_string('encrypt_connection', 'cachestore_redis'),
         false));
 $settings->add(
-    new admin_setting_configtext(
+    new configtext(
         'cachestore_redis/test_cafile',
         get_string('ca_file', 'cachestore_redis'),
         get_string('ca_file', 'cachestore_redis'),
@@ -61,7 +68,7 @@ $settings->add(
     )
 );
 $settings->add(
-    new admin_setting_configpasswordunmask(
+    new configpasswordunmask(
         'cachestore_redis/test_password',
         get_string('test_password', 'cachestore_redis'),
         get_string('test_password_desc', 'cachestore_redis'),
@@ -77,7 +84,7 @@ if (class_exists('Redis')) { // Only if Redis is available.
         $options[Redis::SERIALIZER_IGBINARY] = get_string('serializer_igbinary', 'cachestore_redis');
     }
 
-    $settings->add(new admin_setting_configselect(
+    $settings->add(new configselect(
             'cachestore_redis/test_serializer',
             get_string('test_serializer', 'cachestore_redis'),
             get_string('test_serializer_desc', 'cachestore_redis'),
@@ -87,7 +94,7 @@ if (class_exists('Redis')) { // Only if Redis is available.
     );
 }
 
-$settings->add(new admin_setting_configcheckbox(
+$settings->add(new configcheckbox(
         'cachestore_redis/test_ttl',
         get_string('test_ttl', 'cachestore_redis'),
         get_string('test_ttl_desc', 'cachestore_redis'),

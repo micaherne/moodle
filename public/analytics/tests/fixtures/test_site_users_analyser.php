@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\pix_icon;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -68,7 +71,7 @@ class test_site_users_analyser extends \core_analytics\local\analyser\sitewide {
      * @return \context
      */
     public function sample_access_context($sampleid) {
-        return \context_system::instance();
+        return system::instance();
     }
 
     /**
@@ -122,7 +125,7 @@ class test_site_users_analyser extends \core_analytics\local\analyser\sitewide {
      */
     public function sample_description($sampleid, $contextid, $sampledata) {
         $description = fullname($sampledata['user']);
-        $userimage = new \pix_icon('i/user', get_string('user'));
+        $userimage = new pix_icon('i/user', get_string('user'));
         return array($description, $userimage);
     }
 

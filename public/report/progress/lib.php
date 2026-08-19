@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -46,7 +50,7 @@ function report_progress_extend_navigation_course($navigation, $course, $context
     $completion = new completion_info($course);
     $showonnavigation = ($showonnavigation && $completion->is_enabled() && $completion->has_activities());
     if ($showonnavigation) {
-        $url = new moodle_url('/report/progress/index.php', array('course'=>$course->id));
+        $url = new url('/report/progress/index.php', array('course'=>$course->id));
         $navigation->add(get_string('pluginname','report_progress'), $url, navigation_node::TYPE_SETTING, null, null, new pix_icon('i/report', ''));
     }
 }

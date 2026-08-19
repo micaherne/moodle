@@ -22,6 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\context_helper;
+use core\exception\coding_exception;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -199,7 +205,7 @@ class mod_feedback_structure {
         }
         $pageaftersubmitformat = $this->get_feedback()->page_after_submitformat;
 
-        $context = context_module::instance($this->get_cm()->id);
+        $context = module::instance($this->get_cm()->id);
         $output = file_rewrite_pluginfile_urls($pageaftersubmit,
                 'pluginfile.php', $context->id, 'mod_feedback', 'page_after_submit', 0);
 
@@ -214,7 +220,7 @@ class mod_feedback_structure {
     public function can_view_analysis() {
         global $USER;
 
-        $context = context_module::instance($this->cm->id);
+        $context = module::instance($this->cm->id);
         if (has_capability('mod/feedback:viewreports', $context, $this->userid)) {
             return true;
         }
@@ -355,7 +361,7 @@ class mod_feedback_structure {
         foreach ($list as $course) {
             context_helper::preload_from_record($course);
             if (!$course->visible &&
-                !has_capability('moodle/course:viewhiddencourses', context_course::instance($course->id), $this->userid)) {
+                !has_capability('moodle/course:viewhiddencourses', course::instance($course->id), $this->userid)) {
                 // Do not return courses that current user can not see.
                 continue;
             }

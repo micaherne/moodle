@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\coursecat;
+use core\context_helper;
+use core_course\modinfo;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -65,7 +70,7 @@ class file_info_context_coursecat extends file_info {
             if (empty($component)) {
                 // we can not list the category contents, so try parent, or top system
                 if ($this->category->parent and $pc = $DB->get_record('course_categories', array('id'=>$this->category->parent))) {
-                    $parent = context_coursecat::instance($pc->id, IGNORE_MISSING);
+                    $parent = coursecat::instance($pc->id, IGNORE_MISSING);
                     return $this->browser->get_file_info($parent);
                 } else {
                     return $this->browser->get_file_info();
@@ -170,7 +175,7 @@ class file_info_context_coursecat extends file_info {
 
         list($coursecats, $hiddencats) = $this->get_categories();
         foreach ($coursecats as $category) {
-            $context = context_coursecat::instance($category->id);
+            $context = coursecat::instance($category->id);
             $children[] = new self($this->browser, $context, $category);
         }
 
@@ -194,9 +199,9 @@ class file_info_context_coursecat extends file_info {
 
         // Let's retrieve only minimum number of fields from course table -
         // what is needed to check access or call get_fast_modinfo().
-        $coursefields = array_merge(['id', 'visible', 'sortorder'], \course_modinfo::$cachedfields);
+        $coursefields = array_merge(['id', 'visible', 'sortorder'], modinfo::$cachedfields);
         $fields = 'c.' . join(',c.', $coursefields) . ', ' .
-            \context_helper::get_preload_record_columns_sql('ctx');
+            context_helper::get_preload_record_columns_sql('ctx');
 
         // First statement uses only category.
         $sql1 = "SELECT $fields
@@ -213,7 +218,7 @@ class file_info_context_coursecat extends file_info {
         // Second statement uses only context paths.
         $orcond = [];
         foreach ($hiddencats as $category) {
-            $catcontext = context_coursecat::instance($category->id);
+            $catcontext = coursecat::instance($category->id);
 
             // Case- and accent-sensitive search is not necessary for paths.
             // If we do without it, this will lead to an enormous performance boost on large scale tables.
@@ -270,7 +275,7 @@ class file_info_context_coursecat extends file_info {
      */
     protected function get_child_course($course) {
         context_helper::preload_from_record($course);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $child = new file_info_context_course($this->browser, $context, $course);
         return $child->get_file_info(null, null, null, null, null);
     }
@@ -294,7 +299,7 @@ class file_info_context_coursecat extends file_info {
 
         list($coursecats, $hiddencats) = $this->get_categories();
         foreach ($coursecats as $category) {
-            $context = context_coursecat::instance($category->id);
+            $context = coursecat::instance($category->id);
             $child = new file_info_context_coursecat($this->browser, $context, $category);
             $cnt += $child->count_non_empty_children($extensions) ? 1 : 0;
             if ($cnt >= $limit) {

@@ -16,6 +16,9 @@
 
 namespace tool_brickfield;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
 use tool_brickfield\local\tool\filter;
 
 /**
@@ -121,30 +124,30 @@ final class filters_test extends \advanced_testcase {
 
         $object = $this->create_object_with_params();
         $capability = accessibility::get_capability_name('viewcoursetools');
-        $output = $object->has_capability_in_context($capability, \context_system::instance());
+        $output = $object->has_capability_in_context($capability, system::instance());
         $this->assertFalse($output);
 
-        $output = $object->has_capability_in_context($capability, \context_coursecat::instance($object->categoryid));
+        $output = $object->has_capability_in_context($capability, coursecat::instance($object->categoryid));
         $this->assertFalse($output);
 
-        $output = $object->has_capability_in_context($capability, \context_course::instance($object->courseid));
+        $output = $object->has_capability_in_context($capability, course::instance($object->courseid));
         $this->assertFalse($output);
 
         $course = $this->getDataGenerator()->create_course();
         $user = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
         $this->setUser($user);
 
-        $output = $object->has_capability_in_context($capability, \context_system::instance());
+        $output = $object->has_capability_in_context($capability, system::instance());
         $this->assertFalse($output);
 
-        $output = $object->has_capability_in_context($capability, \context_coursecat::instance($object->categoryid));
+        $output = $object->has_capability_in_context($capability, coursecat::instance($object->categoryid));
         $this->assertFalse($output);
 
-        $output = $object->has_capability_in_context($capability, \context_course::instance($course->id));
+        $output = $object->has_capability_in_context($capability, course::instance($course->id));
         $this->assertTrue($output);
 
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
-        $categorycontext = \context_coursecat::instance($object->categoryid);
+        $categorycontext = coursecat::instance($object->categoryid);
         $this->getDataGenerator()->role_assign($teacherrole->id, $user->id, $categorycontext->id);
 
         $output = $object->has_capability_in_context($capability, $categorycontext);

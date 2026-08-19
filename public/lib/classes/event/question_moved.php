@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -79,7 +82,7 @@ class question_moved extends question_base {
     public function get_url() {
         $cat = $this->other['newcategoryid'] . ',' . $this->contextid;
 
-        return new \moodle_url('/question/edit.php',
+        return new url('/question/edit.php',
                 ['cmid' => $this->contextinstanceid, 'cat' => $cat, 'lastchanged' => $this->objectid]
         );
     }
@@ -93,10 +96,10 @@ class question_moved extends question_base {
     protected function validate_data() {
 
         if (!isset($this->other['oldcategoryid'])) {
-            throw new \coding_exception('The \'oldcategoryid\' must be set in \'other\'.');
+            throw new coding_exception('The \'oldcategoryid\' must be set in \'other\'.');
         }
         if (!isset($this->other['newcategoryid'])) {
-            throw new \coding_exception('The \'newcategoryid\' must be set in \'other\'.');
+            throw new coding_exception('The \'newcategoryid\' must be set in \'other\'.');
         }
     }
 

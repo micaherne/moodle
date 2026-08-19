@@ -27,17 +27,20 @@
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/user/editlib.php');
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
 use core_badges\form\preferences;
 
-$url = new moodle_url('/badges/preferences.php');
+$url = new url('/badges/preferences.php');
 
 require_login();
-$PAGE->set_context(context_user::instance($USER->id));
+$PAGE->set_context(user::instance($USER->id));
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('standard');
 
 if (empty($CFG->enablebadges)) {
-    throw new \moodle_exception('badgesdisabled', 'badges');
+    throw new moodle_exception('badgesdisabled', 'badges');
 }
 
 $mform = new preferences();

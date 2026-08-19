@@ -24,6 +24,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\plugin_manager;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,7 +56,7 @@ class tool_installaddon_installer {
      * @return moodle_url
      */
     public function index_url(?array $params = null) {
-        return new moodle_url('/admin/tool/installaddon/index.php', $params);
+        return new url('/admin/tool/installaddon/index.php', $params);
     }
 
     /**
@@ -78,7 +81,7 @@ class tool_installaddon_installer {
      *
      * @return moodle_url
      */
-    public function get_marketplace_url(): moodle_url {
+    public function get_marketplace_url(): url {
         return $this->get_external_service_url('https://marketplace.moodle.com/');
     }
 
@@ -88,9 +91,9 @@ class tool_installaddon_installer {
      * @param string $url The external service base URL.
      * @return moodle_url
      */
-    protected function get_external_service_url(string $url): moodle_url {
+    protected function get_external_service_url(string $url): url {
         if (!$this->should_send_site_info()) {
-            return new moodle_url($url);
+            return new url($url);
         }
 
         // Append the basic information about our site.
@@ -102,7 +105,7 @@ class tool_installaddon_installer {
 
         $site = $this->encode_site_information($site);
 
-        return new moodle_url($url, array('site' => $site));
+        return new url($url, array('site' => $site));
     }
 
     /**
@@ -142,7 +145,7 @@ class tool_installaddon_installer {
     public function get_plugin_types_menu() {
         global $CFG;
 
-        $pluginman = core_plugin_manager::instance();
+        $pluginman = plugin_manager::instance();
 
         $menu = array('' => get_string('choosedots'));
         foreach (array_keys($pluginman->get_plugin_types()) as $plugintype) {
@@ -179,7 +182,7 @@ class tool_installaddon_installer {
         }
 
         list($plugintype, $pluginname) = core_component::normalize_component($data->component);
-        $pluginman = core_plugin_manager::instance();
+        $pluginman = plugin_manager::instance();
 
         $plugintypepath = $pluginman->get_plugintype_root($plugintype);
 

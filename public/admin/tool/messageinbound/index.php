@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
@@ -30,7 +32,7 @@ admin_externalpage_setup('messageinbound_handlers');
 
 $classname = optional_param('classname', '', PARAM_RAW);
 
-$pageurl = new moodle_url('/admin/tool/messageinbound/index.php');
+$pageurl = new url('/admin/tool/messageinbound/index.php');
 
 $PAGE->set_primary_active_tab('siteadminnode');
 
@@ -55,7 +57,7 @@ if (empty($classname)) {
     $handler = \core\message\inbound\manager::get_handler($classname);
     $record = \core\message\inbound\manager::record_from_handler($handler);
 
-    $formurl = new moodle_url($PAGE->url, array('classname' => $classname));
+    $formurl = new url($PAGE->url, array('classname' => $classname));
     $mform = new tool_messageinbound_edit_handler_form($formurl, array(
             'handler' => $handler,
     ));

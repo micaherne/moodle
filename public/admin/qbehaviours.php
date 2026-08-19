@@ -25,6 +25,14 @@
  */
 
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\plugin_manager;
+use core\url;
+use core_table\flexible_table;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -32,14 +40,14 @@ require_once($CFG->libdir . '/tablelib.php');
 
 // Check permissions.
 require_login(null, false);
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 require_capability('moodle/question:config', $systemcontext);
 
 admin_externalpage_setup('manageqbehaviours');
-$thispageurl = new moodle_url('/admin/qbehaviours.php');
+$thispageurl = new url('/admin/qbehaviours.php');
 
 $behaviours = core_component::get_plugin_list('qbehaviour');
-$pluginmanager = core_plugin_manager::instance();
+$pluginmanager = plugin_manager::instance();
 
 // Get some data we will need - question counts and which types are needed.
 $counts = $DB->get_records_sql_menu("
@@ -84,11 +92,11 @@ if (!empty($config->disabledbehaviours)) {
 // Disable.
 if (($disable = optional_param('disable', '', PARAM_PLUGIN)) && confirm_sesskey()) {
     if (!isset($behaviours[$disable])) {
-        throw new \moodle_exception('unknownbehaviour', 'question', $thispageurl, $disable);
+        throw new moodle_exception('unknownbehaviour', 'question', $thispageurl, $disable);
     }
 
     if (array_search($disable, $disabledbehaviours) === false) {
-        $class = \core_plugin_manager::resolve_plugininfo_class('qbehaviour');
+        $class = plugin_manager::resolve_plugininfo_class('qbehaviour');
         $class::enable_plugin($disable, false);
     }
     redirect($thispageurl);
@@ -97,15 +105,15 @@ if (($disable = optional_param('disable', '', PARAM_PLUGIN)) && confirm_sesskey(
 // Enable.
 if (($enable = optional_param('enable', '', PARAM_PLUGIN)) && confirm_sesskey()) {
     if (!isset($behaviours[$enable])) {
-        throw new \moodle_exception('unknownbehaviour', 'question', $thispageurl, $enable);
+        throw new moodle_exception('unknownbehaviour', 'question', $thispageurl, $enable);
     }
 
     if (!$archetypal[$enable]) {
-        throw new \moodle_exception('cannotenablebehaviour', 'question', $thispageurl, $enable);
+        throw new moodle_exception('cannotenablebehaviour', 'question', $thispageurl, $enable);
     }
 
     if (($key = array_search($enable, $disabledbehaviours)) !== false) {
-        $class = \core_plugin_manager::resolve_plugininfo_class('qbehaviour');
+        $class = plugin_manager::resolve_plugininfo_class('qbehaviour');
         $class::enable_plugin($enable, true);
     }
     redirect($thispageurl);
@@ -114,7 +122,7 @@ if (($enable = optional_param('enable', '', PARAM_PLUGIN)) && confirm_sesskey())
 // Move up in order.
 if (($up = optional_param('up', '', PARAM_PLUGIN)) && confirm_sesskey()) {
     if (!isset($behaviours[$up])) {
-        throw new \moodle_exception('unknownbehaviour', 'question', $thispageurl, $up);
+        throw new moodle_exception('unknownbehaviour', 'question', $thispageurl, $up);
     }
 
     // This function works fine for behaviours, as well as qtypes.
@@ -126,7 +134,7 @@ if (($up = optional_param('up', '', PARAM_PLUGIN)) && confirm_sesskey()) {
 // Move down in order.
 if (($down = optional_param('down', '', PARAM_PLUGIN)) && confirm_sesskey()) {
     if (!isset($behaviours[$down])) {
-        throw new \moodle_exception('unknownbehaviour', 'question', $thispageurl, $down);
+        throw new moodle_exception('unknownbehaviour', 'question', $thispageurl, $down);
     }
 
     // This function works fine for behaviours, as well as qtypes.
@@ -215,7 +223,7 @@ foreach ($sortedbehaviours as $behaviour => $behaviourname) {
     if ($needed[$behaviour]) {
         $row[] = '';
     } else {
-        $uninstallurl = core_plugin_manager::instance()->get_uninstall_url('qbehaviour_'.$behaviour, 'manage');
+        $uninstallurl = plugin_manager::instance()->get_uninstall_url('qbehaviour_'.$behaviour, 'manage');
         if ($uninstallurl) {
             $row[] = html_writer::link($uninstallurl, get_string('uninstallplugin', 'core_admin'),
                 array('title' => get_string('uninstallbehaviour', 'question')));
@@ -241,7 +249,7 @@ function question_behaviour_enable_disable_icons($behaviour, $enabled) {
 
 function question_behaviour_icon_html($action, $behaviour, $icon, $alt, $tip) {
     global $OUTPUT;
-    return $OUTPUT->action_icon(new moodle_url('/admin/qbehaviours.php',
+    return $OUTPUT->action_icon(new url('/admin/qbehaviours.php',
             array($action => $behaviour, 'sesskey' => sesskey())),
             new pix_icon($icon, $alt, 'moodle', array('title' => '', 'class' => 'iconsmall')),
             null, array('title' => $tip));

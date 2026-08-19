@@ -23,6 +23,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
@@ -68,7 +70,7 @@ class switchrole_form extends moodleform {
         $course = $this->_customdata['course'];
 
         // Overall criteria aggregation.
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roles = array();
         $assumedrole = -1;
         if (is_role_switched($course->id)) {

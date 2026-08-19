@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\context\user;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -43,7 +46,7 @@ class user_password_policy_failed extends base {
      */
     public static function create_from_user(\stdClass $user) {
         $data = array(
-            'context' => \context_user::instance($user->id),
+            'context' => user::instance($user->id),
             'userid' => $user->id,
             'relateduserid' => $user->id,
         );
@@ -84,6 +87,6 @@ class user_password_policy_failed extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/user/profile.php', array('id' => $this->userid));
+        return new url('/user/profile.php', array('id' => $this->userid));
     }
 }

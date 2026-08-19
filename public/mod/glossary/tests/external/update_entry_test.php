@@ -16,8 +16,8 @@
 
 namespace mod_glossary\external;
 
-use context_module;
-use context_user;
+use core\context\module;
+use core\context\user;
 use core_external\external_api;
 use core_external\util as external_util;
 use mod_glossary_external;
@@ -192,7 +192,7 @@ final class update_entry_test extends \core_external\tests\externallib_testcase 
 
         $course = $this->getDataGenerator()->create_course();
         $glossary = $this->getDataGenerator()->create_module('glossary', ['course' => $course->id]);
-        $context = context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         $this->setAdminUser();
         $concept = 'A concept';
@@ -201,7 +201,7 @@ final class update_entry_test extends \core_external\tests\externallib_testcase 
         // Draft files.
         $draftidinlineattach = file_get_unused_draft_itemid();
         $draftidattach = file_get_unused_draft_itemid();
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $filerecordinline = [
             'contextid' => $usercontext->id,
             'component' => 'user',

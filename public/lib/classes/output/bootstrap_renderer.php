@@ -16,7 +16,7 @@
 
 namespace core\output;
 
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * This class solves the problem of how to initialise $OUTPUT.

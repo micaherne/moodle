@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace core\plugininfo;
 
 use advanced_testcase;
+use core\plugin_manager;
 
 /**
  * Unit tests for the editor plugininfo class
@@ -102,7 +103,7 @@ final class editor_test extends advanced_testcase {
      * @return array
      */
     public static function get_sorted_plugins_provider(): array {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $allplugins = array_keys($pluginmanager->get_plugins_of_type('editor'));
 
         // Disabled editors are listed alphabetically at the end.
@@ -196,7 +197,7 @@ final class editor_test extends advanced_testcase {
      * @return array
      */
     public static function change_plugin_order_provider(): array {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $allplugins = array_keys($pluginmanager->get_plugins_of_type('editor'));
 
         // Disabled editors are listed alphabetically at the end.

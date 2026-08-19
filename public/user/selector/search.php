@@ -22,12 +22,15 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+
 define('AJAX_SCRIPT', true);
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/user/selector/lib.php');
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url('/user/selector/search.php');
 
 echo $OUTPUT->header();
@@ -42,7 +45,7 @@ $search = required_param('search', PARAM_RAW);
 // Get and validate the selectorid parameter.
 $selectorhash = required_param('selectorid', PARAM_ALPHANUM);
 if (!isset($USER->userselectors[$selectorhash])) {
-    throw new \moodle_exception('unknownuserselector');
+    throw new moodle_exception('unknownuserselector');
 }
 
 // Get the options.

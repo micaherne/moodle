@@ -16,7 +16,8 @@
 
 namespace core\output;
 
-use lang_string;
+use core\exception\coding_exception;
+use core\lang_string;
 
 /**
  * Class allowing to quick edit a title inline
@@ -153,7 +154,7 @@ class inplace_editable implements renderable, templatable {
         $options = array_values($options);
         $idx = array_search($this->value, $options, true);
         if ($idx === false) {
-            throw new \coding_exception('Specified value must be one of the toggle options');
+            throw new coding_exception('Specified value must be one of the toggle options');
         }
         $nextvalue = ($idx < count($options) - 1) ? $idx + 1 : 0;
 
@@ -177,7 +178,7 @@ class inplace_editable implements renderable, templatable {
      */
     public function set_type_select($options) {
         if (!array_key_exists($this->value, $options)) {
-            throw new \coding_exception('Options for select element must contain an option for the specified value');
+            throw new coding_exception('Options for select element must contain an option for the specified value');
         }
         if (count($options) < 2) {
             $this->editable = false;
@@ -243,7 +244,7 @@ class inplace_editable implements renderable, templatable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         if (!$this->editable) {
             return [
                 'displayvalue' => (string)$this->displayvalue,
@@ -275,7 +276,7 @@ class inplace_editable implements renderable, templatable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return string
      */
-    public function render(\renderer_base $output) {
+    public function render(renderer_base $output) {
         return $output->render_from_template('core/inplace_editable', $this->export_for_template($output));
     }
 }

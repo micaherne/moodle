@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
@@ -34,7 +36,7 @@ class enrol_users_assign_form extends moodleform {
 
         $user       = $this->_customdata['user'];
         $course     = $this->_customdata['course'];
-        $context    = context_course::instance($course->id);
+        $context    = course::instance($course->id);
         $assignable = $this->_customdata['assignable'];
         $assignable = array_reverse($assignable, true); // students first
 
@@ -85,7 +87,7 @@ class enrol_users_addmember_form extends moodleform {
 
         $user     = $this->_customdata['user'];
         $course   = $this->_customdata['course'];
-        $context  = context_course::instance($course->id, IGNORE_MISSING);
+        $context  = course::instance($course->id, IGNORE_MISSING);
         $allgroups = $this->_customdata['allgroups'];
         $usergroups = groups_get_all_groups($course->id, $user->id, 0, 'g.id');
 

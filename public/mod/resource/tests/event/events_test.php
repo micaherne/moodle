@@ -24,6 +24,8 @@
 
 namespace mod_resource\event;
 
+use core\context\module;
+
 /**
  * Resource events test cases.
  *
@@ -55,7 +57,7 @@ final class events_test extends \advanced_testcase {
         $resource = $this->getDataGenerator()->create_module('resource', array('course' => $course->id));
 
         $params = array(
-            'context' => \context_module::instance($resource->cmid),
+            'context' => module::instance($resource->cmid),
             'objectid' => $resource->id
         );
         $event = \mod_resource\event\course_module_viewed::create($params);
@@ -69,7 +71,7 @@ final class events_test extends \advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_resource\event\course_module_viewed', $event);
-        $this->assertEquals(\context_module::instance($resource->cmid), $event->get_context());
+        $this->assertEquals(module::instance($resource->cmid), $event->get_context());
         $this->assertEquals($resource->id, $event->objectid);
         $this->assertEventContextNotUsed($event);
     }

@@ -24,6 +24,8 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -102,13 +104,13 @@ class submission_unlocked extends base {
      */
     protected function validate_data() {
         if (self::$preventcreatecall) {
-            throw new \coding_exception('cannot call submission_unlocked::create() directly, use submission_unlocked::create_from_user() instead.');
+            throw new coding_exception('cannot call submission_unlocked::create() directly, use submission_unlocked::create_from_user() instead.');
         }
 
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

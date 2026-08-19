@@ -16,6 +16,10 @@
 
 namespace qbank_customfields\customfield;
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
 use core_customfield\api;
 use core_customfield\field_controller;
 use core_customfield\output\field_data;
@@ -96,7 +100,7 @@ class question_handler extends \core_customfield\handler {
      * @param \context $context The context the field is being displayed in.
      * @return bool true if the current can edit custom fields, false otherwise.
      */
-    public function can_view_type(field_controller $field, \context $context): bool {
+    public function can_view_type(field_controller $field, context $context): bool {
         $visibility = $field->get_configdata_property('visibility');
         if ($visibility == self::NOTVISIBLE) {
             return false;
@@ -114,7 +118,7 @@ class question_handler extends \core_customfield\handler {
      *
      * @param \context $context
      */
-    public function set_parent_context(\context $context): void {
+    public function set_parent_context(context $context): void {
         $this->parentcontext = $context;
     }
 
@@ -123,11 +127,11 @@ class question_handler extends \core_customfield\handler {
      *
      * @return \context
      */
-    protected function get_parent_context(): \context {
+    protected function get_parent_context(): context {
         if ($this->parentcontext) {
             return $this->parentcontext;
         } else {
-            return \context_system::instance();
+            return system::instance();
         }
     }
 
@@ -136,8 +140,8 @@ class question_handler extends \core_customfield\handler {
      *
      * @return \context the context for configuration
      */
-    public function get_configuration_context(): \context {
-        return \context_system::instance();
+    public function get_configuration_context(): context {
+        return system::instance();
     }
 
     /**
@@ -145,8 +149,8 @@ class question_handler extends \core_customfield\handler {
      *
      * @return \moodle_url The URL to configure custom fields for this component
      */
-    public function get_configuration_url(): \moodle_url {
-        return new \moodle_url('/question/customfield.php');
+    public function get_configuration_url(): url {
+        return new url('/question/customfield.php');
     }
 
     /**
@@ -156,14 +160,14 @@ class question_handler extends \core_customfield\handler {
      * @return \context the context for the given record
      * @throws \coding_exception
      */
-    public function get_instance_context(int $instanceid = 0): \context {
+    public function get_instance_context(int $instanceid = 0): context {
         if ($instanceid > 0) {
             $questiondata = \question_bank::load_question_data($instanceid);
             $contextid = $questiondata->contextid;
-            $context = \context::instance_by_id($contextid);
+            $context = context::instance_by_id($contextid);
             return $context;
         } else {
-            throw new \coding_exception('Instance id must be provided.');
+            throw new coding_exception('Instance id must be provided.');
         }
     }
 

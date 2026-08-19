@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\user;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -111,7 +115,7 @@ class message_airnotifier_external extends external_api {
             'users' => [],
             'warnings' => []
         );
-        $hasuserupdatecap = has_capability('moodle/user:update', context_system::instance());
+        $hasuserupdatecap = has_capability('moodle/user:update', system::instance());
         foreach ($users as $user) {
 
             $currentuser = ($user->id == $USER->id);
@@ -235,14 +239,14 @@ class message_airnotifier_external extends external_api {
             )
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         if (empty($params['userid'])) {
             $user = $USER;
         } else {
-            $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($params['userid'], '*', MUST_EXIST);
+            user::require_active_user($user);
             // Allow only admins to retrieve other users devices.
             if ($user->id != $USER->id) {
                 require_capability('moodle/site:config', $context);
@@ -346,7 +350,7 @@ class message_airnotifier_external extends external_api {
             )
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('message/airnotifier:managedevice', $context);
 

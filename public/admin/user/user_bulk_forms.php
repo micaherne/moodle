@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\action_link;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
@@ -68,45 +72,45 @@ class user_bulk_action_form extends moodleform {
 
         global $CFG;
 
-        $canaccessbulkactions = has_any_capability(['moodle/user:update', 'moodle/user:delete'], context_system::instance());
+        $canaccessbulkactions = has_any_capability(['moodle/user:update', 'moodle/user:delete'], system::instance());
 
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $actions = [];
         if (has_capability('moodle/user:update', $syscontext)) {
             $actions['confirm'] = new action_link(
-                new moodle_url('/admin/user/user_bulk_confirm.php'),
+                new url('/admin/user/user_bulk_confirm.php'),
                 get_string('confirm'));
         }
         if ($canaccessbulkactions && has_capability('moodle/site:readallmessages', $syscontext) && !empty($CFG->messaging)) {
             $actions['message'] = new action_link(
-                new moodle_url('/admin/user/user_bulk_message.php'),
+                new url('/admin/user/user_bulk_message.php'),
                 get_string('messageselectadd'));
         }
         if (has_capability('moodle/user:delete', $syscontext)) {
             $actions['delete'] = new action_link(
-                new moodle_url('/admin/user/user_bulk_delete.php'),
+                new url('/admin/user/user_bulk_delete.php'),
                 get_string('delete'));
         }
         if ($canaccessbulkactions) {
             $actions['displayonpage'] = new action_link(
-                new moodle_url('/admin/user/user_bulk_display.php'),
+                new url('/admin/user/user_bulk_display.php'),
                 get_string('displayonpage'));
         }
 
         if (has_capability('moodle/user:update', $syscontext)) {
             $actions['download'] = new action_link(
-                new moodle_url('/admin/user/user_bulk_download.php'),
+                new url('/admin/user/user_bulk_download.php'),
                 get_string('download', 'admin'));
         }
 
         if (has_capability('moodle/user:update', $syscontext)) {
             $actions['forcepasswordchange'] = new action_link(
-                new moodle_url('/admin/user/user_bulk_forcepasswordchange.php'),
+                new url('/admin/user/user_bulk_forcepasswordchange.php'),
                 get_string('forcepasswordchange'));
         }
         if ($canaccessbulkactions && has_capability('moodle/cohort:assign', $syscontext)) {
             $actions['addtocohort'] = new action_link(
-                new moodle_url('/admin/user/user_bulk_cohortadd.php'),
+                new url('/admin/user/user_bulk_cohortadd.php'),
                 get_string('bulkadd', 'core_cohort'));
         }
 

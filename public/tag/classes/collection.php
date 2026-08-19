@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -132,7 +137,7 @@ class core_tag_collection {
      * @return string
      */
     public static function display_name($record) {
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         if (!empty($record->component)) {
             $identifier = 'tagcollection_' .
                     clean_param($record->name, PARAM_STRINGID);
@@ -371,7 +376,7 @@ class core_tag_collection {
         if ($isstandard) {
             $whereclause .= ' AND tg.isstandard = 1';
         }
-        $context = $ctx ? context::instance_by_id($ctx) : context_system::instance();
+        $context = $ctx ? context::instance_by_id($ctx) : system::instance();
         if ($rec && $context->contextlevel != CONTEXT_SYSTEM) {
             $fromclause .= ' JOIN {context} ctx ON ctx.id = ti.contextid ';
             $whereclause .= ' AND ctx.path LIKE ?';

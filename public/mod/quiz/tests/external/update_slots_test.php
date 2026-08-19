@@ -16,9 +16,10 @@
 
 namespace mod_quiz\external;
 
+use core\context\module;
 use core_question_generator;
 use mod_quiz\quiz_settings;
-use required_capability_exception;
+use core\exception\required_capability_exception;
 
 /**
  * Test for the update_slots service.
@@ -78,7 +79,7 @@ final class update_slots_test extends \core_external\tests\externallib_testcase 
         global $DB;
         $quizobj = $this->create_quiz_with_two_shortanswer_questions();
         $course = $quizobj->get_course();
-        $context = \context_module::instance($quizobj->get_cmid());
+        $context = module::instance($quizobj->get_cmid());
 
         // Assign capability 'mod/quiz:manage' to teacher role.
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher'], '*', MUST_EXIST);
@@ -112,7 +113,7 @@ final class update_slots_test extends \core_external\tests\externallib_testcase 
         global $DB;
         $quizobj = $this->create_quiz_with_two_shortanswer_questions();
         $course = $quizobj->get_course();
-        $context = \context_module::instance($quizobj->get_cmid());
+        $context = module::instance($quizobj->get_cmid());
 
         // Assign capability 'mod/quiz:manage' and 'mod/quiz:customisequestionnumbers' capability to the teacher role.
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher'], '*', MUST_EXIST);

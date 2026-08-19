@@ -27,6 +27,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\plugin_manager;
+use core_table\flexible_table;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
@@ -59,7 +63,7 @@ core_collator::asort($plugins);
 
 foreach ($plugins as $plugin => $name) {
     $uninstall = '';
-    if ($uninstallurl = core_plugin_manager::instance()->get_uninstall_url('local_'.$plugin, 'manage')) {
+    if ($uninstallurl = plugin_manager::instance()->get_uninstall_url('local_'.$plugin, 'manage')) {
         $uninstall = html_writer::link($uninstallurl, get_string('uninstallplugin', 'core_admin'));
     }
 

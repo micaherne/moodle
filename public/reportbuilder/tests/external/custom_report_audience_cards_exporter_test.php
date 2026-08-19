@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_reportbuilder\external;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
 
 /**
  * Unit tests for custom report audience cards exporter
@@ -80,7 +80,7 @@ final class custom_report_audience_cards_exporter_test extends advanced_testcase
 
         // This capability controls access to the all/manual users audiences.
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user']);
-        assign_capability('moodle/user:viewalldetails', CAP_ALLOW, $userrole, context_system::instance());
+        assign_capability('moodle/user:viewalldetails', CAP_ALLOW, $userrole, system::instance());
 
         $exporter = new custom_report_audience_cards_exporter(null);
         $export = $exporter->export($PAGE->get_renderer('core_reportbuilder'));
@@ -105,7 +105,7 @@ final class custom_report_audience_cards_exporter_test extends advanced_testcase
         $this->setUser($user);
 
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user']);
-        assign_capability('moodle/cohort:view', CAP_ALLOW, $userrole, context_system::instance());
+        assign_capability('moodle/cohort:view', CAP_ALLOW, $userrole, system::instance());
 
         $exporter = new custom_report_audience_cards_exporter(null);
         $export = $exporter->export($PAGE->get_renderer('core_reportbuilder'));

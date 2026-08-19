@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -72,6 +74,6 @@ class search_indexed extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/searchareas.php');
+        return new url('/admin/searchareas.php');
     }
 }

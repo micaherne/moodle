@@ -16,12 +16,12 @@
 
 namespace core_competency\privacy;
 
-use context;
-use context_course;
-use context_helper;
-use context_module;
-use context_system;
-use context_user;
+use core\context;
+use core\context\course;
+use core\context_helper;
+use core\context\module;
+use core\context\system;
+use core\context\user;
 use moodle_recordset;
 use core_competency\api;
 use core_competency\competency;
@@ -587,7 +587,7 @@ class provider implements
         $userlist->add_from_sql('usermodified', $sql, $params);
 
         // Add users if userlist is in course context.
-        if (is_a($context, \context_course::class)) {
+        if (is_a($context, course::class)) {
             $params = ['courseid' => $context->instanceid];
 
             $sql = "
@@ -609,7 +609,7 @@ class provider implements
             $userlist->add_from_sql('userid', $sql, $params);
             $userlist->add_from_sql('usermodified', $sql, $params);
 
-        } else if (is_a($context, \context_module::class)) {
+        } else if (is_a($context, module::class)) {
             // Add users if userlist is in module context.
             $params = ['moduleid' => $context->instanceid];
 
@@ -619,7 +619,7 @@ class provider implements
                   WHERE cmc.cmid = :moduleid";
             $userlist->add_from_sql('usermodified', $sql, $params);
 
-        } else if (is_a($context, \context_user::class)) {
+        } else if (is_a($context, user::class)) {
             $params = ['userid' => $context->instanceid];
 
             // Add users through plan related data.
@@ -833,7 +833,7 @@ class provider implements
     protected static function delete_user_evidence_of_prior_learning($userid) {
         global $DB;
 
-        $usercontext = context_user::instance($userid);
+        $usercontext = user::instance($userid);
         $ueids = $DB->get_fieldset_select(user_evidence::TABLE, 'id', 'userid = :userid', ['userid' => $userid]);
         if (empty($ueids)) {
             return;
@@ -859,7 +859,7 @@ class provider implements
      */
     protected static function delete_user_plans($userid) {
         global $DB;
-        $usercontext = context_user::instance($userid);
+        $usercontext = user::instance($userid);
 
         // Remove all the comments made on plans.
         \core_comment\privacy\provider::delete_comments_for_all_users($usercontext, 'competency', 'plan');
@@ -889,7 +889,7 @@ class provider implements
      */
     protected static function delete_user_competencies($userid) {
         global $DB;
-        $usercontext = context_user::instance($userid);
+        $usercontext = user::instance($userid);
 
         // Remove all the comments made on user competencies.
         \core_comment\privacy\provider::delete_comments_for_all_users($usercontext, 'competency', 'user_competency');
@@ -941,7 +941,7 @@ class provider implements
     protected static function export_user_data_in_user_contexts($userid, array $contexts) {
         global $DB;
 
-        $mycontext = context_user::instance($userid);
+        $mycontext = user::instance($userid);
         $contextids = array_map(function($context) {
             return $context->id;
         }, $contexts);
@@ -970,8 +970,8 @@ class provider implements
      * @return void
      */
     protected static function export_user_data_in_system_context($userid) {
-        static::export_user_data_frameworks_in_context($userid, context_system::instance());
-        static::export_user_data_templates_in_context($userid, context_system::instance());
+        static::export_user_data_frameworks_in_context($userid, system::instance());
+        static::export_user_data_templates_in_context($userid, system::instance());
     }
 
     /**
@@ -1058,7 +1058,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($path) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
             writer::with_context($context)->export_data($path, (object) ['ratings' => $data]);
         });
 
@@ -1122,7 +1122,7 @@ class provider implements
                 return $carry;
 
             }, function($courseid, $data) use ($path) {
-                $context = context_course::instance($courseid);
+                $context = course::instance($courseid);
                 writer::with_context($context)->export_related_data($path, 'rated_by_me', (object) [
                     'ratings' => $data
                 ]);
@@ -1173,7 +1173,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($path, $userid, $DB) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
             writer::with_context($context)->export_related_data($path, 'associations', (object) ['competencies' => $data]);
         });
     }
@@ -1209,7 +1209,7 @@ class provider implements
                 'created_or_modified_by_you' => transform::yesno(true)
             ];
         }, function($courseid, $data) use ($path, $userid, $DB) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
             writer::with_context($context)->export_related_data($path, 'settings', (object) $data);
         });
     }
@@ -1269,7 +1269,7 @@ class provider implements
             return $carry;
 
         }, function($cmid, $data) use ($path) {
-            $context = context_module::instance($cmid);
+            $context = module::instance($cmid);
             writer::with_context($context)->export_data($path, (object) ['associations' => $data]);
         });
     }
@@ -1280,7 +1280,7 @@ class provider implements
      * @param context_user $context The context of the user requesting the export.
      * @return void
      */
-    protected static function export_user_data_competencies(context_user $context) {
+    protected static function export_user_data_competencies(user $context) {
         global $DB;
 
         $userid = $context->instanceid;
@@ -1340,7 +1340,7 @@ class provider implements
      * @param context_user $context The context of the user requesting the export.
      * @return void
      */
-    protected static function export_user_data_learning_plans(context_user $context) {
+    protected static function export_user_data_learning_plans(user $context) {
         global $DB;
 
         $userid = $context->instanceid;
@@ -1441,7 +1441,7 @@ class provider implements
      * @param context_user $context The context of the user in which we're gathering data.
      * @return void
      */
-    protected static function export_user_data_learning_plans_related_to_me($userid, context_user $context) {
+    protected static function export_user_data_learning_plans_related_to_me($userid, user $context) {
         global $DB;
 
         $path = [
@@ -1602,7 +1602,7 @@ class provider implements
      * @param context_user $context The context of the user in which we're gathering data.
      * @return void
      */
-    protected static function export_user_data_competencies_related_to_me($userid, context_user $context) {
+    protected static function export_user_data_competencies_related_to_me($userid, user $context) {
         global $DB;
 
         $path = [
@@ -1731,7 +1731,7 @@ class provider implements
      * @param context_user $context The context of the user in which we're gathering data.
      * @return void
      */
-    protected static function export_user_data_user_evidence_related_to_me($userid, context_user $context) {
+    protected static function export_user_data_user_evidence_related_to_me($userid, user $context) {
         global $DB;
 
         $path = [
@@ -1820,7 +1820,7 @@ class provider implements
      * @param context_user $context The context of the user we're exporting for.
      * @return void
      */
-    protected static function export_user_data_user_evidence(context_user $context) {
+    protected static function export_user_data_user_evidence(user $context) {
         global $DB;
 
         $userid = $context->instanceid;

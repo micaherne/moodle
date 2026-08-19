@@ -16,6 +16,11 @@
 
 namespace core_block;
 
+use core\context\block;
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\url;
 use core_block_external;
 
 defined('MOODLE_INTERNAL') || die();
@@ -49,7 +54,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->getDataGenerator()->enrol_user($user->id, $course->id, $studentrole->id);
 
         $page = new \moodle_page();
-        $page->set_context(\context_course::instance($course->id));
+        $page->set_context(course::instance($course->id));
         $page->set_pagelayout('course');
         $course->format = course_get_format($course)->get_format();
         $page->set_pagetype('course-view-' . $course->format);
@@ -80,7 +85,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $user = $this->getDataGenerator()->create_user();
 
         $page = new \moodle_page();
-        $page->set_context(\context_course::instance(SITEID));
+        $page->set_context(course::instance(SITEID));
         $page->set_pagelayout('frontpage');
         $page->set_pagetype('site-index');
         $page->blocks->load_blocks();
@@ -146,7 +151,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $course = $this->getDataGenerator()->create_course();
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         $this->getDataGenerator()->enrol_user($user->id, $course->id, $studentrole->id);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Create a HTML block.
         $title = 'Some course info';
@@ -187,7 +192,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $block->instance_config_save((object) $configdata);
         $filename = 'img.png';
         $filerecord = array(
-            'contextid' => \context_block::instance($block->instance->id)->id,
+            'contextid' => block::instance($block->instance->id)->id,
             'component' => 'block_html',
             'filearea' => 'content',
             'itemid' => 0,
@@ -249,7 +254,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $course = $this->getDataGenerator()->create_course();
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         $this->getDataGenerator()->enrol_user($user->id, $course->id, $studentrole->id);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Create a HTML block.
         $title = 'My block $$(a+b)=2$$';
@@ -294,7 +299,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $result = \core_external\external_api::clean_returnvalue(core_block_external::get_course_blocks_returns(), $result);
 
         // Format the original data.
-        $sitecontext = \context_system::instance();
+        $sitecontext = system::instance();
         $title = \core_external\util::format_string($title, $coursecontext->id);
         list($body, $bodyformat) = \core_external\util::format_text($body, $bodyformat, $coursecontext, 'block_html', 'content');
 
@@ -378,9 +383,9 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Now, add a sticky block.
         $page = new \moodle_page();
-        $page->set_context(\context_system::instance());
+        $page->set_context(system::instance());
         $page->set_pagetype('my-index');
-        $page->set_url(new \moodle_url('/'));
+        $page->set_url(new url('/'));
         $page->blocks->add_region('side-pre');
         $page->blocks->load_blocks();
         $page->blocks->add_block('myprofile', 'side-pre', 0, true, '*');
@@ -428,7 +433,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Add a custom block.
         $page = new \moodle_page();
-        $page->set_context(\context_user::instance($user->id));
+        $page->set_context(user::instance($user->id));
         $page->set_pagelayout('mydashboard');
         $page->set_pagetype('my-index');
         $page->blocks->add_region('content');

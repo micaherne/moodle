@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\url;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/deprecatedlib.php');
@@ -110,7 +114,7 @@ function imscp_add_instance($data, $mform) {
 
     // We need to use context now, so we need to make sure all needed info is already in db.
     $DB->set_field('course_modules', 'instance', $data->id, array('id' => $cmid));
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
     $imscp = $DB->get_record('imscp', array('id' => $data->id), '*', MUST_EXIST);
 
     if (!empty($data->package)) {
@@ -156,7 +160,7 @@ function imscp_update_instance($data, $mform) {
 
     $DB->update_record('imscp', $data);
 
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
     $imscp = $DB->get_record('imscp', array('id' => $data->id), '*', MUST_EXIST);
 
     if (!empty($data->package) && ($draftareainfo = file_get_draft_area_info($data->package)) &&
@@ -381,7 +385,7 @@ function imscp_export_contents($cm, $baseurl) {
     global $DB;
 
     $contents = array();
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $imscp = $DB->get_record('imscp', array('id' => $cm->instance), '*', MUST_EXIST);
 
@@ -410,7 +414,7 @@ function imscp_export_contents($cm, $baseurl) {
         $file['filename']     = $fileinfo->get_filename();
         $file['filepath']     = $fileinfo->get_filepath();
         $file['filesize']     = $fileinfo->get_filesize();
-        $file['fileurl']      = moodle_url::make_webservice_pluginfile_url(
+        $file['fileurl']      = url::make_webservice_pluginfile_url(
                                     $context->id, 'mod_imscp', 'content', $imscp->revision,
                                     $fileinfo->get_filepath(), $fileinfo->get_filename())->out(false);
         $file['timecreated']  = $fileinfo->get_timecreated();
@@ -503,7 +507,7 @@ function mod_imscp_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('view'),
-        new \moodle_url('/mod/imscp/view.php', ['id' => $cm->id]),
+        new url('/mod/imscp/view.php', ['id' => $cm->id]),
         1,
         true
     );

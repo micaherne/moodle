@@ -27,11 +27,12 @@ namespace tool_policy\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_url;
-use renderable;
-use renderer_base;
-use single_button;
-use templatable;
+use core\exception\coding_exception;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\templatable;
 
 /**
  * List of users and their acceptances
@@ -39,7 +40,7 @@ use templatable;
  * @copyright 2018 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class user_agreement implements \templatable, \renderable {
+class user_agreement implements templatable, renderable {
 
     /** @var int */
     protected $userid;
@@ -77,12 +78,12 @@ class user_agreement implements \templatable, \renderable {
      * @param bool $canaccept does the current user have permission to accept/decline the policy on behalf of user $userid
      * @param bool $canrevoke does the current user have permission to revoke the policy on behalf of user $userid
      */
-    public function __construct($userid, array $accepted, array $declined, moodle_url $pageurl, $versions, $onbehalf = false,
+    public function __construct($userid, array $accepted, array $declined, url $pageurl, $versions, $onbehalf = false,
                                 $canaccept = null, $canrevoke = null) {
 
         // Make sure that all ids in $accepted and $declined are present in $versions.
         if (array_diff(array_merge($accepted, $declined), array_keys($versions))) {
-            throw new \coding_exception('Policy version ids mismatch');
+            throw new coding_exception('Policy version ids mismatch');
         }
 
         $this->userid = $userid;
@@ -108,7 +109,7 @@ class user_agreement implements \templatable, \renderable {
      * @param renderer_base $output
      * @return stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
 
         $data = (object)[
             'statusicon' => '',
@@ -126,7 +127,7 @@ class user_agreement implements \templatable, \renderable {
                 'text' => get_string('useracceptanceactionaccept', 'tool_policy'),
                 'title' => get_string('useracceptanceactionacceptone', 'tool_policy', $versionname),
                 'data' => 'acceptmodal',
-                'url' => (new \moodle_url('/admin/tool/policy/accept.php', [
+                'url' => (new url('/admin/tool/policy/accept.php', [
                     'userids[]' => $this->userid,
                     'versionids[]' => $versionid,
                     'action' => 'accept',
@@ -138,7 +139,7 @@ class user_agreement implements \templatable, \renderable {
                 'text' => get_string('useracceptanceactionrevoke', 'tool_policy'),
                 'title' => get_string('useracceptanceactionrevokeone', 'tool_policy', $versionname),
                 'data' => 'acceptmodal',
-                'url' => (new \moodle_url('/admin/tool/policy/accept.php', [
+                'url' => (new url('/admin/tool/policy/accept.php', [
                     'userids[]' => $this->userid,
                     'versionids[]' => $versionid,
                     'action' => 'revoke',
@@ -150,7 +151,7 @@ class user_agreement implements \templatable, \renderable {
                 'text' => get_string('useracceptanceactiondecline', 'tool_policy'),
                 'title' => get_string('useracceptanceactiondeclineone', 'tool_policy', $versionname),
                 'data' => 'acceptmodal',
-                'url' => (new \moodle_url('/admin/tool/policy/accept.php', [
+                'url' => (new url('/admin/tool/policy/accept.php', [
                     'userids[]' => $this->userid,
                     'versionids[]' => $versionid,
                     'action' => 'decline',
@@ -199,14 +200,14 @@ class user_agreement implements \templatable, \renderable {
 
             $data->actions[] = (object)[
                 'text' => get_string('useracceptanceactiondetails', 'tool_policy'),
-                'url' => (new \moodle_url('/admin/tool/policy/user.php', [
+                'url' => (new url('/admin/tool/policy/user.php', [
                     'userid' => $this->userid,
                     'returnurl' => $this->pageurl->out_as_local_url(false),
                 ]))->out(false),
             ];
 
             // Prepare the action link to accept all pending policies.
-            $accepturl = new \moodle_url('/admin/tool/policy/accept.php', [
+            $accepturl = new url('/admin/tool/policy/accept.php', [
                 'userids[]' => $this->userid,
                 'action' => 'accept',
                 'returnurl' => $this->pageurl->out_as_local_url(false),
@@ -224,7 +225,7 @@ class user_agreement implements \templatable, \renderable {
             ];
 
             // Prepare the action link to revoke all agreed policies.
-            $revokeurl = new \moodle_url('/admin/tool/policy/accept.php', [
+            $revokeurl = new url('/admin/tool/policy/accept.php', [
                 'userids[]' => $this->userid,
                 'action' => 'revoke',
                 'returnurl' => $this->pageurl->out_as_local_url(false),
@@ -242,7 +243,7 @@ class user_agreement implements \templatable, \renderable {
             ];
 
             // Prepare the action link to decline all pending policies.
-            $declineurl = new \moodle_url('/admin/tool/policy/accept.php', [
+            $declineurl = new url('/admin/tool/policy/accept.php', [
                 'userids[]' => $this->userid,
                 'action' => 'decline',
                 'returnurl' => $this->pageurl->out_as_local_url(false),

@@ -24,6 +24,8 @@
 
 namespace mod_forum;
 
+use core\context\module;
+use core\context\user;
 use mod_forum\local\entities\discussion as discussion_entity;
 use mod_forum\local\entities\post as post_entity;
 use mod_forum\local\exporters\post as post_exporter;
@@ -67,7 +69,7 @@ final class exporters_post_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $now = time();
 
         $forumgenparams = [
@@ -135,7 +137,7 @@ final class exporters_post_test extends \advanced_testcase {
         $discussion = $entityfactory->get_discussion_from_stdClass($discussion);
         $post = $entityfactory->get_post_from_stdClass($post);
         $author = $entityfactory->get_author_from_stdClass($user);
-        $authorcontext = \context_user::instance($author->get_id());
+        $authorcontext = user::instance($author->get_id());
 
         $exporter = new post_exporter($post, [
             'legacydatamapperfactory' => \mod_forum\local\container::get_legacy_data_mapper_factory(),
@@ -232,7 +234,7 @@ final class exporters_post_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $discussion = $forumgenerator->create_discussion((object) [
             'course' => $forum->course,
             'userid' => $user->id,
@@ -290,7 +292,7 @@ final class exporters_post_test extends \advanced_testcase {
         $discussion = $entityfactory->get_discussion_from_stdClass($discussion);
         $post = $entityfactory->get_post_from_stdClass($post);
         $author = $entityfactory->get_author_from_stdClass($user);
-        $authorcontext = \context_user::instance($author->get_id());
+        $authorcontext = user::instance($author->get_id());
 
         $exporter = new post_exporter($post, [
             'legacydatamapperfactory' => \mod_forum\local\container::get_legacy_data_mapper_factory(),
@@ -340,7 +342,7 @@ final class exporters_post_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $discussion = $forumgenerator->create_discussion((object) [
             'course' => $forum->course,
             'userid' => $user->id,
@@ -398,7 +400,7 @@ final class exporters_post_test extends \advanced_testcase {
         $discussion = $entityfactory->get_discussion_from_stdClass($discussion);
         $post = $entityfactory->get_post_from_stdClass($post);
         $author = $entityfactory->get_author_from_stdClass($user);
-        $authorcontext = \context_user::instance($author->get_id());
+        $authorcontext = user::instance($author->get_id());
 
         $exporter = new post_exporter($post, [
             'legacydatamapperfactory' => \mod_forum\local\container::get_legacy_data_mapper_factory(),

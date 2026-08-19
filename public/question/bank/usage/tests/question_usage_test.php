@@ -16,6 +16,7 @@
 
 namespace qbank_usage;
 
+use core\url;
 use mod_quiz\quiz_attempt;
 
 /**
@@ -73,7 +74,7 @@ final class question_usage_test extends \advanced_testcase {
         $attemptdata = quiz_attempt::create($attempt->id);
 
         $this->setAdminUser();
-        $PAGE->set_url(new \moodle_url('/'));
+        $PAGE->set_url(new url('/'));
         foreach ($questions as $question) {
             $questionusagetable = qbank_usage_output_fragment_question_usage(['questionid' => $question->id]);
             // Test usage table contains the quiz data which was attempted.

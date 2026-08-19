@@ -26,6 +26,7 @@ namespace core_tag\tests;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use \core_privacy\tests\request\content_writer;
 
 global $CFG;
@@ -44,7 +45,7 @@ trait privacy_helper {
      * @param   array               $subcontext The subcontext path to check.
      * @return  \stdClass|array
      */
-    protected function get_tags_on_subcontext(\context $context, array $subcontext) {
+    protected function get_tags_on_subcontext(context $context, array $subcontext) {
         $writer = \core_privacy\local\request\writer::with_context($context);
         return $writer->get_related_data($subcontext, 'tags');
     }
@@ -61,7 +62,7 @@ trait privacy_helper {
      */
     protected function assert_all_tags_match_on_context(
         int $userid,
-        \context $context,
+        context $context,
         array $subcontext,
         $component,
         $itemtype,

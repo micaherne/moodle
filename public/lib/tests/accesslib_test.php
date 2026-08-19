@@ -23,6 +23,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\block;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -46,13 +58,13 @@ final class accesslib_test extends advanced_testcase {
      * Verify comparison of context instances in phpunit asserts.
      */
     public function test_context_comparisons(): void {
-        $frontpagecontext1 = context_course::instance(SITEID);
+        $frontpagecontext1 = course::instance(SITEID);
         context_helper::reset_caches();
-        $frontpagecontext2 = context_course::instance(SITEID);
+        $frontpagecontext2 = course::instance(SITEID);
         $this->assertEquals($frontpagecontext1, $frontpagecontext2);
 
-        $user1 = context_user::instance(1);
-        $user2 = context_user::instance(2);
+        $user1 = user::instance(1);
+        $user2 = user::instance(2);
         $this->assertNotEquals($user1, $user2);
     }
 
@@ -185,7 +197,7 @@ final class accesslib_test extends advanced_testcase {
         // Generate data.
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $role = $DB->get_record('role', array('shortname'=>'student'));
 
         // There should be a manual enrolment as part of the default install.
@@ -289,19 +301,19 @@ final class accesslib_test extends advanced_testcase {
     public function test_get_context_info_array(): void {
         $this->resetAfterTest();
 
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $course = $this->getDataGenerator()->create_course();
-        $catcontext = context_coursecat::instance($course->category);
-        $coursecontext = context_course::instance($course->id);
+        $catcontext = coursecat::instance($course->category);
+        $coursecontext = course::instance($course->id);
         $page = $this->getDataGenerator()->create_module('page', array('course'=>$course->id));
-        $modcontext = context_module::instance($page->cmid);
+        $modcontext = module::instance($page->cmid);
         $cm = get_coursemodule_from_instance('page', $page->id);
         $block1 = $this->getDataGenerator()->create_block('online_users', array('parentcontextid'=>$coursecontext->id));
-        $block1context = context_block::instance($block1->id);
+        $block1context = block::instance($block1->id);
         $block2 = $this->getDataGenerator()->create_block('online_users', array('parentcontextid'=>$modcontext->id));
-        $block2context = context_block::instance($block2->id);
+        $block2context = block::instance($block2->id);
 
         $result = get_context_info_array($syscontext->id);
         $this->assertCount(3, $result);
@@ -372,7 +384,7 @@ final class accesslib_test extends advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $contactroles = preg_split('/,/', $CFG->coursecontact);
         $roleid = reset($contactroles);
-        role_assign($roleid, $user->id, context_course::instance($course->id));
+        role_assign($roleid, $user->id, course::instance($course->id));
         $this->assertTrue(has_coursecontact_role($user->id));
     }
 
@@ -405,7 +417,7 @@ final class accesslib_test extends advanced_testcase {
         $this->assertSame('role', $event->target);
         $this->assertSame('role', $event->objecttable);
         $this->assertSame((int)$role->id, $event->objectid);
-        $this->assertEquals(context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertSame($role->shortname, $event->other['shortname']);
         $this->assertSame($role->archetype, $event->other['archetype']);
     }
@@ -421,8 +433,8 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $user = $this->getDataGenerator()->create_user();
-        $syscontext = context_system::instance();
-        $frontcontext = context_course::instance(SITEID);
+        $syscontext = system::instance();
+        $frontcontext = course::instance(SITEID);
         $student = $DB->get_record('role', array('shortname'=>'student'), '*', MUST_EXIST);
         $this->assertTrue($DB->record_exists('capabilities', array('name'=>'moodle/backup:backupcourse'))); // Any capability assigned to student by default.
         $this->assertFalse($DB->record_exists('role_capabilities', array('contextid'=>$syscontext->id, 'roleid'=>$student->id, 'capability'=>'moodle/backup:backupcourse')));
@@ -495,8 +507,8 @@ final class accesslib_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $syscontext = context_system::instance();
-        $frontcontext = context_course::instance(SITEID);
+        $syscontext = system::instance();
+        $frontcontext = course::instance(SITEID);
         $manager = $DB->get_record('role', array('shortname'=>'manager'), '*', MUST_EXIST);
         $this->assertTrue($DB->record_exists('capabilities', array('name'=>'moodle/backup:backupcourse'))); // Any capability assigned to manager by default.
         assign_capability('moodle/backup:backupcourse', CAP_ALLOW, $manager->id, $frontcontext->id);
@@ -552,7 +564,7 @@ final class accesslib_test extends advanced_testcase {
         $role = $DB->get_record('role', array('shortname'=>'student'));
 
         $this->setUser(0);
-        $context = context_system::instance();
+        $context = system::instance();
         $this->assertFalse($DB->record_exists('role_assignments', array('userid'=>$user->id, 'roleid'=>$role->id, 'contextid'=>$context->id)));
         role_assign($role->id, $user->id, $context->id);
         $ras = $DB->get_record('role_assignments', array('userid'=>$user->id, 'roleid'=>$role->id, 'contextid'=>$context->id));
@@ -562,7 +574,7 @@ final class accesslib_test extends advanced_testcase {
         $this->assertEquals($USER->id, $ras->modifierid);
 
         $this->setAdminUser();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $this->assertFalse($DB->record_exists('role_assignments', array('userid'=>$user->id, 'roleid'=>$role->id, 'contextid'=>$context->id)));
         role_assign($role->id, $user->id, $context->id, 'enrol_self', 1, 666);
         $ras = $DB->get_record('role_assignments', array('userid'=>$user->id, 'roleid'=>$role->id, 'contextid'=>$context->id));
@@ -608,7 +620,7 @@ final class accesslib_test extends advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $role = $DB->get_record('role', array('shortname'=>'student'));
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         role_assign($role->id, $user->id, $context->id);
         $this->assertTrue($DB->record_exists('role_assignments', array('userid'=>$user->id, 'roleid'=>$role->id, 'contextid'=>$context->id)));
         role_unassign($role->id, $user->id, $context->id);
@@ -654,10 +666,10 @@ final class accesslib_test extends advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $role = $DB->get_record('role', array('shortname'=>'student'));
         $role2 = $DB->get_record('role', array('shortname'=>'teacher'));
-        $syscontext = context_system::instance();
-        $coursecontext = context_course::instance($course->id);
+        $syscontext = system::instance();
+        $coursecontext = course::instance($course->id);
         $page = $this->getDataGenerator()->create_module('page', array('course'=>$course->id));
-        $modcontext = context_module::instance($page->cmid);
+        $modcontext = module::instance($page->cmid);
 
         role_assign($role->id, $user->id, $syscontext->id);
         role_assign($role->id, $user->id, $coursecontext->id, 'enrol_self', 1);
@@ -707,8 +719,8 @@ final class accesslib_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $syscontext = context_system::instance();
-        $frontcontext = context_course::instance(SITEID);
+        $syscontext = system::instance();
+        $frontcontext = course::instance(SITEID);
         $manager = $DB->get_record('role', array('shortname'=>'manager'), '*', MUST_EXIST);
         $teacher = $DB->get_record('role', array('shortname'=>'teacher'), '*', MUST_EXIST);
 
@@ -744,9 +756,9 @@ final class accesslib_test extends advanced_testcase {
 
         $role = $DB->get_record('role', array('shortname'=>'manager'), '*', MUST_EXIST);
         $user = $this->getDataGenerator()->create_user();
-        role_assign($role->id, $user->id, context_system::instance());
+        role_assign($role->id, $user->id, system::instance());
         $course = $this->getDataGenerator()->create_course();
-        $rolename = (object)array('roleid'=>$role->id, 'name'=>'Man', 'contextid'=>context_course::instance($course->id)->id);
+        $rolename = (object)array('roleid'=>$role->id, 'name'=>'Man', 'contextid'=>course::instance($course->id)->id);
         $DB->insert_record('role_names', $rolename);
 
         $this->assertTrue($DB->record_exists('role_assignments', array('roleid'=>$role->id)));
@@ -781,7 +793,7 @@ final class accesslib_test extends advanced_testcase {
         $this->assertSame('role', $event->target);
         $this->assertSame('role', $event->objecttable);
         $this->assertSame($role->id, $event->objectid);
-        $this->assertEquals(context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertSame($role->shortname, $event->other['shortname']);
         $this->assertSame($role->description, $event->other['description']);
         $this->assertSame($role->archetype, $event->other['archetype']);
@@ -818,7 +830,7 @@ final class accesslib_test extends advanced_testcase {
 
         $teacher = $DB->get_record('role', array('shortname'=>'teacher'), '*', MUST_EXIST);
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $otherid = create_role('Other role', 'other', 'Some other role', '');
         $teacherename = (object)array('roleid'=>$teacher->id, 'name'=>'Učitel', 'contextid'=>$coursecontext->id);
         $DB->insert_record('role_names', $teacherename);
@@ -860,8 +872,8 @@ final class accesslib_test extends advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
 
         // Assign the same user to the same role in different contexts.
-        role_assign($roleid, $user->id, context_system::instance()->id);
-        role_assign($roleid, $user->id, context_course::instance($course->id)->id);
+        role_assign($roleid, $user->id, system::instance()->id);
+        role_assign($roleid, $user->id, course::instance($course->id)->id);
 
         $roles = get_all_roles_with_counts();
         $this->assertArrayHasKey($roleid, $roles);
@@ -880,7 +892,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $roleid = create_role('Risk counted role', 'riskcountedrole', 'Role used for risk count checks', '');
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $riskcapability = $DB->get_record('capabilities', ['name' => 'moodle/site:config'], '*', MUST_EXIST);
         assign_capability($riskcapability->name, CAP_ALLOW, $roleid, $systemcontext->id);
@@ -957,7 +969,7 @@ final class accesslib_test extends advanced_testcase {
         $allroles = $DB->get_records('role');
         $teacher = $DB->get_record('role', array('shortname'=>'teacher'), '*', MUST_EXIST);
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $otherid = create_role('Other role', 'other', 'Some other role', '');
         $teacherename = (object)array('roleid'=>$teacher->id, 'name'=>'Učitel', 'contextid'=>$coursecontext->id);
         $DB->insert_record('role_names', $teacherename);
@@ -1013,12 +1025,12 @@ final class accesslib_test extends advanced_testcase {
         $anotherid = create_role('Another role', 'another', 'Yet another other role', '');
         $allroles = $DB->get_records('role');
 
-        $syscontext = context_system::instance();
-        $frontcontext = context_course::instance(SITEID);
+        $syscontext = system::instance();
+        $frontcontext = course::instance(SITEID);
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $category = $DB->get_record('course_categories', array('id'=>$course->category), '*', MUST_EXIST);
-        $categorycontext = context_coursecat::instance($category->id);
+        $categorycontext = coursecat::instance($category->id);
 
         $teacherename = (object)array('roleid'=>$teacher->id, 'name'=>'Učitel', 'contextid'=>$coursecontext->id);
         $DB->insert_record('role_names', $teacherename);
@@ -1125,7 +1137,7 @@ final class accesslib_test extends advanced_testcase {
 
         // Test event trigger.
         $allowroleassignevent = \core\event\role_allow_assign_updated::create([
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'objectid' => $otherid,
             'other' => ['targetroleid' => $student->id]
         ]);
@@ -1156,7 +1168,7 @@ final class accesslib_test extends advanced_testcase {
 
         // Test event trigger.
         $allowroleassignevent = \core\event\role_allow_override_updated::create([
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'objectid' => $otherid,
             'other' => ['targetroleid' => $student->id]
         ]);
@@ -1187,7 +1199,7 @@ final class accesslib_test extends advanced_testcase {
 
         // Test event trigger.
         $allowroleassignevent = \core\event\role_allow_switch_updated::create([
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'objectid' => $otherid,
             'other' => ['targetroleid' => $student->id]
         ]);
@@ -1218,7 +1230,7 @@ final class accesslib_test extends advanced_testcase {
 
         // Test event trigger.
         $allowroleassignevent = \core\event\role_allow_view_updated::create([
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'objectid' => $otherid,
             'other' => ['targetroleid' => $student->id]
         ]);
@@ -1241,7 +1253,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $teacherrole = $DB->get_record('role', array('shortname'=>'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
@@ -1352,7 +1364,7 @@ final class accesslib_test extends advanced_testcase {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -1385,7 +1397,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $teacherrole = $DB->get_record('role', array('shortname'=>'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
@@ -1445,7 +1457,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $teacherrole = $DB->get_record('role', array('shortname'=>'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
@@ -1540,7 +1552,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
@@ -1576,7 +1588,7 @@ final class accesslib_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $context = context_system::instance();
+        $context = system::instance();
 
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
@@ -1675,7 +1687,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $id2 = create_role('New student role', 'student2', 'New student description', 'student');
         set_role_contextlevels($id2, array(CONTEXT_COURSE));
@@ -1706,12 +1718,12 @@ final class accesslib_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $studentrole = $DB->get_record('role', array('shortname'=>'student'), '*', MUST_EXIST);
         $teacherrole = $DB->get_record('role', array('shortname'=>'editingteacher'), '*', MUST_EXIST);
         $noeditteacherrole = $DB->get_record('role', array('shortname' => 'teacher'), '*', MUST_EXIST);
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $otherid = create_role('Other role', 'other', 'Some other role', '');
         $teacherrename = (object)array('roleid'=>$teacherrole->id, 'name'=>'Učitel', 'contextid'=>$coursecontext->id);
         $DB->insert_record('role_names', $teacherrename);
@@ -1811,10 +1823,10 @@ final class accesslib_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $teacherrole = $DB->get_record('role', array('shortname'=>'editingteacher'), '*', MUST_EXIST);
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $otherid = create_role('Other role', 'other', 'Some other role', '');
         $teacherrename = (object)array('roleid'=>$teacherrole->id, 'name'=>'Učitel', 'contextid'=>$coursecontext->id);
         $DB->insert_record('role_names', $teacherrename);
@@ -1857,7 +1869,7 @@ final class accesslib_test extends advanced_testcase {
         $studentrole = $DB->get_record('role', array('shortname'=>'student'), '*', MUST_EXIST);
         $managerrole = $DB->get_record('role', array('shortname' => 'manager'), '*', MUST_EXIST);
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrename = (object)array('roleid'=>$teacherrole->id, 'name'=>'Učitel', 'contextid'=>$coursecontext->id);
         $DB->insert_record('role_names', $teacherrename);
 
@@ -1924,7 +1936,7 @@ final class accesslib_test extends advanced_testcase {
         $teacherrole = $DB->get_record('role', array('shortname'=>'editingteacher'), '*', MUST_EXIST);
         $studentrole = $DB->get_record('role', array('shortname'=>'student'), '*', MUST_EXIST);
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrename = (object)array('roleid'=>$teacherrole->id, 'name'=>'Učitel', 'contextid'=>$coursecontext->id);
         $DB->insert_record('role_names', $teacherrename);
 
@@ -1962,7 +1974,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname'=>'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
         role_assign($teacherrole->id, $teacher->id, $coursecontext);
@@ -2057,7 +2069,7 @@ final class accesslib_test extends advanced_testcase {
     public function test_get_deprecated_capability_info(): void {
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user = $this->getDataGenerator()->create_and_enrol($course);
         $this->setup_fake_plugin('access');
 
@@ -2077,7 +2089,7 @@ final class accesslib_test extends advanced_testcase {
     public function test_get_deprecated_capability_info_through_has_capability(): void {
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user = $this->getDataGenerator()->create_and_enrol($course);
         $this->setup_fake_plugin('access');
 
@@ -2120,7 +2132,7 @@ final class accesslib_test extends advanced_testcase {
         bool $expectedexisting): void {
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user = $this->getDataGenerator()->create_and_enrol($course);
         $this->setup_fake_plugin('access');
 
@@ -2226,7 +2238,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
 
@@ -2277,7 +2289,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
 
@@ -2302,7 +2314,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
 
@@ -2333,7 +2345,7 @@ final class accesslib_test extends advanced_testcase {
         $studentrole = $DB->get_record('role', array('shortname' => 'student'), '*', MUST_EXIST);
         $emptyroleid = create_role('No capabilities', 'empty', 'A role with no capabilties');
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Instantiate the cache instance, since that does DB queries (get_config)
         // and we don't care about those.
@@ -2423,7 +2435,7 @@ final class accesslib_test extends advanced_testcase {
         $allowroleid = $generator->create_role();
         $prohibitroleid = $generator->create_role();
         $emptyroleid = $generator->create_role();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         assign_capability($cap, CAP_ALLOW, $allowroleid, $systemcontext->id);
         assign_capability($cap, CAP_PROHIBIT, $prohibitroleid, $systemcontext->id);
 
@@ -2442,20 +2454,20 @@ final class accesslib_test extends advanced_testcase {
 
         // Category overrides: in cat 1, empty role is allowed; in cat 2, empty role is prevented.
         assign_capability($cap, CAP_ALLOW, $emptyroleid,
-                context_coursecat::instance($cat1->id)->id);
+                coursecat::instance($cat1->id)->id);
         assign_capability($cap, CAP_PREVENT, $emptyroleid,
-                context_coursecat::instance($cat2->id)->id);
+                coursecat::instance($cat2->id)->id);
 
         // Course overrides: in C5, allow role is prevented; in C6, empty role is prohibited; in
         // C3, empty role is allowed.
         assign_capability($cap, CAP_PREVENT, $allowroleid,
-                context_course::instance($c5->id)->id);
+                course::instance($c5->id)->id);
         assign_capability($cap, CAP_PROHIBIT, $emptyroleid,
-                context_course::instance($c6->id)->id);
+                course::instance($c6->id)->id);
         assign_capability($cap, CAP_ALLOW, $emptyroleid,
-                context_course::instance($c3->id)->id);
+                course::instance($c3->id)->id);
         assign_capability($cap, CAP_ALLOW, $prohibitroleid,
-                context_course::instance($c2->id)->id);
+                course::instance($c2->id)->id);
 
         // User 1 has no roles except default user role.
         $u1 = $generator->create_user();
@@ -2465,7 +2477,7 @@ final class accesslib_test extends advanced_testcase {
 
         // Final override: in C1, default user role is allowed.
         assign_capability($cap, CAP_ALLOW, $CFG->defaultuserroleid,
-                context_course::instance($c1->id)->id);
+                course::instance($c1->id)->id);
 
         // Should now get C1 only.
         $courses = get_user_capability_course($cap, $u1->id, true, '', 'id');
@@ -2498,7 +2510,7 @@ final class accesslib_test extends advanced_testcase {
 
         // User 5 has allow role in default category only.
         $u5 = $generator->create_user();
-        role_assign($allowroleid, $u5->id, context_coursecat::instance($c5->category)->id);
+        role_assign($allowroleid, $u5->id, coursecat::instance($c5->category)->id);
 
         // Should get C1 and the default category courses but not C5.
         $courses = get_user_capability_course($cap, $u5->id, true, '', 'id');
@@ -2507,9 +2519,9 @@ final class accesslib_test extends advanced_testcase {
         // User 6 has a bunch of course roles: prohibit role in C1, empty role in C3, allow role in
         // C6.
         $u6 = $generator->create_user();
-        role_assign($prohibitroleid, $u6->id, context_course::instance($c1->id)->id);
-        role_assign($emptyroleid, $u6->id, context_course::instance($c3->id)->id);
-        role_assign($allowroleid, $u6->id, context_course::instance($c5->id)->id);
+        role_assign($prohibitroleid, $u6->id, course::instance($c1->id)->id);
+        role_assign($emptyroleid, $u6->id, course::instance($c3->id)->id);
+        role_assign($allowroleid, $u6->id, course::instance($c5->id)->id);
 
         // Should get C3 only because the allow role is prevented in C5.
         $courses = get_user_capability_course($cap, $u6->id, true, '', 'id');
@@ -2517,7 +2529,7 @@ final class accesslib_test extends advanced_testcase {
 
         // User 7 has empty role in C2.
         $u7 = $generator->create_user();
-        role_assign($emptyroleid, $u7->id, context_course::instance($c2->id)->id);
+        role_assign($emptyroleid, $u7->id, course::instance($c2->id)->id);
 
         // Should get C1 by the default user role override, and C2 by the cat1 level override.
         $courses = get_user_capability_course($cap, $u7->id, true, '', 'id');
@@ -2525,7 +2537,7 @@ final class accesslib_test extends advanced_testcase {
 
         // User 8 has prohibit role as system context, to verify that prohibits can't be overridden.
         $u8 = $generator->create_user();
-        role_assign($prohibitroleid, $u8->id, context_course::instance($c2->id)->id);
+        role_assign($prohibitroleid, $u8->id, course::instance($c2->id)->id);
 
         // Should get C1 by the default user role override, no other courses because the prohibit cannot be overridden.
         $courses = get_user_capability_course($cap, $u8->id, true, '', 'id');
@@ -2568,7 +2580,7 @@ final class accesslib_test extends advanced_testcase {
         // also is included, if it has this capability.
         assign_capability($cap, CAP_ALLOW, $CFG->guestroleid, $systemcontext->id);
         $this->setUser($u1);
-        load_temp_course_role(context_course::instance($c2->id), $CFG->guestroleid);
+        load_temp_course_role(course::instance($c2->id), $CFG->guestroleid);
         $courses = get_user_capability_course($cap, $USER->id, true, '', 'id');
         $this->assert_course_ids([SITEID, $c1->id, $c2->id], $courses);
     }
@@ -2600,7 +2612,7 @@ final class accesslib_test extends advanced_testcase {
         $allowroleid = $generator->create_role();
         $prohibitroleid = $generator->create_role();
         $emptyroleid = $generator->create_role();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         assign_capability($cap, CAP_ALLOW, $allowroleid, $systemcontext->id);
         assign_capability($cap, CAP_PROHIBIT, $prohibitroleid, $systemcontext->id);
 
@@ -2611,18 +2623,18 @@ final class accesslib_test extends advanced_testcase {
 
         // Category overrides: in cat 1, empty role is allowed; in cat 2, empty role is prevented.
         assign_capability($cap, CAP_ALLOW, $emptyroleid,
-            context_coursecat::instance($cat1->id)->id);
+            coursecat::instance($cat1->id)->id);
         assign_capability($cap, CAP_PREVENT, $emptyroleid,
-            context_coursecat::instance($cat2->id)->id);
+            coursecat::instance($cat2->id)->id);
 
         // Course category overrides: in cat1, allow role is prevented and prohibit role is allowed;
         // in Cat2, allow role is prohibited.
         assign_capability($cap, CAP_PREVENT, $allowroleid,
-            context_coursecat::instance($cat1->id)->id);
+            coursecat::instance($cat1->id)->id);
         assign_capability($cap, CAP_ALLOW, $prohibitroleid,
-            context_coursecat::instance($cat1->id)->id);
+            coursecat::instance($cat1->id)->id);
         assign_capability($cap, CAP_PROHIBIT, $allowroleid,
-            context_coursecat::instance($cat2->id)->id);
+            coursecat::instance($cat2->id)->id);
 
         // User 1 has no roles except default user role.
         $u1 = $generator->create_user();
@@ -2685,9 +2697,9 @@ final class accesslib_test extends advanced_testcase {
         $category = $this->getDataGenerator()->create_category();
         $course = $this->getDataGenerator()->create_course(array('category'=>$category->id));
 
-        $syscontext = context_system::instance();
-        $categorycontext = context_coursecat::instance($category->id);
-        $coursecontext = context_course::instance($course->id);
+        $syscontext = system::instance();
+        $categorycontext = coursecat::instance($category->id);
+        $coursecontext = course::instance($course->id);
         $studentrole = $DB->get_record('role', array('shortname'=>'student'), '*', MUST_EXIST);
         $teacherrole = $DB->get_record('role', array('shortname'=>'editingteacher'), '*', MUST_EXIST);
         $creatorrole = $DB->get_record('role', array('shortname'=>'coursecreator'), '*', MUST_EXIST);
@@ -2807,7 +2819,7 @@ final class accesslib_test extends advanced_testcase {
     public function test_require_capability(): void {
         $this->resetAfterTest();
 
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
 
         $this->setUser(0);
         $this->assertFalse(has_capability('moodle/site:config', $syscontext));
@@ -2853,7 +2865,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $student = $DB->get_record('role', array('shortname' => 'student'), '*', MUST_EXIST);
         $user = $this->getDataGenerator()->create_user();
 
@@ -2892,7 +2904,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $student = $DB->get_record('role', array('shortname' => 'student'), '*', MUST_EXIST);
         $user = $this->getDataGenerator()->create_user();
 
@@ -2928,7 +2940,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $student = $DB->get_record('role', array('shortname' => 'student'), '*', MUST_EXIST);
         $user = $this->getDataGenerator()->create_user();
 
@@ -2982,9 +2994,9 @@ final class accesslib_test extends advanced_testcase {
     public function test_get_enrolled_sql_userswithgroups(): void {
         $this->resetAfterTest();
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
 
@@ -3033,9 +3045,9 @@ final class accesslib_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
 
@@ -3074,7 +3086,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
         $user3 = $this->getDataGenerator()->create_user();
@@ -3264,7 +3276,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $student = $DB->get_record('role', array('shortname' => 'student'), '*', MUST_EXIST);
         $createdusers = array();
 
@@ -3336,12 +3348,12 @@ final class accesslib_test extends advanced_testcase {
         $testblocks = array();
         $allroles = $DB->get_records_menu('role', array(), 'id', 'shortname, id');
 
-        $systemcontext = context_system::instance();
-        $frontpagecontext = context_course::instance(SITEID);
+        $systemcontext = system::instance();
+        $frontpagecontext = course::instance(SITEID);
 
         // Add block to system context.
         $bi = $generator->create_block('online_users');
-        context_block::instance($bi->id);
+        block::instance($bi->id);
         $testblocks[] = $bi->id;
 
         // Some users.
@@ -3349,7 +3361,7 @@ final class accesslib_test extends advanced_testcase {
         for ($i=0; $i<20; $i++) {
             $user = $generator->create_user();
             $testusers[$i] = $user->id;
-            $usercontext = context_user::instance($user->id);
+            $usercontext = user::instance($user->id);
 
             // Add block to user profile.
             $bi = $generator->create_block('online_users', array('parentcontextid'=>$usercontext->id));
@@ -3358,17 +3370,17 @@ final class accesslib_test extends advanced_testcase {
 
         // Add block to frontpage.
         $bi = $generator->create_block('online_users', array('parentcontextid'=>$frontpagecontext->id));
-        $frontpageblockcontext = context_block::instance($bi->id);
+        $frontpageblockcontext = block::instance($bi->id);
         $testblocks[] = $bi->id;
 
         // Add a resource to frontpage.
         $page = $generator->create_module('page', array('course'=>$SITE->id));
         $testpages[] = $page->cmid;
-        $frontpagepagecontext = context_module::instance($page->cmid);
+        $frontpagepagecontext = module::instance($page->cmid);
 
         // Add block to frontpage resource.
         $bi = $generator->create_block('online_users', array('parentcontextid'=>$frontpagepagecontext->id));
-        $frontpagepageblockcontext = context_block::instance($bi->id);
+        $frontpagepageblockcontext = block::instance($bi->id);
         $testblocks[] = $bi->id;
 
         // Some nested course categories with courses.
@@ -3377,7 +3389,7 @@ final class accesslib_test extends advanced_testcase {
         for ($i=0; $i<5; $i++) {
             $cat = $generator->create_category(array('parent'=>$parentcat));
             $testcategories[] = $cat->id;
-            $catcontext = context_coursecat::instance($cat->id);
+            $catcontext = coursecat::instance($cat->id);
             $parentcat = $cat->id;
 
             if ($i >= 4) {
@@ -3386,13 +3398,13 @@ final class accesslib_test extends advanced_testcase {
 
             // Add resource to each category.
             $bi = $generator->create_block('online_users', array('parentcontextid'=>$catcontext->id));
-            context_block::instance($bi->id);
+            block::instance($bi->id);
 
             // Add a few courses to each category.
             for ($j=0; $j<6; $j++) {
                 $course = $generator->create_course(array('category'=>$cat->id));
                 $testcourses[] = $course->id;
-                $coursecontext = context_course::instance($course->id);
+                $coursecontext = course::instance($course->id);
 
                 if ($j >= 5) {
                     continue;
@@ -3407,7 +3419,7 @@ final class accesslib_test extends advanced_testcase {
                 // Add a resource to each course.
                 $page = $generator->create_module('page', array('course'=>$course->id));
                 $testpages[] = $page->cmid;
-                $modcontext = context_module::instance($page->cmid);
+                $modcontext = module::instance($page->cmid);
 
                 // Add block to each module.
                 $bi = $generator->create_block('online_users', array('parentcontextid'=>$modcontext->id));
@@ -3447,36 +3459,36 @@ final class accesslib_test extends advanced_testcase {
         } catch (moodle_exception $e) {
             $this->assertTrue(true);
         }
-        $this->assertInstanceOf('context_system', context_system::instance());
-        $this->assertInstanceOf('context_coursecat', context_coursecat::instance($testcategories[0]));
-        $this->assertInstanceOf('context_course', context_course::instance($testcourses[0]));
-        $this->assertInstanceOf('context_module', context_module::instance($testpages[0]));
-        $this->assertInstanceOf('context_block', context_block::instance($testblocks[0]));
+        $this->assertInstanceOf('context_system', system::instance());
+        $this->assertInstanceOf('context_coursecat', coursecat::instance($testcategories[0]));
+        $this->assertInstanceOf('context_course', course::instance($testcourses[0]));
+        $this->assertInstanceOf('context_module', module::instance($testpages[0]));
+        $this->assertInstanceOf('context_block', block::instance($testblocks[0]));
 
-        $this->assertFalse(context_coursecat::instance(-1, IGNORE_MISSING));
-        $this->assertFalse(context_course::instance(-1, IGNORE_MISSING));
-        $this->assertFalse(context_module::instance(-1, IGNORE_MISSING));
-        $this->assertFalse(context_block::instance(-1, IGNORE_MISSING));
+        $this->assertFalse(coursecat::instance(-1, IGNORE_MISSING));
+        $this->assertFalse(course::instance(-1, IGNORE_MISSING));
+        $this->assertFalse(module::instance(-1, IGNORE_MISSING));
+        $this->assertFalse(block::instance(-1, IGNORE_MISSING));
         try {
-            context_coursecat::instance(-1);
+            coursecat::instance(-1);
             $this->fail('exception expected');
         } catch (moodle_exception $e) {
             $this->assertTrue(true);
         }
         try {
-            context_course::instance(-1);
+            course::instance(-1);
             $this->fail('exception expected');
         } catch (moodle_exception $e) {
             $this->assertTrue(true);
         }
         try {
-            context_module::instance(-1);
+            module::instance(-1);
             $this->fail('exception expected');
         } catch (moodle_exception $e) {
             $this->assertTrue(true);
         }
         try {
-            context_block::instance(-1);
+            block::instance(-1);
             $this->fail('exception expected');
         } catch (moodle_exception $e) {
             $this->assertTrue(true);
@@ -3486,11 +3498,11 @@ final class accesslib_test extends advanced_testcase {
         // Test $context->get_url(), $context->get_context_name(), $context->get_capabilities() methods.
 
         $testcontexts = array();
-        $testcontexts[CONTEXT_SYSTEM]    = context_system::instance();
-        $testcontexts[CONTEXT_COURSECAT] = context_coursecat::instance($testcategories[0]);
-        $testcontexts[CONTEXT_COURSE]    = context_course::instance($testcourses[0]);
-        $testcontexts[CONTEXT_MODULE]    = context_module::instance($testpages[0]);
-        $testcontexts[CONTEXT_BLOCK]     = context_block::instance($testblocks[0]);
+        $testcontexts[CONTEXT_SYSTEM]    = system::instance();
+        $testcontexts[CONTEXT_COURSECAT] = coursecat::instance($testcategories[0]);
+        $testcontexts[CONTEXT_COURSE]    = course::instance($testcourses[0]);
+        $testcontexts[CONTEXT_MODULE]    = module::instance($testpages[0]);
+        $testcontexts[CONTEXT_BLOCK]     = block::instance($testblocks[0]);
 
         foreach ($testcontexts as $context) {
             $name = $context->get_context_name(true, true);
@@ -3516,7 +3528,7 @@ final class accesslib_test extends advanced_testcase {
         } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
-        $context = context_coursecat::instance($testcategories[0]);
+        $context = coursecat::instance($testcategories[0]);
         $this->assertFalse($context->get_course_context(false));
         try {
             $context->get_course_context();
@@ -3532,7 +3544,7 @@ final class accesslib_test extends advanced_testcase {
         // Test $context->get_parent_context(), $context->get_parent_contexts(), $context->get_parent_context_ids() methods.
 
         $userid = reset($testusers);
-        $usercontext = context_user::instance($userid);
+        $usercontext = user::instance($userid);
         $this->assertEquals($systemcontext, $usercontext->get_parent_context());
         $this->assertEquals(array($systemcontext->id=>$systemcontext), $usercontext->get_parent_contexts());
         $this->assertEquals(array($usercontext->id=>$usercontext, $systemcontext->id=>$systemcontext), $usercontext->get_parent_contexts(true));
@@ -3554,10 +3566,10 @@ final class accesslib_test extends advanced_testcase {
         $this->assertEquals($expected, $frontpagecontext->get_parent_context_paths(true));
 
         $this->assertFalse($systemcontext->get_parent_context());
-        $frontpagecontext = context_course::instance($SITE->id);
+        $frontpagecontext = course::instance($SITE->id);
         $parent = $systemcontext;
         foreach ($testcategories as $catid) {
-            $catcontext = context_coursecat::instance($catid);
+            $catcontext = coursecat::instance($catid);
             $this->assertEquals($parent, $catcontext->get_parent_context());
             $parent = $catcontext;
         }
@@ -3572,7 +3584,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetDebugging();
         $this->assertEquals(count($children)+1, $DB->count_records('context'));
 
-        $context = context_coursecat::instance($testcategories[3]);
+        $context = coursecat::instance($testcategories[3]);
         $children = $context->get_child_contexts();
         $countcats    = 0;
         $countcourses = 0;
@@ -3593,14 +3605,14 @@ final class accesslib_test extends advanced_testcase {
         $this->assertEquals(6, $countcourses);
         $this->assertEquals(1, $countblocks);
 
-        $context = context_course::instance($testcourses[2]);
+        $context = course::instance($testcourses[2]);
         $children = $context->get_child_contexts();
 
-        $context = context_module::instance($testpages[3]);
+        $context = module::instance($testpages[3]);
         $children = $context->get_child_contexts();
         $this->assertCount(1, $children);
 
-        $context = context_block::instance($testblocks[1]);
+        $context = block::instance($testblocks[1]);
         $children = $context->get_child_contexts();
         $this->assertCount(0, $children);
 
@@ -3614,7 +3626,7 @@ final class accesslib_test extends advanced_testcase {
 
         context_helper::reset_caches();
         $this->assertEquals(0, context_inspection::check_context_cache_size());
-        context_course::instance($SITE->id);
+        course::instance($SITE->id);
         $this->assertEquals(1, context_inspection::check_context_cache_size());
 
 
@@ -3673,7 +3685,7 @@ final class accesslib_test extends advanced_testcase {
 
         // Test role_assign(), role_unassign(), role_unassign_all() functions.
 
-        $context = context_course::instance($testcourses[1]);
+        $context = course::instance($testcourses[1]);
         $this->assertEquals(0, $DB->count_records('role_assignments', array('contextid'=>$context->id)));
         role_assign($allroles['teacher'], $testusers[1], $context->id);
         role_assign($allroles['teacher'], $testusers[2], $context->id);
@@ -3698,7 +3710,7 @@ final class accesslib_test extends advanced_testcase {
         $course2 = $DB->get_record('course', array('id'=>$testcourses[7]), '*', MUST_EXIST);
         $cms = $DB->get_records('course_modules', array('course'=>$course1->id), 'id');
         $cm1 = reset($cms);
-        $blocks = $DB->get_records('block_instances', array('parentcontextid'=>context_module::instance($cm1->id)->id), 'id');
+        $blocks = $DB->get_records('block_instances', array('parentcontextid'=>module::instance($cm1->id)->id), 'id');
         $block1 = reset($blocks);
         $instance1 = $DB->get_record('enrol', array('enrol'=>'manual', 'courseid'=>$course1->id));
         $instance2 = $DB->get_record('enrol', array('enrol'=>'manual', 'courseid'=>$course2->id));
@@ -3714,17 +3726,17 @@ final class accesslib_test extends advanced_testcase {
         $manualenrol->enrol_user($instance2, $testusers[15], $allroles['editingteacher']);
 
         // Add tons of role assignments - the more the better.
-        role_assign($allroles['coursecreator'], $testusers[11], context_coursecat::instance($testcategories[2]));
-        role_assign($allroles['manager'], $testusers[12], context_coursecat::instance($testcategories[1]));
-        role_assign($allroles['student'], $testusers[9], context_module::instance($cm1->id));
-        role_assign($allroles['teacher'], $testusers[8], context_module::instance($cm1->id));
-        role_assign($allroles['guest'], $testusers[13], context_course::instance($course1->id));
-        role_assign($allroles['teacher'], $testusers[7], context_block::instance($block1->id));
-        role_assign($allroles['manager'], $testusers[9], context_block::instance($block1->id));
-        role_assign($allroles['editingteacher'], $testusers[9], context_course::instance($course1->id));
+        role_assign($allroles['coursecreator'], $testusers[11], coursecat::instance($testcategories[2]));
+        role_assign($allroles['manager'], $testusers[12], coursecat::instance($testcategories[1]));
+        role_assign($allroles['student'], $testusers[9], module::instance($cm1->id));
+        role_assign($allroles['teacher'], $testusers[8], module::instance($cm1->id));
+        role_assign($allroles['guest'], $testusers[13], course::instance($course1->id));
+        role_assign($allroles['teacher'], $testusers[7], block::instance($block1->id));
+        role_assign($allroles['manager'], $testusers[9], block::instance($block1->id));
+        role_assign($allroles['editingteacher'], $testusers[9], course::instance($course1->id));
 
-        role_assign($allroles['teacher'], $adminid, context_course::instance($course1->id));
-        role_assign($allroles['editingteacher'], $adminid, context_block::instance($block1->id));
+        role_assign($allroles['teacher'], $adminid, course::instance($course1->id));
+        role_assign($allroles['editingteacher'], $adminid, block::instance($block1->id));
 
         // Add tons of overrides - the more the better.
         assign_capability('moodle/site:accessallgroups', CAP_ALLOW, $CFG->defaultuserroleid, $frontpageblockcontext, true);
@@ -3747,10 +3759,10 @@ final class accesslib_test extends advanced_testcase {
         assign_capability('mod/page:view', CAP_PREVENT, $allroles['guest'], $systemcontext, true);
 
         // Prepare for prohibit test.
-        role_assign($allroles['editingteacher'], $testusers[19], context_system::instance());
-        role_assign($allroles['teacher'], $testusers[19], context_course::instance($testcourses[17]));
-        role_assign($allroles['editingteacher'], $testusers[19], context_course::instance($testcourses[17]));
-        assign_capability('moodle/course:update', CAP_PROHIBIT, $allroles['teacher'], context_course::instance($testcourses[17]), true);
+        role_assign($allroles['editingteacher'], $testusers[19], system::instance());
+        role_assign($allroles['teacher'], $testusers[19], course::instance($testcourses[17]));
+        role_assign($allroles['editingteacher'], $testusers[19], course::instance($testcourses[17]));
+        assign_capability('moodle/course:update', CAP_PROHIBIT, $allroles['teacher'], course::instance($testcourses[17]), true);
 
         accesslib_clear_all_caches_for_unit_testing(); /// Must be done after assign_capability().
 
@@ -3767,24 +3779,24 @@ final class accesslib_test extends advanced_testcase {
         $this->assertFalse(has_capability('mod/page:view', $systemcontext, 0));
 
         $this->assertFalse(has_capability('moodle/course:create', $systemcontext, $testusers[11]));
-        $this->assertTrue(has_capability('moodle/course:create', context_coursecat::instance($testcategories[2]), $testusers[11]));
-        $this->assertFalse(has_capability('moodle/course:create', context_course::instance($testcourses[1]), $testusers[11]));
-        $this->assertTrue(has_capability('moodle/course:create', context_course::instance($testcourses[19]), $testusers[11]));
+        $this->assertTrue(has_capability('moodle/course:create', coursecat::instance($testcategories[2]), $testusers[11]));
+        $this->assertFalse(has_capability('moodle/course:create', course::instance($testcourses[1]), $testusers[11]));
+        $this->assertTrue(has_capability('moodle/course:create', course::instance($testcourses[19]), $testusers[11]));
 
-        $this->assertFalse(has_capability('moodle/course:update', context_course::instance($testcourses[1]), $testusers[9]));
-        $this->assertFalse(has_capability('moodle/course:update', context_course::instance($testcourses[19]), $testusers[9]));
+        $this->assertFalse(has_capability('moodle/course:update', course::instance($testcourses[1]), $testusers[9]));
+        $this->assertFalse(has_capability('moodle/course:update', course::instance($testcourses[19]), $testusers[9]));
         $this->assertFalse(has_capability('moodle/course:update', $systemcontext, $testusers[9]));
 
         // Test prohibits.
-        $this->assertTrue(has_capability('moodle/course:update', context_system::instance(), $testusers[19]));
-        $ids = get_users_by_capability(context_system::instance(), 'moodle/course:update', 'u.id');
+        $this->assertTrue(has_capability('moodle/course:update', system::instance(), $testusers[19]));
+        $ids = get_users_by_capability(system::instance(), 'moodle/course:update', 'u.id');
         $this->assertArrayHasKey($testusers[19], $ids);
-        $this->assertFalse(has_capability('moodle/course:update', context_course::instance($testcourses[17]), $testusers[19]));
-        $ids = get_users_by_capability(context_course::instance($testcourses[17]), 'moodle/course:update', 'u.id');
+        $this->assertFalse(has_capability('moodle/course:update', course::instance($testcourses[17]), $testusers[19]));
+        $ids = get_users_by_capability(course::instance($testcourses[17]), 'moodle/course:update', 'u.id');
         $this->assertArrayNotHasKey($testusers[19], $ids);
 
         // Test the list of enrolled users.
-        $coursecontext = context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $enrolled = get_enrolled_users($coursecontext);
         $this->assertCount(10, $enrolled);
         for ($i=0; $i<10; $i++) {
@@ -3799,7 +3811,7 @@ final class accesslib_test extends advanced_testcase {
         $userid = $testusers[9];
         $USER = $DB->get_record('user', array('id'=>$userid));
         load_all_capabilities();
-        $coursecontext = context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $this->assertTrue(has_capability('moodle/course:update', $coursecontext));
         $this->assertFalse(is_role_switched($course1->id));
         role_switch($allroles['student'], $coursecontext);
@@ -3813,8 +3825,8 @@ final class accesslib_test extends advanced_testcase {
         $userid = $adminid;
         $USER = $DB->get_record('user', array('id'=>$userid));
         load_all_capabilities();
-        $coursecontext = context_course::instance($course1->id);
-        $blockcontext = context_block::instance($block1->id);
+        $coursecontext = course::instance($course1->id);
+        $blockcontext = block::instance($block1->id);
         $this->assertTrue(has_capability('moodle/course:update', $blockcontext));
         role_switch($allroles['student'], $coursecontext);
         $this->assertEquals($allroles['student'], $USER->access['rsw'][$coursecontext->path]);
@@ -3830,7 +3842,7 @@ final class accesslib_test extends advanced_testcase {
         $roleid = $allroles['editingteacher'];
         $USER = $DB->get_record('user', array('id'=>$userid));
         load_all_capabilities();
-        $coursecontext = context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $this->assertFalse(has_capability('moodle/course:update', $coursecontext));
         $this->assertFalse(isset($USER->access['ra'][$coursecontext->path][$roleid]));
         load_temp_course_role($coursecontext, $roleid);
@@ -3956,10 +3968,10 @@ final class accesslib_test extends advanced_testcase {
         $DB->delete_records('cache_flags', array());
         accesslib_clear_all_caches(false);
         load_all_capabilities();
-        $context = context_course::instance($testcourses[2]);
+        $context = course::instance($testcourses[2]);
         $page = $DB->get_record('page', array('course'=>$testcourses[2]));
         $pagecm = get_coursemodule_from_instance('page', $page->id);
-        $pagecontext = context_module::instance($pagecm->id);
+        $pagecontext = module::instance($pagecm->id);
 
         $context->mark_dirty();
         $this->assertTrue(isset($ACCESSLIB_PRIVATE->dirtycontexts[$context->path]));
@@ -3988,7 +4000,7 @@ final class accesslib_test extends advanced_testcase {
 
         // Test $context->reset_paths() method.
 
-        $context = context_course::instance($testcourses[2]);
+        $context = course::instance($testcourses[2]);
         $children = $context->get_child_contexts();
         $context->reset_paths(false);
         $this->assertNull($DB->get_field('context', 'path', array('id'=>$context->id)));
@@ -4000,9 +4012,9 @@ final class accesslib_test extends advanced_testcase {
         $this->assertEquals(count($children)+1, $DB->count_records('context', array('depth'=>0)));
         $this->assertEquals(count($children)+1, $DB->count_records('context', array('path'=>null)));
 
-        $context = context_course::instance($testcourses[2]);
+        $context = course::instance($testcourses[2]);
         $context->reset_paths(true);
-        $context = context_course::instance($testcourses[2]);
+        $context = course::instance($testcourses[2]);
         $this->assertSame($context->path, $DB->get_field('context', 'path', array('id'=>$context->id)));
         $this->assertSame($context->depth, $DB->get_field('context', 'depth', array('id'=>$context->id)));
         $this->assertEquals(0, $DB->count_records('context', array('depth'=>0)));
@@ -4014,15 +4026,15 @@ final class accesslib_test extends advanced_testcase {
         accesslib_clear_all_caches(false);
         $DB->delete_records('cache_flags', array());
         $course = $DB->get_record('course', array('id'=>$testcourses[0]));
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $oldpath = $context->path;
         $miscid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");
-        $categorycontext = context_coursecat::instance($miscid);
+        $categorycontext = coursecat::instance($miscid);
         $course->category = $miscid;
         $DB->update_record('course', $course);
         $context->update_moved($categorycontext);
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $this->assertEquals($categorycontext, $context->get_parent_context());
         $dirty = get_cache_flags('accesslib/dirtycontexts', time()-2);
         $this->assertFalse(isset($dirty[$oldpath]));
@@ -4032,7 +4044,7 @@ final class accesslib_test extends advanced_testcase {
         // Test $context->delete_content() method.
 
         context_helper::reset_caches();
-        $context = context_module::instance($testpages[3]);
+        $context = module::instance($testpages[3]);
         $this->assertTrue($DB->record_exists('context', array('id'=>$context->id)));
         $this->assertEquals(1, $DB->count_records('block_instances', array('parentcontextid'=>$context->id)));
         $context->delete_content();
@@ -4043,11 +4055,11 @@ final class accesslib_test extends advanced_testcase {
         // Test $context->delete() method.
 
         context_helper::reset_caches();
-        $context = context_module::instance($testpages[4]);
+        $context = module::instance($testpages[4]);
         $this->assertTrue($DB->record_exists('context', array('id'=>$context->id)));
         $this->assertEquals(1, $DB->count_records('block_instances', array('parentcontextid'=>$context->id)));
         $bi = $DB->get_record('block_instances', array('parentcontextid'=>$context->id));
-        $bicontext = context_block::instance($bi->id);
+        $bicontext = block::instance($bi->id);
         $DB->delete_records('cache_flags', array());
         $context->delete(); // Should delete also linked blocks.
         $dirty = get_cache_flags('accesslib/dirtycontexts', time()-2);
@@ -4057,7 +4069,7 @@ final class accesslib_test extends advanced_testcase {
         $this->assertFalse($DB->record_exists('context', array('contextlevel'=>CONTEXT_MODULE, 'instanceid'=>$testpages[4])));
         $this->assertFalse($DB->record_exists('context', array('contextlevel'=>CONTEXT_BLOCK, 'instanceid'=>$bi->id)));
         $this->assertEquals(0, $DB->count_records('block_instances', array('parentcontextid'=>$context->id)));
-        context_module::instance($testpages[4]);
+        module::instance($testpages[4]);
 
 
         // Test context_helper::delete_instance() method.
@@ -4065,7 +4077,7 @@ final class accesslib_test extends advanced_testcase {
         context_helper::reset_caches();
         $lastcourse = array_pop($testcourses);
         $this->assertTrue($DB->record_exists('context', array('contextlevel'=>CONTEXT_COURSE, 'instanceid'=>$lastcourse)));
-        $coursecontext = context_course::instance($lastcourse);
+        $coursecontext = course::instance($lastcourse);
         $this->assertEquals(1, context_inspection::check_context_cache_size());
         $this->assertNotEquals(CONTEXT_COURSE, $coursecontext->instanceid);
         $DB->delete_records('cache_flags', array());
@@ -4074,7 +4086,7 @@ final class accesslib_test extends advanced_testcase {
         $this->assertFalse(isset($dirty[$coursecontext->path]));
         $this->assertEquals(0, context_inspection::check_context_cache_size());
         $this->assertFalse($DB->record_exists('context', array('contextlevel'=>CONTEXT_COURSE, 'instanceid'=>$lastcourse)));
-        context_course::instance($lastcourse);
+        course::instance($lastcourse);
 
 
         // Test context_helper::create_instances() method.
@@ -4125,7 +4137,7 @@ final class accesslib_test extends advanced_testcase {
         context_helper::create_instances(null, true);
         context_helper::reset_caches();
         for ($i=0; $i<CONTEXT_CACHE_MAX_SIZE + 100; $i++) {
-            context_user::instance($testusers[$i]);
+            user::instance($testusers[$i]);
             if ($i == CONTEXT_CACHE_MAX_SIZE - 1) {
                 $this->assertEquals(CONTEXT_CACHE_MAX_SIZE, context_inspection::check_context_cache_size());
             } else if ($i == CONTEXT_CACHE_MAX_SIZE) {
@@ -4137,10 +4149,10 @@ final class accesslib_test extends advanced_testcase {
         // We keep the first 100 cached.
         $prevsize = context_inspection::check_context_cache_size();
         for ($i=0; $i<100; $i++) {
-            context_user::instance($testusers[$i]);
+            user::instance($testusers[$i]);
             $this->assertEquals($prevsize, context_inspection::check_context_cache_size());
         }
-        context_user::instance($testusers[102]);
+        user::instance($testusers[102]);
         $this->assertEquals($prevsize + 1, context_inspection::check_context_cache_size());
         unset($testusers);
     }
@@ -4169,7 +4181,7 @@ final class accesslib_test extends advanced_testcase {
      * @covers \context_system::get_capabilities
      */
     public function test_context_module_caps_returned_by_get_capabilities_in_sys_context(): void {
-        $actual = context_system::instance()->get_capabilities();
+        $actual = system::instance()->get_capabilities();
 
         // Just test a few representative capabilities.
         $expectedcapabilities = ['moodle/site:accessallgroups', 'moodle/site:viewfullnames',
@@ -4188,7 +4200,7 @@ final class accesslib_test extends advanced_testcase {
         $generator = $this->getDataGenerator();
         $cat = $generator->create_category();
 
-        $actual = context_coursecat::instance($cat->id)->get_capabilities();
+        $actual = coursecat::instance($cat->id)->get_capabilities();
 
         // Just test a few representative capabilities.
         $expectedcapabilities = ['moodle/site:accessallgroups', 'moodle/site:viewfullnames',
@@ -4208,7 +4220,7 @@ final class accesslib_test extends advanced_testcase {
         $cat = $generator->create_category();
         $course = $generator->create_course(['category' => $cat->id]);
 
-        $actual = context_course::instance($course->id)->get_capabilities();
+        $actual = course::instance($course->id)->get_capabilities();
 
         // Just test a few representative capabilities.
         $expectedcapabilities = ['moodle/site:accessallgroups', 'moodle/site:viewfullnames',
@@ -4229,7 +4241,7 @@ final class accesslib_test extends advanced_testcase {
         $course = $generator->create_course(['category' => $cat->id]);
         $page = $generator->create_module('page', ['course' => $course->id]);
 
-        $actual = context_module::instance($page->cmid)->get_capabilities();
+        $actual = module::instance($page->cmid)->get_capabilities();
 
         // Just test a few representative capabilities.
         $expectedcapabilities = ['moodle/site:accessallgroups', 'moodle/site:viewfullnames',
@@ -4248,17 +4260,17 @@ final class accesslib_test extends advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $block = $this->getDataGenerator()->create_block('online_users', [
-            'parentcontextid' => context_course::instance($course->id)->id,
+            'parentcontextid' => course::instance($course->id)->id,
         ]);
 
-        $capabilities = context_block::instance($block->id)->get_capabilities();
+        $capabilities = block::instance($block->id)->get_capabilities();
 
         // Just test a few representative capabilities.
         $expected = ['block/online_users:addinstance', 'moodle/block:edit', 'moodle/block:view'];
         $this->assert_capability_list_contains($expected, $capabilities);
 
         // Now test with different sorting.
-        $capabilitiesbyname = context_block::instance($block->id)->get_capabilities('riskbitmask');
+        $capabilitiesbyname = block::instance($block->id)->get_capabilities('riskbitmask');
 
         $capabilitynames = array_column($capabilities, 'name');
         $capabilitynamesordered = array_column($capabilitiesbyname, 'name');
@@ -4277,14 +4289,14 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $user = $this->getDataGenerator()->create_user();
-        $capabilities = context_user::instance($user->id)->get_capabilities();
+        $capabilities = user::instance($user->id)->get_capabilities();
 
         // Just test a few representative capabilities.
         $expected = ['moodle/user:editmessageprofile', 'moodle/user:editprofile', 'moodle/user:viewalldetails'];
         $this->assert_capability_list_contains($expected, $capabilities);
 
         // Now test with different sorting.
-        $capabilitiesbyname = context_user::instance($user->id)->get_capabilities('name');
+        $capabilitiesbyname = user::instance($user->id)->get_capabilities('name');
 
         $capabilitynames = array_column($capabilities, 'name');
         $capabilitynamesordered = array_column($capabilitiesbyname, 'name');
@@ -4305,7 +4317,7 @@ final class accesslib_test extends advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        $froncontext = context_course::instance($SITE->id);
+        $froncontext = course::instance($SITE->id);
         $student = $DB->get_record('role', array('shortname'=>'student'));
         $teacher = $DB->get_record('role', array('shortname'=>'teacher'));
 
@@ -4403,10 +4415,10 @@ final class accesslib_test extends advanced_testcase {
         $course = $generator->create_course();
         $roleid = $DB->get_field('role', 'id', ['shortname' => 'manager']);
         $page1 = $generator->create_module('page', ['course' => $course->id]);
-        $context1 = context_module::instance($page1->cmid);
+        $context1 = module::instance($page1->cmid);
         assign_capability('moodle/course:manageactivities', CAP_PREVENT, $roleid, $context1->id);
         $page2 = $generator->create_module('page', ['course' => $course->id]);
-        $context2 = context_module::instance($page2->cmid);
+        $context2 = module::instance($page2->cmid);
         assign_capability('moodle/course:manageactivities', CAP_PREVENT, $roleid, $context2->id);
         assign_capability('mod/forum:addinstance', CAP_PROHIBIT, $roleid, $context2->id);
 
@@ -4443,11 +4455,11 @@ final class accesslib_test extends advanced_testcase {
         $generator->enrol_user($user->id, $course->id, $roleid);
 
         // Change student role so it DOES have 'mod/forum:addinstance'.
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         assign_capability('mod/forum:addinstance', CAP_ALLOW, $roleid, $systemcontext->id);
 
         // Override course so it does NOT allow students 'mod/forum:viewdiscussion'.
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         assign_capability('mod/forum:viewdiscussion', CAP_PREVENT, $roleid, $coursecontext->id);
 
         // Check expected capabilities so far.
@@ -4485,22 +4497,22 @@ final class accesslib_test extends advanced_testcase {
         // Enrol two users as managers onto the course, and 1 onto the category.
         $generator->enrol_user($user1->id, $course->id, $roleid1);
         $generator->enrol_user($user2->id, $course->id, $roleid1);
-        $generator->role_assign($roleid1, $user3->id, context_coursecat::instance($category->id));
+        $generator->role_assign($roleid1, $user3->id, coursecat::instance($category->id));
         // Enrol 1 user as a coursecreator onto the course, and another onto the category.
         // This is to ensure we do not count users with roles that are not specified.
         $generator->enrol_user($user4->id, $course->id, $roleid2);
-        $generator->role_assign($roleid2, $user5->id, context_coursecat::instance($category->id));
+        $generator->role_assign($roleid2, $user5->id, coursecat::instance($category->id));
         // Check that the correct users are found on the course.
-        $this->assertEquals(2, count_role_users($roleid1, context_course::instance($course->id), false));
-        $this->assertEquals(3, count_role_users($roleid1, context_course::instance($course->id), true));
+        $this->assertEquals(2, count_role_users($roleid1, course::instance($course->id), false));
+        $this->assertEquals(3, count_role_users($roleid1, course::instance($course->id), true));
         // Check for the category.
-        $this->assertEquals(1, count_role_users($roleid1, context_coursecat::instance($category->id), false));
-        $this->assertEquals(1, count_role_users($roleid1, context_coursecat::instance($category->id), true));
+        $this->assertEquals(1, count_role_users($roleid1, coursecat::instance($category->id), false));
+        $this->assertEquals(1, count_role_users($roleid1, coursecat::instance($category->id), true));
         // Have a user with the same role at both the category and course level.
-        $generator->role_assign($roleid1, $user1->id, context_coursecat::instance($category->id));
+        $generator->role_assign($roleid1, $user1->id, coursecat::instance($category->id));
         // The course level checks should remain the same.
-        $this->assertEquals(2, count_role_users($roleid1, context_course::instance($course->id), false));
-        $this->assertEquals(3, count_role_users($roleid1, context_course::instance($course->id), true));
+        $this->assertEquals(2, count_role_users($roleid1, course::instance($course->id), false));
+        $this->assertEquals(3, count_role_users($roleid1, course::instance($course->id), true));
     }
 
     /**
@@ -4514,7 +4526,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
         $studentrole = $DB->get_record('role', array('shortname' => 'student'), '*', MUST_EXIST);
@@ -4566,7 +4578,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
         $studentrole = $DB->get_record('role', array('shortname' => 'student'), '*', MUST_EXIST);
@@ -4655,7 +4667,7 @@ final class accesslib_test extends advanced_testcase {
 
         // This test assumes that by default the student roles has the two
         // capabilities. Check this now in case the role definitions are every changed.
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $this->assertTrue(has_capability('moodle/course:viewscales', $coursecontext, $student));
         $this->assertTrue(has_capability('moodle/question:flag', $coursecontext, $student));
 
@@ -4689,7 +4701,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Assign a student role.
         $studentrole = $DB->get_record('role', array('shortname' => 'student'), '*', MUST_EXIST);
@@ -4894,7 +4906,7 @@ final class accesslib_test extends advanced_testcase {
      * @param   bool $expected The expected result
      */
     public function test_is_parent_of(string $contextpath, string $testpath, bool $testself, bool $expected): void {
-        $context = $this->getMockBuilder(\context::class)
+        $context = $this->getMockBuilder(context::class)
             ->disableOriginalConstructor()
             ->onlyMethods([
                 'get_url',
@@ -4905,7 +4917,7 @@ final class accesslib_test extends advanced_testcase {
         $rcp = new ReflectionProperty($context, '_path');
         $rcp->setValue($context, $contextpath);
 
-        $comparisoncontext = $this->getMockBuilder(\context::class)
+        $comparisoncontext = $this->getMockBuilder(context::class)
             ->disableOriginalConstructor()
             ->onlyMethods([
                 'get_url',
@@ -5001,7 +5013,7 @@ final class accesslib_test extends advanced_testcase {
      * @param   bool $expected The expected result
      */
     public function test_is_child_of(string $contextpath, string $testpath, bool $testself, bool $expected): void {
-        $context = $this->getMockBuilder(\context::class)
+        $context = $this->getMockBuilder(context::class)
             ->disableOriginalConstructor()
             ->onlyMethods([
                 'get_url',
@@ -5012,7 +5024,7 @@ final class accesslib_test extends advanced_testcase {
         $rcp = new ReflectionProperty($context, '_path');
         $rcp->setValue($context, $contextpath);
 
-        $comparisoncontext = $this->getMockBuilder(\context::class)
+        $comparisoncontext = $this->getMockBuilder(context::class)
             ->disableOriginalConstructor()
             ->onlyMethods([
                 'get_url',
@@ -5056,7 +5068,7 @@ final class accesslib_test extends advanced_testcase {
         $course = $this->getDataGenerator()->create_course(['category' => $cat4->id]);
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
 
-        $modcontext = context_module::instance($forum->cmid);
+        $modcontext = module::instance($forum->cmid);
 
         context_helper::reset_caches();
 
@@ -5088,11 +5100,11 @@ final class accesslib_test extends advanced_testcase {
         $cat1course1forum = $generator->create_module('forum', ['course' => $cat1course1]);
 
         $contexts = (object) [
-            'system' => \context_system::instance(),
-            'cat1' => \context_coursecat::instance($cat1->id),
-            'cat2' => \context_coursecat::instance($cat2->id),
-            'cat1course1' => \context_course::instance($cat1course1->id),
-            'cat1course1forum' => \context_module::instance($cat1course1forum->cmid),
+            'system' => system::instance(),
+            'cat1' => coursecat::instance($cat1->id),
+            'cat2' => coursecat::instance($cat2->id),
+            'cat1course1' => course::instance($cat1course1->id),
+            'cat1course1forum' => module::instance($cat1course1forum->cmid),
         ];
 
         // Test with the 'mod/forum:startdiscussion' capability.
@@ -5175,11 +5187,11 @@ final class accesslib_test extends advanced_testcase {
         $cat1course1forum = $generator->create_module('forum', ['course' => $cat1course1]);
 
         $contexts = (object) [
-            'system' => \context_system::instance(),
-            'cat1' => \context_coursecat::instance($cat1->id),
-            'cat2' => \context_coursecat::instance($cat2->id),
-            'cat1course1' => \context_course::instance($cat1course1->id),
-            'cat1course1forum' => \context_module::instance($cat1course1forum->cmid),
+            'system' => system::instance(),
+            'cat1' => coursecat::instance($cat1->id),
+            'cat2' => coursecat::instance($cat2->id),
+            'cat1course1' => course::instance($cat1course1->id),
+            'cat1course1forum' => module::instance($cat1course1forum->cmid),
         ];
 
         // Test with the 'mod/forum:startdiscussion' capability.
@@ -5249,7 +5261,7 @@ final class accesslib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'), '*', MUST_EXIST);
         $teacher = $this->getDataGenerator()->create_user();
         role_assign($teacherrole->id, $teacher->id, $coursecontext);
@@ -5267,7 +5279,7 @@ final class accesslib_test extends advanced_testcase {
 
         // Guest users should not have any of these perms.
         $this->setUser(0);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         require_all_capabilities($sca, $coursecontext);
     }
 
@@ -5282,7 +5294,7 @@ final class accesslib_test extends advanced_testcase {
         set_config('filternavigationwithsystemcontext', 0);
         // First test passed values are returned if disabled.
         $this->assertNull(context_helper::get_navigation_filter_context(null));
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $filtercontext = context_helper::get_navigation_filter_context($coursecontext);
         $this->assertEquals($coursecontext->id, $filtercontext->id);
 

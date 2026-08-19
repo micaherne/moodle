@@ -24,8 +24,8 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use context;
-use lang_string;
+use core\context;
+use core\lang_string;
 use stdClass;
 
 /**

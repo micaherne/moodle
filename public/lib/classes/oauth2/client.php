@@ -28,8 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/oauthlib.php');
 require_once($CFG->libdir . '/filelib.php');
 
-use moodle_url;
-use moodle_exception;
+use core\url;
+use core\exception\moodle_exception;
 use stdClass;
 
 /**
@@ -76,7 +76,7 @@ class client extends \oauth2_client {
             }
         }
         if (empty($returnurl)) {
-            $returnurl = new moodle_url('/');
+            $returnurl = new url('/');
         }
         $this->basicauth = $issuer->get('basicauth');
         parent::__construct($issuer->get('clientid'), $issuer->get('clientsecret'), $returnurl, $scopes);
@@ -315,7 +315,7 @@ class client extends \oauth2_client {
                     $this->store_user_refresh_token($tokensreceived['refresh_token']);
                 }
                 return true;
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 // The refresh attempt failed either due to an error or a bad request. A bad request could be received
                 // for a number of reasons including expired refresh token (lifetime is not specified in OAuth 2 spec),
                 // scope change or if app access has been revoked manually by the user (tokens revoked).

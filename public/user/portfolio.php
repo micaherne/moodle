@@ -22,10 +22,18 @@
  * @package core_user
  */
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__ . '/../config.php');
 
 if (empty($CFG->enableportfolios)) {
-    throw new \moodle_exception('disabled', 'portfolio');
+    throw new moodle_exception('disabled', 'portfolio');
 }
 
 require_once($CFG->libdir . '/portfoliolib.php');
@@ -35,13 +43,13 @@ $config   = optional_param('config', 0, PARAM_INT);
 $hide     = optional_param('hide', 0, PARAM_INT);
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
 
-$url = new moodle_url('/user/portfolio.php', array('courseid' => $courseid));
+$url = new url('/user/portfolio.php', array('courseid' => $courseid));
 
 if ($config !== 0) {
     $url->param('config', $config);
 }
 if (! $course = $DB->get_record("course", array("id" => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 $user = $USER;
@@ -59,7 +67,7 @@ $display = true; // Set this to false in the conditions to stop processing.
 require_login($course, false);
 
 $PAGE->set_url($url);
-$PAGE->set_context(context_user::instance($user->id));
+$PAGE->set_context(user::instance($user->id));
 $PAGE->set_title($configstr);
 $PAGE->set_heading($fullname);
 $PAGE->set_pagelayout('admin');
@@ -68,7 +76,7 @@ echo $OUTPUT->header();
 $showroles = 1;
 
 if (!empty($config)) {
-    navigation_node::override_active_url(new moodle_url('/user/portfolio.php', array('courseid' => $courseid)));
+    navigation_node::override_active_url(new url('/user/portfolio.php', array('courseid' => $courseid)));
     $instance = portfolio_instance($config);
     $mform = new portfolio_user_form('', array('instance' => $instance, 'userid' => $user->id));
     if ($mform->is_cancelled()) {
@@ -76,11 +84,11 @@ if (!empty($config)) {
         exit;
     } else if ($fromform = $mform->get_data()) {
         if (!confirm_sesskey()) {
-            throw new \moodle_exception('confirmsesskeybad', '', $baseurl);
+            throw new moodle_exception('confirmsesskeybad', '', $baseurl);
         }
         // This branch is where you process validated data.
         $instance->set_user_config($fromform, $USER->id);
-        core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
         redirect($baseurl, get_string('instancesaved', 'portfolio'), 3);
 
         exit;
@@ -95,7 +103,7 @@ if (!empty($config)) {
 } else if (!empty($hide)) {
     $instance = portfolio_instance($hide);
     $instance->set_user_config(array('visible' => !$instance->get_user_config('visible', $USER->id)), $USER->id);
-    core_plugin_manager::reset_caches();
+    plugin_manager::reset_caches();
 }
 
 if ($display) {
@@ -105,7 +113,7 @@ if ($display) {
     echo html_writer::tag('p', $introstr);
 
     if (!$instances = portfolio_instances(true, false)) {
-        throw new \moodle_exception('noinstances', 'portfolio', $CFG->wwwroot . '/user/view.php');
+        throw new moodle_exception('noinstances', 'portfolio', $CFG->wwwroot . '/user/view.php');
     }
 
     $table = new html_table();
@@ -118,7 +126,7 @@ if ($display) {
 
         // Configure icon.
         if ($i->has_user_config()) {
-            $configurl = new moodle_url($baseurl);
+            $configurl = new url($baseurl);
             $configurl->param('config', $i->get('id'));
             $actions .= html_writer::link($configurl, $OUTPUT->pix_icon('t/edit', get_string('configure', 'portfolio')));
         }
@@ -126,7 +134,7 @@ if ($display) {
         // Hide/show icon.
         $visible = $i->get_user_config('visible', $USER->id);
         $visibilityaction = $visible ? 'hide' : 'show';
-        $showhideurl = new moodle_url($baseurl);
+        $showhideurl = new url($baseurl);
         $showhideurl->param('hide', $i->get('id'));
         $actions .= html_writer::link($showhideurl, $OUTPUT->pix_icon('t/' . $visibilityaction, get_string($visibilityaction)));
 

@@ -17,6 +17,7 @@
 namespace core\route\api;
 
 use core\exception;
+use core\exception\moodle_exception;
 use core\param;
 use core\router\route;
 use core\output\mustache_template_source_loader;
@@ -130,7 +131,7 @@ class templates {
                 includecomments: $comments,
                 lang: $request->getHeaderLine('language'),
             );
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             throw new exception\not_found_exception('template', "{$component}/{$identifier}");
         }
 

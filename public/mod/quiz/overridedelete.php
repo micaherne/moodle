@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
 use mod_quiz\form\edit_override_form;
 use mod_quiz\quiz_settings;
 
@@ -45,12 +47,12 @@ require_login($course, false, $cm);
 // Check the user has the required capabilities to modify an override.
 $manager->require_manage_capability();
 if (!$manager->can_view_override($override, $course, $cm)) {
-    throw new \moodle_exception('invalidoverrideid', 'quiz');
+    throw new moodle_exception('invalidoverrideid', 'quiz');
 }
 
-$url = new moodle_url('/mod/quiz/overridedelete.php', ['id' => $override->id]);
-$confirmurl = new moodle_url($url, ['id' => $override->id, 'confirm' => 1]);
-$cancelurl = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
+$url = new url('/mod/quiz/overridedelete.php', ['id' => $override->id]);
+$confirmurl = new url($url, ['id' => $override->id, 'confirm' => 1]);
+$cancelurl = new url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
 
 if (!empty($override->userid)) {
     $cancelurl->param('mode', 'user');

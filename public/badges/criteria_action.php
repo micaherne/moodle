@@ -24,6 +24,11 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use \core_badges\badge;
+use core\navigation\navigation_node;
+use core\output\single_button;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
@@ -35,10 +40,10 @@ $confirm = optional_param('confirm', 0, PARAM_BOOL);
 
 require_login();
 
-$return = new moodle_url('/badges/criteria.php', array('id' => $badgeid));
+$return = new url('/badges/criteria.php', array('id' => $badgeid));
 $badge = new badge($badgeid);
 $context = $badge->get_context();
-$navurl = new moodle_url('/badges/index.php', array('type' => $badge->type));
+$navurl = new url('/badges/index.php', array('type' => $badge->type));
 
 // Make sure that no actions available for locked or active badges.
 if ($badge->is_active() || $badge->is_locked()) {
@@ -47,7 +52,7 @@ if ($badge->is_active() || $badge->is_locked()) {
 
 if ($badge->type == BADGE_TYPE_COURSE) {
     require_login($badge->courseid);
-    $navurl = new moodle_url('/badges/index.php', array('type' => $badge->type, 'id' => $badge->courseid));
+    $navurl = new url('/badges/index.php', array('type' => $badge->type, 'id' => $badge->courseid));
     $PAGE->set_pagelayout('standard');
     navigation_node::override_active_url($navurl);
 } else {
@@ -70,7 +75,7 @@ if ($delete && has_capability('moodle/badges:configurecriteria', $context)) {
         $strdeletecheckfull = get_string('delcritconfirm', 'badges');
 
         echo $OUTPUT->header();
-        $formcontinue = new single_button(new moodle_url('/badges/criteria_action.php', $optionsyes), get_string('yes'));
+        $formcontinue = new single_button(new url('/badges/criteria_action.php', $optionsyes), get_string('yes'));
         $formcancel = new single_button($return, get_string('no'), 'get');
         echo $OUTPUT->confirm($strdeletecheckfull, $formcontinue, $formcancel);
         echo $OUTPUT->footer();

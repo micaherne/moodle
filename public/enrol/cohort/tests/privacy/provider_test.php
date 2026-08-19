@@ -26,6 +26,9 @@ namespace enrol_cohort\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\context\coursecat;
+use core\output\progress_trace\null_progress_trace;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\approved_contextlist;
 use enrol_cohort\privacy\provider;
@@ -45,7 +48,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $DB;
 
         $this->resetAfterTest();
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         $cohortplugin = enrol_get_plugin('cohort');
         $user1 = $this->getDataGenerator()->create_user();
@@ -54,7 +57,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $group1 = $this->getDataGenerator()->create_group(array('courseid' => $course1->id));
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         $cohort1 = $this->getDataGenerator()->create_cohort(
-            array('contextid' => \context_coursecat::instance($cat1->id)->id));
+            array('contextid' => coursecat::instance($cat1->id)->id));
         $cohortplugin->add_instance($course1, array(
             'customint1' => $cohort1->id,
             'roleid' => $studentrole->id,
@@ -71,7 +74,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
             'component' => 'enrol_cohort')
         ));
         // Check context course fro provider to user1.
-        $context = \context_course::instance($course1->id);
+        $context = course::instance($course1->id);
         $contextlist = provider::get_contexts_for_userid($user1->id);
         $this->assertEquals($context->id, $contextlist->current()->id);
     }
@@ -83,7 +86,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $DB;
 
         $this->resetAfterTest();
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         $cohortplugin = enrol_get_plugin('cohort');
         $user1 = $this->getDataGenerator()->create_user();
@@ -92,7 +95,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $group1 = $this->getDataGenerator()->create_group(array('courseid' => $course1->id));
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         $cohort1 = $this->getDataGenerator()->create_cohort(
-            array('contextid' => \context_coursecat::instance($cat1->id)->id));
+            array('contextid' => coursecat::instance($cat1->id)->id));
         $cohortplugin->add_instance($course1, array(
             'customint1' => $cohort1->id,
             'roleid' => $studentrole->id,
@@ -138,7 +141,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $DB;
 
         $this->resetAfterTest();
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         $cohortplugin = enrol_get_plugin('cohort');
         $user1 = $this->getDataGenerator()->create_user();
@@ -149,7 +152,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $group1 = $this->getDataGenerator()->create_group(array('courseid' => $course1->id));
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         $cohort1 = $this->getDataGenerator()->create_cohort(
-            array('contextid' => \context_coursecat::instance($cat1->id)->id));
+            array('contextid' => coursecat::instance($cat1->id)->id));
         $cohortplugin->add_instance($course1, array(
             'customint1' => $cohort1->id,
             'roleid' => $studentrole->id,
@@ -168,7 +171,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
                                      WHERE g.courseid = ?", [$course1->id])
         );
 
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         provider::delete_data_for_all_users_in_context($coursecontext1);
         $this->assertEquals(
             0,
@@ -186,7 +189,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $DB;
 
         $this->resetAfterTest();
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         $cohortplugin = enrol_get_plugin('cohort');
         $user1 = $this->getDataGenerator()->create_user();
@@ -199,7 +202,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $group2 = $this->getDataGenerator()->create_group(array('courseid' => $course2->id));
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         $cohort1 = $this->getDataGenerator()->create_cohort(
-            array('contextid' => \context_coursecat::instance($cat1->id)->id));
+            array('contextid' => coursecat::instance($cat1->id)->id));
         $cohortplugin->add_instance($course1, array(
             'customint1' => $cohort1->id,
             'roleid' => $studentrole->id,
@@ -236,8 +239,8 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         );
 
         $this->setUser($user1);
-        $coursecontext1 = \context_course::instance($course1->id);
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext1 = course::instance($course1->id);
+        $coursecontext2 = course::instance($course2->id);
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist($user1, 'enrol_cohort',
                 [$coursecontext1->id, $coursecontext2->id]);
         provider::delete_data_for_user($approvedcontextlist);
@@ -267,7 +270,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $this->resetAfterTest();
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         $cohortplugin = enrol_get_plugin('cohort');
 
@@ -286,7 +289,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
 
         $cohort1 = $this->getDataGenerator()->create_cohort(
-                array('contextid' => \context_coursecat::instance($cat1->id)->id));
+                array('contextid' => coursecat::instance($cat1->id)->id));
         $cohortplugin->add_instance($course1, array(
             'customint1' => $cohort1->id,
             'roleid' => $studentrole->id,
@@ -322,7 +325,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
                                          WHERE g.courseid = ?", [$course2->id])
         );
 
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         $approveduserlist = new \core_privacy\local\request\approved_userlist($coursecontext1, 'enrol_cohort',
                 [$user1->id, $user2->id]);
@@ -356,7 +359,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $this->resetAfterTest();
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         $cohortplugin = enrol_get_plugin('cohort');
 
@@ -365,7 +368,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $group1 = $this->getDataGenerator()->create_group(array('courseid' => $course1->id));
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         $cohort1 = $this->getDataGenerator()->create_cohort(
-                array('contextid' => \context_coursecat::instance($cat1->id)->id));
+                array('contextid' => coursecat::instance($cat1->id)->id));
         $cohortplugin->add_instance($course1, array(
             'customint1' => $cohort1->id,
             'roleid' => $studentrole->id,
@@ -385,7 +388,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
             'component' => 'enrol_cohort')
         ));
 
-        $context = \context_course::instance($course1->id);
+        $context = course::instance($course1->id);
 
         $userlist = new \core_privacy\local\request\userlist($context, 'enrol_cohort');
         \enrol_cohort\privacy\provider::get_users_in_context($userlist);

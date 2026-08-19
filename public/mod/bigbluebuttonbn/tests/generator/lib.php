@@ -24,7 +24,12 @@
  * @author     Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\plugin_manager;
 use core\plugininfo\mod;
+use core\url;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\config;
 use mod_bigbluebuttonbn\logger;
@@ -50,7 +55,7 @@ class mod_bigbluebuttonbn_generator extends \testing_module_generator {
      */
     public function create_instance($record = null, ?array $options = null) {
         // Prior to creating the instance, make sure that the BigBlueButton module is enabled.
-        $modules = \core_plugin_manager::instance()->get_plugins_of_type('mod');
+        $modules = plugin_manager::instance()->get_plugins_of_type('mod');
         if (!$modules['bigbluebuttonbn']->is_enabled()) {
             mod::enable_plugin('bigbluebuttonbn', true);
         }
@@ -99,7 +104,7 @@ class mod_bigbluebuttonbn_generator extends \testing_module_generator {
             global $USER;
             // Here we replace the original presentation file with a draft area in which we store this file.
             $draftareaid = file_get_unused_draft_itemid();
-            $bbbfilerecord['contextid'] = context_user::instance($USER->id)->id;
+            $bbbfilerecord['contextid'] = user::instance($USER->id)->id;
             $bbbfilerecord['component'] = 'user';
             $bbbfilerecord['filearea'] = 'draft';
             $bbbfilerecord['itemid'] = $draftareaid;
@@ -178,7 +183,7 @@ class mod_bigbluebuttonbn_generator extends \testing_module_generator {
             switch ($type) {
                 case 'role':
                     if (!array_key_exists($name, $roles)) {
-                        throw new \coding_exception("Unknown role '{$name}'");
+                        throw new coding_exception("Unknown role '{$name}'");
                     }
                     $participant->selectionid = $roles[$name];
 
@@ -187,7 +192,7 @@ class mod_bigbluebuttonbn_generator extends \testing_module_generator {
                     $participant->selectionid = $DB->get_field('user', 'id', ['username' => $name], MUST_EXIST);
                     break;
                 default:
-                    throw new \coding_exception("Unknown participant type: '{$type}'");
+                    throw new coding_exception("Unknown participant type: '{$type}'");
             }
 
             $configuration[] = $participant;
@@ -263,7 +268,7 @@ class mod_bigbluebuttonbn_generator extends \testing_module_generator {
             'sequence' => 1,
             'meta' => [
                 'bn-presenter-name' => $data['presentername'] ?? 'Fake presenter',
-                'bbb-recording-ready-url' => new moodle_url('/mod/bigbluebuttonbn/bbb_broker.php', [
+                'bbb-recording-ready-url' => new url('/mod/bigbluebuttonbn/bbb_broker.php', [
                     'action' => 'recording_ready',
                     'bigbluebuttonbn' => $instance->get_instance_id()
                 ]),
@@ -332,8 +337,8 @@ class mod_bigbluebuttonbn_generator extends \testing_module_generator {
      * @param array $params
      * @return moodle_url
      */
-    protected function get_mocked_server_url(string $endpoint = '', array $params = []): moodle_url {
-        return new moodle_url(TEST_MOD_BIGBLUEBUTTONBN_MOCK_SERVER . '/' . $endpoint, $params);
+    protected function get_mocked_server_url(string $endpoint = '', array $params = []): url {
+        return new url(TEST_MOD_BIGBLUEBUTTONBN_MOCK_SERVER . '/' . $endpoint, $params);
     }
 
     /**

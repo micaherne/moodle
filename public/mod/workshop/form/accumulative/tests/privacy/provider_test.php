@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\module;
 use core_privacy\local\request\writer;
 use core_privacy\tests\provider_testcase;
 
@@ -134,12 +135,12 @@ final class provider_test extends provider_testcase {
         ]);
 
         $contextlist = new \core_privacy\local\request\approved_contextlist($this->student2, 'mod_workshop', [
-            \context_module::instance($this->workshop11->cmid)->id,
+            module::instance($this->workshop11->cmid)->id,
         ]);
 
         \mod_workshop\privacy\provider::export_user_data($contextlist);
 
-        $writer = writer::with_context(\context_module::instance($this->workshop11->cmid));
+        $writer = writer::with_context(module::instance($this->workshop11->cmid));
 
         $form = $writer->get_data([
             get_string('myassessments', 'mod_workshop'),

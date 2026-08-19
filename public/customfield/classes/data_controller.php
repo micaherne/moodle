@@ -17,6 +17,10 @@
 namespace core_customfield;
 
 use backup_nested_element;
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_customfield\output\field_data;
 
 /**
@@ -87,7 +91,7 @@ abstract class data_controller {
         }
 
         if (!$field && empty($record->fieldid)) {
-            throw new \coding_exception('Not enough parameters to initialise data_controller - unknown field');
+            throw new coding_exception('Not enough parameters to initialise data_controller - unknown field');
         }
         if (!$field) {
             $field = field_controller::create($record->fieldid);
@@ -96,12 +100,12 @@ abstract class data_controller {
             $record->fieldid = $field->get('id');
         }
         if ($field->get('id') != $record->fieldid) {
-            throw new \coding_exception('Field id from the record does not match field from the parameter');
+            throw new coding_exception('Field id from the record does not match field from the parameter');
         }
         $type = $field->get('type');
         $customfieldtype = "\\customfield_{$type}\\data_controller";
         if (!class_exists($customfieldtype) || !is_subclass_of($customfieldtype, self::class)) {
-            throw new \moodle_exception('errorfieldtypenotfound', 'core_customfield', '', s($type));
+            throw new moodle_exception('errorfieldtypenotfound', 'core_customfield', '', s($type));
         }
 
         $category = $field->get_category();
@@ -331,14 +335,14 @@ abstract class data_controller {
      *
      * @return \context
      */
-    public function get_context(): \context {
+    public function get_context(): context {
         if ($this->get('contextid')) {
-            return \context::instance_by_id($this->get('contextid'));
+            return context::instance_by_id($this->get('contextid'));
         } else if ($this->get('instanceid')) {
             return $this->get_field()->get_handler()->get_instance_context($this->get('instanceid'));
         } else {
             // Context is not yet known (for example, entity is not yet created).
-            return \context_system::instance();
+            return system::instance();
         }
     }
 

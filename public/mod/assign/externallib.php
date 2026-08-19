@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\user;
 use core_external\external_files;
 use core_external\external_format_value;
 use core_external\external_function_parameters;
@@ -89,7 +95,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
         $cms = $DB->get_records_sql($sql, $placeholders);
         foreach ($cms as $cm) {
             try {
-                $context = context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 self::validate_context($context);
                 $assign = new assign($context, null, null);
                 $assign->require_view_grades();
@@ -311,7 +317,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
         foreach ($courseids as $cid) {
 
             try {
-                $context = context_course::instance($cid);
+                $context = course::instance($cid);
                 self::validate_context($context);
 
                 // Check if this course was already loaded (by enrol_get_users_courses).
@@ -376,7 +382,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
             // Get a list of assignments for the course.
             if ($modules = get_coursemodules_in_course('assign', $courses[$id]->id, $extrafields)) {
                 foreach ($modules as $module) {
-                    $context = context_module::instance($module->id);
+                    $context = module::instance($module->id);
                     try {
                         self::validate_context($context);
                         require_capability('mod/assign:view', $context);
@@ -757,7 +763,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
         $assigns = array();
         foreach ($cms as $cm) {
             try {
-                $context = context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 self::validate_context($context);
                 $assign = new assign($context, null, null);
                 $assign->require_view_grades();
@@ -1116,7 +1122,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
         $cms = $DB->get_records_sql($sql, $placeholders);
         foreach ($cms as $cm) {
             try {
-                $context = context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 self::validate_context($context);
                 require_capability('mod/assign:grade', $context);
             } catch (Exception $e) {
@@ -1268,7 +1274,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
         $cms = $DB->get_records_sql($sql, $placeholders);
         foreach ($cms as $cm) {
             try {
-                $context = context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 self::validate_context($context);
                 require_capability('mod/assign:revealidentities', $context);
             } catch (Exception $e) {
@@ -2371,8 +2377,8 @@ class mod_assign_external extends \mod_assign\external\external_api {
         if (empty($params['userid'])) {
             $params['userid'] = $USER->id;
         }
-        $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($params['userid'], '*', MUST_EXIST);
+        user::require_active_user($user);
 
         if (!$assign->can_view_submission($user->id)) {
             throw new required_capability_exception($context, 'mod/assign:viewgrades', 'nopermission', '');
@@ -2760,7 +2766,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
                         // If user details are not available (e.g. access prevented), fall back to minimal data.
                         $userdetails = ['id' => $record->id];
                     } else {
-                        $userdetails['initials'] = core_user::get_initials($record);
+                        $userdetails['initials'] = user::get_initials($record);
                     }
                 } else {
                     $userdetails = ['id' => $record->id];
@@ -2946,7 +2952,7 @@ class mod_assign_external extends \mod_assign\external\external_api {
         // hasn't asked for user details to be embedded.
         if (!$assign->is_blind_marking() && $embeduser) {
             if ($userdetails = \core\user::get_user_details($participant, $course)) {
-                $userdetails['initials'] = core_user::get_initials($participant);
+                $userdetails['initials'] = user::get_initials($participant);
                 $return['user'] = $userdetails;
             }
         }

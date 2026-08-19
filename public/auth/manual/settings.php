@@ -22,12 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
     // Introductory explanation.
-    $settings->add(new admin_setting_heading('auth_manual/pluginname',
+    $settings->add(new heading('auth_manual/pluginname',
             new lang_string('passwdexpire_settings', 'auth_manual'),
             new lang_string('auth_manualdescription', 'auth_manual')));
 
@@ -36,7 +40,7 @@ if ($ADMIN->fulltree) {
         new lang_string('yes'),
     );
 
-    $settings->add(new admin_setting_configselect('auth_manual/expiration',
+    $settings->add(new configselect('auth_manual/expiration',
         new lang_string('expiration', 'auth_manual'),
         new lang_string('expiration_desc', 'auth_manual'), 0, $expirationoptions));
 
@@ -50,7 +54,7 @@ if ($ADMIN->fulltree) {
         '365' => new lang_string('numdays', '', 365),
     );
 
-    $settings->add(new admin_setting_configselect('auth_manual/expirationtime',
+    $settings->add(new configselect('auth_manual/expirationtime',
         new lang_string('passwdexpiretime', 'auth_manual'),
         new lang_string('passwdexpiretime_desc', 'auth_manual'), 30, $expirationtimeoptions));
 
@@ -67,7 +71,7 @@ if ($ADMIN->fulltree) {
         '14' => new lang_string('numdays', '', 14),
     );
 
-    $settings->add(new admin_setting_configselect('auth_manual/expiration_warning',
+    $settings->add(new configselect('auth_manual/expiration_warning',
         new lang_string('expiration_warning', 'auth_manual'),
         new lang_string('expiration_warning_desc', 'auth_manual'), 0, $expirationwarningoptions));
 

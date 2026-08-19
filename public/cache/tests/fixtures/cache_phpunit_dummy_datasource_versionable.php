@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core_cache\definition;
 use core_cache\versionable_data_source_interface;
 
 /**
@@ -38,7 +39,7 @@ class cache_phpunit_dummy_datasource_versionable extends cache_phpunit_dummy_dat
      * @param cache_definition $definition
      * @return cache_phpunit_dummy_datasource New object
      */
-    public static function get_instance_for_cache(cache_definition $definition): cache_phpunit_dummy_datasource_versionable {
+    public static function get_instance_for_cache(definition $definition): cache_phpunit_dummy_datasource_versionable {
         self::$lastinstance = new cache_phpunit_dummy_datasource_versionable();
         return self::$lastinstance;
     }

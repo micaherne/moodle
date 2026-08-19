@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once("$CFG->dirroot/rating/lib.php");
 
+use core\exception\moodle_exception;
+use core\output\user_picture;
 use core_external\external_api;
 use core_external\external_value;
 use core_external\external_single_structure;

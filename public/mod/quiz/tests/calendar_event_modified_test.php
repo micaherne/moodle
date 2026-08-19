@@ -16,6 +16,8 @@
 
 namespace mod_quiz;
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -238,7 +240,7 @@ final class calendar_event_modified_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $generator->create_role();
         $now = time();
         $timeopen = (new \DateTime())->setTimestamp($now);
@@ -282,7 +284,7 @@ final class calendar_event_modified_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $generator->create_role();
         $now = time();
         $timeopen = (new \DateTime())->setTimestamp($now);
@@ -464,7 +466,7 @@ final class calendar_event_modified_test extends \advanced_testcase {
         $teacher = $generator->create_user();
         $student = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $generator->create_role();
         $now = time();
         $timelimit = 600;

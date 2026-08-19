@@ -20,7 +20,7 @@ use auth_oauth2\linked_login;
 use core\exception\coding_exception;
 use core\task\scheduled_task;
 use dml_exception;
-use lang_string;
+use core\lang_string;
 
 /**
  * Task to delete expired confirmation tokens.

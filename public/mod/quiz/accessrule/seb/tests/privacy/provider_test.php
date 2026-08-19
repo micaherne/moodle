@@ -25,6 +25,7 @@
 
 namespace quizaccess_seb\privacy;
 
+use core\context\module;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
@@ -79,7 +80,7 @@ final class provider_test extends provider_testcase {
 
         $contexts = provider::get_contexts_for_userid($this->user->id);
         $contextids = $contexts->get_contextids();
-        $this->assertEquals(\context_module::instance($this->quiz->cmid)->id, reset($contextids));
+        $this->assertEquals(module::instance($this->quiz->cmid)->id, reset($contextids));
     }
 
     /**
@@ -100,7 +101,7 @@ final class provider_test extends provider_testcase {
     public function test_export_user_data(): void {
         $this->setup_test_data();
 
-        $context = \context_module::instance($this->quiz->cmid);
+        $context = module::instance($this->quiz->cmid);
 
         // Add another course_module of a differenty type - doing this lets us
         // test that the data exporter is correctly limiting its selection to
@@ -164,7 +165,7 @@ final class provider_test extends provider_testcase {
         $this->setup_test_data();
 
         // Create empty userlist with quiz module context.
-        $userlist = new userlist(\context_module::instance($this->quiz->cmid), 'quizaccess_seb');
+        $userlist = new userlist(module::instance($this->quiz->cmid), 'quizaccess_seb');
 
         // Test that the userlist is populated with expected user/s.
         provider::get_users_in_context($userlist);
@@ -177,7 +178,7 @@ final class provider_test extends provider_testcase {
     public function test_delete_data_for_users(): void {
         $this->setup_test_data();
 
-        $approveduserlist = new approved_userlist(\context_module::instance($this->quiz->cmid),
+        $approveduserlist = new approved_userlist(module::instance($this->quiz->cmid),
                 'quizaccess_seb', [$this->user->id]);
 
         // Test data exists.
@@ -198,7 +199,7 @@ final class provider_test extends provider_testcase {
     public function test_delete_data_for_user(): void {
         $this->setup_test_data();
 
-        $context = \context_module::instance($this->quiz->cmid);
+        $context = module::instance($this->quiz->cmid);
         $approvedcontextlist = new approved_contextlist($this->user,
                 'quizaccess_seb', [$context->id]);
 
@@ -220,7 +221,7 @@ final class provider_test extends provider_testcase {
     public function test_delete_data_for_all_users_in_context(): void {
         $this->setup_test_data();
 
-        $context = \context_module::instance($this->quiz->cmid);
+        $context = module::instance($this->quiz->cmid);
 
         // Test data exists.
         $record = seb_quiz_settings::get_record(['quizid' => $this->quiz->id]);

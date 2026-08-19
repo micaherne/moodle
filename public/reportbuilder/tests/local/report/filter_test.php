@@ -19,8 +19,8 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\report;
 
 use advanced_testcase;
-use lang_string;
-use moodle_exception;
+use core\lang_string;
+use core\exception\moodle_exception;
 use core_reportbuilder\local\filters\text;
 
 /**

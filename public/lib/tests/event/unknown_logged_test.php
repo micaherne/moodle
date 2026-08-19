@@ -16,6 +16,8 @@
 
 namespace core\event;
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/../fixtures/event_fixtures.php');
@@ -31,7 +33,7 @@ require_once(__DIR__.'/../fixtures/event_fixtures.php');
 final class unknown_logged_test extends \advanced_testcase {
 
     public function test_restore_event(): void {
-        $event1 = \core_tests\event\unittest_executed::create(array('context' => \context_system::instance(), 'other' => array('sample' => 1, 'xx' => 10)));
+        $event1 = \core_tests\event\unittest_executed::create(array('context' => system::instance(), 'other' => array('sample' => 1, 'xx' => 10)));
         $data1 = $event1->get_data();
 
         $data1['eventname'] = '\mod_xx\event\xx_yy';

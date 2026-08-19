@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -44,7 +47,7 @@ class core_webservice_generator extends component_generator_base {
 
         foreach ($requiredfields as $fieldname) {
             if (!array_key_exists($fieldname, $data)) {
-                throw new \coding_exception("Field '{$fieldname}' missing when creating new service");
+                throw new coding_exception("Field '{$fieldname}' missing when creating new service");
             }
         }
 
@@ -82,7 +85,7 @@ class core_webservice_generator extends component_generator_base {
 
         foreach ($requiredfields as $fieldname) {
             if (!array_key_exists($fieldname, $data)) {
-                throw new \coding_exception("Field '{$fieldname}' missing when creating new service");
+                throw new coding_exception("Field '{$fieldname}' missing when creating new service");
             }
         }
 
@@ -110,12 +113,12 @@ class core_webservice_generator extends component_generator_base {
 
         foreach ($requiredfields as $fieldname) {
             if (!array_key_exists($fieldname, $data)) {
-                throw new \coding_exception("Field '{$fieldname}' missing when creating new service");
+                throw new coding_exception("Field '{$fieldname}' missing when creating new service");
             }
         }
 
         $optionalfields = [
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'validuntil' => 0,
             'iprestriction' => '',
             'name' => '',

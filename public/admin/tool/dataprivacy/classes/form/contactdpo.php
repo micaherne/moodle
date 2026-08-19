@@ -17,10 +17,10 @@
 
 namespace tool_dataprivacy\form;
 
-use context;
-use context_user;
-use moodle_exception;
-use moodle_url;
+use core\context;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
 use core_form\dynamic_form;
 use tool_dataprivacy\api;
 use tool_dataprivacy\external;
@@ -57,7 +57,7 @@ class contactdpo extends dynamic_form {
     protected function get_context_for_dynamic_submission(): context {
         global $USER;
 
-        return context_user::instance($USER->id);
+        return user::instance($USER->id);
     }
 
     /**
@@ -92,9 +92,9 @@ class contactdpo extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         global $USER;
 
-        return new moodle_url('/user/profile.php', ['id' => $USER->id]);
+        return new url('/user/profile.php', ['id' => $USER->id]);
     }
 }

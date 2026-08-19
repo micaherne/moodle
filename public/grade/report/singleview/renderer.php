@@ -22,7 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
 use core\output\comboboxsearch;
+use core\output\plugin_renderer_base;
+use core\url;
+use core\user;
 use gradereport_singleview\report\singleview;
 
 /**
@@ -46,7 +50,7 @@ class gradereport_singleview_renderer extends plugin_renderer_base {
      */
     public function users_selector(object $course, ?int $userid = null, ?int $groupid = null): string {
         $courserenderer = $this->page->get_renderer('core', 'course');
-        $resetlink = new moodle_url('/grade/report/singleview/index.php', [
+        $resetlink = new url('/grade/report/singleview/index.php', [
             'id' => $course->id,
             'group' => $groupid ?? 0,
             'reset' => 1,
@@ -54,7 +58,7 @@ class gradereport_singleview_renderer extends plugin_renderer_base {
         $usersearch = '';
 
         if ($userid) {
-            $user = core_user::get_user($userid);
+            $user = user::get_user($userid);
             $usersearch = fullname($user);
         }
 
@@ -127,7 +131,7 @@ class gradereport_singleview_renderer extends plugin_renderer_base {
      * @return string The raw HTML to render.
      * @throws moodle_exception
      */
-    public function report_navigation(object $gpr, int $courseid, \context_course $context, singleview $report,
+    public function report_navigation(object $gpr, int $courseid, course $context, singleview $report,
                                       ?int $groupid, string $itemtype, int $itemid): string {
 
         $navigation = '';
@@ -152,7 +156,7 @@ class gradereport_singleview_renderer extends plugin_renderer_base {
 
         if ($i > 0) {
             $navparams['itemid'] = $reloptionssorting[$i - 1];
-            $link = (new moodle_url('/grade/report/singleview/index.php', $navparams))
+            $link = (new url('/grade/report/singleview/index.php', $navparams))
                 ->out(false);
             $navigationdata['previoususer'] = [
                 'name' => $reloptions[$navparams['itemid']],
@@ -162,7 +166,7 @@ class gradereport_singleview_renderer extends plugin_renderer_base {
         }
         if ($i < count($reloptionssorting) - 1) {
             $navparams['itemid'] = $reloptionssorting[$i + 1];
-            $link = (new moodle_url('/grade/report/singleview/index.php', $navparams))
+            $link = (new url('/grade/report/singleview/index.php', $navparams))
                 ->out(false);
             $navigationdata['nextuser'] = [
                 'name' => $reloptions[$navparams['itemid']],

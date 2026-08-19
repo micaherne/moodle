@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\pix_icon;
+use core\url;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -58,7 +62,7 @@ class core_tag_collections_table extends html_table {
         foreach ($tagcolls as $tagcoll) {
             $actions = '';
             $name = core_tag_collection::display_name($tagcoll);
-            $url = new moodle_url($pageurl, array('sesskey' => sesskey(), 'tc' => $tagcoll->id));
+            $url = new url($pageurl, array('sesskey' => sesskey(), 'tc' => $tagcoll->id));
             if (!$tagcoll->isdefault) {
                 // Move up.
                 if ($idx > 1) {

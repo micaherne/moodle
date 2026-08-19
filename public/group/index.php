@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package   core_group
  */
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 
@@ -44,7 +49,7 @@ $returnurl = $CFG->wwwroot.'/group/index.php?id='.$courseid;
 // check the course id is valid.
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 
-$url = new moodle_url('/group/index.php', array('id' => $courseid));
+$url = new url('/group/index.php', array('id' => $courseid));
 navigation_node::override_active_url($url);
 if ($userid) {
     $url->param('user', $userid);
@@ -57,7 +62,7 @@ $PAGE->set_url($url);
 // Make sure that the user has permissions to manage groups.
 require_login($course);
 
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/course:managegroups', $context);
 
 $PAGE->requires->js('/group/clientlib.js', true);
@@ -70,7 +75,7 @@ if (!$singlegroup) {
         case 'showgroupsettingsform':
         case 'showaddmembersform':
         case 'updatemembers':
-            throw new \moodle_exception('errorselectone', 'group', $returnurl);
+            throw new moodle_exception('errorselectone', 'group', $returnurl);
     }
 }
 
@@ -120,26 +125,26 @@ switch ($action) {
 
     case 'deletegroup':
         if (count($groupids) == 0) {
-            throw new \moodle_exception('errorselectsome', 'group', $returnurl);
+            throw new moodle_exception('errorselectsome', 'group', $returnurl);
         }
         $groupidlist = implode(',', $groupids);
-        redirect(new moodle_url('/group/delete.php', array('courseid' => $courseid, 'groups' => $groupidlist)));
+        redirect(new url('/group/delete.php', array('courseid' => $courseid, 'groups' => $groupidlist)));
         break;
 
     case 'showcreateorphangroupform':
-        redirect(new moodle_url('/group/group.php', array('courseid' => $courseid)));
+        redirect(new url('/group/group.php', array('courseid' => $courseid)));
         break;
 
     case 'showautocreategroupsform':
-        redirect(new moodle_url('/group/autogroup.php', array('courseid' => $courseid)));
+        redirect(new url('/group/autogroup.php', array('courseid' => $courseid)));
         break;
 
     case 'showimportgroups':
-        redirect(new moodle_url('/group/import.php', array('id' => $courseid)));
+        redirect(new url('/group/import.php', array('id' => $courseid)));
         break;
 
     case 'showgroupsettingsform':
-        redirect(new moodle_url('/group/group.php', array('courseid' => $courseid, 'id' => $groupids[0])));
+        redirect(new url('/group/group.php', array('courseid' => $courseid, 'id' => $groupids[0])));
         break;
 
     case 'updategroups': // Currently reloading.
@@ -149,7 +154,7 @@ switch ($action) {
         break;
 
     case 'showaddmembersform':
-        redirect(new moodle_url('/group/members.php', array('group' => $groupids[0])));
+        redirect(new url('/group/members.php', array('group' => $groupids[0])));
         break;
 
     case 'updatemembers': // Currently reloading.
@@ -170,7 +175,7 @@ switch ($action) {
         break;
 
     default: // ERROR.
-        throw new \moodle_exception('unknowaction', '', $returnurl);
+        throw new moodle_exception('unknowaction', '', $returnurl);
         break;
 }
 

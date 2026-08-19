@@ -16,6 +16,7 @@
 
 namespace tool_admin_presets\local\action;
 
+use core\url;
 use stdClass;
 use tool_admin_presets\form\continue_form;
 
@@ -46,7 +47,7 @@ class rollback extends base {
         foreach ($applications as $application) {
             $format = get_string('strftimedatetime', 'langconfig');
             $user = $DB->get_record('user', ['id' => $application->userid]);
-            $rollbacklink = new \moodle_url(
+            $rollbacklink = new url(
                 '/admin/tool/admin_presets/index.php',
                 ['action' => 'rollback', 'mode' => 'execute', 'id' => $application->id, 'sesskey' => sesskey()]
             );
@@ -61,7 +62,7 @@ class rollback extends base {
         $this->outputs .= '<br/>' . $OUTPUT->heading(get_string('presetname', 'tool_admin_presets') . ': ' . $preset->name, 3);
         $this->outputs = $OUTPUT->render_from_template('tool_admin_presets/preset_applications_list', $context);
 
-        $url = new \moodle_url('/admin/tool/admin_presets/index.php');
+        $url = new url('/admin/tool/admin_presets/index.php');
         $this->moodleform = new continue_form($url);
     }
 
@@ -98,7 +99,7 @@ class rollback extends base {
         $data->beforeapplying = true;
         $this->outputs = $OUTPUT->render_from_template('tool_admin_presets/settings_rollback', $data);
 
-        $url = new \moodle_url('/admin/tool/admin_presets/index.php');
+        $url = new url('/admin/tool/admin_presets/index.php');
         $this->moodleform = new continue_form($url);
     }
 

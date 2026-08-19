@@ -24,6 +24,9 @@
  */
 namespace mod_workshop;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\url;
 use testable_workshop;
 use workshop;
 use workshop_example_assessment;
@@ -334,7 +337,7 @@ final class locallib_test extends \advanced_testcase {
         $percent = -7.098;
 
         // exercise SUT
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $part = workshop::percent_to_value($percent, $total);
     }
 
@@ -345,7 +348,7 @@ final class locallib_test extends \advanced_testcase {
         $percent = 121.08;
 
         // exercise SUT
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $part = workshop::percent_to_value($percent, $total);
     }
 
@@ -389,7 +392,7 @@ final class locallib_test extends \advanced_testcase {
         $a = $this->workshop->prepare_example_assessment($fakerawrecord);
         // verify
         $this->assertTrue($a instanceof workshop_example_assessment);
-        $this->assertTrue($a->url instanceof \moodle_url);
+        $this->assertTrue($a->url instanceof url);
 
         // modify setup
         $fakerawrecord->weight = 1;
@@ -469,7 +472,7 @@ final class locallib_test extends \advanced_testcase {
 
         // The existing workshop doesn't have any restrictions, so user lists
         // should include all three users.
-        $allusers = get_enrolled_users(\context_course::instance($courseid));
+        $allusers = get_enrolled_users(course::instance($courseid));
         $result = $this->workshop->get_grouped($allusers);
         $this->assertCount(4, $result);
         $users = array_keys($result[0]);

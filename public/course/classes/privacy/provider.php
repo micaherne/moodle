@@ -26,6 +26,8 @@ namespace core_course\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\course;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\contextlist;
 use \core_privacy\local\request\approved_contextlist;
@@ -91,7 +93,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -120,13 +122,13 @@ class provider implements
 
         foreach ($courses as $course) {
             $coursecompletion = \core_completion\privacy\provider::get_course_completion_info($contextlist->get_user(), $course);
-            writer::with_context(\context_course::instance($course->id))->export_data(
+            writer::with_context(course::instance($course->id))->export_data(
                     [get_string('privacy:completionpath', 'course')], (object) $coursecompletion);
             // Get user's favourites information for the particular course.
             $coursefavourite = \core_favourites\privacy\provider::get_favourites_info_for_user($contextlist->get_user()->id,
-                    \context_course::instance($course->id), 'core_course', 'courses', $course->id);
+                    course::instance($course->id), 'core_course', 'courses', $course->id);
             if ($coursefavourite) { // If the course has been favourited by the user, include it in the export.
-                writer::with_context(\context_course::instance($course->id))->export_data(
+                writer::with_context(course::instance($course->id))->export_data(
                         [get_string('privacy:favouritespath', 'course')], (object) $coursefavourite);
             }
         }
@@ -189,7 +191,7 @@ class provider implements
         $coursedata = $DB->get_records_select('course', $sql, $params);
 
         foreach ($coursedata as $course) {
-            $context = \context_course::instance($course->id);
+            $context = course::instance($course->id);
             $courseformat = $course->format !== 'site' ? get_string('pluginname', 'format_' . $course->format) : get_string('site');
             $data = (object) [
                 'fullname' => format_string($course->fullname, true, ['context' => $context]),
@@ -235,9 +237,9 @@ class provider implements
      *
      * @param \context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         // Check what context we've been delivered.
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
         // Delete course completion data.
@@ -255,7 +257,7 @@ class provider implements
     public static function delete_data_for_user(approved_contextlist $contextlist) {
         foreach ($contextlist as $context) {
             // Check what context we've been delivered.
-            if ($context instanceof \context_course) {
+            if ($context instanceof course) {
                 // Delete course completion data.
                 \core_completion\privacy\provider::delete_completion($contextlist->get_user(), $context->instanceid);
                 // Delete course favourite data.
@@ -274,7 +276,7 @@ class provider implements
         $context = $userlist->get_context();
 
         // Check what context we've been delivered.
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
         // Delete course completion data.

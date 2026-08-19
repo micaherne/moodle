@@ -22,15 +22,20 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\plugin_manager;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig && !empty($CFG->enableavailability)) {
-    $ADMIN->add('modules', new admin_category('availabilitysettings',
+    $ADMIN->add('modules', new category('availabilitysettings',
             new lang_string('type_availability_plural', 'plugin')));
-    $ADMIN->add('availabilitysettings', new admin_externalpage('manageavailability',
+    $ADMIN->add('availabilitysettings', new externalpage('manageavailability',
             new lang_string('manageplugins', 'tool_availabilityconditions'),
             $CFG->wwwroot . '/' . $CFG->admin . '/tool/availabilityconditions/'));
-    foreach (core_plugin_manager::instance()->get_plugins_of_type('availability') as $plugin) {
+    foreach (plugin_manager::instance()->get_plugins_of_type('availability') as $plugin) {
         /** @var \core\plugininfo\format $plugin */
         $plugin->load_settings($ADMIN, 'availabilitysettings', $hassiteconfig);
     }

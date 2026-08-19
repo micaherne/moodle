@@ -16,8 +16,12 @@
 
 namespace core\plugininfo;
 
-use core_plugin_manager;
-use moodle_url;
+use core\lang_string;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\setting\heading;
+use core_admin\setting\setting\savebutton;
+use core_admin\setting\tree\part_of_admin_tree;
 
 /**
  * AI placement plugin info class.
@@ -65,7 +69,7 @@ class aiplacement extends base {
      * @param bool $hassiteconfig whether the current user has moodle/site:config capability
      */
     public function load_settings(
-        \part_of_admin_tree $adminroot,
+        part_of_admin_tree $adminroot,
         $parentnodename,
         $hassiteconfig,
     ): void {
@@ -94,22 +98,22 @@ class aiplacement extends base {
         if (file_exists($this->full_path('settings.php'))) {
             include($this->full_path('settings.php')); // This may also set $settings to null.
             // Show the save changes button between the specific settings and the actions table.
-            $settings->add(new \admin_setting_savebutton("{$section}/savebutton"));
+            $settings->add(new savebutton("{$section}/savebutton"));
         }
 
         // Load the actions table.
         if (file_exists($this->full_path('setting_actions.php'))) {
             include($this->full_path('setting_actions.php')); // This may also set $settings to null.
         } else {
-            $settings->add(new \admin_setting_heading("{$section}/generals",
-                new \lang_string('placementactionsettings', 'core_ai'),
-                new \lang_string('placementactionsettings_desc', 'core_ai')));
+            $settings->add(new heading("{$section}/generals",
+                new lang_string('placementactionsettings', 'core_ai'),
+                new lang_string('placementactionsettings_desc', 'core_ai')));
             // Load the setting table of actions that this provider supports.
             $settings->add(new \core_ai\admin\admin_setting_action_manager(
                 $section,
                 \core_ai\table\aiplacement_action_management_table::class,
                 'manageaiplacements',
-                new \lang_string('manageaiproviders', 'core_ai'),
+                new lang_string('manageaiproviders', 'core_ai'),
             ));
         }
 
@@ -123,8 +127,8 @@ class aiplacement extends base {
      *
      * @return moodle_url
      */
-    public static function get_manage_url(): moodle_url {
-        return new moodle_url('/admin/settings.php', [
+    public static function get_manage_url(): url {
+        return new url('/admin/settings.php', [
             'section' => 'aiplacement',
         ]);
     }
@@ -150,7 +154,7 @@ class aiplacement extends base {
             }
 
             add_to_config_log('enabled', $oldvalue, $newvalue, $plugin);
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
             return true;
         }
 
@@ -163,7 +167,7 @@ class aiplacement extends base {
      * @return array|null of enabled plugins $pluginname=>$pluginname, null means unknown.
      */
     public static function get_enabled_plugins(): ?array {
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugins = $pluginmanager->get_installed_plugins('aiplacement');
 
         if (!$plugins) {

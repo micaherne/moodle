@@ -27,6 +27,7 @@
 
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Session;
+use core\exception\coding_exception;
 
 /**
  * Representation of a form field.

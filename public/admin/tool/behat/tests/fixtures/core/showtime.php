@@ -23,12 +23,16 @@
  */
 
 // phpcs:disable moodle.Files.RequireLogin.Missing
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+
 require(__DIR__ . '/../../../../../../config.php');
 
 defined('BEHAT_SITE_RUNNING') || die('Behat fixture');
 
-$PAGE->set_context(\context_system::instance());
-$PAGE->set_url(new \moodle_url('/admin/tool/behat/tests/fixtures/core/showtime.php'));
+$PAGE->set_context(system::instance());
+$PAGE->set_url(new url('/admin/tool/behat/tests/fixtures/core/showtime.php'));
 
 echo $OUTPUT->header();
 

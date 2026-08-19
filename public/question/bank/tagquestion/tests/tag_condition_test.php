@@ -18,7 +18,7 @@ namespace qbank_tagquestion;
 
 use core\output\datafilter;
 use core_question\local\bank\question_edit_contexts;
-use context_module;
+use core\context\module;
 use core_question\test\mock_restore_test_trait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -51,7 +51,7 @@ final class tag_condition_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $qbank = $generator->create_module('qbank', ['course' => $course->id]);
-        $context = context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
 
         // Set up question generator.
         $questiongenerator = $generator->get_plugin_generator('core_question');

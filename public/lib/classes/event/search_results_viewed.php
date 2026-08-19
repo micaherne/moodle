@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -90,7 +93,7 @@ class search_results_viewed extends base {
         if (isset($params['courseids'])) {
             unset($params['courseids']);
         }
-        return new \moodle_url('/search/index.php', $params);
+        return new url('/search/index.php', $params);
     }
 
     /**
@@ -103,11 +106,11 @@ class search_results_viewed extends base {
         parent::validate_data();
 
         if (!isset($this->other['q'])) {
-            throw new \coding_exception('\'other\'[\'q\'] must be set.');
+            throw new coding_exception('\'other\'[\'q\'] must be set.');
         }
 
         if (!isset($this->other['page'])) {
-            throw new \coding_exception('\'other\'[\'page\'] must be set.');
+            throw new coding_exception('\'other\'[\'page\'] must be set.');
         }
 
     }

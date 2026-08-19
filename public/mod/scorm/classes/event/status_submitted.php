@@ -23,6 +23,8 @@
  */
 
 namespace mod_scorm\event;
+
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -63,13 +65,13 @@ class status_submitted extends cmielement_submitted {
 
         if (!in_array($this->other['cmielement'],
                 array('cmi.completion_status', 'cmi.core.lesson_status', 'cmi.success_status'))) {
-            throw new \coding_exception(
+            throw new coding_exception(
                 "The 'cmielement' must represents a valid CMI status element ({$this->other['cmielement']}).");
         }
 
         if (!in_array($this->other['cmivalue'],
                 array('passed', 'completed', 'failed', 'incomplete', 'browsed', 'not attempted', 'unknown'))) {
-            throw new \coding_exception(
+            throw new coding_exception(
                 "The 'cmivalue' must represents a valid CMI status value ({$this->other['cmivalue']}).");
         }
     }

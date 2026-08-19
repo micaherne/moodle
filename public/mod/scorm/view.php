@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/scorm/lib.php');
 require_once($CFG->dirroot.'/mod/scorm/locallib.php');
@@ -27,29 +33,29 @@ $preventskip = optional_param('preventskip', '', PARAM_INT); // Prevent Skip vie
 
 if (!empty($id)) {
     if (! $cm = get_coursemodule_from_id('scorm', $id, 0, true)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $scorm = $DB->get_record("scorm", array("id" => $cm->instance))) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 } else if (!empty($a)) {
     if (! $scorm = $DB->get_record("scorm", array("id" => $a))) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     if (! $course = $DB->get_record("course", array("id" => $scorm->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $cm = get_coursemodule_from_instance("scorm", $scorm->id, $course->id, true)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 } else {
-    throw new \moodle_exception('missingparameter');
+    throw new moodle_exception('missingparameter');
 }
 
-$url = new moodle_url('/mod/scorm/view.php', array('id' => $cm->id));
+$url = new url('/mod/scorm/view.php', array('id' => $cm->id));
 if ($organization !== '') {
     $url->param('organization', $organization);
 }
@@ -61,8 +67,8 @@ if (!empty($forcejs)) {
 
 require_login($course, false, $cm);
 
-$context = context_course::instance($course->id);
-$contextmodule = context_module::instance($cm->id);
+$context = course::instance($course->id);
+$contextmodule = module::instance($cm->id);
 
 $launch = false; // Does this automatically trigger a launch based on skipview.
 if (!empty($scorm->popup)) {
@@ -154,7 +160,7 @@ echo $OUTPUT->header();
 if (!empty($action) && confirm_sesskey() && has_capability('mod/scorm:deleteownresponses', $contextmodule)) {
     if ($action == 'delete') {
         $PAGE->set_show_navigation_footer(false);
-        $confirmurl = new moodle_url($PAGE->url, array('action' => 'deleteconfirm'));
+        $confirmurl = new url($PAGE->url, array('action' => 'deleteconfirm'));
         echo $OUTPUT->confirm(get_string('deleteuserattemptcheck', 'scorm'), $confirmurl, $PAGE->url);
         echo $OUTPUT->footer();
         exit;

@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 use mod_forum\local\entities\author as author_entity;
 use mod_forum\local\exporters\group as group_exporter;
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');
 

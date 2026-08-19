@@ -18,7 +18,9 @@ namespace tool_task\check;
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
 use core\task\manager;
+use core\url;
 
 /**
  * Long running tasks check
@@ -36,9 +38,9 @@ class longrunningtasks extends check {
      * @return \action_link|null
      * @throws \coding_exception
      */
-    public function get_action_link(): ?\action_link {
-        $url = new \moodle_url('/admin/tool/task/runningtasks.php');
-        return new \action_link($url, get_string('runningtasks', 'tool_task'));
+    public function get_action_link(): ?action_link {
+        $url = new url('/admin/tool/task/runningtasks.php');
+        return new action_link($url, get_string('runningtasks', 'tool_task'));
     }
 
     /**

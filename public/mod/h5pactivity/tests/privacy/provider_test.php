@@ -25,6 +25,7 @@
 
 namespace mod_h5pactivity\privacy;
 
+use core\context\module;
 use \core_privacy\local\request\approved_contextlist;
 use \core_privacy\local\request\approved_userlist;
 use \core_privacy\local\request\writer;
@@ -297,7 +298,7 @@ final class provider_test extends provider_testcase {
         $params = ['course' => $course];
         $activity = $this->getDataGenerator()->create_module('h5pactivity', $params);
         $cm = get_coursemodule_from_id('h5pactivity', $activity->cmid, 0, false, MUST_EXIST);
-        $this->context = \context_module::instance($activity->cmid);
+        $this->context = module::instance($activity->cmid);
 
         /** @var \mod_h5pactivity_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_h5pactivity');

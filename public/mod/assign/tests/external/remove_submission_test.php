@@ -16,6 +16,8 @@
 
 namespace mod_assign\external;
 
+use core\context\module;
+use core\exception\moodle_exception;
 use mod_assign_test_generator;
 use mod_assign_external;
 
@@ -54,7 +56,7 @@ final class remove_submission_test extends \mod_assign\externallib_advanced_test
         $params['assignsubmission_onlinetext_enabled'] = 1;
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new \mod_assign_testable_assign($context, $cm, $course);
 
         $teacher  = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
@@ -71,7 +73,7 @@ final class remove_submission_test extends \mod_assign\externallib_advanced_test
     public function test_remove_submission_with_invalid_assign_id(): void {
         $this->resetAfterTest();
         [$course, $student1, $student2, $teacher, $assign, $instance] = $this->prepare_course();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         remove_submission::execute($student1->id, 123);
     }
 

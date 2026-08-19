@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+
 require(__DIR__.'/../../../../config.php');
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/../../locallib.php');
@@ -39,7 +41,7 @@ $book = $DB->get_record('book', array('id' => $cm->instance), '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/book:read', $context);
 require_capability('booktool/print:print', $context);
 

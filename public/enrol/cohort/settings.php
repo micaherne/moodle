@@ -22,26 +22,30 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
 
     //--- general settings -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_heading('enrol_cohort_settings', '', get_string('pluginname_desc', 'enrol_cohort')));
+    $settings->add(new heading('enrol_cohort_settings', '', get_string('pluginname_desc', 'enrol_cohort')));
 
 
     //--- enrol instance defaults ----------------------------------------------------------------------------
     if (!during_initial_install()) {
-        $options = get_default_enrol_roles(context_system::instance());
+        $options = get_default_enrol_roles(system::instance());
         $student = get_archetype_roles('student');
         $student = reset($student);
-        $settings->add(new admin_setting_configselect('enrol_cohort/roleid',
+        $settings->add(new configselect('enrol_cohort/roleid',
             get_string('defaultrole', 'role'), '', $student->id ?? null, $options));
 
         $options = array(
             ENROL_EXT_REMOVED_UNENROL        => get_string('extremovedunenrol', 'enrol'),
             ENROL_EXT_REMOVED_SUSPEND        => get_string('extremovedsuspend', 'enrol'),
             ENROL_EXT_REMOVED_SUSPENDNOROLES => get_string('extremovedsuspendnoroles', 'enrol'));
-        $settings->add(new admin_setting_configselect('enrol_cohort/unenrolaction', get_string('extremovedaction', 'enrol'), get_string('extremovedaction_help', 'enrol'), ENROL_EXT_REMOVED_UNENROL, $options));
+        $settings->add(new configselect('enrol_cohort/unenrolaction', get_string('extremovedaction', 'enrol'), get_string('extremovedaction_help', 'enrol'), ENROL_EXT_REMOVED_UNENROL, $options));
     }
 }

@@ -24,6 +24,8 @@
 
 namespace antivirus_clamav;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** Default socket timeout */
@@ -87,7 +89,7 @@ class scanner extends \core\antivirus\scanner {
                     break;
                 default:
                     // This should not happen.
-                    throw new \coding_exception('Unknown running method.');
+                    throw new coding_exception('Unknown running method.');
             }
         } while ($return == self::SCAN_RESULT_ERROR && $tries < $maxtries);
 

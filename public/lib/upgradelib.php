@@ -24,6 +24,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\theme_config;
+use core\plugin_manager;
+use core\shutdown_manager;
+use core\url;
+use core_cache\helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** UPGRADE_LOG_NORMAL = 0 */
@@ -295,7 +306,7 @@ function upgrade_set_timeout($max_execution_time=300) {
             $upgraderunning = 0;
         } else {
             // web upgrade not running or aborted
-            throw new \moodle_exception('upgradetimedout', 'admin', "$CFG->wwwroot/$CFG->admin/");
+            throw new moodle_exception('upgradetimedout', 'admin', "$CFG->wwwroot/$CFG->admin/");
         }
     }
 
@@ -1592,7 +1603,7 @@ function upgrade_started($preinstall=false) {
         }
 
         ignore_user_abort(true);
-        core_shutdown_manager::register_function('upgrade_finished_handler');
+        shutdown_manager::register_function('upgrade_finished_handler');
         upgrade_setup_debug(true);
         // Support no-maintenance upgrades.
         if (!defined('CLI_UPGRADE_RUNNING') || !CLI_UPGRADE_RUNNING) {
@@ -1627,7 +1638,7 @@ function upgrade_finished($continueurl=null) {
         // cause the config values to propogate to the caches.
         // Caches are purged after the last step in an upgrade but there is several code routines that exceute between
         // then and now that leaving a window for things to fall out of sync.
-        cache_helper::purge_all(true);
+        helper::purge_all(true);
         upgrade_setup_debug(false);
         ignore_user_abort(false);
         if ($continueurl) {
@@ -1858,7 +1869,7 @@ function install_core($version, $verbose) {
 
         // Purge all caches. They're disabled but this ensures that we don't have any persistent data just in case something
         // during installation didn't use APIs.
-        cache_helper::purge_all();
+        helper::purge_all();
     } catch (exception $ex) {
         upgrade_handle_exception($ex);
     } catch (Throwable $ex) {
@@ -1883,7 +1894,7 @@ function upgrade_core($version, $verbose) {
     try {
         // If we are in maintenance, we can purge all our caches here.
         if (!defined('CLI_UPGRADE_RUNNING') || !CLI_UPGRADE_RUNNING) {
-            cache_helper::purge_all(true);
+            helper::purge_all(true);
             purge_all_caches();
         }
 
@@ -1916,12 +1927,12 @@ function upgrade_core($version, $verbose) {
         // perform all other component upgrade routines
         upgrade_component_updated('moodle');
         // Update core definitions.
-        cache_helper::update_definitions(true);
+        helper::update_definitions(true);
         core_upgrade_time::record_detail('cache_helper::update_definitions');
 
         // Purge caches again, just to be sure we arn't holding onto old stuff now.
         if (!defined('CLI_UPGRADE_RUNNING') || !CLI_UPGRADE_RUNNING) {
-            cache_helper::purge_all(true);
+            helper::purge_all(true);
             core_upgrade_time::record_detail('cache_helper::purge_all');
             purge_all_caches();
             core_upgrade_time::record_detail('purge_all_caches');
@@ -1934,7 +1945,7 @@ function upgrade_core($version, $verbose) {
         core_upgrade_time::record_detail('context_helper::create_instances');
         context_helper::build_all_paths(false);
         core_upgrade_time::record_detail('context_helper::build_all_paths');
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $syscontext->mark_dirty();
         core_upgrade_time::record_detail('context_system::mark_dirty');
 
@@ -1961,7 +1972,7 @@ function upgrade_noncore($verbose) {
     try {
         // Reset caches before any output, unless we are not in maintenance.
         if (!defined('CLI_UPGRADE_RUNNING') || !CLI_UPGRADE_RUNNING) {
-            cache_helper::purge_all(true);
+            helper::purge_all(true);
             purge_all_caches();
         }
 
@@ -1981,7 +1992,7 @@ function upgrade_noncore($verbose) {
         core_upgrade_time::record_detail('external_update_services');
 
         // Update cache definitions. Involves scanning each plugin for any changes.
-        cache_helper::update_definitions();
+        helper::update_definitions();
         core_upgrade_time::record_detail('cache_helper::update_definitions');
 
         // Mark the site as upgraded.
@@ -1996,7 +2007,7 @@ function upgrade_noncore($verbose) {
 
         // Purge caches again, just to be sure we arn't holding onto old stuff now.
         if (!defined('CLI_UPGRADE_RUNNING') || !CLI_UPGRADE_RUNNING) {
-            cache_helper::purge_all(true);
+            helper::purge_all(true);
             core_upgrade_time::record_detail('cache_helper::purge_all');
             purge_all_caches();
             core_upgrade_time::record_detail('purge_all_caches');
@@ -2542,7 +2553,7 @@ function check_upgrade_key($upgradekeyhash) {
                 $output = $PAGE->get_renderer('core', 'admin');
 
                 echo $output->upgradekey_form_page_with_validation(
-                    new moodle_url('/admin/index.php', ['cache' => 0]),
+                    new url('/admin/index.php', ['cache' => 0]),
                     $upgradekeyhash !== null,
                 );
                 die();
@@ -2580,7 +2591,7 @@ function upgrade_install_plugins(array $installable, $confirmed, $heading='', $c
         redirect($return);
     }
 
-    $pluginman = core_plugin_manager::instance();
+    $pluginman = plugin_manager::instance();
 
     if ($confirmed) {
         // Installation confirmed at the validation results page.
@@ -2592,7 +2603,7 @@ function upgrade_install_plugins(array $installable, $confirmed, $heading='', $c
         // Do not throw away the existing $PAGE->url parameters such as
         // confirmupgrade or confirmrelease if $PAGE->url is a superset of the
         // URL we must go to.
-        $mustgoto = new moodle_url('/admin/index.php', array('cache' => 0, 'confirmplugincheck' => 0));
+        $mustgoto = new url('/admin/index.php', array('cache' => 0, 'confirmplugincheck' => 0));
         if ($mustgoto->compare($PAGE->url, URL_MATCH_PARAMS)) {
             redirect($PAGE->url);
         } else {

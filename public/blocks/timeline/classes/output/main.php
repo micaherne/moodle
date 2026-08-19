@@ -24,9 +24,11 @@
 namespace block_timeline\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
-use templatable;
+use core\context\course;
+use core\context_helper;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use core_course\external\course_summary_exporter;
 
 require_once($CFG->dirroot . '/course/lib.php');
@@ -161,8 +163,8 @@ class main implements renderable, templatable {
             self::COURSES_PER_PAGE
         );
         $formattedcourses = array_map(function($course) use ($output) {
-            \context_helper::preload_from_record($course);
-            $context = \context_course::instance($course->id);
+            context_helper::preload_from_record($course);
+            $context = course::instance($course->id);
             $exporter = new course_summary_exporter($course, ['context' => $context]);
             return $exporter->export($output);
         }, $inprogresscourses);

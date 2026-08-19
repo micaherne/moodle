@@ -22,93 +22,101 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\html_writer;
+use core\url;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/enrol/imsenterprise/locallib.php');
 
-    $settings->add(new admin_setting_heading('enrol_imsenterprise_settings', '',
+    $settings->add(new heading('enrol_imsenterprise_settings', '',
         get_string('pluginname_desc', 'enrol_imsenterprise')));
 
     // General settings.
-    $settings->add(new admin_setting_heading('enrol_imsenterprise_basicsettings',
+    $settings->add(new heading('enrol_imsenterprise_basicsettings',
         get_string('basicsettings', 'enrol_imsenterprise'), ''));
 
-    $settings->add(new admin_setting_configtext('enrol_imsenterprise/imsfilelocation',
+    $settings->add(new configtext('enrol_imsenterprise/imsfilelocation',
         get_string('location', 'enrol_imsenterprise'), '', ''));
 
-    $settings->add(new admin_setting_configtext('enrol_imsenterprise/logtolocation',
+    $settings->add(new configtext('enrol_imsenterprise/logtolocation',
         get_string('logtolocation', 'enrol_imsenterprise'), '', ''));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/mailadmins',
+    $settings->add(new configcheckbox('enrol_imsenterprise/mailadmins',
         get_string('mailadmins', 'enrol_imsenterprise'), '', 0));
 
     // User data options.
-    $settings->add(new admin_setting_heading('enrol_imsenterprise_usersettings',
+    $settings->add(new heading('enrol_imsenterprise_usersettings',
         get_string('usersettings', 'enrol_imsenterprise'), ''));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/createnewusers',
+    $settings->add(new configcheckbox('enrol_imsenterprise/createnewusers',
         get_string('createnewusers', 'enrol_imsenterprise'), get_string('createnewusers_desc', 'enrol_imsenterprise'), 0));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/imsupdateusers',
+    $settings->add(new configcheckbox('enrol_imsenterprise/imsupdateusers',
         get_string('updateusers', 'enrol_imsenterprise'), get_string('updateusers_desc', 'enrol_imsenterprise'), 0));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/imsdeleteusers',
+    $settings->add(new configcheckbox('enrol_imsenterprise/imsdeleteusers',
         get_string('deleteusers', 'enrol_imsenterprise'), get_string('deleteusers_desc', 'enrol_imsenterprise'), 0));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/fixcaseusernames',
+    $settings->add(new configcheckbox('enrol_imsenterprise/fixcaseusernames',
         get_string('fixcaseusernames', 'enrol_imsenterprise'), '', 0));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/fixcasepersonalnames',
+    $settings->add(new configcheckbox('enrol_imsenterprise/fixcasepersonalnames',
         get_string('fixcasepersonalnames', 'enrol_imsenterprise'), '', 0));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/imssourcedidfallback',
+    $settings->add(new configcheckbox('enrol_imsenterprise/imssourcedidfallback',
         get_string('sourcedidfallback', 'enrol_imsenterprise'), get_string('sourcedidfallback_desc', 'enrol_imsenterprise'), 0));
 
-    $settings->add(new admin_setting_heading('enrol_imsenterprise_usersettings_roles',
+    $settings->add(new heading('enrol_imsenterprise_usersettings_roles',
         get_string('roles', 'enrol_imsenterprise'), get_string('imsrolesdescription', 'enrol_imsenterprise')));
 
     if (!during_initial_install()) {
-        $coursecontext = context_course::instance(SITEID);
+        $coursecontext = course::instance(SITEID);
         $assignableroles = get_assignable_roles($coursecontext);
         $assignableroles = array('0' => get_string('ignore', 'enrol_imsenterprise')) + $assignableroles;
         $imsroles = new imsenterprise_roles();
         foreach ($imsroles->get_imsroles() as $imsrolenum => $imsrolename) {
-            $settings->add(new admin_setting_configselect('enrol_imsenterprise/imsrolemap'.$imsrolenum,
+            $settings->add(new configselect('enrol_imsenterprise/imsrolemap'.$imsrolenum,
                 format_string('"'.$imsrolename.'" ('.$imsrolenum.')'), '',
                 (int)$imsroles->determine_default_rolemapping($imsrolenum), $assignableroles));
         }
     }
 
     // Course data options.
-    $settings->add(new admin_setting_heading('enrol_imsenterprise_coursesettings',
+    $settings->add(new heading('enrol_imsenterprise_coursesettings',
         get_string('coursesettings', 'enrol_imsenterprise'), ''));
 
-    $settings->add(new admin_setting_configtext('enrol_imsenterprise/truncatecoursecodes',
+    $settings->add(new configtext('enrol_imsenterprise/truncatecoursecodes',
         get_string('truncatecoursecodes', 'enrol_imsenterprise'), get_string('truncatecoursecodes_desc', 'enrol_imsenterprise'),
         0, PARAM_INT, 2));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/createnewcourses',
+    $settings->add(new configcheckbox('enrol_imsenterprise/createnewcourses',
         get_string('createnewcourses', 'enrol_imsenterprise'), get_string('createnewcourses_desc', 'enrol_imsenterprise'), 0));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/updatecourses',
+    $settings->add(new configcheckbox('enrol_imsenterprise/updatecourses',
         get_string('updatecourses', 'enrol_imsenterprise'), get_string('updatecourses_desc', 'enrol_imsenterprise'), 0));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/createnewcategories',
+    $settings->add(new configcheckbox('enrol_imsenterprise/createnewcategories',
         get_string('createnewcategories', 'enrol_imsenterprise'), get_string('createnewcategories_desc', 'enrol_imsenterprise'),
         0));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/nestedcategories',
+    $settings->add(new configcheckbox('enrol_imsenterprise/nestedcategories',
         get_string('nestedcategories', 'enrol_imsenterprise'), get_string('nestedcategories_desc', 'enrol_imsenterprise'), 0));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/categoryidnumber',
+    $settings->add(new configcheckbox('enrol_imsenterprise/categoryidnumber',
         get_string('categoryidnumber', 'enrol_imsenterprise'), get_string('categoryidnumber_desc', 'enrol_imsenterprise'), 0));
 
-    $settings->add(new admin_setting_configtext('enrol_imsenterprise/categoryseparator',
+    $settings->add(new configtext('enrol_imsenterprise/categoryseparator',
         get_string('categoryseparator', 'enrol_imsenterprise'), get_string('categoryseparator_desc', 'enrol_imsenterprise'), '',
         PARAM_TEXT, 3));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/imsunenrol',
+    $settings->add(new configcheckbox('enrol_imsenterprise/imsunenrol',
         get_string('allowunenrol', 'enrol_imsenterprise'), get_string('allowunenrol_desc', 'enrol_imsenterprise'), 0));
 
     /* Action to take when a request to remove a user enrolment record is detected in the IMS file */
@@ -120,7 +128,7 @@ if ($ADMIN->fulltree) {
     ];
 
     $settings->add(
-        new admin_setting_configselect('enrol_imsenterprise/unenrolaction',
+        new configselect('enrol_imsenterprise/unenrolaction',
             get_string('unenrolaction', 'enrol_imsenterprise'),
             get_string('unenrolaction_desc', 'enrol_imsenterprise'),
             ENROL_EXT_REMOVED_UNENROL, $options)
@@ -135,23 +143,23 @@ if ($ADMIN->fulltree) {
             $name = get_string('setting' . $courseattr, 'enrol_imsenterprise');
             $description = get_string('setting' . $courseattr . 'description', 'enrol_imsenterprise');
             $defaultvalue = (string) $imscourses->determine_default_coursemapping($courseattr);
-            $settings->add(new admin_setting_configselect('enrol_imsenterprise/imscoursemap' . $courseattr, $name,
+            $settings->add(new configselect('enrol_imsenterprise/imscoursemap' . $courseattr, $name,
                 $description, $defaultvalue, $assignablevalues));
         }
     }
 
     // Miscellaneous.
-    $settings->add(new admin_setting_heading('enrol_imsenterprise_miscsettings',
+    $settings->add(new heading('enrol_imsenterprise_miscsettings',
         get_string('miscsettings', 'enrol_imsenterprise'), ''));
 
-    $settings->add(new admin_setting_configtext('enrol_imsenterprise/imsrestricttarget',
+    $settings->add(new configtext('enrol_imsenterprise/imsrestricttarget',
         get_string('restricttarget', 'enrol_imsenterprise'), get_string('restricttarget_desc', 'enrol_imsenterprise'), ''));
 
-    $settings->add(new admin_setting_configcheckbox('enrol_imsenterprise/imscapitafix',
+    $settings->add(new configcheckbox('enrol_imsenterprise/imscapitafix',
         get_string('usecapitafix', 'enrol_imsenterprise'), get_string('usecapitafix_desc', 'enrol_imsenterprise'), 0));
 
-    $importurl = new moodle_url('/enrol/imsenterprise/importnow.php', array('sesskey' => sesskey()));
+    $importurl = new url('/enrol/imsenterprise/importnow.php', array('sesskey' => sesskey()));
     $importnowstring = get_string('aftersaving...', 'enrol_imsenterprise').' ';
     $importnowstring .= html_writer::link($importurl, get_string('doitnow', 'enrol_imsenterprise'));
-    $settings->add(new admin_setting_heading('enrol_imsenterprise_doitnowmessage', '', $importnowstring));
+    $settings->add(new heading('enrol_imsenterprise_doitnowmessage', '', $importnowstring));
 }

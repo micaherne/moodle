@@ -24,7 +24,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\externalpage;
 use core_question\local\bank\question_version_status;
+use core_table\flexible_table;
 
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/questionlib.php');
@@ -33,14 +42,14 @@ require_once($CFG->libdir . '/tablelib.php');
 
 admin_externalpage_setup('manageqtypes');
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 require_capability('moodle/question:config', $systemcontext);
 $canviewreports = has_capability('report/questioninstances:view', $systemcontext);
 
-$thispageurl = new moodle_url('/admin/qtypes.php');
+$thispageurl = new url('/admin/qtypes.php');
 
 $qtypes = question_bank::get_all_qtypes();
-$pluginmanager = core_plugin_manager::instance();
+$pluginmanager = plugin_manager::instance();
 
 // Get some data we will need - question counts and which types are needed.
 // The second JOIN on question_versions (qv2) is to get the latest version of each question. 
@@ -94,10 +103,10 @@ $sortedqtypes = question_bank::sort_qtype_array($sortedqtypes, $config);
 // Disable.
 if (($disable = optional_param('disable', '', PARAM_PLUGIN)) && confirm_sesskey()) {
     if (!isset($qtypes[$disable])) {
-        throw new \moodle_exception('unknownquestiontype', 'question', $thispageurl, $disable);
+        throw new moodle_exception('unknownquestiontype', 'question', $thispageurl, $disable);
     }
 
-    $class = \core_plugin_manager::resolve_plugininfo_class('qtype');
+    $class = plugin_manager::resolve_plugininfo_class('qtype');
     $class::enable_plugin($disable, false);
     redirect($thispageurl);
 }
@@ -105,14 +114,14 @@ if (($disable = optional_param('disable', '', PARAM_PLUGIN)) && confirm_sesskey(
 // Enable.
 if (($enable = optional_param('enable', '', PARAM_PLUGIN)) && confirm_sesskey()) {
     if (!isset($qtypes[$enable])) {
-        throw new \moodle_exception('unknownquestiontype', 'question', $thispageurl, $enable);
+        throw new moodle_exception('unknownquestiontype', 'question', $thispageurl, $enable);
     }
 
     if (!$qtypes[$enable]->menu_name()) {
-        throw new \moodle_exception('cannotenable', 'question', $thispageurl, $enable);
+        throw new moodle_exception('cannotenable', 'question', $thispageurl, $enable);
     }
 
-    $class = \core_plugin_manager::resolve_plugininfo_class('qtype');
+    $class = plugin_manager::resolve_plugininfo_class('qtype');
     $class::enable_plugin($enable, true);
     redirect($thispageurl);
 }
@@ -120,7 +129,7 @@ if (($enable = optional_param('enable', '', PARAM_PLUGIN)) && confirm_sesskey())
 // Move up in order.
 if (($up = optional_param('up', '', PARAM_PLUGIN)) && confirm_sesskey()) {
     if (!isset($qtypes[$up])) {
-        throw new \moodle_exception('unknownquestiontype', 'question', $thispageurl, $up);
+        throw new moodle_exception('unknownquestiontype', 'question', $thispageurl, $up);
     }
 
     $neworder = question_reorder_qtypes($sortedqtypes, $up, -1);
@@ -131,7 +140,7 @@ if (($up = optional_param('up', '', PARAM_PLUGIN)) && confirm_sesskey()) {
 // Move down in order.
 if (($down = optional_param('down', '', PARAM_PLUGIN)) && confirm_sesskey()) {
     if (!isset($qtypes[$down])) {
-        throw new \moodle_exception('unknownquestiontype', 'question', $thispageurl, $down);
+        throw new moodle_exception('unknownquestiontype', 'question', $thispageurl, $down);
     }
 
     $neworder = question_reorder_qtypes($sortedqtypes, $down, +1);
@@ -177,7 +186,7 @@ foreach ($sortedqtypes as $qtypename => $localname) {
             $strcount = $counts[$qtypename]->numquestions;
         }
         if ($canviewreports) {
-            $row[] = html_writer::link(new moodle_url('/report/questioninstances/index.php',
+            $row[] = html_writer::link(new url('/report/questioninstances/index.php',
                     array('qtype' => $qtypename)), $strcount, array('title' => get_string('showdetails', 'admin')));
         } else {
             $strcount;
@@ -226,10 +235,10 @@ foreach ($sortedqtypes as $qtypename => $localname) {
 
     // Settings link, if available.
     $settings = admin_get_root()->locate('qtypesetting' . $qtypename);
-    if ($settings instanceof admin_externalpage) {
+    if ($settings instanceof externalpage) {
         $row[] = html_writer::link($settings->url, get_string('settings'));
-    } else if ($settings instanceof admin_settingpage) {
-        $row[] = html_writer::link(new moodle_url('/admin/settings.php',
+    } else if ($settings instanceof settingpage) {
+        $row[] = html_writer::link(new url('/admin/settings.php',
                 array('section' => 'qtypesetting' . $qtypename)), get_string('settings'));
     } else {
         $row[] = '';
@@ -239,7 +248,7 @@ foreach ($sortedqtypes as $qtypename => $localname) {
     if ($needed[$qtypename]) {
         $row[] = '';
     } else {
-        $uninstallurl = core_plugin_manager::instance()->get_uninstall_url('qtype_'.$qtypename, 'manage');
+        $uninstallurl = plugin_manager::instance()->get_uninstall_url('qtype_'.$qtypename, 'manage');
         if ($uninstallurl) {
             $row[] = html_writer::link($uninstallurl, get_string('uninstallplugin', 'core_admin'),
                 array('title' => get_string('uninstallqtype', 'question')));
@@ -265,7 +274,7 @@ function question_types_enable_disable_icons($qtypename, $createable) {
 
 function question_type_icon_html($action, $qtypename, $icon, $alt, $tip) {
     global $OUTPUT;
-    return $OUTPUT->action_icon(new moodle_url('/admin/qtypes.php',
+    return $OUTPUT->action_icon(new url('/admin/qtypes.php',
             array($action => $qtypename, 'sesskey' => sesskey())),
             new pix_icon($icon, $alt, 'moodle', array('title' => '', 'class' => 'iconsmall')),
             null, array('title' => $tip));

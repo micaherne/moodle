@@ -20,6 +20,9 @@
  * @copyright   2013 Adam Durana
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core_cache\form\cachestore_addinstance_form;
+use core_cache\helper;
+
 class cachestore_redis_addinstance_form extends cachestore_addinstance_form {
     /**
      * Builds the form for creating an instance.
@@ -28,7 +31,7 @@ class cachestore_redis_addinstance_form extends cachestore_addinstance_form {
         $form = $this->_form;
 
         $form->addElement('advcheckbox', 'clustermode', get_string('clustermode', 'cachestore_redis'), '',
-            cache_helper::is_cluster_available() ? '' : 'disabled');
+            helper::is_cluster_available() ? '' : 'disabled');
         $form->addHelpButton('clustermode', 'clustermode', 'cachestore_redis');
         $form->setType('clustermode', PARAM_BOOL);
 

@@ -24,6 +24,8 @@
 
 namespace gradereport_history;
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -196,7 +198,7 @@ class helper {
         $groupjoinsql = $groupwheresql = '';
         $inparams = [];
         $groupmode = groups_get_course_groupmode(get_course($courseid));
-        if ($groupmode == SEPARATEGROUPS && !has_capability('moodle/site:accessallgroups', \context_course::instance($courseid))) {
+        if ($groupmode == SEPARATEGROUPS && !has_capability('moodle/site:accessallgroups', course::instance($courseid))) {
             // Fetch the groups that the user can see.
             $groups = groups_get_all_groups($courseid, $USER->id, 0, 'g.id');
             // Add join condition to include users that only belong to the same group as the user.

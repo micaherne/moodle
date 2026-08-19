@@ -16,6 +16,8 @@
 
 namespace core\hook\output;
 
+use core\output\renderer_base;
+
 /**
  * Allows plugins to add any elements to the page <head> html tag
  *
@@ -35,7 +37,7 @@ final class before_standard_head_html_generation {
      */
     public function __construct(
         /** @var \renderer_base The core_renderer instance used for the generation */
-        public readonly \renderer_base $renderer,
+        public readonly renderer_base $renderer,
         /** @var string The collected output */
         private string $output = '',
     ) {

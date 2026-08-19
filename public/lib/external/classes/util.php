@@ -16,13 +16,13 @@
 
 namespace core_external;
 
-use context;
-use context_course;
-use context_helper;
-use context_system;
-use core_user;
-use moodle_exception;
-use moodle_url;
+use core\context;
+use core\context\course;
+use core\context_helper;
+use core\context\system;
+use core\user;
+use core\exception\moodle_exception;
+use core\url;
 use stdClass;
 
 /**
@@ -93,7 +93,7 @@ class util {
         foreach ($courseids as $cid) {
             // Check the user can function in this context.
             try {
-                $context = context_course::instance($cid);
+                $context = course::instance($cid);
                 external_api::validate_context($context);
 
                 if ($addcontext) {
@@ -148,7 +148,7 @@ class util {
                 $fileitemid = $useitemidinurl ? $areafile->get_itemid() : null;
                 // If AJAX request, generate a standard plugin file url.
                 if (AJAX_SCRIPT) {
-                    $fileurl = moodle_url::make_pluginfile_url(
+                    $fileurl = url::make_pluginfile_url(
                         $contextid,
                         $component,
                         $filearea,
@@ -157,7 +157,7 @@ class util {
                         $areafile->get_filename()
                     );
                 } else { // Otherwise, generate a webservice plugin file url.
-                    $fileurl = moodle_url::make_webservice_pluginfile_url(
+                    $fileurl = url::make_webservice_pluginfile_url(
                         $contextid,
                         $component,
                         $filearea,
@@ -336,10 +336,10 @@ class util {
     public static function generate_token_for_current_user(stdClass $service) {
         global $DB, $USER, $CFG;
 
-        core_user::require_active_user($USER, true, true);
+        user::require_active_user($USER, true, true);
 
         // Check if there is any required system capability.
-        if ($service->requiredcapability && !has_capability($service->requiredcapability, context_system::instance())) {
+        if ($service->requiredcapability && !has_capability($service->requiredcapability, system::instance())) {
             throw new moodle_exception('missingrequiredcapability', 'webservice', '', $service->requiredcapability);
         }
 
@@ -404,7 +404,7 @@ class util {
         if (count($tokens) > 0) {
             $token = array_pop($tokens);
         } else {
-            $context = context_system::instance();
+            $context = system::instance();
             $isofficialservice = $service->shortname == MOODLE_OFFICIAL_MOBILE_SERVICE;
 
             if (
@@ -416,7 +416,7 @@ class util {
                 $token->token = md5(uniqid((string) rand(), true));
                 $token->userid = $USER->id;
                 $token->tokentype = EXTERNAL_TOKEN_PERMANENT;
-                $token->contextid = context_system::instance()->id;
+                $token->contextid = system::instance()->id;
                 $token->creatorid = $USER->id;
                 $token->timecreated = time();
                 $token->externalserviceid = $service->id;

@@ -4,13 +4,16 @@
       // and uses LaTeX to create the image file.
 
 // disable moodle specific debug messages and any errors in output
+use core\exception\moodle_exception;
+use core_cache\cache;
+
 define('NO_DEBUG_DISPLAY', true);
 define('NO_MOODLE_COOKIES', true); // Because it interferes with caching
 
     require_once('../../config.php');
 
     if (!filter_is_enabled('algebra')) {
-        throw new \moodle_exception('filternotenabled');
+        throw new moodle_exception('filternotenabled');
     }
 
     require_once($CFG->libdir.'/filelib.php');
@@ -24,7 +27,7 @@ define('NO_MOODLE_COOKIES', true); // Because it interferes with caching
     if (count($args) == 1) {
         $image    = $args[0];
     } else {
-        throw new \moodle_exception('invalidarguments', 'error');
+        throw new moodle_exception('invalidarguments', 'error');
     }
 
     $convertformat = get_config('filter_algebra', 'convertformat');
@@ -64,7 +67,7 @@ define('NO_MOODLE_COOKIES', true); // Because it interferes with caching
     }
 
     if ($storedfile) {
-        \cache::make('filter_algebra', 'rendered_images')->set($cachekey, 1);
+        cache::make('filter_algebra', 'rendered_images')->set($cachekey, 1);
         send_stored_file($storedfile, YEARSECS, 0, false, [
             'cacheability' => 'public',
             'immutable' => true,

@@ -16,6 +16,7 @@
 
 namespace tool_brickfield\local\htmlchecker\common;
 
+use core\lang_string;
 use tool_brickfield\local\htmlchecker\brickfield_accessibility_report_item;
 use tool_brickfield\manager;
 
@@ -414,7 +415,7 @@ class brickfield_accessibility_test {
         // Need to process all enabled lang versions of invalidlinkphrases.
         $enabledlangs = $stringmgr->get_list_of_translations();
         foreach ($enabledlangs as $lang => $value) {
-            $tmpstring = (string)new \lang_string($stringname, manager::PLUGINNAME, null, $lang);
+            $tmpstring = (string)new lang_string($stringname, manager::PLUGINNAME, null, $lang);
             $tmplangarray = explode('|', $tmpstring);
             $allstrings = array_merge($allstrings, $tmplangarray);
         }

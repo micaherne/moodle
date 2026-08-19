@@ -16,11 +16,11 @@
 
 namespace core_courseformat\output\local\content;
 
-use action_link;
-use cm_info;
-use renderable;
-use renderer_base;
-use section_info;
+use core\output\action_link;
+use core_course\cm_info;
+use core\output\renderable;
+use core\output\renderer_base;
+use core_course\section_info;
 use stdClass;
 use core\output\named_templatable;
 use core\di;

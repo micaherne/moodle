@@ -19,12 +19,14 @@ declare(strict_types = 1);
 namespace gradingform_rubric\grades\grader\gradingpanel\external;
 
 use advanced_testcase;
-use coding_exception;
+use core\exception\coding_exception;
+use core\exception\required_capability_exception;
+use core\test\testing_util;
 use core_grades\component_gradeitem;
 use core_grades\component_gradeitems;
 use core_external\external_api;
 use mod_forum\local\entities\forum as forum_entity;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Unit tests for core_grades\component_gradeitems;
@@ -200,7 +202,7 @@ final class fetch_test extends advanced_testcase {
 
         $evilstudent = $this->getDataGenerator()->create_and_enrol($course, 'student');
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $this->execute_and_assert_fetch($forum, $controller, $definition, $evilstudent, $teacher, $student);
     }
 
@@ -225,7 +227,7 @@ final class fetch_test extends advanced_testcase {
      * Executes and performs all the assertions of the fetch method with the given parameters.
      */
     private function execute_and_assert_fetch($forum, $controller, $definition, $fetcheruser, $grader, $gradeduser) {
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         $this->setUser($grader);
@@ -348,7 +350,7 @@ final class fetch_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         $forum = $this->get_forum_instance();
@@ -403,7 +405,7 @@ final class fetch_test extends advanced_testcase {
         float $picturescore,
         string $pictureremark
     ): array {
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         return $rubricgenerator->get_test_form_data(

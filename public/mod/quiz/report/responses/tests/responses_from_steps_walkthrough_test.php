@@ -16,6 +16,7 @@
 
 namespace quiz_responses;
 
+use core\exception\coding_exception;
 use mod_quiz\quiz_attempt;
 use question_bank;
 
@@ -63,7 +64,7 @@ final class responses_from_steps_walkthrough_test extends \mod_quiz\tests\attemp
             $responses = $this->explode_dot_separated_keys_to_make_subindexs($responsesfromcsv);
 
             if (!isset($quizattemptids[$responses['quizattempt']])) {
-                throw new \coding_exception("There is no quizattempt {$responses['quizattempt']}!");
+                throw new coding_exception("There is no quizattempt {$responses['quizattempt']}!");
             }
             $this->assert_response_test($quizattemptids[$responses['quizattempt']], $responses);
         }
@@ -93,7 +94,7 @@ final class responses_from_steps_walkthrough_test extends \mod_quiz\tests\attemp
             $stepswithsubmit = $qa->get_steps_with_submitted_response_iterator();
             $step = $stepswithsubmit[$responses['submittedstepno']];
             if (null === $step) {
-                throw new \coding_exception("There is no step no {$responses['submittedstepno']} " .
+                throw new coding_exception("There is no step no {$responses['submittedstepno']} " .
                                            "for slot $slot in quizattempt {$responses['quizattempt']}!");
             }
             foreach (['responsesummary', 'fraction', 'state'] as $column) {

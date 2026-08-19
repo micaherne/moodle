@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace report_infectedfiles\output;
+use core\output\plugin_renderer_base;
 use report_infectedfiles\table\infectedfiles_table;
 
 defined('MOODLE_INTERNAL') || die();
@@ -35,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Render the table

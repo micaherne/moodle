@@ -16,6 +16,10 @@
 
 namespace core_admin\setting\setting;
 
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 /**
  * Special class for overview of external services
  *
@@ -58,11 +62,11 @@ class webservicesoverview extends \core_admin\setting {
         global $CFG, $OUTPUT;
 
         $return = "";
-        $brtag = \html_writer::empty_tag('br');
+        $brtag = html_writer::empty_tag('br');
 
         // One system controlling Moodle with Token.
         $return .= $OUTPUT->heading(get_string('onesystemcontrolling', 'webservice'), 3, 'main');
-        $table = new \html_table();
+        $table = new html_table();
         $table->head = [get_string('step', 'webservice'), get_string('status'),
             get_string('description')];
         $table->colclasses = ['leftalign step', 'leftalign status', 'leftalign description'];
@@ -75,13 +79,13 @@ class webservicesoverview extends \core_admin\setting {
 
         // 1. Enable Web Services.
         $row = [];
-        $url = new \moodle_url("/admin/search.php?query=enablewebservices");
-        $row[0] = "1. " . \html_writer::tag(
+        $url = new url("/admin/search.php?query=enablewebservices");
+        $row[0] = "1. " . html_writer::tag(
             'a',
             get_string('enablews', 'webservice'),
             ['href' => $url]
         );
-        $status = \html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
+        $status = html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
         if ($CFG->enablewebservices) {
             $status = get_string('yes');
         }
@@ -91,13 +95,13 @@ class webservicesoverview extends \core_admin\setting {
 
         // 2. Enable protocols.
         $row = [];
-        $url = new \moodle_url("/admin/settings.php?section=webserviceprotocols");
-        $row[0] = "2. " . \html_writer::tag(
+        $url = new url("/admin/settings.php?section=webserviceprotocols");
+        $row[0] = "2. " . html_writer::tag(
             'a',
             get_string('enableprotocols', 'webservice'),
             ['href' => $url]
         );
-        $status = \html_writer::tag('span', get_string('none'), ['class' => 'badge bg-danger text-white']);
+        $status = html_writer::tag('span', get_string('none'), ['class' => 'badge bg-danger text-white']);
         // Retrieve activated protocol.
         $activeprotocols = empty($CFG->webserviceprotocols) ?
                 [] : \explode(',', $CFG->webserviceprotocols);
@@ -113,8 +117,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 3. Create user account.
         $row = [];
-        $url = new \moodle_url("/user/editadvanced.php?id=-1");
-        $row[0] = "3. " . \html_writer::tag(
+        $url = new url("/user/editadvanced.php?id=-1");
+        $row[0] = "3. " . html_writer::tag(
             'a',
             get_string('createuser', 'webservice'),
             ['href' => $url]
@@ -125,8 +129,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 4. Add capability to users.
         $row = [];
-        $url = new \moodle_url("/admin/roles/check.php?contextid=1");
-        $row[0] = "4. " . \html_writer::tag(
+        $url = new url("/admin/roles/check.php?contextid=1");
+        $row[0] = "4. " . html_writer::tag(
             'a',
             get_string('checkusercapability', 'webservice'),
             ['href' => $url]
@@ -137,8 +141,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 5. Select a web service.
         $row = [];
-        $url = new \moodle_url("/admin/settings.php?section=externalservices");
-        $row[0] = "5. " . \html_writer::tag(
+        $url = new url("/admin/settings.php?section=externalservices");
+        $row[0] = "5. " . html_writer::tag(
             'a',
             get_string('selectservice', 'webservice'),
             ['href' => $url]
@@ -149,8 +153,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 6. Add functions.
         $row = [];
-        $url = new \moodle_url("/admin/settings.php?section=externalservices");
-        $row[0] = "6. " . \html_writer::tag(
+        $url = new url("/admin/settings.php?section=externalservices");
+        $row[0] = "6. " . html_writer::tag(
             'a',
             get_string('addfunctions', 'webservice'),
             ['href' => $url]
@@ -161,8 +165,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 7. Add the specific user.
         $row = [];
-        $url = new \moodle_url("/admin/settings.php?section=externalservices");
-        $row[0] = "7. " . \html_writer::tag(
+        $url = new url("/admin/settings.php?section=externalservices");
+        $row[0] = "7. " . html_writer::tag(
             'a',
             get_string('selectspecificuser', 'webservice'),
             ['href' => $url]
@@ -173,8 +177,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 8. Create token for the specific user.
         $row = [];
-        $url = new \moodle_url('/admin/webservice/tokens.php', ['action' => 'create']);
-        $row[0] = "8. " . \html_writer::tag(
+        $url = new url('/admin/webservice/tokens.php', ['action' => 'create']);
+        $row[0] = "8. " . html_writer::tag(
             'a',
             get_string('createtokenforuser', 'webservice'),
             ['href' => $url]
@@ -185,8 +189,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 9. Enable the documentation.
         $row = [];
-        $url = new \moodle_url("/admin/search.php?query=enablewsdocumentation");
-        $row[0] = "9. " . \html_writer::tag(
+        $url = new url("/admin/search.php?query=enablewsdocumentation");
+        $row[0] = "9. " . html_writer::tag(
             'a',
             get_string('enabledocumentation', 'webservice'),
             ['href' => $url]
@@ -201,8 +205,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 10. Test the service.
         $row = [];
-        $url = new \moodle_url("/admin/webservice/testclient.php");
-        $row[0] = "10. " . \html_writer::tag(
+        $url = new url("/admin/webservice/testclient.php");
+        $row[0] = "10. " . html_writer::tag(
             'a',
             get_string('testwithtestclient', 'webservice'),
             ['href' => $url]
@@ -211,12 +215,12 @@ class webservicesoverview extends \core_admin\setting {
         $row[2] = get_string('testwithtestclientdescription', 'webservice');
         $table->data[] = $row;
 
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
 
         // Users as clients with token.
         $return .= $brtag . $brtag . $brtag;
         $return .= $OUTPUT->heading(get_string('userasclients', 'webservice'), 3, 'main');
-        $table = new \html_table();
+        $table = new html_table();
         $table->head = [get_string('step', 'webservice'), get_string('status'),
             get_string('description')];
         $table->colclasses = ['leftalign step', 'leftalign status', 'leftalign description'];
@@ -229,13 +233,13 @@ class webservicesoverview extends \core_admin\setting {
 
         // 1. Enable Web Services.
         $row = [];
-        $url = new \moodle_url("/admin/search.php?query=enablewebservices");
-        $row[0] = "1. " . \html_writer::tag(
+        $url = new url("/admin/search.php?query=enablewebservices");
+        $row[0] = "1. " . html_writer::tag(
             'a',
             get_string('enablews', 'webservice'),
             ['href' => $url]
         );
-        $status = \html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
+        $status = html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
         if ($CFG->enablewebservices) {
             $status = get_string('yes');
         }
@@ -245,13 +249,13 @@ class webservicesoverview extends \core_admin\setting {
 
         // 2. Enable protocols.
         $row = [];
-        $url = new \moodle_url("/admin/settings.php?section=webserviceprotocols");
-        $row[0] = "2. " . \html_writer::tag(
+        $url = new url("/admin/settings.php?section=webserviceprotocols");
+        $row[0] = "2. " . html_writer::tag(
             'a',
             get_string('enableprotocols', 'webservice'),
             ['href' => $url]
         );
-        $status = \html_writer::tag('span', get_string('none'), ['class' => 'badge bg-danger text-white']);
+        $status = html_writer::tag('span', get_string('none'), ['class' => 'badge bg-danger text-white']);
         // Retrieve activated protocol.
         $activeprotocols = empty($CFG->webserviceprotocols) ?
                 [] : \explode(',', $CFG->webserviceprotocols);
@@ -267,8 +271,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 3. Select a web service.
         $row = [];
-        $url = new \moodle_url("/admin/settings.php?section=externalservices");
-        $row[0] = "3. " . \html_writer::tag(
+        $url = new url("/admin/settings.php?section=externalservices");
+        $row[0] = "3. " . html_writer::tag(
             'a',
             get_string('selectservice', 'webservice'),
             ['href' => $url]
@@ -279,8 +283,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 4. Add functions.
         $row = [];
-        $url = new \moodle_url("/admin/settings.php?section=externalservices");
-        $row[0] = "4. " . \html_writer::tag(
+        $url = new url("/admin/settings.php?section=externalservices");
+        $row[0] = "4. " . html_writer::tag(
             'a',
             get_string('addfunctions', 'webservice'),
             ['href' => $url]
@@ -291,8 +295,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 5. Add capability to users.
         $row = [];
-        $url = new \moodle_url("/admin/roles/check.php?contextid=1");
-        $row[0] = "5. " . \html_writer::tag(
+        $url = new url("/admin/roles/check.php?contextid=1");
+        $row[0] = "5. " . html_writer::tag(
             'a',
             get_string('addcapabilitytousers', 'webservice'),
             ['href' => $url]
@@ -303,8 +307,8 @@ class webservicesoverview extends \core_admin\setting {
 
         // 6. Test the service.
         $row = [];
-        $url = new \moodle_url("/admin/webservice/testclient.php");
-        $row[0] = "6. " . \html_writer::tag(
+        $url = new url("/admin/webservice/testclient.php");
+        $row[0] = "6. " . html_writer::tag(
             'a',
             get_string('testwithtestclient', 'webservice'),
             ['href' => $url]
@@ -313,7 +317,7 @@ class webservicesoverview extends \core_admin\setting {
         $row[2] = get_string('testauserwithtestclientdescription', 'webservice');
         $table->data[] = $row;
 
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
 
         return highlight($query, $return);
     }

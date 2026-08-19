@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
 use gradepenalty_duedate\penalty_rule;
 
 /**
@@ -30,7 +31,7 @@ use gradepenalty_duedate\penalty_rule;
 function xmldb_gradepenalty_duedate_install(): void {
     // Default penalty rule.
     $rule = new penalty_rule();
-    $rule->set('contextid', context_system::instance()->id);
+    $rule->set('contextid', system::instance()->id);
     $rule->set('overdueby', 1);
     $rule->set('penalty', 0);
     $rule->set('sortorder', 0);

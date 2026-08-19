@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/repository/lib.php');
@@ -77,7 +80,7 @@ class repository_areafiles extends repository {
             $ret['path'] = $retpath; // Show path if already inside subfolder.
         }
 
-        $context = context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         $fs = get_file_storage();
         $files = $fs->get_directory_files($context->id, 'user', 'draft', $itemid,
                 empty($path) ? '/' : $path, false, true);
@@ -96,7 +99,7 @@ class repository_areafiles extends repository {
                 $ret['path'] = $retpath; // Show path if subfolders exist.
                 continue;
             }
-            $fileurl = moodle_url::make_draftfile_url($itemid, $file->get_filepath(), $file->get_filename());
+            $fileurl = url::make_draftfile_url($itemid, $file->get_filepath(), $file->get_filename());
             $node = array(
                 'title' => $file->get_filename(),
                 'size' => $file->get_filesize(),

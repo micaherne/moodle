@@ -16,8 +16,8 @@
 
 namespace mod_quiz\output;
 
-use moodle_url;
-use renderable;
+use core\url;
+use core\output\renderable;
 
 /**
  * Represents a single link in the navigation panel.

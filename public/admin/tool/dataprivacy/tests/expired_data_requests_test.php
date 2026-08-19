@@ -16,6 +16,7 @@
 
 namespace tool_dataprivacy;
 
+use core\context\user;
 use data_privacy_testcase;
 
 defined('MOODLE_INTERNAL') || die();
@@ -51,7 +52,7 @@ final class expired_data_requests_test extends data_privacy_testcase {
         // Set up test users.
         $this->setAdminUser();
         $studentuser = $this->getDataGenerator()->create_user();
-        $studentusercontext = \context_user::instance($studentuser->id);
+        $studentusercontext = user::instance($studentuser->id);
 
         $dpouser = $this->getDataGenerator()->create_user();
         $this->assign_site_dpo($dpouser);
@@ -124,7 +125,7 @@ final class expired_data_requests_test extends data_privacy_testcase {
 
         // Create and approve data request.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $this->setUser($user->id);
         $datarequest = api::create_data_request($user->id, api::DATAREQUEST_TYPE_EXPORT);

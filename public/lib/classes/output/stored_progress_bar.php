@@ -16,6 +16,8 @@
 
 namespace core\output;
 
+use core\exception\moodle_exception;
+
 /**
  * Stored progress bar class.
  *
@@ -230,7 +232,7 @@ class stored_progress_bar extends progress_bar {
      * @param  renderer_base $output The renderer.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $class = 'stored-progress-bar';
         if (empty($this->timestart)) {
             $class .= ' stored-progress-notstarted';
@@ -352,7 +354,7 @@ class stored_progress_bar extends progress_bar {
         global $DB;
 
         if (is_null($this->recordid)) {
-            throw new \moodle_exception('Polling has not been started. Cannot set iteration.');
+            throw new moodle_exception('Polling has not been started. Cannot set iteration.');
         }
 
         // Update time.

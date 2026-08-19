@@ -25,6 +25,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\navigation\navigation_json;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation_ajax;
+
 define('AJAX_SCRIPT', true);
 require_once(__DIR__ . '/../../config.php');
 
@@ -40,7 +46,7 @@ if ($branchtype !== navigation_node::TYPE_SITE_ADMIN) {
 // Start capturing output in case of broken plugins.
 \core\ajax::capture_output();
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url('/lib/ajax/getsiteadminbranch.php', array('type'=>$branchtype));
 
 $sitenavigation = new settings_navigation_ajax($PAGE);

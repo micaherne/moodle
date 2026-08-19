@@ -3,6 +3,8 @@
 // detects settings that were added during an upgrade, displays a screen for the admin to
 // modify them, and then processes modifications
 
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -12,7 +14,7 @@ $return = optional_param('return', '', PARAM_ALPHA);
 require_login(0, false);
 if (isguestuser()) {
     // Login as real user!
-    $SESSION->wantsurl = (string)new moodle_url('/admin/upgradesettings.php', array('return'=>$return));
+    $SESSION->wantsurl = (string)new url('/admin/upgradesettings.php', array('return'=>$return));
     redirect(get_login_url());
 }
 

@@ -23,6 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configmultiselect;
+use core_admin\setting\setting\configpasswordunmask;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
@@ -42,28 +49,28 @@ if ($ADMIN->fulltree) {
                                   );
 
     //--- general settings -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_configtext('url/framesize',
+    $settings->add(new configtext('url/framesize',
         get_string('framesize', 'url'), get_string('configframesize', 'url'), 130, PARAM_INT));
-    $settings->add(new admin_setting_configpasswordunmask('url/secretphrase', get_string('password'),
+    $settings->add(new configpasswordunmask('url/secretphrase', get_string('password'),
         get_string('configsecretphrase', 'url'), ''));
-    $settings->add(new admin_setting_configcheckbox('url/allowvariables',
+    $settings->add(new configcheckbox('url/allowvariables',
         get_string('allowvariables', 'url'), get_string('allowvariables_desc', 'url'), false));
-    $settings->add(new admin_setting_configcheckbox('url/rolesinparams',
+    $settings->add(new configcheckbox('url/rolesinparams',
         get_string('rolesinparams', 'url'), get_string('configrolesinparams', 'url'), false));
     $settings->hide_if('url/rolesinparams', 'url/allowvariables');
-    $settings->add(new admin_setting_configmultiselect('url/displayoptions',
+    $settings->add(new configmultiselect('url/displayoptions',
         get_string('displayoptions', 'url'), get_string('configdisplayoptions', 'url'),
         $defaultdisplayoptions, $displayoptions));
 
     //--- modedit defaults -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_heading('urlmodeditdefaults', get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
+    $settings->add(new heading('urlmodeditdefaults', get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
 
-    $settings->add(new admin_setting_configcheckbox('url/printintro',
+    $settings->add(new configcheckbox('url/printintro',
         get_string('printintro', 'url'), get_string('printintroexplain', 'url'), 1));
-    $settings->add(new admin_setting_configselect('url/display',
+    $settings->add(new configselect('url/display',
         get_string('displayselect', 'url'), get_string('displayselectexplain', 'url'), RESOURCELIB_DISPLAY_AUTO, $displayoptions));
-    $settings->add(new admin_setting_configtext('url/popupwidth',
+    $settings->add(new configtext('url/popupwidth',
         get_string('popupwidth', 'url'), get_string('popupwidthexplain', 'url'), 620, PARAM_INT, 7));
-    $settings->add(new admin_setting_configtext('url/popupheight',
+    $settings->add(new configtext('url/popupheight',
         get_string('popupheight', 'url'), get_string('popupheightexplain', 'url'), 450, PARAM_INT, 7));
 }

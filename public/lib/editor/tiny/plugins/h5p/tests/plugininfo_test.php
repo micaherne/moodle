@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace tiny_h5p;
 
 use advanced_testcase;
+use core\context\course;
 
 /**
  * Unit tests for the \tiny_h5p\plugininfo class.
@@ -52,7 +53,7 @@ final class plugininfo_test extends advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         if ($role) {
             $generator->enrol_user($user->id, $course->id, $role);
         }

@@ -30,6 +30,10 @@ require_once(__DIR__ . '/../../behat/behat_base.php');
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
 use Behat\Mink\Exception\ElementNotFoundException as ElementNotFoundException;
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
 
 /**
  * Steps definitions to navigate through the navigation tree nodes.
@@ -509,7 +513,7 @@ class behat_navigation extends behat_base {
         $globuser = $USER;
         $USER = $user; // We need this set to the behat session user so we can call isloggedin.
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $bodynode = $this->find('xpath', 'body');
         $bodyclass = $bodynode->getAttribute('class');
@@ -522,7 +526,7 @@ class behat_navigation extends behat_base {
 
         if (isloggedin() && !isguestuser($user) && !is_mnet_remote_user($user)) {
             if (is_siteadmin($user) ||  has_capability('moodle/user:update', $systemcontext)) {
-                $url = new moodle_url('/user/editadvanced.php', array('id' => $user->id, 'course' => SITEID,
+                $url = new url('/user/editadvanced.php', array('id' => $user->id, 'course' => SITEID,
                     'returnto' => 'profile'));
             } else if (has_capability('moodle/user:editownprofile', $systemcontext)) {
                 $userauthplugin = false;
@@ -533,9 +537,9 @@ class behat_navigation extends behat_base {
                     $url = $userauthplugin->edit_profile_url();
                     if (empty($url)) {
                         if (empty($course)) {
-                            $url = new moodle_url('/user/edit.php', array('id' => $user->id, 'returnto' => 'profile'));
+                            $url = new url('/user/edit.php', array('id' => $user->id, 'returnto' => 'profile'));
                         } else {
-                            $url = new moodle_url('/user/edit.php', array('id' => $user->id, 'course' => $courseid,
+                            $url = new url('/user/edit.php', array('id' => $user->id, 'course' => $courseid,
                                 'returnto' => 'profile'));
                         }
                     }
@@ -598,7 +602,7 @@ class behat_navigation extends behat_base {
      * @param string $page the type of page. E.g. 'Admin notifications' or 'core_user > Preferences'.
      * @return moodle_url the corresponding URL.
      */
-    protected function resolve_page_helper(string $page): moodle_url {
+    protected function resolve_page_helper(string $page): url {
         list($component, $name) = $this->parse_page_name($page);
         if ($component === 'core') {
             return $this->resolve_core_page_url($name);
@@ -693,7 +697,7 @@ class behat_navigation extends behat_base {
      * @param string $pagetype the component and page type. E.g. 'mod_quiz > View'.
      * @return moodle_url the corresponding URL.
      */
-    protected function resolve_page_instance_helper(string $identifier, string $pagetype): moodle_url {
+    protected function resolve_page_instance_helper(string $identifier, string $pagetype): url {
         list($component, $type) = $this->parse_page_name($pagetype);
         if ($component === 'core') {
             return $this->resolve_core_page_instance_url($type, $identifier);
@@ -714,34 +718,34 @@ class behat_navigation extends behat_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_core_page_url(string $name): moodle_url {
+    protected function resolve_core_page_url(string $name): url {
         switch ($name) {
             case 'Homepage':
-                return new moodle_url('/');
+                return new url('/');
 
             case 'My courses':
-                return new moodle_url('/my/courses.php');
+                return new url('/my/courses.php');
 
             case 'Admin notifications':
-                return new moodle_url('/admin/');
+                return new url('/admin/');
 
             case 'Content bank':
-                return new moodle_url('/contentbank/');
+                return new url('/contentbank/');
 
             case 'My private files':
-                return new moodle_url('/user/files.php');
+                return new url('/user/files.php');
 
             case 'System logs report':
-                return new moodle_url('/report/log/index.php');
+                return new url('/report/log/index.php');
 
             case 'Profile':
-                return new moodle_url('/user/view.php');
+                return new url('/user/view.php');
 
             case 'Profile advanced editing':
-                return new moodle_url('/user/editadvanced.php', ['returnto' => 'profile']);
+                return new url('/user/editadvanced.php', ['returnto' => 'profile']);
 
             case 'Profile editing':
-                return new moodle_url('/user/edit.php', ['returnto' => 'profile']);
+                return new url('/user/edit.php', ['returnto' => 'profile']);
 
             default:
                 throw new Exception('Unrecognised core page type "' . $name . '."');
@@ -785,7 +789,7 @@ class behat_navigation extends behat_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_core_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_core_page_instance_url(string $type, string $identifier): url {
         $type = strtolower($type);
         $coursenotfoundexception = new Exception(
             "The specified course with shortname, fullname, or idnumber '{$identifier}' does not exist",
@@ -797,21 +801,21 @@ class behat_navigation extends behat_base {
                 if (!$categoryid) {
                     throw new Exception('The specified category with idnumber "' . $identifier . '" does not exist');
                 }
-                return new moodle_url('/course/index.php', ['categoryid' => $categoryid]);
+                return new url('/course/index.php', ['categoryid' => $categoryid]);
 
             case 'course editing':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/course/edit.php', ['id' => $courseid]);
+                return new url('/course/edit.php', ['id' => $courseid]);
 
             case 'course':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/course/view.php', ['id' => $courseid]);
+                return new url('/course/view.php', ['id' => $courseid]);
 
             case 'activity':
                 $cm = $this->get_course_module_for_identifier($identifier);
@@ -825,7 +829,7 @@ class behat_navigation extends behat_base {
                 if (!$cm) {
                     throw new Exception('The specified activity with idnumber "' . $identifier . '" does not exist');
                 }
-                return new moodle_url('/course/modedit.php', [
+                return new url('/course/modedit.php', [
                     'update' => $cm->id,
                 ]);
             case 'backup':
@@ -833,95 +837,95 @@ class behat_navigation extends behat_base {
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/backup/backup.php', ['id' => $courseid]);
+                return new url('/backup/backup.php', ['id' => $courseid]);
             case 'import':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/backup/import.php', ['id' => $courseid]);
+                return new url('/backup/import.php', ['id' => $courseid]);
             case 'restore':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                $context = context_course::instance($courseid);
-                return new moodle_url('/backup/restorefile.php', ['contextid' => $context->id]);
+                $context = course::instance($courseid);
+                return new url('/backup/restorefile.php', ['contextid' => $context->id]);
             case 'reset':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/course/reset.php', ['id' => $courseid]);
+                return new url('/course/reset.php', ['id' => $courseid]);
             case 'course copy':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/backup/copy.php', ['id' => $courseid]);
+                return new url('/backup/copy.php', ['id' => $courseid]);
             case 'groups':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/group/index.php', ['id' => $courseid]);
+                return new url('/group/index.php', ['id' => $courseid]);
             case 'groups overview':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/group/overview.php', ['id' => $courseid]);
+                return new url('/group/overview.php', ['id' => $courseid]);
             case 'groupings':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/group/groupings.php', ['id' => $courseid]);
+                return new url('/group/groupings.php', ['id' => $courseid]);
             case 'permissions':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                $context = context_course::instance($courseid);
-                return new moodle_url('/admin/roles/permissions.php', ['contextid' => $context->id]);
+                $context = course::instance($courseid);
+                return new url('/admin/roles/permissions.php', ['contextid' => $context->id]);
             case 'enrolment methods':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/enrol/instances.php', ['id' => $courseid]);
+                return new url('/enrol/instances.php', ['id' => $courseid]);
             case 'enrolled users':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/user/index.php', ['id' => $courseid]);
+                return new url('/user/index.php', ['id' => $courseid]);
             case 'other users':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/enrol/otherusers.php', ['id' => $courseid]);
+                return new url('/enrol/otherusers.php', ['id' => $courseid]);
             case 'renameroles':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/enrol/renameroles.php', ['id' => $courseid]);
+                return new url('/enrol/renameroles.php', ['id' => $courseid]);
 
             case 'course profile':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/user/user.php', ['course' => $courseid]);
+                return new url('/user/user.php', ['course' => $courseid]);
 
             case 'course profile editing':
                 $courseid = $this->get_course_id($identifier);
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/user/edit.php', [
+                return new url('/user/edit.php', [
                     'course' => $courseid,
                     'returnto' => 'profile',
                 ]);
@@ -931,7 +935,7 @@ class behat_navigation extends behat_base {
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url('/user/editadvanced.php', [
+                return new url('/user/editadvanced.php', [
                     'course' => $courseid,
                     'returnto' => 'profile',
                 ]);
@@ -947,22 +951,22 @@ class behat_navigation extends behat_base {
 
                 if (count($parts) == 2) {
                     // View page.
-                    return new moodle_url($cm->url);
+                    return new url($cm->url);
                 }
 
                 if ($parts[2] === 'editing') {
                     // Edit settings page.
-                    return new moodle_url('/course/modedit.php', ['update' => $cm->id]);
+                    return new url('/course/modedit.php', ['update' => $cm->id]);
                 }
 
                 if ($parts[2] === 'roles') {
                     // Locally assigned roles page.
-                    return new moodle_url('/admin/roles/assign.php', ['contextid' => $cm->context->id]);
+                    return new url('/admin/roles/assign.php', ['contextid' => $cm->context->id]);
                 }
 
                 if ($parts[2] === 'permissions') {
                     // Permissions page.
-                    return new moodle_url('/admin/roles/permissions.php', ['contextid' => $cm->context->id]);
+                    return new url('/admin/roles/permissions.php', ['contextid' => $cm->context->id]);
                 }
 
             } else if ($parts[1] === 'index' && count($parts) == 2) {
@@ -970,7 +974,7 @@ class behat_navigation extends behat_base {
                 if (!$courseid) {
                     throw $coursenotfoundexception;
                 }
-                return new moodle_url("/mod/$modname/index.php", ['id' => $courseid]);
+                return new url("/mod/$modname/index.php", ['id' => $courseid]);
             }
         }
 
@@ -1044,7 +1048,7 @@ class behat_navigation extends behat_base {
      */
     public function i_am_on_course_homepage($coursefullname) {
         $courseid = $this->get_course_id($coursefullname);
-        $url = new moodle_url('/course/view.php', ['id' => $courseid]);
+        $url = new url('/course/view.php', ['id' => $courseid]);
         $this->execute('behat_general::i_visit', [$url]);
     }
 
@@ -1071,10 +1075,10 @@ class behat_navigation extends behat_base {
         }
 
         $courseid = $this->get_course_id($coursefullname);
-        $context = context_course::instance($courseid);
-        $courseurl = new moodle_url('/course/view.php', ['id' => $courseid]);
+        $context = course::instance($courseid);
+        $courseurl = new url('/course/view.php', ['id' => $courseid]);
 
-        $editmodeurl = new moodle_url('/editmode.php', [
+        $editmodeurl = new url('/editmode.php', [
             'context' => $context->id,
             'pageurl' => $courseurl->out(true),
             'setmode' => ($onoroff === 'on' ? 1 : 0),

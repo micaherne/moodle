@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\context\course;
+
 /**
  * Tests for Moodle's String Formatter.
  *
@@ -499,7 +501,7 @@ final class formatting_test extends \advanced_testcase {
         filter_set_global_state('activitynames', TEXTFILTER_ON);
 
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $page = $this->getDataGenerator()->create_module(
             'page',
             ['course' => $course->id, 'name' => 'Test 1'],

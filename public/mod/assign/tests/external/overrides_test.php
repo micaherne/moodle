@@ -18,12 +18,12 @@ namespace mod_assign\external;
 
 use core_external\external_api;
 use dml_missing_record_exception;
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 use mod_assign_override_test_trait;
 use mod_assign\externallib_advanced_testcase;
 use mod_assign_test_generator;
 use PHPUnit\Framework\Attributes\CoversClass;
-use required_capability_exception;
+use core\exception\required_capability_exception;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();

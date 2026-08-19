@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Request;
@@ -63,7 +64,7 @@ final class http_client_test extends \advanced_testcase {
             }
         } while ($reflector = $reflector->getParentClass());
 
-        throw new \moodle_exception(sprintf('Attribute "%s" not found in object.', $attributename));
+        throw new moodle_exception(sprintf('Attribute "%s" not found in object.', $attributename));
     }
 
     /**
@@ -185,7 +186,7 @@ final class http_client_test extends \advanced_testcase {
 
         // Test a request with a basic hostname filter applied.
         $testhtml = $this->getExternalTestFileUrl('/test.html');
-        $url = new \moodle_url($testhtml);
+        $url = new url($testhtml);
         $host = $url->get_host();
         set_config('curlsecurityblockedhosts', $host); // Blocks $host.
 

@@ -24,6 +24,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\module;
 use core_external\external_single_structure;
 use core_external\external_value;
 
@@ -242,7 +244,7 @@ class assign_submission_onlinetext extends assign_submission_plugin {
         }
 
         $params = array(
-            'context' => context_module::instance($this->assignment->get_course_module()->id),
+            'context' => module::instance($this->assignment->get_course_module()->id),
             'courseid' => $this->assignment->get_course()->id,
             'objectid' => $submission->id,
             'other' => array(

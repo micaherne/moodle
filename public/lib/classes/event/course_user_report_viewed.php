@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +81,7 @@ class course_user_report_viewed extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url("/course/user.php", array('id' => $this->courseid, 'user' => $this->relateduserid,
+        return new url("/course/user.php", array('id' => $this->courseid, 'user' => $this->relateduserid,
                 'mode' => $this->other['mode']));
     }
 
@@ -92,16 +95,16 @@ class course_user_report_viewed extends base {
         parent::validate_data();
 
         if ($this->contextlevel != CONTEXT_COURSE) {
-            throw new \coding_exception('Context passed must be course context.');
+            throw new coding_exception('Context passed must be course context.');
         }
 
         if (empty($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         // Make sure this class is never used without proper object details.
         if (!isset($this->other['mode'])) {
-            throw new \coding_exception('The \'mode\' value must be set in other.');
+            throw new coding_exception('The \'mode\' value must be set in other.');
         }
     }
 

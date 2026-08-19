@@ -24,6 +24,8 @@
 
 namespace core_plagiarism\privacy;
 
+use core\context;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -44,14 +46,14 @@ interface plagiarism_provider extends
      * @param   array       $subcontext The subcontext within the context to export this information to.
      * @param   array       $linkarray The weird and wonderful link array used to display information for a specific item
      */
-    public static function export_plagiarism_user_data(int $userid, \context $context, array $subcontext, array $linkarray);
+    public static function export_plagiarism_user_data(int $userid, context $context, array $subcontext, array $linkarray);
 
     /**
      * Delete all user information for the provided context.
      *
      * @param  \context $context The context to delete user data for.
      */
-    public static function delete_plagiarism_for_context(\context $context);
+    public static function delete_plagiarism_for_context(context $context);
 
     /**
      * Delete all user information for the provided user and context.
@@ -59,5 +61,5 @@ interface plagiarism_provider extends
      * @param  int      $userid    The user to delete
      * @param  \context $context   The context to refine the deletion.
      */
-    public static function delete_plagiarism_for_user(int $userid, \context $context);
+    public static function delete_plagiarism_for_user(int $userid, context $context);
 }

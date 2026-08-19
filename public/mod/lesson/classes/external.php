@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/mod/lesson/locallib.php');
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\user;
 use mod_lesson\external\lesson_summary_exporter;
 use core_external\external_api;
 use core_external\external_files;
@@ -143,7 +146,7 @@ class mod_lesson_external extends external_api {
             // We can avoid then additional validate_context calls.
             $lessons = get_all_instances_in_courses("lesson", $courses);
             foreach ($lessons as $lessonrecord) {
-                $context = context_module::instance($lessonrecord->coursemodule);
+                $context = module::instance($lessonrecord->coursemodule);
 
                 // Remove fields added by get_all_instances_in_courses.
                 unset($lessonrecord->coursemodule, $lessonrecord->section, $lessonrecord->visible, $lessonrecord->groupmode,
@@ -500,8 +503,8 @@ class mod_lesson_external extends external_api {
      * @since Moodle 3.3
      */
     protected static function check_can_view_user_data($userid, $course, $cm, $context) {
-        $user = core_user::get_user($userid, '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($userid, '*', MUST_EXIST);
+        user::require_active_user($user);
         // Check permissions and that if users share group (if groups enabled).
         require_capability('mod/lesson:viewreports', $context);
         if (!groups_user_groups_visible($course, $user->id, $cm)) {

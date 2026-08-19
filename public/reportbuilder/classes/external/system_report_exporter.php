@@ -26,7 +26,7 @@ use core_reportbuilder\form\filter;
 use core_reportbuilder\local\models\report;
 use core_reportbuilder\table\system_report_table;
 use core_reportbuilder\table\system_report_table_filterset;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Report exporter class

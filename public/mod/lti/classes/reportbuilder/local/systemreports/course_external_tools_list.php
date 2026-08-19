@@ -16,7 +16,12 @@
 
 namespace mod_lti\reportbuilder\local\systemreports;
 
+use core\context\course;
+use core\lang_string;
+use core\output\action_menu;
+use core\output\action_menu\link;
 use core\output\html_writer;
+use core\url;
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\report\column;
 use mod_lti\reportbuilder\local\entities\tool_types;
@@ -132,7 +137,7 @@ class course_external_tools_list extends system_report {
         // TODO: This should be replaced with proper column aggregation once that's added to system_report instances in MDL-76392.
         $this->add_column(new column(
             'usage',
-            new \lang_string('usage', 'mod_lti'),
+            new lang_string('usage', 'mod_lti'),
             $tooltypesentity->get_entity_name()
         ))
             ->set_type(column::TYPE_INTEGER)
@@ -143,7 +148,7 @@ class course_external_tools_list extends system_report {
         // Enable toggle column.
         $this->add_column((new column(
             'showinactivitychooser',
-            new \lang_string('showinactivitychooser', 'mod_lti'),
+            new lang_string('showinactivitychooser', 'mod_lti'),
             $tooltypesentity->get_entity_name()
         ))
             // Site tools can be overridden on course level.
@@ -175,7 +180,7 @@ class course_external_tools_list extends system_report {
                 $label = $coursevisible ? get_string('dontshowinactivitychooser', 'mod_lti')
                     : get_string('showinactivitychooser', 'mod_lti');
 
-                $disabled = !has_capability('mod/lti:addcoursetool', \context_course::instance($courseid));
+                $disabled = !has_capability('mod/lti:addcoursetool', course::instance($courseid));
 
                 return $renderer->render_from_template('core/toggle', [
                     'id' => 'showinactivitychooser-toggle-' . $row->id,
@@ -190,7 +195,7 @@ class course_external_tools_list extends system_report {
 
         // Attempt to create a dummy actions column, working around the limitations of the official actions feature.
         $this->add_column(new column(
-            'actions', new \lang_string('actions'),
+            'actions', new lang_string('actions'),
             $tooltypesentity->get_entity_name()
         ))
             ->set_type(column::TYPE_TEXT)
@@ -201,38 +206,38 @@ class course_external_tools_list extends system_report {
 
                 // Lock actions for site-level preconfigured tools.
                 if (get_site()->id == $row->course) {
-                    return \html_writer::div(
-                        \html_writer::div(
+                    return html_writer::div(
+                        html_writer::div(
                             $OUTPUT->pix_icon('t/locked', get_string('courseexternaltoolsnoeditpermissions', 'mod_lti')
                         ), 'tool-action-icon-container'), 'd-flex justify-content-end'
                     );
                 }
 
                 // Lock actions when the user can't add course tools.
-                if (!has_capability('mod/lti:addcoursetool', \context_course::instance($row->course))) {
-                    return \html_writer::div(
-                        \html_writer::div(
+                if (!has_capability('mod/lti:addcoursetool', course::instance($row->course))) {
+                    return html_writer::div(
+                        html_writer::div(
                             $OUTPUT->pix_icon('t/locked', get_string('courseexternaltoolsnoeditpermissions', 'mod_lti')
                         ), 'tool-action-icon-container'), 'd-flex justify-content-end'
                     );
                 }
 
                 // Build and display an action menu.
-                $menu = new \action_menu();
+                $menu = new action_menu();
                 $triggerlabel = get_string('actions');
                 $visuallyhiddenlabel = html_writer::span($triggerlabel, 'visually-hidden d-inline-block');
                 $menu->set_menu_trigger($OUTPUT->pix_icon('i/moremenu', '') . $visuallyhiddenlabel, 'btn btn-icon d-flex');
                 $menu->triggerattributes['title'] = $triggerlabel;
 
-                $menu->add(new \action_menu_link(
-                    new \moodle_url('/mod/lti/coursetooledit.php', ['course' => $row->course, 'typeid' => $row->id]),
+                $menu->add(new link(
+                    new url('/mod/lti/coursetooledit.php', ['course' => $row->course, 'typeid' => $row->id]),
                     null,
                     get_string('edit', 'core'),
                     null
                 ));
 
-                $menu->add(new \action_menu_link(
-                    new \moodle_url('#'),
+                $menu->add(new link(
+                    new url('#'),
                     null,
                     get_string('delete', 'core'),
                     null,

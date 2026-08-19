@@ -17,7 +17,8 @@
 namespace factor_sms\task;
 
 use core\task\adhoc_task;
-use moodle_url;
+use core\url;
+use core\user;
 
 /**
  * Notification for admins to notify about the migration of SMS setup from MFA to SMS gateway plugins.
@@ -32,14 +33,14 @@ class sms_gateway_migration_notification extends adhoc_task {
 
         $siteadmins = get_admins();
         foreach ($siteadmins as $siteadmin) {
-            $smsconfigureurl = new moodle_url('/sms/sms_gateways.php');
+            $smsconfigureurl = new url('/sms/sms_gateways.php');
             $messagebody = get_string('notification:smsgatewaymigrationinfo', 'factor_sms', $smsconfigureurl);
             $messagesubject = get_string('notification:smsgatewaymigration', 'factor_sms');
 
             $message = new \core\message\message();
             $message->component = 'moodle';
             $message->name = 'notices';
-            $message->userfrom = \core_user::get_noreply_user();
+            $message->userfrom = user::get_noreply_user();
             $message->subject = $messagesubject;
             $message->fullmessageformat = FORMAT_HTML;
             $message->notification = 1;

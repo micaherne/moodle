@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\plugin_manager;
+
 define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../config.php');
@@ -111,7 +113,7 @@ if ($options['list']) {
         $nextrun = $task->get_next_run_time();
         $lastrun = $task->get_last_run_time();
 
-        $plugininfo = core_plugin_manager::instance()->get_plugin_info($task->get_component());
+        $plugininfo = plugin_manager::instance()->get_plugin_info($task->get_component());
         $plugindisabled = $plugininfo && $plugininfo->is_enabled() === false && !$task->get_run_if_component_disabled();
 
         if ($plugindisabled) {

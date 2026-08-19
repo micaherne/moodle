@@ -23,6 +23,9 @@
  */
 namespace core_calendar\local\event\forms;
 
+use core\context\user;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
@@ -44,7 +47,7 @@ class managesubscriptions extends \moodleform {
         $mform = $this->_form;
         $eventtypes = calendar_get_allowed_event_types();
         if (in_array(true, $eventtypes, true) === false) {
-            throw new \moodle_exception('nopermissiontoupdatecalendar');
+            throw new moodle_exception('nopermissiontoupdatecalendar');
         }
 
         // Name.
@@ -117,7 +120,7 @@ class managesubscriptions extends \moodleform {
                 // Make sure the file area is not empty and contains only one file.
                 $draftitemid = $data['importfile'];
                 $fs = get_file_storage();
-                $usercontext = \context_user::instance($USER->id);
+                $usercontext = user::instance($USER->id);
                 $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $draftitemid, 'id DESC', false);
                 if (count($files) !== 1) {
                     $errors['importfile'] = get_string('errorrequiredurlorfile', 'calendar');
@@ -131,7 +134,7 @@ class managesubscriptions extends \moodleform {
                 $url = clean_param($data['url'], PARAM_URL);
                 try {
                     calendar_get_icalendar($url);
-                } catch (\moodle_exception $e) {
+                } catch (moodle_exception $e) {
                     $errors['url'] = get_string('errorinvalidicalurl', 'calendar');
                 }
             }

@@ -21,7 +21,7 @@ use core\output\renderable;
 use core\output\renderer_base;
 use core\router\util;
 use core_course\route\controller\course_navigation;
-use cm_info;
+use core_course\cm_info;
 
 /**
  * Sticky footer class for linear navigation in course format.
@@ -104,7 +104,7 @@ class footer_content implements named_templatable, renderable {
     }
 
     #[\Override]
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core_courseformat/local/linearnavigation/footer_content';
     }
 }

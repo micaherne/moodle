@@ -16,7 +16,7 @@
 
 namespace core_h5p\output;
 
-use plugin_renderer_base;
+use core\output\plugin_renderer_base;
 
 /**
  * Renderer class.

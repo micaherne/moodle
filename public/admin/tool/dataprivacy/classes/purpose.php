@@ -23,6 +23,8 @@
  */
 namespace tool_dataprivacy;
 
+use core\context_helper;
+use core_cache\cache;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -58,7 +60,7 @@ class purpose extends \core\persistent {
         global $CFG;
 
         if ($id) {
-            $cache = \cache::make('tool_dataprivacy', 'purpose');
+            $cache = cache::make('tool_dataprivacy', 'purpose');
             if ($data = $cache->get($id)) {
 
                 // Replicate self::read.
@@ -131,7 +133,7 @@ class purpose extends \core\persistent {
      * @return null
      */
     protected function after_create() {
-        $cache = \cache::make('tool_dataprivacy', 'purpose');
+        $cache = cache::make('tool_dataprivacy', 'purpose');
         $cache->set($this->get('id'), $this->to_record());
     }
 
@@ -142,7 +144,7 @@ class purpose extends \core\persistent {
      * @return null
      */
     protected function after_update($result) {
-        $cache = \cache::make('tool_dataprivacy', 'purpose');
+        $cache = cache::make('tool_dataprivacy', 'purpose');
         $cache->set($this->get('id'), $this->to_record());
     }
 
@@ -152,7 +154,7 @@ class purpose extends \core\persistent {
      * @return null
      */
     protected function before_delete() {
-        $cache = \cache::make('tool_dataprivacy', 'purpose');
+        $cache = cache::make('tool_dataprivacy', 'purpose');
         $cache->delete($this->get('id'));
     }
 
@@ -168,7 +170,7 @@ class purpose extends \core\persistent {
         }
 
         $pluginconfig = get_config('tool_dataprivacy');
-        $levels = \context_helper::get_all_levels();
+        $levels = context_helper::get_all_levels();
         foreach ($levels as $level => $classname) {
 
             list($purposevar, $unused) = \tool_dataprivacy\data_registry::var_names_from_context($classname);

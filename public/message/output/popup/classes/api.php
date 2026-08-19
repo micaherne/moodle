@@ -24,6 +24,9 @@
 
 namespace message_popup;
 
+use core\exception\moodle_exception;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -49,7 +52,7 @@ class api {
 
         $sort = strtoupper($sort);
         if ($sort != 'DESC' && $sort != 'ASC') {
-            throw new \moodle_exception('invalid parameter: sort: must be "DESC" or "ASC"');
+            throw new moodle_exception('invalid parameter: sort: must be "DESC" or "ASC"');
         }
 
         if (empty($useridto)) {
@@ -60,7 +63,7 @@ class api {
         if ($useridto == $USER->id) {
             $disabled = $USER->emailstop;
         } else {
-            $user = \core_user::get_user($useridto, "emailstop", MUST_EXIST);
+            $user = user::get_user($useridto, "emailstop", MUST_EXIST);
             $disabled = $user->emailstop;
         }
         if ($disabled) {

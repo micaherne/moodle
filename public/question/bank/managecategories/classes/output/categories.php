@@ -16,11 +16,11 @@
 
 namespace qbank_managecategories\output;
 
-use context;
+use core\context;
 use qbank_managecategories\question_categories;
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Output component for the Manage category page.

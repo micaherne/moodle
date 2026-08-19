@@ -29,6 +29,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
 use tool_policy\api;
 use tool_policy\output\page_viewdoc;
 
@@ -46,7 +47,7 @@ $manage = optional_param('manage', false, PARAM_BOOL);
 $numpolicy = optional_param('numpolicy', null, PARAM_INT);
 $totalpolicies = optional_param('totalpolicies', null, PARAM_INT);
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('secure');
 
 $viewpage = new page_viewdoc($policyid, $versionid, $returnurl, $behalfid, $manage, $numpolicy, $totalpolicies);

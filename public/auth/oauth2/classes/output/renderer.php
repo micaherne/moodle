@@ -23,13 +23,13 @@
  */
 namespace auth_oauth2\output;
 
-use plugin_renderer_base;
-use html_table;
-use html_table_cell;
-use html_table_row;
-use html_writer;
+use core\output\plugin_renderer_base;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+use core\output\html_writer;
 use auth_oauth2\linked_login;
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -75,7 +75,7 @@ class renderer extends plugin_renderer_base {
 
             // Delete.
             $deleteparams = ['linkedloginid' => $linkedlogin->get('id'), 'action' => 'delete', 'sesskey' => sesskey()];
-            $deleteurl = new moodle_url('/auth/oauth2/linkedlogins.php', $deleteparams);
+            $deleteurl = new url('/auth/oauth2/linkedlogins.php', $deleteparams);
             $deletelink = html_writer::link($deleteurl, $this->pix_icon('t/delete', get_string('delete')));
             $links .= ' ' . $deletelink;
 

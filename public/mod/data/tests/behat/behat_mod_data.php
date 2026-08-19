@@ -28,6 +28,7 @@
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 
 use Behat\Gherkin\Node\TableNode as TableNode;
+use core\url;
 /**
  * Database-related steps definitions.
  *
@@ -50,12 +51,12 @@ class behat_mod_data extends behat_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
         global $DB;
 
         switch (strtolower($type)) {
             case 'add entry':
-                return new moodle_url('/mod/data/edit.php', [
+                return new url('/mod/data/edit.php', [
                     'd' => $this->get_cm_by_activity_name('data', $identifier)->instance,
                 ]);
 

@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once('../../../config.php');
@@ -52,12 +56,12 @@ $PAGE->set_pagelayout('report');
 $PAGE->set_other_editing_capability('moodle/grade:edit');
 
 if (!$course = $DB->get_record('course', $courseparams)) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
 
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 // This is the normal requirements.
 require_capability('gradereport/singleview:view', $context);
@@ -153,7 +157,7 @@ if (!is_null($groupid)) {
     $pageparams['group'] = $groupid;
 }
 
-$PAGE->set_url(new moodle_url('/grade/report/singleview/index.php', $pageparams));
+$PAGE->set_url(new url('/grade/report/singleview/index.php', $pageparams));
 
 // Make sure we have proper final grades.
 $taskindicator = new \core\output\task_indicator(
@@ -168,7 +172,7 @@ if ($taskindicator->has_task_record()) {
     // with navigation, and the indicator.
     $actionbar = new \core_grades\output\general_action_bar(
         $context,
-        new moodle_url('/grade/report/singleview/index.php', ['id' => $courseid]),
+        new url('/grade/report/singleview/index.php', ['id' => $courseid]),
         'report',
         'singleview'
     );
@@ -189,12 +193,12 @@ if ($PAGE->user_allowed_editing() && !$PAGE->theme->haseditswitch) {
 
     // Page params for the turn editing on button.
     $options = $gpr->get_options();
-    $button = $OUTPUT->edit_button(new moodle_url($PAGE->url, $options), 'get');
+    $button = $OUTPUT->edit_button(new url($PAGE->url, $options), 'get');
 }
 
 $reportname = $report->screen->heading();
 
-$baseurl = new moodle_url('/grade/report/singleview/index.php', ['id' => $courseid, 'item' => $itemtype]);
+$baseurl = new url('/grade/report/singleview/index.php', ['id' => $courseid, 'item' => $itemtype]);
 if ($itemtype == 'user' || $itemtype == 'user_select') {
     $PAGE->requires->js_call_amd('gradereport_singleview/user', 'init', [$baseurl->out(false)]);
     $actionbar = new \gradereport_singleview\output\action_bar($context, $report, 'user');
@@ -202,7 +206,7 @@ if ($itemtype == 'user' || $itemtype == 'user_select') {
     $PAGE->requires->js_call_amd('gradereport_singleview/grade', 'init', [$baseurl->out(false)]);
     $actionbar = new \gradereport_singleview\output\action_bar($context, $report, 'grade');
 } else {
-    $actionbar = new \core_grades\output\general_action_bar($context, new moodle_url('/grade/report/singleview/index.php',
+    $actionbar = new \core_grades\output\general_action_bar($context, new url('/grade/report/singleview/index.php',
         ['id' => $courseid]), 'report', 'singleview');
 }
 if ($course->groupmode && $itemtype !== 'select') {

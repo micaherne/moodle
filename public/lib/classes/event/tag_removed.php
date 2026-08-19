@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -112,23 +114,23 @@ class tag_removed extends base {
         parent::validate_data();
 
         if (!isset($this->other['tagid'])) {
-            throw new \coding_exception('The \'tagid\' value must be set in other.');
+            throw new coding_exception('The \'tagid\' value must be set in other.');
         }
 
         if (!isset($this->other['itemid'])) {
-            throw new \coding_exception('The \'itemid\' value must be set in other.');
+            throw new coding_exception('The \'itemid\' value must be set in other.');
         }
 
         if (!isset($this->other['itemtype'])) {
-            throw new \coding_exception('The \'itemtype\' value must be set in other.');
+            throw new coding_exception('The \'itemtype\' value must be set in other.');
         }
 
         if (!isset($this->other['tagname'])) {
-            throw new \coding_exception('The \'tagname\' value must be set in other.');
+            throw new coding_exception('The \'tagname\' value must be set in other.');
         }
 
         if (!isset($this->other['tagrawname'])) {
-            throw new \coding_exception('The \'tagrawname\' value must be set in other.');
+            throw new coding_exception('The \'tagrawname\' value must be set in other.');
         }
     }
 

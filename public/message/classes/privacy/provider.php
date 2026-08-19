@@ -24,6 +24,9 @@
  */
 namespace core_message\privacy;
 
+use core\context;
+use core\context\user as context_user;
+use core\user as core_user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -261,7 +264,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof context_user) {
             return;
         }
 
@@ -354,8 +357,8 @@ class provider implements
      *
      * @param \context $context the context to delete in.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
-        if ($context instanceof \context_user) {
+    public static function delete_data_for_all_users_in_context(context $context) {
+        if ($context instanceof context_user) {
             static::delete_user_data($context->instanceid);
         }
     }
@@ -392,7 +395,7 @@ class provider implements
     public static function delete_data_for_users(approved_userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof context_user) {
             return;
         }
 
@@ -500,7 +503,7 @@ class provider implements
      * @param   array       $subcontext The sub-context in which to export this data.
      * @param   int         $itemid Optional itemid associated with component.
      */
-    public static function export_conversations(int $userid, string $component, string $itemtype, \context $context,
+    public static function export_conversations(int $userid, string $component, string $itemtype, context $context,
                                                 array $subcontext = [], int $itemid = 0) {
         global $DB;
 
@@ -543,7 +546,7 @@ class provider implements
      * @param string    $itemtype   The itemtype of the component to delele. Empty string means no itemtype.
      * @param int       $itemid     Optional itemid associated with component.
      */
-    public static function delete_conversations_for_all_users(\context $context, string $component, string $itemtype,
+    public static function delete_conversations_for_all_users(context $context, string $component, string $itemtype,
                                                               int $itemid = 0) {
         global $DB;
 
@@ -789,12 +792,12 @@ class provider implements
             // Delete the favourite conversations.
             if (empty($contextids) && empty($component) && empty($itemtype) && empty($itemid)) {
                 // Favourites for individual conversations are stored into the user context.
-                $favouritectxids = [\context_user::instance($userid)->id];
+                $favouritectxids = [context_user::instance($userid)->id];
             } else {
                 $favouritectxids = $contextids;
             }
             $contextlist = new \core_privacy\local\request\approved_contextlist(
-                \core_user::get_user($userid),
+                core_user::get_user($userid),
                 'core_message',
                 $favouritectxids
             );
@@ -832,7 +835,7 @@ class provider implements
     protected static function export_user_data_contacts(int $userid) {
         global $DB;
 
-        $context = \context_user::instance($userid);
+        $context = context_user::instance($userid);
 
         // Get the user's contacts.
         if ($contacts = $DB->get_records_select('message_contacts', 'userid = ? OR contactid = ?', [$userid, $userid], 'id ASC')) {
@@ -854,7 +857,7 @@ class provider implements
     protected static function export_user_data_contact_requests(int $userid) {
         global $DB;
 
-        $context = \context_user::instance($userid);
+        $context = context_user::instance($userid);
 
         if ($contactrequests = $DB->get_records_select('message_contact_requests', 'userid = ? OR requesteduserid = ?',
                 [$userid, $userid], 'id ASC')) {
@@ -886,7 +889,7 @@ class provider implements
     protected static function export_user_data_blocked_users(int $userid) {
         global $DB;
 
-        $context = \context_user::instance($userid);
+        $context = context_user::instance($userid);
 
         if ($blockedusers = $DB->get_records('message_users_blocked', ['userid' => $userid], 'id ASC')) {
             $blockedusersdata = [];
@@ -907,7 +910,7 @@ class provider implements
      * @param \context $context The context to export for.
      * @param array $subcontext The sub-context in which to export this data.
      */
-    protected static function export_user_data_conversation_messages(int $userid, \stdClass $conversation, \context $context,
+    protected static function export_user_data_conversation_messages(int $userid, \stdClass $conversation, context $context,
                                                                      array $subcontext = []) {
         global $DB;
 
@@ -973,7 +976,7 @@ class provider implements
                 );
 
                 // Get the context for the favourite conversation.
-                $conversationctx = \context_user::instance($userid);
+                $conversationctx = context_user::instance($userid);
             } else {
                 // Conversations with context are stored in 'Messages | <Conversation item type> | <Conversation name>'.
                 if (get_string_manager()->string_exists($conversation->itemtype, $conversation->component)) {
@@ -990,7 +993,7 @@ class provider implements
                 );
 
                 // Get the context for the favourite conversation.
-                $conversationctx = \context::instance_by_id($conversation->contextid);
+                $conversationctx = context::instance_by_id($conversation->contextid);
             }
 
             // Export the conversation messages.
@@ -1028,7 +1031,7 @@ class provider implements
     protected static function export_user_data_notifications(int $userid) {
         global $DB;
 
-        $context = \context_user::instance($userid);
+        $context = context_user::instance($userid);
 
         $notificationdata = [];
         $select = "useridfrom = ? OR useridto = ?";

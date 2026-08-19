@@ -24,6 +24,7 @@
  */
 
 use core\output\notification;
+use core\url;
 use mod_quiz\access_manager;
 use mod_quiz\output\list_of_attempts;
 use mod_quiz\output\renderer;
@@ -193,8 +194,8 @@ $viewobj->mygradeoverridden = $mygradeoverridden;
 $viewobj->gradebookfeedback = $gradebookfeedback;
 $viewobj->lastfinishedattempt = $lastfinishedattempt;
 $viewobj->canedit = has_capability('mod/quiz:manage', $context);
-$viewobj->editurl = new moodle_url('/mod/quiz/edit.php', ['cmid' => $cm->id]);
-$viewobj->backtocourseurl = new moodle_url('/course/view.php', ['id' => $course->id]);
+$viewobj->editurl = new url('/mod/quiz/edit.php', ['cmid' => $cm->id]);
+$viewobj->backtocourseurl = new url('/course/view.php', ['id' => $course->id]);
 $viewobj->startattempturl = $quizobj->start_attempt_url();
 
 if ($accessmanager->is_preflight_check_required($unfinishedattemptid)) {

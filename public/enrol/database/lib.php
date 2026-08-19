@@ -24,6 +24,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\progress_trace;
+use core\output\progress_trace\null_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -39,7 +45,7 @@ class enrol_database_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         if (!has_capability('enrol/database:config', $context)) {
             return false;
         }
@@ -61,7 +67,7 @@ class enrol_database_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/database:config', $context);
     }
 
@@ -247,7 +253,7 @@ class enrol_database_plugin extends enrol_plugin {
                 }
             }
 
-            if (!$context = context_course::instance($instance->courseid, IGNORE_MISSING)) {
+            if (!$context = course::instance($instance->courseid, IGNORE_MISSING)) {
                 // Weird.
                 continue;
             }
@@ -281,7 +287,7 @@ class enrol_database_plugin extends enrol_plugin {
                 continue;
             }
 
-            if (!$context = context_course::instance($instance->courseid, IGNORE_MISSING)) {
+            if (!$context = course::instance($instance->courseid, IGNORE_MISSING)) {
                 // Very weird.
                 continue;
             }
@@ -492,7 +498,7 @@ class enrol_database_plugin extends enrol_plugin {
             if (!$instance = $DB->get_record('enrol', array('id'=>$course->enrolid))) {
                 continue; // Weird!
             }
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
 
             // Get current list of enrolled users with their roles.
             $currentroles  = array();

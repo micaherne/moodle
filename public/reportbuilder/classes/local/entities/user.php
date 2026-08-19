@@ -22,12 +22,12 @@ use core\{context, context_helper};
 use core\context\system;
 use core_component;
 use core_date;
-use core_user;
-use html_writer;
-use lang_string;
-use moodle_url;
+use core\user as core_user;
+use core\output\html_writer;
+use core\lang_string;
+use core\url;
 use stdClass;
-use theme_config;
+use core\output\theme_config;
 use core_user\fields;
 use core_reportbuilder\local\filters\boolean_select;
 use core_reportbuilder\local\filters\date;
@@ -228,7 +228,7 @@ class user extends base {
                     }
 
                     if ($fullnamefield === 'fullnamewithlink') {
-                        return html_writer::link(new moodle_url('/user/profile.php', ['id' => $row->id]),
+                        return html_writer::link(new url('/user/profile.php', ['id' => $row->id]),
                             fullname($row, $viewfullnames));
                     }
                     if ($fullnamefield === 'fullnamewithpicture') {
@@ -236,7 +236,7 @@ class user extends base {
                             fullname($row, $viewfullnames);
                     }
                     if ($fullnamefield === 'fullnamewithpicturelink') {
-                        return html_writer::link(new moodle_url('/user/profile.php', ['id' => $row->id]),
+                        return html_writer::link(new url('/user/profile.php', ['id' => $row->id]),
                             $OUTPUT->user_picture($row, ['link' => false, 'alttext' => false]) .
                             fullname($row, $viewfullnames));
                     }

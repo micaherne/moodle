@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/filebrowser/file_info.php");
@@ -76,7 +79,7 @@ class file_browser {
      */
     public function get_file_info($context = NULL, $component = NULL, $filearea = NULL, $itemid = NULL, $filepath = NULL, $filename = NULL) {
         if (!$context) {
-            $context = context_system::instance();
+            $context = system::instance();
         }
         switch ($context->contextlevel) {
             case CONTEXT_SYSTEM:
@@ -202,7 +205,7 @@ class file_browser {
      * @return file_info|null file_info instance or null if not found or access not allowed
      */
     private function get_file_info_context_module($context, $component, $filearea, $itemid, $filepath, $filename) {
-        if (!($context instanceof context_module)) {
+        if (!($context instanceof module)) {
             return null;
         }
         $coursecontext = $context->get_course_context();

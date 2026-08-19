@@ -26,7 +26,8 @@
 namespace gradingform_rubric;
 
 use advanced_testcase;
-use context_module;
+use core\context\module;
+use core\test\testing_util;
 use gradingform_rubric_controller;
 use gradingform_controller;
 
@@ -47,14 +48,14 @@ final class generator_test extends advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         // Data for testing.
         $name = 'myfirstrubric';
@@ -155,14 +156,14 @@ final class generator_test extends advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         // Data for testing.
         $description = 'My first rubric';
@@ -207,14 +208,14 @@ final class generator_test extends advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         $this->setUser($user);
         $rubric = $rubricgenerator->get_test_rubric($context, 'assign', 'submissions');
@@ -235,14 +236,14 @@ final class generator_test extends advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         $this->setUser($user);
         $controller = $rubricgenerator->get_test_rubric($context, 'assign', 'submissions');
@@ -281,14 +282,14 @@ final class generator_test extends advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         $this->setUser($user);
         $controller = $rubricgenerator->get_test_rubric($context, 'assign', 'submissions');

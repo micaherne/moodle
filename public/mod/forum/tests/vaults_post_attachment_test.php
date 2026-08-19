@@ -16,6 +16,8 @@
 
 namespace mod_forum;
 
+use core\context\module;
+use core\context\system;
 use mod_forum_tests_generator_trait;
 
 defined('MOODLE_INTERNAL') || die();
@@ -48,7 +50,7 @@ final class vaults_post_attachment_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         [$discussion, $post1] = $this->helper_post_to_forum($forum, $user);
         $post2 = $this->helper_reply_to_post($post1, $user);
         $post3 = $this->helper_reply_to_post($post1, $user);
@@ -79,7 +81,7 @@ final class vaults_post_attachment_test extends \advanced_testcase {
         $post2 = $entityfactory->get_post_from_stdClass($post2);
         $post3 = $entityfactory->get_post_from_stdClass($post3);
 
-        $results = $vault->get_attachments_for_posts(\context_system::instance(), [$post1, $post2, $post3]);
+        $results = $vault->get_attachments_for_posts(system::instance(), [$post1, $post2, $post3]);
         $this->assertCount(3, $results);
         $this->assertEquals([], $results[$post1->get_id()]);
         $this->assertEquals([], $results[$post2->get_id()]);
@@ -116,7 +118,7 @@ final class vaults_post_attachment_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         [$discussion, $post1] = $this->helper_post_to_forum($forum, $user);
         $post2 = $this->helper_reply_to_post($post1, $user);
         $post3 = $this->helper_reply_to_post($post1, $user);
@@ -147,7 +149,7 @@ final class vaults_post_attachment_test extends \advanced_testcase {
         $post2 = $entityfactory->get_post_from_stdClass($post2);
         $post3 = $entityfactory->get_post_from_stdClass($post3);
 
-        $results = $vault->get_inline_attachments_for_posts(\context_system::instance(), [$post1, $post2, $post3]);
+        $results = $vault->get_inline_attachments_for_posts(system::instance(), [$post1, $post2, $post3]);
         $this->assertCount(3, $results);
         $this->assertEquals([], $results[$post1->get_id()]);
         $this->assertEquals([], $results[$post2->get_id()]);

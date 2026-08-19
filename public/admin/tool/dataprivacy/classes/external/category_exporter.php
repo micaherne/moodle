@@ -24,6 +24,7 @@
 namespace tool_dataprivacy\external;
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
 use core\external\persistent_exporter;
 use tool_dataprivacy\category;
 use tool_dataprivacy\context_instance;
@@ -71,7 +72,7 @@ class category_exporter extends persistent_exporter {
         } else {
             $purpose = new category($categoryid);
             $output = $PAGE->get_renderer('tool_dataprivacy');
-            $exporter = new self($purpose, ['context' => \context_system::instance()]);
+            $exporter = new self($purpose, ['context' => system::instance()]);
             $data = $exporter->export($output);
             return $data->name;
         }

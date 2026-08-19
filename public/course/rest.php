@@ -23,6 +23,10 @@
  * @package course
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+
 if (!defined('AJAX_SCRIPT')) {
     define('AJAX_SCRIPT', true);
 }
@@ -47,11 +51,11 @@ $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 if (in_array($class, array('resource'))) {
     $cm = get_coursemodule_from_id(null, $id, $course->id, false, MUST_EXIST);
     require_login($course, false, $cm);
-    $modcontext = context_module::instance($cm->id);
+    $modcontext = module::instance($cm->id);
 } else {
     require_login($course);
 }
-$coursecontext = context_course::instance($course->id);
+$coursecontext = course::instance($course->id);
 require_sesskey();
 
 echo $OUTPUT->header(); // send headers

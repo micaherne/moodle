@@ -25,6 +25,9 @@
 namespace assignfeedback_editpdf;
 
 use assign;
+use core\context\module;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use DOMDocument;
 
 /**
@@ -111,7 +114,7 @@ EOD;
 
         if (!is_object($assignment)) {
             $cm = get_coursemodule_from_instance('assign', $assignment, 0, false, MUST_EXIST);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
 
             $assignment = new \assign($context, null, null);
         }
@@ -177,7 +180,7 @@ EOD;
 
         // Capability checks.
         if (!$assignment->can_view_submission($userid)) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
 
         $files = array();
@@ -290,7 +293,7 @@ EOD;
 
         // Capability checks.
         if (!$assignment->can_view_submission($userid)) {
-            throw new \moodle_exception('nopermissiontoaccesspage', 'error');
+            throw new moodle_exception('nopermissiontoaccesspage', 'error');
         }
 
         $grade = $assignment->get_user_grade($userid, true, $attemptnumber);
@@ -380,7 +383,7 @@ EOD;
         $assignment = self::get_assignment_from_param($assignment);
 
         if (!$assignment->can_view_submission($userid)) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
 
         // When in readonly we can return the number of images in the DB because they should already exist,
@@ -423,7 +426,7 @@ EOD;
         $assignment = self::get_assignment_from_param($assignment);
 
         if (!$assignment->can_view_submission($userid)) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
 
         // Need to generate the page images - first get a combined pdf.
@@ -431,7 +434,7 @@ EOD;
 
         $status = $document->get_status();
         if ($status === combined_document::STATUS_FAILED) {
-            throw new \moodle_exception('Could not generate combined pdf.');
+            throw new moodle_exception('Could not generate combined pdf.');
         } else if ($status === combined_document::STATUS_PENDING_INPUT) {
             // The conversion is still in progress.
             return [];
@@ -466,7 +469,7 @@ EOD;
         for ($i = 0; $i < $pagecount; $i++) {
             try {
                 if (empty($images[$i])) {
-                    throw new \moodle_exception('error image');
+                    throw new moodle_exception('error image');
                 }
                 $image = $images[$i];
                 if (!$resetrotation) {
@@ -479,7 +482,7 @@ EOD;
                         imagepng($content, $filepath);
                     }
                 }
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 // We catch only moodle_exception here as other exceptions indicate issue with setup not the pdf.
                 $image = pdf::get_error_image($tmpdir, $i);
             }
@@ -534,7 +537,7 @@ EOD;
         $assignment = self::get_assignment_from_param($assignment);
 
         if (!$assignment->can_view_submission($userid)) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
 
         if ($assignment->get_instance()->teamsubmission) {
@@ -610,7 +613,7 @@ EOD;
                     // Extract the page number from the file name image_pageXXXX.png.
                     preg_match('/page([\d]+)\./', $file->get_filename(), $matches);
                     if (empty($matches) or !is_numeric($matches[1])) {
-                        throw new \coding_exception("'" . $file->get_filename()
+                        throw new coding_exception("'" . $file->get_filename()
                             . "' file hasn't the expected format filename: image_pageXXXX.png.");
                     }
                     $pagenumber = (int)$matches[1];
@@ -625,7 +628,7 @@ EOD;
         // This should never happen, there should be a version of the pages available
         // whenever we are requesting the readonly version.
         if (empty($pages) && $readonly) {
-            throw new \moodle_exception('Could not find readonly pages for grade ' . $grade->id);
+            throw new moodle_exception('Could not find readonly pages for grade ' . $grade->id);
         }
 
         // There are two situations where the number of page images generated does not
@@ -711,10 +714,10 @@ EOD;
         $assignment = self::get_assignment_from_param($assignment);
 
         if (!$assignment->can_view_submission($userid)) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
         if (!$assignment->can_grade()) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
 
         // Need to generate the page images - first get a combined pdf.
@@ -722,7 +725,7 @@ EOD;
 
         $status = $document->get_status();
         if ($status === combined_document::STATUS_FAILED) {
-            throw new \moodle_exception('Could not generate combined pdf.');
+            throw new moodle_exception('Could not generate combined pdf.');
         } else if ($status === combined_document::STATUS_PENDING_INPUT) {
             // The conversion is still in progress.
             return false;
@@ -905,7 +908,7 @@ EOD;
         $assignment->set_is_marking($ismarking);
 
         if (!$assignment->can_view_submission($userid)) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
 
         $grade = $assignment->get_user_grade($userid, true, $attemptnumber);
@@ -943,10 +946,10 @@ EOD;
         $assignment->set_is_marking($ismarking);
 
         if (!$assignment->can_view_submission($userid)) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
         if (!$assignment->can_grade()) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
 
         $grade = $assignment->get_user_grade($userid, true, $attemptnumber);
@@ -1047,7 +1050,7 @@ EOD;
         $grade = $assignment->get_user_grade($userid, true, $attemptnumber);
         // Check permission.
         if (!$assignment->can_view_submission($userid)) {
-            throw new \moodle_exception('nopermission');
+            throw new moodle_exception('nopermission');
         }
 
         [$filearea, $fileitemid] = self::get_file_area_and_id($assignment, $grade, self::PAGE_IMAGE_FILEAREA);
@@ -1056,7 +1059,7 @@ EOD;
             foreach ($files as $file) {
                 preg_match('/' . pdf::IMAGE_PAGE . '([\d]+)\./', $file->get_filename(), $matches);
                 if (empty($matches) or !is_numeric($matches[1])) {
-                    throw new \coding_exception("'" . $file->get_filename()
+                    throw new coding_exception("'" . $file->get_filename()
                         . "' file hasn't the expected format filename: image_pageXXXX.png.");
                 }
                 $pagenumber = (int)$matches[1];

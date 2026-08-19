@@ -16,6 +16,7 @@
 
 namespace core_calendar;
 
+use core\url;
 use core_calendar\local\event\value_objects\action;
 
 /**
@@ -57,7 +58,7 @@ final class action_test extends \advanced_testcase {
             'Dataset 1' => [
                 'constructorparams' => [
                     'name' => 'Hello',
-                    'url' => new \moodle_url('http://example.com'),
+                    'url' => new url('http://example.com'),
                     'item_count' => 1,
                     'actionable' => true
                 ]
@@ -65,7 +66,7 @@ final class action_test extends \advanced_testcase {
             'Dataset 2' => [
                 'constructorparams' => [
                     'name' => 'Goodbye',
-                    'url' => new \moodle_url('http://example.com'),
+                    'url' => new url('http://example.com'),
                     'item_count' => 2,
                     'actionable' => false
                 ]

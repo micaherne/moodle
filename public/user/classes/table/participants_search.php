@@ -24,10 +24,11 @@
 
 namespace core_user\table;
 
-use context;
-use context_helper;
+use core\context;
+use core\context_helper;
+use core\exception\coding_exception;
 use core_table\local\filter\filterset;
-use core_user;
+use core\user;
 use moodle_recordset;
 use stdClass;
 use core_user\fields;
@@ -429,7 +430,7 @@ class participants_search {
             // Users not in any group in a course with separate groups mode should not be able to access the participants filter.
             if (empty($allowedgroupids)) {
                 // The UI does not support this, so it should not be reachable unless someone is trying to bypass the restriction.
-                throw new \coding_exception('User must be part of a group to filter by participants.');
+                throw new coding_exception('User must be part of a group to filter by participants.');
             }
 
             $forceduid = "{$forcedprefix}u.id";
@@ -1015,7 +1016,7 @@ class participants_search {
                         "u.maildisplay <> :$maildisplay " .
                         "OR u.id = :$userid1". // Users can always find themselves.
                         "))";
-                $params[$maildisplay] = core_user::MAILDISPLAY_HIDE;
+                $params[$maildisplay] = user::MAILDISPLAY_HIDE;
                 $params[$userid1] = $USER->id;
             }
 

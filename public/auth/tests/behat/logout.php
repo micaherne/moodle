@@ -24,11 +24,13 @@
  * @copyright  Andrew Lyons <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+
 require(__DIR__.'/../../../config.php');
 
 $behatrunning = defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING;
 if (!$behatrunning) {
-    redirect(new moodle_url('/login/logout.php'));
+    redirect(new url('/login/logout.php'));
 }
 
 require_logout();
@@ -37,5 +39,5 @@ $login = optional_param('loginpage', 0, PARAM_BOOL);
 if ($login) {
     redirect(get_login_url());
 } else {
-    redirect(new moodle_url('/'));
+    redirect(new url('/'));
 }

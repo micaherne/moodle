@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configpasswordunmask;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
@@ -33,10 +39,10 @@ if ($ADMIN->fulltree) {
     require_once($CFG->libdir.'/authlib.php');
 
     // Introductory explanation.
-    $settings->add(new admin_setting_heading('auth_db/pluginname', '', new lang_string('auth_dbdescription', 'auth_db')));
+    $settings->add(new heading('auth_db/pluginname', '', new lang_string('auth_dbdescription', 'auth_db')));
 
     // Host.
-    $settings->add(new admin_setting_configtext('auth_db/host', get_string('auth_dbhost_key', 'auth_db'),
+    $settings->add(new configtext('auth_db/host', get_string('auth_dbhost_key', 'auth_db'),
             get_string('auth_dbhost', 'auth_db') . ' ' .get_string('auth_multiplehosts', 'auth'),
             '127.0.0.1', PARAM_RAW));
 
@@ -50,7 +56,7 @@ if ($ADMIN->fulltree) {
         $dboptions[$dbtype] = $dbtype;
     }
 
-    $settings->add(new admin_setting_configselect('auth_db/type',
+    $settings->add(new configselect('auth_db/type',
         new lang_string('auth_dbtype_key', 'auth_db'),
         new lang_string('auth_dbtype', 'auth_db'), 'mysqli', $dboptions));
 
@@ -60,27 +66,27 @@ if ($ADMIN->fulltree) {
     );
 
     // DB Name.
-    $settings->add(new admin_setting_configtext('auth_db/name', get_string('auth_dbname_key', 'auth_db'),
+    $settings->add(new configtext('auth_db/name', get_string('auth_dbname_key', 'auth_db'),
             get_string('auth_dbname', 'auth_db'), '', PARAM_RAW_TRIMMED));
 
     // DB Username.
-    $settings->add(new admin_setting_configtext('auth_db/user', get_string('auth_dbuser_key', 'auth_db'),
+    $settings->add(new configtext('auth_db/user', get_string('auth_dbuser_key', 'auth_db'),
             get_string('auth_dbuser', 'auth_db'), '', PARAM_RAW_TRIMMED));
 
     // Password.
-    $settings->add(new admin_setting_configpasswordunmask('auth_db/pass', get_string('auth_dbpass_key', 'auth_db'),
+    $settings->add(new configpasswordunmask('auth_db/pass', get_string('auth_dbpass_key', 'auth_db'),
             get_string('auth_dbpass', 'auth_db'), ''));
 
     // DB Table.
-    $settings->add(new admin_setting_configtext('auth_db/table', get_string('auth_dbtable_key', 'auth_db'),
+    $settings->add(new configtext('auth_db/table', get_string('auth_dbtable_key', 'auth_db'),
             get_string('auth_dbtable', 'auth_db'), '', PARAM_RAW_TRIMMED));
 
     // DB User field.
-    $settings->add(new admin_setting_configtext('auth_db/fielduser', get_string('auth_dbfielduser_key', 'auth_db'),
+    $settings->add(new configtext('auth_db/fielduser', get_string('auth_dbfielduser_key', 'auth_db'),
             get_string('auth_dbfielduser', 'auth_db'), '', PARAM_RAW_TRIMMED));
 
     // DB User password.
-    $settings->add(new admin_setting_configtext('auth_db/fieldpass', get_string('auth_dbfieldpass_key', 'auth_db'),
+    $settings->add(new configtext('auth_db/fieldpass', get_string('auth_dbfieldpass_key', 'auth_db'),
             get_string('auth_dbfieldpass', 'auth_db'), '', PARAM_RAW_TRIMMED));
 
 
@@ -92,19 +98,19 @@ if ($ADMIN->fulltree) {
     $passtype["saltedcrypt"] = get_string("auth_dbsaltedcrypt", "auth_db");
     $passtype["internal"]    = get_string("internal", "auth");
 
-    $settings->add(new admin_setting_configselect('auth_db/passtype',
+    $settings->add(new configselect('auth_db/passtype',
         new lang_string('auth_dbpasstype_key', 'auth_db'), new lang_string('auth_dbpasstype', 'auth_db'), 'plaintext', $passtype));
 
     // Encoding.
-    $settings->add(new admin_setting_configtext('auth_db/extencoding', get_string('auth_dbextencoding', 'auth_db'),
+    $settings->add(new configtext('auth_db/extencoding', get_string('auth_dbextencoding', 'auth_db'),
             get_string('auth_dbextencodinghelp', 'auth_db'), 'utf-8', PARAM_RAW_TRIMMED));
 
     // DB SQL SETUP.
-    $settings->add(new admin_setting_configtext('auth_db/setupsql', get_string('auth_dbsetupsql', 'auth_db'),
+    $settings->add(new configtext('auth_db/setupsql', get_string('auth_dbsetupsql', 'auth_db'),
             get_string('auth_dbsetupsqlhelp', 'auth_db'), '', PARAM_RAW_TRIMMED));
 
     // Debug ADOOB.
-    $settings->add(new admin_setting_configselect('auth_db/debugauthdb',
+    $settings->add(new configselect('auth_db/debugauthdb',
         new lang_string('auth_dbdebugauthdb', 'auth_db'), new lang_string('auth_dbdebugauthdbhelp', 'auth_db'), 0, $yesno));
 
     // Password change URL.
@@ -113,7 +119,7 @@ if ($ADMIN->fulltree) {
             get_string('changepasswordhelp', 'auth'), '', PARAM_URL));
 
     // Label and Sync Options.
-    $settings->add(new admin_setting_heading('auth_db/usersync', new lang_string('auth_sync_script', 'auth'), ''));
+    $settings->add(new heading('auth_db/usersync', new lang_string('auth_sync_script', 'auth'), ''));
 
     // Sync Options.
     $deleteopt = array();
@@ -121,12 +127,12 @@ if ($ADMIN->fulltree) {
     $deleteopt[AUTH_REMOVEUSER_SUSPEND] = get_string('auth_remove_suspend', 'auth');
     $deleteopt[AUTH_REMOVEUSER_FULLDELETE] = get_string('auth_remove_delete', 'auth');
 
-    $settings->add(new admin_setting_configselect('auth_db/removeuser',
+    $settings->add(new configselect('auth_db/removeuser',
         new lang_string('auth_remove_user_key', 'auth'),
         new lang_string('auth_remove_user', 'auth'), AUTH_REMOVEUSER_KEEP, $deleteopt));
 
     // Update users.
-    $settings->add(new admin_setting_configselect('auth_db/updateusers',
+    $settings->add(new configselect('auth_db/updateusers',
         new lang_string('auth_dbupdateusers', 'auth_db'),
         new lang_string('auth_dbupdateusers_description', 'auth_db'), 0, $yesno));
 

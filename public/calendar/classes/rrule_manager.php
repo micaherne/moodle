@@ -27,7 +27,7 @@ namespace core_calendar;
 use calendar_event;
 use DateInterval;
 use DateTime;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();

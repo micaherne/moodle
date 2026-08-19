@@ -16,6 +16,9 @@
 
 namespace factor_email;
 
+use core\exception\coding_exception;
+use core\url;
+use core\user;
 use stdClass;
 use tool_mfa\local\factor\object_factor_base;
 
@@ -64,7 +67,7 @@ class factor extends object_factor_base {
      */
     public static function email_verification_code(int $instanceid): void {
         global $PAGE, $USER;
-        $noreplyuser = \core_user::get_noreply_user();
+        $noreplyuser = user::get_noreply_user();
         $subject = get_string('email:subject', 'factor_email');
         $renderer = $PAGE->get_renderer('factor_email');
         $body = $renderer->generate_email($instanceid);
@@ -274,7 +277,7 @@ class factor extends object_factor_base {
      * {@inheritDoc}
      */
     public function get_no_redirect_urls(): array {
-        $email = new \moodle_url('/admin/tool/mfa/factor/email/email.php');
+        $email = new url('/admin/tool/mfa/factor/email/email.php');
         return [$email];
     }
 
@@ -306,7 +309,7 @@ class factor extends object_factor_base {
         $parts = explode('@', $email);
 
         if (count($parts) != 2) {
-            throw new \coding_exception('Invalid email format');
+            throw new coding_exception('Invalid email format');
         }
 
         $local = $parts[0];

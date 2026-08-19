@@ -17,6 +17,7 @@
 namespace core\output;
 
 use core\context;
+use core\context\course;
 use stdClass;
 
 /**
@@ -56,7 +57,7 @@ abstract class datafilter implements renderable, templatable {
         $this->context = $context;
         $this->tableregionid = $tableregionid;
 
-        if ($context instanceof \context_course) {
+        if ($context instanceof course) {
             $this->course = get_course($context->instanceid);
         }
     }

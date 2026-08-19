@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/scorm/locallib.php');
 
@@ -25,26 +29,26 @@ $delayseconds = 2;  // Delay time before sco launch, used to give time to browse
 
 if (!empty($id)) {
     if (! $cm = get_coursemodule_from_id('scorm', $id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     if (! $course = $DB->get_record('course', array('id' => $cm->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $scorm = $DB->get_record('scorm', array('id' => $cm->instance))) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 } else if (!empty($a)) {
     if (! $scorm = $DB->get_record('scorm', array('id' => $a))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $course = $DB->get_record('course', array('id' => $scorm->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $cm = get_coursemodule_from_instance('scorm', $scorm->id, $course->id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 } else {
-    throw new \moodle_exception('missingparameter');
+    throw new moodle_exception('missingparameter');
 }
 
 $PAGE->set_url('/mod/scorm/loadSCO.php', array('scoid' => $scoid, 'id' => $cm->id));
@@ -63,7 +67,7 @@ require_login($course, false, $cm, false); // Call require_login anyway to set u
 // Check if SCORM is available.
 scorm_require_available($scorm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 // Forge SCO URL.
 list($sco, $scolaunchurl) = scorm_get_sco_and_launch_url($scorm, $scoid, $context);

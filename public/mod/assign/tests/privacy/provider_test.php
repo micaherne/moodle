@@ -16,6 +16,7 @@
 
 namespace mod_assign\privacy;
 
+use core\context\course;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\approved_contextlist;
 use mod_assign\privacy\provider;
@@ -198,7 +199,7 @@ final class provider_test extends provider_testcase {
         global $DB;
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $user = $this->getDataGenerator()->create_user();
         $teacher = $this->getDataGenerator()->create_user();
@@ -315,7 +316,7 @@ final class provider_test extends provider_testcase {
     public function test_export_user_data_teacher(): void {
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -571,7 +572,7 @@ final class provider_test extends provider_testcase {
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
 
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();

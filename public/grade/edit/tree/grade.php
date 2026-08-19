@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once '../../../config.php';
 require_once $CFG->dirroot.'/grade/lib.php';
 require_once $CFG->dirroot.'/grade/report/lib.php';
@@ -32,7 +36,7 @@ $id       = optional_param('id', 0, PARAM_INT);
 $itemid   = optional_param('itemid', 0, PARAM_INT);
 $userid   = optional_param('userid', 0, PARAM_INT);
 
-$url = new moodle_url('/grade/edit/tree/grade.php', array('courseid'=>$courseid));
+$url = new url('/grade/edit/tree/grade.php', array('courseid'=>$courseid));
 if ($id !== 0) {
     $url->param('id', $id);
 }
@@ -45,12 +49,12 @@ if ($userid !== 0) {
 $PAGE->set_url($url);
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 $PAGE->set_pagelayout('incourse');
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 if (!has_capability('moodle/grade:manage', $context)) {
     require_capability('moodle/grade:edit', $context);
 }
@@ -62,27 +66,27 @@ $returnurl = $gpr->get_return_url($CFG->wwwroot.'/grade/report/index.php?id='.$c
 // security checks!
 if (!empty($id)) {
     if (!$grade = $DB->get_record('grade_grades', array('id' => $id))) {
-        throw new \moodle_exception('invalidgroupid');
+        throw new moodle_exception('invalidgroupid');
     }
 
     if (!empty($itemid) and $itemid != $grade->itemid) {
-        throw new \moodle_exception('invaliditemid');
+        throw new moodle_exception('invaliditemid');
     }
     $itemid = $grade->itemid;
 
     if (!empty($userid) and $userid != $grade->userid) {
-        throw new \moodle_exception('invaliduser');
+        throw new moodle_exception('invaliduser');
     }
     $userid = $grade->userid;
 
     unset($grade);
 
 } else if (empty($userid) or empty($itemid)) {
-    throw new \moodle_exception('missinguseranditemid');
+    throw new moodle_exception('missinguseranditemid');
 }
 
 if (!$grade_item = grade_item::fetch(array('id'=>$itemid, 'courseid'=>$courseid))) {
-    throw new \moodle_exception('cannotfindgradeitem');
+    throw new moodle_exception('cannotfindgradeitem');
 }
 
 // now verify grading user has access to all groups or is member of the same group when separate groups used in course
@@ -95,10 +99,10 @@ if (groups_get_course_groupmode($COURSE) == SEPARATEGROUPS and !has_capability('
             }
         }
         if (!$ok) {
-            throw new \moodle_exception('cannotgradeuser');
+            throw new moodle_exception('cannotgradeuser');
         }
     } else {
-        throw new \moodle_exception('cannotgradeuser');
+        throw new moodle_exception('cannotgradeuser');
     }
 }
 

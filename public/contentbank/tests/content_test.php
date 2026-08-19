@@ -25,8 +25,9 @@
 
 namespace core_contentbank;
 
+use core\context\course;
 use stdClass;
-use context_system;
+use core\context\system;
 use contenttype_testable\contenttype as contenttype;
 
 /**
@@ -64,7 +65,7 @@ final class content_test extends \advanced_testcase {
         $record->name = 'Test content';
         $record->configdata = '';
 
-        $contenttype = new contenttype(context_system::instance());
+        $contenttype = new contenttype(system::instance());
         $content = $contenttype->create_content($record);
         $this->assertEquals($record->name, $content->get_name());
     }
@@ -103,7 +104,7 @@ final class content_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $oldname = "Old name";
-        $context = context_system::instance();
+        $context = system::instance();
 
         // Create content.
         $record = new stdClass();
@@ -133,7 +134,7 @@ final class content_test extends \advanced_testcase {
         $record->name = 'Test content';
         $record->configdata = '';
 
-        $contenttype = new contenttype(context_system::instance());
+        $contenttype = new contenttype(system::instance());
         $content = $contenttype->create_content($record);
         $this->assertEquals('contenttype_testable', $content->get_content_type());
     }
@@ -152,7 +153,7 @@ final class content_test extends \advanced_testcase {
         $record = new stdClass();
         $record->configdata = $configdata;
 
-        $contenttype = new contenttype(context_system::instance());
+        $contenttype = new contenttype(system::instance());
         $content = $contenttype->create_content($record);
         $this->assertEquals($configdata, $content->get_configdata());
 
@@ -169,9 +170,9 @@ final class content_test extends \advanced_testcase {
     public function test_set_contextid(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = context_system::instance();
+        $context = system::instance();
         $course = $this->getDataGenerator()->create_course();
-        $newcontext = \context_course::instance($course->id);
+        $newcontext = course::instance($course->id);
 
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
@@ -200,7 +201,7 @@ final class content_test extends \advanced_testcase {
     public function test_set_visibility(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = context_system::instance();
+        $context = system::instance();
         $oldvisibility = content::VISIBILITY_PUBLIC;
         $newvisibility = content::VISIBILITY_UNLISTED;
         $illegalvisibility = -1;
@@ -230,7 +231,7 @@ final class content_test extends \advanced_testcase {
         global $USER;
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = context_system::instance();
+        $context = system::instance();
 
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
@@ -271,7 +272,7 @@ final class content_test extends \advanced_testcase {
         global $USER;
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = context_system::instance();
+        $context = system::instance();
 
         $type = new contenttype($context);
         $record = (object)[
@@ -314,7 +315,7 @@ final class content_test extends \advanced_testcase {
         global $USER;
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = context_system::instance();
+        $context = system::instance();
 
         $type = new contenttype($context);
         $record = (object)[
@@ -336,7 +337,7 @@ final class content_test extends \advanced_testcase {
     public function test_is_view_allowed(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = context_system::instance();
+        $context = system::instance();
 
         $userauthor = $this->getDataGenerator()->create_user();
         $userother = $this->getDataGenerator()->create_user();
@@ -374,7 +375,7 @@ final class content_test extends \advanced_testcase {
     public function test_get_uses(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $context = context_system::instance();
+        $context = system::instance();
 
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');

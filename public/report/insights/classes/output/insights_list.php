@@ -24,6 +24,13 @@
 
 namespace report_insights\output;
 
+use core\context;
+use core\output\paging_bar;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_select;
+use core\output\templatable;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,7 +40,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2017 David Monllao {@link http://www.davidmonllao.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class insights_list implements \renderable, \templatable {
+class insights_list implements renderable, templatable {
 
     /**
      * @var \core_analytics\model
@@ -70,7 +77,7 @@ class insights_list implements \renderable, \templatable {
      * @param int $perpage The max number of results to fetch
      * @return void
      */
-    public function __construct(\core_analytics\model $model, \context $context, $othermodels, $page = 0, $perpage = 100) {
+    public function __construct(\core_analytics\model $model, context $context, $othermodels, $page = 0, $perpage = 100) {
         $this->model = $model;
         $this->context = $context;
         $this->othermodels = $othermodels;
@@ -84,7 +91,7 @@ class insights_list implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         global $PAGE;
 
         $target = $this->model->get_target();
@@ -210,14 +217,14 @@ class insights_list implements \renderable, \templatable {
 
             // New moodle_url instance returned by magic_get_url.
             $url->remove_params('modelid');
-            $modelselector = new \single_select($url, 'modelid', $options, '',
+            $modelselector = new single_select($url, 'modelid', $options, '',
                 array('' => get_string('selectotherinsights', 'report_insights')));
             $data->modelselector = $modelselector->export_for_template($output);
         }
 
         // Add the 'perpage' parameter to the url which is later used to generate the pagination links.
         $url->param('perpage', $this->perpage);
-        $data->pagingbar = $output->render(new \paging_bar($total, $this->page, $this->perpage, $url));
+        $data->pagingbar = $output->render(new paging_bar($total, $this->page, $this->perpage, $url));
 
         return $data;
     }

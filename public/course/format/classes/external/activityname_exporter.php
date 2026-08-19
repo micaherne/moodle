@@ -17,6 +17,7 @@
 namespace core_courseformat\external;
 
 use core\external\exporter;
+use core\output\renderer_base;
 use core_courseformat\output\local\overview\activityname;
 
 /**
@@ -96,7 +97,7 @@ class activityname_exporter extends exporter {
     }
 
     #[\Override]
-    protected function get_other_values(\renderer_base $output) {
+    protected function get_other_values(renderer_base $output) {
         /** @var activityname $source */
         $source = $this->data;
         $templatedata = $source->export_for_template($output);

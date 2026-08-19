@@ -24,6 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\user;
+use core\url;
+use core_cache\cache;
 use core_user\output\myprofile\tree;
 use tool_policy\api;
 use tool_policy\policy_version;
@@ -60,9 +63,9 @@ function tool_policy_myprofile_navigation(tree $tree, $user, $iscurrentuser, $co
     }
 
     // Add "Policies and agreements" node only for current user or users who can accept on behalf of current user.
-    $usercontext = \context_user::instance($user->id);
+    $usercontext = user::instance($user->id);
     if ($iscurrentuser || has_capability('tool/policy:acceptbehalf', $usercontext)) {
-        $url = new moodle_url('/admin/tool/policy/user.php', ['userid' => $user->id]);
+        $url = new url('/admin/tool/policy/user.php', ['userid' => $user->id]);
         $node = new core_user\output\myprofile\node('privacyandpolicies', 'tool_policy',
             get_string('policiesagreements', 'tool_policy'), null, $url);
         $category->add_node($node);
@@ -87,7 +90,7 @@ function tool_policy_pre_signup_requests() {
     if (!empty($policies) && !$userpolicyagreed) {
         // Redirect to "Policy" pages for consenting before creating the user.
         cache::make('core', 'presignup')->set('tool_policy_issignup', 1);
-        redirect(new \moodle_url('/admin/tool/policy/index.php'));
+        redirect(new url('/admin/tool/policy/index.php'));
     }
 }
 

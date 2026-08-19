@@ -24,6 +24,9 @@
  */
 namespace mod_lesson;
 
+use core\context\course;
+use core\context\module;
+use core_course\cm_info;
 use lesson;
 use mod_lesson_external;
 
@@ -127,7 +130,7 @@ final class lib_test extends \advanced_testcase {
         // Convert to a lesson object.
         $lesson = new lesson($lessonmodule);
         $cm = $lesson->cm;
-        $cm = \cm_info::create($cm);
+        $cm = cm_info::create($cm);
 
         // Check that upon creation, the updates are only about the new configuration created.
         $onehourago = time() - HOURSECS;
@@ -211,7 +214,7 @@ final class lib_test extends \advanced_testcase {
 
         // Now, teacher can't access all groups.
         groups_add_member($group1, $teacherg1);
-        assign_capability('moodle/site:accessallgroups', CAP_PROHIBIT, $teacherrole->id, \context_module::instance($cm->id));
+        assign_capability('moodle/site:accessallgroups', CAP_PROHIBIT, $teacherrole->id, module::instance($cm->id));
         accesslib_clear_all_caches_for_unit_testing();
         $updates = lesson_check_updates_since($cm, $onehourago);
         // I will see only the studentg1 updates.
@@ -761,8 +764,8 @@ final class lib_test extends \advanced_testcase {
             'completionendreached' => 0,
             'completiontimespent' => 0
         ]);
-        $cm1 = \cm_info::create(get_coursemodule_from_instance('lesson', $lesson1->id));
-        $cm2 = \cm_info::create(get_coursemodule_from_instance('lesson', $lesson2->id));
+        $cm1 = cm_info::create(get_coursemodule_from_instance('lesson', $lesson1->id));
+        $cm2 = cm_info::create(get_coursemodule_from_instance('lesson', $lesson2->id));
 
         // Data for the stdClass input type.
         // This type of input would occur when checking the default completion rules for an activity type, where we don't have
@@ -1072,7 +1075,7 @@ final class lib_test extends \advanced_testcase {
     public function test_creation_with_no_calendar_capabilities(): void {
         $this->resetAfterTest();
         $course = self::getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = self::getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $roleid = self::getDataGenerator()->create_role();
         self::getDataGenerator()->role_assign($roleid, $user->id, $context->id);

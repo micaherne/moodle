@@ -16,6 +16,7 @@
 
 namespace core_badges\local\backpack;
 
+use core\exception\coding_exception;
 use core_badges\local\backpack\ob\assertion_exporter_interface;
 use core_badges\local\backpack\ob\badge_exporter_interface;
 use core_badges\local\backpack\ob\issuer_exporter_interface;
@@ -44,7 +45,7 @@ abstract class ob_factory {
         $classname = helper::assertion_exists($hash) ? 'assertion_exporter' : 'revoked_assertion_exporter';
         $classname = '\\core_badges\\local\\backpack\\ob\\' . $apiversion . '\\' . $classname;
         if (!class_exists($classname)) {
-            throw new \coding_exception('Invalid Open Badges API version');
+            throw new coding_exception('Invalid Open Badges API version');
         }
 
         return new $classname($hash);
@@ -65,7 +66,7 @@ abstract class ob_factory {
 
         $classname = '\\core_badges\\local\\backpack\\ob\\' . $apiversion . '\\badge_exporter';
         if (!class_exists($classname)) {
-            throw new \coding_exception('Invalid Open Badges API version');
+            throw new coding_exception('Invalid Open Badges API version');
         }
 
         return new $classname($badgeid);
@@ -86,12 +87,12 @@ abstract class ob_factory {
 
         $classname = '\\core_badges\\local\\backpack\\ob\\' . $apiversion . '\\badge_exporter';
         if (!class_exists($classname)) {
-            throw new \coding_exception('Invalid Open Badges API version');
+            throw new coding_exception('Invalid Open Badges API version');
         }
 
         $badgeid = helper::get_badgeid_from_hash($hash);
         if ($badgeid === null) {
-            throw new \coding_exception('Badge with the given hash does not exist');
+            throw new coding_exception('Badge with the given hash does not exist');
         }
 
         return new $classname($badgeid);
@@ -112,7 +113,7 @@ abstract class ob_factory {
 
         $classname = '\\core_badges\\local\\backpack\\ob\\' . $apiversion . '\\issuer_exporter';
         if (!class_exists($classname)) {
-            throw new \coding_exception('Invalid Open Badges API version');
+            throw new coding_exception('Invalid Open Badges API version');
         }
 
         return new $classname($badgeid);

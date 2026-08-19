@@ -24,6 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
 use core_files\hook\before_file_created;
 
 require_once("$CFG->libdir/filestorage/stored_file.php");
@@ -241,7 +244,7 @@ class file_storage {
      */
     public function get_file_preview(stored_file $file, $mode) {
 
-        $context = context_system::instance();
+        $context = system::instance();
         $path = '/' . trim($mode, '/') . '/';
         $preview = $this->get_file($context->id, 'core', 'preview', 0, $path, $file->get_contenthash());
 
@@ -429,7 +432,7 @@ class file_storage {
             return false;
         }
 
-        $context = context_system::instance();
+        $context = system::instance();
         $record = array(
             'contextid' => $context->id,
             'component' => 'core',
@@ -686,7 +689,7 @@ class file_storage {
         $params = [
             'component' => 'user',
             'filearea' => 'draft',
-            'contextid' => context_user::instance($userid)->id,
+            'contextid' => user::instance($userid)->id,
         ];
 
         $updatedsincesql = '';
@@ -2281,7 +2284,7 @@ class file_storage {
                    AND (p.filearea = 'preview' OR p.filearea = 'documentconversion')
                    AND p.itemid = 0
                    AND o.id IS NULL";
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $rs = $DB->get_recordset_sql($sql, array($syscontext->id));
         foreach ($rs as $orphan) {
             $file = $this->get_file_instance($orphan);

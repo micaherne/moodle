@@ -16,6 +16,8 @@
 
 namespace tool_admin_presets\local\action;
 
+use core\context\user;
+use core\exception\moodle_exception;
 use core_adminpresets\manager;
 
 /**
@@ -60,7 +62,7 @@ final class import_test extends \advanced_testcase {
         $filerecord = [
             'component' => 'user',
             'filearea' => 'draft',
-            'contextid' => \context_user::instance($USER->id)->id, 'itemid' => $draftid,
+            'contextid' => user::instance($USER->id)->id, 'itemid' => $draftid,
             'filename' => 'export.xml', 'filepath' => '/'
         ];
         $fs = get_file_storage();
@@ -91,7 +93,7 @@ final class import_test extends \advanced_testcase {
             if ($expectedexception) {
                 $this->assertInstanceOf($expectedexception, $e);
             } else {
-                $this->assertInstanceOf(\moodle_exception::class, $e);
+                $this->assertInstanceOf(moodle_exception::class, $e);
             }
             restore_error_handler();
         } finally {

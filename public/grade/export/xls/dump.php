@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\exception\moodle_exception;
+
 define('NO_MOODLE_COOKIES', true); // session not used here
 require_once '../../../config.php';
 require_once($CFG->dirroot.'/grade/export/xls/grade_export_xls.php');
@@ -28,22 +31,22 @@ $decimalpoints      = optional_param('decimalpoints', $CFG->grade_export_decimal
 $onlyactive         = optional_param('export_onlyactive', 0, PARAM_BOOL);
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_user_key_login('grade/export', $id); // we want different keys for each course
 
 if (empty($CFG->gradepublishing)) {
-    throw new \moodle_exception('gradepubdisable');
+    throw new moodle_exception('gradepubdisable');
 }
 
-$context = context_course::instance($id);
+$context = course::instance($id);
 require_capability('moodle/grade:export', $context);
 require_capability('gradeexport/xls:view', $context);
 require_capability('gradeexport/xls:publish', $context);
 
 if (!groups_group_visible($groupid, $COURSE)) {
-    throw new \moodle_exception('cannotaccessgroup', 'grades');
+    throw new moodle_exception('cannotaccessgroup', 'grades');
 }
 
 // Get all url parameters and create an object to simulate a form submission.

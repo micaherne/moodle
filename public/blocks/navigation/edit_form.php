@@ -31,6 +31,8 @@
  * @copyright 2009 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\navigation\global_navigation;
+
 class block_navigation_edit_form extends block_edit_form {
     /**
      * @param MoodleQuickForm $mform

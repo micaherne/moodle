@@ -29,6 +29,12 @@
  * @copyright  2010 Andrew Davis
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\single_button;
+use core\url;
+use core_table\output\html_table;
+
 class core_rss_renderer extends plugin_renderer_base {
     /**
      * Returns the html for the token reset confirmation box
@@ -37,8 +43,8 @@ class core_rss_renderer extends plugin_renderer_base {
     public function user_reset_rss_token_confirmation() {
         $managetokenurl = '/user/managetoken.php';
         $optionsyes = ['action' => 'resetrsstoken', 'confirm' => 1];
-        $formcontinue = new single_button(new moodle_url($managetokenurl, $optionsyes), get_string('reset'));
-        $formcancel = new single_button(new moodle_url($managetokenurl), get_string('cancel'), 'get');
+        $formcontinue = new single_button(new url($managetokenurl, $optionsyes), get_string('reset'));
+        $formcancel = new single_button(new url($managetokenurl), get_string('cancel'), 'get');
         $html = $this->output->confirm(get_string('resettokenconfirmsimple', 'webservice'), $formcontinue, $formcancel);
         return $html;
     }
@@ -67,7 +73,7 @@ class core_rss_renderer extends plugin_renderer_base {
         $table->data  = array();
 
         if (!empty($token)) {
-            $reset = html_writer::link(new moodle_url('/user/managetoken.php', [
+            $reset = html_writer::link(new url('/user/managetoken.php', [
                 'action' => 'resetrsstoken',
             ]), get_string('reset'));
 

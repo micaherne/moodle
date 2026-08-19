@@ -29,7 +29,9 @@
  * @copyright  2020 Mihail Geshoski
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_shibboleth_admin_setting_convert_data extends admin_setting_configfile {
+use core_admin\setting\setting\configfile;
+
+class auth_shibboleth_admin_setting_convert_data extends configfile {
 
     /**
      * Constructor.

@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require('../../config.php');
 require_once($CFG->dirroot.'/mod/resource/lib.php');
 require_once($CFG->dirroot.'/mod/resource/locallib.php');
@@ -36,14 +41,14 @@ $forceview = optional_param('forceview', 0, PARAM_BOOL);
 if ($r) {
     if (!$resource = $DB->get_record('resource', array('id'=>$r))) {
         resource_redirect_if_migrated($r, 0);
-        throw new \moodle_exception('invalidaccessparameter');
+        throw new moodle_exception('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('resource', $resource->id, $resource->course, false, MUST_EXIST);
 
 } else {
     if (!$cm = get_coursemodule_from_id('resource', $id)) {
         resource_redirect_if_migrated(0, $id);
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     $resource = $DB->get_record('resource', array('id'=>$cm->instance), '*', MUST_EXIST);
 }
@@ -51,7 +56,7 @@ if ($r) {
 $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/resource:view', $context);
 
 // Completion and trigger events.
@@ -83,7 +88,7 @@ if ($displaytype == RESOURCELIB_DISPLAY_OPEN || $displaytype == RESOURCELIB_DISP
 // Don't redirect teachers, otherwise they can not access course or module settings.
 if ($redirect && !course_get_format($course)->has_view_page() &&
         (has_capability('moodle/course:manageactivities', $context) ||
-        has_capability('moodle/course:update', context_course::instance($course->id)))) {
+        has_capability('moodle/course:update', course::instance($course->id)))) {
     $redirect = false;
 }
 
@@ -91,7 +96,7 @@ if ($redirect && !$forceview) {
     // coming from course page or url index page
     // this redirect trick solves caching problems when tracking views ;-)
     $path = '/'.$context->id.'/mod_resource/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
-    $fullurl = moodle_url::make_file_url('/pluginfile.php', $path, $displaytype == RESOURCELIB_DISPLAY_DOWNLOAD);
+    $fullurl = url::make_file_url('/pluginfile.php', $path, $displaytype == RESOURCELIB_DISPLAY_DOWNLOAD);
     redirect($fullurl);
 }
 

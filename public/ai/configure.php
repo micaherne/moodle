@@ -22,10 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+
 require_once('../config.php');
 
 require_login();
-$context = context_system::instance();
+$context = system::instance();
 require_capability('moodle/site:config', $context);
 
 $id = optional_param('id', 0, PARAM_INT);  // If we have an id we have existing settings.
@@ -36,12 +41,12 @@ $data = [];
 
 // Handle return URL.
 if (empty($returnurl)) {
-    $returnurl = new moodle_url(
+    $returnurl = new url(
         url: '/admin/settings.php',
         params: ['section' => 'aiprovider']
     );
 } else {
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 }
 $data['returnurl'] = $returnurl;
 
@@ -73,7 +78,7 @@ $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 // Explode if there are no provider plugins installed.
-$plugins = core_plugin_manager::instance()->get_plugins_of_type('aiprovider');
+$plugins = plugin_manager::instance()->get_plugins_of_type('aiprovider');
 if (empty($plugins)) {
     throw new moodle_exception('noproviderplugins', 'core_ai');
 }

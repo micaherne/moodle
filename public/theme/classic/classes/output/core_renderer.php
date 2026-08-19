@@ -36,6 +36,6 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2018 Bas Brands
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class core_renderer extends \core_renderer {
+class core_renderer extends \core\output\core_renderer {
 
 }

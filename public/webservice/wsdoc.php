@@ -23,12 +23,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot . '/webservice/lib.php');
 
 require_login();
 
-$usercontext = context_user::instance($USER->id);
+$usercontext = user::instance($USER->id);
 $tokenid = required_param('id', PARAM_INT);
 
 // PAGE settings
@@ -39,9 +43,9 @@ $PAGE->set_pagelayout('standard');
 
 // nav bar
 $PAGE->navbar->ignore_active(true);
-$PAGE->navbar->add(get_string('preferences'), new moodle_url('/user/preferences.php'));
+$PAGE->navbar->add(get_string('preferences'), new url('/user/preferences.php'));
 $PAGE->navbar->add(get_string('useraccount'));
-$PAGE->navbar->add(get_string('securitykeys', 'webservice'), new moodle_url('/user/managetoken.php'));
+$PAGE->navbar->add(get_string('securitykeys', 'webservice'), new url('/user/managetoken.php'));
 $PAGE->navbar->add(get_string('wsdocumentation', 'webservice'));
 
 // check web service are enabled

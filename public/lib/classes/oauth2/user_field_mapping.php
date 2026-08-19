@@ -26,7 +26,8 @@ namespace core\oauth2;
 defined('MOODLE_INTERNAL') || die();
 
 use core\persistent;
-use lang_string;
+use core\lang_string;
+use core\user;
 /**
  * Class for loading/storing oauth2 user field mappings from the DB
  *
@@ -46,7 +47,7 @@ class user_field_mapping extends persistent {
         global $CFG;
         require_once($CFG->dirroot . '/user/profile/lib.php');
 
-        return array_merge(\core_user::AUTHSYNCFIELDS, ['picture', 'username'], get_profile_field_names());
+        return array_merge(user::AUTHSYNCFIELDS, ['picture', 'username'], get_profile_field_names());
     }
 
     /**
@@ -75,7 +76,7 @@ class user_field_mapping extends persistent {
      * @return array
      */
     public function get_internalfield_list() {
-        $userfields = array_merge(\core_user::AUTHSYNCFIELDS, ['picture', 'username']);
+        $userfields = array_merge(user::AUTHSYNCFIELDS, ['picture', 'username']);
         $internalfields = array_combine($userfields, $userfields);
         return array_merge(['' => $internalfields], get_profile_field_list());
     }

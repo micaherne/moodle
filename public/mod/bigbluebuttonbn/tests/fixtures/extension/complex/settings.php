@@ -23,10 +23,12 @@
  * @author    Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 
+use core_admin\setting\setting\configcheckbox;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Example setting for the complex extension.
-$settings->add(new admin_setting_configcheckbox(
+$settings->add(new configcheckbox(
     'bbbext_complex/enabled',
     get_string('pluginname', 'bbbext_complex'),
     get_string('complexsetting', 'bbbext_complex'),

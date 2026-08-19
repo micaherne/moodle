@@ -27,6 +27,7 @@ use Behat\Gherkin\Parser;
 use Behat\Gherkin\Lexer;
 use Behat\Gherkin\Keywords\ArrayKeywords;
 use Behat\Gherkin\Node\OutlineNode;
+use core\exception\moodle_exception;
 use ReflectionClass;
 use ReflectionMethod;
 use stdClass;
@@ -62,7 +63,7 @@ class runner {
     public function include_composer_libraries() {
         global $CFG;
         if (!file_exists($CFG->dirroot . '/../vendor/autoload.php')) {
-            throw new \moodle_exception('Missing composer.');
+            throw new moodle_exception('Missing composer.');
         }
         require_once($CFG->dirroot . '/../vendor/autoload.php');
         return true;
@@ -74,7 +75,7 @@ class runner {
     public function include_behat_libraries() {
         global $CFG;
         if (!class_exists('Behat\Gherkin\Lexer')) {
-            throw new \moodle_exception('Missing behat classes.');
+            throw new moodle_exception('Missing behat classes.');
         }
 
         // Behat constant.

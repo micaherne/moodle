@@ -21,7 +21,7 @@ use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
-use context_system;
+use core\context\system;
 use core\external\output\icon_system\load_fontawesome_map;
 
 /**
@@ -58,7 +58,7 @@ class external extends external_api {
     public static function load_template($component, $template, $themename, $includecomments = false) {
         global $DB, $CFG, $PAGE;
 
-        $PAGE->set_context(context_system::instance());
+        $PAGE->set_context(system::instance());
         $params = self::validate_parameters(
             self::load_template_parameters(),
             [

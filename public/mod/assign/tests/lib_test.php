@@ -31,6 +31,8 @@ require_once($CFG->dirroot . '/mod/assign/lib.php');
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
 
+use core\context\course;
+use core\url;
 use core_calendar\local\api as calendar_local_api;
 use core_calendar\local\event\container as calendar_event_container;
 use mod_assign_test_generator;
@@ -142,7 +144,7 @@ final class lib_test extends \advanced_testcase {
         $assign = $this->create_instance($course, ['submissiondrafts' => 1]);
         $this->add_submission($student, $assign);
 
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', array('id' => $assign->get_course_module()->id)));
+        $PAGE->set_url(new url('/mod/assign/view.php', array('id' => $assign->get_course_module()->id)));
 
         $submission = $assign->get_user_submission($student->id, true);
         $submission->status = ASSIGN_SUBMISSION_STATUS_DRAFT;
@@ -1327,7 +1329,7 @@ final class lib_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $roleid = $this->getDataGenerator()->create_role();
         $role = $DB->get_record('role', ['id' => $roleid]);
@@ -1383,7 +1385,7 @@ final class lib_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
         $roleid = $DB->get_field('role', 'id', ['shortname' => 'teacher']);
 
@@ -1442,7 +1444,7 @@ final class lib_test extends \advanced_testcase {
     public function test_creation_with_no_calendar_capabilities(): void {
         $this->resetAfterTest();
         $course = self::getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = self::getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $roleid = self::getDataGenerator()->create_role();
         self::getDataGenerator()->role_assign($roleid, $user->id, $context->id);

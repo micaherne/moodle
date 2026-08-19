@@ -24,6 +24,12 @@
  */
 
 use core\notification;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
+use core_table\output\html_table;
 use mod_data\local\importer\preset_existing_importer;
 use mod_data\local\importer\preset_importer;
 use mod_data\local\importer\preset_upload_importer;
@@ -48,7 +54,7 @@ if ($cancel) {
     $mode = 'list';
 }
 
-$url = new moodle_url('/mod/data/field.php');
+$url = new url('/mod/data/field.php');
 if ($fid !== 0) {
     $url->param('fid', $fid);
 }
@@ -270,7 +276,7 @@ switch ($mode) {
     case 'usepreset':
         $importer = preset_importer::create_from_parameters($manager);
         if (!$importer->needs_mapping() || $action == 'notmapping') {
-            $backurl = new moodle_url('/mod/data/field.php', ['id' => $cm->id]);
+            $backurl = new url('/mod/data/field.php', ['id' => $cm->id]);
             if ($importer->import(false)) {
                 notification::success(get_string('importsuccess', 'mod_data'));
             } else {
@@ -369,17 +375,17 @@ if (($mode == 'new') && (!empty($newtype))) { // Adding a new field.
 
         $field = data_get_field($fieldrecord, $data);
 
-        $baseurl = new moodle_url('/mod/data/field.php', array(
+        $baseurl = new url('/mod/data/field.php', array(
             'd'         => $data->id,
             'fid'       => $field->field->id,
             'sesskey'   => sesskey(),
         ));
 
-        $displayurl = new moodle_url($baseurl, array(
+        $displayurl = new url($baseurl, array(
             'mode'      => 'display',
         ));
 
-        $deleteurl = new moodle_url($baseurl, array(
+        $deleteurl = new url($baseurl, array(
             'mode'      => 'delete',
         ));
 
@@ -395,7 +401,7 @@ if (($mode == 'new') && (!empty($newtype))) { // Adding a new field.
         } else {
             $fieltypedata = $field->image() . '&nbsp;' . $field->name();
             // Edit icon, only displayed when the field type is known.
-            $actionmenu->add(new action_menu_link_secondary(
+            $actionmenu->add(new link_secondary(
                 $displayurl,
                 null,
                 get_string('edit'),
@@ -403,7 +409,7 @@ if (($mode == 'new') && (!empty($newtype))) { // Adding a new field.
         }
 
         // Delete.
-        $actionmenu->add(new action_menu_link_secondary(
+        $actionmenu->add(new link_secondary(
             $deleteurl,
             null,
             get_string('delete'),

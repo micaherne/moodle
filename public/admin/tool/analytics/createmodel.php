@@ -22,20 +22,24 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 require_login();
 \core_analytics\manager::check_can_manage_models();
 
 if (!\core_analytics\manager::is_analytics_enabled()) {
-    $PAGE->set_context(\context_system::instance());
+    $PAGE->set_context(system::instance());
     $renderer = $PAGE->get_renderer('tool_analytics');
     echo $renderer->render_analytics_disabled();
     exit(0);
 }
 
-$returnurl = new \moodle_url('/admin/tool/analytics/index.php');
-$url = new \moodle_url('/admin/tool/analytics/createmodel.php');
+$returnurl = new url('/admin/tool/analytics/index.php');
+$url = new url('/admin/tool/analytics/createmodel.php');
 $title = get_string('createmodel', 'tool_analytics');
 
 \tool_analytics\output\helper::set_navbar($title, $url);
@@ -66,7 +70,7 @@ if ($mform->is_cancelled()) {
     // Converting option names to class names.
     $targetclass = \tool_analytics\output\helper::option_to_class($data->target);
     if (empty($targets[$targetclass])) {
-        throw new \moodle_exception('errorinvalidtarget', 'analytics', '', $targetclass);
+        throw new moodle_exception('errorinvalidtarget', 'analytics', '', $targetclass);
     }
     $target = $targets[$targetclass];
 

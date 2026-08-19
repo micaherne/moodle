@@ -16,6 +16,8 @@
 
 namespace mod_forum;
 
+use core\context\user;
+
 /**
  * The author vault tests.
  *
@@ -54,9 +56,9 @@ final class vaults_author_test extends \advanced_testcase {
         $fakeuserid = $user3->id + 1000;
         $vaultfactory = \mod_forum\local\container::get_vault_factory();
         $authorvault = $vaultfactory->get_author_vault();
-        $user1context = \context_user::instance($user1->id);
-        $user2context = \context_user::instance($user2->id);
-        $user3context = \context_user::instance($user3->id);
+        $user1context = user::instance($user1->id);
+        $user2context = user::instance($user2->id);
+        $user3context = user::instance($user3->id);
         $user1contextid = $user1context->id;
         $user2contextid = $user2context->id;
         $user3contextid = $user3context->id;

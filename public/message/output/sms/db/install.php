@@ -27,6 +27,8 @@
  *
  * @return bool
  */
+use core\plugin_manager;
+
 function xmldb_message_sms_install(): bool {
     // Insert the processor record for sms.
     global $DB;
@@ -35,7 +37,7 @@ function xmldb_message_sms_install(): bool {
     $DB->insert_record('message_processors', $provider);
 
     // Keep the plugin disabled by default.
-    $class = \core_plugin_manager::resolve_plugininfo_class('message');
+    $class = plugin_manager::resolve_plugininfo_class('message');
     $class::enable_plugin($provider->name, 0);
 
     return true;

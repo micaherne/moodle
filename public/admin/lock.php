@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\url;
+
 require_once('../config.php');
 require_once("{$CFG->libdir}/adminlib.php");
 
@@ -36,7 +39,7 @@ list($context, $course, $cm) = get_context_info_array($contextid);
 $parentcontext = $context->get_parent_context();
 if ($parentcontext && !empty($parentcontext->locked)) {
     // Can't make changes to a context whose parent is locked.
-    throw new \coding_exception('Not sure how you got here');
+    throw new coding_exception('Not sure how you got here');
 }
 
 if ($course) {
@@ -68,7 +71,7 @@ if (null !== $confirm && confirm_sesskey()) {
     if (empty($returnurl)) {
         $returnurl = $context->get_url();
     } else {
-        $returnurl = new moodle_url($returnurl);
+        $returnurl = new url($returnurl);
     }
     redirect($returnurl, $lockmessage);
 }
@@ -87,7 +90,7 @@ if ($context->locked) {
     $target = 1;
 }
 
-$confirmurl = new \moodle_url($PAGE->url, ['confirm' => $target]);
+$confirmurl = new url($PAGE->url, ['confirm' => $target]);
 if (!empty($returnurl)) {
     $confirmurl->param('returnurl', $returnurl);
 }

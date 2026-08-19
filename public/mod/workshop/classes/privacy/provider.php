@@ -25,6 +25,10 @@
 
 namespace mod_workshop\privacy;
 
+use core\context;
+use core\context\module;
+use core\context_helper;
+use core\exception\coding_exception;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -182,7 +186,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
 
@@ -298,11 +302,11 @@ class provider implements
      * @param stdClass $data Base data about the workshop instance to append to.
      * @param array $subcontext Subcontext path items to eventually write files into.
      */
-    protected static function append_extra_workshop_data(\context $context, \stdClass $user, \stdClass $data, array $subcontext) {
+    protected static function append_extra_workshop_data(context $context, \stdClass $user, \stdClass $data, array $subcontext) {
         global $DB;
 
         if ($context->contextlevel != CONTEXT_MODULE) {
-            throw new \coding_exception('Unexpected context provided');
+            throw new coding_exception('Unexpected context provided');
         }
 
         $sql = "SELECT w.instructauthors, w.instructauthorsformat, w.instructreviewers, w.instructreviewersformat, w.phase,
@@ -381,7 +385,7 @@ class provider implements
         $sql = "SELECT ws.id, ws.authorid, ws.example, ws.timecreated, ws.timemodified, ws.title,
                        ws.content, ws.contentformat, ws.grade, ws.gradeover, ws.feedbackauthor, ws.feedbackauthorformat,
                        ws.published, ws.late,
-                       w.phase, w.course, cm.id AS cmid, ".\context_helper::get_preload_record_columns_sql('ctx')."
+                       w.phase, w.course, cm.id AS cmid, ".context_helper::get_preload_record_columns_sql('ctx')."
                   FROM {course_modules} cm
                   JOIN {modules} m ON cm.module = m.id AND m.name = :module
                   JOIN {context} ctx ON ctx.contextlevel = :contextlevel AND ctx.instanceid = cm.id
@@ -398,8 +402,8 @@ class provider implements
         $rs = $DB->get_recordset_sql($sql, $params);
 
         foreach ($rs as $record) {
-            \context_helper::preload_from_record($record);
-            $context = \context_module::instance($record->cmid);
+            context_helper::preload_from_record($record);
+            $context = module::instance($record->cmid);
             $writer = \core_privacy\local\request\writer::with_context($context);
 
             if ($record->example) {
@@ -491,7 +495,7 @@ class provider implements
         $sql = "SELECT ws.authorid, ws.example, ws.timecreated, ws.timemodified, ws.title, ws.content, ws.contentformat,
                        wa.id, wa.submissionid, wa.reviewerid, wa.weight, wa.timecreated, wa.timemodified, wa.grade,
                        wa.gradinggrade, wa.gradinggradeover, wa.feedbackauthor, wa.feedbackauthorformat, wa.feedbackreviewer,
-                       wa.feedbackreviewerformat, cm.id AS cmid, ".\context_helper::get_preload_record_columns_sql('ctx')."
+                       wa.feedbackreviewerformat, cm.id AS cmid, ".context_helper::get_preload_record_columns_sql('ctx')."
                   FROM {course_modules} cm
                   JOIN {modules} m ON cm.module = m.id AND m.name = :module
                   JOIN {context} ctx ON cm.id = ctx.instanceid AND ctx.contextlevel = :contextlevel
@@ -509,8 +513,8 @@ class provider implements
         $rs = $DB->get_recordset_sql($sql, $params);
 
         foreach ($rs as $record) {
-            \context_helper::preload_from_record($record);
-            $context = \context_module::instance($record->cmid);
+            context_helper::preload_from_record($record);
+            $context = module::instance($record->cmid);
             $writer = \core_privacy\local\request\writer::with_context($context);
             $subcontext = [get_string('myassessments', 'mod_workshop'), $record->id];
 
@@ -561,7 +565,7 @@ class provider implements
      * @param array $subcontext Subcontext path of the assessment
      * @param int $assessmentid ID of the exported assessment
      */
-    protected static function export_assessment_forms(\stdClass $user, \context $context, array $subcontext, int $assessmentid) {
+    protected static function export_assessment_forms(\stdClass $user, context $context, array $subcontext, int $assessmentid) {
 
         foreach (\workshop::available_strategies_list() as $strategy => $title) {
             $providername = '\workshopform_'.$strategy.'\privacy\provider';
@@ -587,7 +591,7 @@ class provider implements
      *
      * @param context $context Context to delete personal data from.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $CFG, $DB;
         require_once($CFG->libdir.'/gradelib.php');
 

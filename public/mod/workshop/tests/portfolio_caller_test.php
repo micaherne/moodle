@@ -16,6 +16,8 @@
 
 namespace mod_workshop;
 
+use core\context\module;
+use core\url;
 use testable_workshop;
 
 defined('MOODLE_INTERNAL') || die();
@@ -101,8 +103,8 @@ final class portfolio_caller_test extends \advanced_testcase {
         $portfoliocaller->set_formats_from_button([]);
         $portfoliocaller->load_data();
 
-        $expected = new \moodle_url('/mod/workshop/submission.php', ['cmid' => $this->workshop->cm->id, 'id' => $subid1]);
-        $actual = new \moodle_url($portfoliocaller->get_return_url());
+        $expected = new url('/mod/workshop/submission.php', ['cmid' => $this->workshop->cm->id, 'id' => $subid1]);
+        $actual = new url($portfoliocaller->get_return_url());
         $this->assertTrue($expected->compare($actual));
     }
 
@@ -131,7 +133,7 @@ final class portfolio_caller_test extends \advanced_testcase {
         global $DB;
         $this->resetAfterTest(true);
 
-        $context = \context_module::instance($this->cm->id);
+        $context = module::instance($this->cm->id);
         $student1 = $this->getDataGenerator()->create_user();
         $student2 = $this->getDataGenerator()->create_user();
         $roleids = $DB->get_records_menu('role', null, '', 'shortname, id');

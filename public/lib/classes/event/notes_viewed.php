@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -74,6 +76,6 @@ class notes_viewed extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/notes/index.php', array('course' => $this->courseid, 'user' => $this->relateduserid));
+        return new url('/notes/index.php', array('course' => $this->courseid, 'user' => $this->relateduserid));
     }
 }

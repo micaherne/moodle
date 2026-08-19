@@ -16,7 +16,7 @@
 
 namespace core\plugininfo;
 
-use core_plugin_manager;
+use core\plugin_manager;
 
 /**
  * Defines classes used for plugin info.
@@ -73,7 +73,7 @@ class dataformat extends base {
 
     #[\Override]
     public static function get_enabled_plugins() {
-        $plugins = core_plugin_manager::instance()->get_installed_plugins('dataformat');
+        $plugins = plugin_manager::instance()->get_installed_plugins('dataformat');
         if (!$plugins) {
             return [];
         }
@@ -107,7 +107,7 @@ class dataformat extends base {
 
         if ($haschanged) {
             add_to_config_log('disabled', $oldvalue, $disabled, $plugin);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;

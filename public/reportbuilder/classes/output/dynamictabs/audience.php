@@ -24,7 +24,7 @@ use core_reportbuilder\local\helpers\audience as audience_helper;
 use core_reportbuilder\local\models\report;
 use core_reportbuilder\output\audience_heading_editable;
 use core_reportbuilder\permission;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Audience dynamic tab

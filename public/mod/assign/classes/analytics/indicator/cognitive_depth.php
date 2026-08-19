@@ -24,6 +24,9 @@
 
 namespace mod_assign\analytics\indicator;
 
+use core\lang_string;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -42,15 +45,15 @@ class cognitive_depth extends activity_base {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('indicator:cognitivedepth', 'mod_assign');
+    public static function get_name(): lang_string {
+        return new lang_string('indicator:cognitivedepth', 'mod_assign');
     }
 
     public function get_indicator_type() {
         return self::INDICATOR_COGNITIVE;
     }
 
-    public function get_cognitive_depth_level(\cm_info $cm) {
+    public function get_cognitive_depth_level(cm_info $cm) {
         return self::COGNITIVE_LEVEL_5;
     }
 
@@ -72,7 +75,7 @@ class cognitive_depth extends activity_base {
      * @param int $after
      * @return bool
      */
-    protected function feedback_replied(\cm_info $cm, $contextid, $userid, $after = false) {
+    protected function feedback_replied(cm_info $cm, $contextid, $userid, $after = false) {
         // No level 4.
         return false;
     }

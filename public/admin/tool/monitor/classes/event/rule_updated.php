@@ -24,6 +24,8 @@
 
 namespace tool_monitor\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -71,7 +73,7 @@ class rule_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/monitor/edit.php', array('ruleid' => $this->objectid,
+        return new url('/admin/tool/monitor/edit.php', array('ruleid' => $this->objectid,
             'courseid' => $this->courseid));
     }
 

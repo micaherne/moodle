@@ -19,8 +19,8 @@ declare(strict_types=1);
 namespace core\content\export\exporters;
 
 use advanced_testcase;
-use context_course;
-use context_module;
+use core\context\course;
+use core\context\module;
 use ZipArchive;
 use core\content\export\zipwriter;
 
@@ -44,7 +44,7 @@ final class course_exporter_test extends advanced_testcase {
         $generator = $this->getDataGenerator();
 
         $course = $generator->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $intro = 'XX Some introduction should go here XX';
         $content = 'YY Some content should go here YY';
@@ -53,7 +53,7 @@ final class course_exporter_test extends advanced_testcase {
             'intro' => $intro,
             'content' => $content,
         ]);
-        $modcontext = context_module::instance($module->cmid);
+        $modcontext = module::instance($module->cmid);
 
         $user = $generator->create_user();
         $generator->enrol_user($user->id, $course->id);
@@ -93,7 +93,7 @@ final class course_exporter_test extends advanced_testcase {
         $generator = $this->getDataGenerator();
 
         $course = $generator->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $intro = 'XX Some introduction should go here XX';
         $content = 'YY Some content should go here YY';
@@ -102,7 +102,7 @@ final class course_exporter_test extends advanced_testcase {
             'intro' => $intro,
             'content' => $content,
         ]);
-        $modcontext = context_module::instance($module->cmid);
+        $modcontext = module::instance($module->cmid);
 
         $user = $generator->create_user();
         $generator->enrol_user($user->id, $course->id);

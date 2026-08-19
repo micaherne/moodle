@@ -31,7 +31,7 @@ use core\output\action_link;
 use core\output\pix_icon;
 use core\url;
 use core_contentbank\contentbank;
-use core_plugin_manager;
+use core\plugin_manager;
 use moodle_page;
 use repository;
 
@@ -1219,7 +1219,7 @@ class settings_navigation extends navigation_node {
                 $useraccount->add(get_string('preferredlanguage'), $url, self::TYPE_SETTING, null, 'preferredlanguage');
             }
         }
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $enabled = $pluginmanager->get_enabled_plugins('mod');
         if (isset($enabled['forum']) && isloggedin() && !isguestuser($user) && !is_mnet_remote_user($user)) {
             if (

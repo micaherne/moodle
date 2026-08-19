@@ -20,7 +20,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/questionlib.php');
 
-use context_system;
+use core\context\module;
+use core\context\system;
 use core_question\local\bank\column_base;
 use core_question\local\bank\column_manager_base;
 use core_question\local\bank\question_edit_contexts;
@@ -30,7 +31,7 @@ use qbank_columnsortorder\local\bank\column_action_move;
 use qbank_columnsortorder\local\bank\column_action_remove;
 use qbank_columnsortorder\local\bank\column_action_resize;
 use qbank_columnsortorder\local\bank\preview_view;
-use moodle_url;
+use core\url;
 
 /**
  * Class column_manager responsible for loading and saving order to the config setting.
@@ -159,7 +160,7 @@ class column_manager extends column_manager_base {
      */
     private static function save_preference(string $name, ?string $value, bool $global = false): void {
         if ($global) {
-            require_capability('moodle/site:config', context_system::instance());
+            require_capability('moodle/site:config', system::instance());
             set_config($name, $value, 'qbank_columnsortorder');
         } else {
             set_user_preference("qbank_columnsortorder_{$name}", $value);
@@ -175,14 +176,14 @@ class column_manager extends column_manager_base {
         $course = (object) ['id' => 0];
         $previewbank = question_bank_helper::get_preview_open_instance_type(true);
         $cm = $previewbank->get_course_module_record();
-        $context = \context_module::instance($previewbank->id);
+        $context = module::instance($previewbank->id);
         $contexts = new question_edit_contexts($context);
         $category = question_get_default_category($contexts->lowest()->id, true);
         $params = ['cat' => $category->id . ',' . $context->id];
         // Dummy call to get the objects without error.
         $questionbank = new preview_view(
             $contexts,
-            new moodle_url('/question/bank/columnsortorder/sortcolumns.php'),
+            new url('/question/bank/columnsortorder/sortcolumns.php'),
             $course,
             $cm,
             $params

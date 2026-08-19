@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\tree;
 
+use core\context\system;
+use core\url;
 use core_admin\admin_search;
 use core_admin\local\settings\linkable_settings_page;
 
@@ -93,8 +95,8 @@ class externalpage implements \core_admin\setting\tree\part_of_admin_tree, linka
      *
      * @return moodle_url
      */
-    public function get_settings_page_url(): \moodle_url {
-        return new \moodle_url($this->url);
+    public function get_settings_page_url(): url {
+        return new url($this->url);
     }
 
     /**
@@ -159,7 +161,7 @@ class externalpage implements \core_admin\setting\tree\part_of_admin_tree, linka
      * @return bool True if user has access, false otherwise.
      */
     public function check_access() {
-        $context = empty($this->context) ? \context_system::instance() : $this->context;
+        $context = empty($this->context) ? system::instance() : $this->context;
         foreach ($this->req_capability as $cap) {
             if (has_capability($cap, $context)) {
                 return true;

@@ -24,6 +24,8 @@
 
 namespace core\message\inbound;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -113,7 +115,7 @@ class manager {
             if ($handlerinstance = self::handler_from_record($record)) {
                 $handlerinstances[] = $handlerinstance;
             } else {
-                throw new \coding_exception("Inbound Message Handler not found for '{$componentname}'.");
+                throw new coding_exception("Inbound Message Handler not found for '{$componentname}'.");
             }
         }
 

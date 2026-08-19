@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 use core\di;
+use core\exception\moodle_exception;
 use core\hook\manager;
 use core_backup\hook\copy_helper_process_formdata;
 
@@ -57,7 +58,7 @@ final class copy_helper {
 
         $missingfields = array_diff($requiredfields, array_keys((array)$formdata));
         if ($missingfields) {
-            throw new \moodle_exception('copyfieldnotfound', 'backup', '', null, implode(", ", $missingfields));
+            throw new moodle_exception('copyfieldnotfound', 'backup', '', null, implode(", ", $missingfields));
         }
 
         // Remove any extra stuff in the form data.

@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
+use core\url;
 /**
  * Cron running check
  *
@@ -42,9 +44,9 @@ class cronrunning extends check {
      *
      * @return action_link|null
      */
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url('/admin/tool/task/runningtasks.php'),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url('/admin/tool/task/runningtasks.php'),
             get_string('runningtasks', 'tool_task'));
     }
 
@@ -80,7 +82,7 @@ class cronrunning extends check {
 
             if (empty($lastcron)) {
                 if (empty($CFG->cronclionly)) {
-                    $url = new \moodle_url('/admin/cron.php');
+                    $url = new url('/admin/cron.php');
                     $summary = get_string('cronwarningneverweb', 'admin', [
                         'url' => $url->out(),
                         'expected' => $formatexpected,
@@ -91,7 +93,7 @@ class cronrunning extends check {
                     ]);
                 }
             } else if (empty($CFG->cronclionly)) {
-                $url = new \moodle_url('/admin/cron.php');
+                $url = new url('/admin/cron.php');
                 $summary = get_string('cronwarning', 'admin', [
                     'url' => $url->out(),
                     'actual'   => $formatdelta,

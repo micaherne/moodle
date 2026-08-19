@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\progress_trace\html_list_progress_trace;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require('../../../config.php');

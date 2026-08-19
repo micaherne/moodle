@@ -24,7 +24,7 @@
 namespace core\oauth2;
 
 use curl;
-use coding_exception;
+use core\exception\coding_exception;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();

@@ -26,6 +26,8 @@ namespace tool_monitor\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user;
 use tool_monitor\privacy\provider;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -97,8 +99,8 @@ final class provider_test extends provider_testcase {
     public function test_get_contexts_for_userid(): void {
         $user = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext = user::instance($user->id);
+        $usercontext2 = user::instance($user2->id);
         $this->assertEmpty(provider::get_contexts_for_userid($user->id));
         $this->assertEmpty(provider::get_contexts_for_userid($user2->id));
 
@@ -139,8 +141,8 @@ final class provider_test extends provider_testcase {
         $component = 'tool_monitor';
         $user = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext = user::instance($user->id);
+        $usercontext2 = user::instance($user2->id);
 
         $userlist = new \core_privacy\local\request\userlist($usercontext, $component);
         provider::get_users_in_context($userlist);
@@ -186,7 +188,7 @@ final class provider_test extends provider_testcase {
      */
     public function test_export_user_data(): void {
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $monitorgenerator = $this->getDataGenerator()->get_plugin_generator('tool_monitor');
 
         $this->setUser($user);
@@ -224,13 +226,13 @@ final class provider_test extends provider_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext = user::instance($user->id);
+        $usercontext2 = user::instance($user2->id);
         $monitorgenerator = $this->getDataGenerator()->get_plugin_generator('tool_monitor');
 
         $this->setUser($user);
         // Need to give user one the ability to manage rules.
-        $this->assign_user_capability('tool/monitor:managerules', \context_system::instance());
+        $this->assign_user_capability('tool/monitor:managerules', system::instance());
 
         $rulerecord = (object)['name' => 'privacy rule'];
         $rule = $monitorgenerator->create_rule($rulerecord);
@@ -253,7 +255,7 @@ final class provider_test extends provider_testcase {
         $subscription3 = $monitorgenerator->create_subscription($subscription3);
 
         // Try a different context first.
-        provider::delete_data_for_all_users_in_context(\context_system::instance());
+        provider::delete_data_for_all_users_in_context(system::instance());
 
         // Get all of the monitor rules.
         $dbrules = $DB->get_records('tool_monitor_rules');
@@ -291,13 +293,13 @@ final class provider_test extends provider_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext = user::instance($user->id);
+        $usercontext2 = user::instance($user2->id);
         $monitorgenerator = $this->getDataGenerator()->get_plugin_generator('tool_monitor');
 
         $this->setUser($user);
         // Need to give user one the ability to manage rules.
-        $this->assign_user_capability('tool/monitor:managerules', \context_system::instance());
+        $this->assign_user_capability('tool/monitor:managerules', system::instance());
 
         $rulerecord = (object)['name' => 'privacy rule'];
         $rule = $monitorgenerator->create_rule($rulerecord);
@@ -349,13 +351,13 @@ final class provider_test extends provider_testcase {
         $component = 'tool_monitor';
         $user = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext = user::instance($user->id);
+        $usercontext2 = user::instance($user2->id);
         $monitorgenerator = $this->getDataGenerator()->get_plugin_generator('tool_monitor');
 
         $this->setUser($user);
         // Need to give user one the ability to manage rules.
-        $this->assign_user_capability('tool/monitor:managerules', \context_system::instance());
+        $this->assign_user_capability('tool/monitor:managerules', system::instance());
 
         $rulerecord = (object)['name' => 'privacy rule'];
         $rule = $monitorgenerator->create_rule($rulerecord);

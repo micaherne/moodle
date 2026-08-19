@@ -17,6 +17,7 @@
 namespace core_courseformat\external;
 
 use core\external\exporter;
+use core\output\renderer_base;
 use core_courseformat\output\local\overview\overviewdialog;
 
 /**
@@ -97,7 +98,7 @@ class overviewdialog_exporter extends exporter {
     }
 
     #[\Override]
-    protected function get_other_values(\renderer_base $output) {
+    protected function get_other_values(renderer_base $output) {
         /** @var overviewdialog $source */
         $source = $this->data;
         return [

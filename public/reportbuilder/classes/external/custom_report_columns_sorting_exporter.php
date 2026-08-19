@@ -19,8 +19,8 @@ declare(strict_types=1);
 namespace core_reportbuilder\external;
 
 use core_collator;
-use pix_icon;
-use renderer_base;
+use core\output\pix_icon;
+use core\output\renderer_base;
 use core\external\exporter;
 use core_reportbuilder\datasource;
 use core_reportbuilder\local\report\column;

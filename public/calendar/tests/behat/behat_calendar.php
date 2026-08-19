@@ -27,6 +27,7 @@
 require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
 
 use Behat\Gherkin\Node\TableNode as TableNode;
+use core\url;
 
 /**
  * Contains functions used by behat to test functionality.
@@ -262,7 +263,7 @@ class behat_calendar extends behat_base {
             throw new Exception("Invalid calendar view. Allowed values are: 'month', 'day' and 'upcoming'");
         }
 
-        $url = new moodle_url('/calendar/view.php', ['view' => $view]);
+        $url = new url('/calendar/view.php', ['view' => $view]);
         $this->execute('behat_general::i_visit', [$url]);
     }
 }

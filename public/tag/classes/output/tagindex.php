@@ -24,11 +24,12 @@
 
 namespace core_tag\output;
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\exception\coding_exception;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
-use moodle_url;
+use core\url;
 use core_tag_tag;
 
 /**
@@ -71,7 +72,7 @@ class tagindex implements templatable {
 
         $tagareas = \core_tag_area::get_areas();
         if (!isset($tagareas[$itemtype][$component])) {
-            throw new \coding_exception('Tag area for component '.$component.' and itemtype '.$itemtype.' is not defined');
+            throw new coding_exception('Tag area for component '.$component.' and itemtype '.$itemtype.' is not defined');
         }
         $this->tagarea = $tagareas[$itemtype][$component];
         $this->record->tagid = $tag->id;
@@ -97,13 +98,13 @@ class tagindex implements templatable {
         $url = core_tag_tag::make_url($tag->tagcollid, $tag->rawname, $exclusivemode, $fromctx, $ctx, $rec);
         $urlparams = array('ta' => $this->tagarea->id);
         if ($totalpages > $page + 1) {
-            $this->record->nextpageurl = new moodle_url($url, $urlparams + array('page' => $page + 1));
+            $this->record->nextpageurl = new url($url, $urlparams + array('page' => $page + 1));
         }
         if ($page > 0) {
-            $this->record->prevpageurl = new moodle_url($url, $urlparams + array('page' => $page - 1));
+            $this->record->prevpageurl = new url($url, $urlparams + array('page' => $page - 1));
         }
         if (!$exclusivemode && ($totalpages > 1 || $page)) {
-            $this->record->exclusiveurl = new moodle_url($url, $urlparams + array('excl' => 1));
+            $this->record->exclusiveurl = new url($url, $urlparams + array('excl' => 1));
         }
         $this->record->exclusivetext = get_string('exclusivemode', 'tag', $a);
         $this->record->hascontent = ($totalpages > 1 || $page || $content);
@@ -147,13 +148,13 @@ class tagindex implements templatable {
      * @return stdClass
      */
     public function export_for_template(renderer_base $output) {
-        if ($this->record->nextpageurl && $this->record->nextpageurl instanceof moodle_url) {
+        if ($this->record->nextpageurl && $this->record->nextpageurl instanceof url) {
             $this->record->nextpageurl = $this->record->nextpageurl->out(false);
         }
-        if ($this->record->prevpageurl && $this->record->prevpageurl instanceof moodle_url) {
+        if ($this->record->prevpageurl && $this->record->prevpageurl instanceof url) {
             $this->record->prevpageurl = $this->record->prevpageurl->out(false);
         }
-        if ($this->record->exclusiveurl && $this->record->exclusiveurl instanceof moodle_url) {
+        if ($this->record->exclusiveurl && $this->record->exclusiveurl instanceof url) {
             $this->record->exclusiveurl = $this->record->exclusiveurl->out(false);
         }
         return $this->record;

@@ -26,10 +26,12 @@ namespace auth_oauth2;
 
 defined('MOODLE_INTERNAL') || die();
 
-use pix_icon;
-use moodle_url;
+use core\context\user as context_user;
+use core\output\pix_icon;
+use core\url;
+use core\user as core_user;
 use core_text;
-use context_system;
+use core\context\system;
 use stdClass;
 use core\oauth2\issuer;
 use core\oauth2\client;
@@ -183,7 +185,7 @@ class auth extends \auth_plugin_base {
                 if (!empty($wantsurl)) {
                     $params['wantsurl'] = $wantsurl;
                 }
-                $url = new moodle_url('/auth/oauth2/login.php', $params);
+                $url = new url('/auth/oauth2/login.php', $params);
                 $icon = $idp->get('image');
                 $result[] = ['url' => $url, 'iconurl' => $icon, 'name' => $idp->get_display_name()];
             }
@@ -249,7 +251,7 @@ class auth extends \auth_plugin_base {
             return false;
         }
 
-        $context = \context_user::instance($userid, MUST_EXIST);
+        $context = context_user::instance($userid, MUST_EXIST);
         $fs->delete_area_files($context->id, 'user', 'newicon');
 
         $filerecord = array(
@@ -425,7 +427,7 @@ class auth extends \auth_plugin_base {
             $errormsg = get_string('loginerror_nouserinfo', 'auth_oauth2');
             $SESSION->loginerrormsg = $errormsg;
             $client->log_out();
-            redirect(new moodle_url('/login/index.php'));
+            redirect(new url('/login/index.php'));
         }
         if (empty($userinfo['username']) || empty($userinfo['email'])) {
             // Trigger login failed event.
@@ -437,7 +439,7 @@ class auth extends \auth_plugin_base {
             $errormsg = get_string('loginerror_userincomplete', 'auth_oauth2');
             $SESSION->loginerrormsg = $errormsg;
             $client->log_out();
-            redirect(new moodle_url('/login/index.php'));
+            redirect(new url('/login/index.php'));
         }
 
         $userinfo['username'] = trim(core_text::strtolower($userinfo['username']));
@@ -468,7 +470,7 @@ class auth extends \auth_plugin_base {
 
             if ($mappeduser && $mappeduser->suspended) {
                 // Check if there's another user with the same email that is not suspended.
-                $moodleuser = \core_user::get_user_by_email($userinfo['email'], '*', null, IGNORE_MULTIPLE);
+                $moodleuser = core_user::get_user_by_email($userinfo['email'], '*', null, IGNORE_MULTIPLE);
                 if ($moodleuser->id == $mappeduser->id) {
                     $failurereason = AUTH_LOGIN_SUSPENDED;
                     $event = \core\event\user_login_failed::create([
@@ -481,7 +483,7 @@ class auth extends \auth_plugin_base {
                     $event->trigger();
                     $SESSION->loginerrormsg = get_string('invalidlogin');
                     $client->log_out();
-                    redirect(new moodle_url('/login/index.php'));
+                    redirect(new url('/login/index.php'));
                 } else if ($moodleuser && !$moodleuser->suspended) {
                     // Update the OAuth2 linked login to point to the active user account.
                     $linkedlogin->set('userid', $moodleuser->id);
@@ -506,7 +508,7 @@ class auth extends \auth_plugin_base {
                 $errormsg = get_string('confirmationpending', 'auth_oauth2');
                 $SESSION->loginerrormsg = $errormsg;
                 $client->log_out();
-                redirect(new moodle_url('/login/index.php'));
+                redirect(new url('/login/index.php'));
             }
         } else if (!empty($linkedlogin)) {
             // Trigger login failed event.
@@ -518,7 +520,7 @@ class auth extends \auth_plugin_base {
             $errormsg = get_string('confirmationpending', 'auth_oauth2');
             $SESSION->loginerrormsg = $errormsg;
             $client->log_out();
-            redirect(new moodle_url('/login/index.php'));
+            redirect(new url('/login/index.php'));
         }
 
         if (!$issuer->is_valid_login_domain($oauthemail)) {
@@ -531,12 +533,12 @@ class auth extends \auth_plugin_base {
             $errormsg = get_string('notloggedindebug', 'auth_oauth2', get_string('loginerror_invaliddomain', 'auth_oauth2'));
             $SESSION->loginerrormsg = $errormsg;
             $client->log_out();
-            redirect(new moodle_url('/login/index.php'));
+            redirect(new url('/login/index.php'));
         }
 
         if (!$userwasmapped) {
             // No defined mapping - we need to see if there is an existing account with the same email.
-            $moodleuser = \core_user::get_user_by_email($userinfo['email'], '*', null, IGNORE_MULTIPLE);
+            $moodleuser = core_user::get_user_by_email($userinfo['email'], '*', null, IGNORE_MULTIPLE);
 
             // Ensure we don't link a login for a suspended user.
             if (!empty($moodleuser) && $moodleuser->suspended) {
@@ -551,13 +553,13 @@ class auth extends \auth_plugin_base {
                 $event->trigger();
                 $SESSION->loginerrormsg = get_string('invalidlogin');
                 $client->log_out();
-                redirect(new moodle_url('/login/index.php'));
+                redirect(new url('/login/index.php'));
             }
 
             if (!empty($moodleuser)) {
                 if ($issuer->get('requireconfirmation')) {
                     $PAGE->set_url('/auth/oauth2/confirm-link-login.php');
-                    $PAGE->set_context(context_system::instance());
+                    $PAGE->set_context(system::instance());
 
                     \auth_oauth2\api::send_confirm_link_login_email($userinfo, $issuer, $moodleuser->id);
                     // Request to link to existing account.
@@ -576,7 +578,7 @@ class auth extends \auth_plugin_base {
 
             } else {
                 // This is a new account.
-                $exists = \core_user::get_user_by_username($userinfo['username']);
+                $exists = core_user::get_user_by_username($userinfo['username']);
                 // Creating a new user?
                 if ($exists) {
                     // Trigger login failed event.
@@ -589,7 +591,7 @@ class auth extends \auth_plugin_base {
                     $errormsg = get_string('accountexists', 'auth_oauth2');
                     $SESSION->loginerrormsg = $errormsg;
                     $client->log_out();
-                    redirect(new moodle_url('/login/index.php'));
+                    redirect(new url('/login/index.php'));
                 }
 
                 if (email_is_not_allowed($userinfo['email'])) {
@@ -603,7 +605,7 @@ class auth extends \auth_plugin_base {
                     $errormsg = get_string('notloggedindebug', 'auth_oauth2', $reason);
                     $SESSION->loginerrormsg = $errormsg;
                     $client->log_out();
-                    redirect(new moodle_url('/login/index.php'));
+                    redirect(new url('/login/index.php'));
                 }
 
                 if (!empty($CFG->authpreventaccountcreation)) {
@@ -617,12 +619,12 @@ class auth extends \auth_plugin_base {
                     $errormsg = get_string('notloggedindebug', 'auth_oauth2', $reason);
                     $SESSION->loginerrormsg = $errormsg;
                     $client->log_out();
-                    redirect(new moodle_url('/login/index.php'));
+                    redirect(new url('/login/index.php'));
                 }
 
                 if ($issuer->get('requireconfirmation')) {
                     $PAGE->set_url('/auth/oauth2/confirm-account.php');
-                    $PAGE->set_context(context_system::instance());
+                    $PAGE->set_context(system::instance());
 
                     // Create a new (unconfirmed account) and send an email to confirm it.
                     $user = \auth_oauth2\api::send_confirm_account_email($userinfo, $issuer);
@@ -654,7 +656,7 @@ class auth extends \auth_plugin_base {
         if (empty($redirecturl)) {
             $redirecturl = core_login_get_return_url();
         }
-        redirect(new moodle_url($redirecturl));
+        redirect(new url($redirecturl));
     }
 
     /**

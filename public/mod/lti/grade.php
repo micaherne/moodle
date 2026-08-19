@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 
 $id = required_param('id', PARAM_INT);
@@ -32,5 +34,5 @@ $cm = get_coursemodule_from_id('lti', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 require_login($course, false, $cm);
 
-redirect(new moodle_url('/mod/lti/view.php', array(
+redirect(new url('/mod/lti/view.php', array(
     'id' => $cm->id, 'action' => 'gradeReport', 'user' => $userid)));

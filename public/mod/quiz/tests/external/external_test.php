@@ -26,14 +26,22 @@
 
 namespace mod_quiz\external;
 
+use core\context\course;
+use core\context\module;
+use core\context\user;
+use core\exception\invalid_parameter_exception;
+use core\exception\required_capability_exception;
+use core\url;
+use core_course\modinfo;
 use core_external\external_api;
 use core_question\local\bank\question_version_status;
 use mod_quiz\question\display_options;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
 use mod_quiz\structure;
+use mod_quiz\tests\question_helper_test_trait;
 use mod_quiz_external;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -85,7 +93,7 @@ class testable_mod_quiz_external extends mod_quiz_external {
  * @covers \mod_quiz_external
  */
 final class external_test extends \core_external\tests\externallib_testcase {
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /** @var \stdClass course record. */
     protected $course;
@@ -123,7 +131,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Setup test data.
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
         $this->cm = get_coursemodule_from_instance('quiz', $this->quiz->id);
 
         // Create users.
@@ -134,7 +142,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $this->studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->teacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
         // Allow student to receive messages.
-        $coursecontext = \context_course::instance($this->course->id);
+        $coursecontext = course::instance($this->course->id);
         assign_capability('mod/quiz:emailnotifysubmission', CAP_ALLOW, $this->teacherrole->id, $coursecontext, true);
 
         $this->getDataGenerator()->enrol_user($this->student->id, $this->course->id, $this->studentrole->id, 'manual');
@@ -161,7 +169,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
                       'preferredbehaviour' => $behaviour];
         $data = array_merge($data, $extraoptions);
         $quiz = $quizgenerator->create_instance($data);
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
 
         // Create a couple of questions.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -228,7 +236,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         }
 
         // Clear static cache and call get_fast_modinfo() again so that in the following cache should not be rebuilt.
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
         get_fast_modinfo($record->course);
 
         $enrol->enrol_user($instance2, $this->student->id, $this->studentrole->id);
@@ -400,7 +408,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_quiz\event\course_module_viewed', $event);
         $this->assertEquals($this->context, $event->get_context());
-        $moodlequiz = new \moodle_url('/mod/quiz/view.php', ['id' => $this->cm->id]);
+        $moodlequiz = new url('/mod/quiz/view.php', ['id' => $this->cm->id]);
         $this->assertEquals($moodlequiz, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -410,7 +418,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         assign_capability('mod/quiz:view', CAP_PROHIBIT, $this->studentrole->id, $this->context->id);
         // Empty all the caches that may be affected  by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
         try {
             mod_quiz_external::view_quiz($this->quiz->id);
@@ -513,7 +521,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             $this->resetDebugging();
             mod_quiz_external::get_user_attempts($quiz->id, $this->student->id, 'INVALID_PARAMETER');
             $this->fail('Exception expected due to missing capability.');
-        } catch (\invalid_parameter_exception $e) {
+        } catch (invalid_parameter_exception $e) {
             $this->assertDebuggingCalled();
             $this->assertEquals('invalidparameter', $e->errorcode);
         }
@@ -732,7 +740,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             mod_quiz_external::get_user_quiz_attempts($quiz->id, $this->student->id, 'INVALID_PARAMETER');
             $this->fail('Exception expected due to missing capability.');
-        } catch (\invalid_parameter_exception $e) {
+        } catch (invalid_parameter_exception $e) {
             $this->assertEquals('invalidparameter', $e->errorcode);
         }
     }
@@ -1099,7 +1107,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             mod_quiz_external::get_user_best_grade($quizapi1->id, $anotherstudent->id);
             $this->fail('Exception expected due to missing capability.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -1486,12 +1494,12 @@ final class external_test extends \core_external\tests\externallib_testcase {
         assign_capability('mod/quiz:attempt', CAP_PROHIBIT, $this->studentrole->id, $context->id);
         // Empty all the caches that may be affected  by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
         try {
             mod_quiz_external::start_attempt($quiz->id);
             $this->fail('Exception expected due to missing capability.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -1586,12 +1594,12 @@ final class external_test extends \core_external\tests\externallib_testcase {
         assign_capability('mod/quiz:attempt', CAP_PROHIBIT, $this->studentrole->id, $context->id);
         // Empty all the caches that may be affected  by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
         try {
             testable_mod_quiz_external::validate_attempt($params);
             $this->fail('Exception expected due to missing permissions.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -1970,7 +1978,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Add files in the attachment response.
         $draftitemid = file_get_unused_draft_itemid();
         $filerecordinline = [
-            'contextid' => \context_user::instance($this->student->id)->id,
+            'contextid' => user::instance($this->student->id)->id,
             'component' => 'user',
             'filearea'  => 'draft',
             'itemid'    => $draftitemid,
@@ -2317,7 +2325,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_quiz\event\attempt_summary_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodlequiz = new \moodle_url('/mod/quiz/summary.php', ['attempt' => $attempt->id]);
+        $moodlequiz = new url('/mod/quiz/summary.php', ['attempt' => $attempt->id]);
         $this->assertEquals($moodlequiz, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -2358,7 +2366,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_quiz\event\attempt_reviewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodlequiz = new \moodle_url('/mod/quiz/review.php', ['attempt' => $attempt->id]);
+        $moodlequiz = new url('/mod/quiz/review.php', ['attempt' => $attempt->id]);
         $this->assertEquals($moodlequiz, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());

@@ -23,6 +23,10 @@
  */
 
 namespace core\event;
+
+use core\context\module;
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +82,7 @@ class course_module_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/' . $this->other['modulename'] . '/view.php', array('id' => $this->objectid));
+        return new url('/mod/' . $this->other['modulename'] . '/view.php', array('id' => $this->objectid));
     }
 
     /**
@@ -89,13 +93,13 @@ class course_module_updated extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['modulename'])) {
-            throw new \coding_exception('The \'modulename\' value must be set in other.');
+            throw new coding_exception('The \'modulename\' value must be set in other.');
         }
         if (!isset($this->other['instanceid'])) {
-            throw new \coding_exception('The \'instanceid\' value must be set in other.');
+            throw new coding_exception('The \'instanceid\' value must be set in other.');
         }
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
     }
 
@@ -110,7 +114,7 @@ class course_module_updated extends base {
     final public static function create_from_cm($cm, $modcontext = null) {
         // If not set, get the module context.
         if (empty($modcontext)) {
-            $modcontext = \context_module::instance($cm->id);
+            $modcontext = module::instance($cm->id);
         }
 
         // Create event object for course module update action.

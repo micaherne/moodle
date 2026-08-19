@@ -48,6 +48,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/mod/lti/edit_form.php');
@@ -59,7 +61,7 @@ $tab          = optional_param('tab', '', PARAM_ALPHAEXT);
 $returnto     = optional_param('returnto', '', PARAM_ALPHA);
 
 if ($returnto == 'toolconfigure') {
-    $returnurl = new moodle_url($CFG->wwwroot . '/mod/lti/toolconfigure.php');
+    $returnurl = new url($CFG->wwwroot . '/mod/lti/toolconfigure.php');
 }
 
 // No guest autologin.
@@ -76,7 +78,7 @@ if (!empty($id)) {
         if (!empty($returnto)) {
             $params['returnto'] = $returnto;
         }
-        $redirect = new moodle_url('/mod/lti/toolssettings.php', $params);
+        $redirect = new url('/mod/lti/toolssettings.php', $params);
         redirect($redirect);
     }
     $type->lti_coursecategories = '';
@@ -94,7 +96,7 @@ if (!empty($id)) {
     $type->lti_coursecategories = '';
 }
 
-$pageurl = new moodle_url('/mod/lti/typessettings.php');
+$pageurl = new url('/mod/lti/typessettings.php');
 if (!empty($id)) {
     $pageurl->param('id', $id);
 }
@@ -161,7 +163,7 @@ if ($data = $form->get_data()) {
 $PAGE->set_title(get_string('toolsetup', 'lti'));
 $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->set_secondary_active_tab('ltitoolconfigure');
-$PAGE->navbar->add(get_string('manage_external_tools', 'lti'), new moodle_url('/mod/lti/toolconfigure.php'));
+$PAGE->navbar->add(get_string('manage_external_tools', 'lti'), new url('/mod/lti/toolconfigure.php'));
 $PAGE->navbar->add(get_string('toolsetup', 'lti'), $PAGE->url);
 $PAGE->requires->js_call_amd('mod_lti/coursecategory', 'init', [$type->lti_coursecategories]);
 

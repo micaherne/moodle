@@ -24,6 +24,9 @@
 
 namespace core\message\inbound;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -247,7 +250,7 @@ class address_manager {
 
         // Ensure that the minimum requirements are in place.
         if (!isset($this->handler) || !$this->handler) {
-            throw new \coding_exception('Inbound Message handler not specified.');
+            throw new coding_exception('Inbound Message handler not specified.');
         }
 
         // Ensure that the requested handler is actually enabled.
@@ -256,7 +259,7 @@ class address_manager {
         }
 
         if (!isset($this->datavalue)) {
-            throw new \coding_exception('Inbound Message data item has not been specified.');
+            throw new coding_exception('Inbound Message data item has not been specified.');
         }
 
         $data = array(
@@ -325,7 +328,7 @@ class address_manager {
             if ($content['handlerid1'] > 0 || $content['userid1'] > 0 || $content['datavalue1'] > 0) {
                 // Any 64-bit integer which is greater than the 32-bit integer size will have a non-zero value in the first
                 // half of the integer.
-                throw new \moodle_exception('Mixed environment.' .
+                throw new moodle_exception('Mixed environment.' .
                     ' Key generated with a 64-bit machine but received into a 32-bit machine.');
             }
             $content['handlerid'] = $content['handlerid2'];

@@ -16,10 +16,15 @@
 
 namespace core_courseformat\local;
 
+use core\context\course;
+use core\context\module;
+use core\context_helper;
 use core\exception\moodle_exception;
+use core_course\cm_info;
+use core_course\section_info;
 use core_courseformat\sectiondelegatemodule;
 use core_text;
-use course_modinfo;
+use core_course\modinfo;
 use stdClass;
 
 /**
@@ -49,7 +54,7 @@ class cmactions extends baseactions {
         }
 
         // Propagate the changes to delegated section.
-        $cminfo = \cm_info::create($cm);
+        $cminfo = cm_info::create($cm);
         if (!$delegatedsection = $cminfo->get_delegated_section_info()) {
             return false;
         }
@@ -58,7 +63,7 @@ class cmactions extends baseactions {
         $sectionactions->update($delegatedsection, $sectionfields);
 
         if ($rebuildcache) {
-            course_modinfo::purge_course_section_cache_by_id($cm->course, $delegatedsection->id);
+            modinfo::purge_course_section_cache_by_id($cm->course, $delegatedsection->id);
             rebuild_course_cache($cm->course, false, true);
         }
 
@@ -109,7 +114,7 @@ class cmactions extends baseactions {
         $cm->name = $name;
         \core\event\course_module_updated::create_from_cm($cm)->trigger();
 
-        course_modinfo::purge_course_module_cache($cm->course, $cm->id);
+        modinfo::purge_course_module_cache($cm->course, $cm->id);
         rebuild_course_cache($cm->course, false, true);
 
         $this->update_delegated($cm, ['name' => $name]);
@@ -182,7 +187,7 @@ class cmactions extends baseactions {
         $this->update_delegated($cm, $fields, false);
 
         if ($rebuildcache) {
-            \course_modinfo::purge_course_module_cache($cm->course, $cm->id);
+            modinfo::purge_course_module_cache($cm->course, $cm->id);
             rebuild_course_cache($cm->course, false, true);
         }
 
@@ -243,7 +248,7 @@ class cmactions extends baseactions {
             return false;
         }
         $DB->set_field('course_modules', 'groupmode', $groupmode, ['id' => $cm->id]);
-        \course_modinfo::purge_course_module_cache($cm->course, $cm->id);
+        modinfo::purge_course_module_cache($cm->course, $cm->id);
         rebuild_course_cache($cm->course, false, true);
 
         return true;
@@ -318,13 +323,13 @@ class cmactions extends baseactions {
         question_delete_activity($cm);
 
         // Remove all module files in case modules forget to do that.
-        $modcontext = \context_module::instance($cm->id);
+        $modcontext = module::instance($cm->id);
         $fs = get_file_storage();
         $fs->delete_area_files($modcontext->id);
 
         // Delete events from calendar.
         if ($events = $DB->get_records('event', ['instance' => $cm->instance, 'modulename' => $modulename])) {
-            $coursecontext = \context_course::instance($cm->course);
+            $coursecontext = course::instance($cm->course);
             foreach ($events as $event) {
                 $event->context = $coursecontext;
                 $calendarevent = \calendar_event::load($event);
@@ -366,7 +371,7 @@ class cmactions extends baseactions {
         \core_competency\api::hook_course_module_deleted($cm);
 
         // Delete the context.
-        \context_helper::delete_instance(CONTEXT_MODULE, $cm->id);
+        context_helper::delete_instance(CONTEXT_MODULE, $cm->id);
 
         // Delete the module from the course_modules table.
         $DB->delete_records('course_modules', ['id' => $cm->id]);
@@ -391,7 +396,7 @@ class cmactions extends baseactions {
         ]);
         $event->add_record_snapshot('course_modules', $cm);
         $event->trigger();
-        course_modinfo::purge_course_module_cache($cm->course, $cm->id);
+        modinfo::purge_course_module_cache($cm->course, $cm->id);
         rebuild_course_cache($cm->course, false, true);
     }
 
@@ -420,7 +425,7 @@ class cmactions extends baseactions {
         $cm = $modinfo->get_cm($cmid);
         $targetsection = $modinfo->get_section_info_by_id($targetsectionid ?? $cm->get_section_info()->id, MUST_EXIST);
         // Plugins with this feature flag set to false must ALWAYS be in section 0.
-        if (!course_modinfo::is_mod_type_visible_on_course($cm->modname)) {
+        if (!modinfo::is_mod_type_visible_on_course($cm->modname)) {
             if ($modinfo->get_section_info(0, MUST_EXIST)->id != $targetsectionid) {
                 throw new \core\exception\coding_exception(
                     'Modules with FEATURE_CAN_DISPLAY set to false can not be moved from section 0'
@@ -472,7 +477,7 @@ class cmactions extends baseactions {
             $groupsetting->set_value(true);
         }
 
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
         if (!$rc->execute_precheck()) {
             $precheckresults = $rc->get_precheck_results();
             if (is_array($precheckresults) && !empty($precheckresults['errors'])) {
@@ -536,7 +541,7 @@ class cmactions extends baseactions {
                 }
             }
             // Copy permission overrides to new course module.
-            $newcmcontext = \context_module::instance($newcmid);
+            $newcmcontext = module::instance($newcmid);
             $overrides = $DB->get_records('role_capabilities', ['contextid' => $cmcontext->id]);
             foreach ($overrides as $override) {
                 $override->contextid = $newcmcontext->id;
@@ -618,7 +623,7 @@ class cmactions extends baseactions {
         if (file_exists($modlib)) {
             require_once($modlib);
         } else {
-            throw new \moodle_exception(
+            throw new moodle_exception(
                 errorcode: 'cannotdeletemodulemissinglib',
                 debuginfo: "Cannot delete module: Missing file mod/$modulename/lib.php.",
             );
@@ -627,7 +632,7 @@ class cmactions extends baseactions {
         // Ensure the delete_instance function exists for this module.
         $deleteinstancefunction = $modulename . '_delete_instance';
         if (!function_exists($deleteinstancefunction)) {
-            throw new \moodle_exception(
+            throw new moodle_exception(
                 errorcode: 'cannotdeletemodulemissingfunc',
                 debuginfo: "Cannot delete module: Missing function {$modulename}_delete_instance in mod/$modulename/lib.php.",
             );
@@ -653,7 +658,7 @@ class cmactions extends baseactions {
             return false;
         }
 
-        if ($beforecm->section != 0 && !course_modinfo::is_mod_type_visible_on_course($cm->modname)) {
+        if ($beforecm->section != 0 && !modinfo::is_mod_type_visible_on_course($cm->modname)) {
             throw new \core\exception\coding_exception(
                 "Modules with FEATURE_CAN_DISPLAY set to false can not be moved from section 0"
             );
@@ -688,7 +693,7 @@ class cmactions extends baseactions {
         }
         $cmsection = $cm->get_section_info();
         $targetsection = $this->get_section_info($targetsectionid, MUST_EXIST);
-        if ($targetsection->section != 0 && !course_modinfo::is_mod_type_visible_on_course($cm->modname)) {
+        if ($targetsection->section != 0 && !modinfo::is_mod_type_visible_on_course($cm->modname)) {
             throw new \core\exception\coding_exception(
                 "Modules with FEATURE_CAN_DISPLAY set to false can not be moved from section 0"
             );
@@ -701,9 +706,9 @@ class cmactions extends baseactions {
         course_add_cm_to_section($this->course, $cm->id, $targetsection->sectionnum);
 
         // Purge caches and rebuild.
-        \course_modinfo::purge_course_section_cache_by_id($this->course->id, $cmsection->id);
-        \course_modinfo::purge_course_section_cache_by_id($this->course->id, $targetsection->id);
-        \course_modinfo::purge_course_module_cache($cm->course, $cm->id);
+        modinfo::purge_course_section_cache_by_id($this->course->id, $cmsection->id);
+        modinfo::purge_course_section_cache_by_id($this->course->id, $targetsection->id);
+        modinfo::purge_course_module_cache($cm->course, $cm->id);
         rebuild_course_cache($this->course->id, true);
         $this->update_visibility_in_section($cm, $targetsection);
         return true;
@@ -715,7 +720,7 @@ class cmactions extends baseactions {
      * @param \cm_info $cm The course module.
      * @param \section_info $newsection The new section where the module is moved.
      */
-    private function update_visibility_in_section(\cm_info $cm, \section_info $newsection): void {
+    private function update_visibility_in_section(cm_info $cm, section_info $newsection): void {
         global $DB;
         if ($cm->section == $newsection->id) {
             return;
@@ -731,7 +736,7 @@ class cmactions extends baseactions {
                 1,
                 ['id' => $cm->id]
             );
-            course_modinfo::purge_course_module_cache($this->course->id, $cm->id);
+            modinfo::purge_course_module_cache($this->course->id, $cm->id);
         }
         if ($newsection->visible && !$cm->visible) {
             // Hidden module was moved to the visible section, restore the module visibility from visibleold.

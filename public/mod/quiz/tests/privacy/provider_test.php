@@ -23,6 +23,9 @@
  */
 namespace mod_quiz\privacy;
 
+use core\context\module;
+use core\context\system;
+use core\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\deletion_criteria;
 use core_privacy\local\request\writer;
@@ -80,7 +83,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         ]);
 
         $cm = get_coursemodule_from_instance('quiz', $quiz->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Fetch the contexts - only one context should be returned.
         $this->setUser();
@@ -98,7 +101,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setAdminUser();
 
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($USER->id),
+            user::get_user($USER->id),
             'mod_quiz',
             []
         );
@@ -107,7 +110,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertDebuggingNotCalled();
 
         // No data should have been exported.
-        $writer = \core_privacy\local\request\writer::with_context(\context_system::instance());
+        $writer = \core_privacy\local\request\writer::with_context(system::instance());
         $this->assertFalse($writer->has_any_data_in_any_context());
     }
 
@@ -120,7 +123,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setAdminUser();
 
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($USER->id),
+            user::get_user($USER->id),
             'mod_quiz',
             []
         );
@@ -166,7 +169,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Perform the export and check the data.
         $this->setUser($user);
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_quiz',
             $contextlist->get_contextids()
         );
@@ -355,7 +358,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $plugingenerator = $this->getDataGenerator()->get_plugin_generator('mod_choice');
         $choice = $plugingenerator->create_instance(['course' => $course->id]);
         $cm = get_coursemodule_from_instance('choice', $choice->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Fetch the contexts - no context should be returned.
         $this->setUser();
@@ -365,7 +368,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Perform the export and check the data.
         $this->setUser($user);
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_quiz',
             [$context->id]
         );
@@ -382,7 +385,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Perform a deletion with the approved contextlist containing an incorrect context.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_quiz',
             [$context->id]
         );

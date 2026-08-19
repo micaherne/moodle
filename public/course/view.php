@@ -22,6 +22,12 @@
  * @package core_course
  */
 
+use core\context\course;
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once($CFG->libdir.'/completionlib.php');
@@ -51,7 +57,7 @@ if (!empty($name)) {
 } else if (!empty($id)) {
     $params = ['id' => $id];
 } else {
-    throw new \moodle_exception('unspecifycourseid', 'error');
+    throw new moodle_exception('unspecifycourseid', 'error');
 }
 
 $course = $DB->get_record('course', $params, '*', MUST_EXIST);
@@ -75,7 +81,7 @@ $PAGE->set_url('/course/view.php', $urlparams); // Defined here to avoid notices
 $PAGE->set_cacheable(false);
 
 context_helper::preload_course($course->id);
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 
 // Remove any switched roles before checking login.
 if ($switchrole == 0 && confirm_sesskey()) {
@@ -176,7 +182,7 @@ if ($PAGE->user_allowed_editing()) {
         } else if (!empty($return)) {
             redirect($CFG->wwwroot . $return);
         } else {
-            $url = new moodle_url($PAGE->url, ['notifyeditingon' => 1]);
+            $url = new url($PAGE->url, ['notifyeditingon' => 1]);
             redirect($url);
         }
     } else if (($edit == 0) && confirm_sesskey()) {
@@ -401,7 +407,7 @@ echo html_writer::end_tag('div');
 // Trigger course viewed event.
 // We don't trust $context here. Course format inclusion above executes in the global space. We can't assume
 // anything after that point.
-course_view(context_course::instance($course->id), $section);
+course_view(course::instance($course->id), $section);
 
 // If available, include the JS to prepare the download course content modal.
 if ($candownloadcourse) {

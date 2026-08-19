@@ -22,20 +22,24 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 $action = required_param('action', PARAM_ALPHANUMEXT);
 $plugin = required_param('plugin', PARAM_ALPHANUMEXT);
 
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 $PAGE->set_url('/lib/editor/tiny/plugins/premium/pluginsettings.php');
 $PAGE->set_context($syscontext);
 
 require_admin();
 require_sesskey();
 
-$return = new moodle_url('/admin/settings.php', ['section' => 'tiny_premium_settings']);
+$return = new url('/admin/settings.php', ['section' => 'tiny_premium_settings']);
 
 // Get all Tiny Premium plugins.
 $premiumplugins = \tiny_premium\manager::get_plugins();

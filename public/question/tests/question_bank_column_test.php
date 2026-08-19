@@ -16,6 +16,8 @@
 
 namespace core_question;
 
+use core\context\module;
+use core\url;
 use core_question\local\bank\question_edit_contexts;
 use core_question\local\bank\view;
 use testable_core_question_column;
@@ -45,8 +47,8 @@ final class question_bank_column_test extends \advanced_testcase {
         $qbank = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
         $cm = get_coursemodule_from_id('qbank', $qbank->cmid);
         $questionbank = new view(
-                new question_edit_contexts(\context_module::instance($cm->id)),
-                new \moodle_url('/'),
+                new question_edit_contexts(module::instance($cm->id)),
+                new url('/'),
                 $course,
                 $cm
         );
@@ -82,8 +84,8 @@ final class question_bank_column_test extends \advanced_testcase {
         $qbank = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
         $cm = get_coursemodule_from_id('qbank', $qbank->cmid);
         $questionbank = new view(
-                new question_edit_contexts(\context_module::instance($cm->id)),
-                new \moodle_url('/'),
+                new question_edit_contexts(module::instance($cm->id)),
+                new url('/'),
                 $course,
                 $cm
         );

@@ -25,6 +25,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__.'/../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->libdir.'/completionlib.php');
@@ -46,14 +50,14 @@ if ($id) {
 
     if($id == SITEID){
         // Don't allow editing of 'site course' using this form.
-        throw new \moodle_exception('cannoteditsiteform');
+        throw new moodle_exception('cannoteditsiteform');
     }
 
     if (!$course = $DB->get_record('course', array('id'=>$id))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
     require_login($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     if (!has_capability('moodle/course:update', $context)) {
         // User is not allowed to modify course completion.
         // Check if they can see default completion or edit bulk completion and redirect there.
@@ -67,7 +71,7 @@ if ($id) {
 
 } else {
     require_login();
-    throw new \moodle_exception('needcourseid');
+    throw new moodle_exception('needcourseid');
 }
 
 // Set up the page.
@@ -148,13 +152,13 @@ if ($form->is_cancelled()){
     $event = \core\event\course_completion_updated::create(
             array(
                 'courseid' => $course->id,
-                'context' => context_course::instance($course->id)
+                'context' => course::instance($course->id)
                 )
             );
     $event->trigger();
 
     // Redirect to the course main page.
-    $url = new moodle_url('/course/view.php', array('id' => $course->id));
+    $url = new url('/course/view.php', array('id' => $course->id));
     redirect($url);
 }
 

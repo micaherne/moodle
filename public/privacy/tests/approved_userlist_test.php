@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\system;
 use \core_privacy\local\request\approved_userlist;
 use \core_privacy\local\request\userlist;
 
@@ -52,7 +53,7 @@ final class approved_userlist_test extends advanced_testcase {
         $u3 = $this->getDataGenerator()->create_user();
         $u4 = $this->getDataGenerator()->create_user();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $component = 'core_privacy';
 
         $uut = new approved_userlist($context, $component, [$u1->id, $u2->id]);
@@ -84,7 +85,7 @@ final class approved_userlist_test extends advanced_testcase {
         $u3 = $this->getDataGenerator()->create_user();
         $u4 = $this->getDataGenerator()->create_user();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $component = 'core_privacy';
 
         $sourcelist = new userlist($context, $component);

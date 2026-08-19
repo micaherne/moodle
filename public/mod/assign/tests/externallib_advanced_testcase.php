@@ -16,6 +16,9 @@
 
 namespace mod_assign;
 
+use core\context\module;
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -66,7 +69,7 @@ abstract class externallib_advanced_testcase extends \core_external\tests\extern
 
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \mod_assign_testable_assign($context, $cm, $course);
 
@@ -98,7 +101,7 @@ abstract class externallib_advanced_testcase extends \core_external\tests\extern
         ];
 
         $draftidfile = file_get_unused_draft_itemid();
-        $usercontext = \context_user::instance($student1->id);
+        $usercontext = user::instance($student1->id);
         $filerecord = [
             'contextid' => $usercontext->id,
             'component' => 'user',
@@ -148,7 +151,7 @@ abstract class externallib_advanced_testcase extends \core_external\tests\extern
         $assign = $this->getDataGenerator()->create_module('assign', $params);
 
         $cm = get_coursemodule_from_instance('assign', $assign->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $student = $this->getDataGenerator()->create_user();
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);

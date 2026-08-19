@@ -24,6 +24,7 @@
 
 namespace core_calendar;
 
+use core\url;
 use core_calendar\local\event\entities\action_event;
 use core_calendar\local\event\value_objects\action;
 use core_calendar\local\event\value_objects\event_description;
@@ -71,7 +72,7 @@ final class action_event_test extends \advanced_testcase {
                     'event' => new core_calendar_action_event_test_event(),
                     'action' => new action(
                         'action 1',
-                        new \moodle_url('http://example.com'),
+                        new url('http://example.com'),
                         2,
                         true
                     )
@@ -82,7 +83,7 @@ final class action_event_test extends \advanced_testcase {
                     'event' => new core_calendar_action_event_test_event(),
                     'action' => new action(
                         'action 2',
-                        new \moodle_url('http://example.com'),
+                        new url('http://example.com'),
                         5,
                         false
                     )

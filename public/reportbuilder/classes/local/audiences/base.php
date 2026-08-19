@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\audiences;
 
-use core_plugin_manager;
+use core\plugin_manager;
 use MoodleQuickForm;
 use stdClass;
 use core\output\notification;
@@ -100,7 +100,7 @@ abstract class base {
     final public function get_component_displayname(): string {
         [$component] = explode('\\', get_class($this));
 
-        if ($plugininfo = core_plugin_manager::instance()->get_plugin_info($component)) {
+        if ($plugininfo = plugin_manager::instance()->get_plugin_info($component)) {
             return $plugininfo->displayname;
         }
 

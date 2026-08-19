@@ -26,6 +26,9 @@ namespace block_recentlyaccesseditems\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\user as context_user;
+use core\user as core_user;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\transform;
 use \core_privacy\local\request\contextlist;
@@ -95,7 +98,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof context_user) {
             return;
         }
 
@@ -111,7 +114,7 @@ class provider implements
      */
     public static function export_user_data(approved_contextlist $contextlist) {
         $context = $contextlist->current();
-        $user = \core_user::get_user($contextlist->get_user()->id);
+        $user = core_user::get_user($contextlist->get_user()->id);
         static::export_recentitems($user->id, $context);
     }
 
@@ -121,7 +124,7 @@ class provider implements
      * @param  int $userid The user ID.
      * @param  \context $context The user context.
      */
-    protected static function export_recentitems(int $userid, \context $context) {
+    protected static function export_recentitems(int $userid, context $context) {
         global $DB;
         $sql = "SELECT ra.id, c.fullname, ra.timeaccess, m.name, ra.cmid
                   FROM {block_recentlyaccesseditems} ra
@@ -150,7 +153,7 @@ class provider implements
      *
      * @param context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         // Only delete data for a user context.
@@ -186,7 +189,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_user && in_array($context->instanceid, $userlist->get_userids())) {
+        if ($context instanceof context_user && in_array($context->instanceid, $userlist->get_userids())) {
             $DB->delete_records('block_recentlyaccesseditems', ['userid' => $context->instanceid]);
         }
     }

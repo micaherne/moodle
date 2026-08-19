@@ -25,6 +25,7 @@
 namespace core\event;
 
 use core\event\base;
+use core\exception\coding_exception;
 use core_competency\template;
 
 defined('MOODLE_INTERNAL') || die();
@@ -53,7 +54,7 @@ class competency_template_updated extends base {
      */
     final public static function create_from_template(template $template) {
         if (!$template->get('id')) {
-            throw new \coding_exception('The template ID must be set.');
+            throw new coding_exception('The template ID must be set.');
         }
         $event = static::create(array(
             'contextid'  => $template->get('contextid'),

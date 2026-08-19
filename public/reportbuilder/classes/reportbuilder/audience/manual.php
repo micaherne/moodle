@@ -18,10 +18,10 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\reportbuilder\audience;
 
-use context_system;
+use core\context\system;
 use core_reportbuilder\local\audiences\base;
 use core_reportbuilder\local\helpers\database;
-use core_user;
+use core\user;
 use MoodleQuickForm;
 
 /**
@@ -44,8 +44,8 @@ class manual extends base {
             'ajax' => 'core_user/form_user_selector',
             'multiple' => true,
             'valuehtmlcallback' => function($userid) {
-                $user = core_user::get_user($userid);
-                return fullname($user, has_capability('moodle/site:viewfullnames', context_system::instance()));
+                $user = user::get_user($userid);
+                return fullname($user, has_capability('moodle/site:viewfullnames', system::instance()));
             }
         ];
 
@@ -85,7 +85,7 @@ class manual extends base {
     public function get_description(): string {
         global $DB;
 
-        $canviewfullnames = has_capability('moodle/site:viewfullnames', context_system::instance());
+        $canviewfullnames = has_capability('moodle/site:viewfullnames', system::instance());
 
         $userslist = [];
 
@@ -105,7 +105,7 @@ class manual extends base {
      * @return bool
      */
     public function user_can_add(): bool {
-        return has_capability('moodle/user:viewalldetails', context_system::instance());
+        return has_capability('moodle/user:viewalldetails', system::instance());
     }
 
     /**
@@ -114,6 +114,6 @@ class manual extends base {
      * @return bool
      */
     public function user_can_edit(): bool {
-        return has_capability('moodle/user:viewalldetails', context_system::instance());
+        return has_capability('moodle/user:viewalldetails', system::instance());
     }
 }

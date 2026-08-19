@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -91,7 +93,7 @@ class core_customfield_external extends external_api {
         $params = self::validate_parameters(self::reload_template_parameters(),
                       ['component' => $component, 'area' => $area, 'itemid' => $itemid]);
 
-        $PAGE->set_context(context_system::instance());
+        $PAGE->set_context(system::instance());
         $handler = \core_customfield\handler::get_handler($params['component'], $params['area'], $params['itemid']);
         self::validate_context($handler->get_configuration_context());
         if (!$handler->can_configure()) {

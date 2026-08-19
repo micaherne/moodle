@@ -27,6 +27,7 @@ namespace mod_wiki\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
+use core\context\module;
 use core_privacy\tests\provider_testcase;
 use mod_wiki\privacy\provider;
 use core_privacy\local\request\approved_contextlist;
@@ -151,10 +152,10 @@ final class provider_test extends provider_testcase {
         ];
 
         $this->contexts = [
-            1 => \context_module::instance($cm1->cmid),
-            2 => \context_module::instance($cm2->cmid),
-            3 => \context_module::instance($cm3->cmid),
-            4 => \context_module::instance($cm4->cmid),
+            1 => module::instance($cm1->cmid),
+            2 => module::instance($cm2->cmid),
+            3 => module::instance($cm3->cmid),
+            4 => module::instance($cm4->cmid),
         ];
 
         $this->pagepaths = [
@@ -233,7 +234,7 @@ final class provider_test extends provider_testcase {
 
         $fs = get_file_storage();
         return $fs->create_file_from_string([
-            'contextid' => \context_module::instance($wiki->cmid)->id,
+            'contextid' => module::instance($wiki->cmid)->id,
             'component' => 'mod_wiki',
             'filearea' => 'attachments',
             'itemid' => $subwikiid,
@@ -499,7 +500,7 @@ final class provider_test extends provider_testcase {
             JOIN {wiki} w ON cm.instance = w.id
             JOIN {wiki_subwikis} s ON s.wikiid = w.id
             WHERE s.id=?', ['wiki', $page->subwikiid]);
-        $context = \context_module::instance($record->id);
+        $context = module::instance($record->id);
         $args = new \stdClass;
         $args->context = $context;
         $args->courseid = $record->course;

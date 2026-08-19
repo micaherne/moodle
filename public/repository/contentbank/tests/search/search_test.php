@@ -24,6 +24,10 @@
 
 namespace repository_contentbank\search;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -51,7 +55,7 @@ final class search_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $admin = get_admin();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         foreach ($contentnames as $contentname) {
@@ -144,10 +148,10 @@ final class search_test extends \advanced_testcase {
 
         // Create a course in default category by default.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         // Create a course category without a course.
         $category = $this->getDataGenerator()->create_category();
-        $categorycontext = \context_coursecat::instance($category->id);
+        $categorycontext = coursecat::instance($category->id);
 
         $admin = get_admin();
         // Add some content to the content bank in different contexts.
@@ -188,13 +192,13 @@ final class search_test extends \advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Create course1.
         $course1 = $this->getDataGenerator()->create_course();
-        $course1context = \context_course::instance($course1->id);
+        $course1context = course::instance($course1->id);
         // Create course2.
         $course2 = $this->getDataGenerator()->create_course();
-        $course2context = \context_course::instance($course2->id);
+        $course2context = course::instance($course2->id);
 
         $admin = get_admin();
         // Create and enrol an editing teacher in course1.

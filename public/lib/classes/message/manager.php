@@ -26,6 +26,11 @@
 
 namespace core\message;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -68,7 +73,7 @@ class manager {
         global $DB, $CFG, $SITE;
 
         if (empty($eventdata->convid)) {
-            throw new \moodle_exception("Message is not being sent to a conversation. Please check event data.");
+            throw new moodle_exception("Message is not being sent to a conversation. Please check event data.");
         }
 
         // Fetch default (site) preferences.
@@ -95,7 +100,7 @@ class manager {
         $members = $DB->get_records_sql($sql, [$eventdata->convid, \core_message\api::CONVERSATION_ACTION_MUTED,
             $eventdata->convid]);
         if (empty($members)) {
-            throw new \moodle_exception("Conversation has no members or does not exist.");
+            throw new moodle_exception("Conversation has no members or does not exist.");
         }
 
         if (!is_object($localisedeventdata->userfrom)) {
@@ -154,7 +159,7 @@ class manager {
                 $recipient->ismuted = $ismuted;
             }
 
-            $usertoisrealuser = (\core_user::is_real_user($recipient->id) != false);
+            $usertoisrealuser = (user::is_real_user($recipient->id) != false);
 
             // Using string manager directly so that strings in the message will be in the message recipients language rather than
             // the sender's.
@@ -179,7 +184,7 @@ class manager {
             }
 
             $s = new \stdClass();
-            $s->sitename = format_string($SITE->shortname, true, array('context' => \context_course::instance(SITEID)));
+            $s->sitename = format_string($SITE->shortname, true, array('context' => course::instance(SITEID)));
             $s->url = $CFG->wwwroot.'/message/index.php?id='.$eventdata->userfrom->id;
             $emailtagline = get_string_manager()->get_string('emailtagline', 'message', $s, $recipient->lang);
 
@@ -228,7 +233,7 @@ class manager {
                         // exist in the message_provider table (thus there is no default settings for them).
                         $preferrormsg = "Could not load preference $defaultlockedpreference.
                      Make sure the component and name you supplied to message_send() are valid.";
-                        throw new \coding_exception($preferrormsg);
+                        throw new coding_exception($preferrormsg);
                     }
 
                     $enabledpreference = 'message_provider_'.$preferencebase . '_enabled';
@@ -380,7 +385,7 @@ class manager {
 
         // Send the message to processors.
         if (!self::call_processors($eventdata, $processorlist)) {
-            throw new \moodle_exception("Message was not sent.");
+            throw new moodle_exception("Message was not sent.");
         }
 
         // Trigger event for sending a message or notification - we need to do this before marking as read!

@@ -27,10 +27,10 @@ namespace tool_policy\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_url;
-use renderable;
-use renderer_base;
-use templatable;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use tool_policy\api;
 use tool_policy\policy_version;
 
@@ -52,7 +52,7 @@ class guestconsent implements renderable, templatable {
         global $PAGE;
 
         $data = (object) [];
-        $data->pluginbaseurl = (new moodle_url('/admin/tool/policy'))->out(true);
+        $data->pluginbaseurl = (new url('/admin/tool/policy'))->out(true);
         if (strpos(qualified_me(), '/tool/policy/view.php') === false) {
             // Current page is not a policy doc, so returnurl parameter will be it.
             $data->returnurl = qualified_me();

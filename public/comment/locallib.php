@@ -15,6 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context;
+use core\output\html_writer;
+use core\url;
+use core_comment\manager;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 debugging(
@@ -199,15 +205,15 @@ class comment_manager {
         $table->id = 'commentstable';
         $table->data = array();
 
-        $link = new moodle_url('/comment/index.php', array('action' => 'delete', 'sesskey' => sesskey()));
+        $link = new url('/comment/index.php', array('action' => 'delete', 'sesskey' => sesskey()));
         foreach ($comments as $c) {
-            $userdata = html_writer::link(new moodle_url('/user/profile.php', ['id' => $c->userid]), $c->fullname);
+            $userdata = html_writer::link(new url('/user/profile.php', ['id' => $c->userid]), $c->fullname);
             $this->setup_plugin($c);
             if (!empty($this->plugintype)) {
                 $context_url = plugin_callback($this->plugintype, $this->pluginname, 'comment', 'url', array($c));
             }
             $checkbox = html_writer::checkbox('comments', $c->id, false);
-            $action = html_writer::link(new moodle_url($link, array('commentid' => $c->id)), get_string('delete'));
+            $action = html_writer::link(new url($link, array('commentid' => $c->id)), get_string('delete'));
             if (!empty($context_url)) {
                 $action .= html_writer::empty_tag('br');
                 $action .= html_writer::link($context_url, get_string('commentincontext'), array('target'=>'_blank'));
@@ -294,7 +300,7 @@ class comment_manager {
                     $args->cm = $cm;
                 }
 
-                $manager = new comment($args);
+                $manager = new manager($args);
                 $managersviewstatus[$comment->commentarea][$comment->itemid] = $manager->can_view();
             }
 

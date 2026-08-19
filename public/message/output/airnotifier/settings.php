@@ -21,35 +21,43 @@
  * @copyright  2012 Jerome Mouneyrac, 2014 Juan Leyva
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\lang_string;
+use core\output\html_writer;
+use core\url;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
     $notify = new \core\output\notification(
         get_string('moodleappsportallimitswarning', 'message_airnotifier',
-            (new moodle_url('https://apps.moodle.com'))->out()),
+            (new url('https://apps.moodle.com'))->out()),
         \core\output\notification::NOTIFY_WARNING);
-    $settings->add(new admin_setting_heading('tool_mobile/moodleappsportalfeaturesappearance', '', $OUTPUT->render($notify)));
+    $settings->add(new heading('tool_mobile/moodleappsportalfeaturesappearance', '', $OUTPUT->render($notify)));
 
     // The processor should be enabled by the same enable mobile setting.
-    $settings->add(new admin_setting_configtext('airnotifierurl',
+    $settings->add(new configtext('airnotifierurl',
                     get_string('airnotifierurl', 'message_airnotifier'),
                     get_string('configairnotifierurl', 'message_airnotifier'), message_airnotifier_manager::AIRNOTIFIER_PUBLICURL,
                     PARAM_URL));
-    $settings->add(new admin_setting_configtext('airnotifierport',
+    $settings->add(new configtext('airnotifierport',
                     get_string('airnotifierport', 'message_airnotifier'),
                     get_string('configairnotifierport', 'message_airnotifier'), 443, PARAM_INT));
-    $settings->add(new admin_setting_configtext('airnotifiermobileappname',
+    $settings->add(new configtext('airnotifiermobileappname',
                     get_string('airnotifiermobileappname', 'message_airnotifier'),
                     get_string('configairnotifiermobileappname', 'message_airnotifier'), 'com.moodle.moodlemobile', PARAM_TEXT));
-    $settings->add(new admin_setting_configtext('airnotifierappname',
+    $settings->add(new configtext('airnotifierappname',
                     get_string('airnotifierappname', 'message_airnotifier'),
                     get_string('configairnotifierappname', 'message_airnotifier'), 'commoodlemoodlemobile', PARAM_TEXT));
-    $settings->add(new admin_setting_configtext('airnotifieraccesskey',
+    $settings->add(new configtext('airnotifieraccesskey',
                     get_string('airnotifieraccesskey', 'message_airnotifier'),
                     get_string('configairnotifieraccesskey', 'message_airnotifier'), '', PARAM_ALPHANUMEXT));
 
-    $settings->add(new admin_setting_configcheckbox('message_airnotifier/encryptnotifications',
+    $settings->add(new configcheckbox('message_airnotifier/encryptnotifications',
         new lang_string('encryptnotifications', 'message_airnotifier'),
         new lang_string('encryptnotifications_help', 'message_airnotifier'),
         false
@@ -59,7 +67,7 @@ if ($ADMIN->fulltree) {
         message_airnotifier_manager::ENCRYPT_UNSUPPORTED_NOT_SEND => new lang_string('donotsendnotification', 'message_airnotifier'),
         message_airnotifier_manager::ENCRYPT_UNSUPPORTED_SEND => new lang_string('sendnotificationnotenc', 'message_airnotifier'),
     ];
-    $settings->add(new admin_setting_configselect('message_airnotifier/encryptprocessing',
+    $settings->add(new configselect('message_airnotifier/encryptprocessing',
         new lang_string('encryptprocessing', 'message_airnotifier'),
         new lang_string('encryptprocessing_desc', 'message_airnotifier'),
         message_airnotifier_manager::ENCRYPT_UNSUPPORTED_NOT_SEND,
@@ -68,11 +76,11 @@ if ($ADMIN->fulltree) {
     $settings->hide_if('message_airnotifier/encryptprocessing', 'message_airnotifier/encryptnotifications',
         'neq', 1);
 
-    $url = new moodle_url('/message/output/airnotifier/requestaccesskey.php', array('sesskey' => sesskey()));
+    $url = new url('/message/output/airnotifier/requestaccesskey.php', array('sesskey' => sesskey()));
     $link = html_writer::link($url, get_string('requestaccesskey', 'message_airnotifier'));
-    $settings->add(new admin_setting_heading('requestaccesskey', '', $link));
+    $settings->add(new heading('requestaccesskey', '', $link));
     // Check configuration.
-    $url = new moodle_url('/message/output/airnotifier/checkconfiguration.php');
+    $url = new url('/message/output/airnotifier/checkconfiguration.php');
     $link = html_writer::link($url, get_string('checkconfiguration', 'message_airnotifier'));
-    $settings->add(new admin_setting_heading('checkconfiguration', '', $link));
+    $settings->add(new heading('checkconfiguration', '', $link));
 }

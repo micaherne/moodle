@@ -16,6 +16,9 @@
 
 namespace mod_workshop\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * This event is triggered when a phase is automatically switched, usually from cron_task.
  *
@@ -69,7 +72,7 @@ class phase_automatically_switched extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/workshop/view.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/workshop/view.php', array('id' => $this->contextinstanceid));
     }
 
     /**
@@ -82,10 +85,10 @@ class phase_automatically_switched extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['previousworkshopphase'])) {
-            throw new \coding_exception('The \'previousworkshopphase\' value must be set in other.');
+            throw new coding_exception('The \'previousworkshopphase\' value must be set in other.');
         }
         if (!isset($this->other['targetworkshopphase'])) {
-            throw new \coding_exception('The \'targetworkshopphase\' value must be set in other.');
+            throw new coding_exception('The \'targetworkshopphase\' value must be set in other.');
         }
     }
 

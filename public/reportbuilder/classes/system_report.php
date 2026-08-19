@@ -18,10 +18,10 @@ declare(strict_types=1);
 
 namespace core_reportbuilder;
 
-use action_menu_filler;
-use coding_exception;
+use core\output\action_menu\filler;
+use core\exception\coding_exception;
 use core_reportbuilder\exception\report_access_exception;
-use html_writer;
+use core\output\html_writer;
 use stdClass;
 use core\output\checkbox_toggleall;
 use core_reportbuilder\local\models\report;
@@ -218,7 +218,7 @@ abstract class system_report extends base {
      *
      */
     final public function add_action_divider(): void {
-        $divider = new action_menu_filler();
+        $divider = new filler();
         // We need to set as not primary action because we just need add an action divider, not a new action item.
         $divider->primary = false;
         $this->actions[] = $divider;

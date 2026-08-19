@@ -16,7 +16,7 @@
 
 namespace core_communication;
 
-use context_course;
+use core\context\course;
 use core\hook\access\after_role_assigned;
 use core\hook\access\after_role_unassigned;
 use core_enrol\hook\before_enrol_instance_deleted;
@@ -79,7 +79,7 @@ class hook_listener {
             return;
         }
 
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         // Get the course communication instance to set the provider.
         $coursecommunication = helper::load_by_course(
             courseid: $course->id,
@@ -138,7 +138,7 @@ class hook_listener {
             return;
         }
 
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         $communication = helper::load_by_group(
             groupid: $group->id,
             context: $coursecontext,
@@ -184,7 +184,7 @@ class hook_listener {
             return;
         }
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $communication = helper::load_by_group(
             groupid: $group->id,
             context: $context,
@@ -209,7 +209,7 @@ class hook_listener {
             return;
         }
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $communication = helper::load_by_group(
             groupid: $group->id,
             context: $context,
@@ -241,7 +241,7 @@ class hook_listener {
             return;
         }
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $communication = helper::load_by_group(
             groupid: $group->id,
             context: $context,
@@ -290,7 +290,7 @@ class hook_listener {
         // Prepare the communication api data.
         $courseimage = course_get_courseimage(course: $course);
         $communicationroomname = !empty($course->communicationroomname) ? $course->communicationroomname : $coursedata->fullname;
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         // Communication api call for course communication.
         $communication = \core_communication\api::load_by_instance(
             context: $coursecontext,
@@ -362,7 +362,7 @@ class hook_listener {
 
         $course = $hook->course;
         $groupmode = $course->groupmode ?? get_course(courseid: $course->id)->groupmode;
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
 
         // If group mode is not set then just handle the course communication room.
         if ((int)$groupmode === NOGROUPS) {
@@ -435,7 +435,7 @@ class hook_listener {
 
         foreach (enrol_get_users_courses(userid: $user->id) as $course) {
             $groupmode = $course->groupmode ?? get_course(courseid: $course->id)->groupmode;
-            $coursecontext = \context_course::instance(courseid: $course->id);
+            $coursecontext = course::instance(courseid: $course->id);
 
             if ((int)$groupmode === NOGROUPS) {
                 $communication = helper::load_by_course(

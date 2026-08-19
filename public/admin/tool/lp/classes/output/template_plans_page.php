@@ -23,6 +23,9 @@
  */
 
 namespace tool_lp\output;
+
+use core\output\renderable;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -32,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2015 Frédéric Massart - FMCorz.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class template_plans_page implements \renderable {
+class template_plans_page implements renderable {
 
     /** @var \core_competency\template|null */
     protected $template = null;
@@ -48,7 +51,7 @@ class template_plans_page implements \renderable {
      * @param \core_competency\template $template
      * @param \moodle_url $url
      */
-    public function __construct(\core_competency\template $template, \moodle_url $url) {
+    public function __construct(\core_competency\template $template, url $url) {
         $this->template = $template;
         $this->url = $url;
         $this->table = new template_plans_table('tplplans', $template);

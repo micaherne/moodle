@@ -16,6 +16,12 @@
 
 namespace core_external;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\exception\invalid_parameter_exception;
+use core\exception\invalid_response_exception;
+use core\exception\moodle_exception;
 use core\tests\fake_plugins_test_trait;
 
 /**
@@ -93,8 +99,8 @@ final class external_api_test extends \advanced_testcase {
         try {
             external_api::clean_returnvalue($description, $testdata);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $ex) {
-            $this->assertInstanceOf(\invalid_response_exception::class, $ex);
+        } catch (moodle_exception $ex) {
+            $this->assertInstanceOf(invalid_response_exception::class, $ex);
             $this->assertSame('Invalid response value detected (Error in response - '
                 . 'Missing following required key in a single structure: text)', $ex->getMessage());
         }
@@ -149,8 +155,8 @@ final class external_api_test extends \advanced_testcase {
         $testdata = ['value' => null];
         try {
             $cleanedvalue = external_api::clean_returnvalue($returndesc, $testdata);
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\invalid_response_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(invalid_response_exception::class, $e);
             $this->assertStringContainsString('of PHP type "NULL"', $e->debuginfo);
         }
     }
@@ -216,8 +222,8 @@ final class external_api_test extends \advanced_testcase {
         try {
             external_api::clean_returnvalue($returndesc, $testdata);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $ex) {
-            $this->assertInstanceOf(\invalid_response_exception::class, $ex);
+        } catch (moodle_exception $ex) {
+            $this->assertInstanceOf(invalid_response_exception::class, $ex);
             $this->assertSame('Invalid response value detected (object => Invalid response value detected '
                 . '(Error in response - Missing following required key in a single structure: value1): Error in response - '
                 . 'Missing following required key in a single structure: value1)', $ex->getMessage());
@@ -228,8 +234,8 @@ final class external_api_test extends \advanced_testcase {
         try {
             external_api::clean_returnvalue($returndesc, $testdata);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $ex) {
-            $this->assertInstanceOf(\invalid_response_exception::class, $ex);
+        } catch (moodle_exception $ex) {
+            $this->assertInstanceOf(invalid_response_exception::class, $ex);
             $this->assertSame('Invalid response value detected (Only arrays accepted. The bad value is: \'\')',
                 $ex->getMessage());
         }
@@ -273,7 +279,7 @@ final class external_api_test extends \advanced_testcase {
     public function test_get_context_from_params(): void {
         $this->resetAfterTest(true);
         $course = $this->getDataGenerator()->create_course();
-        $realcontext = \context_course::instance($course->id);
+        $realcontext = course::instance($course->id);
 
         // Use context id.
         $fetchedcontext = $this->get_context_from_params(["contextid" => $realcontext->id]);
@@ -292,26 +298,26 @@ final class external_api_test extends \advanced_testcase {
         try {
             $fetchedcontext = $this->get_context_from_params(["contextid" => 0]);
             $this->fail('Exception expected from get_context_wrapper()');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\invalid_parameter_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(invalid_parameter_exception::class, $e);
         }
 
         try {
             $fetchedcontext = $this->get_context_from_params(["instanceid" => 0]);
             $this->fail('Exception expected from get_context_wrapper()');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\invalid_parameter_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(invalid_parameter_exception::class, $e);
         }
 
         try {
             $fetchedcontext = $this->get_context_from_params(["contextid" => null]);
             $this->fail('Exception expected from get_context_wrapper()');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\invalid_parameter_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(invalid_parameter_exception::class, $e);
         }
 
         // Tests for context with instanceid equal to 0 (System context).
-        $realcontext = \context_system::instance();
+        $realcontext = system::instance();
         $fetchedcontext = $this->get_context_from_params(["contextlevel" => "system", "instanceid" => 0]);
         $this->assertEquals($realcontext, $fetchedcontext);
 
@@ -319,7 +325,7 @@ final class external_api_test extends \advanced_testcase {
         try {
             $fetchedcontext = $this->get_context_from_params(["contextlevel" => "random", "instanceid" => $course->id]);
             $this->fail('exception expected when level name is invalid');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('invalid_parameter_exception', $e);
             $this->assertSame('Invalid parameter value detected (Invalid context level = random)', $e->getMessage());
         }
@@ -328,7 +334,7 @@ final class external_api_test extends \advanced_testcase {
         try {
             $fetchedcontext = $this->get_context_from_params(["contextlevel" => -10, "instanceid" => $course->id]);
             $this->fail('exception expected when level name is invalid');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('invalid_parameter_exception', $e);
             $this->assertSame('Invalid parameter value detected (Invalid context level = -10)', $e->getMessage());
         }
@@ -429,7 +435,7 @@ final class external_api_test extends \advanced_testcase {
         $this->setAdminUser();
         $category = $this->getDataGenerator()->create_category();
         $params = [
-            'contextid' => \context_coursecat::instance($category->id)->id,
+            'contextid' => coursecat::instance($category->id)->id,
             'name' => 'aaagrrryyy',
             'idnumber' => '',
             'description' => '',

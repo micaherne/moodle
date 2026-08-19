@@ -21,21 +21,28 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\plugin_manager;
+use core_admin\setting\page\managemessageoutputs;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\settingpage\settingpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $temp = new admin_settingpage('messages',
+    $temp = new settingpage('messages',
         new lang_string('messagingssettings', 'admin'),
         'moodle/site:config',
         empty($CFG->messaging)
     );
 
-    $temp->add(new admin_setting_configcheckbox('messagingallusers',
+    $temp->add(new configcheckbox('messagingallusers',
             new lang_string('messagingallusers', 'admin'),
             new lang_string('configmessagingallusers', 'admin'),
              0)
     );
-    $temp->add(new admin_setting_configcheckbox('messagingdefaultpressenter',
+    $temp->add(new configcheckbox('messagingdefaultpressenter',
             new lang_string('messagingdefaultpressenter', 'admin'),
             new lang_string('configmessagingdefaultpressenter', 'admin'),
             1)
@@ -48,29 +55,29 @@ if ($hassiteconfig) {
         15724800 => new lang_string('nummonths', 'moodle', 6),
         0 => new lang_string('never')
     );
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
             'messagingdeletereadnotificationsdelay',
             new lang_string('messagingdeletereadnotificationsdelay', 'admin'),
             new lang_string('configmessagingdeletereadnotificationsdelay', 'admin'),
             604800,
             $options)
     );
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
             'messagingdeleteallnotificationsdelay',
             new lang_string('messagingdeleteallnotificationsdelay', 'admin'),
             new lang_string('configmessagingdeleteallnotificationsdelay', 'admin'),
             2620800,
             $options)
     );
-    $temp->add(new admin_setting_configcheckbox('messagingallowemailoverride',
+    $temp->add(new configcheckbox('messagingallowemailoverride',
         new lang_string('messagingallowemailoverride', 'admin'),
         new lang_string('configmessagingallowemailoverride', 'admin'),
         0));
     $ADMIN->add('messaging', $temp);
-    $ADMIN->add('messaging', new admin_page_managemessageoutputs());
+    $ADMIN->add('messaging', new managemessageoutputs());
 
     // Notification outputs plugins.
-    $plugins = core_plugin_manager::instance()->get_plugins_of_type('message');
+    $plugins = plugin_manager::instance()->get_plugins_of_type('message');
     core_collator::asort_objects_by_property($plugins, 'displayname');
     foreach ($plugins as $plugin) {
         /** @var \core\plugininfo\message $plugin */

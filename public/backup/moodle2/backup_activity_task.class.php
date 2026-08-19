@@ -25,6 +25,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\coding_exception;
+use core\output\image_icon;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -68,7 +72,7 @@ abstract class backup_activity_task extends backup_task {
         $this->sectionid  = $coursemodule->section;
         $this->modulename = $coursemodule->modname;
         $this->activityid = $coursemodule->instance;
-        $this->contextid  = context_module::instance($this->moduleid)->id;
+        $this->contextid  = module::instance($this->moduleid)->id;
         $this->section = $DB->get_record('course_sections', ['id' => $this->sectionid]);
 
         parent::__construct($name, $plan);

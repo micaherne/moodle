@@ -16,7 +16,9 @@
 
 namespace core_grades\external;
 
-use core_user;
+use core\context\course;
+use core\exception\moodle_exception;
+use core\user;
 use core_user_external;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -25,7 +27,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
 use core_external\restricted_context_exception;
-use user_picture;
+use core\output\user_picture;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -79,7 +81,7 @@ class get_enrolled_users_for_selector extends external_api {
         );
 
         $warnings = [];
-        $coursecontext = \context_course::instance($params['courseid']);
+        $coursecontext = course::instance($params['courseid']);
         parent::validate_context($coursecontext);
 
         require_capability('moodle/course:viewparticipants', $coursecontext);
@@ -87,7 +89,7 @@ class get_enrolled_users_for_selector extends external_api {
         $course = $DB->get_record('course', ['id' => $params['courseid']]);
 
         if ($params['groupid'] && !groups_group_visible($params['groupid'], $course)) {
-            throw new \moodle_exception('cannotaccessgroup', 'core_grades');
+            throw new moodle_exception('cannotaccessgroup', 'core_grades');
         }
 
         // Create a graded_users_iterator because it will properly check the groups etc.
@@ -108,7 +110,7 @@ class get_enrolled_users_for_selector extends external_api {
             $userforselector = new \stdClass();
             $userforselector->id = $userdata->user->id;
             $userforselector->fullname = fullname($userdata->user);
-            $userforselector->initials = core_user::get_initials($userdata->user);
+            $userforselector->initials = user::get_initials($userdata->user);
             foreach (\core_user\fields::get_name_fields() as $field) {
                 $userforselector->$field = $userdata->user->$field ?? null;
             }

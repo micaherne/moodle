@@ -23,6 +23,11 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\url;
+use core_admin\setting\setting\configpasswordunmask;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\tree\externalpage;
 use tiny_premium\manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -30,8 +35,8 @@ defined('MOODLE_INTERNAL') || die();
 if ($hassiteconfig) {
     // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
     if ($ADMIN->fulltree) {
-        $sourcepathurl = new moodle_url('/admin/settings.php', ['section' => 'editorsettingstiny']);
-        $setting = new admin_setting_configselect(
+        $sourcepathurl = new url('/admin/settings.php', ['section' => 'editorsettingstiny']);
+        $setting = new configselect(
             'tiny_premium/plugin_source',
             new lang_string('pluginsource', 'tiny_premium'),
             new lang_string('pluginsource_desc', 'tiny_premium', $sourcepathurl->out(false)),
@@ -56,7 +61,7 @@ if ($hassiteconfig) {
         $settings->add($setting);
 
         // Set API key.
-        $setting = new admin_setting_configpasswordunmask(
+        $setting = new configpasswordunmask(
             'tiny_premium/apikey',
             get_string('apikey', 'tiny_premium'),
             get_string('apikey_desc', 'tiny_premium'),
@@ -75,10 +80,10 @@ if ($hassiteconfig) {
     }
 
     // Extra settings for on-premise plugins (hidden, accessed via direct link from the settings page).
-    $page = new admin_externalpage(
+    $page = new externalpage(
         name: 'tiny_premium_plugin_settings',
         visiblename: get_string('premiumplugins_settings', 'tiny_premium'),
-        url: new moodle_url('/lib/editor/tiny/plugins/premium/extrasettings.php'),
+        url: new url('/lib/editor/tiny/plugins/premium/extrasettings.php'),
         requiredcapability: 'moodle/site:config',
         hidden: true,
     );

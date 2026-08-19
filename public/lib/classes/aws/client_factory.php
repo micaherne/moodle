@@ -16,6 +16,7 @@
 
 namespace core\aws;
 use Aws\AwsClient;
+use core\exception\moodle_exception;
 
 /**
  * AWS Client factory. Retrieves a client with moodle specific HTTP configuration.
@@ -53,7 +54,7 @@ class client_factory {
         // Blindly trust the call here. If it exceptions, the raw message is the most useful.
         $client = new $class($opts);
         if (!$client instanceof \Aws\AwsClient) {
-            throw new \moodle_exception('clientnotfound', 'factor_sms');
+            throw new moodle_exception('clientnotfound', 'factor_sms');
         }
 
         // Now we can configure the proxy with the routing aware middleware.

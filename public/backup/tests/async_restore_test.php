@@ -18,6 +18,8 @@ namespace core_backup;
 
 use backup;
 use backup_controller;
+use core\context\course;
+use core\context\module;
 use restore_controller;
 use restore_dbops;
 
@@ -62,7 +64,7 @@ final class async_restore_test extends \advanced_testcase {
         // We need a grade, easiest is to add an assignment.
         $assignrow = $generator->create_module('assign', array(
                 'course' => $course->id));
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
         $item = $assign->get_grade_item();
 
         // Make a test grouping as well.
@@ -88,7 +90,7 @@ final class async_restore_test extends \advanced_testcase {
         $bc->destroy();
 
         // Get the backup file.
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $fs = get_file_storage();
         $files = $fs->get_area_files($coursecontext->id, 'backup', 'course', false, 'id ASC');
         $backupfile = reset($files);
@@ -163,7 +165,7 @@ final class async_restore_test extends \advanced_testcase {
         // We need a grade, easiest is to add an assignment.
         $assignrow = $generator->create_module('assign', array(
                 'course' => $course->id));
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
         $item = $assign->get_grade_item();
 
         // Make a test grouping as well.
@@ -188,7 +190,7 @@ final class async_restore_test extends \advanced_testcase {
         $bc->destroy();
 
         // Get the backup file.
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $fs = get_file_storage();
         $files = $fs->get_area_files($coursecontext->id, 'backup', 'course', false, 'id ASC');
         $backupfile = reset($files);

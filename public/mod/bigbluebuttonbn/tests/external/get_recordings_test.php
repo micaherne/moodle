@@ -16,10 +16,12 @@
 
 namespace mod_bigbluebuttonbn\external;
 
+use core\context\course;
+use core\user;
 use core_external\external_api;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\test\testcase_helper_trait;
-use require_login_exception;
+use core\exception\require_login_exception;
 
 /**
  * Tests for the update_course class.
@@ -139,9 +141,9 @@ final class get_recordings_test extends \core_external\tests\externallib_testcas
         $activityid = $this->create_from_dataset($dataset);
         $instance = instance::get_from_instanceid($activityid);
 
-        $context = \context_course::instance($instance->get_course_id());
+        $context = course::instance($instance->get_course_id());
         foreach ($dataset['users'] as $userdef) {
-            $user = \core_user::get_user_by_username($userdef['username']);
+            $user = user::get_user_by_username($userdef['username']);
             $this->setUser($user);
             $getrecordings = $this->get_recordings($instance->get_instance_id());
             // Check users see or do not see recording dependings on their groups.
@@ -161,7 +163,7 @@ final class get_recordings_test extends \core_external\tests\externallib_testcas
         }
         // Now without delete.
         foreach ($dataset['users'] as $userdef) {
-            $user = \core_user::get_user_by_username($userdef['username']);
+            $user = user::get_user_by_username($userdef['username']);
             $this->setUser($user);
             $getrecordings = $this->get_recordings($instance->get_instance_id(), 'protect');
             // Check users see or do not see recording dependings on their groups.
@@ -194,9 +196,9 @@ final class get_recordings_test extends \core_external\tests\externallib_testcas
         $activityid = $this->create_from_dataset($dataset);
         $instance = instance::get_from_instanceid($activityid);
 
-        $context = \context_course::instance($instance->get_course_id());
+        $context = course::instance($instance->get_course_id());
         foreach ($dataset['users'] as $userdef) {
-            $user = \core_user::get_user_by_username($userdef['username']);
+            $user = user::get_user_by_username($userdef['username']);
             $this->setUser($user);
             $getrecordings = $this->get_recordings($instance->get_instance_id());
             $this->assertNotEmpty($getrecordings['tabledata']['columns']['3']);
@@ -238,7 +240,7 @@ final class get_recordings_test extends \core_external\tests\externallib_testcas
         $this->create_recordings_for_instance($newinstance, [['name' => 'Recording3']]);
 
         foreach ($dataset['users'] as $userdef) {
-            $user = \core_user::get_user_by_username($userdef['username']);
+            $user = user::get_user_by_username($userdef['username']);
             $this->setUser($user);
             $getrecordings = $this->get_recordings($newinstance->get_instance_id());
             // Check users see or do not see recording dependings on their groups.
@@ -286,7 +288,7 @@ final class get_recordings_test extends \core_external\tests\externallib_testcas
         }
 
         foreach ($dataset['users'] as $userdef) {
-            $user = \core_user::get_user_by_username($userdef['username']);
+            $user = user::get_user_by_username($userdef['username']);
             $this->setUser($user);
             $getrecordings = $this->get_recordings($newinstance->get_instance_id());
             // Check users see or do not see recording dependings on their groups.
@@ -347,7 +349,7 @@ final class get_recordings_test extends \core_external\tests\externallib_testcas
                 $recording->create_imported_recording($newinstance);
             }
         }
-        $user = \core_user::get_user_by_username('s1');
+        $user = user::get_user_by_username('s1');
         $this->setUser($user);
         $getrecordings = $this->get_recordings($newinstance->get_instance_id());
         $data = json_decode($getrecordings['tabledata']['data']);
@@ -381,7 +383,7 @@ final class get_recordings_test extends \core_external\tests\externallib_testcas
         $instance = instance::get_from_instanceid($activityid);
 
         foreach ($dataset['users'] as $userdef) {
-            $user = \core_user::get_user_by_username($userdef['username']);
+            $user = user::get_user_by_username($userdef['username']);
             $this->setUser($user);
             $groups = array_values(groups_get_my_groups());
             $mygroup = !empty($groups) ? end($groups) : null;

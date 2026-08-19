@@ -28,10 +28,15 @@
  * @param navigation_node $navigation The navigation node to extend
  * @param context $coursecategorycontext The context of the course category
  */
+use core\context;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+
 function tool_uploadcourse_extend_navigation_category_settings(navigation_node $navigation, context $coursecategorycontext): void {
     if (has_capability('tool/uploadcourse:use', $coursecategorycontext)) {
         $title = get_string('uploadcourses', 'tool_uploadcourse');
-        $path = new moodle_url('/admin/tool/uploadcourse/index.php', ['categoryid' => $coursecategorycontext->instanceid]);
+        $path = new url('/admin/tool/uploadcourse/index.php', ['categoryid' => $coursecategorycontext->instanceid]);
         $settingsnode = navigation_node::create(
             $title,
             $path,

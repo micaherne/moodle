@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+
 function scorm_add_time($a, $b) {
     $aes = explode(':', $a);
     $bes = explode(':', $b);
@@ -131,7 +134,7 @@ function scorm_parse_aicc(&$scorm) {
         $cm = get_coursemodule_from_instance('scorm', $scorm->id);
         $scorm->cmid = $cm->id;
     }
-    $context = context_module::instance($scorm->cmid);
+    $context = module::instance($scorm->cmid);
 
     $fs = get_file_storage();
 
@@ -520,10 +523,10 @@ function get_scorm_default (&$userdata, $scorm, $scoid, $attempt, $mode) {
             $userdata->$key = $value;
         }
     } else {
-        throw new \moodle_exception('cannotfindsco', 'scorm');
+        throw new moodle_exception('cannotfindsco', 'scorm');
     }
     if (!$sco = scorm_get_sco($scoid)) {
-        throw new \moodle_exception('cannotfindsco', 'scorm');
+        throw new moodle_exception('cannotfindsco', 'scorm');
     }
 
     $userdata->mode = 'normal';

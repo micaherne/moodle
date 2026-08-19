@@ -24,6 +24,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\module;
+use core\context\user;
 use core_external\external_value;
 
 // File areas for file submission assignment.
@@ -241,7 +244,7 @@ class assign_submission_file extends assign_submission_plugin {
         $count = $this->count_files($submission->id, ASSIGNSUBMISSION_FILE_FILEAREA);
 
         $params = array(
-            'context' => context_module::instance($this->assignment->get_course_module()->id),
+            'context' => module::instance($this->assignment->get_course_module()->id),
             'courseid' => $this->assignment->get_course()->id,
             'objectid' => $submission->id,
             'other' => array(
@@ -587,7 +590,7 @@ class assign_submission_file extends assign_submission_plugin {
         global $USER;
         $fs = get_file_storage();
         // Get a count of all the draft files, excluding any directories.
-        $files = $fs->get_area_files(context_user::instance($USER->id)->id,
+        $files = $fs->get_area_files(user::instance($USER->id)->id,
                                      'user',
                                      'draft',
                                      $data->files_filemanager,

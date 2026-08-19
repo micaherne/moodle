@@ -16,6 +16,9 @@
 
 namespace block_html;
 
+use core\context\course;
+use core\context\user;
+
 /**
  * Unit test for block_html class.
  *
@@ -42,7 +45,7 @@ final class block_html_test extends \advanced_testcase {
         $block1 = $this->create_block($course);
         $itemid = file_get_unused_draft_itemid();
         $fs = get_file_storage();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $fs->create_file_from_string(['component' => 'user', 'filearea' => 'draft',
             'contextid' => $usercontext->id, 'itemid' => $itemid, 'filepath' => '/',
             'filename' => 'file.txt'], 'File content');
@@ -66,7 +69,7 @@ final class block_html_test extends \advanced_testcase {
      * @return \moodle_page Page object representing course view
      */
     protected static function construct_page($course): \moodle_page {
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $page = new \moodle_page();
         $page->set_context($context);
         $page->set_course($course);

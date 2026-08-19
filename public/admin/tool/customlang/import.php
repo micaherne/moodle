@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\url;
 use tool_customlang\form\import;
 use tool_customlang\local\importer;
 
@@ -31,14 +34,14 @@ require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/customlang/locallib.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 require_login(SITEID, false);
-require_capability('tool/customlang:edit', context_system::instance());
+require_capability('tool/customlang:edit', system::instance());
 
 $lng = required_param('lng', PARAM_LANG);
 
 admin_externalpage_setup('toolcustomlang', '', null,
-    new moodle_url('/admin/tool/customlang/import.php', ['lng' => $lng]));
+    new url('/admin/tool/customlang/import.php', ['lng' => $lng]));
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 $PAGE->set_secondary_active_tab('siteadminnode');
 $PAGE->set_primary_active_tab('siteadminnode');
@@ -51,7 +54,7 @@ if ($data = $form->get_data()) {
     require_sesskey();
 
     // Get the file from the users draft area.
-    $usercontext = context_user::instance($USER->id);
+    $usercontext = user::instance($USER->id);
     $fs = get_file_storage();
     $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $data->pack, 'id',
         false);
@@ -69,7 +72,7 @@ if ($data = $form->get_data()) {
     }
 
     // Show continue button.
-    echo $output->continue_button(new moodle_url('index.php', array('lng' => $lng)));
+    echo $output->continue_button(new url('index.php', array('lng' => $lng)));
 
 } else {
     echo $output->header();

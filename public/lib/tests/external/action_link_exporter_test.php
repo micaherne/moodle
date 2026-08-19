@@ -16,6 +16,8 @@
 
 namespace core\external;
 
+use core\context\system;
+
 /**
  * Tests for action_link_exporter.
  *
@@ -45,7 +47,7 @@ final class action_link_exporter_test extends \advanced_testcase {
             icon: $icon,
             attributes: $attributes,
         );
-        $exporter = new action_link_exporter($actionlink, ['context' => \context_system::instance()]);
+        $exporter = new action_link_exporter($actionlink, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('linkurl', $data);
@@ -86,7 +88,7 @@ final class action_link_exporter_test extends \advanced_testcase {
             icon: $icon,
             attributes: $attributes,
         );
-        $exporter = new action_link_exporter($actionlink, ['context' => \context_system::instance()]);
+        $exporter = new action_link_exporter($actionlink, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('linkurl', $data);
@@ -129,7 +131,7 @@ final class action_link_exporter_test extends \advanced_testcase {
             icon: $icon,
             attributes: $attributes,
         );
-        $exporter = new action_link_exporter($actionlink, ['context' => \context_system::instance()]);
+        $exporter = new action_link_exporter($actionlink, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('linkurl', $data);
@@ -165,7 +167,7 @@ final class action_link_exporter_test extends \advanced_testcase {
             text: $text,
             attributes: $attributes,
         );
-        $exporter = new action_link_exporter($actionlink, ['context' => \context_system::instance()]);
+        $exporter = new action_link_exporter($actionlink, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('linkurl', $data);

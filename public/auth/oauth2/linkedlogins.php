@@ -22,12 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
 
 $PAGE->set_url('/auth/oauth2/linkedlogins.php');
-$PAGE->set_context(context_user::instance($USER->id));
+$PAGE->set_context(user::instance($USER->id));
 $PAGE->set_pagelayout('admin');
 $strheading = get_string('linkedlogins', 'auth_oauth2');
 $PAGE->set_title($strheading);
@@ -36,7 +40,7 @@ $PAGE->set_heading($strheading);
 require_login();
 
 if (!\auth_oauth2\api::is_enabled()) {
-    throw new \moodle_exception('notenabled', 'auth_oauth2');
+    throw new moodle_exception('notenabled', 'auth_oauth2');
 }
 
 $action = optional_param('action', '', PARAM_ALPHAEXT);
@@ -46,12 +50,12 @@ if ($action == 'new') {
     $issuer = \core\oauth2\api::get_issuer($issuerid);
 
     if (!$issuer->is_available_for_login()) {
-        throw new \moodle_exception('issuernologin', 'auth_oauth2');
+        throw new moodle_exception('issuernologin', 'auth_oauth2');
     }
 
     // We do a login dance with this issuer.
     $addparams = ['action' => 'new', 'issuerid' => $issuerid, 'sesskey' => sesskey()];
-    $addurl = new moodle_url('/auth/oauth2/linkedlogins.php', $addparams);
+    $addurl = new url('/auth/oauth2/linkedlogins.php', $addparams);
     $client = \core\oauth2\api::get_user_oauth_client($issuer, $addurl);
 
     if (optional_param('logout', false, PARAM_BOOL)) {
@@ -100,14 +104,14 @@ foreach ($issuers as $issuer) {
     $anyshowinloginpage = true;
 
     $addparams = ['action' => 'new', 'issuerid' => $issuer->get('id'), 'sesskey' => sesskey(), 'logout' => true];
-    $addurl = new moodle_url('/auth/oauth2/linkedlogins.php', $addparams);
+    $addurl = new url('/auth/oauth2/linkedlogins.php', $addparams);
     $issuerbuttons[$issuer->get('id')] = $renderer->single_button($addurl, get_string('createnewlinkedlogin', 'auth_oauth2',
         s($issuer->get_display_name())));
 }
 
 if (!$anyshowinloginpage) {
     // Just a notification that we can't make it.
-    $preferencesurl = new moodle_url('/user/preferences.php');
+    $preferencesurl = new url('/user/preferences.php');
     redirect($preferencesurl, get_string('noissuersavailable', 'auth_oauth2'), null, \core\output\notification::NOTIFY_WARNING);
 }
 

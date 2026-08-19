@@ -25,6 +25,9 @@
 
 namespace mod_assign\search;
 
+use core\context\module;
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -62,13 +65,13 @@ final class search_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
 
         $fs = get_file_storage();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
 
         $record = new \stdClass();
         $record->course = $course->id;
 
         $assign = $this->getDataGenerator()->create_module('assign', $record);
-        $context = \context_module::instance($assign->cmid);
+        $context = module::instance($assign->cmid);
 
         // Attach the main file. We put them in the draft area, create_module will move them.
         $filerecord = array(

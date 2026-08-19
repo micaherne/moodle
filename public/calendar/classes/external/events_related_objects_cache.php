@@ -26,6 +26,9 @@ namespace core_calendar\external;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\user;
 use \core_calendar\local\event\entities\event_interface;
 
 /**
@@ -119,19 +122,19 @@ class events_related_objects_cache {
         $moduleid = $event->get_course_module() ? $event->get_course_module()->get('id') : null;
 
         if (!empty($categoryid)) {
-            return \context_coursecat::instance($categoryid);
+            return coursecat::instance($categoryid);
         } else if (!empty($courseid)) {
-            return \context_course::instance($event->get_course()->get('id'));
+            return course::instance($event->get_course()->get('id'));
         } else if (!empty($groupid)) {
             $group = $this->get_group($event);
-            return \context_course::instance($group->courseid);
+            return course::instance($group->courseid);
         } else if (!empty($userid) && $userid == $USER->id) {
-            return \context_user::instance($userid);
+            return user::instance($userid);
         } else if (!empty($userid) && $userid != $USER->id && $moduleid && $moduleid > 0) {
             $cm = $this->get_course_module($event);
-            return \context_course::instance($cm->course);
+            return course::instance($cm->course);
         } else {
-            return \context_user::instance($userid);
+            return user::instance($userid);
         }
     }
 

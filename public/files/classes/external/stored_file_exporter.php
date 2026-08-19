@@ -16,10 +16,10 @@
 
 namespace core_files\external;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core_text;
-use moodle_url;
-use renderer_base;
+use core\url;
+use core\output\renderer_base;
 use stdClass;
 use stored_file;
 
@@ -148,7 +148,7 @@ class stored_file_exporter extends \core\external\exporter {
 
         $icon = $this->file->is_directory() ? file_folder_icon() : file_file_icon($this->file);
 
-        $url = moodle_url::make_pluginfile_url(
+        $url = url::make_pluginfile_url(
             $this->file->get_contextid(),
             $this->file->get_component(),
             $this->file->get_filearea(),

@@ -22,10 +22,19 @@
  * @package core_user
  */
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\output\paging_bar;
+use core\output\pix_icon;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__ . '/../config.php');
 
 if (empty($CFG->enableportfolios)) {
-    throw new \moodle_exception('disabled', 'portfolio');
+    throw new moodle_exception('disabled', 'portfolio');
 }
 
 require_once($CFG->libdir . '/portfoliolib.php');
@@ -36,7 +45,7 @@ $page     = optional_param('page', 0, PARAM_INT);
 $perpage  = optional_param('perpage', 10, PARAM_INT);
 
 if (! $course = $DB->get_record("course", array("id" => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course, false);
@@ -45,9 +54,9 @@ $user = $USER;
 $fullname = fullname($user);
 $strportfolios = get_string('portfolios', 'portfolio');
 
-$url = new moodle_url('/user/portfoliologs.php', array('courseid' => $courseid));
+$url = new url('/user/portfoliologs.php', array('courseid' => $courseid));
 
-navigation_node::override_active_url(new moodle_url('/user/portfoliologs.php', array('courseid' => $courseid)));
+navigation_node::override_active_url(new url('/user/portfoliologs.php', array('courseid' => $courseid)));
 
 if ($page !== 0) {
     $url->param('page', $page);
@@ -59,7 +68,7 @@ if ($perpage !== 0) {
 $PAGE->set_url($url);
 $PAGE->set_title(get_string('logs', 'portfolio'));
 $PAGE->set_heading($fullname);
-$PAGE->set_context(context_user::instance($user->id));
+$PAGE->set_context(user::instance($user->id));
 $PAGE->set_pagelayout('report');
 
 echo $OUTPUT->header();
@@ -85,9 +94,9 @@ if (count($queued) > 0) {
         $e = portfolio_exporter::rewaken_object($q->id);
         $e->verify_rewaken(true);
         $queued = $e->get('queued');
-        $baseurl = new moodle_url('/portfolio/add.php', array('id' => $q->id, 'logreturn' => 1, 'sesskey' => sesskey()));
+        $baseurl = new url('/portfolio/add.php', array('id' => $q->id, 'logreturn' => 1, 'sesskey' => sesskey()));
 
-        $iconstr = $OUTPUT->action_icon(new moodle_url($baseurl, array('cancel' => 1)), new pix_icon('t/stop', get_string('cancel')));
+        $iconstr = $OUTPUT->action_icon(new url($baseurl, array('cancel' => 1)), new pix_icon('t/stop', get_string('cancel')));
 
         if (!$e->get('queued') && $e->get('expirytime') > $now) {
             $iconstr .= $OUTPUT->action_icon($baseurl, new pix_icon('t/go', get_string('continue')));

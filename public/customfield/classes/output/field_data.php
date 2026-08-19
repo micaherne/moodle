@@ -24,6 +24,9 @@
 
 namespace core_customfield\output;
 
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use core_customfield\data_controller;
 
 defined('MOODLE_INTERNAL') || die;
@@ -35,7 +38,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright 2018 Daniel Neis Araujo <danielneis@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class field_data implements \renderable, \templatable {
+class field_data implements renderable, templatable {
 
     /** @var \core_customfield\data_controller */
     protected $data;
@@ -100,7 +103,7 @@ class field_data implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $value = $this->get_value();
         return (object)[
             'value' => $value,

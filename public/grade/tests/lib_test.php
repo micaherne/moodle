@@ -25,7 +25,8 @@
 namespace core_grades;
 
 use assign;
-use cm_info;
+use core\context\course;
+use core_course\cm_info;
 use grade_item;
 use grade_plugin_return;
 use grade_report_grader;
@@ -284,8 +285,8 @@ final class lib_test extends \advanced_testcase {
         grade_regrade_final_grades($course2->id);
 
         // Initialise reports.
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
 
         $gpr1 = new grade_plugin_return(
             [
@@ -414,7 +415,7 @@ final class lib_test extends \advanced_testcase {
         grade_regrade_final_grades($course->id);
 
         // Initialise reports.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $gpr = new grade_plugin_return(
             [
@@ -535,7 +536,7 @@ final class lib_test extends \advanced_testcase {
         grade_regrade_final_grades($course->id);
 
         // Initialise report.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $gpr1 = new grade_plugin_return(
             [
@@ -660,7 +661,7 @@ final class lib_test extends \advanced_testcase {
 
         // Give teacher 'viewsuspendedusers' capability and set a preference to display suspended users.
         $roleteacher = $DB->get_record('role', ['shortname' => 'teacher'], '*', MUST_EXIST);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         assign_capability('moodle/course:viewsuspendedusers', $hascapability, $roleteacher->id, $coursecontext, true);
         set_user_preference('grade_report_showonlyactiveenrol', $showonlyactiveenrolpref, $teacher);
         accesslib_clear_all_caches_for_unit_testing();
@@ -686,7 +687,7 @@ final class lib_test extends \advanced_testcase {
         grade_regrade_final_grades($course->id);
 
         // Initialise reports.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $gpr = new grade_plugin_return(
             [
@@ -847,7 +848,7 @@ final class lib_test extends \advanced_testcase {
         $manuaitem->update_final_grade($student3->id, 2);
 
         // Initialise report.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $gpr = new grade_plugin_return(
             [
@@ -933,7 +934,7 @@ final class lib_test extends \advanced_testcase {
             ->create_grade_category(['courseid' => $course1->id]), false);
 
         // Initialise reports.
-        $context = \context_course::instance($course1->id);
+        $context = course::instance($course1->id);
 
         $gpr = new grade_plugin_return(
             [
@@ -945,7 +946,7 @@ final class lib_test extends \advanced_testcase {
 
         $report1 = new grade_report_grader($course1->id, $gpr, $context);
 
-        $context = \context_course::instance($course2->id);
+        $context = course::instance($course2->id);
 
         $gpr = new grade_plugin_return(
             [
@@ -986,7 +987,7 @@ final class lib_test extends \advanced_testcase {
 
         // Create a course.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         // Create groups.
         $group1 = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
         $group2 = $this->getDataGenerator()->create_group(['courseid' => $course->id]);

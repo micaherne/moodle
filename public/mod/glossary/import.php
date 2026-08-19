@@ -1,5 +1,9 @@
 <?php
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 require_once("$CFG->dirroot/course/lib.php");
@@ -11,7 +15,7 @@ $id = required_param('id', PARAM_INT);    // Course Module ID
 $mode     = optional_param('mode', 'letter', PARAM_ALPHA );
 $hook     = optional_param('hook', 'ALL', PARAM_ALPHANUM);
 
-$url = new moodle_url('/mod/glossary/import.php', array('id'=>$id));
+$url = new url('/mod/glossary/import.php', array('id'=>$id));
 if ($mode !== 'letter') {
     $url->param('mode', $mode);
 }
@@ -21,20 +25,20 @@ if ($hook !== 'ALL') {
 $PAGE->set_url($url);
 
 if (! $cm = get_coursemodule_from_id('glossary', $id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 if (! $course = $DB->get_record("course", array("id"=>$cm->course))) {
-    throw new \moodle_exception('coursemisconf');
+    throw new moodle_exception('coursemisconf');
 }
 
 if (! $glossary = $DB->get_record("glossary", array("id"=>$cm->instance))) {
-    throw new \moodle_exception('invalidid', 'glossary');
+    throw new moodle_exception('invalidid', 'glossary');
 }
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/glossary:import', $context);
 
 $strglossaries = get_string("modulenameplural", "glossary");
@@ -55,7 +59,7 @@ $PAGE->activityheader->disable();
 
 $form = new mod_glossary_import_form('');
 if ($form->is_cancelled()) {
-    redirect(new moodle_url('view.php', ['id' => $id]));
+    redirect(new url('view.php', ['id' => $id]));
 }
 
 echo $OUTPUT->header();
@@ -166,7 +170,7 @@ if ($xml = glossary_read_imported_file($result)) {
                 echo $OUTPUT->footer();
                 exit;
             } else {
-                $glossarycontext = context_module::instance($glossary->coursemodule);
+                $glossarycontext = module::instance($glossary->coursemodule);
                 glossary_xml_import_files($xmlglossary, 'INTROFILES', $glossarycontext->id, 'intro', 0);
                 echo $OUTPUT->box(get_string("newglossarycreated","glossary"),'generalbox boxaligncenter boxwidthnormal');
             }
@@ -186,7 +190,7 @@ if ($xml = glossary_read_imported_file($result)) {
         $newentry->concept = trim($xmlentry['#']['CONCEPT'][0]['#']);
         $definition = $xmlentry['#']['DEFINITION'][0]['#'];
         if (!is_string($definition)) {
-            throw new \moodle_exception('errorparsingxml', 'glossary');
+            throw new moodle_exception('errorparsingxml', 'glossary');
         }
         $newentry->definition = trusttext_strip($definition);
 

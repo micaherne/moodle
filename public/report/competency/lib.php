@@ -24,6 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -39,7 +44,7 @@ function report_competency_extend_navigation_course($navigation, $course, $conte
     }
 
     if (has_capability('moodle/competency:coursecompetencyview', $context)) {
-        $url = new moodle_url('/report/competency/index.php', array('id' => $course->id));
+        $url = new url('/report/competency/index.php', array('id' => $course->id));
         $name = get_string('pluginname', 'report_competency');
         $navigation->add($name, $url, navigation_node::TYPE_SETTING, null, null, new pix_icon('i/report', ''));
     }
@@ -57,8 +62,8 @@ function report_competency_extend_navigation_module($navigation, $cm) {
     }
 
     if (has_any_capability(array('moodle/competency:usercompetencyview', 'moodle/competency:coursecompetencymanage'),
-            context_course::instance($cm->course))) {
-        $url = new moodle_url('/report/competency/index.php', array('id' => $cm->course, 'mod' => $cm->id));
+            course::instance($cm->course))) {
+        $url = new url('/report/competency/index.php', array('id' => $cm->course, 'mod' => $cm->id));
         $name = get_string('pluginname', 'report_competency');
         $navigation->add($name, $url, navigation_node::TYPE_SETTING, null, 'competencybreakdown',
             new pix_icon('i/competencies', ''))->set_show_in_secondary_navigation(false);

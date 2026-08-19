@@ -24,6 +24,10 @@
 
 namespace core_analytics;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -364,7 +368,7 @@ class analysis {
 
         if (!$formattedresult) {
             $this->finish_analysable_analysis();
-            throw new \moodle_exception('errorcannotwritedataset', 'analytics');
+            throw new moodle_exception('errorcannotwritedataset', 'analytics');
         }
 
         $result->status = \core_analytics\model::OK;
@@ -633,7 +637,7 @@ class analysis {
 
             // Update the cache just in case it is used in the same request.
             $key = $this->analyser->get_modelid() . '_' . $analysableid;
-            $cache = \cache::make('core', 'modelfirstanalyses');
+            $cache = cache::make('core', 'modelfirstanalyses');
             $cache->set($key, $now);
         }
     }
@@ -664,7 +668,7 @@ class analysis {
 
         $firstanalyses = $DB->get_records_sql($sql, $params);
         if ($firstanalyses) {
-            $cache = \cache::make('core', 'modelfirstanalyses');
+            $cache = cache::make('core', 'modelfirstanalyses');
 
             $firstanalyses = array_map(function($record) {
                 return $record->firstanalysis;
@@ -781,7 +785,7 @@ class analysis {
             \core_analytics\local\time_splitting\base $timesplitting) {
 
         if (count($ranges) > 1) {
-            throw new \coding_exception('$ranges argument should only contain one range');
+            throw new coding_exception('$ranges argument should only contain one range');
         }
 
         $rangeindex = key($ranges);
@@ -858,7 +862,7 @@ class analysis {
         global $DB;
 
         if (count($ranges) > 1) {
-            throw new \coding_exception('$ranges argument should only contain one range');
+            throw new coding_exception('$ranges argument should only contain one range');
         }
 
         $rangeindex = key($ranges);

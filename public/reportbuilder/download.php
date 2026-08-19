@@ -24,6 +24,7 @@
 
 declare(strict_types=1);
 
+use core\url;
 use core_reportbuilder\permission;
 use core_reportbuilder\system_report_factory;
 
@@ -39,7 +40,7 @@ $reportpersistent = new \core_reportbuilder\local\models\report($reportid);
 $context = $reportpersistent->get_context();
 
 $PAGE->set_context($context);
-$PAGE->set_url(new moodle_url('/reportbuilder/download.php'));
+$PAGE->set_url(new url('/reportbuilder/download.php'));
 
 if ($reportpersistent->get('type') === \core_reportbuilder\local\report\base::TYPE_SYSTEM_REPORT) {
     $parameters = (array) json_decode($parameters);

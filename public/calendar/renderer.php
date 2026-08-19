@@ -22,6 +22,18 @@
  * @package calendar
  */
 
+use core\context\course;
+use core\context_helper;
+use core\lang_string;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\single_button;
+use core\url;
+use core_block\output\block_contents;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -71,7 +83,7 @@ class core_calendar_renderer extends plugin_renderer_base {
      */
     public function add_event_button($courseid, $unused1 = null, $unused2 = null, $unused3 = null, $unused4 = null) {
         $data = [
-            'contextid' => (\context_course::instance($courseid))->id,
+            'contextid' => (course::instance($courseid))->id,
         ];
         return $this->render_from_template('core_calendar/add_event_button', $data);
     }
@@ -85,7 +97,7 @@ class core_calendar_renderer extends plugin_renderer_base {
      * @param int|null $calendarinstanceid The instance ID of the calendar we're generating this course filter for.
      * @return string
      */
-    public function course_filter_selector(moodle_url $returnurl, $label = null, $courseid = null, ?int $calendarinstanceid = null) {
+    public function course_filter_selector(url $returnurl, $label = null, $courseid = null, ?int $calendarinstanceid = null) {
         global $CFG, $DB;
 
         if (!isloggedin() or isguestuser()) {
@@ -136,7 +148,7 @@ class core_calendar_renderer extends plugin_renderer_base {
         } else {
             $selected = '';
         }
-        $courseurl = new moodle_url($returnurl);
+        $courseurl = new url($returnurl);
         $courseurl->remove_params('course');
 
         $labelattributes = [];
@@ -162,10 +174,10 @@ class core_calendar_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_subscriptions_header(): string {
-        $importcalendarbutton = new single_button(new moodle_url('/calendar/import.php', calendar_get_export_import_link_params()),
+        $importcalendarbutton = new single_button(new url('/calendar/import.php', calendar_get_export_import_link_params()),
                 get_string('importcalendar', 'calendar'), 'get', single_button::BUTTON_PRIMARY);
         $importcalendarbutton->class .= ' float-sm-end float-end';
-        $exportcalendarbutton = new single_button(new moodle_url('/calendar/export.php', calendar_get_export_import_link_params()),
+        $exportcalendarbutton = new single_button(new url('/calendar/export.php', calendar_get_export_import_link_params()),
                 get_string('exportcalendar', 'calendar'), 'get', single_button::BUTTON_PRIMARY);
         $exportcalendarbutton->class .= ' float-sm-end float-end';
         $output = $this->output->heading(get_string('managesubscriptions', 'calendar'));
@@ -189,7 +201,7 @@ class core_calendar_renderer extends plugin_renderer_base {
      */
     public function render_no_calendar_subscriptions(): string {
         $output = html_writer::start_div('mt-5');
-        $importlink = (new moodle_url('/calendar/import.php', calendar_get_export_import_link_params()))->out();
+        $importlink = (new url('/calendar/import.php', calendar_get_export_import_link_params()))->out();
         $output .= get_string('nocalendarsubscriptionsimportexternal', 'core_calendar', $importlink);
         $output .= html_writer::end_div();
 
@@ -217,7 +229,7 @@ class core_calendar_renderer extends plugin_renderer_base {
         $table->id = 'subscription_details_table';
 
         if (empty($subscriptions)) {
-            $importlink = (new moodle_url('/calendar/import.php', calendar_get_export_import_link_params()))->out();
+            $importlink = (new url('/calendar/import.php', calendar_get_export_import_link_params()))->out();
             $cell = new html_table_cell(get_string('nocalendarsubscriptionsimportexternal', 'core_calendar', $importlink));
             $cell->colspan = 5;
             $table->data[] = new html_table_row(array($cell));

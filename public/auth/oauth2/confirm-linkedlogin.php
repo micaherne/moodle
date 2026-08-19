@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+
 require('../../config.php');
 require_once($CFG->libdir . '/authlib.php');
 
@@ -32,10 +35,10 @@ $issuerid = required_param('issuerid', PARAM_INT);
 $redirect = optional_param('redirect', '', PARAM_LOCALURL);    // Where to redirect the browser once the user has been confirmed.
 
 $PAGE->set_url('/auth/oauth2/confirm-linkedlogin.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 if (!\auth_oauth2\api::is_enabled()) {
-    throw new \moodle_exception('notenabled', 'auth_oauth2');
+    throw new moodle_exception('notenabled', 'auth_oauth2');
 }
 
 $confirmed = \auth_oauth2\api::confirm_link_login($userid, $username, $issuerid, $token);
@@ -45,7 +48,7 @@ if ($confirmed) {
     // The user has confirmed successfully, let's log them in.
 
     if (!$user = get_complete_user_data('id', $userid)) {
-        throw new \moodle_exception('cannotfinduser', '', '', $userid);
+        throw new moodle_exception('cannotfinduser', '', '', $userid);
     }
 
     if ($user->id == $USER->id) {

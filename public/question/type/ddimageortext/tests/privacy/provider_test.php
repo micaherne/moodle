@@ -23,6 +23,7 @@
  */
 namespace qtype_ddimageortext\privacy;
 
+use core\context\system;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\user_preference_provider;
 use qtype_ddimageortext\privacy\provider;
@@ -55,7 +56,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         provider::export_user_preferences($user->id);
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertFalse($writer->has_any_data());
     }
 
@@ -72,7 +73,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $user = $this->getDataGenerator()->create_user();
         set_user_preference("qtype_ddimageortext_$name", $value, $user);
         provider::export_user_preferences($user->id);
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertTrue($writer->has_any_data());
         $preferences = $writer->get_user_preferences('qtype_ddimageortext');
         foreach ($preferences as $key => $pref) {

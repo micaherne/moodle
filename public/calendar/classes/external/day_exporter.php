@@ -23,8 +23,8 @@ require_once($CFG->dirroot . '/calendar/lib.php');
 use core\external\exporter;
 use core_date;
 use DateTimeImmutable;
-use renderer_base;
-use moodle_url;
+use core\output\renderer_base;
+use core\url;
 
 /**
  * Class for displaying the day view.
@@ -54,7 +54,7 @@ class day_exporter extends exporter {
     public function __construct(\calendar_information $calendar, $data, $related) {
         $this->calendar = $calendar;
 
-        $url = new moodle_url('/calendar/view.php', [
+        $url = new url('/calendar/view.php', [
                 'view' => 'day',
                 'time' => $calendar->time,
             ]);

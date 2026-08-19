@@ -24,6 +24,8 @@
 
 namespace core_user\form;
 
+use core\lang_string;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    // It must be included from a Moodle page.
 }
@@ -100,7 +102,7 @@ class calendar_form extends \moodleform {
         $mform->addHelpButton('maxevents', 'pref_maxevents', 'calendar');
 
         // Calendar lookahead.
-        $options = array(365 => new \lang_string('numyear', '', 1),
+        $options = array(365 => new lang_string('numyear', '', 1),
                 270 => get_string('nummonths', '', 9),
                 180 => get_string('nummonths', '', 6),
                 150 => get_string('nummonths', '', 5),

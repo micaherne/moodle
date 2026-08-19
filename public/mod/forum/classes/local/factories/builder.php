@@ -33,7 +33,7 @@ use mod_forum\local\factories\vault as vault_factory;
 use mod_forum\local\factories\legacy_data_mapper as legacy_data_mapper_factory;
 use mod_forum\local\factories\exporter as exporter_factory;
 use mod_forum\local\factories\manager as manager_factory;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Builder factory to construct any builders for forum.

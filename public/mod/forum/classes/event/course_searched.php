@@ -24,6 +24,9 @@
 
 namespace mod_forum\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +81,7 @@ class course_searched extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/forum/search.php',
+        return new url('/mod/forum/search.php',
             array('id' => $this->courseid, 'search' => $this->other['searchterm']));
     }
 
@@ -91,11 +94,11 @@ class course_searched extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['searchterm'])) {
-            throw new \coding_exception('The \'searchterm\' value must be set in other.');
+            throw new coding_exception('The \'searchterm\' value must be set in other.');
         }
 
         if ($this->contextlevel != CONTEXT_COURSE) {
-            throw new \coding_exception('Context level must be CONTEXT_COURSE.');
+            throw new coding_exception('Context level must be CONTEXT_COURSE.');
         }
     }
 

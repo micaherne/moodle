@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\output\core_renderer;
+
 /**
  * Tests for \core_userfeedback
  *
@@ -31,7 +33,7 @@ final class core_userfeedback_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $page = new \moodle_page();
-        $renderer = new \core_renderer($page, RENDERER_TARGET_GENERAL);
+        $renderer = new core_renderer($page, RENDERER_TARGET_GENERAL);
 
         $html = $renderer->standard_footer_html();
         $this->assertStringNotContainsString(
@@ -47,7 +49,7 @@ final class core_userfeedback_test extends \advanced_testcase {
         set_config('enableuserfeedback', 1);;
 
         $page = new \moodle_page();
-        $renderer = new \core_renderer($page, RENDERER_TARGET_GENERAL);
+        $renderer = new core_renderer($page, RENDERER_TARGET_GENERAL);
 
         $html = $renderer->standard_footer_html();
         $this->assertStringContainsString(
@@ -62,7 +64,7 @@ final class core_userfeedback_test extends \advanced_testcase {
         set_config('enableuserfeedback', 1);;
 
         $page = new \moodle_page();
-        $renderer = new \core_renderer($page, RENDERER_TARGET_GENERAL);
+        $renderer = new core_renderer($page, RENDERER_TARGET_GENERAL);
 
         $html = $renderer->standard_footer_html();
         $this->assertStringNotContainsString(

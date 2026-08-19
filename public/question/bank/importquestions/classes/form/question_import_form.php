@@ -26,7 +26,7 @@ namespace qbank_importquestions\form;
 
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_exception;
+use core\exception\moodle_exception;
 use moodleform;
 use stdClass;
 

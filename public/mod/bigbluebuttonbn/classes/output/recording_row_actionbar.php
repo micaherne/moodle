@@ -16,12 +16,14 @@
 
 namespace mod_bigbluebuttonbn\output;
 
+use core\output\action_link;
+use core\url;
 use mod_bigbluebuttonbn\recording;
-use pix_icon;
-use renderable;
-use renderer_base;
+use core\output\pix_icon;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Renderer for recording row actionbar column
@@ -150,7 +152,7 @@ class recording_row_actionbar implements renderable, templatable {
                         $iconattributes
                     );
                     $iconortext = $output->render($icon);
-                    $actionlink = new \action_link(new \moodle_url('#'), $iconortext, null, $linkattributes);
+                    $actionlink = new action_link(new url('#'), $iconortext, null, $linkattributes);
                     $context->tools[] = $actionlink->export_for_template($output);
                 }
 

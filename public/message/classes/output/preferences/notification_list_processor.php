@@ -28,8 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/message/lib.php');
 
-use renderable;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Class to create context for a notification component on the message preferences page.
@@ -111,7 +112,7 @@ class notification_list_processor implements templatable, renderable {
      * @param renderer_base $output
      * @return stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $processor = $this->processor;
         $preferencebase = $this->get_preference_base();
         $defaultpreferences = get_message_output_default_preferences();

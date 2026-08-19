@@ -16,9 +16,9 @@
 
 namespace tool_generator\output;
 
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use tool_generator\local\testscenario\parsedfeature;
 
 /**

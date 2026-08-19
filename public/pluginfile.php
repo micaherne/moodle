@@ -25,6 +25,8 @@
  */
 
 // Disable moodle specific debug messages and any errors in output.
+use core\url;
+
 if (!defined('NO_DEBUG_DISPLAY')) {
     define('NO_DEBUG_DISPLAY', true);
 }
@@ -45,6 +47,6 @@ $embed = optional_param('embed', 0, PARAM_BOOL);
 // We need to set the page URL here because there are cases where file_pluginfile may display an
 // error directly on the page instead of throwing an exception, and this will generate a server
 // error if $PAGE->url is not defined.
-$PAGE->set_url(new \moodle_url($FULLME));
+$PAGE->set_url(new url($FULLME));
 
 file_pluginfile($relativepath, $forcedownload, $preview, $offline, $embed);

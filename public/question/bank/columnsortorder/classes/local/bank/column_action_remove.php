@@ -16,6 +16,10 @@
 
 namespace qbank_columnsortorder\local\bank;
 
+use core\output\action_menu\link;
+use core\output\action_menu\link_secondary;
+use core\output\pix_icon;
+use core\url;
 use core_question\local\bank\column_action_base;
 use core_question\local\bank\column_base;
 
@@ -53,19 +57,19 @@ class column_action_remove extends column_action_base {
         $this->global = $global;
     }
 
-    public function get_action_menu_link(column_base $column): ?\action_menu_link {
-        $actionurl = new \moodle_url('/question/bank/columnsortorder/actions.php', [
+    public function get_action_menu_link(column_base $column): ?link {
+        $actionurl = new url('/question/bank/columnsortorder/actions.php', [
             'column' => $column->get_column_id(),
             'action' => 'remove',
             'sesskey' => sesskey(),
-            'returnurl' => new \moodle_url($this->qbank->returnurl),
+            'returnurl' => new url($this->qbank->returnurl),
         ]);
         if ($this->global) {
             $actionurl->param('global', $this->global);
         }
-        return new \action_menu_link_secondary(
+        return new link_secondary(
             $actionurl,
-            new \pix_icon('t/delete', ''),
+            new pix_icon('t/delete', ''),
             $this->remove,
             [
                 'class' => 'action-link',

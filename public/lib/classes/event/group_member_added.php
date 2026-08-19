@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -67,7 +70,7 @@ class group_member_added extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/group/members.php', array('group' => $this->objectid));
+        return new url('/group/members.php', array('group' => $this->objectid));
     }
 
     /**
@@ -91,15 +94,15 @@ class group_member_added extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['component'])) {
-            throw new \coding_exception('The \'component\' value must be set in other, even if empty.');
+            throw new coding_exception('The \'component\' value must be set in other, even if empty.');
         }
 
         if (!isset($this->other['itemid'])) {
-            throw new \coding_exception('The \'itemid\' value must be set in other, even if empty.');
+            throw new coding_exception('The \'itemid\' value must be set in other, even if empty.');
         }
     }
 

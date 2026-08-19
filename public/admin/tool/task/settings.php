@@ -22,12 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
     $ADMIN->add(
         'taskconfig',
-        new admin_externalpage(
+        new externalpage(
             'scheduledtasks',
             new lang_string('scheduledtasks', 'tool_task'),
             "$CFG->wwwroot/$CFG->admin/tool/task/scheduledtasks.php"
@@ -36,7 +39,7 @@ if ($hassiteconfig) {
 
     $ADMIN->add(
         'taskconfig',
-        new admin_externalpage(
+        new externalpage(
             'adhoctasks',
             new lang_string('adhoctasks', 'tool_task'),
             "$CFG->wwwroot/$CFG->admin/tool/task/adhoctasks.php"
@@ -45,7 +48,7 @@ if ($hassiteconfig) {
 
     $ADMIN->add(
         'taskconfig',
-        new admin_externalpage(
+        new externalpage(
             'runningtasks',
             new lang_string('runningtasks', 'tool_task'),
             "$CFG->wwwroot/$CFG->admin/tool/task/runningtasks.php"

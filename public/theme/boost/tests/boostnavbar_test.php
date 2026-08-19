@@ -16,6 +16,10 @@
 
 namespace theme_boost;
 
+use core\navigation\navigation_node;
+use core\output\action_link;
+use core\url;
+
 /**
  * Test the boostnavbar file
  *
@@ -195,12 +199,12 @@ final class boostnavbar_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $page = new \moodle_page();
         $page->set_course($course);
-        $page->set_url(new \moodle_url('/course/view.php', array('id' => $course->id)));
+        $page->set_url(new url('/course/view.php', array('id' => $course->id)));
         // A dummy url to use. We don't care where it's pointing to.
-        $url = new \moodle_url('/');
+        $url = new url('/');
         foreach ($setup as $key => $value) {
             $page->navbar->add($key, $value['hasaction'] ? $url : null,
-                $value['issection'] ? \navigation_node::TYPE_SECTION : null);
+                $value['issection'] ? navigation_node::TYPE_SECTION : null);
         }
 
         $boostnavbar = $this->getMockBuilder(boostnavbar::class)
@@ -238,19 +242,19 @@ final class boostnavbar_test extends \advanced_testcase {
                 [
                     [
                         'text' => 'Node 1',
-                        'action' => new \moodle_url('/page1.php')
+                        'action' => new url('/page1.php')
                     ],
                     [
                         'text' => 'Node 2',
-                        'action' => new \moodle_url('/page2.php', ['id' => 1])
+                        'action' => new url('/page2.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 4',
-                        'action' => new \moodle_url('/page4.php', ['id' => 1])
+                        'action' => new url('/page4.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 2',
-                        'action' => new \moodle_url('/page2.php', ['id' => 1])
+                        'action' => new url('/page2.php', ['id' => 1])
                     ],
                 ],
                 ['Home', 'Node 1', 'Node 4', 'Node 2']
@@ -259,15 +263,15 @@ final class boostnavbar_test extends \advanced_testcase {
                 [
                     [
                         'text' => 'Node 1',
-                        'action' => new \moodle_url('/page1.php')
+                        'action' => new url('/page1.php')
                     ],
                     [
                         'text' => 'Node 2',
-                        'action' => new \moodle_url('/page2.php', ['id' => 1])
+                        'action' => new url('/page2.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 4',
-                        'action' => new \moodle_url('/page4.php', ['id' => 1])
+                        'action' => new url('/page4.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 2',
@@ -280,19 +284,19 @@ final class boostnavbar_test extends \advanced_testcase {
                 [
                     [
                         'text' => 'Node 1',
-                        'action' => new \moodle_url('/page1.php')
+                        'action' => new url('/page1.php')
                     ],
                     [
                         'text' => 'Node 2',
-                        'action' => new \moodle_url('/page2.php', ['id' => 1])
+                        'action' => new url('/page2.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 4',
-                        'action' => new \moodle_url('/page4.php', ['id' => 1])
+                        'action' => new url('/page4.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 2',
-                        'action' => new \action_link(new \moodle_url('/page2.php', ['id' => 1]), 'Action link')
+                        'action' => new action_link(new url('/page2.php', ['id' => 1]), 'Action link')
                     ],
                 ],
                 ['Home', 'Node 1', 'Node 4', 'Node 2']
@@ -301,19 +305,19 @@ final class boostnavbar_test extends \advanced_testcase {
                 [
                     [
                         'text' => 'Node 1',
-                        'action' => new \moodle_url('/page1.php')
+                        'action' => new url('/page1.php')
                     ],
                     [
                         'text' => 'Node 2',
-                        'action' => new \moodle_url('/page2.php', ['id' => 1])
+                        'action' => new url('/page2.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 2',
-                        'action' => new \moodle_url('/page2.php', ['id' => 2])
+                        'action' => new url('/page2.php', ['id' => 2])
                     ],
                     [
                         'text' => 'Node 4',
-                        'action' => new \moodle_url('/page4.php', ['id' => 1])
+                        'action' => new url('/page4.php', ['id' => 1])
                     ],
                 ],
                 ['Home', 'Node 1', 'Node 2', 'Node 2', 'Node 4']
@@ -322,19 +326,19 @@ final class boostnavbar_test extends \advanced_testcase {
                 [
                     [
                         'text' => 'Node 1',
-                        'action' => new \moodle_url('/page1.php')
+                        'action' => new url('/page1.php')
                     ],
                     [
                         'text' => 'Node 2',
-                        'action' => new \moodle_url('/page2.php', ['id' => 1])
+                        'action' => new url('/page2.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 3',
-                        'action' => new \moodle_url('/page2.php', ['id' => 1])
+                        'action' => new url('/page2.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 4',
-                        'action' => new \moodle_url('/page4.php', ['id' => 1])
+                        'action' => new url('/page4.php', ['id' => 1])
                     ],
                 ],
                 ['Home', 'Node 1', 'Node 2', 'Node 3', 'Node 4']
@@ -343,19 +347,19 @@ final class boostnavbar_test extends \advanced_testcase {
                 [
                     [
                         'text' => 'Node 1',
-                        'action' => new \moodle_url('/page1.php')
+                        'action' => new url('/page1.php')
                     ],
                     [
                         'text' => 'Node 2',
-                        'action' => new \moodle_url('/page2.php', ['id' => 1])
+                        'action' => new url('/page2.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 3',
-                        'action' => new \moodle_url('/page3.php', ['id' => 1])
+                        'action' => new url('/page3.php', ['id' => 1])
                     ],
                     [
                         'text' => 'Node 4',
-                        'action' => new \moodle_url('/page4.php', ['id' => 1])
+                        'action' => new url('/page4.php', ['id' => 1])
                     ],
                 ],
                 ['Home', 'Node 1', 'Node 2', 'Node 3', 'Node 4']
@@ -378,7 +382,7 @@ final class boostnavbar_test extends \advanced_testcase {
 
         // Add the navbar nodes.
         foreach ($navbarnodes as $node) {
-            $page->navbar->add($node['text'], $node['action'], \navigation_node::TYPE_CUSTOM);
+            $page->navbar->add($node['text'], $node['action'], navigation_node::TYPE_CUSTOM);
         }
 
         $boostnavbar = $this->getMockBuilder(boostnavbar::class)
@@ -418,7 +422,7 @@ final class boostnavbar_test extends \advanced_testcase {
         $page->set_url('/');
 
         foreach ($navbarnodes as $node) {
-            $page->navbar->add($node['text'], $node['action'], \navigation_node::TYPE_CUSTOM);
+            $page->navbar->add($node['text'], $node['action'], navigation_node::TYPE_CUSTOM);
         }
 
         $boostnavbar = $this->getMockBuilder(boostnavbar::class)
@@ -475,13 +479,13 @@ final class boostnavbar_test extends \advanced_testcase {
                 [
                     [
                         'text' => 'Node 1',
-                        'action' => new \moodle_url('/page1.php')
+                        'action' => new url('/page1.php')
                     ],
                 ],
                 [
-                    'Node 1' => new \moodle_url('/page1.php'),
-                    'Node 2' => new \moodle_url('/page2.php'),
-                    'Node 3' => new \moodle_url('/page1.php'),
+                    'Node 1' => new url('/page1.php'),
+                    'Node 2' => new url('/page2.php'),
+                    'Node 3' => new url('/page1.php'),
                 ],
                 ['Node 2', 'Node 3']
             ],
@@ -490,13 +494,13 @@ final class boostnavbar_test extends \advanced_testcase {
                 [
                     [
                         'text' => 'Node 2',
-                        'action' => new \moodle_url('/page2.php')
+                        'action' => new url('/page2.php')
                     ],
                 ],
                 [
-                    'Node 1' => new \moodle_url('/page1.php'),
-                    'Node 2' => new \moodle_url('/page2.php'),
-                    'Node 3' => new \moodle_url('/page1.php'),
+                    'Node 1' => new url('/page1.php'),
+                    'Node 2' => new url('/page2.php'),
+                    'Node 3' => new url('/page1.php'),
                 ],
                 ['Home', 'Node 1', 'Node 3']
             ],
@@ -505,17 +509,17 @@ final class boostnavbar_test extends \advanced_testcase {
                 [
                     [
                         'text' => 'Node 2',
-                        'action' => new \moodle_url('/page2.php')
+                        'action' => new url('/page2.php')
                     ],
                     [
                         'text' => 'Node 3',
-                        'action' => new \moodle_url('/page3.php')
+                        'action' => new url('/page3.php')
                     ],
                 ],
                 [
-                    'Node 1' => new \moodle_url('/page1.php'),
+                    'Node 1' => new url('/page1.php'),
                     'Node 2' => "{$CFG->wwwroot}/page2.php",
-                    'Node 3' => new \action_link(new \moodle_url('/page3.php'), 'Action link'),
+                    'Node 3' => new action_link(new url('/page3.php'), 'Action link'),
                 ],
                 ['Home', 'Node 1']
             ],
@@ -524,13 +528,13 @@ final class boostnavbar_test extends \advanced_testcase {
                 [
                     [
                         'text' => 'Node 4',
-                        'action' => new \moodle_url('/page4.php')
+                        'action' => new url('/page4.php')
                     ],
                 ],
                 [
-                    'Node 1' => new \moodle_url('/page1.php'),
-                    'Node 2' => new \moodle_url('/page2.php'),
-                    'Node 3' => new \moodle_url('/page1.php'),
+                    'Node 1' => new url('/page1.php'),
+                    'Node 2' => new url('/page2.php'),
+                    'Node 3' => new url('/page1.php'),
                 ],
                 ['Home', 'Node 1', 'Node 2', 'Node 3']
             ],
@@ -568,12 +572,12 @@ final class boostnavbar_test extends \advanced_testcase {
         $navigationmenu->initialise();
         // Add the additional nodes to the navigation menu.
         foreach ($navmenunodes as $navmenunode) {
-            $navigationmenu->add($navmenunode['text'], $navmenunode['action'], \navigation_node::TYPE_CUSTOM);
+            $navigationmenu->add($navmenunode['text'], $navmenunode['action'], navigation_node::TYPE_CUSTOM);
         }
 
         // Add the additional navbar nodes.
         foreach ($navbarnodes as $text => $action) {
-            $page->navbar->add($text, $action, \navigation_node::TYPE_CUSTOM);
+            $page->navbar->add($text, $action, navigation_node::TYPE_CUSTOM);
         }
 
         $boostnavbar = $this->getMockBuilder(boostnavbar::class)

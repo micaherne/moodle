@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 class core_role_view_role_definition_table extends core_role_define_role_table_advanced {
@@ -112,7 +117,7 @@ class core_role_view_role_definition_table extends core_role_define_role_table_a
             $html .= $OUTPUT->notification(
                 get_string('risksfilter', 'role', [
                     'riskname' => $riskname,
-                    'reseturl' => new \moodle_url('/admin/roles/define.php', [
+                    'reseturl' => new url('/admin/roles/define.php', [
                             'action' => 'view',
                             'roleid' => $this->roleid,
                         ]),
@@ -128,7 +133,7 @@ class core_role_view_role_definition_table extends core_role_define_role_table_a
             if ($count == 0) {
                 continue;
             }
-            $filterurl = new \moodle_url('/admin/roles/define.php', [
+            $filterurl = new url('/admin/roles/define.php', [
                 'action' => 'view',
                 'roleid' => $this->roleid,
                 'risk' => $type,

@@ -15,6 +15,9 @@
  * @return bool
  * @package mod_glossary
  */
+use core\output\html_writer;
+use core\url;
+
 function glossary_show_entry_entrylist(
     $course,
     $cm,
@@ -35,7 +38,7 @@ function glossary_show_entry_entrylist(
         glossary_print_entry_approval($cm, $entry, $mode);
         $anchortagcontents = glossary_print_entry_concept($entry, true, $conceptheadinglevel);
 
-        $link = new moodle_url('/mod/glossary/showentry.php', [
+        $link = new url('/mod/glossary/showentry.php', [
             'courseid' => $course->id,
             'eid' => $entry->id,
             'displayformat' => 'dictionary',

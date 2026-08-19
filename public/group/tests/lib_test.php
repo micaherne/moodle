@@ -23,6 +23,9 @@
  */
 namespace core_group;
 
+use core\context\course;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -55,9 +58,9 @@ final class lib_test extends \advanced_testcase {
 
         $this->assertInstanceOf('\core\event\group_member_added', $event);
         $this->assertEquals($user->id, $event->relateduserid);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($group->id, $event->objectid);
-        $url = new \moodle_url('/group/members.php', array('group' => $event->objectid));
+        $url = new url('/group/members.php', array('group' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -79,9 +82,9 @@ final class lib_test extends \advanced_testcase {
 
         $this->assertInstanceOf('\core\event\group_member_removed', $event);
         $this->assertEquals($user->id, $event->relateduserid);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($group->id, $event->objectid);
-        $url = new \moodle_url('/group/members.php', array('group' => $event->objectid));
+        $url = new url('/group/members.php', array('group' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -98,9 +101,9 @@ final class lib_test extends \advanced_testcase {
         $event = reset($events);
 
         $this->assertInstanceOf('\core\event\group_created', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($group->id, $event->objectid);
-        $url = new \moodle_url('/group/index.php', array('id' => $event->courseid));
+        $url = new url('/group/index.php', array('id' => $event->courseid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -118,9 +121,9 @@ final class lib_test extends \advanced_testcase {
 
         $this->assertInstanceOf('\core\event\grouping_created', $event);
 
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($group->id, $event->objectid);
-        $url = new \moodle_url('/group/groupings.php', array('id' => $event->courseid));
+        $url = new url('/group/groupings.php', array('id' => $event->courseid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -147,9 +150,9 @@ final class lib_test extends \advanced_testcase {
 
         $this->assertInstanceOf('\core\event\group_updated', $event);
         $group->name = $data->name;
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($group->id, $event->objectid);
-        $url = new \moodle_url('/group/group.php', array('id' => $event->objectid));
+        $url = new url('/group/group.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -174,9 +177,9 @@ final class lib_test extends \advanced_testcase {
         $this->assertTimeCurrent($group->timemodified);
 
         $this->assertInstanceOf('\core\event\group_updated', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($group->id, $event->objectid);
-        $url = new \moodle_url('/group/group.php', array('id' => $event->objectid));
+        $url = new url('/group/group.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -205,9 +208,9 @@ final class lib_test extends \advanced_testcase {
         $data->timemodified = $DB->get_field('groupings', 'timemodified', array('id'=>$grouping->id));
         $this->assertTimeCurrent($data->timemodified);
 
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($grouping->id, $event->objectid);
-        $url = new \moodle_url('/group/grouping.php', array('id' => $event->objectid));
+        $url = new url('/group/grouping.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -242,9 +245,9 @@ final class lib_test extends \advanced_testcase {
         $data->name = $grouping->name;
         $data->timecreated = $grouping->timecreated;
 
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($grouping->id, $event->objectid);
-        $url = new \moodle_url('/group/grouping.php', array('id' => $event->objectid));
+        $url = new url('/group/grouping.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -260,9 +263,9 @@ final class lib_test extends \advanced_testcase {
         $this->assertCount(1, $events);
         $event = reset($events);
 
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($group->id, $event->objectid);
-        $url = new \moodle_url('/group/index.php', array('id' => $event->courseid));
+        $url = new url('/group/index.php', array('id' => $event->courseid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -279,9 +282,9 @@ final class lib_test extends \advanced_testcase {
         $event = reset($events);
 
         $this->assertInstanceOf('\core\event\grouping_deleted', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($group->id, $event->objectid);
-        $url = new \moodle_url('/group/groupings.php', array('id' => $event->courseid));
+        $url = new url('/group/groupings.php', array('id' => $event->courseid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -591,7 +594,7 @@ final class lib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         // Create two groups and only one group with enablemessaging = 1.
         $group1a = $this->getDataGenerator()->create_group(array('courseid' => $course1->id, 'enablemessaging' => 1));
@@ -629,7 +632,7 @@ final class lib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         // Create two groups and only one group with enablemessaging = 1.
         $group1a = $this->getDataGenerator()->create_group(array('courseid' => $course1->id, 'enablemessaging' => 1));
@@ -688,7 +691,7 @@ final class lib_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -731,7 +734,7 @@ final class lib_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -778,7 +781,7 @@ final class lib_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -944,7 +947,7 @@ final class lib_test extends \advanced_testcase {
      * @return bool true if all groups $enablemessaging setting matches the given $desired value, else false
      */
     private function check_groups_messaging_status_is(array $groupids, int $courseid, bool $desired) {
-        $context = \context_course::instance($courseid);
+        $context = course::instance($courseid);
 
         foreach ($groupids as $groupid) {
             $conversation = \core_message\api::get_conversation_by_area(

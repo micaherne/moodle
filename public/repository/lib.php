@@ -23,6 +23,19 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_cache\cache;
+use core_cache\cacheable_object_array;
+use core_cache\cacheable_object_interface;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->libdir . '/formslib.php');
@@ -54,7 +67,7 @@ define('RENAME_SUFFIX', '_2');
  * @copyright 2009 Jerome Mouneyrac
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class repository_type implements cacheable_object {
+class repository_type implements cacheable_object_interface {
 
 
     /**
@@ -253,7 +266,7 @@ class repository_type implements cacheable_object {
                     // for it
                     $instanceoptions['name'] = $this->_options['pluginname'];
                 }
-                repository::static_function($this->_typename, 'create', $this->_typename, 0, context_system::instance(), $instanceoptions);
+                repository::static_function($this->_typename, 'create', $this->_typename, 0, system::instance(), $instanceoptions);
             }
             //run plugin_init function
             if (!repository::static_function($this->_typename, 'plugin_init')) {
@@ -494,7 +507,7 @@ class repository_type implements cacheable_object {
  * @copyright 2009 Dongsheng Cai {@link http://dongsheng.org}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class repository implements cacheable_object {
+abstract class repository implements cacheable_object_interface {
     /**
      * Timeout in seconds for downloading the external file into moodle
      * @deprecated since Moodle 2.7, please use $CFG->repositorygetfiletimeout instead
@@ -814,7 +827,7 @@ abstract class repository implements cacheable_object {
     public static function draftfile_exists($itemid, $filepath, $filename) {
         global $USER;
         $fs = get_file_storage();
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         return $fs->file_exists($usercontext->id, 'user', 'draft', $itemid, $filepath, $filename);
     }
 
@@ -883,7 +896,7 @@ abstract class repository implements cacheable_object {
             throw new coding_exception('Only repository used to browse moodle files can use repository::copy_to_area()');
         }
 
-        $user_context = context_user::instance($USER->id);
+        $user_context = user::instance($USER->id);
 
         $filerecord = (array)$filerecord;
         // make sure the new file will be created in user draft area
@@ -916,11 +929,11 @@ abstract class repository implements cacheable_object {
             $event['newfile'] = new stdClass;
             $event['newfile']->filepath = $new_filepath;
             $event['newfile']->filename = $unused_filename;
-            $event['newfile']->url = moodle_url::make_draftfile_url($draftitemid, $new_filepath, $unused_filename)->out();
+            $event['newfile']->url = url::make_draftfile_url($draftitemid, $new_filepath, $unused_filename)->out();
             $event['existingfile'] = new stdClass;
             $event['existingfile']->filepath = $new_filepath;
             $event['existingfile']->filename = $new_filename;
-            $event['existingfile']->url = moodle_url::make_draftfile_url($draftitemid, $new_filepath, $new_filename)->out();
+            $event['existingfile']->url = url::make_draftfile_url($draftitemid, $new_filepath, $new_filename)->out();
             return $event;
         } else {
             $fs->create_file_from_storedfile($filerecord, $stored_file);
@@ -929,7 +942,7 @@ abstract class repository implements cacheable_object {
             $info['file'] = $new_filename;
             $info['title'] = $new_filename;
             $info['contextid'] = $user_context->id;
-            $info['url'] = moodle_url::make_draftfile_url($draftitemid, $new_filepath, $new_filename)->out();
+            $info['url'] = url::make_draftfile_url($draftitemid, $new_filepath, $new_filename)->out();
             $info['filesize'] = $stored_file->get_filesize();
             return $info;
         }
@@ -948,7 +961,7 @@ abstract class repository implements cacheable_object {
      */
     public static function get_unused_filename($itemid, $filepath, $filename) {
         global $USER;
-        $contextid = context_user::instance($USER->id)->id;
+        $contextid = user::instance($USER->id)->id;
         $fs = get_file_storage();
         return $fs->get_unused_filename($contextid, 'user', 'draft', $itemid, $filepath, $filename);
     }
@@ -983,7 +996,7 @@ abstract class repository implements cacheable_object {
     public static function get_editable_types($context = null) {
 
         if (empty($context)) {
-            $context = context_system::instance();
+            $context = system::instance();
         }
 
         $types= repository::get_types(true);
@@ -1026,10 +1039,10 @@ abstract class repository implements cacheable_object {
                 debugging('currentcontext passed to repository::get_instances was ' .
                         'not a context object. Using system context instead, but ' .
                         'you should probably fix your code.', DEBUG_DEVELOPER);
-                $current_context = context_system::instance();
+                $current_context = system::instance();
             }
         } else {
-            $current_context = context_system::instance();
+            $current_context = system::instance();
         }
         $args['currentcontext'] = $current_context->id;
         $contextids = array();
@@ -1163,7 +1176,7 @@ abstract class repository implements cacheable_object {
      * @return repository
      */
     public static function get_instance($id) {
-        return self::get_repository_by_id($id, context_system::instance());
+        return self::get_repository_by_id($id, system::instance());
     }
 
     /**
@@ -1376,12 +1389,12 @@ abstract class repository implements cacheable_object {
             $event['newfile'] = new stdClass;
             $event['newfile']->filepath = $record->filepath;
             $event['newfile']->filename = $new_filename;
-            $event['newfile']->url = moodle_url::make_draftfile_url($draftitemid, $record->filepath, $new_filename)->out();
+            $event['newfile']->url = url::make_draftfile_url($draftitemid, $record->filepath, $new_filename)->out();
 
             $event['existingfile'] = new stdClass;
             $event['existingfile']->filepath = $record->filepath;
             $event['existingfile']->filename = $old_filename;
-            $event['existingfile']->url      = moodle_url::make_draftfile_url($draftitemid, $record->filepath, $old_filename)->out();
+            $event['existingfile']->url      = url::make_draftfile_url($draftitemid, $record->filepath, $old_filename)->out();
             return $event;
         }
         if ($file = $fs->create_file_from_pathname($record, $thefile)) {
@@ -1390,7 +1403,7 @@ abstract class repository implements cacheable_object {
                 unset($CFG->repository_no_delete);
             }
             return array(
-                'url'=>moodle_url::make_draftfile_url($file->get_itemid(), $file->get_filepath(), $file->get_filename())->out(),
+                'url'=>url::make_draftfile_url($file->get_itemid(), $file->get_filepath(), $file->get_filename())->out(),
                 'id'=>$file->get_itemid(),
                 'file'=>$file->get_filename(),
                 'icon' => $OUTPUT->image_url(file_extension_icon($thefile))->out(),
@@ -1500,10 +1513,10 @@ abstract class repository implements cacheable_object {
         //if the context is SYSTEM, so we call it from administration page
         $admin = ($context->id == SYSCONTEXTID) ? true : false;
         if ($admin) {
-            $baseurl = new moodle_url('/admin/repositoryinstance.php');
+            $baseurl = new url('/admin/repositoryinstance.php');
             $output .= $OUTPUT->heading(get_string('siteinstances', 'repository'));
         } else {
-            $baseurl = new moodle_url('/repository/manage_instances.php', ['contextid' => $context->id]);
+            $baseurl = new url('/repository/manage_instances.php', ['contextid' => $context->id]);
         }
 
         $namestr = get_string('name');
@@ -1540,12 +1553,12 @@ abstract class repository implements cacheable_object {
             if ($type->get_contextvisibility($context)) {
                 if (!$i->readonly) {
 
-                    $settingurl = new moodle_url($baseurl);
+                    $settingurl = new url($baseurl);
                     $settingurl->param('type', $i->options['type']);
                     $settingurl->param('edit', $i->id);
                     $settings .= html_writer::link($settingurl, $settingsstr);
 
-                    $deleteurl = new moodle_url($baseurl);
+                    $deleteurl = new url($baseurl);
                     $deleteurl->param('delete', $i->id);
                     $deleteurl->param('type', $i->options['type']);
                     $delete .= html_writer::link($deleteurl, $deletestr);
@@ -2499,7 +2512,7 @@ abstract class repository implements cacheable_object {
     public static function overwrite_existing_draftfile($itemid, $filepath, $filename, $newfilepath, $newfilename) {
         global $USER;
         $fs = get_file_storage();
-        $user_context = context_user::instance($USER->id);
+        $user_context = user::instance($USER->id);
         if ($file = $fs->get_file($user_context->id, 'user', 'draft', $itemid, $filepath, $filename)) {
             if ($tempfile = $fs->get_file($user_context->id, 'user', 'draft', $itemid, $newfilepath, $newfilename)) {
                 // Remember original file source field.
@@ -2549,7 +2562,7 @@ abstract class repository implements cacheable_object {
     public static function update_draftfile($draftid, $filepath, $filename, $updatedata) {
         global $USER;
         $fs = get_file_storage();
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         // make sure filename and filepath are present in $updatedata
         $updatedata = $updatedata + array('filepath' => $filepath, 'filename' => $filename);
         $filemodified = false;
@@ -2645,7 +2658,7 @@ abstract class repository implements cacheable_object {
     public static function delete_tempfile_from_draft($draftitemid, $filepath, $filename) {
         global $USER;
         $fs = get_file_storage();
-        $user_context = context_user::instance($USER->id);
+        $user_context = user::instance($USER->id);
         if ($file = $fs->get_file($user_context->id, 'user', 'draft', $draftitemid, $filepath, $filename)) {
             $file->delete();
             return true;
@@ -2721,7 +2734,7 @@ abstract class repository implements cacheable_object {
             }
 
             if (in_array($file->get_id(), self::$syncfileids)) {
-                throw new \coding_exception('File references itself: ' . $file->get_id());
+                throw new coding_exception('File references itself: ' . $file->get_id());
             }
             try {
                 array_push(self::$syncfileids, $file->get_id());
@@ -3133,13 +3146,13 @@ function initialise_filepicker($args) {
         $disable_types = $args->disable_types;
     }
 
-    $user_context = context_user::instance($USER->id);
+    $user_context = user::instance($USER->id);
 
     list($context, $course, $cm) = get_context_info_array($context->id);
-    $contexts = array($user_context, context_system::instance());
+    $contexts = array($user_context, system::instance());
     if (!empty($course)) {
         // adding course context
-        $contexts[] = context_course::instance($course->id);
+        $contexts[] = course::instance($course->id);
     }
     $externallink = (int)get_config(null, 'repositoryallowexternallinks');
     $repositories = repository::get_instances(array(
@@ -3306,7 +3319,7 @@ function repository_download_selected_files($context, string $component, string 
             $USER->id,
     )) {
         $return = new stdClass();
-        $return->fileurl = moodle_url::make_draftfile_url($newdraftitemid, '/', $zippedfile)->out();
+        $return->fileurl = url::make_draftfile_url($newdraftitemid, '/', $zippedfile)->out();
         $return->filepath = $filepath;
     }
 

@@ -24,6 +24,8 @@
  */
 namespace mod_wiki\search;
 
+use core\context\course;
+use core\context\module;
 use core_courseformat\formatactions;
 
 defined('MOODLE_INTERNAL') || die();
@@ -136,13 +138,13 @@ final class search_test extends \advanced_testcase {
         $wikigenerator->create_first_page($collabwiki2);
 
         // Test indexing contexts.
-        $rs = $searcharea->get_document_recordset(0, \context_module::instance($collabwiki->cmid));
+        $rs = $searcharea->get_document_recordset(0, module::instance($collabwiki->cmid));
         $this->assertEquals(3, iterator_count($rs));
         $rs->close();
-        $rs = $searcharea->get_document_recordset(0, \context_module::instance($collabwiki2->cmid));
+        $rs = $searcharea->get_document_recordset(0, module::instance($collabwiki2->cmid));
         $this->assertEquals(1, iterator_count($rs));
         $rs->close();
-        $rs = $searcharea->get_document_recordset(0, \context_course::instance($course1->id));
+        $rs = $searcharea->get_document_recordset(0, course::instance($course1->id));
         $this->assertEquals(4, iterator_count($rs));
         $rs->close();
     }

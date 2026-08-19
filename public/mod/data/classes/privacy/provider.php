@@ -24,6 +24,8 @@
 
 namespace mod_data\privacy;
 
+use core\context;
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -168,7 +170,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!is_a($context, \context_module::class)) {
+        if (!is_a($context, module::class)) {
             return;
         }
 
@@ -328,7 +330,7 @@ class provider implements
                 // Export the data for the previous module.
                 self::export_data($context, $user);
                 // Start new data module.
-                $context = \context_module::instance($row->cmid);
+                $context = module::instance($row->cmid);
             }
 
             if (!$recordobj || $row->recordid != $recordobj->id) {
@@ -400,10 +402,10 @@ class provider implements
      *
      * @param \context $context the context to delete in.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
         $recordstobedeleted = [];

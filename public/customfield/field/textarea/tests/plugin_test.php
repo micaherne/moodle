@@ -18,9 +18,9 @@ namespace customfield_textarea;
 
 use core_customfield_generator;
 use core_customfield_test_instance_form;
-use context_user;
-use context_course;
-use context_system;
+use core\context\user;
+use core\context\course;
+use core\context\system;
 
 /**
  * Functional test for customfield_textarea
@@ -217,7 +217,7 @@ final class plugin_test extends \advanced_testcase {
         // Create a file.
         $fs = get_file_storage();
         $filerecord = [
-            'contextid' => context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'component' => 'user',
             'filearea' => 'draft',
             'itemid' => file_get_unused_draft_itemid(),
@@ -247,7 +247,7 @@ final class plugin_test extends \advanced_testcase {
         $handler->instance_form_save($data);
 
         // Check if the draft file exists.
-        $context = context_course::instance($this->courses[1]->id);
+        $context = course::instance($this->courses[1]->id);
         $file = $fs->get_file($filerecord['contextid'], $filerecord['component'], $filerecord['filearea'], $filerecord['itemid'],
             $filerecord['filepath'], $filerecord['filename']);
         $this->assertNotEmpty($file);
@@ -260,7 +260,7 @@ final class plugin_test extends \advanced_testcase {
         $backupid = $this->backup($this->courses[1]);
         $newcourseid = $this->restore($backupid, $this->courses[1], '_copy');
 
-        $newcontext = context_course::instance($newcourseid);
+        $newcontext = course::instance($newcourseid);
 
         $newcfdata = $DB->get_record('customfield_data', ['instanceid' => $newcourseid, 'fieldid' => $this->cfields[1]->get('id')]);
 

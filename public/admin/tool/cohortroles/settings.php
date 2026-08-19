@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 // This tool's required capabilities.
@@ -31,12 +35,12 @@ $capabilities = [
 ];
 
 // Check if the user has all of the required capabilities.
-$context = context_system::instance();
+$context = system::instance();
 $hasaccess = has_all_capabilities($capabilities, $context);
 
 // Add this admin page only if the user has all of the required capabilities.
 if ($hasaccess) {
     $str = get_string('managecohortroles', 'tool_cohortroles');
-    $url = new moodle_url('/admin/tool/cohortroles/index.php');
-    $ADMIN->add('roles', new admin_externalpage('toolcohortroles', $str, $url, $capabilities));
+    $url = new url('/admin/tool/cohortroles/index.php');
+    $ADMIN->add('roles', new externalpage('toolcohortroles', $str, $url, $capabilities));
 }

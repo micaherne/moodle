@@ -17,6 +17,7 @@
 namespace core_admin\setting\tree;
 
 use core\exception\coding_exception;
+use core\url;
 use core_admin\local\settings\linkable_settings_page;
 
 /**
@@ -76,8 +77,8 @@ class category implements
      *
      * @return moodle_url
      */
-    public function get_settings_page_url(): \moodle_url {
-        return new \moodle_url(
+    public function get_settings_page_url(): url {
+        return new url(
             '/admin/category.php',
             [
                 'category' => $this->name,

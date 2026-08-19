@@ -22,12 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-    $ADMIN->add('experimental', new admin_externalpage('tooldbtransfer', get_string('dbtransfer', 'tool_dbtransfer'),
+    $ADMIN->add('experimental', new externalpage('tooldbtransfer', get_string('dbtransfer', 'tool_dbtransfer'),
         $CFG->wwwroot.'/'.$CFG->admin.'/tool/dbtransfer/index.php', 'moodle/site:config', false));
     // DB export/import is not ready yet - keep it hidden for now.
-    $ADMIN->add('experimental', new admin_externalpage('tooldbexport', get_string('dbexport', 'tool_dbtransfer'),
+    $ADMIN->add('experimental', new externalpage('tooldbexport', get_string('dbexport', 'tool_dbtransfer'),
         $CFG->wwwroot.'/'.$CFG->admin.'/tool/dbtransfer/dbexport.php', 'moodle/site:config', true));
 }

@@ -16,6 +16,7 @@
 
 namespace core_question;
 
+use core\context\system;
 use quiz_statistics\tests\statistics_helper;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
@@ -103,7 +104,7 @@ final class datalib_reporting_queries_test extends \qbehaviour_walkthrough_test_
 
         // Create the second usage.
         $this->quba = question_engine::make_questions_usage_by_activity('unit_test',
-                \context_system::instance());
+                system::instance());
 
         $q = question_bank::load_question($this->sa->id);
         $this->start_attempt_at_question($q, 'interactive', 5);

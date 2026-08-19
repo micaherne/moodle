@@ -32,6 +32,8 @@
  * @copyright 2010 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+
 class restore_ui extends base_ui {
     /**
      * The stages of the restore user interface.
@@ -335,7 +337,7 @@ class restore_ui extends base_ui {
             }
             $item = array('text' => strlen(decbin($stage)).'. '.get_string('restorestage'.$stage, 'backup'), 'class' => join(' ', $classes));
             if ($stage < $currentstage && $currentstage < self::STAGE_COMPLETE && $stage > self::STAGE_DESTINATION) {
-                $item['link'] = new moodle_url($PAGE->url, array('restore' => $this->get_restoreid(), 'stage' => $stage));
+                $item['link'] = new url($PAGE->url, array('restore' => $this->get_restoreid(), 'stage' => $stage));
             }
             array_unshift($items, $item);
             $stage = floor($stage / 2);

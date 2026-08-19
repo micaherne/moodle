@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/moodle_database.php');
@@ -527,7 +530,7 @@ abstract class pdo_moodle_database extends moodle_database {
                 break;
             default:
                 $this->lastError = __FILE__ . ' LINE: ' . __LINE__ . '.';
-                throw new \moodle_exception(unknowparamtype, 'error', '', $this->lastError);
+                throw new moodle_exception(unknowparamtype, 'error', '', $this->lastError);
             }
         }
         $sql = "UPDATE {{$table}} SET $newfield $select";
@@ -535,11 +538,11 @@ abstract class pdo_moodle_database extends moodle_database {
     }
 
     public function sql_concat(...$arr) {
-        throw new \moodle_exception('TODO');
+        throw new moodle_exception('TODO');
     }
 
     public function sql_concat_join($separator="' '", $elements=array()) {
-        throw new \moodle_exception('TODO');
+        throw new moodle_exception('TODO');
     }
 
     /**

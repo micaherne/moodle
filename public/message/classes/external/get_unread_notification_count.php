@@ -24,9 +24,9 @@ require_once($CFG->dirroot . '/message/lib.php');
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
-use context_system;
-use core_user;
-use moodle_exception;
+use core\context\system;
+use core\user;
+use core\exception\moodle_exception;
 
 /**
  * External service to get number of unread notifications
@@ -64,14 +64,14 @@ class get_unread_notification_count extends external_api {
             ['useridto' => $useridto],
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $useridto = $params['useridto'];
 
         if (!empty($useridto)) {
-            if (core_user::is_real_user($useridto)) {
-                $userto = core_user::get_user($useridto, '*', MUST_EXIST);
+            if (user::is_real_user($useridto)) {
+                $userto = user::get_user($useridto, '*', MUST_EXIST);
             } else {
                 throw new moodle_exception('invaliduser');
             }

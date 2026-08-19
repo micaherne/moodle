@@ -21,6 +21,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package core_user
  */
+use core\context\system;
+use core\output\html_writer;
+use core\user;
+
 require_once('../config.php');
 require_once($CFG->dirroot . '/user/lib.php');
 
@@ -38,7 +42,7 @@ if (!empty($CFG->supportpage)) {
     redirect($CFG->supportpage);
 }
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url('/user/contactsitesupport.php');
 $PAGE->set_title(get_string('contactsitesupport', 'admin'));
 $PAGE->set_heading(get_string('contactsitesupport', 'admin'));
@@ -52,13 +56,13 @@ if ($form->is_cancelled()) {
 } else if ($form->is_submitted() && $form->is_validated() && confirm_sesskey()) {
     $data = $form->get_data();
 
-    $from = $user ?? core_user::get_noreply_user();
+    $from = $user ?? user::get_noreply_user();
     $subject = get_string('supportemailsubject', 'admin', format_string($SITE->fullname));
     $data->notloggedinuser = (!$user);
     $message = $renderer->render_from_template('user/contact_site_support_email_body', $data);
 
     $sendmail = email_to_user(
-        user: core_user::get_support_user(),
+        user: user::get_support_user(),
         from: $from,
         subject: $subject,
         messagetext: $message,

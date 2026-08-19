@@ -25,6 +25,8 @@
 
 namespace mod_choice\privacy;
 
+use core\context;
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -108,7 +110,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
 
@@ -170,7 +172,7 @@ class provider implements
             // If we've moved to a new choice, then write the last choice data and reinit the choice data array.
             if ($lastcmid != $choiceanswer->cmid) {
                 if (!empty($choicedata)) {
-                    $context = \context_module::instance($lastcmid);
+                    $context = module::instance($lastcmid);
                     self::export_choice_data_for_user($choicedata, $context, $user);
                 }
                 $choicedata = [
@@ -185,7 +187,7 @@ class provider implements
 
         // The data for the last activity won't have been written yet, so make sure to write it now!
         if (!empty($choicedata)) {
-            $context = \context_module::instance($lastcmid);
+            $context = module::instance($lastcmid);
             self::export_choice_data_for_user($choicedata, $context, $user);
         }
     }
@@ -197,7 +199,7 @@ class provider implements
      * @param \context_module $context the context of the choice.
      * @param \stdClass $user the user record
      */
-    protected static function export_choice_data_for_user(array $choicedata, \context_module $context, \stdClass $user) {
+    protected static function export_choice_data_for_user(array $choicedata, module $context, \stdClass $user) {
         // Fetch the generic module data for the choice.
         $contextdata = helper::get_context_data($context, $user);
 
@@ -214,10 +216,10 @@ class provider implements
      *
      * @param \context $context the context to delete in.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
 
@@ -241,7 +243,7 @@ class provider implements
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
 
-            if (!$context instanceof \context_module) {
+            if (!$context instanceof module) {
                 continue;
             }
             $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid]);
@@ -262,7 +264,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
 

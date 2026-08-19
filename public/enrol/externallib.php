@@ -23,6 +23,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\context_helper;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\output\user_picture;
+use core\url;
+use core\user as core_user;
 use core_external\external_api;
 use core_external\external_files;
 use core_external\external_format_value;
@@ -136,13 +146,13 @@ class core_enrol_external extends external_api {
         foreach ($params['coursecapabilities'] as $coursecapability) {
             $courseid = $coursecapability['courseid'];
             $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
-            $coursecontext = context_course::instance($courseid);
+            $coursecontext = course::instance($courseid);
             if (!$coursecontext) {
                 throw new moodle_exception('cannotfindcourse', 'error', '', null,
                         'The course id ' . $courseid . ' doesn\'t exist.');
             }
             if ($courseid == SITEID) {
-                $context = context_system::instance();
+                $context = system::instance();
             } else {
                 $context = $coursecontext;
             }
@@ -448,7 +458,7 @@ class core_enrol_external extends external_api {
         // Retrieve favourited courses (starred).
         $favouritecourseids = array();
         if ($sameuser) {
-            $ufservice = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($userid));
+            $ufservice = \core_favourites\service_factory::get_service_for_user_context(context_user::instance($userid));
             $favourites = $ufservice->find_favourites_by_type('core_course', 'courses');
 
             if ($favourites) {
@@ -460,7 +470,7 @@ class core_enrol_external extends external_api {
         }
 
         foreach ($courses as $course) {
-            $context = context_course::instance($course->id, IGNORE_MISSING);
+            $context = course::instance($course->id, IGNORE_MISSING);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -522,7 +532,7 @@ class core_enrol_external extends external_api {
             $courselist = new core_course_list_element($course);
             $overviewfiles = array();
             foreach ($courselist->get_course_overviewfiles() as $file) {
-                $fileurl = moodle_url::make_webservice_pluginfile_url($file->get_contextid(), $file->get_component(),
+                $fileurl = url::make_webservice_pluginfile_url($file->get_contextid(), $file->get_component(),
                                                                         $file->get_filearea(), null, $file->get_filepath(),
                                                                         $file->get_filename())->out(false);
                 $overviewfiles[] = array(
@@ -671,7 +681,7 @@ class core_enrol_external extends external_api {
                 'perpage' => $perpage
             )
         );
-        $context = context_course::instance($params['courseid']);
+        $context = course::instance($params['courseid']);
         try {
             self::validate_context($context);
         } catch (Exception $e) {
@@ -791,7 +801,7 @@ class core_enrol_external extends external_api {
         if (isset($contextid)) {
             $context = context::instance_by_id($params['contextid']);
         } else {
-            $context = context_course::instance($params['courseid']);
+            $context = course::instance($params['courseid']);
         }
         try {
             self::validate_context($context);
@@ -968,9 +978,9 @@ class core_enrol_external extends external_api {
         }
 
         $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
-        $coursecontext = context_course::instance($courseid, IGNORE_MISSING);
+        $coursecontext = course::instance($courseid, IGNORE_MISSING);
         if ($courseid == SITEID) {
-            $context = context_system::instance();
+            $context = system::instance();
         } else {
             $context = $coursecontext;
         }
@@ -1167,7 +1177,7 @@ class core_enrol_external extends external_api {
         global $DB;
 
         $params = self::validate_parameters(self::get_course_enrolment_methods_parameters(), array('courseid' => $courseid));
-        self::validate_context(context_system::instance());
+        self::validate_context(system::instance());
 
         $course = $DB->get_record('course', array('id' => $params['courseid']), '*', MUST_EXIST);
         if (!core_course_category::can_view_course_info($course) && !can_access_course($course)) {
@@ -1236,7 +1246,7 @@ class core_enrol_external extends external_api {
         $instance = $DB->get_record('enrol', ['id' => $userenrolment->enrolid], '*', MUST_EXIST);
         $plugin = enrol_get_plugin($instance->enrol);
         $course = get_course($instance->courseid);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         self::validate_context($context);
 
         require_once("$CFG->dirroot/enrol/editenrolment_form.php");
@@ -1309,7 +1319,7 @@ class core_enrol_external extends external_api {
             $enrol = $DB->get_record('enrol', ['id' => $enrolid], '*', MUST_EXIST);
             $courseid = $enrol->courseid;
             $course = get_course($courseid);
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             self::validate_context($context);
         } else {
             $validationerrors['invalidrequest'] = get_string('invalidrequest', 'enrol');

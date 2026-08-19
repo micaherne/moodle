@@ -16,6 +16,7 @@
 
 namespace qtype_match;
 
+use core\context\module;
 use question_bank;
 
 defined('MOODLE_INTERNAL') || die();
@@ -48,7 +49,7 @@ final class backup_test extends \advanced_testcase {
         // Create a course with a page that embeds a question.
         $course = $coregenerator->create_course();
         $quiz = $coregenerator->create_module('quiz', ['course' => $course->id]);
-        $quizcontext = \context_module::instance($quiz->cmid);
+        $quizcontext = module::instance($quiz->cmid);
 
         $cat = $questiongenerator->create_question_category(['contextid' => $quizcontext->id]);
         $question = $questiongenerator->create_question('match', 'trickynums', ['category' => $cat->id]);

@@ -16,6 +16,8 @@
 
 namespace gradepenalty_duedate\output;
 
+use core\context;
+use core\output\renderer_base;
 use core_grades\output\action_bar;
 use core\output\notification;
 use core\output\single_button;
@@ -43,7 +45,7 @@ class view_penalty_rule_action_bar extends action_bar {
      * @param string $title The title of the page.
      * @param url $url The URL of the page.
      */
-    public function __construct(\context $context, string $title, url $url) {
+    public function __construct(context $context, string $title, url $url) {
         parent::__construct($context);
         $this->title = $title;
         $this->url = $url;
@@ -55,7 +57,7 @@ class view_penalty_rule_action_bar extends action_bar {
     }
 
     #[\Override]
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
          $data = [];
 
          $contextid = $this->context->id;

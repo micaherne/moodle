@@ -22,8 +22,8 @@ use core_external\external_value;
 use core_external\external_single_structure;
 use core_external\external_multiple_structure;
 use core_question\category_manager;
-use moodle_exception;
-use context;
+use core\exception\moodle_exception;
+use core\context;
 use qbank_managecategories\helper;
 
 /**

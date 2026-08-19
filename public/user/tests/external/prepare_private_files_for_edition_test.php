@@ -16,6 +16,7 @@
 
 namespace core_user\external;
 
+use core\context\user;
 use core_external\external_api;
 
 /**
@@ -37,7 +38,7 @@ final class prepare_private_files_for_edition_test extends \advanced_testcase {
         // Create some files in the user private file area.
         $filename = 'faketxt.txt';
         $filerecordinline = [
-            'contextid' => \context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'component' => 'user',
             'filearea'  => 'private',
             'itemid'    => 0,

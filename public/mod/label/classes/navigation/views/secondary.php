@@ -17,8 +17,8 @@
 namespace mod_label\navigation\views;
 
 use core\navigation\views\secondary as core_secondary;
-use settings_navigation;
-use navigation_node;
+use core\navigation\settings_navigation;
+use core\navigation\navigation_node;
 
 /**
  * Class secondary_navigation_view.

@@ -16,9 +16,12 @@
 
 namespace mod_quiz;
 
+use core\context\course;
+use core\context\module;
 use core_question\local\bank\condition;
 use mod_quiz\external\submit_question_version;
 use mod_quiz\question\bank\qbank_helper;
+use mod_quiz\tests\question_helper_test_trait;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -35,7 +38,7 @@ require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
  * @covers \mod_quiz\question\bank\qbank_helper
  */
 final class quiz_question_version_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /** @var \stdClass user record. */
     protected $student;
@@ -59,7 +62,7 @@ final class quiz_question_version_test extends \advanced_testcase {
         $this->resetAfterTest();
         $quiz = $this->create_test_quiz($this->course);
         // Test for questions from a different context.
-        $context = \context_module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
+        $context = module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         // Create a couple of questions.
         $cat = $questiongenerator->create_question_category(['contextid' => $context->id]);
@@ -139,7 +142,7 @@ final class quiz_question_version_test extends \advanced_testcase {
         $this->resetAfterTest();
         $quiz = $this->create_test_quiz($this->course);
         // Test for questions from a different context.
-        $context = \context_module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
+        $context = module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         // Create a couple of questions.
         $cat = $questiongenerator->create_question_category(['contextid' => $context->id]);
@@ -192,7 +195,7 @@ final class quiz_question_version_test extends \advanced_testcase {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
         // Make two categories, each with a question.
-        $coursecontext = \context_course::instance($this->course->id);
+        $coursecontext = course::instance($this->course->id);
         $cat = $questiongenerator->create_question_category(
             ['name' => 'Non-random questions', 'context' => $coursecontext->id]);
         $randomcat = $questiongenerator->create_question_category(

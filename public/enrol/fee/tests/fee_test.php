@@ -16,6 +16,9 @@
 
 namespace enrol_fee;
 
+use core\context\course;
+use core\output\progress_trace\null_progress_trace;
+
 /**
  * enrol_fee tests.
  *
@@ -61,7 +64,7 @@ final class fee_test extends \advanced_testcase {
         $this->enable_plugin();
 
         $feeplugin = enrol_get_plugin('fee');
-        $feeplugin->sync(new \null_progress_trace());
+        $feeplugin->sync(new null_progress_trace());
     }
 
     /**
@@ -83,7 +86,7 @@ final class fee_test extends \advanced_testcase {
         $this->assertNotEmpty($manualplugin);
 
         $now = time();
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         // Prepare roles.
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
@@ -102,8 +105,8 @@ final class fee_test extends \advanced_testcase {
         // Prepare courses.
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
 
         // Add fee enrolment instances.
         $instanceid1 = $feeplugin->add_instance($course1, [

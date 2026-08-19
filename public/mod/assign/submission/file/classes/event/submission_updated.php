@@ -24,6 +24,8 @@
 
 namespace assignsubmission_file\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +79,7 @@ class submission_updated extends \mod_assign\event\submission_updated {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['filesubmissioncount'])) {
-            throw new \coding_exception('The \'filesubmissioncount\' value must be set in other.');
+            throw new coding_exception('The \'filesubmissioncount\' value must be set in other.');
         }
     }
 

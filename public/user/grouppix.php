@@ -26,6 +26,8 @@
  */
 
 // Disable moodle specific debug messages and any errors in output.
+use core\exception\moodle_exception;
+
 define('NO_DEBUG_DISPLAY', true);
 define('NO_MOODLE_COOKIES', true); // Session not used here.
 
@@ -49,5 +51,5 @@ if (file_exists($pathname) and !is_dir($pathname)) {
     send_file($pathname, $image);
 } else {
     header('HTTP/1.0 404 not found');
-    throw new \moodle_exception('filenotfound', 'error'); // This is not displayed on IIS??
+    throw new moodle_exception('filenotfound', 'error'); // This is not displayed on IIS??
 }

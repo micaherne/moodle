@@ -31,6 +31,7 @@ require_once($CFG->dirroot.'/mod/lti/locallib.php');
 require_once($CFG->dirroot.'/mod/lti/servicelib.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
+use core\context\course;
 use mod_lti\service_exception_handler;
 use moodle\mod\lti as lti;
 use ltiservice_basicoutcomes\local\service\basicoutcomes;
@@ -124,7 +125,7 @@ switch ($messagetype) {
         }
 
         // Getting the grade requires the context is set.
-        $context = context_course::instance($ltiinstance->course);
+        $context = course::instance($ltiinstance->course);
         $PAGE->set_context($context);
 
         lti_verify_sourcedid($ltiinstance, $parsed);

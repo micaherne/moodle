@@ -16,12 +16,12 @@
 
 namespace mod_assign;
 
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 use mod_assign_override_test_trait;
 use mod_assign_test_generator;
 use mod_assign_testable_assign;
 use PHPUnit\Framework\Attributes\CoversClass;
-use required_capability_exception;
+use core\exception\required_capability_exception;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();

@@ -19,7 +19,7 @@ namespace core_external\tests;
 use core\context;
 use core\exception\coding_exception;
 use core_external\external_settings;
-use filter_manager;
+use core_filters\filter_manager;
 
 // phpcs:disable moodle.NamingConventions.ValidFunctionName.LowercaseMethod
 

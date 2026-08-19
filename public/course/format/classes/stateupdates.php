@@ -16,11 +16,11 @@
 
 namespace core_courseformat;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core_courseformat\base as course_format;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
-use course_modinfo;
+use core_course\modinfo;
 use JsonSerializable;
 
 /**
@@ -110,7 +110,7 @@ class stateupdates implements JsonSerializable {
             );
         }
         $course = $this->format->get_course();
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
         $format = $this->format;
 
         $section = $modinfo->get_section_info_by_id($sectionid, MUST_EXIST);
@@ -177,7 +177,7 @@ class stateupdates implements JsonSerializable {
      * @param string $action The action to track for the section ('create' or 'put').
      */
     protected function create_or_put_cm(int $cmid, string $action): void {
-        $modinfo = course_modinfo::instance($this->format->get_course());
+        $modinfo = modinfo::instance($this->format->get_course());
 
         $cm = $modinfo->get_cm($cmid);
         $section = $modinfo->get_section_info_by_id($cm->section);

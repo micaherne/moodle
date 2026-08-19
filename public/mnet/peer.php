@@ -8,6 +8,8 @@
  * @package mnet
  */
 
+use core\exception\moodle_exception;
+
 require_once($CFG->libdir . '/filelib.php'); // download_file_content() used here
 
 class mnet_peer {

@@ -25,9 +25,10 @@
 
 namespace core\task;
 
+use core\context\course;
 use core\di;
 use async_helper;
-use cache_helper;
+use core_cache\helper;
 use core\hook\manager;
 use core_backup\hook\before_copy_course_execute;
 
@@ -162,7 +163,7 @@ class asynchronous_copy_task extends adhoc_task {
         // Copy user enrolments from source course to destination.
         if (!empty($keptroles) && !$keepuserdata) {
             mtrace('Course copy: Creating user enrolments in destination course.');
-            $context = \context_course::instance($backuprecord->itemid);
+            $context = course::instance($backuprecord->itemid);
 
             $enrol = enrol_get_plugin('manual');
             $instance = null;
@@ -216,7 +217,7 @@ class asynchronous_copy_task extends adhoc_task {
         }
 
         rebuild_course_cache($restorerecord->itemid, true);
-        cache_helper::purge_by_event('changesincourse');
+        helper::purge_by_event('changesincourse');
 
         $duration = time() - $started;
         mtrace('Course copy: Copy completed in: ' . $duration . ' seconds');

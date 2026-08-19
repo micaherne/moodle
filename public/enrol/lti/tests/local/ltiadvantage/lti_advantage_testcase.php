@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\plugin_manager;
+use core\url;
 use enrol_lti\helper;
 use enrol_lti\local\ltiadvantage\entity\application_registration;
 use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
@@ -291,11 +293,11 @@ abstract class lti_advantage_testcase extends \advanced_testcase {
         $reg = application_registration::create(
             'Example LMS application',
             'a2c94a2c94',
-            new moodle_url($this->issuer),
+            new url($this->issuer),
             '123',
-            new moodle_url('https://example.org/authrequesturl'),
-            new moodle_url('https://example.org/jwksurl'),
-            new moodle_url('https://example.org/accesstokenurl')
+            new url('https://example.org/authrequesturl'),
+            new url('https://example.org/jwksurl'),
+            new url('https://example.org/accesstokenurl')
         );
         $regrepo = new application_registration_repository();
         $reg = $regrepo->save($reg);
@@ -364,7 +366,7 @@ abstract class lti_advantage_testcase extends \advanced_testcase {
      * Enable auth_lti plugin.
      */
     protected function enable_auth() {
-        $class = \core_plugin_manager::resolve_plugininfo_class('auth');
+        $class = plugin_manager::resolve_plugininfo_class('auth');
         $class::enable_plugin('lti', true);
     }
 
@@ -372,7 +374,7 @@ abstract class lti_advantage_testcase extends \advanced_testcase {
      * Enable enrol_lti plugin.
      */
     protected function enable_enrol() {
-        $class = \core_plugin_manager::resolve_plugininfo_class('enrol');
+        $class = plugin_manager::resolve_plugininfo_class('enrol');
         $class::enable_plugin('lti', true);
     }
 

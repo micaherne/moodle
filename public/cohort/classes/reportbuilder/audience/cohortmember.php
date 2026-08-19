@@ -18,8 +18,8 @@ declare(strict_types=1);
 
 namespace core_cohort\reportbuilder\audience;
 
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 use core_course_category;
 use stdClass;
 use core_reportbuilder\local\audiences\base;
@@ -101,7 +101,7 @@ class cohortmember extends base {
      */
     public function user_can_add(): bool {
         // Check system context first.
-        if (has_capability('moodle/cohort:view', context_system::instance())) {
+        if (has_capability('moodle/cohort:view', system::instance())) {
             return true;
         }
         // If there is at least one category with given permissions, user can add.
@@ -157,7 +157,7 @@ class cohortmember extends base {
         $usercohorts = cohort_get_all_cohorts(0, 0);
 
         // The previous method doesn't check cohorts on system context.
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $cohorts = array_filter($usercohorts['cohorts'], static function(stdClass $cohort) use ($syscontext): bool {
             return ($cohort->contextid != $syscontext->id) || has_capability('moodle/cohort:view', $syscontext);
         });

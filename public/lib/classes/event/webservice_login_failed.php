@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\context\system;
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,7 +79,7 @@ class webservice_login_failed extends base {
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 
     /**
@@ -97,11 +100,11 @@ class webservice_login_failed extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['reason'])) {
-           throw new \coding_exception('The \'reason\' value must be set in other.');
+           throw new coding_exception('The \'reason\' value must be set in other.');
         } else if (!isset($this->other['method'])) {
-           throw new \coding_exception('The \'method\' value must be set in other.');
+           throw new coding_exception('The \'method\' value must be set in other.');
         } else if (isset($this->other['token'])) {
-           throw new \coding_exception('The \'token\' value must not be set in other.');
+           throw new coding_exception('The \'token\' value must not be set in other.');
         }
     }
 

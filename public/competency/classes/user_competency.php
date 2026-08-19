@@ -24,10 +24,11 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use context_course;
-use context_user;
-use lang_string;
+use core\exception\coding_exception;
+use core\context\course;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\lang_string;
 
 /**
  * Class for loading/storing user_competency from the DB.
@@ -153,7 +154,7 @@ class user_competency extends persistent {
                 $strname = 'inreview';
                 break;
             default:
-                throw new \moodle_exception('errorusercomptencystatus', 'core_competency', '', $status);
+                throw new moodle_exception('errorusercomptencystatus', 'core_competency', '', $status);
                 break;
         }
 
@@ -215,7 +216,7 @@ class user_competency extends persistent {
      * @return \context The context.
      */
     public function get_context() {
-        return context_user::instance($this->get('userid'));
+        return user::instance($this->get('userid'));
     }
 
     /**
@@ -336,7 +337,7 @@ class user_competency extends persistent {
             $capabilities[] = 'moodle/competency:usercompetencycommentown';
         }
 
-        if (has_any_capability($capabilities, context_user::instance($userid))) {
+        if (has_any_capability($capabilities, user::instance($userid))) {
             return true;
         }
 
@@ -351,7 +352,7 @@ class user_competency extends persistent {
      */
     public static function can_grade_user($userid) {
         $ratecap = 'moodle/competency:competencygrade';
-        return has_capability($ratecap, context_user::instance($userid));
+        return has_capability($ratecap, user::instance($userid));
     }
 
     /**
@@ -363,7 +364,7 @@ class user_competency extends persistent {
      */
     public static function can_grade_user_in_course($userid, $courseid) {
         $ratecap = 'moodle/competency:competencygrade';
-        return has_capability($ratecap, context_course::instance($courseid))
+        return has_capability($ratecap, course::instance($courseid))
             || static::can_grade_user($userid);
     }
 
@@ -387,7 +388,7 @@ class user_competency extends persistent {
      */
     public static function can_read_user_in_course($userid, $courseid) {
         $capability = 'moodle/competency:usercompetencyview';
-        return has_capability($capability, context_course::instance($courseid))
+        return has_capability($capability, course::instance($courseid))
             || static::can_read_user($userid);
     }
 
@@ -399,7 +400,7 @@ class user_competency extends persistent {
      */
     public static function can_read_user($userid) {
         $capability = 'moodle/competency:usercompetencyview';
-        return has_capability($capability, context_user::instance($userid))
+        return has_capability($capability, user::instance($userid))
             || plan::can_read_user($userid);
     }
 
@@ -421,7 +422,7 @@ class user_competency extends persistent {
             $capabilities[] = 'moodle/competency:usercompetencyrequestreviewown';
         }
 
-        if (has_any_capability($capabilities, context_user::instance($userid))) {
+        if (has_any_capability($capabilities, user::instance($userid))) {
             return true;
         }
 
@@ -436,7 +437,7 @@ class user_competency extends persistent {
      */
     public static function can_review_user($userid) {
         $capability = 'moodle/competency:usercompetencyreview';
-        return has_capability($capability, context_user::instance($userid));
+        return has_capability($capability, user::instance($userid));
     }
 
     /**

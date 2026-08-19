@@ -16,10 +16,11 @@
 
 namespace mod_feedback\form;
 
+use core\exception\moodle_exception;
 use core_form\dynamic_form;
-use moodle_url;
-use context;
-use context_module;
+use core\url;
+use core\context;
+use core\context\module;
 
 /**
  * Prints the confirm use template form
@@ -55,7 +56,7 @@ class use_template_form extends dynamic_form {
     protected function get_context_for_dynamic_submission(): context {
         $id = $this->optional_param('id', null, PARAM_INT);
         list($course, $cm) = get_course_and_cm_from_cmid($id, 'feedback');
-        return context_module::instance($cm->id);
+        return module::instance($cm->id);
     }
 
     /**
@@ -65,7 +66,7 @@ class use_template_form extends dynamic_form {
      */
     protected function check_access_for_dynamic_submission(): void {
         if (!has_capability('mod/feedback:edititems', $this->get_context_for_dynamic_submission())) {
-            throw new \moodle_exception('nocapabilitytousethisservice');
+            throw new moodle_exception('nocapabilitytousethisservice');
         }
     }
 
@@ -82,7 +83,7 @@ class use_template_form extends dynamic_form {
         $templateid = $this->optional_param('templateid', null, PARAM_INT);
         $id = $this->optional_param('id', null, PARAM_INT);
         $response = feedback_items_from_template($PAGE->activityrecord, $templateid, $formdata->deleteolditems);
-        $url = new moodle_url('/mod/feedback/edit.php', ['id' => $id]);
+        $url = new url('/mod/feedback/edit.php', ['id' => $id]);
 
         if ($response !== false) {
             // Provide a notification on success as the user will be redirected.
@@ -110,11 +111,11 @@ class use_template_form extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $params = [
             'id' => $this->optional_param('id', null, PARAM_INT),
             'templateid' => $this->optional_param('templateid', null, PARAM_INT)
         ];
-        return new moodle_url('/mod/feedback/use_templ.php', $params);
+        return new url('/mod/feedback/use_templ.php', $params);
     }
 }

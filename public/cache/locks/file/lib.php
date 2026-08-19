@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\cache_lock_interface;
+use core_cache\exception\cache_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**

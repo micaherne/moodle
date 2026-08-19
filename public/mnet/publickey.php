@@ -8,11 +8,13 @@
  * @package mnet
  */
 
+use core\exception\moodle_exception;
+
 require_once(__DIR__ . '/../config.php');
 require_once $CFG->dirroot.'/mnet/lib.php';
 
 if ($CFG->mnet_dispatcher_mode === 'off') {
-    throw new \moodle_exception('mnetdisabled', 'mnet');
+    throw new moodle_exception('mnetdisabled', 'mnet');
 }
 
 header("Content-type: text/plain; charset=utf-8");

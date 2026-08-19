@@ -16,6 +16,7 @@
 
 namespace mod_forum;
 
+use core\context\module;
 use mod_forum_tests_generator_trait;
 
 defined('MOODLE_INTERNAL') || die();
@@ -76,7 +77,7 @@ final class vaults_discussion_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $forumentity = $entityfactory->get_forum_from_stdClass($forum, $context, $coursemodule, $course);
 
         $this->assertEquals(null, $vault->get_first_discussion_in_forum($forumentity));
@@ -102,7 +103,7 @@ final class vaults_discussion_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $forumentity = $entityfactory->get_forum_from_stdClass($forum, $context, $coursemodule, $course);
 
         $this->assertEquals([], $vault->get_all_discussions_in_forum($forumentity));

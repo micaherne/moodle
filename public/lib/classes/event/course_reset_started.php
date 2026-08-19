@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -65,7 +68,7 @@ class course_reset_started extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/course/view.php', array('id' => $this->courseid));
+        return new url('/course/view.php', array('id' => $this->courseid));
     }
 
     /**
@@ -87,7 +90,7 @@ class course_reset_started extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['reset_options'])) {
-            throw new \coding_exception('The \'reset_options\' value must be set in other.');
+            throw new coding_exception('The \'reset_options\' value must be set in other.');
         }
     }
 

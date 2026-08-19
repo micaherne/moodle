@@ -17,6 +17,8 @@
 namespace aiplacement_courseassist\external;
 
 use aiplacement_courseassist\utils;
+use core\context;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -74,7 +76,7 @@ class explain_text extends external_api {
         ]);
 
         // Context validation and permission check.
-        $context = \context::instance_by_id($contextid);
+        $context = context::instance_by_id($contextid);
         self::validate_context($context);
 
         // Check the user has permission to use the AI service.
@@ -82,7 +84,7 @@ class explain_text extends external_api {
 
         // Check if AI Placement course assist is available.
         if (!utils::is_course_assist_available()) {
-            throw new \moodle_exception('nocourseassist', 'aiplacement_courseassist');
+            throw new moodle_exception('nocourseassist', 'aiplacement_courseassist');
         }
 
         // Prepare the action.

@@ -16,6 +16,8 @@
 
 namespace tool_usertours;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -328,7 +330,7 @@ final class manager_test extends \advanced_testcase {
             $this->helper_create_step((object) ['tourid' => $tour->get_id()]);
         }
 
-        $matches = \tool_usertours\manager::get_matching_tours(new \moodle_url($url));
+        $matches = \tool_usertours\manager::get_matching_tours(new url($url));
         $this->assertEquals(count($expected), count($matches));
         for ($i = 0; $i < count($matches); $i++) {
             $this->assertEquals($expected[$i], $matches[$i]->get_name());
@@ -356,12 +358,12 @@ final class manager_test extends \advanced_testcase {
             'tourid' => $tour->get_id(),
         ]);
 
-        $matches = \tool_usertours\manager::get_matching_tours(new \moodle_url('/'));
+        $matches = \tool_usertours\manager::get_matching_tours(new url('/'));
         $this->assertEquals(1, count($matches));
 
         $CFG->sitepolicyguest = 'https://example.com';
 
-        $matches = \tool_usertours\manager::get_matching_tours(new \moodle_url('/'));
+        $matches = \tool_usertours\manager::get_matching_tours(new url('/'));
         $this->assertEmpty($matches);
     }
 }

@@ -16,7 +16,7 @@
 
 namespace core;
 
-use core_renderer;
+use core\output\core_renderer;
 use moodle_page;
 
 /**

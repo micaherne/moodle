@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\plugin_manager;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once('../config.php');
@@ -33,7 +37,7 @@ $enrol   = required_param('enrol', PARAM_PLUGIN);
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
 
 $PAGE->set_url('/admin/enrol.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 require_admin();
 require_sesskey();
@@ -41,11 +45,11 @@ require_sesskey();
 $enabled = enrol_get_plugins(true);
 $all     = enrol_get_plugins(false);
 
-$return = new moodle_url('/admin/settings.php', array('section'=>'manageenrols'));
+$return = new url('/admin/settings.php', array('section'=>'manageenrols'));
 
 switch ($action) {
     case 'disable':
-        $class = \core_plugin_manager::resolve_plugininfo_class('enrol');
+        $class = plugin_manager::resolve_plugininfo_class('enrol');
         $class::enable_plugin($enrol, false);
         break;
 
@@ -53,7 +57,7 @@ switch ($action) {
         if (!isset($all[$enrol])) {
             break;
         }
-        $class = \core_plugin_manager::resolve_plugininfo_class('enrol');
+        $class = plugin_manager::resolve_plugininfo_class('enrol');
         $class::enable_plugin($enrol, true);
         break;
 
@@ -113,8 +117,8 @@ switch ($action) {
 
         echo $OUTPUT->notification(get_string('success'), 'notifysuccess');
 
-        if (!$return = core_plugin_manager::instance()->get_uninstall_url('enrol_'.$enrol, 'manage')) {
-            $return = new moodle_url('/admin/plugins.php');
+        if (!$return = plugin_manager::instance()->get_uninstall_url('enrol_'.$enrol, 'manage')) {
+            $return = new url('/admin/plugins.php');
         }
         echo $OUTPUT->continue_button($return);
         echo $OUTPUT->footer();

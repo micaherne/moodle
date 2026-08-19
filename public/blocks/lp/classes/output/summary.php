@@ -25,6 +25,7 @@
 namespace block_lp\output;
 defined('MOODLE_INTERNAL') || die();
 
+use core\url as moodle_url;
 use core_competency\api;
 use core_competency\external\competency_exporter;
 use core_competency\external\plan_exporter;
@@ -32,10 +33,10 @@ use core_competency\external\user_competency_exporter;
 use core_user\external\user_summary_exporter;
 use core_competency\plan;
 use core_competency\url;
-use renderable;
-use renderer_base;
-use templatable;
-use required_capability_exception;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\exception\required_capability_exception;
 
 /**
  * Summary renderable class.
@@ -137,7 +138,7 @@ class summary implements renderable, templatable {
             'hasmoreplanstoreview' => $this->planstoreview['count'] > 3,
 
             'plansurl' => url::plans($this->user->id)->out(false),
-            'pluginbaseurl' => (new \moodle_url('/blocks/lp'))->out(false),
+            'pluginbaseurl' => (new moodle_url('/blocks/lp'))->out(false),
             'userid' => $this->user->id,
         );
 

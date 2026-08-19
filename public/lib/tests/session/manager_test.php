@@ -16,6 +16,8 @@
 
 namespace core\session;
 
+use core\context\course;
+use core\context\system;
 use core\tests\session\mock_handler;
 use core\tests\session\testable_manager;
 
@@ -658,10 +660,10 @@ final class manager_test extends \advanced_testcase {
 
         // Try admin loginas this user in system context.
         $this->assertObjectNotHasProperty('realuser', $USER);
-        \core\session\manager::loginas($user->id, \context_system::instance());
+        \core\session\manager::loginas($user->id, system::instance());
 
         $this->assertSame($user->id, $USER->id);
-        $this->assertEquals(\context_system::instance(), $USER->loginascontext);
+        $this->assertEquals(system::instance(), $USER->loginascontext);
         $this->assertSame($adminuser->id, $USER->realuser);
         $this->assertSame($GLOBALS['USER'], $_SESSION['USER']);
         $this->assertSame($GLOBALS['USER'], $USER);
@@ -680,7 +682,7 @@ final class manager_test extends \advanced_testcase {
         $this->setUser($user);
         $this->assertNotEquals($adminuser->id, $USER->id);
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Catch event triggered.
         $sink = $this->redirectEvents();
@@ -712,7 +714,7 @@ final class manager_test extends \advanced_testcase {
         $this->assertFalse(\core\session\manager::is_loggedinas());
 
         $this->setUser($user1);
-        \core\session\manager::loginas($user2->id, \context_system::instance());
+        \core\session\manager::loginas($user2->id, system::instance());
 
         $this->assertTrue(\core\session\manager::is_loggedinas());
     }
@@ -727,7 +729,7 @@ final class manager_test extends \advanced_testcase {
         $normal = \core\session\manager::get_realuser();
         $this->assertSame($GLOBALS['USER'], $normal);
 
-        \core\session\manager::loginas($user2->id, \context_system::instance());
+        \core\session\manager::loginas($user2->id, system::instance());
 
         $real = \core\session\manager::get_realuser();
 

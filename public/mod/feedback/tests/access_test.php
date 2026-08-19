@@ -16,6 +16,7 @@
 
 namespace mod_feedback;
 
+use core\exception\moodle_exception;
 use mod_feedback_completion;
 
 defined('MOODLE_INTERNAL') || die();
@@ -112,7 +113,7 @@ final class access_test extends \advanced_testcase {
             try {
                 new mod_feedback_completion($feedback, $cm, 0, true, $showcompleted, $userid);
                 $this->assertTrue($access);
-            } catch (\moodle_exception $ex) {
+            } catch (moodle_exception $ex) {
                 $this->assertTrue(!$access);
             }
         }

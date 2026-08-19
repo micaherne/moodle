@@ -36,6 +36,8 @@
  * @license http://opensource.org/licenses/lgpl-license.php GNU Lesser General Public License
  */
 
+use core\exception\invalid_parameter_exception;
+
 class webdav_client {
 
     /**#@+

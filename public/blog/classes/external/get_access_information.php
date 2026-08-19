@@ -16,7 +16,7 @@
 
 namespace core_blog\external;
 
-use context_system;
+use core\context\system;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -52,7 +52,7 @@ class get_access_information extends external_api {
      */
     public static function execute(): array {
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         return [

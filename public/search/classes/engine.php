@@ -26,6 +26,9 @@
 
 namespace core_search;
 
+use core\context;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -94,9 +97,9 @@ abstract class engine {
 
         $classname = get_class($this);
         if (strpos($classname, '\\') === false) {
-            throw new \coding_exception('"' . $classname . '" class should specify its component namespace and it should be named engine.');
+            throw new coding_exception('"' . $classname . '" class should specify its component namespace and it should be named engine.');
         } else if (strpos($classname, '_') === false) {
-            throw new \coding_exception('"' . $classname . '" class namespace should be its frankenstyle name');
+            throw new coding_exception('"' . $classname . '" class namespace should be its frankenstyle name');
         }
 
         // This is search_xxxx config.
@@ -535,7 +538,7 @@ abstract class engine {
      * @return int[] Array of three elements, successfully processed, failed processed, batch count
      */
     public function add_document_batch(array $documents, bool $fileindexing = false): array {
-        throw new \coding_exception('add_document_batch not supported by this engine');
+        throw new coding_exception('add_document_batch not supported by this engine');
     }
 
     /**
@@ -702,7 +705,7 @@ abstract class engine {
      * @param \context $context Context that the user requested search from
      * @return array Array from order name => display text
      */
-    public function get_supported_orders(\context $context) {
+    public function get_supported_orders(context $context) {
         return ['relevance' => get_string('order_relevance', 'search')];
     }
 

@@ -25,6 +25,8 @@
 
 namespace core\event;
 
+use core\context\user;
+
 /**
  * Test for draft file deleted event.
  *
@@ -42,7 +44,7 @@ final class draft_file_deleted_test extends \advanced_testcase {
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $sink = $this->redirectEvents();
         $fs = get_file_storage();

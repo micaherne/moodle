@@ -24,8 +24,9 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use lang_string;
-use context_user;
+use core\exception\coding_exception;
+use core\lang_string;
+use core\context\user;
 
 /**
  * Class for loading/storing user_competency_plan from the DB.
@@ -86,7 +87,7 @@ class user_competency_plan extends persistent {
      * @return context The context.
      */
     public function get_context() {
-        return context_user::instance($this->get('userid'));
+        return user::instance($this->get('userid'));
     }
 
     /**
@@ -221,7 +222,7 @@ class user_competency_plan extends persistent {
         $record = $DB->get_record_sql($sql, array($planid, $competencyid));
 
         if (!$record) {
-            throw new \coding_exception('The competency does not belong to this plan: ' . $competencyid . ', ' . $planid);
+            throw new coding_exception('The competency does not belong to this plan: ' . $competencyid . ', ' . $planid);
         }
 
         return new competency(0, $record);

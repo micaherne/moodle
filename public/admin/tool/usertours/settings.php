@@ -22,18 +22,22 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 $capabilities = [
     'tool/usertours:managetours',
 ];
-if ($hassiteconfig || has_any_capability($capabilities, context_system::instance())) {
+if ($hassiteconfig || has_any_capability($capabilities, system::instance())) {
     $ADMIN->add(
         'appearance',
-        new admin_externalpage(
+        new externalpage(
             'tool_usertours/tours',
             get_string('usertours', 'tool_usertours'),
-            new moodle_url('/admin/tool/usertours/configure.php'),
+            new url('/admin/tool/usertours/configure.php'),
             'tool/usertours:managetours'
         )
     );

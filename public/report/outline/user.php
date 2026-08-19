@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
 use report_outline\output\hierarchicalactivities;
 
 require('../../config.php');
@@ -40,8 +44,8 @@ if ($mode !== 'complete' and $mode !== 'outline') {
 $user = $DB->get_record('user', array('id'=>$userid, 'deleted'=>0), '*', MUST_EXIST);
 $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
 
-$coursecontext   = context_course::instance($course->id);
-$personalcontext = context_user::instance($user->id);
+$coursecontext   = course::instance($course->id);
+$personalcontext = user::instance($user->id);
 
 if ($courseid == SITEID) {
     $PAGE->set_context($personalcontext);
@@ -58,7 +62,7 @@ if ($USER->id != $user->id and has_capability('moodle/user:viewuseractivitiesrep
 $PAGE->set_url('/report/outline/user.php', array('id'=>$userid, 'course'=>$courseid, 'mode'=>$mode));
 
 if (!report_outline_can_access_user_report($user, $course)) {
-    throw new \moodle_exception('nocapability', 'report_outline');
+    throw new moodle_exception('nocapability', 'report_outline');
 }
 
 $stractivityreport = get_string('activityreport');
@@ -71,7 +75,7 @@ $PAGE->set_title("$course->shortname: $stractivityreport");
 
 // Create the appropriate breadcrumb.
 $navigationnode = array(
-        'url' => new moodle_url('/report/outline/user.php', array('id' => $user->id, 'course' => $course->id, 'mode' => $mode))
+        'url' => new url('/report/outline/user.php', array('id' => $user->id, 'course' => $course->id, 'mode' => $mode))
     );
 if ($mode === 'complete') {
     $navigationnode['name'] = get_string('completereport');
@@ -87,13 +91,13 @@ if ($courseid == SITEID) {
 }
 
 // Trigger a report viewed event.
-$event = \report_outline\event\report_viewed::create(array('context' => context_course::instance($course->id),
+$event = \report_outline\event\report_viewed::create(array('context' => course::instance($course->id),
         'relateduserid' => $userid, 'other' => array('mode' => $mode)));
 $event->trigger();
 
 echo $OUTPUT->header();
 if ($courseid != SITEID) {
-    $backurl = new moodle_url('/user/view.php', ['id' => $userid, 'course' => $courseid]);
+    $backurl = new url('/user/view.php', ['id' => $userid, 'course' => $courseid]);
     echo $OUTPUT->single_button($backurl, get_string('back'), 'get', ['class' => 'mb-3']);
     echo $OUTPUT->context_header(
             array(

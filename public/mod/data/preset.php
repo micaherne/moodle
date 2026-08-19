@@ -28,6 +28,8 @@
  * @package mod_data
  */
 
+use core\exception\moodle_exception;
+use core\url;
 use mod_data\local\importer\preset_importer;
 use mod_data\local\importer\preset_upload_importer;
 use mod_data\manager;
@@ -68,7 +70,7 @@ $context = $manager->get_context();
 require_login($course, false, $cm);
 require_capability('mod/data:managetemplates', $context);
 
-$url = new moodle_url('/mod/data/preset.php', array('d' => $data->id));
+$url = new url('/mod/data/preset.php', array('d' => $data->id));
 
 $PAGE->add_body_class('limitedwidth');
 $PAGE->set_url($url);
@@ -94,7 +96,7 @@ $presets = $manager->get_available_presets();
 
 if ($action === 'export') {
     if (headers_sent()) {
-        throw new \moodle_exception('headersent');
+        throw new moodle_exception('headersent');
     }
 
     // Check if we should export a given preset or the current one.
@@ -132,7 +134,7 @@ if ($action == 'importzip') {
     }
     $importer->import(false);
     core\notification::success(get_string('importsuccess', 'mod_data'));
-    redirect(new moodle_url('/mod/data/field.php', ['id' => $cm->id]));
+    redirect(new url('/mod/data/field.php', ['id' => $cm->id]));
     exit(0);
 }
 
@@ -144,7 +146,7 @@ if ($action === 'preview') {
     $preset = preset::create_from_fullname($manager, $fullname);
     // Validate if the user can view this preset.
     if (!$manager->can_view_preset($preset)) {
-        throw new \moodle_exception('cannotaccesspresentsother', manager::PLUGINNAME);
+        throw new moodle_exception('cannotaccesspresentsother', manager::PLUGINNAME);
     }
     $preview = new preset_preview($manager, $preset, $templatename);
     $preview->prepare_page($PAGE);
@@ -181,7 +183,7 @@ echo $OUTPUT->header();
 
 $actionbar = new \mod_data\output\action_bar($data->id, $url);
 echo $actionbar->get_presets_action_bar();
-$presets = new \mod_data\output\presets($manager, $presets, new \moodle_url('/mod/data/field.php'), true);
+$presets = new \mod_data\output\presets($manager, $presets, new url('/mod/data/field.php'), true);
 echo $renderer->render_presets($presets);
 
 echo $OUTPUT->footer();

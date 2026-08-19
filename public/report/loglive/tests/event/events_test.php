@@ -24,6 +24,9 @@
 
 namespace report_loglive\event;
 
+use core\context\course;
+use core\url;
+
 /**
  * Class report_loglive_events_testcase
  *
@@ -52,7 +55,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_report_viewed(): void {
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         // Trigger event for loglive report viewed.
         $event = \report_loglive\event\report_viewed::create(array('context' => $context));
 
@@ -65,7 +68,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\report_loglive\event\report_viewed', $event);
         $this->assertEquals($context, $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $url = new \moodle_url('/report/loglive/index.php', array('id' => $course->id));
+        $url = new url('/report/loglive/index.php', array('id' => $course->id));
         $this->assertEquals($url, $event->get_url());
     }
 }

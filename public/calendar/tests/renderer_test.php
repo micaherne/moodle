@@ -16,6 +16,8 @@
 
 namespace core_calendar;
 
+use core\url;
+
 /**
  * Renderer testcase.
  *
@@ -48,7 +50,7 @@ final class renderer_test extends \advanced_testcase {
         // Get course selector for user.
         $this->setUser($user);
         $renderer = $PAGE->get_renderer('core_calendar');
-        $html = $renderer->course_filter_selector(new \moodle_url('/'));
+        $html = $renderer->course_filter_selector(new url('/'));
 
         // It should contain courses by fullname.
         $this->assertStringContainsString(
@@ -63,7 +65,7 @@ final class renderer_test extends \advanced_testcase {
         // Turn on the option to show shortnames as well.
         set_config('courselistshortnames', true);
 
-        $html = $renderer->course_filter_selector(new \moodle_url('/'));
+        $html = $renderer->course_filter_selector(new url('/'));
 
         // It should contain courses by fullname and shortname.
         $this->assertStringContainsString(

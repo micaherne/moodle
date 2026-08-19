@@ -23,6 +23,8 @@
  * @package   core_group
  */
 
+use core\context\course;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -43,7 +45,7 @@ class grouping_form extends moodleform {
      */
     function definition() {
         global $USER, $CFG, $COURSE;
-        $coursecontext = context_course::instance($COURSE->id);
+        $coursecontext = course::instance($COURSE->id);
 
         $mform =& $this->_form;
         $editoroptions = $this->_customdata['editoroptions'];

@@ -24,6 +24,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -135,7 +137,7 @@ class completion_criteria_course extends completion_criteria {
         global $DB;
 
         $prereq = $DB->get_record('course', array('id' => $this->courseinstance));
-        $coursecontext = context_course::instance($prereq->id, MUST_EXIST);
+        $coursecontext = course::instance($prereq->id, MUST_EXIST);
         $fullname = format_string($prereq->fullname, true, array('context' => $coursecontext));
         return shorten_text(urldecode($fullname));
     }
@@ -215,7 +217,7 @@ class completion_criteria_course extends completion_criteria {
         $info = new completion_info($course);
 
         $prereq = $DB->get_record('course', array('id' => $this->courseinstance));
-        $coursecontext = context_course::instance($prereq->id, MUST_EXIST);
+        $coursecontext = course::instance($prereq->id, MUST_EXIST);
         $fullname = format_string($prereq->fullname, true, array('context' => $coursecontext));
 
         $prereq_info = new completion_info($prereq);

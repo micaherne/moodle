@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/filelib.php');
 
-use context_system;
+use core\context\system;
 use curl;
 
 /**
@@ -239,7 +239,7 @@ class backpack_api_mapping {
                 }
             }
         }
-        $context = context_system::instance();
+        $context = system::instance();
         $exporter = $this->requestexporter;
         $output = $PAGE->get_renderer('core', 'badges');
         if (!empty($exporter)) {
@@ -385,7 +385,7 @@ class backpack_api_mapping {
         if (isset($response->result)) {
             $response = $response->result;
         }
-        $context = context_system::instance();
+        $context = system::instance();
         $exporter = $this->responseexporter;
         if (class_exists($exporter)) {
             $output = $PAGE->get_renderer('core', 'badges');

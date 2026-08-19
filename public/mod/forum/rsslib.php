@@ -25,6 +25,9 @@
  */
 
 /* Include the core RSS lib */
+use core\context\module;
+use core\exception\moodle_exception;
+
 require_once($CFG->libdir.'/rsslib.php');
 
 /**
@@ -46,7 +49,7 @@ function forum_rss_get_feed($context, $args) {
 
     $forumid  = clean_param($args[3], PARAM_INT);
     $cm = get_coursemodule_from_instance('forum', $forumid, 0, false, MUST_EXIST);
-    $modcontext = context_module::instance($cm->id);
+    $modcontext = module::instance($cm->id);
 
     //context id from db should match the submitted one
     if ($context->id != $modcontext->id || !has_capability('mod/forum:viewdiscussion', $modcontext)) {
@@ -149,7 +152,7 @@ function forum_rss_feed_discussions_sql($forum, $cm, $newsince=0) {
     $now = floor(time() / 60) * 60; // DB Cache Friendly.
     $params = array();
 
-    $modcontext = context_module::instance($cm->id);
+    $modcontext = module::instance($cm->id);
 
     if (!empty($CFG->forum_enabletimedposts)) { /// Users must fulfill timed posts
         if (!has_capability('mod/forum:viewhiddentimedposts', $modcontext)) {
@@ -207,7 +210,7 @@ function forum_rss_feed_discussions_sql($forum, $cm, $newsince=0) {
 function forum_rss_feed_posts_sql($forum, $cm, $newsince=0) {
     global $USER;
 
-    $modcontext = context_module::instance($cm->id);
+    $modcontext = module::instance($cm->id);
 
     // Get group enforcement SQL.
     $groupmode = groups_get_activity_groupmode($cm);
@@ -323,7 +326,7 @@ function forum_rss_feed_contents($forum, $sql, $params, $context) {
     }
 
     if (!$cm = get_coursemodule_from_instance('forum', $forum->id, $forum->course)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 
     $items = array();

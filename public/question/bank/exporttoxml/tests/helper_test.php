@@ -16,9 +16,9 @@
 
 namespace qbank_exporttoxml;
 
-use context_course;
-use context_module;
-use moodle_url;
+use core\context\course;
+use core\context\module;
+use core\url;
 use question_bank;
 
 /**
@@ -44,23 +44,23 @@ final class helper_test extends \advanced_testcase {
         // Create a course and an activity.
         $course = $generator->create_course();
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbankcontext = \context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
         $quiz = $generator->create_module('quiz', ['course' => $course->id]);
 
         // Create a question in each place.
         $questiongenerator = $generator->get_plugin_generator('core_question');
         $qbankqcat = $questiongenerator->create_question_category(['contextid' => $qbankcontext->id]);
         $qbankq = $questiongenerator->create_question('truefalse', null, ['category' => $qbankqcat->id]);
-        $quizqcat = $questiongenerator->create_question_category(['contextid' => context_module::instance($quiz->cmid)->id]);
+        $quizqcat = $questiongenerator->create_question_category(['contextid' => module::instance($quiz->cmid)->id]);
         $quizq = $questiongenerator->create_question('truefalse', null, ['category' => $quizqcat->id]);
 
         // Verify some URLs.
-        $this->assertEquals(new moodle_url('/question/bank/exporttoxml/exportone.php',
+        $this->assertEquals(new url('/question/bank/exporttoxml/exportone.php',
                 ['id' => $qbankq->id, 'cmid' => $qbank->cmid, 'sesskey' => sesskey()]),
                 helper::question_get_export_single_question_url(
                         question_bank::load_question_data($qbankq->id)));
 
-        $this->assertEquals(new moodle_url('/question/bank/exporttoxml/exportone.php',
+        $this->assertEquals(new url('/question/bank/exporttoxml/exportone.php',
                 ['id' => $quizq->id, 'cmid' => $quiz->cmid, 'sesskey' => sesskey()]),
                 helper::question_get_export_single_question_url(
                         question_bank::load_question($quizq->id)));

@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/mod/lti/lib.php');
@@ -43,7 +45,7 @@ if ($cartridgeurl) {
     lti_add_type($type, $data);
 }
 
-$pageurl = new moodle_url('/mod/lti/toolconfigure.php');
+$pageurl = new url('/mod/lti/toolconfigure.php');
 $PAGE->set_url($pageurl);
 $PAGE->set_title(get_string('toolregistration', 'mod_lti'));
 $PAGE->requires->string_for_js('success', 'moodle');

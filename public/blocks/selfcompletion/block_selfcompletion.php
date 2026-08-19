@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 require_once($CFG->libdir.'/completionlib.php');
 
 /**
@@ -54,7 +56,7 @@ class block_selfcompletion extends block_base {
         $this->content = new stdClass;
 
         // Can edit settings?
-        $can_edit = has_capability('moodle/course:update', context_course::instance($this->page->course->id));
+        $can_edit = has_capability('moodle/course:update', course::instance($this->page->course->id));
 
         // Get course completion data
         $info = new completion_info($this->page->course);

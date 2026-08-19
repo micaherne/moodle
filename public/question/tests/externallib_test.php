@@ -16,6 +16,10 @@
 
 namespace core_question;
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
 use core_external\restricted_context_exception;
 use core_question_external;
 
@@ -75,7 +79,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Create a question category.
         $cat = $questiongenerator->create_question_category();
 
-        $quba = \question_engine::make_questions_usage_by_activity('core_question_update_flag', \context_system::instance());
+        $quba = \question_engine::make_questions_usage_by_activity('core_question_update_flag', system::instance());
         $quba->set_preferred_behaviour('deferredfeedback');
         $questiondata = $questiongenerator->create_question('numerical', null, ['category' => $cat->id]);
         $question = \question_bank::load_question($questiondata->id);
@@ -102,7 +106,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
             core_question_external::update_flag($qubaid, $questionid, $qaid, $slot, $checksum, true);
             $this->fail('Exception expected due to invalid checksum.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('errorsavingflags', $e->errorcode);
         }
     }
@@ -196,7 +200,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
     ): void {
         $this->resetAfterTest();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $categories = [];
         $questions = [];
         $tagnames = [
@@ -258,7 +262,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
     public function test_get_random_question_summaries_invalid_category_id_param(): void {
         $this->resetAfterTest();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $this->expectException('\invalid_parameter_exception');
         core_question_external::get_random_question_summaries('invalid value', false, [], $context->id);
     }
@@ -270,7 +274,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
     public function test_get_random_question_summaries_invalid_includesubcategories_param(): void {
         $this->resetAfterTest();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $this->expectException('\invalid_parameter_exception');
         core_question_external::get_random_question_summaries(1, 'invalid value', [], $context->id);
     }
@@ -282,7 +286,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
     public function test_get_random_question_summaries_invalid_tagids_param(): void {
         $this->resetAfterTest();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $this->expectException('\invalid_parameter_exception');
         core_question_external::get_random_question_summaries(1, false, ['invalid', 'values'], $context->id);
     }
@@ -307,8 +311,8 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
-        $systemcontext = \context_system::instance();
+        $coursecontext = course::instance($course->id);
+        $systemcontext = system::instance();
         // Restrict access to external functions for the logged in user to only
         // the course we just created. External functions should not be allowed
         // to execute in any contexts above the course context.
@@ -334,7 +338,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest();
 
         list($category, $questions) = $this->create_category_and_questions(1);
-        $context = \context_system::instance();
+        $context = system::instance();
         $question = $questions[0];
         $expected = (object) [
             'id' => $question->id,
@@ -370,7 +374,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $tagids = [];
         $limit = 1;
         $offset = 0;
-        $context = \context_system::instance();
+        $context = system::instance();
         list($category, $questions) = $this->create_category_and_questions($numberofquestions);
 
         // Sort the questions by id to match the ordering of the result.
@@ -415,13 +419,13 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $roleid = $generator->create_role();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $numberofquestions = 5;
         $includesubcategories = false;
         $tagids = [];
-        $context = \context_system::instance();
+        $context = system::instance();
         list($category, $questions) = $this->create_category_and_questions($numberofquestions);
-        $categorycontext = \context::instance_by_id($category->contextid);
+        $categorycontext = context::instance_by_id($category->contextid);
 
         $generator->role_assign($roleid, $user->id, $systemcontext->id);
         // Prohibit all of the tag capabilities.
@@ -463,7 +467,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         }
 
         if (!empty($tagnames) && !empty($questions)) {
-            $context = \context::instance_by_id($category->contextid);
+            $context = context::instance_by_id($category->contextid);
             \core_tag_tag::set_item_tags('core_question', 'question', $questions[0]->id, $context, $tagnames);
         }
 

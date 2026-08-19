@@ -16,6 +16,8 @@
 
 namespace enrol_lti\local\ltiadvantage\service;
 
+use core\exception\coding_exception;
+use core\url;
 use enrol_lti\local\ltiadvantage\entity\application_registration;
 use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
 use enrol_lti\local\ltiadvantage\repository\context_repository;
@@ -75,11 +77,11 @@ class application_registration_service {
     private function registration_from_dto(\stdClass $dto): application_registration {
         $registration = $this->appregistrationrepo->find($dto->id);
         $registration->set_name($dto->name);
-        $registration->set_platformid(new \moodle_url($dto->platformid));
+        $registration->set_platformid(new url($dto->platformid));
         $registration->set_clientid($dto->clientid);
-        $registration->set_accesstokenurl(new \moodle_url($dto->accesstokenurl));
-        $registration->set_jwksurl(new \moodle_url($dto->jwksurl));
-        $registration->set_authenticationrequesturl(new \moodle_url($dto->authenticationrequesturl));
+        $registration->set_accesstokenurl(new url($dto->accesstokenurl));
+        $registration->set_jwksurl(new url($dto->jwksurl));
+        $registration->set_authenticationrequesturl(new url($dto->authenticationrequesturl));
         $registration->complete_registration();
         return $registration;
     }
@@ -121,7 +123,7 @@ class application_registration_service {
      */
     public function create_draft_application_registration(\stdClass $appregdto): application_registration {
         if (empty($appregdto->name)) {
-            throw new \coding_exception('Cannot create draft registration. Name is missing.');
+            throw new coding_exception('Cannot create draft registration. Name is missing.');
         }
         $draftregistration = $this->draft_registration_from_dto($appregdto);
         return $this->appregistrationrepo->save($draftregistration);
@@ -135,7 +137,7 @@ class application_registration_service {
      */
     public function update_application_registration(\stdClass $appregdto): application_registration {
         if (empty($appregdto->id)) {
-            throw new \coding_exception('Cannot update registration. Id is missing.');
+            throw new coding_exception('Cannot update registration. Id is missing.');
         }
         return $this->appregistrationrepo->save($this->registration_from_dto($appregdto));
     }

@@ -26,9 +26,11 @@ namespace core_calendar\local;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\exception\moodle_exception;
 use core_calendar\local\event\container;
 use core_calendar\local\event\entities\event_interface;
 use core_calendar\local\event\exceptions\limit_invalid_parameter_exception;
+use core_course\modinfo;
 
 /**
  * Class containing the local calendar API.
@@ -140,11 +142,11 @@ class api {
         }
 
         if (is_null($timesortfrom) && is_null($timesortto)) {
-            throw new \moodle_exception("Must provide a timesort to and/or from value");
+            throw new moodle_exception("Must provide a timesort to and/or from value");
         }
 
         if ($limitnum < 1 || $limitnum > 50) {
-            throw new \moodle_exception("Limit must be between 1 and 50 (inclusive)");
+            throw new moodle_exception("Limit must be between 1 and 50 (inclusive)");
         }
 
         \core_calendar\local\event\container::set_requesting_user($user->id);
@@ -294,15 +296,15 @@ class api {
         // If the callback returns false for either value it means that
         // there is no valid time start range.
         if ($min === false || $max === false) {
-            throw new \moodle_exception('The start day of this event can not be modified');
+            throw new moodle_exception('The start day of this event can not be modified');
         }
 
         if ($min && $starttimestamp < $min[0]) {
-            throw new \moodle_exception($min[1]);
+            throw new moodle_exception($min[1]);
         }
 
         if ($max && $starttimestamp > $max[0]) {
-            throw new \moodle_exception($max[1]);
+            throw new moodle_exception($max[1]);
         }
 
         // This function does our capability checks.
@@ -329,7 +331,7 @@ class api {
             // Rebuild the course cache to make sure the updated dates are reflected.
             $courseid = $event->get_course()->get('id');
             $cmid = $event->get_course_module()->get('id');
-            \course_modinfo::purge_course_module_cache($courseid, $cmid);
+            modinfo::purge_course_module_cache($courseid, $cmid);
             rebuild_course_cache($courseid, true, true);
         }
 

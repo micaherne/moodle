@@ -17,11 +17,11 @@
 namespace core_badges\output;
 
 use core_badges\badge;
-use moodle_url;
-use renderer_base;
-use single_button;
+use core\url;
+use core\output\renderer_base;
+use core\output\single_button;
 use moodle_page;
-use url_select;
+use core\output\url_select;
 
 /**
  * Class manage_badge_action_bar - Display the action bar
@@ -66,7 +66,7 @@ class manage_badge_action_bar extends base_action_bar {
         if ($this->page->context->contextlevel == CONTEXT_COURSE) {
             $params['id'] = $this->page->context->instanceid;
         }
-        $elements['button'] = new single_button(new moodle_url('/badges/index.php', $params), get_string('back'), 'get');
+        $elements['button'] = new single_button(new url('/badges/index.php', $params), get_string('back'), 'get');
         $badgenav = $this->generate_badge_navigation();
         if ($badgenav) {
             $badgenavselect = new url_select($badgenav, $this->page->url->out(false), null);
@@ -171,7 +171,7 @@ class manage_badge_action_bar extends base_action_bar {
                 $content = $DB->count_records_sql($sql, ['badgeid' => $this->badge->id, 'badgeid2' => $this->badge->id]);
             }
 
-            $url = new moodle_url($checks['url'], $params + ($checks['additionalparams'] ?? []));
+            $url = new url($checks['url'], $params + ($checks['additionalparams'] ?? []));
             $options[get_string($stringidentifier, 'core_badges', $content)] = $url->out(false);
         }
         if (count($options) <= 1) {

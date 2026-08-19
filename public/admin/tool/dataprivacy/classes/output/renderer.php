@@ -26,10 +26,10 @@ namespace tool_dataprivacy\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use html_writer;
-use moodle_exception;
-use plugin_renderer_base;
+use core\exception\coding_exception;
+use core\output\html_writer;
+use core\exception\moodle_exception;
+use core\output\plugin_renderer_base;
 
 /**
  * Renderer class for tool_dataprivacy.

@@ -23,6 +23,8 @@
  */
 
 namespace tool_log\helper;
+
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -54,7 +56,7 @@ trait store {
         $called = get_called_class();
         $parts = explode('\\', $called);
         if (!isset($parts[0]) || strpos($parts[0], 'logstore_') !== 0) {
-            throw new \coding_exception("Store $called doesn't define classes in correct namespaces.");
+            throw new coding_exception("Store $called doesn't define classes in correct namespaces.");
         }
         $this->component = $parts[0];
         $this->store = str_replace('logstore_', '', $this->component);

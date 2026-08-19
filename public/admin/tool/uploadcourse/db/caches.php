@@ -22,10 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 $definitions = array(
     'helper' => array(
-        'mode' => cache_store::MODE_REQUEST,
+        'mode' => store::MODE_REQUEST,
     )
 );

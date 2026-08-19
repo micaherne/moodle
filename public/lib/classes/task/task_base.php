@@ -25,7 +25,7 @@
 namespace core\task;
 
 use core_component;
-use core_plugin_manager;
+use core\plugin_manager;
 use core\check\result;
 
 /**
@@ -141,7 +141,7 @@ abstract class task_base {
 
             // Load component information from plugin manager.
             if ($component !== 'core' && strpos($component, 'core_') !== 0) {
-                $plugininfo = \core_plugin_manager::instance()->get_plugin_info($component);
+                $plugininfo = plugin_manager::instance()->get_plugin_info($component);
                 if ($plugininfo && $plugininfo->component) {
                     $this->set_component($plugininfo->component);
                 } else {
@@ -235,7 +235,7 @@ abstract class task_base {
         if ($componenttype === 'core') {
             return true;
         } else {
-            $plugininfo = core_plugin_manager::instance()->get_plugin_info($component);
+            $plugininfo = plugin_manager::instance()->get_plugin_info($component);
             return $plugininfo && ($plugininfo->is_enabled() !== false);
         }
     }

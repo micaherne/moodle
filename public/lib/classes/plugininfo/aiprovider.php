@@ -16,8 +16,8 @@
 
 namespace core\plugininfo;
 
-use core_plugin_manager;
-use moodle_url;
+use core\plugin_manager;
+use core\url;
 
 /**
  * AI placement plugin info class.
@@ -50,15 +50,15 @@ class aiprovider extends base {
     }
 
     #[\Override]
-    public static function get_manage_url(): moodle_url {
-        return new moodle_url('/admin/settings.php', [
+    public static function get_manage_url(): url {
+        return new url('/admin/settings.php', [
             'section' => 'aiprovider',
         ]);
     }
 
     #[\Override]
     public static function get_enabled_plugins(): ?array {
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugins = $pluginmanager->get_installed_plugins('aiprovider');
 
         if (!$plugins) {

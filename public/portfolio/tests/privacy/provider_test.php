@@ -25,6 +25,8 @@ namespace core_portfolio\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user;
 use core_portfolio\privacy\provider;
 use core_privacy\local\request\approved_userlist;
 
@@ -90,7 +92,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
     public function test_get_contexts_for_userid(): void {
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $this->create_portfolio_data('googledocs', 'Google Docs', $user, 'visible', 1);
         $contextlist = provider::get_contexts_for_userid($user->id);
         $this->assertEquals($context->id, $contextlist->current()->id);
@@ -102,7 +104,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
     public function test_export_user_data(): void {
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $this->create_portfolio_data('googledocs', 'Google Docs', $user, 'visible', 1);
         $contextlist = new \core_privacy\local\request\approved_contextlist($user, 'core_portfolio', [$context->id]);
         provider::export_user_data($contextlist);
@@ -123,12 +125,12 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->create_portfolio_data('googledocs', 'Google Docs', $user1, 'visible', 1);
         $this->create_portfolio_data('onedrive', 'Microsoft onedrive', $user2, 'visible', 1);
         // Check a system context sent through.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         provider::delete_data_for_all_users_in_context($systemcontext);
         $records = $DB->get_records('portfolio_instance_user');
         $this->assertCount(2, $records);
         $this->assertCount(4, $DB->get_records('portfolio_log'));
-        $context = \context_user::instance($user1->id);
+        $context = user::instance($user1->id);
         provider::delete_data_for_all_users_in_context($context);
         $records = $DB->get_records('portfolio_instance_user');
         // Only one entry should remain for user 2.
@@ -154,7 +156,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(2, $records);
         $this->assertCount(4, $DB->get_records('portfolio_log'));
 
-        $context = \context_user::instance($user1->id);
+        $context = user::instance($user1->id);
         $contextlist = new \core_privacy\local\request\approved_contextlist($user1, 'core_portfolio', [$context->id]);
         provider::delete_data_for_user($contextlist);
         $records = $DB->get_records('portfolio_instance_user');
@@ -174,7 +176,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $component = 'core_portfolio';
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         // The list of users should not return anything yet (related data still haven't been created).
         $userlist = new \core_privacy\local\request\userlist($usercontext, $component);
         provider::get_users_in_context($userlist);
@@ -192,7 +194,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // The list of users for system context should not return any users.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist);
         $this->assertCount(0, $userlist);
@@ -207,10 +209,10 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $component = 'core_portfolio';
         // Create user1.
         $user1 = $this->getDataGenerator()->create_user();
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         // Create user1.
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext2 = user::instance($user2->id);
 
         // Create portfolio data for user1 and user2.
         $this->create_portfolio_data('googledocs', 'Google Docs', $user1,
@@ -247,7 +249,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // User data should be only removed in the user context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Add userlist2 to the approved user list in the system context.
         $approvedlist = new approved_userlist($systemcontext, $component, $userlist2->get_userids());
         // Delete user1 data using delete_data_for_user.

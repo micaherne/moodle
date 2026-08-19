@@ -31,6 +31,10 @@
  * @copyright 2010 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\course;
+use core\output\pix_icon;
+use core\output\renderer_base;
+
 class base_setting_ui {
     /**
      * Prefix applied to all inputs/selects
@@ -403,7 +407,7 @@ class backup_setting_ui_text extends backup_setting_ui {
      */
     public function get_element_properties(?base_task $task = null, ?renderer_base $output = null) {
         $icon = $this->get_icon();
-        $context = context_course::instance($task->get_courseid());
+        $context = course::instance($task->get_courseid());
         $label = format_string($this->get_label($task), true, array('context' => $context));
         if (!empty($icon)) {
             $label .= $output->render($icon);
@@ -467,7 +471,7 @@ class backup_setting_ui_checkbox extends backup_setting_ui {
     public function get_element_properties(?base_task $task = null, ?renderer_base $output = null) {
         // Name, label, text, attributes.
         $icon = $this->get_icon();
-        $context = context_course::instance($task->get_courseid());
+        $context = course::instance($task->get_courseid());
         $label = format_string($this->get_label($task), true, array('context' => $context));
         if (!empty($icon)) {
             $label .= $output->render($icon);
@@ -582,7 +586,7 @@ class backup_setting_ui_radio extends backup_setting_ui {
      */
     public function get_element_properties(?base_task $task = null, ?renderer_base $output = null) {
         $icon = $this->get_icon();
-        $context = context_course::instance($task->get_courseid());
+        $context = course::instance($task->get_courseid());
         $label = format_string($this->get_label($task), true, array('context' => $context));
         if (!empty($icon)) {
             $label .= $output->render($icon);
@@ -660,7 +664,7 @@ class backup_setting_ui_select extends backup_setting_ui {
      */
     public function get_element_properties(?base_task $task = null, ?renderer_base $output = null) {
         $icon = $this->get_icon();
-        $context = context_course::instance($task->get_courseid());
+        $context = course::instance($task->get_courseid());
         $label = format_string($this->get_label($task), true, array('context' => $context));
         if (!empty($icon)) {
             $label .= $output->render($icon);

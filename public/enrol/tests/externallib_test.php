@@ -16,12 +16,17 @@
 
 namespace core_enrol;
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_courseformat\formatactions;
 use core_enrol_external;
 use core_external\external_api;
 use enrol_user_enrolment_form;
 use stdClass;
-use core_user;
+use core\user;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -264,7 +269,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Create the course and the users.
         $course = $this->getDataGenerator()->create_course(array('groupmode' => $settings['coursegroupmode']));
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user0 = $this->getDataGenerator()->create_user(array('username' => 'user0'));     // A user without group.
         $user1 = $this->getDataGenerator()->create_user(array('username' => 'user1'));     // User for group 1.
         $user2 = $this->getDataGenerator()->create_user(array('username' => 'user2'));     // Two users for group 2.
@@ -328,7 +333,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 $this->expectExceptionMessage($exception['message']);
             } else {
                 // Failed, only canview and exception are supported.
-                throw new \coding_exception('Incomplete, only canview and exception are supported');
+                throw new coding_exception('Incomplete, only canview and exception are supported');
             }
 
             // Switch to the user and assign the role.
@@ -374,7 +379,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Create the course and the users.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user0 = $this->getDataGenerator()->create_user(['username' => 'user0active']);
         $user1 = $this->getDataGenerator()->create_user(['username' => 'user1active']);
         $user2 = $this->getDataGenerator()->create_user(['username' => 'user2active']);
@@ -461,7 +466,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Create the course and the users.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user0 = $this->getDataGenerator()->create_user(['username' => 'user0active']);
 
         // Create a role to add the allowedcaps. Users will have this role assigned.
@@ -547,7 +552,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Default format (firstname lastname): initials must match core_user::get_initials().
         foreach ($result as $user) {
             $this->assertNotEmpty($user['initials']);
-            $expectedinitials = core_user::get_initials($users[$user['id']]);
+            $expectedinitials = user::get_initials($users[$user['id']]);
             $this->assertEquals($expectedinitials, $user['initials']);
         }
     }
@@ -585,8 +590,8 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $course1 = self::getDataGenerator()->create_course($coursedata1);
         $course2 = self::getDataGenerator()->create_course($coursedata2);
         $courses = array($course1, $course2);
-        $contexts = array ($course1->id => \context_course::instance($course1->id),
-            $course2->id => \context_course::instance($course2->id));
+        $contexts = array ($course1->id => course::instance($course1->id),
+            $course2->id => course::instance($course2->id));
 
         $student = $this->getDataGenerator()->create_user();
         $otherstudent = $this->getDataGenerator()->create_user();
@@ -619,8 +624,8 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Set course hidden and favourited.
         set_user_preference('block_myoverview_hidden_course_' . $course1->id, 1, $student);
-        $ufservice = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($student->id));
-        $ufservice->create_favourite('core_course', 'courses', $course1->id, \context_system::instance());
+        $ufservice = \core_favourites\service_factory::get_service_for_user_context(context_user::instance($student->id));
+        $ufservice->create_favourite('core_course', 'courses', $course1->id, system::instance());
 
         $this->setUser($student);
         // Call the external function.
@@ -741,7 +746,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $user1 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $user2 = $this->getDataGenerator()->create_and_enrol($course, 'student');
@@ -829,7 +834,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         ];
 
         $course = self::getDataGenerator()->create_course($coursedata);
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Enrol a student in the course.
         $student = $this->getDataGenerator()->create_user();
@@ -942,7 +947,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($user);
         try {
             core_enrol_external::get_course_enrolment_methods($course2->id);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('coursehidden', $e->errorcode);
         }
     }
@@ -961,7 +966,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($return->user3);
 
         // Set the required capabilities by the external function.
-        $return->context = \context_course::instance($return->course->id);
+        $return->context = course::instance($return->course->id);
         $return->roleid = $this->assignUserCapability($capability, $return->context->id);
         $this->assignUserCapability('moodle/user:viewdetails', $return->context->id, $return->roleid);
 
@@ -1066,7 +1071,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Call without required capability.
         $this->unassignUserCapability($capability, $data->context->id, $data->roleid);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $categories = core_enrol_external::get_enrolled_users($data->course->id);
     }
 
@@ -1079,7 +1084,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Create the course and fetch its context.
         $return->course = self::getDataGenerator()->create_course();
-        $context = \context_course::instance($return->course->id);
+        $context = course::instance($return->course->id);
 
         // Create one teacher, and two students.
         $return->teacher = self::getDataGenerator()->create_user();
@@ -1578,7 +1583,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertEquals($user1->id, $result['id']);
         $this->assertEquals($user1->email, $result['email']);
         $this->assertEquals(fullname($user1), $result['fullname']);
-        $this->assertEquals(core_user::get_initials($user1), $result['initials']);
+        $this->assertEquals(user::get_initials($user1), $result['initials']);
 
         $this->setUser($user1);
 
@@ -1706,7 +1711,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertEquals(['id', 'fullname', 'customfields',
                 'profileimageurl', 'profileimageurlsmall', 'department', 'initials'], array_keys($result1));
         $this->assertEquals('Eigh User', $result1['fullname']);
-        $this->assertEquals(core_user::get_initials($user1), $result1['initials']);
+        $this->assertEquals(user::get_initials($user1), $result1['initials']);
         $this->assertEquals('Amphibians', $result1['department']);
 
         // Check the custom fields ONLY include the user identity one.

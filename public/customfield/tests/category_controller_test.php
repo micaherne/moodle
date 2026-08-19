@@ -16,6 +16,10 @@
 
 namespace core_customfield;
 
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_customfield_generator;
 
 /**
@@ -109,7 +113,7 @@ final class category_controller_test extends \advanced_testcase {
         try {
             category_controller::create($catrecord->id + 1);
             $this->fail('Expected exception');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('Category not found', $e->getMessage());
         }
 
@@ -117,7 +121,7 @@ final class category_controller_test extends \advanced_testcase {
         try {
             category_controller::create(0, (object)['area' => 'course', 'itemid' => 0]);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Not enough parameters ' .
                 'to initialise category_controller - unknown component', $e->getMessage());
         }
@@ -126,7 +130,7 @@ final class category_controller_test extends \advanced_testcase {
         try {
             category_controller::create(0, (object)['component' => 'core_course', 'itemid' => 0]);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Not enough parameters ' .
                 'to initialise category_controller - unknown area', $e->getMessage());
         }
@@ -135,7 +139,7 @@ final class category_controller_test extends \advanced_testcase {
         try {
             category_controller::create(0, (object)['component' => 'core_course', 'area' => 'course']);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Not enough parameters ' .
                 'to initialise category_controller - unknown itemid', $e->getMessage());
         }
@@ -145,7 +149,7 @@ final class category_controller_test extends \advanced_testcase {
         try {
             category_controller::create(0, (object)['component' => 'x', 'area' => 'course', 'itemid' => 0], $handler);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Component of the handler ' .
                 'does not match the one from the record', $e->getMessage());
         }
@@ -153,7 +157,7 @@ final class category_controller_test extends \advanced_testcase {
         try {
             category_controller::create(0, (object)['component' => 'core_course', 'area' => 'x', 'itemid' => 0], $handler);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Area of the handler ' .
                 'does not match the one from the record', $e->getMessage());
         }
@@ -161,7 +165,7 @@ final class category_controller_test extends \advanced_testcase {
         try {
             category_controller::create(0, (object)['component' => 'core_course', 'area' => 'course', 'itemid' => 1], $handler);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Itemid of the ' .
                 'handler does not match the one from the record', $e->getMessage());
         }
@@ -172,10 +176,10 @@ final class category_controller_test extends \advanced_testcase {
                 'component' => 'core_course',
                 'area' => 'course',
                 'itemid' => 0,
-                'contextid' => \context_user::instance($user->id)->id,
+                'contextid' => user::instance($user->id)->id,
             ], $handler);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Context of the ' .
                 'handler does not match the one from the record', $e->getMessage());
         }
@@ -196,7 +200,7 @@ final class category_controller_test extends \advanced_testcase {
         $categorydata->component = 'core_course';
         $categorydata->area      = 'course';
         $categorydata->itemid    = 0;
-        $categorydata->contextid = \context_system::instance()->id;
+        $categorydata->contextid = system::instance()->id;
         $category = category_controller::create(0, $categorydata);
         $category->save();
         $this->assertNotEmpty($category->get('id'));
@@ -220,7 +224,7 @@ final class category_controller_test extends \advanced_testcase {
 
         // Create the category.
         $params = ['component' => 'core_course', 'area' => 'course', 'itemid' => 0, 'name' => 'Cat1',
-            'contextid' => \context_system::instance()->id];
+            'contextid' => system::instance()->id];
         $c1 = category_controller::create(0, (object)$params);
         $c1->save();
         $this->assertNotEmpty($c1->get('id'));

@@ -21,6 +21,8 @@
  * @copyright  2013 Gordon Bateson (gordon.bateson@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\coding_exception;
+
 class qtype_ordering_question extends question_graded_automatically {
 
     /** Select all answers */

@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class media_vimeo_plugin extends core_media_player_external {
-    protected function embed_external(moodle_url $url, $name, $width, $height, $options) {
+    protected function embed_external(url $url, $name, $width, $height, $options) {
         global $OUTPUT;
 
         $donottrack = get_config('media_vimeo', 'donottrack');
@@ -51,7 +53,7 @@ class media_vimeo_plugin extends core_media_player_external {
             $params['dnt'] = 1;
         }
 
-        $embedurl = new moodle_url("https://player.vimeo.com/video/$videoid", $params);
+        $embedurl = new url("https://player.vimeo.com/video/$videoid", $params);
         // Template context.
         $context = [
             'width' => $width,

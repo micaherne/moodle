@@ -27,12 +27,12 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
-use moodle_url;
-use renderable;
-use templatable;
-use renderer_base;
+use core\url;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
-use help_icon;
+use core\output\help_icon;
 
 /**
  * Class containing data for tool_configure page
@@ -53,11 +53,11 @@ class tool_configure_page implements renderable, templatable {
         $keyhelp = new help_icon('resourcekey', 'mod_lti');
         $secrethelp = new help_icon('password', 'mod_lti');
 
-        $url = new moodle_url('/mod/lti/typessettings.php', array('sesskey' => sesskey(), 'returnto' => 'toolconfigure'));
+        $url = new url('/mod/lti/typessettings.php', array('sesskey' => sesskey(), 'returnto' => 'toolconfigure'));
         $data->configuremanualurl = $url->out();
-        $url = new moodle_url('/admin/settings.php?section=modsettinglti');
+        $url = new url('/admin/settings.php?section=modsettinglti');
         $data->managetoolsurl = $url->out();
-        $url = new moodle_url('/mod/lti/toolproxies.php');
+        $url = new url('/mod/lti/toolproxies.php');
         $data->managetoolproxiesurl = $url->out();
         $data->keyhelp = $keyhelp->export_for_template($output);
         $data->secrethelp = $secrethelp->export_for_template($output);

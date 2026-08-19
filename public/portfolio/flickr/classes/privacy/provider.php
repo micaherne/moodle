@@ -25,6 +25,7 @@ namespace portfolio_flickr\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use core_privacy\local\metadata\collection;
 
 /**
@@ -57,7 +58,7 @@ class provider implements
      * @param   array $subcontext The subcontext within the context to export this information to.
      * @param   array $linkarray The weird and wonderful link array used to display information for a specific item
      */
-    public static function export_portfolio_user_data(int $userid, \context $context, array $subcontext, array $linkarray) {
+    public static function export_portfolio_user_data(int $userid, context $context, array $subcontext, array $linkarray) {
     }
 
     /**
@@ -65,7 +66,7 @@ class provider implements
      *
      * @param  \context $context The context to delete user data for.
      */
-    public static function delete_portfolio_for_context(\context $context) {
+    public static function delete_portfolio_for_context(context $context) {
     }
 
     /**
@@ -74,6 +75,6 @@ class provider implements
      * @param  int $userid The user to delete
      * @param  \context $context The context to refine the deletion.
      */
-    public static function delete_portfolio_for_user(int $userid, \context $context) {
+    public static function delete_portfolio_for_user(int $userid, context $context) {
     }
 }

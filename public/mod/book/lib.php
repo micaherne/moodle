@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\url;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__ . '/deprecatedlib.php');
@@ -149,7 +155,7 @@ function book_reset_userdata($data) {
                     continue;
                 }
 
-                $context = context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 core_tag_tag::delete_instances('mod_book', null, $context->id);
             }
         }
@@ -315,7 +321,7 @@ function book_extend_settings_navigation(settings_navigation $settingsnav, navig
             $string = get_string("turneditingon");
             $edit = '1';
         }
-        $url = new moodle_url('/mod/book/view.php', array('id'=>$params['id'], 'chapterid'=>$params['chapterid'], 'edit'=>$edit, 'sesskey'=>sesskey()));
+        $url = new url('/mod/book/view.php', array('id'=>$params['id'], 'chapterid'=>$params['chapterid'], 'edit'=>$edit, 'sesskey'=>sesskey()));
         $editnode = navigation_node::create($string, $url, navigation_node::TYPE_SETTING);
         $editnode->set_show_in_secondary_navigation(false);
         $booknode->add_node($editnode, $firstkey);
@@ -527,7 +533,7 @@ function book_export_contents($cm, $baseurl) {
     global $DB;
 
     $contents = array();
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $book = $DB->get_record('book', array('id' => $cm->instance), '*', MUST_EXIST);
 
@@ -572,7 +578,7 @@ function book_export_contents($cm, $baseurl) {
         // Each chapter in a subdirectory.
         $chapterindexfile['filepath']     = "/{$chapter->id}/";
         $chapterindexfile['filesize']     = 0;
-        $chapterindexfile['fileurl']      = moodle_url::make_webservice_pluginfile_url(
+        $chapterindexfile['fileurl']      = url::make_webservice_pluginfile_url(
                     $context->id, 'mod_book', 'chapter', $chapter->id, '/', 'index.html')->out(false);
         $chapterindexfile['timecreated']  = $chapter->timecreated;
         $chapterindexfile['timemodified'] = $chapter->timemodified;
@@ -592,7 +598,7 @@ function book_export_contents($cm, $baseurl) {
             $file['filename']     = $fileinfo->get_filename();
             $file['filepath']     = "/{$chapter->id}" . $fileinfo->get_filepath();
             $file['filesize']     = $fileinfo->get_filesize();
-            $file['fileurl']      = moodle_url::make_webservice_pluginfile_url(
+            $file['fileurl']      = url::make_webservice_pluginfile_url(
                                         $context->id, 'mod_book', 'chapter', $chapter->id,
                                         $fileinfo->get_filepath(), $fileinfo->get_filename())->out(false);
             $file['timecreated']  = $fileinfo->get_timecreated();
@@ -730,7 +736,7 @@ function mod_book_core_calendar_provide_event_action(calendar_event $event,
         return null;
     }
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     if (!has_capability('mod/book:read', $context, $userid)) {
         return null;
@@ -746,7 +752,7 @@ function mod_book_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('view'),
-        new \moodle_url('/mod/book/view.php', ['id' => $cm->id]),
+        new url('/mod/book/view.php', ['id' => $cm->id]),
         1,
         true
     );

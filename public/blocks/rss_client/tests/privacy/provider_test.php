@@ -24,6 +24,8 @@ namespace block_rss_client\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user;
 use core_privacy\tests\provider_testcase;
 use block_rss_client\privacy\provider;
 use core_privacy\local\request\approved_userlist;
@@ -50,7 +52,7 @@ final class provider_test extends provider_testcase {
     public function test_get_contexts_for_userid(): void {
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $this->add_rss_feed($user);
 
@@ -65,7 +67,7 @@ final class provider_test extends provider_testcase {
     public function test_export_user_data(): void {
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $this->add_rss_feed($user);
         $this->add_rss_feed($user);
@@ -92,7 +94,7 @@ final class provider_test extends provider_testcase {
 
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $userlist = new \core_privacy\local\request\userlist($usercontext, $component);
         provider::get_users_in_context($userlist);
@@ -108,7 +110,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // The list of users within the system context should be empty.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist2 = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist2);
         $this->assertCount(0, $userlist2);
@@ -121,9 +123,9 @@ final class provider_test extends provider_testcase {
         $component = 'block_rss_client';
 
         $user1 = $this->getDataGenerator()->create_user();
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext2 = user::instance($user2->id);
 
         $this->add_rss_feed($user1);
         $this->add_rss_feed($user2);
@@ -160,7 +162,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // Convert $userlist2 into an approved_contextlist in the system context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $approvedlist2 = new approved_userlist($systemcontext, $component, $userlist2->get_userids());
         // Delete using delete_data_for_user.
         provider::delete_data_for_users($approvedlist2);
@@ -178,7 +180,7 @@ final class provider_test extends provider_testcase {
         global $DB;
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $this->add_rss_feed($user);
 
@@ -200,7 +202,7 @@ final class provider_test extends provider_testcase {
         global $DB;
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $this->add_rss_feed($user);
 

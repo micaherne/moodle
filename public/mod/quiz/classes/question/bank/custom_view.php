@@ -27,8 +27,11 @@ namespace mod_quiz\question\bank;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use core\output\datafilter;
 use core\output\html_writer;
+use core\url;
+use core_course\cm_info;
 use core_question\local\bank\column_base;
 use core_question\local\bank\condition;
 use core_question\local\bank\column_manager_base;
@@ -167,7 +170,7 @@ class custom_view extends \core_question\local\bank\view {
         $params['addquestion'] = $questionid;
         $params['sesskey'] = sesskey();
         $params['cmid'] = $this->cm->id;
-        return new \moodle_url('/mod/quiz/edit.php', $params);
+        return new url('/mod/quiz/edit.php', $params);
     }
 
     /**
@@ -188,13 +191,13 @@ class custom_view extends \core_question\local\bank\view {
         return $out;
     }
 
-    protected function display_bottom_controls(\context $catcontext): void {
+    protected function display_bottom_controls(context $catcontext): void {
         $cmoptions = new \stdClass();
         $cmoptions->hasattempts = !empty($this->quizhasattempts);
 
         $canuseall = has_capability('moodle/question:useall', $catcontext);
 
-        echo \html_writer::start_tag('div', ['class' => 'pt-2']);
+        echo html_writer::start_tag('div', ['class' => 'pt-2']);
         if ($canuseall) {
             // Add selected questions to the quiz.
             $params = [
@@ -207,9 +210,9 @@ class custom_view extends \core_question\local\bank\view {
                 'data-toggle' => 'action',
                 'disabled' => true,
             ];
-            echo \html_writer::empty_tag('input', $params);
+            echo html_writer::empty_tag('input', $params);
         }
-        echo \html_writer::end_tag('div');
+        echo html_writer::end_tag('div');
     }
 
     /**
@@ -315,7 +318,7 @@ class custom_view extends \core_question\local\bank\view {
      */
     public function display(): void {
 
-        echo \html_writer::start_div('questionbankwindow boxwidthwide boxaligncenter', [
+        echo html_writer::start_div('questionbankwindow boxwidthwide boxaligncenter', [
             'data-component' => 'core_question',
             'data-callback' => 'display_question_bank',
             'data-contextid' => $this->contexts->lowest()->id,
@@ -328,7 +331,7 @@ class custom_view extends \core_question\local\bank\view {
         $this->wanted_filters();
         // Continues with list of questions.
         $this->display_question_list();
-        echo \html_writer::end_div();
+        echo html_writer::end_div();
     }
 
     /**
@@ -343,7 +346,7 @@ class custom_view extends \core_question\local\bank\view {
             return '';
         }
 
-        $cminfo = \cm_info::create($this->cm);
+        $cminfo = cm_info::create($this->cm);
 
         return $OUTPUT->render_from_template('mod_quiz/switch_bank_header', ['currentbank' => $cminfo->get_formatted_name()]);
     }

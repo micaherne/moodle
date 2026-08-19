@@ -23,6 +23,11 @@
  * @package core_group
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->dirroot.'/group/lib.php');
@@ -35,19 +40,19 @@ $course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);
 $PAGE->set_url('/group/import.php', array('id'=>$id));
 
 require_login($course);
-$context = context_course::instance($id);
+$context = course::instance($id);
 
 require_capability('moodle/course:managegroups', $context);
 
 $strimportgroups = get_string('importgroups', 'core_group');
 
 $PAGE->navbar->add($strimportgroups);
-navigation_node::override_active_url(new moodle_url('/group/index.php', array('id' => $course->id)));
+navigation_node::override_active_url(new url('/group/index.php', array('id' => $course->id)));
 $PAGE->set_title("$course->shortname: $strimportgroups");
 $PAGE->set_heading($course->fullname);
 $PAGE->set_pagelayout('admin');
 
-$returnurl = new moodle_url('/group/index.php', array('id'=>$id));
+$returnurl = new url('/group/index.php', array('id'=>$id));
 
 $importform = new groups_import_form(null, ['id' => $id]);
 
@@ -69,11 +74,11 @@ if ($importform->is_cancelled()) {
     $readcount = $csvimport->load_csv_content($text, $encoding, $delimiter);
 
     if ($readcount === false) {
-        throw new \moodle_exception('csvfileerror', 'error', $PAGE->url, $csvimport->get_error());
+        throw new moodle_exception('csvfileerror', 'error', $PAGE->url, $csvimport->get_error());
     } else if ($readcount == 0) {
-        throw new \moodle_exception('csvemptyfile', 'error', $PAGE->url, $csvimport->get_error());
+        throw new moodle_exception('csvemptyfile', 'error', $PAGE->url, $csvimport->get_error());
     } else if ($readcount == 1) {
-        throw new \moodle_exception('csvnodata', 'error', $PAGE->url);
+        throw new moodle_exception('csvnodata', 'error', $PAGE->url);
     }
 
     $csvimport->init();
@@ -117,7 +122,7 @@ if ($importform->is_cancelled()) {
         $h = trim($h);
         $header[$i] = $h;
         if (!isset($required[$h]) && !isset($optionaldefaults[$h]) && !isset($optional[$h]) && !isset($customfieldnames[$h])) {
-            throw new \moodle_exception('invalidfieldname', 'error', $PAGE->url, $h);
+            throw new moodle_exception('invalidfieldname', 'error', $PAGE->url, $h);
         }
         if (isset($required[$h])) {
             $required[$h] = 2;
@@ -126,7 +131,7 @@ if ($importform->is_cancelled()) {
     // check for required fields
     foreach ($required as $key => $value) {
         if ($value < 2) {
-            throw new \moodle_exception('fieldrequired', 'error', $PAGE->url, $key);
+            throw new moodle_exception('fieldrequired', 'error', $PAGE->url, $key);
         }
     }
     $linenum = 2; // since header is line 1
@@ -147,7 +152,7 @@ if ($importform->is_cancelled()) {
             foreach ($record as $name => $value) {
                 // check for required values
                 if (isset($required[$name]) and !$value) {
-                    throw new \moodle_exception('missingfield', 'error', $PAGE->url, $name);
+                    throw new moodle_exception('missingfield', 'error', $PAGE->url, $name);
                 } else if ($name == "groupname") {
                     $newgroup->name = $value;
                 } else {
@@ -187,7 +192,7 @@ if ($importform->is_cancelled()) {
             if (isset($newgroup->courseid)) {
                 $linenum++;
                 $groupname = $newgroup->name;
-                $newgrpcoursecontext = context_course::instance($newgroup->courseid);
+                $newgrpcoursecontext = course::instance($newgroup->courseid);
 
                 ///Users cannot upload groups in courses they cannot update.
                 if (!has_capability('moodle/course:managegroups', $newgrpcoursecontext) or (!is_enrolled($newgrpcoursecontext) and !has_capability('moodle/course:view', $newgrpcoursecontext))) {

@@ -27,6 +27,8 @@
  *
  * TODO: Finish phpdocs
  */
+use core\context\course;
+
 class backup_plan extends base_plan implements loggable {
 
     protected $controller; // The backup controller building/executing this plan
@@ -155,7 +157,7 @@ class backup_plan extends base_plan implements loggable {
             );
             $event = \core\event\course_backup_created::create(array(
                 'objectid' => $this->get_courseid(),
-                'context' => context_course::instance($this->get_courseid()),
+                'context' => course::instance($this->get_courseid()),
                 'other' => $otherarray
             ));
             $event->trigger();

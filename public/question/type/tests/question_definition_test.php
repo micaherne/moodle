@@ -16,6 +16,8 @@
 
 namespace core_question;
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -54,7 +56,7 @@ final class question_definition_test extends \advanced_testcase {
         $options = new \question_display_options();
 
         // Prepare and start an interactive question attempt.
-        $quba = new \question_usage_by_activity('qtype_shortanswer', \context_system::instance());
+        $quba = new \question_usage_by_activity('qtype_shortanswer', system::instance());
         $qa = new \question_attempt($question, $quba->get_id());
         $qa->start('interactive', 1);
 

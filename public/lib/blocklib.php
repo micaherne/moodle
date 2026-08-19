@@ -26,6 +26,24 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\block;
+use core\context\course;
+use core\context\system;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\lang_string;
+use core\output\action_menu\link_primary;
+use core\output\action_menu\link_secondary;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\single_button;
+use core\output\single_select;
+use core\url;
+use core_block\output\block_contents;
+use core_block\output\block_move_target;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**#@+
@@ -348,7 +366,7 @@ class block_manager {
      * @return moodle_url URL for moving block $this->movingblock to this position.
      */
     protected function get_move_target_url($region, $weight) {
-        return new moodle_url($this->page->url, array('bui_moveid' => $this->movingblock,
+        return new url($this->page->url, array('bui_moveid' => $this->movingblock,
                 'bui_newregion' => $region, 'bui_newweight' => $weight, 'sesskey' => sesskey()));
     }
 
@@ -453,7 +471,7 @@ class block_manager {
     public static function protect_block($blockidorname) {
         global $DB;
 
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
 
         require_capability('moodle/site:config', $syscontext);
 
@@ -479,7 +497,7 @@ class block_manager {
     public static function unprotect_block($blockidorname) {
         global $DB;
 
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
 
         require_capability('moodle/site:config', $syscontext);
 
@@ -727,7 +745,7 @@ class block_manager {
         $ccselect = ', ' . context_helper::get_preload_record_columns_sql('ctx');
         $ccjoin = "LEFT JOIN {context} ctx ON (ctx.instanceid = bi.id AND ctx.contextlevel = :contextlevel)";
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $params = array(
             'contextlevel' => CONTEXT_BLOCK,
             'subpage1' => $this->page->subpage,
@@ -856,7 +874,7 @@ class block_manager {
         $blockinstance->id = $DB->insert_record('block_instances', $blockinstance);
 
         // Ensure the block context is created.
-        context_block::instance($blockinstance->id);
+        block::instance($blockinstance->id);
 
         // If the new instance was created, allow it to do additional setup
         if ($block = block_instance($blockname, $blockinstance)) {
@@ -1213,7 +1231,7 @@ class block_manager {
             return;
         }
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $defaultregion = $this->get_default_region();
         // Add a special system wide block instance only for themes that require it.
         $blockinstance = new stdClass;
@@ -1231,7 +1249,7 @@ class block_manager {
         $blockinstance->id = $DB->insert_record('block_instances', $blockinstance);
 
         // Ensure the block context is created.
-        context_block::instance($blockinstance->id);
+        block::instance($blockinstance->id);
 
         // If the new instance was created, allow it to do additional setup.
         if ($block = block_instance($blockname, $blockinstance)) {
@@ -1353,8 +1371,8 @@ class block_manager {
         if ($this->page->user_can_edit_blocks()) {
             // Move icon.
             $str = new lang_string('moveblock', 'block', $blocktitle);
-            $controls[] = new action_menu_link_primary(
-                new moodle_url($actionurl, array('bui_moveid' => $block->instance->id)),
+            $controls[] = new link_primary(
+                new url($actionurl, array('bui_moveid' => $block->instance->id)),
                 new pix_icon('t/move', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str,
                 array('class' => 'editing_move')
@@ -1365,15 +1383,15 @@ class block_manager {
         if ($this->page->user_can_edit_blocks() || $block->user_can_edit()) {
             // Edit config icon - always show - needed for positioning UI.
             $str = new lang_string('configureblock', 'block', $blocktitle);
-            $editactionurl = new moodle_url($actionurl, ['bui_editid' => $block->instance->id]);
+            $editactionurl = new url($actionurl, ['bui_editid' => $block->instance->id]);
             $editactionurl->remove_params(['sesskey']);
 
             // Handle editing block on admin index page, prevent the page redirecting before block action can begin.
-            if ($editactionurl->compare(new moodle_url('/admin/index.php'), URL_MATCH_BASE)) {
+            if ($editactionurl->compare(new url('/admin/index.php'), URL_MATCH_BASE)) {
                 $editactionurl->param('cache', 1);
             }
 
-            $controls[] = new action_menu_link_secondary(
+            $controls[] = new link_secondary(
                 $editactionurl,
                 new pix_icon('i/settings', $str, 'moodle', ['class' => 'iconsmall', 'title' => '']),
                 $str,
@@ -1392,24 +1410,24 @@ class block_manager {
             // Show/hide icon.
             if ($block->instance->visible) {
                 $str = new lang_string('hideblock', 'block', $blocktitle);
-                $url = new moodle_url($actionurl, array('bui_hideid' => $block->instance->id));
+                $url = new url($actionurl, array('bui_hideid' => $block->instance->id));
                 $icon = new pix_icon('t/hide', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
                 $attributes = array('class' => 'editing_hide');
             } else {
                 $str = new lang_string('showblock', 'block', $blocktitle);
-                $url = new moodle_url($actionurl, array('bui_showid' => $block->instance->id));
+                $url = new url($actionurl, array('bui_showid' => $block->instance->id));
                 $icon = new pix_icon('t/show', $str, 'moodle', array('class' => 'iconsmall', 'title' => ''));
                 $attributes = array('class' => 'editing_show');
             }
-            $controls[] = new action_menu_link_secondary($url, $icon, $str, $attributes);
+            $controls[] = new link_secondary($url, $icon, $str, $attributes);
         }
 
         // Assign roles.
         if (get_assignable_roles($block->context, ROLENAME_SHORT)) {
-            $rolesurl = new moodle_url('/admin/roles/assign.php', array('contextid' => $block->context->id,
+            $rolesurl = new url('/admin/roles/assign.php', array('contextid' => $block->context->id,
                 'returnurl' => $this->page->url->out_as_local_url()));
             $str = new lang_string('assignrolesinblock', 'block', $blocktitle);
-            $controls[] = new action_menu_link_secondary(
+            $controls[] = new link_secondary(
                 $rolesurl,
                 new pix_icon('i/assignroles', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str, array('class' => 'editing_assignroles')
@@ -1418,10 +1436,10 @@ class block_manager {
 
         // Permissions.
         if (has_capability('moodle/role:review', $block->context) or get_overridable_roles($block->context)) {
-            $rolesurl = new moodle_url('/admin/roles/permissions.php', array('contextid' => $block->context->id,
+            $rolesurl = new url('/admin/roles/permissions.php', array('contextid' => $block->context->id,
                 'returnurl' => $this->page->url->out_as_local_url()));
             $str = get_string('permissions', 'role');
-            $controls[] = new action_menu_link_secondary(
+            $controls[] = new link_secondary(
                 $rolesurl,
                 new pix_icon('i/permissions', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str, array('class' => 'editing_permissions')
@@ -1430,10 +1448,10 @@ class block_manager {
 
         // Change permissions.
         if (has_any_capability(array('moodle/role:safeoverride', 'moodle/role:override', 'moodle/role:assign'), $block->context)) {
-            $rolesurl = new moodle_url('/admin/roles/check.php', array('contextid' => $block->context->id,
+            $rolesurl = new url('/admin/roles/check.php', array('contextid' => $block->context->id,
                 'returnurl' => $this->page->url->out_as_local_url()));
             $str = get_string('checkpermissions', 'role');
-            $controls[] = new action_menu_link_secondary(
+            $controls[] = new link_secondary(
                 $rolesurl,
                 new pix_icon('i/checkpermissions', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str, array('class' => 'editing_checkroles')
@@ -1443,15 +1461,15 @@ class block_manager {
         if ($this->user_can_delete_block($block)) {
             // Delete icon.
             $str = new lang_string('deleteblock', 'block', $blocktitle);
-            $deleteactionurl = new moodle_url($actionurl, ['bui_deleteid' => $block->instance->id]);
+            $deleteactionurl = new url($actionurl, ['bui_deleteid' => $block->instance->id]);
             $deleteactionurl->remove_params(['sesskey']);
 
             // Handle deleting block on admin index page, prevent the page redirecting before block action can begin.
-            if ($deleteactionurl->compare(new moodle_url('/admin/index.php'), URL_MATCH_BASE)) {
+            if ($deleteactionurl->compare(new url('/admin/index.php'), URL_MATCH_BASE)) {
                 $deleteactionurl->param('cache', 1);
             }
 
-            $deleteconfirmationurl = new moodle_url($actionurl, [
+            $deleteconfirmationurl = new url($actionurl, [
                 'bui_deleteid' => $block->instance->id,
                 'bui_confirm' => 1,
                 'sesskey' => sesskey(),
@@ -1462,7 +1480,7 @@ class block_manager {
             // If the block is being shown in sub contexts display a warning.
             if ($block->instance->showinsubcontexts == 1) {
                 $parentcontext = context::instance_by_id($block->instance->parentcontextid);
-                $systemcontext = context_system::instance();
+                $systemcontext = system::instance();
                 $messagestring = new stdClass();
                 $messagestring->location = $parentcontext->get_context_name();
 
@@ -1480,7 +1498,7 @@ class block_manager {
                 $deleteblockmessage = json_encode(['deleteblockwarning', 'block', $messagestring]);
             }
 
-            $controls[] = new action_menu_link_secondary(
+            $controls[] = new link_secondary(
                 $deleteactionurl,
                 new pix_icon('t/delete', $str, 'moodle', array('class' => 'iconsmall', 'title' => '')),
                 $str,
@@ -1507,8 +1525,8 @@ class block_manager {
                     $lockicon = 'i/lock';
                     $lockstring = get_string('managecontextlock', 'admin');
                 }
-                $controls[] = new action_menu_link_secondary(
-                    new moodle_url(
+                $controls[] = new link_secondary(
+                    new url(
                         '/admin/lock.php',
                         [
                             'id' => $block->context->id,
@@ -1605,7 +1623,7 @@ class block_manager {
                 echo $OUTPUT->box(get_string('noblockstoaddhere'));
                 echo $OUTPUT->container($OUTPUT->action_link($addpage->url, get_string('back')), 'mx-3 mb-1');
             } else {
-                $url = new moodle_url($addpage->url, array('sesskey' => sesskey()));
+                $url = new url($addpage->url, array('sesskey' => sesskey()));
                 echo $OUTPUT->render_from_template('core/add_block_body',
                     ['blocks' => array_values($addableblocks),
                      'url' => '?' . $url->get_query_string(false)]);
@@ -1679,7 +1697,7 @@ class block_manager {
             // If the block is being shown in sub contexts display a warning.
             if ($block->instance->showinsubcontexts == 1) {
                 $parentcontext = context::instance_by_id($block->instance->parentcontextid);
-                $systemcontext = context_system::instance();
+                $systemcontext = system::instance();
                 $messagestring = new stdClass();
                 $messagestring->location = $parentcontext->get_context_name();
 
@@ -1701,8 +1719,8 @@ class block_manager {
             $PAGE->set_title($blocktitle . ': ' . $strdeletecheck);
             $PAGE->set_heading($site->fullname);
             echo $OUTPUT->header();
-            $confirmurl = new moodle_url($deletepage->url, array('sesskey' => sesskey(), 'bui_deleteid' => $block->instance->id, 'bui_confirm' => 1));
-            $cancelurl = new moodle_url($deletepage->url);
+            $confirmurl = new url($deletepage->url, array('sesskey' => sesskey(), 'bui_deleteid' => $block->instance->id, 'bui_confirm' => 1));
+            $cancelurl = new url($deletepage->url);
             $yesbutton = new single_button($confirmurl, get_string('yes'));
             $nobutton = new single_button($cancelurl, get_string('no'));
             echo $OUTPUT->confirm($message, $yesbutton, $nobutton);
@@ -1861,7 +1879,7 @@ class block_manager {
             $bits = explode('-', $this->page->pagetype);
             if ($bits[0] == 'tag' && !empty($this->page->subpage)) {
                 // better navbar for tag pages
-                $editpage->navbar->add(get_string('tags'), new moodle_url('/tag/'));
+                $editpage->navbar->add(get_string('tags'), new url('/tag/'));
                 $tag = core_tag_tag::get($this->page->subpage);
                 // tag search page doesn't have subpageid
                 if ($tag) {
@@ -1899,8 +1917,8 @@ class block_manager {
             $bi->subpagepattern = $data->bui_subpagepattern;
         }
 
-        $systemcontext = context_system::instance();
-        $frontpagecontext = context_course::instance(SITEID);
+        $systemcontext = system::instance();
+        $frontpagecontext = course::instance(SITEID);
         $parentcontext = context::instance_by_id($data->bui_parentcontextid);
 
         // Updating stickiness and contexts.  See MDL-21375 for details.
@@ -2465,7 +2483,7 @@ function block_add_block_ui($page, $output) {
         $menu[$block->name] = $block->title;
     }
 
-    $actionurl = new moodle_url($page->url, array('sesskey'=>sesskey()));
+    $actionurl = new url($page->url, array('sesskey'=>sesskey()));
     $select = new single_select($actionurl, 'bui_addblock', $menu, null, array(''=>get_string('adddots')), 'add_block');
     $select->set_label(get_string('addblock'), array('class'=>'accesshide'));
     $bc->content = $OUTPUT->render($select);
@@ -2790,7 +2808,7 @@ function blocks_add_default_system_blocks() {
     global $DB;
 
     $page = new moodle_page();
-    $page->set_context(context_system::instance());
+    $page->set_context(system::instance());
     // We don't add blocks required by the theme, they will be auto-created.
     $page->blocks->add_blocks(
         $page->blocks->filter_nonexistent_blocks([

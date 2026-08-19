@@ -16,6 +16,8 @@
 
 namespace mod_page;
 
+use core\context\module;
+
 /**
  * PHPUnit data generator testcase
  *
@@ -47,7 +49,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals('page', $cm->modname);
         $this->assertEquals($SITE->id, $cm->course);
 
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertEquals($page->cmid, $context->instanceid);
     }
 }

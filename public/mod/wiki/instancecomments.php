@@ -32,6 +32,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . "/mod/wiki/pagelib.php");
 require_once($CFG->dirroot . "/mod/wiki/locallib.php");
@@ -49,18 +52,18 @@ if ($newcontent) {
 }
 
 if (!$page = wiki_get_page($pageid)) {
-    throw new \moodle_exception('incorrectpageid', 'wiki');
+    throw new moodle_exception('incorrectpageid', 'wiki');
 }
 
 if (!$subwiki = wiki_get_subwiki($page->subwikiid)) {
-    throw new \moodle_exception('incorrectsubwikiid', 'wiki');
+    throw new moodle_exception('incorrectsubwikiid', 'wiki');
 }
 if (!$cm = get_coursemodule_from_instance("wiki", $subwiki->wikiid)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 if (!$wiki = wiki_get_wiki($subwiki->wikiid)) {
-    throw new \moodle_exception('incorrectwikiid', 'wiki');
+    throw new moodle_exception('incorrectwikiid', 'wiki');
 }
 require_login($course, true, $cm);
 
@@ -69,7 +72,7 @@ $PAGE->set_show_navigation_footer(false);
 if ($action == 'add' || $action == 'edit') {
     //just check sesskey
     if (!confirm_sesskey()) {
-        throw new \moodle_exception(get_string('invalidsesskey', 'wiki'));
+        throw new moodle_exception(get_string('invalidsesskey', 'wiki'));
     }
     $comm = new page_wiki_handlecomments($wiki, $subwiki, $cm, 'modulepage');
     $comm->set_page($page);
@@ -82,7 +85,7 @@ if ($action == 'add' || $action == 'edit') {
         $comm = new page_wiki_handlecomments($wiki, $subwiki, $cm, 'modulepage');
         $comm->set_page($page);
         if (!confirm_sesskey()) {
-            throw new \moodle_exception(get_string('invalidsesskey', 'wiki'));
+            throw new moodle_exception(get_string('invalidsesskey', 'wiki'));
         }
     }
 }
@@ -93,7 +96,7 @@ if ($action == 'delete') {
     if (empty($newcontent)) {
         $form = new mod_wiki_comments_form();
         if ($form->is_cancelled()) {
-            redirect(new moodle_url('/mod/wiki/comments.php', ['pageid' => (int)$pageid]));
+            redirect(new url('/mod/wiki/comments.php', ['pageid' => (int)$pageid]));
         }
         $newcomment = $form->get_data();
         $content = $newcomment->entrycomment_editor['text'];

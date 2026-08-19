@@ -16,6 +16,9 @@
 
 namespace core_analytics;
 
+use core\context;
+use core\context\course;
+use core\exception\coding_exception;
 use core_analytics\tests\mlbackend_helper_trait;
 
 defined('MOODLE_INTERNAL') || die();
@@ -100,7 +103,7 @@ final class manager_test extends \advanced_testcase {
         ));
 
         // Now we delete a context, the course predictions and prediction actions should be deleted.
-        $deletedcontext = \context::instance_by_id($predictioncontextid);
+        $deletedcontext = context::instance_by_id($predictioncontextid);
         delete_course($deletedcontext->instanceid, false);
 
         \core_analytics\manager::cleanup();
@@ -154,7 +157,7 @@ final class manager_test extends \advanced_testcase {
         $this->assertNotEmpty($DB->count_records('analytics_used_analysables'));
 
         // Now we delete an analysable, stored predict and training samples should be deleted.
-        $deletedcontext = \context_course::instance($coursepredict1->id);
+        $deletedcontext = course::instance($coursepredict1->id);
         delete_course($coursepredict1, false);
 
         \core_analytics\manager::cleanup();
@@ -224,7 +227,7 @@ final class manager_test extends \advanced_testcase {
     public function test_validate_models_declaration_exceptions(array $models, string $exception): void {
         $this->resetAfterTest();
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage($exception);
         \core_analytics\manager::validate_models_declaration($models);
     }
@@ -524,10 +527,10 @@ final class manager_test extends \advanced_testcase {
         $categorycontext = $category->get_context();
 
         $courseone = $this->getDataGenerator()->create_course(['fullname' => 'Course one', 'shortname' => 'CS1']);
-        $courseonecontext = \context_course::instance($courseone->id);
+        $courseonecontext = course::instance($courseone->id);
 
         $coursetwo = $this->getDataGenerator()->create_course(['fullname' => 'Course two', 'shortname' => 'CS2']);
-        $coursetwocontext = \context_course::instance($coursetwo->id);
+        $coursetwocontext = course::instance($coursetwo->id);
 
         // All context levels.
         $this->assertEqualsCanonicalizing([

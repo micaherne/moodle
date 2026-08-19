@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\url_select;
+use core\url;
+use core_table\output\html_table;
+
 require('../config.php');
 
 $id         = required_param('id', PARAM_INT); // course id
@@ -31,7 +38,7 @@ $confirm    = optional_param('confirm', 0, PARAM_BOOL);
 $confirm2   = optional_param('confirm2', 0, PARAM_BOOL);
 
 $course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 
 if ($course->id == SITEID) {
     redirect("$CFG->wwwroot/");
@@ -101,7 +108,7 @@ if ($canconfig and $action and confirm_sesskey()) {
                 if ($confirm) {
                     if (enrol_accessing_via_instance($instance)) {
                         if (!$confirm2) {
-                            $yesurl = new moodle_url('/enrol/instances.php',
+                            $yesurl = new url('/enrol/instances.php',
                                                      array('id' => $course->id,
                                                            'action' => 'delete',
                                                            'instance' => $instance->id,
@@ -123,7 +130,7 @@ if ($canconfig and $action and confirm_sesskey()) {
                 }
 
                 echo $OUTPUT->header();
-                $yesurl = new moodle_url('/enrol/instances.php',
+                $yesurl = new url('/enrol/instances.php',
                                          array('id' => $course->id,
                                                'action' => 'delete',
                                                'instance' => $instance->id,
@@ -152,7 +159,7 @@ if ($canconfig and $action and confirm_sesskey()) {
                 if ($instance->status != ENROL_INSTANCE_DISABLED) {
                     if (enrol_accessing_via_instance($instance)) {
                         if (!$confirm2) {
-                            $yesurl = new moodle_url('/enrol/instances.php',
+                            $yesurl = new url('/enrol/instances.php',
                                                      array('id' => $course->id,
                                                            'action' => 'disable',
                                                            'instance' => $instance->id,
@@ -210,7 +217,7 @@ $table->data  = array();
 // iterate through enrol plugins and add to the display table
 $updowncount = 1;
 $icount = count($instances);
-$url = new moodle_url('/enrol/instances.php', array('sesskey'=>sesskey(), 'id'=>$course->id));
+$url = new url('/enrol/instances.php', array('sesskey'=>sesskey(), 'id'=>$course->id));
 foreach ($instances as $instance) {
     if (!isset($plugins[$instance->enrol])) {
         continue;
@@ -229,13 +236,13 @@ foreach ($instances as $instance) {
 
     if ($canconfig) {
         if ($updowncount > 1) {
-            $aurl = new moodle_url($url, array('action'=>'up', 'instance'=>$instance->id));
+            $aurl = new url($url, array('action'=>'up', 'instance'=>$instance->id));
             $updown[] = $OUTPUT->action_icon($aurl, new pix_icon('t/up', $strup, 'core', array('class' => 'iconsmall')));
         } else {
             $updown[] = $OUTPUT->spacer();
         }
         if ($updowncount < $icount) {
-            $aurl = new moodle_url($url, array('action'=>'down', 'instance'=>$instance->id));
+            $aurl = new url($url, array('action'=>'down', 'instance'=>$instance->id));
             $updown[] = $OUTPUT->action_icon($aurl, new pix_icon('t/down', $strdown, 'core', array('class' => 'iconsmall')));
         } else {
             $updown[] = $OUTPUT->spacer();
@@ -243,16 +250,16 @@ foreach ($instances as $instance) {
         ++$updowncount;
 
         if ($plugin->can_delete_instance($instance)) {
-            $aurl = new moodle_url($url, array('action'=>'delete', 'instance'=>$instance->id));
+            $aurl = new url($url, array('action'=>'delete', 'instance'=>$instance->id));
             $edit[] = $OUTPUT->action_icon($aurl, new pix_icon('t/delete', $strdelete, 'core', array('class' => 'iconsmall')));
         }
 
         if (enrol_is_enabled($instance->enrol) && $plugin->can_hide_show_instance($instance)) {
             if ($instance->status == ENROL_INSTANCE_ENABLED) {
-                $aurl = new moodle_url($url, array('action'=>'disable', 'instance'=>$instance->id));
+                $aurl = new url($url, array('action'=>'disable', 'instance'=>$instance->id));
                 $edit[] = $OUTPUT->action_icon($aurl, new pix_icon('t/hide', $strdisable, 'core', array('class' => 'iconsmall')));
             } else if ($instance->status == ENROL_INSTANCE_DISABLED) {
-                $aurl = new moodle_url($url, array('action'=>'enable', 'instance'=>$instance->id));
+                $aurl = new url($url, array('action'=>'enable', 'instance'=>$instance->id));
                 $edit[] = $OUTPUT->action_icon($aurl, new pix_icon('t/show', $strenable, 'core', array('class' => 'iconsmall')));
             } else {
                 // plugin specific state - do not mess with it!
@@ -282,7 +289,7 @@ foreach (enrol_get_plugins(true) as $name=>$plugin) {
         if ($plugin->can_add_instance($course->id)) {
             // Standard add/edit UI.
             $params = array('type' => $name, 'courseid' => $course->id);
-            $url = new moodle_url('/enrol/editinstance.php', $params);
+            $url = new url('/enrol/editinstance.php', $params);
             $link = $url->out(false);
             $candidates[$link] = get_string('pluginname', 'enrol_'.$name);
         }

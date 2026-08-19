@@ -25,17 +25,19 @@
 
 namespace qbank_bulkmove\output;
 
-use cm_info;
+use core\output\renderable;
+use core\output\templatable;
+use core_course\cm_info;
 use core_question\local\bank\question_bank_helper;
 use core_question\output\question_category_selector;
-use moodle_url;
-use renderer_base;
-use single_button;
+use core\url;
+use core\output\renderer_base;
+use core\output\single_button;
 
 /**
  * Output class to create a modal template with selects for question banks, question categories, and a move button.
  */
-class bulk_move implements \renderable, \templatable {
+class bulk_move implements renderable, templatable {
 
     /** @var int The question bank id you are currently moving the question(s) from */
     protected int $currentbankid;
@@ -89,7 +91,7 @@ class bulk_move implements \renderable, \templatable {
         );
 
         $savebutton = new single_button(
-            new moodle_url('#'),
+            new url('#'),
             get_string('movequestions', 'qbank_bulkmove'),
             'post',
             single_button::BUTTON_PRIMARY,

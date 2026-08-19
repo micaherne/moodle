@@ -24,6 +24,10 @@
 
 namespace core_course\analytics\target;
 
+use core\context;
+use core\lang_string;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -51,8 +55,8 @@ class no_recent_accesses extends course_enrolments {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('target:norecentaccesses', 'course');
+    public static function get_name(): lang_string {
+        return new lang_string('target:norecentaccesses', 'course');
     }
 
     /**
@@ -64,7 +68,7 @@ class no_recent_accesses extends course_enrolments {
      * @param  \moodle_url  $insighturl
      * @return array                        The plain text message and the HTML message
      */
-    public function get_insight_body(\context $context, string $contextname, \stdClass $user, \moodle_url $insighturl): array {
+    public function get_insight_body(context $context, string $contextname, \stdClass $user, url $insighturl): array {
         global $OUTPUT;
 
         $a = (object)['coursename' => $contextname, 'userfirstname' => $user->firstname];

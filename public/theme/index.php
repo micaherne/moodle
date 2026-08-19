@@ -21,7 +21,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 
 // Theme selector has been moved to admin/themeselector.php.
-redirect (new moodle_url('/admin/themeselector.php'));
+redirect (new url('/admin/themeselector.php'));

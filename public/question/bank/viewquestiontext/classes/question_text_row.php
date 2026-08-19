@@ -16,6 +16,7 @@
 
 namespace qbank_viewquestiontext;
 
+use core\url;
 use core_question\local\bank\row_base;
 use qbank_viewquestiontext\output\question_text_format;
 use question_utils;
@@ -39,7 +40,7 @@ class question_text_row extends row_base {
     protected function init(): void {
 
         // Cannot use $this->get_preference because of PHP type hints.
-        $this->preference = (int)question_get_display_preference($this->get_preference_key(), 0, PARAM_INT, new \moodle_url(''));
+        $this->preference = (int)question_get_display_preference($this->get_preference_key(), 0, PARAM_INT, new url(''));
         $this->formatoptions = new \stdClass();
         $this->formatoptions->noclean = true;
         $this->formatoptions->para = false;

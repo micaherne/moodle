@@ -28,6 +28,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\module;
+use core\context\system;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
 use core_question\local\bank\question_version_status;
 use core_question\question_reference_manager;
 
@@ -380,7 +389,7 @@ function question_delete_question($questionid): void {
         debugging('Deleting question ' . $question->id . ' which is no longer linked to a context. ' .
             'Assuming system context to avoid errors, but this may mean that some data like files, ' .
             'tags, are not cleaned up.');
-        $questiondata->contextid = context_system::instance()->id;
+        $questiondata->contextid = system::instance()->id;
         $questiondata->categoryid = 0;
     }
 
@@ -489,7 +498,7 @@ function question_save_from_deletion($questionids, $newcontextid, $oldplace, $ne
  * @return boolean
  */
 function question_delete_activity($cm, $notused = false, bool $coursedeletion = false): bool {
-    $modcontext = context_module::instance($cm->id);
+    $modcontext = module::instance($cm->id);
     question_delete_context($modcontext->id, $coursedeletion);
     return true;
 }
@@ -649,7 +658,7 @@ function question_move_questions_to_category($questionids, $newcategoryid): bool
         // the original context may be missing. The question_moved event requires a valid context
         // and will throw a fatal exception otherwise, so fall back to the system context.
         if ($oldcontext === false) {
-            $oldcontext = \context_system::instance();
+            $oldcontext = system::instance();
         }
         $event = \core\event\question_moved::create_from_question_instance(
             $question,
@@ -1458,7 +1467,7 @@ function question_extend_settings_navigation(navigation_node $navigationnode, $c
         if ($viewquestionbanks) {
             return $navigationnode->add(
                 get_string('questionbank_plural', 'question'),
-                new moodle_url($baseurl, ['courseid' => $context->instanceid]),
+                new url($baseurl, ['courseid' => $context->instanceid]),
                 navigation_node::TYPE_CONTAINER,
                 null,
                 'questionbank',
@@ -1478,7 +1487,7 @@ function question_extend_settings_navigation(navigation_node $navigationnode, $c
 
     $questionnode = $navigationnode->add(
         get_string('questionbank', 'question'),
-        new moodle_url($baseurl, $params),
+        new url($baseurl, $params),
         navigation_node::TYPE_CONTAINER,
         null,
         'questionbank'
@@ -1487,7 +1496,7 @@ function question_extend_settings_navigation(navigation_node $navigationnode, $c
     $corenavigations = [
             'questions' => [
                     'title' => get_string('questions', 'question'),
-                    'url' => new moodle_url($baseurl)
+                    'url' => new url($baseurl)
             ],
             'categories' => [],
             'import' => [],
@@ -1545,7 +1554,7 @@ function question_extend_settings_navigation(navigation_node $navigationnode, $c
     $contexts = new core_question\local\bank\question_edit_contexts($context);
     foreach ($corenavigations as $key => $corenavigation) {
         if ($contexts->have_one_edit_tab_cap($key)) {
-            $questionnode->add($corenavigation['title'], new moodle_url(
+            $questionnode->add($corenavigation['title'], new url(
                     $corenavigation['url'], $params), navigation_node::TYPE_SETTING, null, $key);
         }
     }
@@ -1556,7 +1565,7 @@ function question_extend_settings_navigation(navigation_node $navigationnode, $c
                 continue;
             }
         }
-        $questionnode->add($pluginnavigation['title'], new moodle_url(
+        $questionnode->add($pluginnavigation['title'], new url(
                 $pluginnavigation['url'], $params), navigation_node::TYPE_SETTING, null, $key);
     }
 

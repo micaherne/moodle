@@ -16,6 +16,9 @@
 
 namespace core_tests\event;
 
+use core\context\system;
+use core\url;
+
 /**
  * Fixtures for new event testing.
  *
@@ -45,7 +48,7 @@ class unittest_executed extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/somepath/somefile.php', array('id'=>$this->data['other']['sample']));
+        return new url('/somepath/somefile.php', array('id'=>$this->data['other']['sample']));
     }
 }
 
@@ -84,7 +87,7 @@ class unittest_observer {
         self::$event[] = $event;
         if (!empty($event->nest)) {
             self::$info[] = 'observe_all-nesting-'.$event->other['sample'];
-            unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>666, 'xx'=>666)))->trigger();
+            unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>666, 'xx'=>666)))->trigger();
         } else {
             self::$info[] = 'observe_all-'.$event->other['sample'];
         }
@@ -181,7 +184,7 @@ class problematic_event2 extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 }
 
@@ -189,7 +192,7 @@ class problematic_event3 extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 
     protected function validate_data() {
@@ -204,7 +207,7 @@ class deprecated_event1 extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'c';
         $this->data['level'] = self::LEVEL_TEACHING; // Tests edulevel hint.
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 }
 
@@ -213,7 +216,7 @@ class noname_event extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 }
 

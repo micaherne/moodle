@@ -24,6 +24,9 @@
 
 namespace tool_monitor;
 
+use core\context\user as context_user;
+use core\user as core_user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,12 +72,12 @@ class notification_task extends \core\task\adhoc_task {
             // Race condition, someone deleted the subscription.
             return false;
         }
-        $user = \core_user::get_user($subscription->userid);
+        $user = core_user::get_user($subscription->userid);
         if (empty($user)) {
             // User doesn't exist. Should never happen, nothing to do return.
             return false;
         }
-        $context = \context_user::instance($user->id, IGNORE_MISSING);
+        $context = context_user::instance($user->id, IGNORE_MISSING);
         if ($context === false) {
             // User context doesn't exist. Should never happen, nothing to do return.
             return false;
@@ -87,7 +90,7 @@ class notification_task extends \core\task\adhoc_task {
         $msgdata->courseid          = empty($subscription->courseid) ? SITEID : $subscription->courseid;
         $msgdata->component         = 'tool_monitor'; // Your component name.
         $msgdata->name              = 'notification'; // This is the message name from messages.php.
-        $msgdata->userfrom          = \core_user::get_noreply_user();
+        $msgdata->userfrom          = core_user::get_noreply_user();
         $msgdata->userto            = $user;
         $msgdata->subject           = $subscription->get_name($context);
         $msgdata->fullmessage       = html_to_text($htmlmessage);

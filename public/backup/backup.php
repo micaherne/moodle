@@ -24,6 +24,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once('../config.php');
@@ -50,8 +56,8 @@ if (async_helper::is_async_enabled()) {
     $backupmode = backup::MODE_ASYNC;
 }
 
-$courseurl = new moodle_url('/course/view.php', array('id' => $courseid));
-$url = new moodle_url('/backup/backup.php', array('id'=>$courseid));
+$courseurl = new url('/course/view.php', array('id' => $courseid));
+$url = new url('/backup/backup.php', array('id'=>$courseid));
 if ($sectionid !== null) {
     $url->param('section', $sectionid);
 }
@@ -64,7 +70,7 @@ $PAGE->set_pagelayout('admin');
 $id = $courseid;
 $cm = null;
 $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
-$coursecontext = context_course::instance($course->id);
+$coursecontext = course::instance($course->id);
 $contextid = $coursecontext->id;
 $type = backup::TYPE_1COURSE;
 if (!is_null($sectionid)) {
@@ -97,13 +103,13 @@ switch ($type) {
         }
         break;
     case backup::TYPE_1ACTIVITY :
-        $activitycontext = context_module::instance($cm->id);
+        $activitycontext = module::instance($cm->id);
         require_capability('moodle/backup:backupactivity', $activitycontext);
         $contextid = $activitycontext->id;
         $heading = get_string('backupactivity', 'backup', $cm->name);
         break;
     default :
-        throw new \moodle_exception('unknownbackuptype');
+        throw new moodle_exception('unknownbackuptype');
 }
 
 $PAGE->set_title($heading);
@@ -209,7 +215,7 @@ if (!async_helper::is_async_pending($id, 'course', 'backup')) {
             \core\task\manager::queue_adhoc_task($asynctask);
 
             // Add ajax progress bar and initiate ajax via a template.
-            $restoreurl = new moodle_url('/backup/restorefile.php', array('contextid' => $contextid));
+            $restoreurl = new url('/backup/restorefile.php', array('contextid' => $contextid));
             $progresssetup = array(
                     'backupid' => $backupid,
                     'contextid' => $contextid,

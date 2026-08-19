@@ -25,6 +25,11 @@
 
 namespace block_rss_client\output;
 
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -35,7 +40,7 @@ defined('MOODLE_INTERNAL') || die();
  * @author    Brendan Anderson <brendan_anderson@hcpss.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class feed implements \renderable, \templatable {
+class feed implements renderable, templatable {
 
     /**
      * The feed's title
@@ -101,7 +106,7 @@ class feed implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $data = array(
             'title' => $this->showtitle ? $this->title : null,
             'image' => null,
@@ -146,7 +151,7 @@ class feed implements \renderable, \templatable {
      *
      * @param \moodle_url|null $channellink the URL to the channel website.
      */
-    public function set_channellink(?\moodle_url $channellink) {
+    public function set_channellink(?url $channellink) {
         $this->channellink = $channellink;
     }
 

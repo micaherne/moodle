@@ -16,10 +16,10 @@
 
 namespace qbank_managecategories;
 
-use context;
+use core\context;
 use core\context\module;
 use core\exception\coding_exception;
-use moodle_url;
+use core\url;
 
 /**
  * Builds a tree for categories for rendering the category management page.
@@ -33,7 +33,7 @@ class question_categories {
     /**
      * @var moodle_url Object representing url for this page
      */
-    public moodle_url $pageurl;
+    public url $pageurl;
 
     /**
      * @var ?int cmid.
@@ -76,7 +76,7 @@ class question_categories {
      * @param ?int $thiscontext Deprecated since Moodle 5.2, do not use anymore.
      */
     public function __construct(
-        moodle_url $pageurl,
+        url $pageurl,
         ?array $contexts = null,
         ?int $cmid = null,
         ?int $courseid = null,

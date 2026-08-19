@@ -24,9 +24,12 @@
 namespace tool_dataprivacy\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
-use templatable;
+use core\context\system;
+use core\context_helper;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\plugin_manager;
 
 
 /**
@@ -54,10 +57,10 @@ class summary_page implements renderable, templatable {
         ];
 
         $data = [];
-        $context = \context_system::instance();
+        $context = system::instance();
 
         foreach ($contextlevels as $levelname => $level) {
-            $classname = \context_helper::get_class_for_level($level);
+            $classname = context_helper::get_class_for_level($level);
             list($purposevar, $categoryvar) = \tool_dataprivacy\data_registry::var_names_from_context($classname);
             $purposeid = get_config('tool_dataprivacy', $purposevar);
             $categoryid = get_config('tool_dataprivacy', $categoryvar);
@@ -92,11 +95,11 @@ class summary_page implements renderable, templatable {
         }
 
         // Get activity module plugin info.
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $modplugins = $pluginmanager->get_enabled_plugins('mod');
 
         foreach ($modplugins as $name) {
-            $classname = \context_helper::get_class_for_level($contextlevels['contextlevelname70']);
+            $classname = context_helper::get_class_for_level($contextlevels['contextlevelname70']);
             list($purposevar, $categoryvar) = \tool_dataprivacy\data_registry::var_names_from_context($classname, $name);
             $categoryid = get_config('tool_dataprivacy', $categoryvar);
             $purposeid = get_config('tool_dataprivacy', $purposevar);

@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\plugin_renderer_base;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -45,7 +48,7 @@ class assignfeedback_file_renderer extends plugin_renderer_base {
         $o .= $this->container(get_string('filesupdated', 'assignfeedback_file', $summary->feedbackfilesupdated));
         $o .= $this->container(get_string('filesadded', 'assignfeedback_file', $summary->feedbackfilesadded));
 
-        $url = new moodle_url('view.php',
+        $url = new url('view.php',
                               array('id'=>$summary->cmid,
                                     'action'=>'grading'));
         $o .= $this->continue_button($url);

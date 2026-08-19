@@ -16,6 +16,7 @@
 
 namespace enrol_guest\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use enrol_guest_external;
 
@@ -85,7 +86,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $this->setUser($user);
         try {
             enrol_guest_external::get_instance_info($instance);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('coursehidden', $e->errorcode);
         }
 

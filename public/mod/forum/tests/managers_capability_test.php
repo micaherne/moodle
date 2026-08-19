@@ -16,6 +16,9 @@
 
 namespace mod_forum;
 
+use core\context\module;
+use core\context\system;
+use core_cache\cache;
 use mod_forum\local\container;
 use mod_forum\local\entities\forum;
 use mod_forum\local\managers\capability as capability_manager;
@@ -92,7 +95,7 @@ final class managers_capability_test extends \advanced_testcase {
         $this->course = $datagenerator->create_course();
         $this->forumrecord = $datagenerator->create_module('forum', ['course' => $this->course->id]);
         $this->coursemodule = get_coursemodule_from_instance('forum', $this->forumrecord->id);
-        $this->context = \context_module::instance($this->coursemodule->id);
+        $this->context = module::instance($this->coursemodule->id);
         $this->roleid = $DB->get_field('role', 'id', ['shortname' => 'teacher'], MUST_EXIST);
 
         $datagenerator->enrol_user($this->user->id, $this->course->id, 'teacher');
@@ -216,7 +219,7 @@ final class managers_capability_test extends \advanced_testcase {
             ['course' => $this->course->id, 'groupmode' => SEPARATEGROUPS]
         );
         $coursemodule = get_coursemodule_from_instance('forum', $forumrecord->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $forum = $this->entityfactory->get_forum_from_stdClass(
             $forumrecord,
             $context,
@@ -419,7 +422,7 @@ final class managers_capability_test extends \advanced_testcase {
         $forum = $this->create_forum();
         $user = $this->user;
         $capabilitymanager = $this->managerfactory->get_capability_manager($forum);
-        $cache = \cache::make('mod_forum', 'forum_is_tracked');
+        $cache = cache::make('mod_forum', 'forum_is_tracked');
 
         $user->trackforums = true;
         $prefid = $DB->insert_record('forum_track_prefs', ['userid' => $user->id, 'forumid' => $forum->get_id()]);
@@ -575,7 +578,7 @@ final class managers_capability_test extends \advanced_testcase {
             ['course' => $this->course->id, 'groupmode' => SEPARATEGROUPS]
         );
         $coursemodule = get_coursemodule_from_instance('forum', $forumrecord->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $forum = $this->entityfactory->get_forum_from_stdClass(
             $forumrecord,
             $context,
@@ -607,7 +610,7 @@ final class managers_capability_test extends \advanced_testcase {
             ['course' => $this->course->id, 'groupmode' => VISIBLEGROUPS]
         );
         $coursemodule = get_coursemodule_from_instance('forum', $forumrecord->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $forum = $this->entityfactory->get_forum_from_stdClass(
             $forumrecord,
             $context,
@@ -920,7 +923,7 @@ final class managers_capability_test extends \advanced_testcase {
             ['course' => $this->course->id, 'groupmode' => SEPARATEGROUPS]
         );
         $coursemodule = get_coursemodule_from_instance('forum', $forumrecord->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $forum = $this->entityfactory->get_forum_from_stdClass(
             $forumrecord,
             $context,
@@ -952,7 +955,7 @@ final class managers_capability_test extends \advanced_testcase {
             ['course' => $this->course->id, 'groupmode' => VISIBLEGROUPS]
         );
         $coursemodule = get_coursemodule_from_instance('forum', $forumrecord->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $forum = $this->entityfactory->get_forum_from_stdClass(
             $forumrecord,
             $context,
@@ -1272,7 +1275,7 @@ final class managers_capability_test extends \advanced_testcase {
         $forum = $this->create_forum();
         $user = $this->user;
         $capabilitymanager = $this->managerfactory->get_capability_manager($forum);
-        $context = \context_system::instance();
+        $context = system::instance();
         $roleid = $DB->get_field('role', 'id', ['shortname' => 'user'], MUST_EXIST);
 
         assign_capability('moodle/tag:manage', CAP_PREVENT, $roleid, $context->id, true);

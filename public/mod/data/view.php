@@ -22,6 +22,11 @@
  * @package mod_data
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
 use mod_data\manager;
 
 require_once(__DIR__ . '/../../config.php');
@@ -184,7 +189,7 @@ if ($page) {
 if ($filter) {
     $urlparams['filter'] = $filter;
 }
-$pageurl = new moodle_url('/mod/data/view.php', $urlparams);
+$pageurl = new url('/mod/data/view.php', $urlparams);
 
 // Initialize $PAGE, compute blocks.
 $PAGE->set_url($pageurl);
@@ -193,7 +198,7 @@ if (($edit != -1) and $PAGE->user_allowed_editing()) {
     $USER->editing = $edit;
 }
 
-$courseshortname = format_string($course->shortname, true, array('context' => context_course::instance($course->id)));
+$courseshortname = format_string($course->shortname, true, array('context' => course::instance($course->id)));
 
 /// RSS and CSS and JS meta
 $meta = '';
@@ -221,7 +226,7 @@ if ($PAGE->user_allowed_editing() && !$PAGE->theme->haseditswitch) {
         $urlediting = 'on';
         $strediting = get_string('blocksediton');
     }
-    $editurl = new moodle_url($CFG->wwwroot.'/mod/data/view.php', ['id' => $cm->id, 'edit' => $urlediting]);
+    $editurl = new url($CFG->wwwroot.'/mod/data/view.php', ['id' => $cm->id, 'edit' => $urlediting]);
     $PAGE->set_button($OUTPUT->single_button($editurl, $strediting));
 }
 
@@ -269,7 +274,7 @@ if (!$manager->has_fields()) {
 
 // Detect entries not approved yet and show hint instead of not found error.
 if ($record and !data_can_view_record($data, $record, $currentgroup, $canmanageentries)) {
-    throw new \moodle_exception('notapprovederror', 'data');
+    throw new moodle_exception('notapprovederror', 'data');
 }
 
 // Do we need to show a link to the RSS feed for the records?
@@ -307,7 +312,7 @@ if ($delete && data_user_can_manage_entry($delete, $data, $context)) {
                 $PAGE->set_show_navigation_footer(false);
                 echo $OUTPUT->heading(get_string('deleteentry', 'mod_data'), 2, 'mb-4');
                 $deletebutton = new single_button(
-                    new moodle_url('/mod/data/view.php?d=' . $data->id . '&delete=' . $delete . '&confirm=1'),
+                    new url('/mod/data/view.php?d=' . $data->id . '&delete=' . $delete . '&confirm=1'),
                     get_string('delete'), 'post',
                     single_button::BUTTON_DANGER
                 );
@@ -357,8 +362,8 @@ if ($multidelete && $canmanageentries) {
         }
         $serialiseddata = json_encode($recordids);
         $submitactions = array('d' => $data->id, 'sesskey' => sesskey(), 'confirm' => '1', 'serialdelete' => $serialiseddata);
-        $action = new moodle_url('/mod/data/view.php', $submitactions);
-        $cancelurl = new moodle_url('/mod/data/view.php', array('d' => $data->id));
+        $action = new url('/mod/data/view.php', $submitactions);
+        $cancelurl = new url('/mod/data/view.php', array('d' => $data->id));
         $deletebutton = new single_button($action, get_string('delete'), 'post', single_button::BUTTON_DANGER);
         echo $OUTPUT->confirm(get_string('confirmdeleterecords', 'data'), $deletebutton, $cancelurl);
         $parser = $manager->get_template('listtemplate');
@@ -411,7 +416,7 @@ if ($showactivity) {
         }
 
         if ($groupmode != NOGROUPS) {
-            $returnurl = new moodle_url('/mod/data/view.php', ['d' => $data->id, 'mode' => $mode, 'search' => s($search),
+            $returnurl = new url('/mod/data/view.php', ['d' => $data->id, 'mode' => $mode, 'search' => s($search),
                 'sort' => s($sort), 'order' => s($order)]);
             echo html_writer::div(groups_print_activity_menu($cm, $returnurl, true), 'mb-3');
         }
@@ -453,7 +458,7 @@ if ($showactivity) {
 
         } else {
             //  We have some records to print.
-            $formurl = new moodle_url('/mod/data/view.php', ['d' => $data->id, 'sesskey' => sesskey()]);
+            $formurl = new url('/mod/data/view.php', ['d' => $data->id, 'sesskey' => sesskey()]);
             echo html_writer::start_tag('form', ['action' => $formurl, 'method' => 'post']);
 
             if ($maxcount != $totalcount) {
@@ -475,7 +480,7 @@ if ($showactivity) {
                 if (!empty($page)) {
                     $baseurlparams['page'] = $page;
                 }
-                $baseurl = new moodle_url($baseurl, $baseurlparams);
+                $baseurl = new url($baseurl, $baseurlparams);
 
                 echo $OUTPUT->box_start('', 'data-singleview-content');
                 require_once($CFG->dirroot.'/rating/lib.php');
@@ -511,7 +516,7 @@ if ($showactivity) {
                 if (!empty($search)) {
                     $baseurlparams['filter'] = 1;
                 }
-                $baseurl = new moodle_url($baseurl, $baseurlparams);
+                $baseurl = new url($baseurl, $baseurlparams);
 
                 echo $OUTPUT->box_start('', 'data-listview-content');
                 echo $data->listtemplateheader;

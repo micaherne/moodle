@@ -28,10 +28,11 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/message/lib.php');
 
-use renderable;
-use templatable;
-use moodle_url;
-use core_user;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+use core\user;
 
 /**
  * Class to prepare a popup notification for display.
@@ -56,7 +57,7 @@ class popup_notification implements templatable, renderable {
         $this->notification = $notification;
     }
 
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $context = clone $this->notification;
         $context->timecreatedpretty = get_string('ago', 'message', format_time(time() - $context->timecreated));
         $context->text = message_format_message_text($context);

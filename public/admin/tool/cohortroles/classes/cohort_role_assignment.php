@@ -23,7 +23,7 @@
  */
 namespace tool_cohortroles;
 
-use lang_string;
+use core\lang_string;
 use core_competency\persistent;
 
 /**

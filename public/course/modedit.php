@@ -23,6 +23,12 @@
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once("../config.php");
 require_once("lib.php");
 require_once($CFG->libdir.'/filelib.php');
@@ -44,7 +50,7 @@ if ($sectionreturn < 0) {
     $sectionreturn = null;
 }
 
-$url = new moodle_url('/course/modedit.php');
+$url = new url('/course/modedit.php');
 if (!is_null($sectionreturn)) {
     $url->param('sr', $sectionreturn);
 }
@@ -100,7 +106,7 @@ if (!empty($add)) {
     $PAGE->set_url($url);
 
     // Select the "Edit settings" from navigation.
-    navigation_node::override_active_url(new moodle_url('/course/modedit.php', array('update'=>$update, 'return'=>1)));
+    navigation_node::override_active_url(new url('/course/modedit.php', array('update'=>$update, 'return'=>1)));
 
     // Check the course module exists.
     $cm = get_coursemodule_from_id('', $update, 0, false, MUST_EXIST);
@@ -129,7 +135,7 @@ if (!empty($add)) {
 
 } else {
     require_login();
-    throw new \moodle_exception('invalidaction');
+    throw new moodle_exception('invalidaction');
 }
 
 $pagepath = 'mod-' . $module->name . '-';
@@ -147,7 +153,7 @@ $modmoodleform = "$CFG->dirroot/mod/$module->name/mod_form.php";
 if (file_exists($modmoodleform)) {
     require_once($modmoodleform);
 } else {
-    throw new \moodle_exception('noformdesc');
+    throw new moodle_exception('noformdesc');
 }
 
 $mformclassname = 'mod_'.$module->name.'_mod_form';
@@ -163,7 +169,7 @@ if ($mform->is_cancelled()) {
             'id' => $cm->id, // We always need the activity id.
             'forceview' => 1, // Stop file downloads in resources.
         ];
-        $activityurl = new moodle_url("/mod/$module->name/view.php", $urlparams);
+        $activityurl = new url("/mod/$module->name/view.php", $urlparams);
         redirect($activityurl);
     } else if (plugin_supports('mod', $module->name, FEATURE_PUBLISHES_QUESTIONS)) {
         redirect(\core_question\local\bank\question_bank_helper::get_url_for_qbank_list($course->id));
@@ -189,11 +195,11 @@ if ($mform->is_cancelled()) {
     } else if (!empty($fromform->add)) {
         $fromform = add_moduleinfo($fromform, $course, $mform);
     } else {
-        throw new \moodle_exception('invaliddata');
+        throw new moodle_exception('invaliddata');
     }
 
     if (isset($fromform->submitbutton)) {
-        $url = new moodle_url("/mod/$module->name/view.php", array('id' => $fromform->coursemodule, 'forceview' => 1));
+        $url = new url("/mod/$module->name/view.php", array('id' => $fromform->coursemodule, 'forceview' => 1));
         if (!empty($fromform->showgradingmanagement)) {
             $url = $fromform->gradingman->get_management_url($url);
         }
@@ -214,9 +220,9 @@ if ($mform->is_cancelled()) {
 
 } else {
     if (!empty($cm->id)) {
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
     } else {
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
     }
 
     $PAGE->set_heading($course->fullname);

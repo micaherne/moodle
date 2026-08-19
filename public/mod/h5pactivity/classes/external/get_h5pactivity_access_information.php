@@ -21,7 +21,7 @@ use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_module;
+use core\context\module;
 use mod_h5pactivity\local\manager;
 
 /**
@@ -64,7 +64,7 @@ class get_h5pactivity_access_information extends external_api {
 
         list($course, $cm) = get_course_and_cm_from_instance($h5pactivity, 'h5pactivity');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         $result = [];

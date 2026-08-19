@@ -16,6 +16,7 @@
 
 namespace core_question;
 
+use core\exception\moodle_exception;
 use question_attempt;
 use question_attempt_step;
 use question_state;
@@ -58,7 +59,7 @@ final class questionattempt_with_steps_test extends \advanced_testcase {
     }
 
     public function test_get_step_before_start(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $step = $this->qa->get_step(-1);
     }
 
@@ -73,7 +74,7 @@ final class questionattempt_with_steps_test extends \advanced_testcase {
     }
 
     public function test_get_step_past_end(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $step = $this->qa->get_step(3);
     }
 

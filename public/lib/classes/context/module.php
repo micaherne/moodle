@@ -18,7 +18,7 @@ namespace core\context;
 
 use core\context;
 use stdClass;
-use coding_exception, moodle_url;
+use core\exception\coding_exception, core\url;
 
 /**
  * Course module context class
@@ -109,10 +109,10 @@ class module extends context {
                                              FROM {course_modules} cm
                                              JOIN {modules} md ON md.id = cm.module
                                             WHERE cm.id = ?", array($this->_instanceid))) {
-            return new moodle_url('/mod/' . $modname . '/view.php', array('id' => $this->_instanceid));
+            return new url('/mod/' . $modname . '/view.php', array('id' => $this->_instanceid));
         }
 
-        return new moodle_url('/');
+        return new url('/');
     }
 
     /**

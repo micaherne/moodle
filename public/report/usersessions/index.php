@@ -23,6 +23,8 @@
  * @author    Petr Skoda <petr.skoda@totaralms.com>
  */
 
+use core\url;
+
 require(__DIR__ . '/../../config.php');
 
-redirect(new moodle_url('/report/usersessions/user.php'));
+redirect(new url('/report/usersessions/user.php'));

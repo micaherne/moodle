@@ -23,7 +23,8 @@
  */
 namespace core\plugininfo;
 
-use moodle_url;
+use core\url;
+use core_admin\setting\tree\part_of_admin_tree;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -55,7 +56,7 @@ class tool extends base {
      * @return moodle_url
      */
     public static function get_manage_url() {
-        return new moodle_url('/admin/settings.php', ['section' => 'toolsmanagement']);
+        return new url('/admin/settings.php', ['section' => 'toolsmanagement']);
     }
 
     /**
@@ -68,7 +69,7 @@ class tool extends base {
      * @param string $parentnodename
      * @param bool $hassiteconfig whether the current user has moodle/site:config capability
      */
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
         global $CFG, $USER, $DB, $OUTPUT, $PAGE; // In case settings.php wants to refer to them.
         $ADMIN = $adminroot; // May be used in settings.php.
         $plugininfo = $this; // Also can be used inside settings.php.

@@ -24,6 +24,10 @@
 
 namespace core\analytics\analyser;
 
+use core\context\user;
+use core\context_helper;
+use core\output\user_picture;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -66,7 +70,7 @@ class users extends \core_analytics\local\analyser\base {
                 // Skip admins and the guest user.
                 return false;
             }
-            $context = \context_helper::preload_from_record($record);
+            $context = context_helper::preload_from_record($record);
             return \core_analytics\user::instance($record, $context);
         });
     }
@@ -115,7 +119,7 @@ class users extends \core_analytics\local\analyser\base {
      * @return \context
      */
     public function sample_access_context($sampleid) {
-        return \context_user::instance($sampleid);
+        return user::instance($sampleid);
     }
 
     /**
@@ -126,7 +130,7 @@ class users extends \core_analytics\local\analyser\base {
      */
     public function get_all_samples(\core_analytics\analysable $user) {
 
-        $context = \context_user::instance($user->get_id());
+        $context = user::instance($user->get_id());
 
         // Just 1 sample per analysable.
         return [
@@ -151,7 +155,7 @@ class users extends \core_analytics\local\analyser\base {
         $sampleids = array_combine($userids, $userids);
 
         $users = array_map(function($user) {
-            return ['user' => $user, 'context' => \context_user::instance($user->id)];
+            return ['user' => $user, 'context' => user::instance($user->id)];
         }, $users);
 
         // No related data attached.
@@ -168,7 +172,7 @@ class users extends \core_analytics\local\analyser\base {
      */
     public function sample_description($sampleid, $contextid, $sampledata) {
         $description = fullname($sampledata['user']);
-        return [$description, new \user_picture($sampledata['user'])];
+        return [$description, new user_picture($sampledata['user'])];
     }
 
     /**

@@ -24,6 +24,10 @@
  */
 namespace mod_url;
 
+use core\context\module;
+use core\url;
+use core_course\cm_info;
+
 /**
  * mod_url tests
  *
@@ -105,7 +109,7 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
         $url = $this->getDataGenerator()->create_module('url', array('course' => $course->id),
                                                             array('completion' => 2, 'completionview' => 1));
-        $context = \context_module::instance($url->cmid);
+        $context = module::instance($url->cmid);
         $cm = get_coursemodule_from_instance('url', $url->id);
 
         // Trigger and capture the event.
@@ -122,7 +126,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_url\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $url = new \moodle_url('/mod/url/view.php', array('id' => $cm->id));
+        $url = new url('/mod/url/view.php', array('id' => $cm->id));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -254,7 +258,7 @@ final class lib_test extends \advanced_testcase {
         // Create the activity.
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('url', ['course' => $course->id]);
-        $cminfo = \cm_info::create(get_coursemodule_from_instance('url', $module->id));
+        $cminfo = cm_info::create(get_coursemodule_from_instance('url', $module->id));
 
         $navigationurl = $cminfo->get_navigation_url();
         $this->assertInstanceOf(\core\url::class, $navigationurl);

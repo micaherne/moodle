@@ -24,10 +24,19 @@
 namespace tool_dataprivacy\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
+use core\context;
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\exception\coding_exception;
+use core\output\action_link;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\url;
 use stdClass;
-use templatable;
+use core\output\templatable;
 use tool_dataprivacy\data_registry;
 
 require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/dataprivacy/lib.php');
@@ -72,28 +81,28 @@ class data_registry_page implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         global $PAGE;
 
-        $params = [\context_system::instance()->id, $this->defaultcontextlevel, $this->defaultcontextid];
+        $params = [system::instance()->id, $this->defaultcontextlevel, $this->defaultcontextid];
         $PAGE->requires->js_call_amd('tool_dataprivacy/data_registry', 'init', $params);
 
         $data = new stdClass();
-        $defaultsbutton = new \action_link(
-            new \moodle_url('/admin/tool/dataprivacy/defaults.php'),
+        $defaultsbutton = new action_link(
+            new url('/admin/tool/dataprivacy/defaults.php'),
             get_string('setdefaults', 'tool_dataprivacy'),
             null,
             ['class' => 'btn btn-primary']
         );
         $data->defaultsbutton = $defaultsbutton->export_for_template($output);
 
-        $actionmenu = new \action_menu();
+        $actionmenu = new action_menu();
         $actionmenu->set_menu_trigger(get_string('edit'), 'btn btn-primary');
         $actionmenu->set_owner_selector('dataregistry-actions');
 
-        $url = new \moodle_url('/admin/tool/dataprivacy/categories.php');
-        $categories = new \action_menu_link_secondary($url, null, get_string('categories', 'tool_dataprivacy'));
+        $url = new url('/admin/tool/dataprivacy/categories.php');
+        $categories = new link_secondary($url, null, get_string('categories', 'tool_dataprivacy'));
         $actionmenu->add($categories);
 
-        $url = new \moodle_url('/admin/tool/dataprivacy/purposes.php');
-        $purposes = new \action_menu_link_secondary($url, null, get_string('purposes', 'tool_dataprivacy'));
+        $url = new url('/admin/tool/dataprivacy/purposes.php');
+        $purposes = new link_secondary($url, null, get_string('purposes', 'tool_dataprivacy'));
         $actionmenu->add($purposes);
 
         $data->actions = $actionmenu->export_for_template($output);
@@ -121,7 +130,7 @@ class data_registry_page implements renderable, templatable {
      */
     private function get_default_tree_structure() {
 
-        $frontpage = \context_course::instance(SITEID);
+        $frontpage = course::instance(SITEID);
 
         $categorybranches = $this->get_all_category_branches();
 
@@ -173,7 +182,7 @@ class data_registry_page implements renderable, templatable {
         while (count($categories) > 0) {
             foreach ($categories as $key => $category) {
 
-                $context = \context_coursecat::instance($category->id);
+                $context = coursecat::instance($category->id);
                 $newnode = [
                     'text' => shorten_text(format_string($category->name, true, ['context' => $context])),
                     'categoryid' => $category->id,
@@ -218,10 +227,10 @@ class data_registry_page implements renderable, templatable {
      * @param \context $catcontext
      * @return array
      */
-    public static function get_courses_branch(\context $catcontext) {
+    public static function get_courses_branch(context $catcontext) {
 
         if ($catcontext->contextlevel !== CONTEXT_COURSECAT) {
-            throw new \coding_exception('A course category context should be provided');
+            throw new coding_exception('A course category context should be provided');
         }
 
         $coursecat = \core_course_category::get($catcontext->instanceid);
@@ -231,7 +240,7 @@ class data_registry_page implements renderable, templatable {
 
         foreach ($courses as $course) {
 
-            $coursecontext = \context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
 
             $coursenode = [
                 'text' => shorten_text(format_string($course->shortname, true, ['context' => $coursecontext])),
@@ -262,10 +271,10 @@ class data_registry_page implements renderable, templatable {
      * @param \context $coursecontext
      * @return array
      */
-    public static function get_modules_branch(\context $coursecontext) {
+    public static function get_modules_branch(context $coursecontext) {
 
         if ($coursecontext->contextlevel !== CONTEXT_COURSE) {
-            throw new \coding_exception('A course context should be provided');
+            throw new coding_exception('A course context should be provided');
         }
 
         $branches = [];
@@ -301,11 +310,11 @@ class data_registry_page implements renderable, templatable {
      * @param \context $coursecontext
      * @return null
      */
-    public static function get_blocks_branch(\context $coursecontext) {
+    public static function get_blocks_branch(context $coursecontext) {
         global $DB;
 
         if ($coursecontext->contextlevel !== CONTEXT_COURSE) {
-            throw new \coding_exception('A course context should be provided');
+            throw new coding_exception('A course context should be provided');
         }
 
         $branches = [];

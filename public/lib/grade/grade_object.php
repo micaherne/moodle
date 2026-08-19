@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -160,7 +163,7 @@ abstract class grade_object {
         if ($instances = grade_object::fetch_all_helper($table, $classname, $params)) {
             if (count($instances) > 1) {
                 // we should not tolerate any errors here - problems might appear later
-                throw new \moodle_exception('morethanonerecordinfetch', 'debug');
+                throw new moodle_exception('morethanonerecordinfetch', 'debug');
             }
             return reset($instances);
         } else {

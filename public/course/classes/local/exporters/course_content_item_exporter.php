@@ -27,6 +27,7 @@ namespace core_course\local\exporters;
 defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
+use core\output\renderer_base;
 use core_course\local\entity\content_item;
 use core_course\local\service\content_item_service;
 
@@ -113,7 +114,7 @@ class course_content_item_exporter extends exporter {
      * @param \renderer_base $output
      * @return array The array of property values, indexed by name.
      */
-    protected function get_other_values(\renderer_base $output) {
+    protected function get_other_values(renderer_base $output) {
 
         $favourite = false;
         $itemtype = 'contentitem_' . $this->contentitem->get_component_name();

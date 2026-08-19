@@ -23,6 +23,9 @@
  * @package course
  */
 
+use core\context\course;
+use core\context\system;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -35,7 +38,7 @@ class recent_form extends moodleform {
         global $CFG, $COURSE, $USER;
 
         $mform =& $this->_form;
-        $context = context_course::instance($COURSE->id);
+        $context = course::instance($COURSE->id);
         $modinfo = get_fast_modinfo($COURSE);
 
         $mform->addElement('header', 'filters', get_string('managefilters')); //TODO: add better string
@@ -65,13 +68,13 @@ class recent_form extends moodleform {
         }
 
         if ($COURSE->id == SITEID) {
-            $viewparticipants = course_can_view_participants(context_system::instance());
+            $viewparticipants = course_can_view_participants(system::instance());
         } else {
             $viewparticipants = course_can_view_participants($context);
         }
 
         if ($viewparticipants) {
-            $viewfullnames = has_capability('moodle/site:viewfullnames', context_course::instance($COURSE->id));
+            $viewfullnames = has_capability('moodle/site:viewfullnames', course::instance($COURSE->id));
 
             $options = array();
             $options[0] = get_string('allparticipants');

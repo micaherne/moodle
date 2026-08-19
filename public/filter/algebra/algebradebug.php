@@ -3,10 +3,13 @@
       // If not, it obtains the corresponding TeX expression from the cache_filters db table
       // and uses LaTeX to create the image file.
 
-    require_once("../../config.php");
+    use core\context\system;
+use core\exception\moodle_exception;
+
+require_once("../../config.php");
 
     if (!filter_is_enabled('algebra')) {
-        throw new \moodle_exception('filternotenabled');
+        throw new moodle_exception('filternotenabled');
     }
 
     require_once($CFG->libdir.'/filelib.php');
@@ -18,7 +21,7 @@
     $algebra = optional_param('algebra', '', PARAM_RAW);
 
     require_login();
-    require_capability('moodle/site:config', context_system::instance());
+    require_capability('moodle/site:config', system::instance());
     if ($action || $algebra) {
         require_sesskey();
     }
@@ -213,7 +216,7 @@ function tex2image($texexp, $md5, $return=false) {
     $lateximage = $latex->render($texexp, $image, 12, $density, $background);
 
     if ($lateximage) {
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $fs = get_file_storage();
         if (!$fs->file_exists($syscontext->id, 'filter_algebra', 'rendered_images', 0, '/', $image)) {
             $filerecord = [

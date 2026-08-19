@@ -27,6 +27,8 @@
  * @deprecated since Moodle 5.1 (MDL-85284)
  */
 
+use core\context\course;
+
 require_once(__DIR__.'/../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 
@@ -44,7 +46,7 @@ $PAGE->set_url('/course/changenumsections.php', array('courseid' => $courseid));
 
 // Authorisation checks.
 require_login($course);
-require_capability('moodle/course:update', context_course::instance($course->id));
+require_capability('moodle/course:update', course::instance($course->id));
 require_sesskey();
 
 debugging(
@@ -87,7 +89,7 @@ if (isset($courseformatoptions['numsections']) && $increase !== null) {
 } else if (course_get_format($course)->uses_sections() && $insertsection !== null) {
     if ($insertsection) {
         // Inserting sections at any position except in the very end requires capability to move sections.
-        require_capability('moodle/course:movesections', context_course::instance($course->id));
+        require_capability('moodle/course:movesections', course::instance($course->id));
     }
     $sections = [];
     for ($i = 0; $i < max($numsections, 1); $i ++) {

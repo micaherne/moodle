@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\output\single_select;
+use core\url;
+
 require('../../config.php');
 
 $contextid  = required_param('contextid', PARAM_INT);
@@ -37,7 +44,7 @@ $returnurl  = optional_param('returnurl', null, PARAM_LOCALURL);
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 
-$url = new moodle_url('/admin/roles/permissions.php', array('contextid' => $contextid));
+$url = new url('/admin/roles/permissions.php', array('contextid' => $contextid));
 
 if ($course) {
     $isfrontpage = ($course->id == SITEID);
@@ -59,7 +66,7 @@ require_capability('moodle/role:review', $context);
 
 $PAGE->set_show_navigation_footer(false);
 navigation_node::override_active_url($url);
-$pageurl = new moodle_url($url);
+$pageurl = new url($url);
 if ($returnurl) {
     $pageurl->param('returnurl', $returnurl);
 }
@@ -68,7 +75,7 @@ $PAGE->set_url($pageurl);
 if ($context->contextlevel == CONTEXT_USER and $USER->id != $context->instanceid) {
     $PAGE->navbar->includesettingsbase = true;
     $PAGE->navigation->extend_for_user($user);
-    $PAGE->set_context(context_user::instance($user->id));
+    $PAGE->set_context(user::instance($user->id));
 } else {
     $PAGE->set_context($context);
 }
@@ -101,7 +108,7 @@ $PAGE->set_title($title);
 $PAGE->activityheader->disable();
 switch ($context->contextlevel) {
     case CONTEXT_SYSTEM:
-        throw new \moodle_exception('cannotoverridebaserole', 'error');
+        throw new moodle_exception('cannotoverridebaserole', 'error');
         break;
     case CONTEXT_USER:
         $fullname = fullname($user, has_capability('moodle/site:viewfullnames', $context));
@@ -141,7 +148,7 @@ if ($capability && ($allowoverrides || ($allowsafeoverrides && is_safe_capabilit
             } else {
                 $a = (object)array('cap'=>get_capability_docs_link($capability)." ($capability->name)", 'role'=>$overridableroles[$roleid], 'context'=>$contextname);
                 $message = get_string('confirmroleprevent', 'core_role', $a);
-                $continueurl = new moodle_url($PAGE->url,
+                $continueurl = new url($PAGE->url,
                     array('contextid'=>$context->id, 'roleid'=>$roleid, 'capability'=>$capability->name, 'prevent'=>1, 'sesskey'=>sesskey(), 'confirm'=>1));
             }
         }
@@ -153,7 +160,7 @@ if ($capability && ($allowoverrides || ($allowsafeoverrides && is_safe_capabilit
             } else {
                 $a = (object)array('cap'=>get_capability_docs_link($capability)." ($capability->name)", 'role'=>$overridableroles[$roleid], 'context'=>$contextname);
                 $message = get_string('confirmroleunprohibit', 'core_role', $a);
-                $continueurl = new moodle_url($PAGE->url,
+                $continueurl = new url($PAGE->url,
                     array('contextid'=>$context->id, 'roleid'=>$roleid, 'capability'=>$capability->name, 'unprohibit'=>1, 'sesskey'=>sesskey(), 'confirm'=>1));
             }
         }
@@ -214,7 +221,7 @@ if (in_array($context->contextlevel, [CONTEXT_COURSE, CONTEXT_MODULE, CONTEXT_CO
 
 echo $OUTPUT->heading($title);
 
-$adminurl = new moodle_url('/admin/');
+$adminurl = new url('/admin/');
 $arguments = array('contextid' => $contextid,
                 'contextname' => $contextname,
                 'adminurl' => $adminurl->out());
@@ -227,7 +234,7 @@ $table = new core_role_permissions_table($context, $contextname, $allowoverrides
 echo $OUTPUT->box_start('generalbox capbox');
 // Print link to advanced override page.
 if ($overridableroles) {
-    $overrideurl = new moodle_url('/admin/roles/override.php', array('contextid' => $context->id));
+    $overrideurl = new url('/admin/roles/override.php', array('contextid' => $context->id));
     $select = new single_select($overrideurl, 'roleid', $nameswithcounts);
     $select->label = get_string('advancedoverride', 'core_role');
     echo html_writer::tag('div', $OUTPUT->render($select), array('class'=>'advancedoverride'));
@@ -239,7 +246,7 @@ echo $OUTPUT->box_end();
 if ($context->contextlevel > CONTEXT_USER) {
 
     if ($returnurl) {
-        $url = new moodle_url($returnurl);
+        $url = new url($returnurl);
     } else {
         $url = $context->get_url();
     }

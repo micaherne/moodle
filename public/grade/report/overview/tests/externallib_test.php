@@ -16,6 +16,7 @@
 
 namespace gradereport_overview;
 
+use core\context\course;
 use core_external\external_api;
 use gradereport_overview_external;
 
@@ -217,7 +218,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Check the event details are correct.
         $this->assertInstanceOf('\gradereport_overview\event\grade_report_viewed', $event);
-        $this->assertEquals(\context_course::instance($this->course1->id), $event->get_context());
+        $this->assertEquals(course::instance($this->course1->id), $event->get_context());
         $this->assertEquals($USER->id, $event->get_data()['relateduserid']);
 
         $this->setUser($this->teacher);
@@ -229,7 +230,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Check the event details are correct.
         $this->assertInstanceOf('\gradereport_overview\event\grade_report_viewed', $event);
-        $this->assertEquals(\context_course::instance($this->course1->id), $event->get_context());
+        $this->assertEquals(course::instance($this->course1->id), $event->get_context());
         $this->assertEquals($this->student1->id, $event->get_data()['relateduserid']);
     }
 

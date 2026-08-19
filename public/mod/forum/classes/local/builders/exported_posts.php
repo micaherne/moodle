@@ -34,8 +34,8 @@ use mod_forum\local\factories\exporter as exporter_factory;
 use mod_forum\local\factories\vault as vault_factory;
 use mod_forum\local\factories\manager as manager_factory;
 use core_tag_tag;
-use moodle_exception;
-use renderer_base;
+use core\exception\moodle_exception;
+use core\output\renderer_base;
 use stdClass;
 
 /**

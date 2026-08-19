@@ -23,6 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require('../../config.php');
 require_once($CFG->dirroot.'/report/stats/locallib.php');
 
@@ -32,8 +39,8 @@ $courseid = required_param('course', PARAM_INT);
 $user = $DB->get_record('user', array('id'=>$userid, 'deleted'=>0), '*', MUST_EXIST);
 $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
 
-$coursecontext   = context_course::instance($course->id);
-$personalcontext = context_user::instance($user->id);
+$coursecontext   = course::instance($course->id);
+$personalcontext = user::instance($user->id);
 
 $pageheading = $course->fullname;
 $userfullname = fullname($user);
@@ -53,7 +60,7 @@ if ($USER->id != $user->id and has_capability('moodle/user:viewuseractivitiesrep
 
 if (!report_stats_can_access_user_report($user, $course)) {
     // this should never happen
-    throw new \moodle_exception('nocapability', 'report_stats');
+    throw new moodle_exception('nocapability', 'report_stats');
 }
 
 $stractivityreport = get_string('activityreport');
@@ -65,7 +72,7 @@ $PAGE->navigation->set_userid_for_parent_checks($user->id); // see MDL-25805 for
 // Breadcrumb stuff.
 $navigationnode = array(
         'name' => get_string('stats'),
-        'url' => new moodle_url('/report/stats/user.php', array('id' => $user->id, 'course' => $course->id))
+        'url' => new url('/report/stats/user.php', array('id' => $user->id, 'course' => $course->id))
     );
 $PAGE->add_report_nodes($user->id, $navigationnode);
 
@@ -73,7 +80,7 @@ $PAGE->set_title("$course->shortname: $stractivityreport");
 $PAGE->set_heading($pageheading);
 echo $OUTPUT->header();
 if ($courseid != SITEID) {
-    $backurl = new moodle_url('/user/view.php', ['id' => $userid, 'course' => $courseid]);
+    $backurl = new url('/user/view.php', ['id' => $userid, 'course' => $courseid]);
     echo $OUTPUT->single_button($backurl, get_string('back'), 'get', ['class' => 'mb-3']);
 
     echo $OUTPUT->context_header(
@@ -90,7 +97,7 @@ $event = \report_stats\event\user_report_viewed::create(array('context' => $cour
 $event->trigger();
 
 if (empty($CFG->enablestats)) {
-    throw new \moodle_exception('statsdisable', 'error');
+    throw new moodle_exception('statsdisable', 'error');
 }
 
 $statsstatus = stats_check_uptodate($course->id);
@@ -119,7 +126,7 @@ $lastmonthend = stats_get_base_monthly();
 $timeoptions = stats_get_time_options($now,$lastweekend,$lastmonthend,$earliestday,$earliestweek,$earliestmonth);
 
 if (empty($timeoptions)) {
-    throw new \moodle_exception('nostatstodisplay', '',
+    throw new moodle_exception('nostatstodisplay', '',
         $CFG->wwwroot.'/course/user.php?id='.$course->id.'&user='.$user->id.'&mode=outline');
 }
 
@@ -160,7 +167,7 @@ $sql = "
 $stats = $DB->get_records_sql($sql, $params);
 
 if (empty($stats)) {
-    throw new \moodle_exception('nostatstodisplay', '',
+    throw new moodle_exception('nostatstodisplay', '',
         $CFG->wwwroot.'/course/user.php?id='.$course->id.'&user='.$user->id.'&mode=outline');
 }
 

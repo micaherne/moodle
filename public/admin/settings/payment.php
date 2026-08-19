@@ -22,8 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$ADMIN->add('payment', new admin_externalpage(
+use core\lang_string;
+use core\url;
+use core_admin\setting\tree\externalpage;
+
+$ADMIN->add('payment', new externalpage(
     'paymentaccounts',
     new lang_string('paymentaccounts', 'payment'),
-    new moodle_url("/payment/accounts.php"),
+    new url("/payment/accounts.php"),
     ['moodle/payment:manageaccounts', 'moodle/payment:viewpayments']));

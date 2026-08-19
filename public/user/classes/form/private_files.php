@@ -16,8 +16,10 @@
 
 namespace core_user\form;
 
-use html_writer;
-use moodle_url;
+use core\context;
+use core\context\user;
+use core\output\html_writer;
+use core\url;
 
 /**
  * Manage user private area files form
@@ -54,7 +56,7 @@ class private_files extends \core_form\dynamic_form {
 
         $mform->addElement('filemanager', 'files_filemanager', get_string('files'), null, $options);
         if ($link = $this->get_emaillink()) {
-            $emaillink = html_writer::link(new moodle_url('mailto:' . $link), $link);
+            $emaillink = html_writer::link(new url('mailto:' . $link), $link);
             $mform->addElement('static', 'emailaddress', '',
                 get_string('emailtoprivatefiles', 'moodle', $emaillink));
         }
@@ -120,9 +122,9 @@ class private_files extends \core_form\dynamic_form {
      *
      * @return \context
      */
-    protected function get_context_for_dynamic_submission(): \context {
+    protected function get_context_for_dynamic_submission(): context {
         global $USER;
-        return \context_user::instance($USER->id);
+        return user::instance($USER->id);
     }
 
     /**
@@ -186,7 +188,7 @@ class private_files extends \core_form\dynamic_form {
      *
      * @return \moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): \moodle_url {
-        return new moodle_url('/user/files.php');
+    protected function get_page_url_for_dynamic_submission(): url {
+        return new url('/user/files.php');
     }
 }

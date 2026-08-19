@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\helpers;
 
 use stdClass;
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 use core\persistent;
 use core_reportbuilder\datasource;
 use core_reportbuilder\manager;

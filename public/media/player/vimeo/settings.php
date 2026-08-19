@@ -22,11 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
     // Add a settings checkbox to enable or disable do not track vimeo links.
-    $settings->add(new admin_setting_configcheckbox('media_vimeo/donottrack',
+    $settings->add(new configcheckbox('media_vimeo/donottrack',
             new lang_string('donottrack', 'media_vimeo'),
             new lang_string('donottrack_desc', 'media_vimeo'), 0));
 }

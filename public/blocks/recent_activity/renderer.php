@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -51,7 +56,7 @@ class block_recent_activity_renderer extends plugin_renderer_base {
                 array('class' => 'activityhead'));
 
         $output .= html_writer::tag('div',
-                html_writer::link(new moodle_url('/course/recent.php', array('id' => $course->id)),
+                html_writer::link(new url('/course/recent.php', array('id' => $course->id)),
                     get_string('recentactivityreport')),
                 array('class' => 'activityhead mb-3'));
 
@@ -60,7 +65,7 @@ class block_recent_activity_renderer extends plugin_renderer_base {
         // Firstly, have there been any new enrolments?
         if ($recentenrolments) {
             $content = true;
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             $viewfullnames = has_capability('moodle/site:viewfullnames', $context);
             $output .= html_writer::start_tag('div', array('class' => 'newusers'));
             $output .= $this->heading(get_string("newusers").':', 3);
@@ -68,7 +73,7 @@ class block_recent_activity_renderer extends plugin_renderer_base {
             $output .= html_writer::start_tag('ol', array('class' => 'list'));
             foreach ($recentenrolments as $user) {
                 $output .= html_writer::tag('li',
-                        html_writer::link(new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id)),
+                        html_writer::link(new url('/user/view.php', array('id' => $user->id, 'course' => $course->id)),
                                 fullname($user, $viewfullnames)),
                         array('class' => 'name'));
             }

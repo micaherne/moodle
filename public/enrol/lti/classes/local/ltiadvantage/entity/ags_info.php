@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * The ags_info class, instances of which represent grade service information for a resource_link or context.
  *
@@ -60,11 +63,11 @@ class ags_info {
      * @param \moodle_url|null $lineitemurl The lineitemurl, which is only present when a single lineitem is supported.
      * @param array $scopes The array of supported scopes for this service instance.
      */
-    private function __construct(?\moodle_url $lineitemsurl, ?\moodle_url $lineitemurl, array $scopes) {
+    private function __construct(?url $lineitemsurl, ?url $lineitemurl, array $scopes) {
 
         // Platforms may support just lineitemurl, just lineitemsurl or both. At least one of the two is required.
         if (is_null($lineitemsurl) && is_null($lineitemurl)) {
-            throw new \coding_exception("Missing lineitem or lineitems URL");
+            throw new coding_exception("Missing lineitem or lineitems URL");
         }
 
         $this->lineitemsurl = $lineitemsurl;
@@ -80,7 +83,7 @@ class ags_info {
      * @param array $scopes The array of supported scopes for this service instance.
      * @return ags_info the object instance.
      */
-    public static function create(?\moodle_url $lineitemsurl = null, ?\moodle_url $lineitemurl = null,
+    public static function create(?url $lineitemsurl = null, ?url $lineitemurl = null,
             array $scopes = []): ags_info {
         return new self($lineitemsurl, $lineitemurl, $scopes);
     }
@@ -100,7 +103,7 @@ class ags_info {
         ];
         foreach ($scopes as $scope) {
             if (!is_string($scope)) {
-                throw new \coding_exception('Scope must be a string value');
+                throw new coding_exception('Scope must be a string value');
             }
             $key = array_search($scope, $supportedscopes);
             if ($key === 0) {
@@ -120,7 +123,7 @@ class ags_info {
      *
      * @return \moodle_url the url.
      */
-    public function get_lineitemsurl(): ?\moodle_url {
+    public function get_lineitemsurl(): ?url {
         return $this->lineitemsurl;
     }
 
@@ -129,7 +132,7 @@ class ags_info {
      *
      * @return \moodle_url|null the url, or null if not present.
      */
-    public function get_lineitemurl(): ?\moodle_url {
+    public function get_lineitemurl(): ?url {
         return $this->lineitemurl;
     }
 

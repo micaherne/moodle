@@ -16,6 +16,9 @@
 
 namespace core_h5p;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
 use core_xapi\handler;
 use core_xapi\xapi_exception;
 use Moodle\H5PFrameworkInterface;
@@ -519,9 +522,9 @@ class framework implements H5PFrameworkInterface {
             return;
         }
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
-        return \moodle_url::make_pluginfile_url($context->id, 'core_h5p', 'libraries',
+        return url::make_pluginfile_url($context->id, 'core_h5p', 'libraries',
             $library->id, '/' . $libraryfilepath . '/', $filename)->out();
     }
 
@@ -538,7 +541,7 @@ class framework implements H5PFrameworkInterface {
         }
 
         if (!isset($this->lastuploadedfolder)) {
-            throw new \coding_exception('Using getUploadedH5pFolderPath() before path is set');
+            throw new coding_exception('Using getUploadedH5pFolderPath() before path is set');
         }
 
         return $this->lastuploadedfolder;
@@ -557,7 +560,7 @@ class framework implements H5PFrameworkInterface {
         }
 
         if (!isset($this->lastuploadedfile)) {
-            throw new \coding_exception('Using getUploadedH5pPath() before path is set');
+            throw new coding_exception('Using getUploadedH5pPath() before path is set');
         }
 
         return $this->lastuploadedfile;
@@ -763,7 +766,7 @@ class framework implements H5PFrameworkInterface {
      */
     public function get_file(): \stored_file {
         if (!isset($this->file)) {
-            throw new \coding_exception('Using get_file() before file is set');
+            throw new coding_exception('Using get_file() before file is set');
         }
 
         return $this->file;

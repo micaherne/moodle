@@ -26,7 +26,7 @@ namespace core_xapi;
 defined('MOODLE_INTERNAL') || die();
 
 use stdClass;
-use moodle_url;
+use core\url;
 
 /**
  * Class to translate Moodle objects to xAPI elements.
@@ -55,7 +55,7 @@ class iri {
         if (empty($type)) {
             $type = 'element';
         }
-        return (new moodle_url("/xapi/$type/$value"))->out(false);
+        return (new url("/xapi/$type/$value"))->out(false);
     }
 
     /**
@@ -73,7 +73,7 @@ class iri {
         if (empty($type)) {
             $type = 'element';
         }
-        $xapibase = (new moodle_url("/xapi/$type/"))->out(false);
+        $xapibase = (new url("/xapi/$type/"))->out(false);
         if (strpos($value, $xapibase) === 0) {
             return substr($value, strlen($xapibase));
         }
@@ -87,7 +87,7 @@ class iri {
      * @return bool if the $value could be an IRI.
      */
     public static function check(string $value): bool {
-        $iri = new moodle_url($value);
+        $iri = new url($value);
         return in_array($iri->get_scheme(), ['http', 'https']);
     }
 }

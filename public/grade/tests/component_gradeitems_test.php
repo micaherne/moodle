@@ -29,7 +29,7 @@ namespace core_grades {
 
     use advanced_testcase;
     use core_grades\component_gradeitems;
-    use coding_exception;
+    use core\exception\coding_exception;
 
     /**
      * Unit tests for core_grades\component_gradeitems;

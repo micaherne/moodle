@@ -16,6 +16,8 @@
 
 namespace tool_admin_presets\local\action;
 
+use core\exception\moodle_exception;
+
 /**
  * Tests for the load class.
  *
@@ -47,7 +49,7 @@ final class load_test extends \advanced_testcase {
         $_POST['id'] = $presetid * 2; // Unexisting preset identifier.
 
         $action = new load();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $action->show();
     }
 

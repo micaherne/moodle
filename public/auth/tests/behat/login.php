@@ -25,12 +25,14 @@
  * @copyright  2021 Class Technologies Inc. {@link https://www.class.com/}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+
 require(__DIR__.'/../../../config.php');
 require_once("{$CFG->dirroot}/login/lib.php");
 
 $behatrunning = defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING;
 if (!$behatrunning) {
-    redirect(new moodle_url('/'));
+    redirect(new url('/'));
 }
 
 $username = required_param('username', PARAM_ALPHANUMEXT);
@@ -39,9 +41,9 @@ $wantsurl = optional_param('wantsurl', null, PARAM_URL);
 if (isloggedin()) {
     // If the user is already logged in, log them out and redirect them back to login again.
     require_logout();
-    redirect(new moodle_url('/auth/tests/behat/login.php', [
+    redirect(new url('/auth/tests/behat/login.php', [
         'username' => $username,
-        'wantsurl' => (new moodle_url($wantsurl))->out(false),
+        'wantsurl' => (new url($wantsurl))->out(false),
     ]));
 }
 
@@ -76,7 +78,7 @@ if ($failurereason) {
     // Note: Do not throw an exception here as we sometimes test that login does not work.
     // Exceptions are automatic failures in Behat.
     \core\notification::add($reason, \core\notification::ERROR);
-    redirect(new moodle_url('/'));
+    redirect(new url('/'));
 }
 
 if (!complete_user_login($user)) {
@@ -86,4 +88,4 @@ if (!complete_user_login($user)) {
 if (empty($wantsurl)) {
     $wantsurl = core_login_get_return_url();
 }
-redirect(new moodle_url($wantsurl));
+redirect(new url($wantsurl));

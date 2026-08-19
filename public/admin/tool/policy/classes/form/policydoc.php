@@ -25,8 +25,8 @@
 
 namespace tool_policy\form;
 
-use context_system;
-use html_writer;
+use core\context\system;
+use core\output\html_writer;
 use moodleform;
 use tool_policy\api;
 use tool_policy\policy_version;

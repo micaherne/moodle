@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once('../config.php');
@@ -44,9 +48,9 @@ if (async_helper::is_async_enabled()) {
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 
-navigation_node::override_active_url(new moodle_url('/backup/restorefile.php', array('contextid'=>$contextid)));
+navigation_node::override_active_url(new url('/backup/restorefile.php', array('contextid'=>$contextid)));
 $PAGE->set_show_navigation_footer(false);
-$PAGE->set_url(new moodle_url('/backup/restore.php', array('contextid'=>$contextid)));
+$PAGE->set_url(new url('/backup/restore.php', array('contextid'=>$contextid)));
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_secondary_active_tab('coursereuse');
@@ -59,7 +63,7 @@ $PAGE->secondarynav->set_overflow_selected_node('restore');
 if (is_null($course)) {
     $coursefullname = $SITE->fullname;
     $courseshortname = $SITE->shortname;
-    $courseurl = new moodle_url('/');
+    $courseurl = new url('/');
 } else {
     $coursefullname = $course->fullname;
     $courseshortname = $course->shortname;
@@ -179,7 +183,7 @@ if ($restore->get_stage() != restore_ui::STAGE_PROCESS) {
     \core\task\manager::queue_adhoc_task($asynctask);
 
     // Add ajax progress bar and initiate ajax via a template.
-    $restoreurl = new moodle_url('/backup/restorefile.php', array('contextid' => $contextid));
+    $restoreurl = new url('/backup/restorefile.php', array('contextid' => $contextid));
     $progresssetup = array(
             'backupid' => $restoreid,
             'contextid' => $contextid,

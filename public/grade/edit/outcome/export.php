@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+
 require_once '../../../config.php';
 require_once $CFG->dirroot.'/grade/lib.php';
 require_once $CFG->libdir.'/gradelib.php';
@@ -32,10 +35,10 @@ $action   = optional_param('action', '', PARAM_ALPHA);
 /// Make sure they can even access this course
 if ($courseid) {
     if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
     require_login($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     require_capability('moodle/grade:manage', $context);
 
     if (empty($CFG->enableoutcomes)) {

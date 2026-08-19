@@ -16,6 +16,7 @@
 
 namespace core\router\parameters;
 
+use core\context\module;
 use core\exception\not_found_exception;
 use core\tests\router\route_testcase;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -35,7 +36,7 @@ final class path_coursemodule_test extends route_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $mod = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
-        $modcontext = \context_module::instance($mod->cmid);
+        $modcontext = module::instance($mod->cmid);
 
         $param = new path_coursemodule();
         $request = new ServerRequest('GET', '/course/cms/' . $mod->cmid . '/restricted');

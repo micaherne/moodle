@@ -16,11 +16,12 @@
 
 namespace mod_bigbluebuttonbn\output;
 
+use core\output\single_button;
 use mod_bigbluebuttonbn\instance;
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Renderer for recording section.
@@ -65,7 +66,7 @@ class recordings_session implements renderable, templatable {
         ];
 
         if ($this->instance->can_import_recordings()) {
-            $button = new \single_button(
+            $button = new single_button(
                 $this->instance->get_import_url(),
                 get_string('view_recording_button_import', 'mod_bigbluebuttonbn')
             );

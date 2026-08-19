@@ -22,8 +22,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\module;
 use core\dataformat;
+use core\output\action_link;
+use core\output\actions\popup_action;
+use core\output\html_writer;
 use core\report_helper;
+use core\url;
+use core\user;
+use core_table\sql_table;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -37,7 +46,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  2014 Rajesh Taneja <rajesh.taneja@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class report_log_table_log extends table_sql {
+class report_log_table_log extends sql_table {
     /** @var array list of user fullnames shown in report */
     private $userfullnames = array();
 
@@ -125,7 +134,7 @@ class report_log_table_log extends table_sql {
         // If we reach that point new users logs have been generated since the last users db query.
         $userfieldsapi = \core_user\fields::for_name();
         $fields = $userfieldsapi->get_sql('', false, '', '', false)->selects;
-        if ($user = \core_user::get_user($userid, $fields)) {
+        if ($user = user::get_user($userid, $fields)) {
             $this->userfullnames[$userid] = fullname($user, has_capability('moodle/site:viewfullnames', $this->get_context()));
         } else {
             $this->userfullnames[$userid] = false;
@@ -176,9 +185,9 @@ class report_log_table_log extends table_sql {
                 if ($event->courseid) {
                     $params['course'] = $event->courseid;
                 }
-                $a->realusername = html_writer::link(new moodle_url('/user/view.php', $params), $a->realusername);
+                $a->realusername = html_writer::link(new url('/user/view.php', $params), $a->realusername);
                 $params['id'] = $event->userid;
-                $a->asusername = html_writer::link(new moodle_url('/user/view.php', $params), $a->asusername);
+                $a->asusername = html_writer::link(new url('/user/view.php', $params), $a->asusername);
             }
             $username = get_string('eventloggedas', 'report_log', $a);
 
@@ -188,7 +197,7 @@ class report_log_table_log extends table_sql {
                 if ($event->courseid) {
                     $params['course'] = $event->courseid;
                 }
-                $username = html_writer::link(new moodle_url('/user/view.php', $params), $eventusername);
+                $username = html_writer::link(new url('/user/view.php', $params), $eventusername);
             } else {
                 $username = $eventusername;
             }
@@ -212,7 +221,7 @@ class report_log_table_log extends table_sql {
                 if ($event->courseid) {
                     $params['course'] = $event->courseid;
                 }
-                $username = html_writer::link(new moodle_url('/user/view.php', $params), $username);
+                $username = html_writer::link(new url('/user/view.php', $params), $username);
             }
         } else {
             $username = '-';
@@ -325,7 +334,7 @@ class report_log_table_log extends table_sql {
         $ip = $logextra['ip'];
 
         if (empty($this->download)) {
-            $url = new moodle_url("/iplookup/index.php?popup=1&ip={$ip}&user={$event->userid}");
+            $url = new url("/iplookup/index.php?popup=1&ip={$ip}&user={$event->userid}");
             $ip = $this->action_link($url, $ip, 'ip');
         }
         return $ip;
@@ -340,7 +349,7 @@ class report_log_table_log extends table_sql {
      *
      * @return string html to use.
      */
-    protected function action_link(moodle_url $url, $text, $name = 'popup') {
+    protected function action_link(url $url, $text, $name = 'popup') {
         global $OUTPUT;
         $link = new action_link($url, $text, new popup_action('click', $url, $name, array('height' => 440, 'width' => 700)));
         return $OUTPUT->render($link);
@@ -485,9 +494,9 @@ class report_log_table_log extends table_sql {
 
         // Filter out anonymous actions, this is N/A for legacy log because it never stores them.
         if ($this->filterparams->modid) {
-            $context = context_module::instance($this->filterparams->modid);
+            $context = module::instance($this->filterparams->modid);
         } else {
-            $context = context_course::instance($this->filterparams->courseid);
+            $context = course::instance($this->filterparams->courseid);
         }
         if (!has_capability('moodle/site:viewanonymousevents', $context)) {
             $joins[] = "anonymous = 0";

@@ -18,7 +18,7 @@ namespace core\output;
 
 use core\exception\coding_exception;
 use core\output\actions\component_action;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -119,7 +119,7 @@ class single_select implements renderable, templatable {
      * @param string $formid
      */
     public function __construct(
-        moodle_url $url,
+        url $url,
         $name,
         array $options,
         $selected = '',
@@ -208,7 +208,7 @@ class single_select implements renderable, templatable {
         }, array_keys($attributes));
 
         // Form parameters.
-        $actionurl = new moodle_url($this->url);
+        $actionurl = new url($this->url);
         if ($this->method === 'post') {
             $actionurl->param('sesskey', sesskey());
         }

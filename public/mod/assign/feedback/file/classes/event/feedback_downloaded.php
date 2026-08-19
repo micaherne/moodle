@@ -16,6 +16,8 @@
 
 namespace assignfeedback_file\event;
 
+use core\exception\coding_exception;
+
 /**
  * One or all of the feedback files have been downloaded.
  *
@@ -63,10 +65,10 @@ class feedback_downloaded extends \core\event\base {
     #[\Override]
     protected function validate_data() {
         if (empty($this->other['fileid'])) {
-            throw new \coding_exception('other[\'fileid\'] must be set');
+            throw new coding_exception('other[\'fileid\'] must be set');
         }
         if (empty($this->other['filename'])) {
-            throw new \coding_exception('other[\'filename\'] must be set');
+            throw new coding_exception('other[\'filename\'] must be set');
         }
 
         parent::validate_data();

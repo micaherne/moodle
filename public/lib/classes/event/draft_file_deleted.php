@@ -16,6 +16,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 /**
  * Event fired when a file is deleted from the draft area.
  *
@@ -61,23 +63,23 @@ class draft_file_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->other['itemid'])) {
-            throw new \coding_exception('The \'itemid\' must be set in other.');
+            throw new coding_exception('The \'itemid\' must be set in other.');
         }
 
         if (!isset($this->other['filename'])) {
-            throw new \coding_exception('The \'filename\' value must be set in other.');
+            throw new coding_exception('The \'filename\' value must be set in other.');
         }
 
         if (!isset($this->other['filesize'])) {
-            throw new \coding_exception('The \'filesize\' value must be set in other.');
+            throw new coding_exception('The \'filesize\' value must be set in other.');
         }
 
         if (!isset($this->other['filepath'])) {
-            throw new \coding_exception('The \'filepath\' value must be set in other.');
+            throw new coding_exception('The \'filepath\' value must be set in other.');
         }
 
         if (!isset($this->other['contenthash'])) {
-            throw new \coding_exception('The \'contenthash\' value must be set in other.');
+            throw new coding_exception('The \'contenthash\' value must be set in other.');
         }
     }
 }

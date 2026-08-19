@@ -25,6 +25,8 @@
  */
 namespace core_privacy\local\request;
 
+use core\context;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -58,7 +60,7 @@ interface core_user_data_provider extends core_data_provider {
      *
      * @param   context                 $context   The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context);
+    public static function delete_data_for_all_users_in_context(context $context);
 
     /**
      * Delete all user data for the specified user, in the specified contexts.

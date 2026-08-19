@@ -23,6 +23,11 @@
  * @package   core_group
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once('group_form.php');
@@ -37,28 +42,28 @@ $confirm  = optional_param('confirm', 0, PARAM_BOOL);
 // anyone still links to it, let's redirect to the new script.
 if ($delete) {
     debugging('Deleting a group through group/group.php is deprecated and will be removed soon. Please use group/delete.php instead');
-    redirect(new moodle_url('delete.php', array('courseid' => $courseid, 'groups' => $id)));
+    redirect(new url('delete.php', array('courseid' => $courseid, 'groups' => $id)));
 }
 
 
 if ($id) {
     if (!$group = $DB->get_record('groups', array('id'=>$id))) {
-        throw new \moodle_exception('invalidgroupid');
+        throw new moodle_exception('invalidgroupid');
     }
     if (empty($courseid)) {
         $courseid = $group->courseid;
 
     } else if ($courseid != $group->courseid) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
 
     if (!$course = $DB->get_record('course', array('id'=>$courseid))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
 
 } else {
     if (!$course = $DB->get_record('course', array('id'=>$courseid))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
     $group = new stdClass();
     $group->courseid = $course->id;
@@ -71,14 +76,14 @@ if ($id !== 0) {
 }
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/course:managegroups', $context);
 
 $strgroups = get_string('groups');
 $PAGE->set_title($strgroups);
 $PAGE->set_heading($course->fullname . ': '.$strgroups);
 $PAGE->set_pagelayout('admin');
-navigation_node::override_active_url(new moodle_url('/group/index.php', array('id' => $course->id)));
+navigation_node::override_active_url(new url('/group/index.php', array('id' => $course->id)));
 
 $returnurl = $CFG->wwwroot.'/group/index.php?id='.$course->id.'&group='.$id;
 
@@ -124,8 +129,8 @@ if ($id) {
     $strheading = get_string('creategroup', 'group');
 }
 
-$PAGE->navbar->add($strparticipants, new moodle_url('/user/index.php', array('id'=>$courseid)));
-$PAGE->navbar->add($strgroups, new moodle_url('/group/index.php', array('id'=>$courseid)));
+$PAGE->navbar->add($strparticipants, new url('/user/index.php', array('id'=>$courseid)));
+$PAGE->navbar->add($strgroups, new url('/group/index.php', array('id'=>$courseid)));
 $PAGE->navbar->add($strheading);
 
 /// Print header

@@ -26,8 +26,8 @@ namespace mod_forum\local\vaults\preprocessors;
 
 defined('MOODLE_INTERNAL') || die();
 
-use context;
-use context_helper;
+use core\context;
+use core\context_helper;
 
 /**
  * Extract context vault preprocessor.

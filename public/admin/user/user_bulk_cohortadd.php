@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once('user_bulk_cohortadd_form.php');
@@ -32,10 +38,10 @@ $sort = optional_param('sort', 'fullname', PARAM_ALPHA);
 $dir  = optional_param('dir', 'asc', PARAM_ALPHA);
 
 admin_externalpage_setup('userbulk');
-require_capability('moodle/cohort:assign', context_system::instance());
+require_capability('moodle/cohort:assign', system::instance());
 
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
-$return = new moodle_url($returnurl ?: '/admin/user/user_bulk.php');
+$return = new url($returnurl ?: '/admin/user/user_bulk.php');
 
 $users = $SESSION->bulk_users;
 

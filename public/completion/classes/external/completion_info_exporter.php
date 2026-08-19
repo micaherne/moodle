@@ -20,7 +20,8 @@ namespace core_completion\external;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderer_base;
+use core\output\renderer_base;
+use core_course\cm_info;
 
 /**
  * Completion info exporter
@@ -53,7 +54,7 @@ class completion_info_exporter extends \core\external\exporter {
      */
     public function __construct(object $course, object $cm, int $userid, array $related = []) {
         $this->course = $course;
-        $this->cminfo = \cm_info::create($cm, $userid);
+        $this->cminfo = cm_info::create($cm, $userid);
         $this->userid = $userid;
         parent::__construct([], $related);
     }

@@ -16,10 +16,12 @@
 
 namespace theme_boost\output;
 
-use context_course;
-use context_system;
-use moodle_url;
-use html_writer;
+use core\context\course;
+use core\context\system;
+use core\output\context_header;
+use core\output\single_button;
+use core\url;
+use core\output\html_writer;
 use get_string;
 
 defined('MOODLE_INTERNAL') || die;
@@ -31,7 +33,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2012 Bas Brands, www.basbrands.nl
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class core_renderer extends \core_renderer {
+class core_renderer extends \core\output\core_renderer {
     /**
      * Returns the navbar search box using the inline field design.
      *
@@ -44,12 +46,12 @@ class core_renderer extends \core_renderer {
     public function search_box($id = false) {
         global $CFG;
 
-        if (empty($CFG->enableglobalsearch) || !has_capability('moodle/search:query', context_system::instance())) {
+        if (empty($CFG->enableglobalsearch) || !has_capability('moodle/search:query', system::instance())) {
             return '';
         }
 
         $data = [
-            'action' => new moodle_url('/search/index.php'),
+            'action' => new url('/search/index.php'),
             'hiddenfields' => (object) ['name' => 'context', 'value' => $this->page->context->id],
             'inputname' => 'q',
             'searchstring' => get_string('search'),
@@ -66,7 +68,7 @@ class core_renderer extends \core_renderer {
      * @param string $method
      * @return string HTML the button
      */
-    public function edit_button(moodle_url $url, string $method = 'post') {
+    public function edit_button(url $url, string $method = 'post') {
         if ($this->page->theme->haseditswitch) {
             return;
         }
@@ -78,7 +80,7 @@ class core_renderer extends \core_renderer {
             $url->param('edit', 'on');
             $editstring = get_string('turneditingon');
         }
-        $button = new \single_button($url, $editstring, $method, \single_button::BUTTON_PRIMARY);
+        $button = new single_button($url, $editstring, $method, single_button::BUTTON_PRIMARY);
         return $this->render_single_button($button);
     }
 
@@ -148,7 +150,7 @@ class core_renderer extends \core_renderer {
                         'messages' => array(
                             'buttontype' => 'message',
                             'title' => get_string('message', 'message'),
-                            'url' => new moodle_url('/message/index.php', array('id' => $user->id)),
+                            'url' => new url('/message/index.php', array('id' => $user->id)),
                             'image' => 't/message',
                             'linkattributes' => \core_message\helper::messageuser_link_params($user->id),
                             'page' => $this->page
@@ -201,7 +203,7 @@ class core_renderer extends \core_renderer {
                             $userbuttons['togglecontact'] = array(
                                 'buttontype' => 'togglecontact',
                                 'title' => get_string($contacttitle, 'message'),
-                                'url' => new moodle_url('/message/index.php', array(
+                                'url' => new url('/message/index.php', array(
                                         'user1' => $USER->id,
                                         'user2' => $user->id,
                                         $contacturlaction => $user->id,
@@ -245,7 +247,7 @@ class core_renderer extends \core_renderer {
             }
         }
 
-        $contextheader = new \context_header($heading, $headinglevel, $imagedata, $userbuttons, $prefix);
+        $contextheader = new context_header($heading, $headinglevel, $imagedata, $userbuttons, $prefix);
         return $this->render($contextheader);
     }
 
@@ -299,7 +301,7 @@ class core_renderer extends \core_renderer {
         $context->sitename = format_string(
             $SITE->fullname,
             true,
-            ['context' => context_course::instance(SITEID), 'escape' => false]
+            ['context' => course::instance(SITEID), 'escape' => false]
         );
         $context->hasauthinstructions = !empty($CFG->auth_instructions);
 

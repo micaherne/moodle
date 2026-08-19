@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -95,7 +98,7 @@ class mod_feedback_responses_anon_table extends mod_feedback_responses_table {
      * @return \moodle_url
      */
     protected function get_link_single_entry($row) {
-        return new moodle_url($this->baseurl, ['showcompleted' => $row->id]);
+        return new url($this->baseurl, ['showcompleted' => $row->id]);
     }
 
     /**

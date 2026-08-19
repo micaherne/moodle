@@ -19,8 +19,8 @@ declare(strict_types=1);
 namespace core_reportbuilder\external;
 
 use advanced_testcase;
-use context_system;
-use moodle_url;
+use core\context\system;
+use core\url;
 use core_reportbuilder\output\report_action;
 use core_reportbuilder\system_report_available;
 use core_reportbuilder\system_report_factory;
@@ -70,9 +70,9 @@ final class system_report_exporter_test extends advanced_testcase {
         $this->resetAfterTest();
 
         // Prevent debug warnings from flexible_table.
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new url('/'));
 
-        $instance = system_report_factory::create(system_report_available::class, context_system::instance(), '', '', 0,
+        $instance = system_report_factory::create(system_report_available::class, system::instance(), '', '', 0,
             ['withfilters' => $withfilters]);
         $instance->set_report_action(new report_action('Add', []));
         $instance->set_report_info_container('Hello');

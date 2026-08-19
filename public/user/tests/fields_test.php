@@ -16,6 +16,9 @@
 
 namespace core_user;
 
+use core\context\course;
+use core\context\user;
+
 /**
  * Unit tests for \core_user\fields
  *
@@ -76,10 +79,10 @@ final class fields_test extends \advanced_testcase {
 
         // Create a test course and a student in the course.
         $course = $generator->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user = $generator->create_user();
         $anotheruser = $generator->create_user();
-        $usercontext = \context_user::instance($anotheruser->id);
+        $usercontext = user::instance($anotheruser->id);
         $generator->enrol_user($user->id, $course->id, 'student');
 
         // When no context is provided, it does no access checks and should return all specified (other than non-visible).

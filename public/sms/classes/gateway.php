@@ -16,7 +16,7 @@
 
 namespace core_sms;
 
-use coding_exception;
+use core\exception\coding_exception;
 use Spatie\Cloneable\Cloneable;
 use stdClass;
 
@@ -116,7 +116,7 @@ abstract class gateway {
      */
     public function update_message_status(message $message): message {
         if ($message->gatewayid !== $this->id) {
-            throw new \coding_exception('This gateway cannot update the status of this message');
+            throw new coding_exception('This gateway cannot update the status of this message');
         }
 
         return $message;

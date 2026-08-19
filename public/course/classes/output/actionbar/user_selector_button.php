@@ -20,6 +20,7 @@ use core\output\named_templatable;
 use core\output\renderable;
 use core\output\renderer_base;
 use core\url;
+use core\user;
 use stdClass;
 
 /**
@@ -48,7 +49,7 @@ class user_selector_button implements renderable, named_templatable {
         // If the user ID is set, it indicates that a user has been selected. In this case, override the user search
         // string with the full name of the selected user.
         if ($this->userid) {
-            $this->usersearch = fullname(\core_user::get_user($this->userid));
+            $this->usersearch = fullname(user::get_user($this->userid));
         }
     }
 

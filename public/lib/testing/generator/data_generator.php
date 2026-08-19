@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context_helper;
+use core\exception\coding_exception;
+use core_cache\helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -314,7 +322,7 @@ EOD;
         $record = (array)$record;
 
         if (!isset($record['contextid'])) {
-            $record['contextid'] = context_system::instance()->id;
+            $record['contextid'] = system::instance()->id;
         }
 
         if (!isset($record['name'])) {
@@ -426,7 +434,7 @@ EOD;
         if ($initsections) {
             $this->init_sections($course);
         }
-        context_course::instance($course->id);
+        course::instance($course->id);
 
         return $course;
     }
@@ -575,13 +583,13 @@ EOD;
         // Allow tests to set group pictures.
         if (!empty($record['picturepath'])) {
             require_once($CFG->dirroot . '/lib/gdlib.php');
-            $grouppicture = process_new_icon(\context_course::instance($record['courseid']), 'group', 'icon', $id,
+            $grouppicture = process_new_icon(course::instance($record['courseid']), 'group', 'icon', $id,
                 $record['picturepath']);
 
             $DB->set_field('groups', 'picture', $grouppicture, ['id' => $id]);
 
             // Invalidate the group data as we've updated the group record.
-            cache_helper::invalidate_by_definition('core', 'groupdata', array(), [$record['courseid']]);
+            helper::invalidate_by_definition('core', 'groupdata', array(), [$record['courseid']]);
         }
 
         return $DB->get_record('groups', array('id'=>$id));
@@ -863,7 +871,7 @@ EOD;
 
         $allcapabilities = get_all_capabilities();
         $foundcapabilities = array_intersect(array_keys($allcapabilities), array_keys($record));
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         $allpermissions = [
             'inherit' => CAP_INHERIT,
@@ -875,7 +883,7 @@ EOD;
         foreach ($foundcapabilities as $capability) {
             $permission = $record[$capability];
             if (!array_key_exists($permission, $allpermissions)) {
-                throw new \coding_exception("Unknown capability permissions '{$permission}'");
+                throw new coding_exception("Unknown capability permissions '{$permission}'");
             }
             assign_capability(
                 $capability,
@@ -914,11 +922,11 @@ EOD;
             }
 
             if (!array_key_exists($capability, $allcapabilities)) {
-                throw new \coding_exception("Unknown capability '{$capability}'");
+                throw new coding_exception("Unknown capability '{$capability}'");
             }
 
             if (!array_key_exists($permission, $allpermissions)) {
-                throw new \coding_exception("Unknown capability permissions '{$permission}'");
+                throw new coding_exception("Unknown capability permissions '{$permission}'");
             }
 
             assign_capability(
@@ -1069,7 +1077,7 @@ EOD;
 
         // Default to the system context.
         if (!$contextid) {
-            $context = context_system::instance();
+            $context = system::instance();
             $contextid = $context->id;
         }
 
@@ -1141,7 +1149,7 @@ EOD;
 
         if ($item->itemtype === 'mod') {
             $cm = get_coursemodule_from_instance($item->itemmodule, $item->iteminstance);
-            $module = new $item->itemmodule(context_module::instance($cm->id), $cm, false);
+            $module = new $item->itemmodule(module::instance($cm->id), $cm, false);
             $record['attemptnumber'] = $record['attemptnumber'] ?? 0;
 
             $module->save_grade($userid, (object) $record);
@@ -1260,9 +1268,9 @@ EOD;
         }
 
         if (!empty($data->cmid)) {
-            $data->contextid = context_module::instance($data->cmid)->id;
+            $data->contextid = module::instance($data->cmid)->id;
         } else {
-            $data->contextid = context_course::instance($data->courseid)->id;
+            $data->contextid = course::instance($data->courseid)->id;
         }
 
         // Set it to enabled if no status was specified.

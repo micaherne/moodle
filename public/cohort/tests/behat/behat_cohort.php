@@ -25,6 +25,8 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
+use core\url;
+
 require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
 
 /**
@@ -47,7 +49,7 @@ class behat_cohort extends behat_base {
     public function i_add_user_to_cohort_members($user, $cohortidnumber) {
 
         // If we are not in the cohorts management we should move there before anything else.
-        $cohortsurl = new moodle_url('/cohort/index.php');
+        $cohortsurl = new url('/cohort/index.php');
         if (strpos($this->getSession()->getCurrentUrl(), $cohortsurl->out(false)) !== 0) {
             // With JS enabled we should expand a few tree nodes.
             $parentnodes = get_string('users', 'admin') . ' > ' .

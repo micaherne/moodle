@@ -29,6 +29,8 @@
 /**
  * Structure step to restore one data activity
  */
+use core\context\module;
+
 class restore_data_activity_structure_step extends restore_activity_structure_step {
 
     protected function define_structure() {
@@ -141,7 +143,7 @@ class restore_data_activity_structure_step extends restore_activity_structure_st
         }
 
         $tag = $data->rawname;
-        $context = context_module::instance($this->task->get_moduleid());
+        $context = module::instance($this->task->get_moduleid());
         core_tag_tag::add_item_tag('mod_data', 'data_records', $itemid, $context, $tag);
     }
 

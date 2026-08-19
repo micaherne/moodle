@@ -16,15 +16,15 @@
 
 namespace core_admin\reportbuilder\local\systemreports;
 
-use context_system;
+use core\context\system;
 use core_admin\reportbuilder\local\entities\task_log;
 use core_reportbuilder\local\entities\user;
 use core_reportbuilder\local\report\action;
 use core_reportbuilder\system_report;
-use html_writer;
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\output\html_writer;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 use stdClass;
 
 /**
@@ -71,7 +71,7 @@ class task_logs extends system_report {
      * @return bool
      */
     protected function can_view(): bool {
-        return has_capability('moodle/site:config', context_system::instance());
+        return has_capability('moodle/site:config', system::instance());
     }
 
     /**
@@ -108,7 +108,7 @@ class task_logs extends system_report {
         $this->get_column('task_log:name')
             ->add_field("{$entitymainalias}.id")
             ->add_callback(static function (string $output, stdClass $row): string {
-                return html_writer::link(new moodle_url('/admin/tasklogs.php', ['logid' => $row->id]), $output);
+                return html_writer::link(new url('/admin/tasklogs.php', ['logid' => $row->id]), $output);
             });
 
         // Rename the user fullname column.
@@ -147,7 +147,7 @@ class task_logs extends system_report {
 
         // Action to view individual task log on a popup window.
         $this->add_action((new action(
-            new moodle_url('/admin/tasklogs.php', ['logid' => ':id']),
+            new url('/admin/tasklogs.php', ['logid' => ':id']),
             new pix_icon('e/search', ''),
             [],
             false,
@@ -156,7 +156,7 @@ class task_logs extends system_report {
 
         // Action to download individual task log.
         $this->add_action((new action(
-            new moodle_url('/admin/tasklogs.php', ['logid' => ':id', 'download' => true]),
+            new url('/admin/tasklogs.php', ['logid' => ':id', 'download' => true]),
             new pix_icon('t/download', ''),
             [],
             false,

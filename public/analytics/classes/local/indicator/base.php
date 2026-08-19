@@ -24,6 +24,8 @@
 
 namespace core_analytics\local\indicator;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -189,7 +191,7 @@ abstract class base extends \core_analytics\calculable {
      */
     protected function validate_calculated_value($calculatedvalue) {
         if ($calculatedvalue > self::MAX_VALUE || $calculatedvalue < self::MIN_VALUE) {
-            throw new \coding_exception('Calculated values should be higher than ' . self::MIN_VALUE .
+            throw new coding_exception('Calculated values should be higher than ' . self::MIN_VALUE .
                 ' and lower than ' . self::MAX_VALUE . ' ' . $calculatedvalue . ' received');
         }
         return true;

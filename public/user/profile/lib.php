@@ -27,6 +27,15 @@
  * Editable by the profile owner if they have the moodle/user:editownprofile capability
  * or any user with the moodle/user:update capability.
  */
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core_cache\cache;
+use core_cache\store;
+
 define('PROFILE_VISIBLE_TEACHERS', '3');
 
 /**
@@ -123,7 +132,7 @@ class profile_field_base {
      * @param MoodleQuickForm $mform instance of the moodleform class
      */
     public function edit_field_add($mform) {
-        throw new \moodle_exception('mustbeoveride', 'debug', '', 'edit_field_add');
+        throw new moodle_exception('mustbeoveride', 'debug', '', 'edit_field_add');
     }
 
     /**
@@ -144,7 +153,7 @@ class profile_field_base {
      */
     public function display_name(bool $escape = true): string {
         return format_string($this->field->name, true, [
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'escape' => $escape,
         ]);
     }
@@ -286,7 +295,7 @@ class profile_field_base {
         if (!$mform->elementExists($this->inputname)) {
             return;
         }
-        if ($this->is_locked() and !has_capability('moodle/user:update', context_system::instance())) {
+        if ($this->is_locked() and !has_capability('moodle/user:update', system::instance())) {
             $mform->hardFreeze($this->inputname);
             $mform->setConstant($this->inputname, $this->data);
         }
@@ -451,7 +460,7 @@ class profile_field_base {
         global $USER, $COURSE;
 
         if ($context === null) {
-            $context = ($this->userid > 0) ? context_user::instance($this->userid) : context_system::instance();
+            $context = ($this->userid > 0) ? user::instance($this->userid) : system::instance();
         }
 
         switch ($this->field->visible) {
@@ -462,11 +471,11 @@ class profile_field_base {
                     return true;
                 } else if ($this->userid > 0) {
                     return has_capability('moodle/user:viewalldetails', $context);
-                } else if ($context instanceof context_course) {
+                } else if ($context instanceof course) {
                     return has_capability('moodle/site:viewuseridentity', $context);
                 } else {
                     // Fall back to the global course object.
-                    $coursecontext = context_course::instance($COURSE->id);
+                    $coursecontext = course::instance($COURSE->id);
                     return has_capability('moodle/site:viewuseridentity', $coursecontext);
                 }
             case PROFILE_VISIBLE_ALL:
@@ -482,7 +491,7 @@ class profile_field_base {
             default:
                 // PROFILE_VISIBLE_NONE, so let's check capabilities at system level.
                 if ($this->userid > 0) {
-                    $context = context_system::instance();
+                    $context = system::instance();
                 }
                 return has_capability('moodle/user:viewalldetails', $context);
         }
@@ -505,7 +514,7 @@ class profile_field_base {
             return true;
         }
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         if ($this->userid == $USER->id && has_capability('moodle/user:editownprofile', $systemcontext)) {
             return true;
@@ -517,7 +526,7 @@ class profile_field_base {
 
         // Checking for mentors have capability to edit user's profile.
         if ($this->userid > 0) {
-            $usercontext = context_user::instance($this->userid);
+            $usercontext = user::instance($this->userid);
             if ($this->userid != $USER->id && has_capability('moodle/user:editprofile', $usercontext, $USER->id)) {
                 return true;
             }
@@ -895,7 +904,7 @@ function profile_save_custom_fields($userid, $profilefields) {
  * @return stdClass|null Object with properties id, shortname, name, visible, datatype, categoryid, etc
  */
 function profile_get_custom_field_data_by_shortname(string $shortname, bool $casesensitive = true): ?stdClass {
-    $cache = \cache::make_from_params(cache_store::MODE_REQUEST, 'core_profile', 'customfields',
+    $cache = cache::make_from_params(store::MODE_REQUEST, 'core_profile', 'customfields',
             [], ['simplekeys' => true, 'simpledata' => true]);
     $data = $cache->get($shortname);
     if ($data === false) {

@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\module;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/lib/grade/constants.php');
@@ -230,7 +235,7 @@ class block_activity_results extends block_base {
             $context = $this->page->context;
         } else {
             $cm = get_coursemodule_from_instance($activity->itemmodule, $activity->iteminstance, $courseid);
-            $context = context_module::instance($cm->id);
+            $context = module::instance($cm->id);
         }
 
         if (!empty($this->config->usegroups)) {
@@ -556,7 +561,7 @@ class block_activity_results extends block_base {
                             default:
                             case B_ACTIVITYRESULTS_NAME_FORMAT_FULL:
                                 if (has_capability('moodle/user:viewdetails', $context)) {
-                                    $thisname = html_writer::link(new moodle_url('/user/view.php',
+                                    $thisname = html_writer::link(new url('/user/view.php',
                                         array('id' => $userid, 'course' => $courseid)), fullname($users[$userid]));
                                 } else {
                                     $thisname = fullname($users[$userid]);
@@ -622,7 +627,7 @@ class block_activity_results extends block_base {
                             default:
                             case B_ACTIVITYRESULTS_NAME_FORMAT_FULL:
                                 if (has_capability('moodle/user:viewdetails', $context)) {
-                                    $thisname = html_writer::link(new moodle_url('/user/view.php',
+                                    $thisname = html_writer::link(new url('/user/view.php',
                                         array('id' => $userid, 'course' => $courseid)), fullname($users[$userid]));
                                 } else {
                                     $thisname = fullname($users[$userid]);
@@ -697,8 +702,8 @@ class block_activity_results extends block_base {
     private function activity_link($activity, $cm) {
 
         $o = html_writer::start_tag('h5');
-        $o .= html_writer::link(new moodle_url('/mod/'.$activity->itemmodule.'/view.php',
-        array('id' => $cm->id)), format_string(($activity->itemname), true, ['context' => context_module::instance($cm->id)]));
+        $o .= html_writer::link(new url('/mod/'.$activity->itemmodule.'/view.php',
+        array('id' => $cm->id)), format_string(($activity->itemname), true, ['context' => module::instance($cm->id)]));
         $o .= html_writer::end_tag('h5');
         return $o;
     }

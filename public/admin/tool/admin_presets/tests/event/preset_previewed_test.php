@@ -16,6 +16,8 @@
 
 namespace tool_admin_presets\event;
 
+use core\context\system;
+
 /**
  * Tests for the preset_previewed event class.
  *
@@ -39,7 +41,7 @@ final class preset_previewed_test extends \advanced_testcase {
         $presetid = $generator->create_preset();
 
         $params = [
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'objectid' => $presetid,
         ];
         $event = preset_previewed::create($params);
@@ -53,7 +55,7 @@ final class preset_previewed_test extends \advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\tool_admin_presets\event\preset_previewed', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals($presetid, $event->objectid);
     }
 }

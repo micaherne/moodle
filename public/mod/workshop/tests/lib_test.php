@@ -22,6 +22,9 @@
  */
 namespace mod_workshop;
 
+use core\context\module;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -425,8 +428,8 @@ final class lib_test extends \advanced_testcase {
         );
         $workshop = $this->getDataGenerator()->create_module('workshop', $record);
         $cm = get_coursemodule_from_instance('workshop', $workshop->id, $course->id);
-        $context = \context_module::instance($cm->id);
-        $cm = \cm_info::create($cm);
+        $context = module::instance($cm->id);
+        $cm = cm_info::create($cm);
 
         $this->setUser($student);
         // Check that upon creation, the updates are only about the new configuration created.

@@ -16,7 +16,7 @@
 
 namespace core_ai\table;
 
-use moodle_url;
+use core\url;
 
 /**
  * Table to manage AI Placement plugins.
@@ -33,8 +33,8 @@ class aiplacement_management_table extends \core_admin\table\plugin_management_t
     }
 
     #[\Override]
-    protected function get_action_url(array $params = []): moodle_url {
-        return new moodle_url('/admin/ai.php', $params);
+    protected function get_action_url(array $params = []): url {
+        return new url('/admin/ai.php', $params);
     }
 
     #[\Override]

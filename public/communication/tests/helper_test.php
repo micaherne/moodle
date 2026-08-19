@@ -17,6 +17,7 @@
 namespace core_communication;
 
 use communication_matrix\matrix_test_helper_trait;
+use core\context\course;
 use core_communication\processor as communication_processor;
 
 defined('MOODLE_INTERNAL') || die();
@@ -53,7 +54,7 @@ final class helper_test extends \advanced_testcase {
             extrafields: ['groupmode' => SEPARATEGROUPS],
         );
         $group = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
-        $context = \context_course::instance(courseid: $course->id);
+        $context = course::instance(courseid: $course->id);
 
         $groupcommunication = helper::load_by_group(
             groupid: $group->id,
@@ -71,7 +72,7 @@ final class helper_test extends \advanced_testcase {
     public function test_load_by_course(): void {
         // As communication is created by default.
         $course = $this->get_course();
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         $coursecommunication = helper::load_by_course(
             courseid: $course->id,
             context: $coursecontext,
@@ -91,7 +92,7 @@ final class helper_test extends \advanced_testcase {
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
         $course = $this->get_course();
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
 
         // Enrol user1 as teacher.
         $teacherrole = $DB->get_record(
@@ -143,7 +144,7 @@ final class helper_test extends \advanced_testcase {
         // Set up the data with course, group, user etc.
         $user = $this->getDataGenerator()->create_user();
         $course = $this->get_course();
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         $teacherrole = $DB->get_record(
             table: 'role',
             conditions: ['shortname' => 'manager'],

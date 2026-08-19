@@ -27,8 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 use core\external\exporter;
 use core_external\util as external_util;
 use core_external\external_files;
-use renderer_base;
-use context_system;
+use core\output\renderer_base;
+use core\context\system;
 use core_tag\external\tag_item_exporter;
 
 /**
@@ -190,7 +190,7 @@ class post_exporter extends exporter {
         global $CFG;
         require_once($CFG->dirroot . '/blog/lib.php');
 
-        $context = context_system::instance(); // Files always on site context.
+        $context = system::instance(); // Files always on site context.
 
         $values['summaryfiles'] = external_util::get_area_files($context->id, 'blog', 'post', $this->data->id);
         $values['attachmentfiles'] = external_util::get_area_files($context->id, 'blog', 'attachment', $this->data->id);

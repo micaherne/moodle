@@ -28,8 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/message/lib.php');
 
-use renderable;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Class to prepare a message processor for display.
@@ -61,7 +62,7 @@ class processor implements templatable, renderable {
         $this->user = $user;
     }
 
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $processor = $this->processor;
         $user = $this->user;
 

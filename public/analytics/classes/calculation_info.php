@@ -24,6 +24,8 @@
 
 namespace core_analytics;
 
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -83,7 +85,7 @@ class calculation_info {
             int $rangeindex) {
 
         $calculableclass = get_class($calculable);
-        $cache = \cache::make('core', 'calculablesinfo');
+        $cache = cache::make('core', 'calculablesinfo');
 
         foreach ($this->info as $key => $value) {
             $datakey = self::get_data_key($calculableclass, $key);
@@ -119,7 +121,7 @@ class calculation_info {
      */
     public static function pull_info(array $predictionrecords) {
 
-        $cache = \cache::make('core', 'calculablesinfo');
+        $cache = cache::make('core', 'calculablesinfo');
 
         foreach ($predictionrecords as $uniquesampleid => $predictionrecord) {
 

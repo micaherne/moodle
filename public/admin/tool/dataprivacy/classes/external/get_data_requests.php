@@ -23,9 +23,9 @@ use core_external\external_multiple_structure;
 use core_external\external_value;
 use core_external\external_warnings;
 use tool_dataprivacy\api;
-use core_user;
-use context_system;
-use moodle_exception;
+use core\user;
+use core\context\system;
+use core\exception\moodle_exception;
 
 /**
  * External function for getting data requests.
@@ -105,7 +105,7 @@ class get_data_requests extends external_api {
             'limitfrom' => $limitfrom,
             'limitnum' => $limitnum,
         ]);
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         if ($params['userid'] == $USER->id) {
             $userid = $USER->id;
@@ -118,8 +118,8 @@ class get_data_requests extends external_api {
 
             $userid = 0;
             if (!empty($params['userid'])) {
-                $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-                core_user::require_active_user($user);
+                $user = user::get_user($params['userid'], '*', MUST_EXIST);
+                user::require_active_user($user);
                 $userid = $user->id;
             }
         }

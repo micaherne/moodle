@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\exception\require_login_exception;
+use core\url;
+use core\user;
+
 require(__DIR__ . '/../../../config.php');
 
 $id = required_param('id', PARAM_INT);
@@ -34,10 +39,10 @@ if (isguestuser()) {
 
 $uc = \core_competency\api::get_user_competency_by_id($id);
 $params = array('id' => $id);
-$url = new moodle_url('/admin/tool/lp/user_competency.php', $params);
+$url = new url('/admin/tool/lp/user_competency.php', $params);
 
-$user = core_user::get_user($uc->get('userid'));
-if (!$user || !core_user::is_real_user($user->id)) {
+$user = user::get_user($uc->get('userid'));
+if (!$user || !user::is_real_user($user->id)) {
     throw new moodle_exception('invaliduser', 'error');
 }
 $iscurrentuser = ($USER->id == $user->id);
@@ -47,7 +52,7 @@ $compexporter = new \core_competency\external\competency_exporter($competency, a
 
 $PAGE->set_pagelayout('standard');
 $PAGE->set_url($url);
-$PAGE->navigation->override_active_url(new moodle_url('/admin/tool/lp/plans.php', array('userid' => $uc->get('userid'))));
+$PAGE->navigation->override_active_url(new url('/admin/tool/lp/plans.php', array('userid' => $uc->get('userid'))));
 $PAGE->set_context($uc->get_context());
 if (!$iscurrentuser) {
     $PAGE->navigation->extend_for_user($user);

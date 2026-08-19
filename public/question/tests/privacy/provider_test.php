@@ -16,6 +16,9 @@
 
 namespace core_question\privacy;
 
+use core\context\module;
+use core\context\system;
+use core\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\deletion_criteria;
 use core_privacy\local\request\writer;
@@ -49,7 +52,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Create a question with a usage from the current user.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
-        $quba = \question_engine::make_questions_usage_by_activity('core_question_preview', \context_system::instance());
+        $quba = \question_engine::make_questions_usage_by_activity('core_question_preview', system::instance());
         $quba->set_preferred_behaviour('deferredfeedback');
         $questiondata = $questiongenerator->create_question('numerical', null, ['category' => $cat->id]);
         $question = \question_bank::load_question($questiondata->id);
@@ -73,7 +76,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Create a question with a usage from the current user.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
-        $quba = \question_engine::make_questions_usage_by_activity('core_question_preview', \context_system::instance());
+        $quba = \question_engine::make_questions_usage_by_activity('core_question_preview', system::instance());
         $quba->set_preferred_behaviour('deferredfeedback');
         $questiondata = $questiongenerator->create_question('numerical', null, ['category' => $cat->id]);
         $question = \question_bank::load_question($questiondata->id);
@@ -107,7 +110,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Create a question with a usage from the current user.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
-        $quba = \question_engine::make_questions_usage_by_activity('core_question_preview', \context_system::instance());
+        $quba = \question_engine::make_questions_usage_by_activity('core_question_preview', system::instance());
         $quba->set_preferred_behaviour('deferredfeedback');
 
         $questiondata = $questiongenerator->create_question('truefalse', 'true', ['category' => $cat->id]);
@@ -190,15 +193,15 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Create one question as each user in diferent contexts.
         $this->setUser($user);
         $userdata = $questiongenerator->setup_course_and_questions();
-        $expectedcontext = \context_module::instance($userdata[4]->cmid);
+        $expectedcontext = module::instance($userdata[4]->cmid);
 
         $this->setUser($otheruser);
         $otheruserdata = $questiongenerator->setup_course_and_questions();
-        $unexpectedcontext = \context_module::instance($otheruserdata[4]->cmid);
+        $unexpectedcontext = module::instance($otheruserdata[4]->cmid);
 
         // And create another one where we'll update a question as the test user.
         $moreotheruserdata = $questiongenerator->setup_course_and_questions();
-        $otherexpectedcontext = \context_module::instance($moreotheruserdata[4]->cmid);
+        $otherexpectedcontext = module::instance($moreotheruserdata[4]->cmid);
         $morequestions = $moreotheruserdata[3];
 
         // Update the third set of questions.
@@ -229,7 +232,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setUser($user);
 
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'core_question',
             $expectedcontexts
         );
@@ -282,14 +285,14 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $DB;
         $this->resetAfterTest(true);
 
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $otheruser = $this->getDataGenerator()->create_user();
 
         $course = $this->getDataGenerator()->create_course();
         $qbank1 = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbank1context = \context_module::instance($qbank1->cmid);
+        $qbank1context = module::instance($qbank1->cmid);
         $qbank2 = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbank2context = \context_module::instance($qbank2->cmid);
+        $qbank2context = module::instance($qbank2->cmid);
 
         // Create a couple of questions.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -364,14 +367,14 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $DB;
         $this->resetAfterTest(true);
 
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $otheruser = $this->getDataGenerator()->create_user();
 
         $course = $this->getDataGenerator()->create_course();
         $qbank1 = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbank1context = \context_module::instance($qbank1->cmid);
+        $qbank1context = module::instance($qbank1->cmid);
         $qbank2 = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbank2context = \context_module::instance($qbank2->cmid);
+        $qbank2context = module::instance($qbank2->cmid);
 
         // Create a couple of questions.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -450,7 +453,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setUser($user2);
         $user2data = $questiongenerator->setup_course_and_questions();
 
-        $qbankcontext = \context_module::instance($user1data[4]->cmid);
+        $qbankcontext = module::instance($user1data[4]->cmid);
         $questions = $user1data[3];
 
         // Log in as user3 and update the questions in course1.
@@ -489,7 +492,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $qbank = $coursedata[4];
         $course1qcat = $coursedata[2];
         $questions = $coursedata[3];
-        $qbankcontext = \context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
 
         // Log in as user2 and update the questions in course1.
         $this->setUser($user2);

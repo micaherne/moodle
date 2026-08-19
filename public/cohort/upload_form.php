@@ -22,6 +22,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\coursecat;
+use core\context\system;
+use core\context\user;
+use core\lang_string;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
@@ -139,12 +150,12 @@ class cohort_upload_form extends moodleform {
             $this->contextoptions = array();
             $displaylist = core_course_category::make_categories_list('moodle/cohort:manage');
             // We need to index the options array by context id instead of category id and add option for system context.
-            $syscontext = context_system::instance();
+            $syscontext = system::instance();
             if (has_capability('moodle/cohort:manage', $syscontext)) {
                 $this->contextoptions[$syscontext->id] = $syscontext->get_context_name();
             }
             foreach ($displaylist as $cid => $name) {
-                $context = context_coursecat::instance($cid);
+                $context = coursecat::instance($cid);
                 $this->contextoptions[$context->id] = $name;
             }
         }
@@ -179,7 +190,7 @@ class cohort_upload_form extends moodleform {
             return null;
         }
         $fs = get_file_storage();
-        $context = context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         if (!$files = $fs->get_area_files($context->id, 'user', 'draft', $draftid, 'id DESC', false)) {
             return null;
         }
@@ -240,7 +251,7 @@ class cohort_upload_form extends moodleform {
             $context = context::instance_by_id($line['data']['contextid']);
             foreach ($columns as $key => $value) {
                 if ($key === 'contextid') {
-                    $text = html_writer::link(new moodle_url('/cohort/index.php', array('contextid' => $context->id)),
+                    $text = html_writer::link(new url('/cohort/index.php', array('contextid' => $context->id)),
                         $context->get_context_name(false));
                 } else {
                     $text = s($line['data'][$key]);
@@ -498,7 +509,7 @@ class cohort_upload_form extends moodleform {
         }
 
         if (!empty($hash['context'])) {
-            $systemcontext = context_system::instance();
+            $systemcontext = system::instance();
             if ((core_text::strtolower(trim($hash['context'])) ===
                     core_text::strtolower($systemcontext->get_context_name())) ||
                     ('' . $hash['context'] === '' . $systemcontext->id)) {

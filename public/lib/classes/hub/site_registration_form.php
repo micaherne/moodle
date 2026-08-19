@@ -25,10 +25,10 @@
 namespace core\hub;
 defined('MOODLE_INTERNAL') || die();
 
-use context_course;
+use core\context\course;
 use stdClass;
-use html_writer;
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 
 global $CFG;
 require_once($CFG->libdir . '/formslib.php');
@@ -56,7 +56,7 @@ class site_registration_form extends \moodleform {
         $registered = $this->_customdata['registered'];
 
         $siteinfo = registration::get_site_info([
-            'name' => format_string($site->fullname, true, array('context' => context_course::instance(SITEID))),
+            'name' => format_string($site->fullname, true, array('context' => course::instance(SITEID))),
             'description' => $site->summary,
             'contactname' => fullname($admin, true),
             'contactemail' => $admin->email,
@@ -158,7 +158,7 @@ class site_registration_form extends \moodleform {
         $mform->addElement('html', html_writer::empty_tag('hr'));
 
         // Communication news emails (expert tips).
-        $privacyurl = new moodle_url('https://moodle.com/privacy-notice/');
+        $privacyurl = new url('https://moodle.com/privacy-notice/');
         $experttipsandinsightsdesc = html_writer::span(get_string('experttipsandinsightsdesc', 'hub', $privacyurl->out()));
         $mform->addElement('checkbox', 'commnews', get_string('experttipsandinsights', 'hub'), $experttipsandinsightsdesc);
 

@@ -22,13 +22,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\confightmleditor;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\special_registerauth;
+use core_admin\setting\settingpage\settingpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $temp = new admin_settingpage('loginsettings', new lang_string('loginsettings', 'admin'));
+    $temp = new settingpage('loginsettings', new lang_string('loginsettings', 'admin'));
 
     // Force to show the login page for fresh installs.
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'forcelogin',
         new lang_string('forcelogin', 'admin'),
         new lang_string('configforcelogin', 'admin'),
@@ -36,10 +44,10 @@ if ($hassiteconfig) {
     ));
 
     // Self registration.
-    $temp->add(new admin_setting_special_registerauth());
+    $temp->add(new special_registerauth());
 
     // Allow log in via email.
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'authloginviaemail',
         new lang_string('authloginviaemail', 'core_auth'),
         new lang_string('authloginviaemail_desc', 'core_auth'),
@@ -47,7 +55,7 @@ if ($hassiteconfig) {
     ));
 
     // Autofocus login page form.
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'loginpageautofocus',
         new lang_string('loginpageautofocus', 'admin'),
         new lang_string('loginpageautofocus_help', 'admin'),
@@ -55,7 +63,7 @@ if ($hassiteconfig) {
     ));
 
     // Guest login button.
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
         'guestloginbutton',
         new lang_string('guestloginbutton', 'auth'),
         new lang_string('showguestlogin', 'auth'),
@@ -64,7 +72,7 @@ if ($hassiteconfig) {
     ));
 
     // Alternate login URL.
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'alternateloginurl',
         new lang_string('alternateloginurl', 'auth'),
         new lang_string('alternatelogin', 'auth', htmlspecialchars(get_login_url(), ENT_COMPAT)),
@@ -72,7 +80,7 @@ if ($hassiteconfig) {
     ));
 
     // Display manual login form.
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'showloginform',
         new lang_string('showloginform', 'core_auth'),
         new lang_string('showloginform_desc', 'core_auth'),
@@ -80,7 +88,7 @@ if ($hassiteconfig) {
     ));
 
     // Forgotten password URL.
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'forgottenpasswordurl',
         new lang_string('forgottenpasswordurl', 'auth'),
         new lang_string('forgottenpassword', 'auth'),
@@ -89,7 +97,7 @@ if ($hassiteconfig) {
     ));
 
     // Instructions shown on the login page.
-    $temp->add(new admin_setting_confightmleditor(
+    $temp->add(new confightmleditor(
         'auth_instructions',
         new lang_string('instructions', 'auth'),
         new lang_string('authinstructions', 'auth'),
@@ -97,7 +105,7 @@ if ($hassiteconfig) {
     ));
 
     // Enable reCAPTCHA for login.
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
         'enableloginrecaptcha',
         new lang_string('auth_loginrecaptcha', 'auth'),
         new lang_string('auth_loginrecaptcha_desc', 'auth'),
@@ -109,7 +117,7 @@ if ($hassiteconfig) {
     ));
 
     // Enable reCAPTCHA for forgot password.
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'enableforgotpasswordrecaptcha',
         new lang_string('auth_forgotpasswordrecaptcha', 'auth'),
         new lang_string('auth_forgotpasswordrecaptcha_desc', 'auth'),
@@ -117,7 +125,7 @@ if ($hassiteconfig) {
     ));
 
     // ReCAPTCHA site key.
-    $setting = new admin_setting_configtext(
+    $setting = new configtext(
         'recaptchapublickey',
         new lang_string('recaptchapublickey', 'admin'),
         new lang_string('configrecaptchapublickey', 'admin'),
@@ -128,7 +136,7 @@ if ($hassiteconfig) {
     $temp->add($setting);
 
     // ReCAPTCHA secret key.
-    $setting = new admin_setting_configtext(
+    $setting = new configtext(
         'recaptchaprivatekey',
         new lang_string('recaptchaprivatekey', 'admin'),
         new lang_string('configrecaptchaprivatekey', 'admin'),
@@ -139,7 +147,7 @@ if ($hassiteconfig) {
     $temp->add($setting);
 
     // Password visibility toggle.
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
         'loginpasswordtoggle',
         new lang_string('auth_loginpasswordtoggle', 'auth'),
         new lang_string('auth_loginpasswordtoggle_desc', 'auth'),

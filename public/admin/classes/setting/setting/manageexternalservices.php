@@ -16,7 +16,9 @@
 
 namespace core_admin\setting\setting;
 
+use core\output\html_writer;
 use core_admin\admin_search;
+use core_table\output\html_table;
 
 /**
  * External services management.
@@ -98,7 +100,7 @@ class manageexternalservices extends \core_admin\setting {
         if (!empty($services)) {
             $return .= $OUTPUT->heading(get_string('servicesbuiltin', 'webservice'), 3, 'main');
 
-            $table = new \html_table();
+            $table = new html_table();
             $table->head  = [$strservice, $strplugin, $strfunctions, $strusers, $stredit];
             $table->colclasses = [
                 'leftalign service',
@@ -137,14 +139,14 @@ class manageexternalservices extends \core_admin\setting {
                 // Add a row to the table.
                 $table->data[] = [$displayname, $plugin, $functions, $users, $edit];
             }
-            $return .= \html_writer::table($table);
+            $return .= html_writer::table($table);
         }
 
         // Custom services.
         $return .= $OUTPUT->heading(get_string('servicescustom', 'webservice'), 3, 'main');
         $services = $DB->get_records_select('external_services', 'component IS NULL', null, 'name');
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [$strservice, $strdelete, $strfunctions, $strusers, $stredit];
         $table->colclasses = [
             'leftalign service',
@@ -185,7 +187,7 @@ class manageexternalservices extends \core_admin\setting {
             $table->data[] = [$displayname, $delete, $functions, $users, $edit];
         }
         // Add new custom service option.
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
 
         $return .= '<br />';
         // Add a token to the table.

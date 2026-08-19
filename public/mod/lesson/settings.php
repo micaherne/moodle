@@ -22,6 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
  **/
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configcheckbox_with_advanced;
+use core_admin\setting\setting\configduration_with_advanced;
+use core_admin\setting\setting\configempty;
+use core_admin\setting\setting\configselect_with_advanced;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\flag;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
@@ -29,36 +38,36 @@ if ($ADMIN->fulltree) {
     $yesno = array(0 => get_string('no'), 1 => get_string('yes'));
 
     // Introductory explanation that all the settings are defaults for the add lesson form.
-    $settings->add(new admin_setting_heading('mod_lesson/lessonintro', '', get_string('configintro', 'lesson')));
+    $settings->add(new heading('mod_lesson/lessonintro', '', get_string('configintro', 'lesson')));
 
     // Appearance settings.
-    $settings->add(new admin_setting_heading('mod_lesson/appearance', get_string('appearance'), ''));
+    $settings->add(new heading('mod_lesson/appearance', get_string('appearance'), ''));
 
     // Media file popup settings.
-    $setting = new admin_setting_configempty('mod_lesson/mediafile', get_string('mediafile', 'lesson'),
+    $setting = new configempty('mod_lesson/mediafile', get_string('mediafile', 'lesson'),
             get_string('mediafile_help', 'lesson'));
 
-    $setting->set_advanced_flag_options(admin_setting_flag::ENABLED, true);
+    $setting->set_advanced_flag_options(flag::ENABLED, true);
     $settings->add($setting);
 
-    $settings->add(new admin_setting_configtext('mod_lesson/mediawidth', get_string('mediawidth', 'lesson'),
+    $settings->add(new configtext('mod_lesson/mediawidth', get_string('mediawidth', 'lesson'),
             get_string('configmediawidth', 'lesson'), 640, PARAM_INT));
 
-    $settings->add(new admin_setting_configtext('mod_lesson/mediaheight', get_string('mediaheight', 'lesson'),
+    $settings->add(new configtext('mod_lesson/mediaheight', get_string('mediaheight', 'lesson'),
             get_string('configmediaheight', 'lesson'), 480, PARAM_INT));
 
-    $settings->add(new admin_setting_configcheckbox('mod_lesson/mediaclose', get_string('mediaclose', 'lesson'),
+    $settings->add(new configcheckbox('mod_lesson/mediaclose', get_string('mediaclose', 'lesson'),
             get_string('configmediaclose', 'lesson'), false, PARAM_TEXT));
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/progressbar',
+    $settings->add(new configselect_with_advanced('mod_lesson/progressbar',
         get_string('progressbar', 'lesson'), get_string('progressbar_help', 'lesson'),
         array('value' => 0, 'adv' => false), $yesno));
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/ongoing',
+    $settings->add(new configselect_with_advanced('mod_lesson/ongoing',
         get_string('ongoing', 'lesson'), get_string('ongoing_help', 'lesson'),
         array('value' => 0, 'adv' => true), $yesno));
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/displayleftmenu',
+    $settings->add(new configselect_with_advanced('mod_lesson/displayleftmenu',
         get_string('displayleftmenu', 'lesson'), get_string('displayleftmenu_help', 'lesson'),
         array('value' => 0, 'adv' => false), $yesno));
 
@@ -66,22 +75,22 @@ if ($ADMIN->fulltree) {
     for ($i = 100; $i >= 0; $i--) {
         $percentage[$i] = $i.'%';
     }
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/displayleftif',
+    $settings->add(new configselect_with_advanced('mod_lesson/displayleftif',
         get_string('displayleftif', 'lesson'), get_string('displayleftif_help', 'lesson'),
         array('value' => 0, 'adv' => true), $percentage));
 
     // Slideshow settings.
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/slideshow',
+    $settings->add(new configselect_with_advanced('mod_lesson/slideshow',
         get_string('slideshow', 'lesson'), get_string('slideshow_help', 'lesson'),
         array('value' => 0, 'adv' => true), $yesno));
 
-    $settings->add(new admin_setting_configtext('mod_lesson/slideshowwidth', get_string('slideshowwidth', 'lesson'),
+    $settings->add(new configtext('mod_lesson/slideshowwidth', get_string('slideshowwidth', 'lesson'),
             get_string('configslideshowwidth', 'lesson'), 640, PARAM_INT));
 
-    $settings->add(new admin_setting_configtext('mod_lesson/slideshowheight', get_string('slideshowheight', 'lesson'),
+    $settings->add(new configtext('mod_lesson/slideshowheight', get_string('slideshowheight', 'lesson'),
             get_string('configslideshowheight', 'lesson'), 480, PARAM_INT));
 
-    $settings->add(new admin_setting_configtext('mod_lesson/slideshowbgcolor', get_string('slideshowbgcolor', 'lesson'),
+    $settings->add(new configtext('mod_lesson/slideshowbgcolor', get_string('slideshowbgcolor', 'lesson'),
             get_string('configslideshowbgcolor', 'lesson'), '#FFFFFF', PARAM_TEXT));
 
     $numbers = array();
@@ -89,39 +98,39 @@ if ($ADMIN->fulltree) {
         $numbers[$i] = $i;
     }
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/maxanswers',
+    $settings->add(new configselect_with_advanced('mod_lesson/maxanswers',
         get_string('maximumnumberofanswersbranches', 'lesson'), get_string('maximumnumberofanswersbranches_help', 'lesson'),
         array('value' => '5', 'adv' => true), $numbers));
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/defaultfeedback',
+    $settings->add(new configselect_with_advanced('mod_lesson/defaultfeedback',
         get_string('displaydefaultfeedback', 'lesson'), get_string('displaydefaultfeedback_help', 'lesson'),
         array('value' => 0, 'adv' => true), $yesno));
 
-    $setting = new admin_setting_configempty('mod_lesson/activitylink', get_string('activitylink', 'lesson'),
+    $setting = new configempty('mod_lesson/activitylink', get_string('activitylink', 'lesson'),
         '');
 
-    $setting->set_advanced_flag_options(admin_setting_flag::ENABLED, true);
+    $setting->set_advanced_flag_options(flag::ENABLED, true);
     $settings->add($setting);
 
     // Availability settings.
-    $settings->add(new admin_setting_heading('mod_lesson/availibility', get_string('availability'), ''));
+    $settings->add(new heading('mod_lesson/availibility', get_string('availability'), ''));
 
-    $settings->add(new admin_setting_configduration_with_advanced('mod_lesson/timelimit',
+    $settings->add(new configduration_with_advanced('mod_lesson/timelimit',
         get_string('timelimit', 'lesson'), get_string('configtimelimit_desc', 'lesson'),
             array('value' => '0', 'adv' => false), 60));
 
-    $settings->add(new admin_setting_configcheckbox_with_advanced('mod_lesson/password',
+    $settings->add(new configcheckbox_with_advanced('mod_lesson/password',
         get_string('password', 'lesson'), get_string('configpassword_desc', 'lesson'),
         array('value' => 0, 'adv' => true)));
 
     // Flow Control.
-    $settings->add(new admin_setting_heading('lesson/flowcontrol', get_string('flowcontrol', 'lesson'), ''));
+    $settings->add(new heading('lesson/flowcontrol', get_string('flowcontrol', 'lesson'), ''));
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/modattempts',
+    $settings->add(new configselect_with_advanced('mod_lesson/modattempts',
         get_string('modattempts', 'lesson'), get_string('modattempts_help', 'lesson'),
         array('value' => 0, 'adv' => false), $yesno));
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/displayreview',
+    $settings->add(new configselect_with_advanced('mod_lesson/displayreview',
         get_string('displayreview', 'lesson'), get_string('displayreview_help', 'lesson'),
         array('value' => 0, 'adv' => false), $yesno));
 
@@ -130,7 +139,7 @@ if ($ADMIN->fulltree) {
         $attempts[$i] = $i;
     }
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/maximumnumberofattempts',
+    $settings->add(new configselect_with_advanced('mod_lesson/maximumnumberofattempts',
         get_string('maximumnumberofattempts', 'lesson'), get_string('maximumnumberofattempts_help', 'lesson'),
         array('value' => '1', 'adv' => false), $attempts));
 
@@ -139,7 +148,7 @@ if ($ADMIN->fulltree) {
     $defaultnextpages[LESSON_UNSEENPAGE] = get_string("showanunseenpage", "lesson");
     $defaultnextpages[LESSON_UNANSWEREDPAGE] = get_string("showanunansweredpage", "lesson");
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/defaultnextpage',
+    $settings->add(new configselect_with_advanced('mod_lesson/defaultnextpage',
             get_string('actionaftercorrectanswer', 'lesson'), '',
             array('value' => 0, 'adv' => true), $defaultnextpages));
 
@@ -147,22 +156,22 @@ if ($ADMIN->fulltree) {
     for ($i = 100; $i >= 0; $i--) {
         $pages[$i] = $i;
     }
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/numberofpagestoshow',
+    $settings->add(new configselect_with_advanced('mod_lesson/numberofpagestoshow',
         get_string('numberofpagestoshow', 'lesson'), get_string('numberofpagestoshow_help', 'lesson'),
         array('value' => '1', 'adv' => true), $pages));
 
     // Grade.
-    $settings->add(new admin_setting_heading('lesson/grade', get_string('gradenoun'), ''));
+    $settings->add(new heading('lesson/grade', get_string('gradenoun'), ''));
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/practice',
+    $settings->add(new configselect_with_advanced('mod_lesson/practice',
         get_string('practice', 'lesson'), get_string('practice_help', 'lesson'),
         array('value' => 0, 'adv' => false), $yesno));
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/customscoring',
+    $settings->add(new configselect_with_advanced('mod_lesson/customscoring',
         get_string('customscoring', 'lesson'), get_string('customscoring_help', 'lesson'),
         array('value' => 1, 'adv' => true), $yesno));
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/retakesallowed',
+    $settings->add(new configselect_with_advanced('mod_lesson/retakesallowed',
         get_string('retakesallowed', 'lesson'), get_string('retakesallowed_help', 'lesson'),
         array('value' => 0, 'adv' => false), $yesno));
 
@@ -170,11 +179,11 @@ if ($ADMIN->fulltree) {
     $options[0] = get_string('usemean', 'lesson');
     $options[1] = get_string('usemaximum', 'lesson');
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/handlingofretakes',
+    $settings->add(new configselect_with_advanced('mod_lesson/handlingofretakes',
         get_string('handlingofretakes', 'lesson'), get_string('handlingofretakes_help', 'lesson'),
         array('value' => 0, 'adv' => true), $options));
 
-    $settings->add(new admin_setting_configselect_with_advanced('mod_lesson/minimumnumberofquestions',
+    $settings->add(new configselect_with_advanced('mod_lesson/minimumnumberofquestions',
         get_string('minimumnumberofquestions', 'lesson'), get_string('minimumnumberofquestions_help', 'lesson'),
         array('value' => 0, 'adv' => true), $pages));
 

@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/enrol/locallib.php');
@@ -112,7 +115,7 @@ class enrol_cohort_handler {
             } else {
                 if ($ue->status != ENROL_USER_SUSPENDED) {
                     $plugin->update_user_enrol($instance, $ue->userid, ENROL_USER_SUSPENDED);
-                    $context = context_course::instance($instance->courseid);
+                    $context = course::instance($instance->courseid);
                     if ($unenrolaction != ENROL_EXT_REMOVED_SUSPEND) {
                         role_unassign_all(array('userid' => $ue->userid, 'contextid' => $context->id,
                             'component' => 'enrol_cohort', 'itemid' => $instance->id));
@@ -142,7 +145,7 @@ class enrol_cohort_handler {
 
         foreach ($instances as $instance) {
             if ($unenrolaction != ENROL_EXT_REMOVED_UNENROL) {
-                $context = context_course::instance($instance->courseid);
+                $context = course::instance($instance->courseid);
                 if ($unenrolaction != ENROL_EXT_REMOVED_SUSPEND) {
                     role_unassign_all(array('contextid' => $context->id, 'component' => 'enrol_cohort',
                         'itemid' => $instance->id));
@@ -238,7 +241,7 @@ function enrol_cohort_sync(progress_trace $trace, $courseid = NULL) {
             // Just disable and ignore any changes.
             if ($ue->status != ENROL_USER_SUSPENDED) {
                 $plugin->update_user_enrol($instance, $ue->userid, ENROL_USER_SUSPENDED);
-                $context = context_course::instance($instance->courseid);
+                $context = course::instance($instance->courseid);
                 if ($unenrolaction != ENROL_EXT_REMOVED_SUSPEND) {
                     role_unassign_all(array('userid' => $ue->userid, 'contextid' => $context->id,
                         'component' => 'enrol_cohort', 'itemid' => $instance->id));

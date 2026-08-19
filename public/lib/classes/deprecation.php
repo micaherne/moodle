@@ -18,6 +18,7 @@ namespace core;
 
 use core\attribute\deprecated;
 use core\attribute\deprecated_with_reference;
+use core\exception\coding_exception;
 
 /**
  * Deprecation utility.
@@ -270,7 +271,7 @@ class deprecation {
         $message = self::get_deprecation_string($attribute);
 
         if ($attribute->final) {
-            throw new \coding_exception($message);
+            throw new coding_exception($message);
         }
 
         debugging($message, DEBUG_DEVELOPER);

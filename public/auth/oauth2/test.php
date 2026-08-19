@@ -24,24 +24,28 @@
 
 // Require_login is not needed here.
 // phpcs:disable moodle.Files.RequireLogin.Missing
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../config.php');
 
 require_sesskey();
 
 $issuerid = required_param('id', PARAM_INT);
-$url = new moodle_url('/auth/oauth2/test.php', ['id' => $issuerid, 'sesskey' => sesskey()]);
+$url = new url('/auth/oauth2/test.php', ['id' => $issuerid, 'sesskey' => sesskey()]);
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 
 if (!\auth_oauth2\api::is_enabled()) {
-    throw new \moodle_exception('notenabled', 'auth_oauth2');
+    throw new moodle_exception('notenabled', 'auth_oauth2');
 }
 
 $issuer = new \core\oauth2\issuer($issuerid);
 if (!$issuer->is_available_for_login()) {
-    throw new \moodle_exception('issuernologin', 'auth_oauth2');
+    throw new moodle_exception('issuernologin', 'auth_oauth2');
 }
 
 $client = \core\oauth2\api::get_user_oauth_client($issuer, $url);

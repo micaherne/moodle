@@ -24,8 +24,9 @@
 
 namespace core_cohort\output;
 
+use core\context;
 use core_external\external_api;
-use lang_string;
+use core\lang_string;
 
 /**
  * Class to prepare a cohort name for display.
@@ -41,7 +42,7 @@ class cohortname extends \core\output\inplace_editable {
      * @param stdClass $cohort
      */
     public function __construct($cohort) {
-        $cohortcontext = \context::instance_by_id($cohort->contextid);
+        $cohortcontext = context::instance_by_id($cohort->contextid);
         $editable = has_capability('moodle/cohort:manage', $cohortcontext);
         $displayvalue = format_string($cohort->name, true, array('context' => $cohortcontext));
         parent::__construct('core_cohort', 'cohortname', $cohort->id, $editable,
@@ -61,7 +62,7 @@ class cohortname extends \core\output\inplace_editable {
     public static function update($cohortid, $newvalue) {
         global $DB;
         $cohort = $DB->get_record('cohort', array('id' => $cohortid), '*', MUST_EXIST);
-        $cohortcontext = \context::instance_by_id($cohort->contextid);
+        $cohortcontext = context::instance_by_id($cohort->contextid);
         external_api::validate_context($cohortcontext);
         require_capability('moodle/cohort:manage', $cohortcontext);
         $newvalue = clean_param($newvalue, PARAM_TEXT);

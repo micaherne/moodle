@@ -23,6 +23,9 @@
  */
 
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir .'/simplepie/moodle_simplepie.php');
@@ -140,7 +143,7 @@ class feed_edit_form extends moodleform {
             }
 
             // return URL without quoting..
-            $discoveredurl = new moodle_url($rss->subscribe_url());
+            $discoveredurl = new url($rss->subscribe_url());
             return $discoveredurl->out(false);
     }
 }
@@ -157,7 +160,7 @@ if ($courseid) {
     $PAGE->set_course($course);
     $context = $PAGE->context;
 } else {
-    $context = context_system::instance();
+    $context = system::instance();
     $PAGE->set_context($context);
 }
 
@@ -173,7 +176,7 @@ if ($courseid) {
 if ($returnurl) {
     $urlparams['returnurl'] = $returnurl;
 }
-$managefeeds = new moodle_url('/blocks/rss_client/managefeeds.php', $urlparams);
+$managefeeds = new url('/blocks/rss_client/managefeeds.php', $urlparams);
 
 $PAGE->set_url('/blocks/rss_client/editfeed.php', $urlparams);
 $PAGE->set_pagelayout('admin');

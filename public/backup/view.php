@@ -22,16 +22,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 
 // Course id.
 $courseid = required_param('id', PARAM_INT);
 
-$PAGE->set_url(new moodle_url('/backup/view.php', ['id' => $courseid]));
+$PAGE->set_url(new url('/backup/view.php', ['id' => $courseid]));
 
 // Basic access checks.
 if (!$course = $DB->get_record('course', ['id' => $courseid])) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 require_login($course);
 
@@ -52,7 +56,7 @@ echo $OUTPUT->heading(get_string('coursereuse'));
 
 // Check if there is at least one displayable course reuse action.
 $hasactions = false;
-if ($coursereusenode = $PAGE->settingsnav->find('coursereuse', \navigation_node::TYPE_CONTAINER)) {
+if ($coursereusenode = $PAGE->settingsnav->find('coursereuse', navigation_node::TYPE_CONTAINER)) {
     foreach ($coursereusenode->children as $child) {
         if ($child->display) {
             $hasactions = true;
@@ -64,10 +68,10 @@ if ($coursereusenode = $PAGE->settingsnav->find('coursereuse', \navigation_node:
 if ($hasactions) {
     echo $OUTPUT->render_from_template('core/report_link_page', ['node' => $coursereusenode]);
 } else {
-    throw new \moodle_exception(
+    throw new moodle_exception(
         'accessdenied',
         'admin',
-        new moodle_url('/course/view.php', ['id' => $courseid])
+        new url('/course/view.php', ['id' => $courseid])
     );
 }
 echo $OUTPUT->footer();

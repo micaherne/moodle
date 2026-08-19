@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\url;
+
 require('../../config.php');
 require_once("$CFG->dirroot/mod/folder/locallib.php");
 require_once("$CFG->dirroot/mod/folder/edit_form.php");
@@ -31,7 +34,7 @@ require_once("$CFG->dirroot/repository/lib.php");
 $id = required_param('id', PARAM_INT);  // Course module ID
 
 $cm = get_coursemodule_from_id('folder', $id, 0, true, MUST_EXIST);
-$context = context_module::instance($cm->id, MUST_EXIST);
+$context = module::instance($cm->id, MUST_EXIST);
 $folder = $DB->get_record('folder', array('id'=>$cm->instance), '*', MUST_EXIST);
 $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
 
@@ -60,7 +63,7 @@ $mform = new mod_folder_edit_form(null, array('data'=>$data, 'options'=>$options
 if ($folder->display == FOLDER_DISPLAY_INLINE) {
     $redirecturl = course_get_url($cm->course, $cm->sectionnum);
 } else {
-    $redirecturl = new moodle_url('/mod/folder/view.php', array('id' => $cm->id));
+    $redirecturl = new url('/mod/folder/view.php', array('id' => $cm->id));
 }
 
 if ($mform->is_cancelled()) {

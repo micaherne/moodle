@@ -25,6 +25,8 @@
 
 namespace core\check;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -50,7 +52,7 @@ class manager {
      */
     public static function get_checks(string $type): array {
         if (!in_array($type, self::TYPES)) {
-            throw new \moodle_exception("Invalid check type '$type'");
+            throw new moodle_exception("Invalid check type '$type'");
         }
         $method = 'get_' . $type . '_checks';
         $checks = self::$method();

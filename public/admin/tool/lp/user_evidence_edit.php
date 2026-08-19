@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\exception\require_login_exception;
+use core\exception\required_capability_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 require_login(null, false);
@@ -34,7 +39,7 @@ $userid = optional_param('userid', $USER->id, PARAM_INT);
 $id = optional_param('id', null, PARAM_INT);
 $returntype = optional_param('return', null, PARAM_ALPHA);
 
-$url = new moodle_url('/admin/tool/lp/user_evidence_edit.php', array('id' => $id, 'userid' => $userid, 'return' => $returntype));
+$url = new url('/admin/tool/lp/user_evidence_edit.php', array('id' => $id, 'userid' => $userid, 'return' => $returntype));
 
 $userevidence = null;
 if (empty($id)) {
@@ -100,7 +105,7 @@ if ($data = $form->get_data()) {
 
     if (empty($userevidence)) {
         $userevidence = \core_competency\api::create_user_evidence($data, $draftitemid);
-        $returnurl = new moodle_url('/admin/tool/lp/user_evidence.php', ['id' => $userevidence->get('id')]);
+        $returnurl = new url('/admin/tool/lp/user_evidence.php', ['id' => $userevidence->get('id')]);
         $returnmsg = get_string('userevidencecreated', 'tool_lp');
     } else {
         \core_competency\api::update_user_evidence($data, $draftitemid);

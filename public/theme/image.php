@@ -25,6 +25,8 @@
 
 // disable moodle specific debug messages and any errors in output,
 // comment out when debugging or better look into error log!
+use core\output\theme_config;
+
 define('NO_DEBUG_DISPLAY', true);
 
 // we need just the values from config.php and minlib.php

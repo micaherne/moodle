@@ -22,12 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
     // Introductory explanation.
-    $settings->add(new admin_setting_heading('auth_email/pluginname', '',
+    $settings->add(new heading('auth_email/pluginname', '',
         new lang_string('auth_emaildescription', 'auth_email')));
 
     $options = array(
@@ -35,7 +39,7 @@ if ($ADMIN->fulltree) {
         new lang_string('yes'),
     );
 
-    $settings->add(new admin_setting_configselect('auth_email/recaptcha',
+    $settings->add(new configselect('auth_email/recaptcha',
         new lang_string('auth_emailrecaptcha_key', 'auth_email'),
         new lang_string('auth_emailrecaptcha', 'auth_email'), 0, $options));
 

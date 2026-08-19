@@ -25,8 +25,11 @@
 
 namespace repository_dropbox;
 
+use core\exception\coding_exception;
+use core\exception\invalid_response_exception;
 use core\oauth2\client;
 use core\oauth2\issuer;
+use core\url;
 
 /**
  * Dropbox V2 API.
@@ -91,7 +94,7 @@ class dropbox extends client {
      * @return  moodle_url              The constructed API URL
      */
     protected function get_api_endpoint($endpoint) {
-        return new \moodle_url('https://api.dropboxapi.com/2/' . $endpoint);
+        return new url('https://api.dropboxapi.com/2/' . $endpoint);
     }
 
     /**
@@ -101,7 +104,7 @@ class dropbox extends client {
      * @return  moodle_url              The constructed content URL
      */
     protected function get_content_endpoint($endpoint) {
-        return new \moodle_url('https://api-content.dropbox.com/2/' . $endpoint);
+        return new url('https://api-content.dropbox.com/2/' . $endpoint);
     }
 
     /**
@@ -224,7 +227,7 @@ class dropbox extends client {
         switch($this->info['http_code']) {
             case 400:
                 // Bad input parameter. Error message should indicate which one and why.
-                throw new \coding_exception('Invalid input parameter passed to DropBox API.');
+                throw new coding_exception('Invalid input parameter passed to DropBox API.');
                 break;
             case 401:
                 // Bad or expired token. This can happen if the access token is expired or if the access token has been
@@ -233,7 +236,7 @@ class dropbox extends client {
                 break;
             case 409:
                 // Endpoint-specific error. Look to the JSON response body for the specifics of the error.
-                throw new \coding_exception('Endpoint specific error: ' . $data->error_summary);
+                throw new coding_exception('Endpoint specific error: ' . $data->error_summary);
                 break;
             case 429:
                 // Your app is making too many requests for the given user or team and is being rate limited. Your app
@@ -246,7 +249,7 @@ class dropbox extends client {
         }
 
         if ($this->info['http_code'] >= 500 && $this->info['http_code'] < 600) {
-            throw new \invalid_response_exception($this->info['http_code'] . ": " . $data);
+            throw new invalid_response_exception($this->info['http_code'] . ": " . $data);
         }
     }
 

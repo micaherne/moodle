@@ -16,6 +16,8 @@
 
 namespace filter_multilang;
 
+use core\context\system;
+
 /**
  * Tests for filter_multilang.
  *
@@ -129,7 +131,7 @@ final class text_filter_test extends \advanced_testcase {
             $this->setup_parent_language($child, $parent);
         }
 
-        $filtered = format_text($input, FORMAT_HTML, ['context' => \context_system::instance()]);
+        $filtered = format_text($input, FORMAT_HTML, ['context' => system::instance()]);
         $this->assertEquals($expectedoutput, $filtered);
     }
 }

@@ -16,6 +16,7 @@
 
 namespace core\output;
 
+use core\url;
 use ReflectionMethod;
 
 /**
@@ -76,9 +77,9 @@ final class language_menu_test extends \advanced_testcase {
                 // We need to manually generate the url key and its value in the expected item array as this cannot
                 // be done in the data provider due to the change of the state of $PAGE.
                 if ($expecteditem['isactive']) {
-                    $expecteditem['url'] = new \moodle_url('#');
+                    $expecteditem['url'] = new url('#');
                 } else {
-                    $expecteditem['url'] = new \moodle_url($PAGE->url, ['lang' => $lang]);
+                    $expecteditem['url'] = new url($PAGE->url, ['lang' => $lang]);
                     // When the language menu item is not the current language, it will contain the lang attribute.
                     $expecteditem['attributes'][] = [
                         'key' => 'lang',

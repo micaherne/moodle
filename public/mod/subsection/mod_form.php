@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 
+use core\url;
 use mod_subsection\manager;
 
 /**
@@ -46,7 +47,7 @@ class mod_subsection_mod_form extends moodleform_mod {
         // Showing edit form. Redirect to the edit section page.
         if (!empty($this->current->instance)) {
             $manager = manager::create_from_id($this->current->course, $this->current->id);
-            $editurl = new moodle_url('/course/editsection.php', ['id' => $manager->get_delegated_section_info()->id]);
+            $editurl = new url('/course/editsection.php', ['id' => $manager->get_delegated_section_info()->id]);
             redirect($editurl->out());
         } else {
             $mform = $this->_form;

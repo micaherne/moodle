@@ -27,6 +27,15 @@
  * @deprecated
  */
 
+use core\context;
+use core\context\course;
+use core\context\coursecat;
+use core\exception\moodle_exception;
+use core\output\actions\popup_action;
+use core\output\html_writer;
+use core\url;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -320,7 +329,7 @@ function print_grade_menu($courseid, $name, $current, $includenograde=true, $ret
     $output .= html_writer::select($grades, $name, $current, false);
 
     $linkobject = '<span class="helplink">' . $OUTPUT->pix_icon('help', $strscales) . '</span>';
-    $link = new moodle_url('/course/scales.php', array('id' => $courseid, 'list' => 1));
+    $link = new url('/course/scales.php', array('id' => $courseid, 'list' => 1));
     $action = new popup_action('click', $link, 'ratingscales', array('height' => 400, 'width' => 500));
     $output .= $OUTPUT->action_link($link, $linkobject, $action, array('title' => $strscales));
 
@@ -351,7 +360,7 @@ function reset_password_and_mail($user) {
     global $CFG;
 
     $site  = get_site();
-    $supportuser = core_user::get_support_user();
+    $supportuser = user::get_support_user();
 
     $userauth = \core\di::get(\core\authentication::class)->get_plugin($user->auth);
     if (
@@ -365,7 +374,7 @@ function reset_password_and_mail($user) {
     $newpassword = generate_password();
 
     if (!$userauth->user_update_password($user, $newpassword)) {
-        throw new \moodle_exception("cannotsetpassword");
+        throw new moodle_exception("cannotsetpassword");
     }
 
     $a = new stdClass();
@@ -490,7 +499,7 @@ function question_make_default_categories($contexts): object {
 function question_delete_course($course, $notused = false): bool {
     \core\deprecation::emit_deprecation(__FUNCTION__);
 
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
     question_delete_context($coursecontext->id);
     return true;
 }
@@ -511,13 +520,13 @@ function question_delete_course_category($category, $newcategory, $notused = fal
     global $DB;
     \core\deprecation::emit_deprecation(__FUNCTION__);
 
-    $context = context_coursecat::instance($category->id);
+    $context = coursecat::instance($category->id);
     if (empty($newcategory)) {
         question_delete_context($context->id);
 
     } else {
         // Move question categories to the new context.
-        if (!$newcontext = context_coursecat::instance($newcategory->id)) {
+        if (!$newcontext = coursecat::instance($newcategory->id)) {
             return false;
         }
 
@@ -707,7 +716,7 @@ function badges_get_default_issuer() {
 
     $sitebackpack = badges_get_site_primary_backpack();
     $issuer = [];
-    $issuerurl = new moodle_url('/');
+    $issuerurl = new url('/');
     $issuer['name'] = $CFG->badges_defaultissuername;
     if (empty($issuer['name'])) {
         $issuer['name'] = $SITE->fullname ? $SITE->fullname : $SITE->shortname;
@@ -715,7 +724,7 @@ function badges_get_default_issuer() {
     $issuer['url'] = $issuerurl->out(false);
     $issuer['email'] = $sitebackpack->backpackemail ?: $CFG->badges_defaultissuercontact;
     $issuer['@context'] = OPEN_BADGES_V2_CONTEXT;
-    $issuerid = new moodle_url('/badges/issuer_json.php');
+    $issuerid = new url('/badges/issuer_json.php');
     $issuer['id'] = $issuerid->out(false);
     $issuer['type'] = OPEN_BADGES_V2_TYPE_ISSUER;
     return $issuer;

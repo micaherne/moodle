@@ -27,6 +27,14 @@
 /**
  * The admin bookmarks block class
  */
+use core\context\system;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
+
 class block_admin_bookmarks extends block_base {
 
     /** @var string */
@@ -57,7 +65,7 @@ class block_admin_bookmarks extends block_base {
      * @return array
      */
     function applicable_formats() {
-        if (has_capability('moodle/site:config', context_system::instance())) {
+        if (has_capability('moodle/site:config', system::instance())) {
             return array('all' => true);
         } else {
             return array('site' => true);
@@ -87,16 +95,16 @@ class block_admin_bookmarks extends block_base {
             $contents = array();
             foreach($bookmarks as $bookmark) {
                 $temp = $adminroot->locate($bookmark);
-                if ($temp instanceof admin_settingpage) {
-                    $contenturl = new moodle_url('/admin/settings.php', array('section'=>$bookmark));
+                if ($temp instanceof settingpage) {
+                    $contenturl = new url('/admin/settings.php', array('section'=>$bookmark));
                     $contentlink = html_writer::link($contenturl, $temp->visiblename);
                     $contents[] = html_writer::tag('li', $contentlink);
-                } else if ($temp instanceof admin_externalpage) {
-                    $contenturl = new moodle_url($temp->url);
+                } else if ($temp instanceof externalpage) {
+                    $contenturl = new url($temp->url);
                     $contentlink = html_writer::link($contenturl, $temp->visiblename);
                     $contents[] = html_writer::tag('li', $contentlink);
-                } else if ($temp instanceof admin_category) {
-                    $contenturl = new moodle_url('/admin/category.php', array('category' => $bookmark));
+                } else if ($temp instanceof category) {
+                    $contenturl = new url('/admin/category.php', array('category' => $bookmark));
                     $contentlink = html_writer::link($contenturl, $temp->visiblename);
                     $contents[] = html_writer::tag('li', $contentlink);
                 }
@@ -118,10 +126,10 @@ class block_admin_bookmarks extends block_base {
             // the search page can't be properly bookmarked at present
             $this->content->footer = '';
         } else if (in_array($section, $bookmarks)) {
-            $deleteurl = new moodle_url('/blocks/admin_bookmarks/delete.php', array('section'=>$section, 'sesskey'=>sesskey()));
+            $deleteurl = new url('/blocks/admin_bookmarks/delete.php', array('section'=>$section, 'sesskey'=>sesskey()));
             $this->content->footer =  html_writer::link($deleteurl, get_string('unbookmarkthispage','admin'));
         } else {
-            $createurl = new moodle_url('/blocks/admin_bookmarks/create.php', array('section'=>$section, 'sesskey'=>sesskey()));
+            $createurl = new url('/blocks/admin_bookmarks/create.php', array('section'=>$section, 'sesskey'=>sesskey()));
             $this->content->footer = html_writer::link($createurl, get_string('bookmarkthispage','admin'));
         }
 

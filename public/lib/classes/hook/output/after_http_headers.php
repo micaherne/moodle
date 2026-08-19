@@ -16,6 +16,8 @@
 
 namespace core\hook\output;
 
+use core\output\renderer_base;
+
 /**
  * Class after_http_headers
  *
@@ -35,7 +37,7 @@ class after_http_headers {
      */
     public function __construct(
         /** @var \renderer_base The page renderer object */
-        public readonly \renderer_base $renderer,
+        public readonly renderer_base $renderer,
         /** @var string The collected output */
         private string $output = '',
     ) {

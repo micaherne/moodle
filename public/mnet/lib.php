@@ -7,6 +7,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package mnet
  */
+use core\context\system;
+use core\exception\moodle_exception;
+
 require_once $CFG->dirroot.'/mnet/xmlrpc/xmlparser.php';
 require_once $CFG->dirroot.'/mnet/peer.php';
 require_once $CFG->dirroot.'/mnet/environment.php';
@@ -93,7 +96,7 @@ function mnet_get_public_key($uri, $application=null) {
             if (defined('CURLPROXY_SOCKS5')) {
                 $extracurloptions[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
             } else {
-                throw new \moodle_exception( 'socksnotsupported', 'mnet');
+                throw new moodle_exception( 'socksnotsupported', 'mnet');
             }
         }
 
@@ -220,7 +223,7 @@ function mnet_sign_message($message, $privatekey = null) {
 
     // Avoid passing null values to base64_encode.
     if ($bool === false) {
-        throw new \moodle_exception('opensslsignerror');
+        throw new moodle_exception('opensslsignerror');
     }
 
     $message = '<?xml version="1.0" encoding="iso-8859-1"?>
@@ -291,7 +294,7 @@ function mnet_encrypt_message($message, $remote_certificate) {
 
     // Avoid passing null values to base64_encode.
     if ($bool === false) {
-        throw new \moodle_exception('opensslsealerror');
+        throw new moodle_exception('opensslsealerror');
     }
 
     $message = $encryptedstring;
@@ -470,7 +473,7 @@ function mnet_update_sso_access_control($username, $mnet_host_id, $accessctrl) {
         // Trigger access control updated event.
         $params = array(
             'objectid' => $aclrecord->id,
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'other' => array(
                 'username' => $username,
                 'hostname' => $mnethost->name,
@@ -491,7 +494,7 @@ function mnet_update_sso_access_control($username, $mnet_host_id, $accessctrl) {
         // Trigger access control created event.
         $params = array(
             'objectid' => $aclrecord->id,
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'other' => array(
                 'username' => $username,
                 'hostname' => $mnethost->name,

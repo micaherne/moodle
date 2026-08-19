@@ -21,11 +21,12 @@ use core\output\named_templatable;
 use core\output\renderable;
 use core\output\renderer_base;
 use core\plugin_manager;
+use core_course\modinfo;
 use core_courseformat\activityoverviewbase;
 use core_courseformat\external\overviewtable_exporter;
 use core_courseformat\local\overview\overviewitem;
 use core_courseformat\local\overview\overviewfactory;
-use cm_info;
+use core_course\cm_info;
 use stdClass;
 
 /**
@@ -225,7 +226,7 @@ class overviewtable implements externable, named_templatable, renderable {
         // Folder is an exception because it has settings to be displayed in the course
         // page without having a view link.
         return (
-            \course_modinfo::is_mod_type_visible_on_course($cm->modname)
+            modinfo::is_mod_type_visible_on_course($cm->modname)
             && (
                 has_capability('moodle/course:viewhiddenactivities', $cm->context)
                 || (($cm->is_visible_on_course_page() || $cm->is_stealth()

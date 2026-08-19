@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once('grade_object.php');
@@ -109,7 +112,7 @@ class grade_outcome extends grade_object {
             $DB->delete_records('grade_outcomes_courses', array('outcomeid' => $this->id, 'courseid' => $this->courseid));
         }
         if (parent::delete($source)) {
-            $context = context_system::instance();
+            $context = system::instance();
             $fs = get_file_storage();
             $files = $fs->get_area_files($context->id, 'grade', 'outcome', $this->id);
             foreach ($files as $file) {
@@ -282,7 +285,7 @@ class grade_outcome extends grade_object {
      */
     public function get_name() {
         // Grade outcomes can be created at site or course context, so set the filter context appropriately.
-        $context = empty($this->courseid) ? context_system::instance() : context_course::instance($this->courseid);
+        $context = empty($this->courseid) ? system::instance() : course::instance($this->courseid);
         return format_string($this->fullname, false, ["context" => $context]);
     }
 
@@ -306,7 +309,7 @@ class grade_outcome extends grade_object {
 
         $options = new stdClass;
         $options->noclean = true;
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $description = file_rewrite_pluginfile_urls($this->description, 'pluginfile.php', $systemcontext->id, 'grade', 'outcome', $this->id);
         return format_text($description, $this->descriptionformat, $options);
     }

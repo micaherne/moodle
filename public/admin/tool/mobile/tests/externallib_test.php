@@ -16,6 +16,8 @@
 
 namespace tool_mobile;
 
+use core\context\course;
+use core\context\system;
 use core_external\external_api;
 
 defined('MOODLE_INTERNAL') || die();
@@ -54,7 +56,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $result = external_api::clean_returnvalue(external::get_public_config_returns(), $result);
 
         // Test default values.
-        $context = \context_system::instance();
+        $context = system::instance();
         [$authinstructions] = \core_external\util::format_text(
             $CFG->auth_instructions,
             FORMAT_MOODLE,
@@ -192,11 +194,11 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         [$sitesummary, $summaryformat] = \core_external\util::format_text(
             $SITE->summary,
             $SITE->summaryformat,
-            \context_system::instance()->id
+            system::instance()->id
         );
 
         // Test default values.
-        $context = \context_system::instance();
+        $context = system::instance();
         $expected = [
             [ 'name' => 'fullname', 'value' => $SITE->fullname ],
             [ 'name' => 'shortname', 'value' => $SITE->shortname ],
@@ -659,7 +661,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $this->assertCount(4, $result['responses']);
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $pluginfile = 'webservice/pluginfile.php';
 
         $this->assertFalse($result['responses'][0]['error']);

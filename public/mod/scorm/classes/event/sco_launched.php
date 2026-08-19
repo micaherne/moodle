@@ -23,6 +23,9 @@
  */
 
 namespace mod_scorm\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,7 +79,7 @@ class sco_launched extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/scorm/player.php', array('cm' => $this->contextinstanceid, 'scoid' => $this->objectid));
+        return new url('/mod/scorm/player.php', array('cm' => $this->contextinstanceid, 'scoid' => $this->objectid));
     }
 
     /**
@@ -89,7 +92,7 @@ class sco_launched extends \core\event\base {
         parent::validate_data();
 
         if (empty($this->other['loadedcontent'])) {
-            throw new \coding_exception('The \'loadedcontent\' value must be set in other.');
+            throw new coding_exception('The \'loadedcontent\' value must be set in other.');
         }
     }
 

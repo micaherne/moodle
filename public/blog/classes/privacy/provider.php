@@ -27,10 +27,10 @@ namespace core_blog\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 use blog_entry;
-use context;
-use context_helper;
-use context_user;
-use context_system;
+use core\context;
+use core\context_helper;
+use core\context\user;
+use core\context\system;
 use core_tag_tag;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
@@ -220,7 +220,7 @@ class provider implements
     public static function export_user_data(approved_contextlist $contextlist) {
         global $DB;
 
-        $sysctx = context_system::instance();
+        $sysctx = system::instance();
         $fs = get_file_storage();
         $userid = $contextlist->get_user()->id;
         $ctxfields = context_helper::get_preload_record_columns_sql('ctx');
@@ -506,7 +506,7 @@ class provider implements
      * @param context_user $usercontext The user context.
      * @return void
      */
-    protected static function delete_all_user_data(context_user $usercontext) {
+    protected static function delete_all_user_data(user $usercontext) {
         global $DB;
         $userid = $usercontext->instanceid;
 

@@ -16,7 +16,7 @@
 
 namespace core_courseformat;
 
-use cm_info;
+use core_course\cm_info;
 use core\context\module as module_context;
 use core\output\local\properties\text_align;
 use core_completion\cm_completion_details;

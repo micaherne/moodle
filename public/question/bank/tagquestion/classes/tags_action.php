@@ -16,6 +16,11 @@
 
 namespace qbank_tagquestion;
 
+use core\output\action_menu\link;
+use core\output\action_menu\link_secondary;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
 use core_question\local\bank\question_action_base;
 
 /**
@@ -66,13 +71,13 @@ class tags_action extends question_action_base {
                 question_has_capability_on($question, 'view') && $this->tagsenabled) {
 
             [$url, $attributes] = $this->get_link_url_and_attributes($question);
-            echo \html_writer::link($url, $OUTPUT->pix_icon('t/tags',
+            echo html_writer::link($url, $OUTPUT->pix_icon('t/tags',
                     $this->managetags), $attributes);
         }
     }
 
     protected function get_link_url_and_attributes($question): array {
-        $url = new \moodle_url($this->qbank->returnurl);
+        $url = new url($this->qbank->returnurl);
 
         $attributes = [
                 'data-action' => 'edittags',
@@ -84,14 +89,14 @@ class tags_action extends question_action_base {
         return [$url, $attributes];
     }
 
-    public function get_action_menu_link(\stdClass $question): ?\action_menu_link {
+    public function get_action_menu_link(\stdClass $question): ?link {
         if (!\core_tag_tag::is_enabled('core_question', 'question') ||
                 !question_has_capability_on($question, 'view') || !$this->tagsenabled) {
             return null;
         }
 
         [$url, $attributes] = $this->get_link_url_and_attributes($question);
-        return new \action_menu_link_secondary($url, new \pix_icon('t/tags', ''),
+        return new link_secondary($url, new pix_icon('t/tags', ''),
                 $this->managetags, $attributes);
     }
 }

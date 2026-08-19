@@ -22,38 +22,43 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 $action  = required_param('action', PARAM_ALPHANUMEXT);
 $customfieldname = required_param('field', PARAM_PLUGIN);
 
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 $PAGE->set_url('/admin/customfields.php');
 $PAGE->set_context($syscontext);
 
 require_admin();
 require_sesskey();
 
-$return = new moodle_url('/admin/settings.php', array('section' => 'managecustomfields'));
+$return = new url('/admin/settings.php', array('section' => 'managecustomfields'));
 
-$customfieldplugins = core_plugin_manager::instance()->get_plugins_of_type('customfield');
+$customfieldplugins = plugin_manager::instance()->get_plugins_of_type('customfield');
 $sortorder = array_flip(array_keys($customfieldplugins));
 
 if (!isset($customfieldplugins[$customfieldname])) {
-    throw new \moodle_exception('customfieldnotfound', 'error', $return, $customfieldname);
+    throw new moodle_exception('customfieldnotfound', 'error', $return, $customfieldname);
 }
 
 switch ($action) {
     case 'disable':
         if ($customfieldplugins[$customfieldname]->is_enabled()) {
-            $class = \core_plugin_manager::resolve_plugininfo_class('customfield');
+            $class = plugin_manager::resolve_plugininfo_class('customfield');
             $class::enable_plugin($customfieldname, false);
         }
         break;
     case 'enable':
         if (!$customfieldplugins[$customfieldname]->is_enabled()) {
-            $class = \core_plugin_manager::resolve_plugininfo_class('customfield');
+            $class = plugin_manager::resolve_plugininfo_class('customfield');
             $class::enable_plugin($customfieldname, true);
         }
         break;

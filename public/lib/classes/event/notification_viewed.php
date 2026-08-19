@@ -24,6 +24,12 @@
 
 namespace core\event;
 
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\url;
+use core\user as core_user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -47,15 +53,15 @@ class notification_viewed extends base {
         // We may be sending a notification from the 'noreply' address, which means we are not actually sending a
         // notification from a valid user. In this case, we will set the userid to 0.
         // Check if the userid is valid.
-        if (!\core_user::is_real_user($userfromid)) {
+        if (!core_user::is_real_user($userfromid)) {
             $userfromid = 0;
         }
 
         // Get the context for the user who received the notification.
-        $context = \context_user::instance($usertoid, IGNORE_MISSING);
+        $context = context_user::instance($usertoid, IGNORE_MISSING);
         // If the user no longer exists the context value will be false, in this case use the system context.
         if ($context === false) {
-            $context = \context_system::instance();
+            $context = system::instance();
         }
 
         $event = self::create(
@@ -94,7 +100,7 @@ class notification_viewed extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/message/output/popup/notifications.php', array('notificationid' => $this->objectid));
+        return new url('/message/output/popup/notifications.php', array('notificationid' => $this->objectid));
     }
 
     /**
@@ -116,7 +122,7 @@ class notification_viewed extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

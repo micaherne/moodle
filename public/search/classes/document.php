@@ -24,7 +24,13 @@
 
 namespace core_search;
 
-use context;
+use core\context;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,7 +44,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2015 David Monllao {@link http://www.davidmonllao.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class document implements \renderable, \templatable {
+class document implements renderable, templatable {
 
     /**
      * @var array $data The document data.
@@ -216,7 +222,7 @@ class document implements \renderable, \templatable {
     public function __construct($itemid, $componentname, $areaname) {
 
         if (!is_numeric($itemid)) {
-            throw new \coding_exception('The itemid should be an integer');
+            throw new coding_exception('The itemid should be an integer');
         }
 
         $this->data['areaid'] = \core_search\manager::generate_areaid($componentname, $areaname);
@@ -284,13 +290,13 @@ class document implements \renderable, \templatable {
         }
 
         if (empty($fielddata)) {
-            throw new \coding_exception('"' . $fieldname . '" field does not exist.');
+            throw new coding_exception('"' . $fieldname . '" field does not exist.');
         }
 
         // tdate fields should be set as timestamps, later they might be converted to
         // a date format, it depends on the search engine.
         if (($fielddata['type'] === 'int' || $fielddata['type'] === 'tdate') && !is_numeric($value)) {
-            throw new \coding_exception('"' . $fieldname . '" value should be an integer and its value is "' . $value . '"');
+            throw new coding_exception('"' . $fieldname . '" value should be an integer and its value is "' . $value . '"');
         }
 
         // We want to be strict here, there might be engines that expect us to
@@ -309,7 +315,7 @@ class document implements \renderable, \templatable {
                 } else {
                     $docid = '(unknown)';
                 }
-                throw new \moodle_exception('error_indexing', 'search', '', null, '"' . $fieldname .
+                throw new moodle_exception('error_indexing', 'search', '', null, '"' . $fieldname .
                         '" value causes preg_replace error (may be caused by unusual characters) ' .
                         'in document with id "' . $docid . '"');
             }
@@ -352,7 +358,7 @@ class document implements \renderable, \templatable {
             return $this->extradata[$field];
         }
 
-        throw new \coding_exception('Field "' . $field . '" is not set in the document');
+        throw new coding_exception('Field "' . $field . '" is not set in the document');
     }
 
     /**
@@ -490,7 +496,7 @@ class document implements \renderable, \templatable {
      * @param \moodle_url $url
      * @return void
      */
-    public function set_doc_url(\moodle_url $url) {
+    public function set_doc_url(url $url) {
         $this->docurl = $url;
     }
 
@@ -521,7 +527,7 @@ class document implements \renderable, \templatable {
         return $this->docicon;
     }
 
-    public function set_context_url(\moodle_url $url) {
+    public function set_context_url(url $url) {
         $this->contexturl = $url;
     }
 
@@ -552,7 +558,7 @@ class document implements \renderable, \templatable {
 
             // We also check that we have everything we need.
             if (!isset($data[$fieldname])) {
-                throw new \coding_exception('Missing "' . $fieldname . '" field in document with id "' . $this->data['id'] . '"');
+                throw new coding_exception('Missing "' . $fieldname . '" field in document with id "' . $this->data['id'] . '"');
             }
 
             if ($field['type'] === 'tdate') {
@@ -609,7 +615,7 @@ class document implements \renderable, \templatable {
      * @param \renderer_base $output The renderer.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $docdata = $this->export_doc($output);
         return $docdata;
     }
@@ -628,7 +634,7 @@ class document implements \renderable, \templatable {
      * @param \renderer_base $output The renderer.
      * @return array
      */
-    public function export_doc(\renderer_base $output): array {
+    public function export_doc(renderer_base $output): array {
         global $USER, $CFG;
         require_once($CFG->dirroot . '/course/lib.php');
 
@@ -674,7 +680,7 @@ class document implements \renderable, \templatable {
             if ($this->get('userid') == $USER->id ||
                     (has_capability('moodle/user:viewdetails', $context) &&
                     has_capability('moodle/course:viewparticipants', $context))) {
-                $data['userurl'] = (new \moodle_url(
+                $data['userurl'] = (new url(
                     '/user/view.php',
                     ['id' => $this->get('userid'), 'course' => $this->get('courseid')]
                 ))->out(false);

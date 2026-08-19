@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once '../../../config.php';
 require_once $CFG->libdir.'/gradelib.php';
 require_once $CFG->dirroot.'/grade/lib.php';
@@ -33,7 +38,7 @@ $userid   = optional_param('userid', null, PARAM_INT);
 $userview = optional_param('userview', 0, PARAM_INT);
 $reset = optional_param('reset', 0, PARAM_BOOL);
 
-$PAGE->set_url(new moodle_url('/grade/report/user/index.php', ['id' => $courseid]));
+$PAGE->set_url(new url('/grade/report/user/index.php', ['id' => $courseid]));
 
 if ($userview == 0) {
     $userview = get_user_preferences('gradereport_user_view_user', GRADE_REPORT_USER_VIEW_USER);
@@ -43,19 +48,19 @@ if ($userview == 0) {
 
 // Basic access checks.
 if (!$course = $DB->get_record('course', ['id' => $courseid])) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 require_login($course);
 $PAGE->set_pagelayout('report');
 
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('gradereport/user:view', $context);
 
 if ($userid === 0) {
     require_capability('moodle/grade:viewall', $context);
 } else if ($userid) {
     if (!$DB->get_record('user', ['id' => $userid, 'deleted' => 0]) || isguestuser($userid)) {
-        throw new \moodle_exception('invaliduser');
+        throw new moodle_exception('invaliduser');
     }
 }
 
@@ -66,14 +71,14 @@ if (has_capability('moodle/grade:viewall', $context)) {
 } else if (($userid == $USER->id || is_null($userid)) && has_capability('moodle/grade:view', $context) && $course->showgrades) {
     // User can view own grades.
     $access = true;
-} else if (has_capability('moodle/grade:viewall', context_user::instance($userid)) && $course->showgrades) {
+} else if (has_capability('moodle/grade:viewall', user::instance($userid)) && $course->showgrades) {
     // User can view grades of this user, The user is an parent most probably.
     $access = true;
 }
 
 if (!$access) {
     // The user has no access to grades.
-    throw new \moodle_exception('nopermissiontoviewgrades', 'error',  $CFG->wwwroot.'/course/view.php?id='.$courseid);
+    throw new moodle_exception('nopermissiontoviewgrades', 'error',  $CFG->wwwroot.'/course/view.php?id='.$courseid);
 }
 
 // Initialise the grade tracking object.
@@ -115,7 +120,7 @@ if (has_capability('moodle/grade:viewall', $context)) {
     $currentgroup = $gpr->groupid;
     // Conditionally add the group JS if we have groups enabled.
     if ($groupmode) {
-        $baseurl = new moodle_url('/grade/report/user/index.php', ['id' => $courseid]);
+        $baseurl = new url('/grade/report/user/index.php', ['id' => $courseid]);
         $PAGE->requires->js_call_amd('core_course/actionbar/group', 'init', [$baseurl->out(false)]);
     }
 

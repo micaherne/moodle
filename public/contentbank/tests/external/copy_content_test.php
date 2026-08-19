@@ -23,6 +23,8 @@ global $CFG;
 require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_contenttype.php');
 require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_content.php');
 
+use core\context\course;
+use core\exception\invalid_response_exception;
 use core_external\external_api;
 
 /**
@@ -72,7 +74,7 @@ final class copy_content_test extends \core_external\tests\externallib_testcase 
         $this->assertEquals($oldname, $record->name);
 
         // Call the WS using an unexisting contentid and check an error is thrown.
-        $this->expectException(\invalid_response_exception::class);
+        $this->expectException(invalid_response_exception::class);
         $result = copy_content::execute_returns($content->get_id() + 1, $oldname);
         $result = external_api::clean_returnvalue(copy_content::execute_returns(), $result);
         $this->assertNotEmpty($result['warnings']);
@@ -95,7 +97,7 @@ final class copy_content_test extends \core_external\tests\externallib_testcase 
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
 
         // Add some content to the content bank as teacher.
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $filename = 'filltheblanks.h5p';
         $filepath = $CFG->dirroot . '/h5p/tests/fixtures/' . $filename;
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');

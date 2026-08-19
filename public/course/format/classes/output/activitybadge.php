@@ -16,10 +16,11 @@
 
 namespace core_courseformat\output;
 
-use cm_info;
+use core\output\renderable;
+use core_course\cm_info;
 use core_courseformat\output\local\courseformat_named_templatable;
 use core\output\named_templatable;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 /**
@@ -31,7 +32,7 @@ use stdClass;
  * @copyright  2023 Sara Arjona <sara@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class activitybadge implements named_templatable, \renderable {
+abstract class activitybadge implements named_templatable, renderable {
     use courseformat_named_templatable;
 
     /** @var array Badge defined styles. */

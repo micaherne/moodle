@@ -23,6 +23,7 @@
  */
 
 use assignfeedback_editpdf\document_services;
+use core\context;
 
 defined('MOODLE_INTERNAL') || die();
 

@@ -24,6 +24,12 @@
 
 namespace tool_analytics\output;
 
+use core\output\html_writer;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\templatable;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -33,7 +39,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2017 David Monllao {@link http://www.davidmonllao.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class invalid_analysables implements \renderable, \templatable {
+class invalid_analysables implements renderable, templatable {
 
     /**
      * @var \core_analytics\model
@@ -71,7 +77,7 @@ class invalid_analysables implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         global $PAGE;
 
         $offset = $this->page * $this->perpage;
@@ -131,20 +137,20 @@ class invalid_analysables implements \renderable, \templatable {
         if ($this->page > 0) {
             $prev = clone $PAGE->url;
             $prev->param('page', $this->page - 1);
-            $button = new \single_button($prev, get_string('previouspage', 'tool_analytics'), 'get');
+            $button = new single_button($prev, get_string('previouspage', 'tool_analytics'), 'get');
             $data->prev = $button->export_for_template($output);
         }
         if ($morepages) {
             $next = clone $PAGE->url;
             $next->param('page', $this->page + 1);
-            $button = new \single_button($next, get_string('nextpage', 'tool_analytics'), 'get');
+            $button = new single_button($next, get_string('nextpage', 'tool_analytics'), 'get');
             $data->next = $button->export_for_template($output);
         }
 
         $data->analysables = [];
         foreach ($results as list($analysable, $validtraining, $validprediction)) {
             $obj = new \stdClass();
-            $obj->url = \html_writer::link($analysable->get_context()->get_url(), $analysable->get_name(),
+            $obj->url = html_writer::link($analysable->get_context()->get_url(), $analysable->get_name(),
                 array('target' => '_blank'));
 
             if ($validtraining !== true) {

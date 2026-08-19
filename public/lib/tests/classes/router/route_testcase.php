@@ -16,12 +16,14 @@
 
 namespace core\tests\router;
 
+use core\exception\coding_exception;
 use core\router;
 use core\router\bridge;
 use core\router\route_loader_interface;
 use core\router\schema\openapi_base;
 use core\router\schema\referenced_object;
 use core\router\schema\specification;
+use core\url;
 use stdClass;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -123,7 +125,7 @@ abstract class route_testcase extends \advanced_testcase {
             return route_loader_interface::ROUTE_GROUP_API;
         }
 
-        throw new \coding_exception("Unable to determine route path for '{$classname}'");
+        throw new coding_exception("Unable to determine route path for '{$classname}'");
     }
 
     /**
@@ -190,7 +192,7 @@ abstract class route_testcase extends \advanced_testcase {
      */
     protected function get_basepath(): string {
         if ($this->basepath === null) {
-            $this->basepath = rtrim((new \moodle_url('/'))->get_path(), '/');
+            $this->basepath = rtrim((new url('/'))->get_path(), '/');
         }
 
         return $this->basepath;

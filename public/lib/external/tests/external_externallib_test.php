@@ -16,6 +16,9 @@
 
 namespace core;
 
+use core\context\module;
+use core\context\system;
+use core\exception\moodle_exception;
 use core_external\external_api;
 
 defined('MOODLE_INTERNAL') || die();
@@ -191,7 +194,7 @@ final class external_externallib_test extends \core_external\tests\externallib_t
         try {
             \core_external::update_inplace_editable('tool_log', 'itemtype', 1, 'newvalue');
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('Error calling update processor', $e->getMessage());
         }
 
@@ -227,7 +230,7 @@ final class external_externallib_test extends \core_external\tests\externallib_t
         $res = external_api::clean_returnvalue(\core_external::update_inplace_editable_returns(), $res);
 
         // Format original data.
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
         $newname = \core_external\util::format_string($newname, $context);
         $editlabel = get_string('newactivityname', '', $newname);
 
@@ -245,7 +248,7 @@ final class external_externallib_test extends \core_external\tests\externallib_t
         // will not match expected values.
         $this->setTimezone(99, 'Australia/Perth');
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $request = [
             [
                 'timestamp' => 1293876000,

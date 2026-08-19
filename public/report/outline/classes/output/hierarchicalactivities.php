@@ -16,8 +16,10 @@
 
 namespace report_outline\output;
 
+use core\output\renderer_base;
+use core_course\cm_info;
 use core_report\output\coursestructure;
-use course_modinfo;
+use core_course\modinfo;
 
 /**
  * Activities list page in a hierarchical format.
@@ -36,7 +38,7 @@ class hierarchicalactivities extends coursestructure {
      * @param bool $indelegated Whether the activity is part of a delegated section or not.
      * @return array
      */
-    public function export_activity_data(\renderer_base $output, \cm_info $cm, bool $indelegated = false): array {
+    public function export_activity_data(renderer_base $output, cm_info $cm, bool $indelegated = false): array {
         if (!$cm->has_view()) {
             return [];
         }
@@ -64,9 +66,9 @@ class hierarchicalactivities extends coursestructure {
      * @param \stdClass $course
      */
     public function print_activity(
-            \renderer_base $output,
+            renderer_base $output,
             string $mode,
-            \cm_info $mod,
+            cm_info $mod,
             \stdClass $user,
             \stdClass $course,
     ): void {

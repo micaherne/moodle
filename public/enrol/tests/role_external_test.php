@@ -16,6 +16,9 @@
 
 namespace core_enrol;
 
+use core\context\course;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -52,13 +55,13 @@ final class role_external_test extends \core_external\tests\externallib_testcase
         $course = self::getDataGenerator()->create_course();
 
         // Set the required capabilities by the external function.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $this->assignUserCapability('moodle/role:assign', $context->id);
         $this->assignUserCapability('moodle/course:view', $context->id, $roleid);
 
         // Add manager role to $USER.
         // So $USER is allowed to assign 'manager', 'editingteacher', 'teacher' and 'student'.
-        role_assign(1, $USER->id, \context_system::instance()->id);
+        role_assign(1, $USER->id, system::instance()->id);
 
         // Check the teacher role has not been assigned to $USER.
         $users = get_role_users(3, $context);
@@ -101,13 +104,13 @@ final class role_external_test extends \core_external\tests\externallib_testcase
         $course = self::getDataGenerator()->create_course();
 
         // Set the required capabilities by the external function.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $this->assignUserCapability('moodle/role:assign', $context->id);
         $this->assignUserCapability('moodle/course:view', $context->id, $roleid);
 
         // Add manager role to $USER.
         // So $USER is allowed to assign 'manager', 'editingteacher', 'teacher' and 'student'.
-        role_assign(1, $USER->id, \context_system::instance()->id);
+        role_assign(1, $USER->id, system::instance()->id);
 
         // Add teacher role to $USER on course context.
         role_assign(3, $USER->id, $context->id);

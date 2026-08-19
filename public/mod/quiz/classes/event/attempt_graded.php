@@ -24,6 +24,9 @@
  */
 namespace mod_quiz\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * The mod_quiz attempt graded event class.
  *
@@ -66,8 +69,8 @@ class attempt_graded extends \core\event\base {
      *
      * @return \moodle_url
      */
-    public function get_url(): \moodle_url {
-        return new \moodle_url('/mod/quiz/review.php', ['attempt' => $this->objectid]);
+    public function get_url(): url {
+        return new url('/mod/quiz/review.php', ['attempt' => $this->objectid]);
     }
 
     /**
@@ -80,11 +83,11 @@ class attempt_graded extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!array_key_exists('submitterid', $this->other)) {
-            throw new \coding_exception('The \'submitterid\' value must be set in other.');
+            throw new coding_exception('The \'submitterid\' value must be set in other.');
         }
     }
 

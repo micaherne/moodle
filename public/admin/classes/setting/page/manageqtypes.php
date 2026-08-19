@@ -16,6 +16,7 @@
 
 namespace core_admin\setting\page;
 
+use core\url;
 use core_admin\admin_search;
 
 /**
@@ -34,7 +35,7 @@ class manageqtypes extends \core_admin\setting\tree\externalpage {
         parent::__construct(
             'manageqtypes',
             get_string('manageqtypes', 'admin'),
-            new \moodle_url('/admin/qtypes.php')
+            new url('/admin/qtypes.php')
         );
     }
 

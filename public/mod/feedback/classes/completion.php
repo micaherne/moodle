@@ -21,6 +21,11 @@
  * @copyright 2016 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\module;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
+
 class mod_feedback_completion extends mod_feedback_structure {
     /** @var stdClass */
     protected $completed;
@@ -612,7 +617,7 @@ class mod_feedback_completion extends mod_feedback_structure {
     public function can_complete() {
         global $CFG, $USER;
 
-        $context = context_module::instance($this->cm->id);
+        $context = module::instance($this->cm->id);
         if (has_capability('mod/feedback:complete', $context, $this->userid, false)) {
             return true;
         }
@@ -689,7 +694,7 @@ class mod_feedback_completion extends mod_feedback_structure {
 
         if ($this->form->is_cancelled()) {
             // Form was cancelled - return to the course page.
-            $urltogo = new moodle_url('/mod/feedback/view.php', ['id' => $this->get_cm()->id]);
+            $urltogo = new url('/mod/feedback/view.php', ['id' => $this->get_cm()->id]);
         } else if ($this->form->is_submitted() &&
                 ($this->form->is_validated() || $gopreviouspage)) {
             // Form was submitted (skip validation for "Previous page" button).
@@ -698,7 +703,7 @@ class mod_feedback_completion extends mod_feedback_structure {
             if (!empty($data->savevalues) || !empty($data->gonextpage)) {
                 if (($nextpage = $this->get_next_page($gopage)) !== null) {
                     if ($PAGE->has_set_url()) {
-                        $urltogo = new moodle_url($PAGE->url, array('gopage' => $nextpage));
+                        $urltogo = new url($PAGE->url, array('gopage' => $nextpage));
                     }
                     $this->jumpto = $nextpage;
                 } else {
@@ -711,7 +716,7 @@ class mod_feedback_completion extends mod_feedback_structure {
             } else if (!empty($gopreviouspage)) {
                 $prevpage = intval($this->get_previous_page($gopage));
                 if ($PAGE->has_set_url()) {
-                    $urltogo = new moodle_url($PAGE->url, array('gopage' => $prevpage));
+                    $urltogo = new url($PAGE->url, array('gopage' => $prevpage));
                 }
                 $this->jumpto = $prevpage;
             }

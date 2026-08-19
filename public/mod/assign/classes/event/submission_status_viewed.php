@@ -24,6 +24,8 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -105,13 +107,13 @@ class submission_status_viewed extends base {
      */
     protected function validate_data() {
         if (self::$preventcreatecall) {
-            throw new \coding_exception('cannot call submission_status_viewed::create() directly, use submission_status_viewed::create_from_assign() instead.');
+            throw new coding_exception('cannot call submission_status_viewed::create() directly, use submission_status_viewed::create_from_assign() instead.');
         }
 
         parent::validate_data();
 
         if (!isset($this->other['assignid'])) {
-            throw new \coding_exception('The \'assignid\' value must be set in other.');
+            throw new coding_exception('The \'assignid\' value must be set in other.');
         }
     }
 

@@ -26,6 +26,9 @@ namespace core_role\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\system;
+use core\context_helper;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\contextlist;
 use \core_privacy\local\request\approved_contextlist;
@@ -215,7 +218,7 @@ class provider implements
 
         $rolesnames = self::get_roles_name();
         $userid = $contextlist->get_user()->id;
-        $ctxfields = \context_helper::get_preload_record_columns_sql('ctx');
+        $ctxfields = context_helper::get_preload_record_columns_sql('ctx');
         list($insql, $inparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
 
         // Role Assignments export data.
@@ -243,7 +246,7 @@ class provider implements
         $params += $ctxparams;
         $assignments = $DB->get_recordset_sql($sql, $params);
         foreach ($assignments as $assignment) {
-            \context_helper::preload_from_record($assignment);
+            context_helper::preload_from_record($assignment);
             $alldata[$assignment->contextid][$rolesnames[$assignment->roleid]][] = (object)[
                 'timemodified' => transform::datetime($assignment->timemodified),
                 'userid' => transform::user($assignment->userid),
@@ -253,7 +256,7 @@ class provider implements
         $assignments->close();
         if (!empty($alldata)) {
             array_walk($alldata, function($roledata, $contextid) {
-                $context = \context::instance_by_id($contextid);
+                $context = context::instance_by_id($contextid);
                 array_walk($roledata, function($data, $rolename) use ($context) {
                     writer::with_context($context)->export_data(
                             [get_string('privacy:metadata:role_assignments', 'core_role'), $rolename],
@@ -290,7 +293,7 @@ class provider implements
         $params += $ctxparams;
         $capabilities = $DB->get_recordset_sql($sql, $params);
         foreach ($capabilities as $capability) {
-            \context_helper::preload_from_record($capability);
+            context_helper::preload_from_record($capability);
             $alldata[$capability->contextid][$rolesnames[$capability->roleid]][] = (object)[
                 'timemodified' => transform::datetime($capability->timemodified),
                 'capability' => $capability->capability,
@@ -300,7 +303,7 @@ class provider implements
         $capabilities->close();
         if (!empty($alldata)) {
             array_walk($alldata, function($capdata, $contextid) {
-                $context = \context::instance_by_id($contextid);
+                $context = context::instance_by_id($contextid);
                 array_walk($capdata, function($data, $rolename) use ($context) {
                     writer::with_context($context)->export_data(
                             [get_string('privacy:metadata:role_capabilities', 'core_role'), $rolename],
@@ -341,7 +344,7 @@ class provider implements
         $assignments->close();
         if (!empty($alldata)) {
             array_walk($alldata, function($roledata, $contextid) {
-                $context = \context::instance_by_id($contextid);
+                $context = context::instance_by_id($contextid);
                 array_walk($roledata, function($data, $rolename) use ($context) {
                     writer::with_context($context)->export_related_data(
                             [get_string('privacy:metadata:role_cohortroles', 'core_role'), $rolename], 'cohortroles',
@@ -355,7 +358,7 @@ class provider implements
      *
      * @param  \context $context The context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         // Don't remove data from role_capabilities.
@@ -435,7 +438,7 @@ class provider implements
      * @return array Array of name of the roles by roleid.
      */
     protected static function get_roles_name() {
-        $roles = role_fix_names(get_all_roles(), \context_system::instance(), ROLENAME_ORIGINAL);
+        $roles = role_fix_names(get_all_roles(), system::instance(), ROLENAME_ORIGINAL);
         $rolesnames = array();
         foreach ($roles as $role) {
             $rolesnames[$role->id] = $role->localname;

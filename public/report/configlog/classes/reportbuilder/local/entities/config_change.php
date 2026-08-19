@@ -16,7 +16,7 @@
 
 namespace report_configlog\reportbuilder\local\entities;
 
-use lang_string;
+use core\lang_string;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
 use core_reportbuilder\local\report\column;

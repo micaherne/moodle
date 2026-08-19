@@ -24,6 +24,7 @@
  */
 namespace workshopallocation_manual\privacy;
 
+use core\context\system;
 use core_privacy\local\request\writer;
 
 defined('MOODLE_INTERNAL') || die();
@@ -45,7 +46,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setAdminUser();
 
         \workshopallocation_manual\privacy\provider::export_user_preferences($USER->id);
-        $this->assertFalse(writer::with_context(\context_system::instance())->has_any_data());
+        $this->assertFalse(writer::with_context(system::instance())->has_any_data());
     }
 
     /**
@@ -59,9 +60,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         set_user_preference('workshopallocation_manual_perpage', 81);
 
         \workshopallocation_manual\privacy\provider::export_user_preferences($USER->id);
-        $this->assertTrue(writer::with_context(\context_system::instance())->has_any_data());
+        $this->assertTrue(writer::with_context(system::instance())->has_any_data());
 
-        $prefs = writer::with_context(\context_system::instance())->get_user_preferences('workshopallocation_manual');
+        $prefs = writer::with_context(system::instance())->get_user_preferences('workshopallocation_manual');
         $this->assertNotEmpty($prefs->workshopallocation_manual_perpage);
         $this->assertEquals(81, $prefs->workshopallocation_manual_perpage->value);
         $this->assertStringContainsString(get_string('privacy:metadata:preference:perpage', 'workshopallocation_manual'),

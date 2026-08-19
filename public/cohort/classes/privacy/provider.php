@@ -26,6 +26,9 @@ namespace core_cohort\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\coursecat;
+use core\context\system;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
@@ -91,7 +94,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_system && !$context instanceof \context_coursecat) {
+        if (!$context instanceof system && !$context instanceof coursecat) {
             return;
         }
 
@@ -156,7 +159,7 @@ class provider implements
 
         // Export cohort data.
         array_walk($alldata, function($data, $contextid) {
-            $context = \context::instance_by_id($contextid);
+            $context = context::instance_by_id($contextid);
             writer::with_context($context)->export_related_data([], 'cohort', $data);
         });
 
@@ -167,8 +170,8 @@ class provider implements
      *
      * @param context $context A user context.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
-        if (!$context instanceof \context_system && !$context instanceof \context_coursecat) {
+    public static function delete_data_for_all_users_in_context(context $context) {
+        if (!$context instanceof system && !$context instanceof coursecat) {
             return;
         }
 
@@ -183,7 +186,7 @@ class provider implements
     public static function delete_data_for_users(approved_userlist $userlist) {
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_system || $context instanceof \context_coursecat) {
+        if ($context instanceof system || $context instanceof coursecat) {
             foreach ($userlist->get_userids() as $userid) {
                 static::delete_data($context, $userid);
             }
@@ -202,7 +205,7 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
-            if (!$context instanceof \context_system && !$context instanceof \context_coursecat) {
+            if (!$context instanceof system && !$context instanceof coursecat) {
                 continue;
             }
             static::delete_data($context, $userid);
@@ -215,7 +218,7 @@ class provider implements
      * @param context $context A context.
      * @param int $userid The user ID.
      */
-    protected static function delete_data(\context $context, ?int $userid = null) {
+    protected static function delete_data(context $context, ?int $userid = null) {
         global $DB;
 
         $cohortids = $DB->get_fieldset_select('cohort', 'id', 'contextid = :contextid', ['contextid' => $context->id]);

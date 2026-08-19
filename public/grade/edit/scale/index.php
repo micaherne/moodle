@@ -22,6 +22,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require_once '../../../config.php';
 require_once $CFG->dirroot.'/grade/lib.php';
 require_once $CFG->libdir.'/gradelib.php';
@@ -34,16 +41,16 @@ $PAGE->set_url('/grade/edit/scale/index.php', array('id' => $courseid));
 /// Make sure they can even access this course
 if ($courseid) {
     if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
     require_login($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     require_capability('moodle/course:managescales', $context);
     $PAGE->set_pagelayout('admin');
 } else {
     require_once $CFG->libdir.'/adminlib.php';
     admin_externalpage_setup('scales');
-    $context = context_system::instance();
+    $context = system::instance();
     $PAGE->set_primary_active_tab('siteadminnode');
 }
 
@@ -70,9 +77,9 @@ switch ($action) {
         }
 
         if (empty($scale->courseid)) {
-            require_capability('moodle/course:managescales', context_system::instance());
+            require_capability('moodle/course:managescales', system::instance());
         } else if ($scale->courseid != $courseid) {
-            throw new \moodle_exception('invalidcourseid');
+            throw new moodle_exception('invalidcourseid');
         }
 
         if (!$scale->can_delete()) {
@@ -83,7 +90,7 @@ switch ($action) {
 
         if (!$deleteconfirmed) {
             if ($courseid) {
-                $PAGE->navbar->add(get_string('scales'), new moodle_url('/grade/edit/scale/index.php',
+                $PAGE->navbar->add(get_string('scales'), new url('/grade/edit/scale/index.php',
                     ['id' => $courseid]));
             }
             $strdeletescale = get_string('deletescale', 'grades');
@@ -91,7 +98,7 @@ switch ($action) {
             $PAGE->set_title($strdeletescale);
             $PAGE->set_heading($COURSE->fullname);
             echo $OUTPUT->header();
-            $confirmurl = new moodle_url('index.php', array(
+            $confirmurl = new url('index.php', array(
                     'id' => $courseid, 'scaleid' => $scale->id,
                     'action'=> 'delete',
                     'sesskey' =>  sesskey(),
@@ -153,10 +160,10 @@ if ($scales = grade_scale::fetch_all_global()) {
         $line[] = $used ? get_string('yes') : get_string('no');
 
         $buttons = "";
-        if (has_capability('moodle/course:managescales', context_system::instance())) {
+        if (has_capability('moodle/course:managescales', system::instance())) {
             $buttons .= grade_button('edit', $courseid, $scale);
         }
-        if (!$used and has_capability('moodle/course:managescales', context_system::instance())) {
+        if (!$used and has_capability('moodle/course:managescales', system::instance())) {
             $buttons .= grade_button('delete', $courseid, $scale);
         }
         $line[] = $buttons;

@@ -16,7 +16,7 @@
 
 namespace core\router\schema;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core\param;
 use core\router\schema\objects\type_base;
 use core\router\schema\response\response;

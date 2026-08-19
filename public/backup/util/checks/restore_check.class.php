@@ -30,6 +30,8 @@
  *
  * TODO: Finish phpdocs
  */
+use core\context\course;
+
 abstract class restore_check {
 
     public static function check_courseid($courseid) {
@@ -62,7 +64,7 @@ abstract class restore_check {
         $type     = $restore_controller->get_type();
         $mode     = $restore_controller->get_mode();
         $courseid = $restore_controller->get_courseid();
-        $coursectx= context_course::instance($courseid);
+        $coursectx= course::instance($courseid);
         $userid   = $restore_controller->get_userid();
 
         // Note: all the checks along the function MUST be performed for $userid, that

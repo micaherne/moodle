@@ -24,17 +24,17 @@
 
 namespace core_courseformat\output\local\content\cm;
 
-use cm_info;
-use context_course;
+use core_course\cm_info;
+use core\context\course;
 use core\output\named_templatable;
 use core_availability\info_module;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\content\cm;
 use core_courseformat\output\local\courseformat_named_templatable;
 use core_courseformat\output\section_renderer;
-use renderable;
-use renderer_base;
-use section_info;
+use core\output\renderable;
+use core\output\renderer_base;
+use core_course\section_info;
 use stdClass;
 
 /**

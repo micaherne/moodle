@@ -25,6 +25,12 @@
 
 namespace tool_analytics\output;
 
+use core\output\help_icon;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2019 David Mudrák <david@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restorable_models implements \renderable, \templatable {
+class restorable_models implements renderable, templatable {
 
     /** @var array */
     protected $models;
@@ -54,7 +60,7 @@ class restorable_models implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return string
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
 
         $components = [];
 
@@ -84,7 +90,7 @@ class restorable_models implements \renderable, \templatable {
 
                 if (get_string_manager()->string_exists($targetnamelangstring->get_identifier().'_help',
                         $targetnamelangstring->get_component())) {
-                    $helpicon = new \help_icon($targetnamelangstring->get_identifier(), $targetnamelangstring->get_component());
+                    $helpicon = new help_icon($targetnamelangstring->get_identifier(), $targetnamelangstring->get_component());
                     $model['targethelp'] = $helpicon->export_for_template($output);
                 }
 
@@ -97,7 +103,7 @@ class restorable_models implements \renderable, \templatable {
 
                     if (get_string_manager()->string_exists($indicatornamelangstring->get_identifier().'_help',
                             $indicatornamelangstring->get_component())) {
-                        $helpicon = new \help_icon($indicatornamelangstring->get_identifier(),
+                        $helpicon = new help_icon($indicatornamelangstring->get_identifier(),
                             $indicatornamelangstring->get_component());
                         $indicatordata['indicatorhelp'] = $helpicon->export_for_template($output);
                     }
@@ -116,8 +122,8 @@ class restorable_models implements \renderable, \templatable {
         $result = [
             'hasdata' => !empty($components),
             'components' => array_values($components),
-            'submiturl' => new \moodle_url('/admin/tool/analytics/restoredefault.php'),
-            'backurl' => new \moodle_url('/admin/tool/analytics/index.php'),
+            'submiturl' => new url('/admin/tool/analytics/restoredefault.php'),
+            'backurl' => new url('/admin/tool/analytics/index.php'),
             'sesskey' => sesskey(),
         ];
 

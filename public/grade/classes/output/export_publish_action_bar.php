@@ -16,7 +16,10 @@
 
 namespace core_grades\output;
 
-use moodle_url;
+use core\context;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\url;
 
 /**
  * Renderable class for the action bar elements in the gradebook publish export page.
@@ -36,7 +39,7 @@ class export_publish_action_bar extends action_bar {
      * @param \context $context The context object.
      * @param string $activeplugin The plugin of the current export grades page (xml, ods, ...).
      */
-    public function __construct(\context $context, string $activeplugin) {
+    public function __construct(context $context, string $activeplugin) {
         parent::__construct($context);
         $this->activeplugin = $activeplugin;
     }
@@ -56,15 +59,15 @@ class export_publish_action_bar extends action_bar {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         if ($this->context->contextlevel !== CONTEXT_COURSE) {
             return [];
         }
         $courseid = $this->context->instanceid;
 
         // Add a back button to the action bar.
-        $backlink = new moodle_url("/grade/export/{$this->activeplugin}/index.php", ['id' => $courseid]);
-        $backbutton = new \single_button($backlink, get_string('back'), 'get');
+        $backlink = new url("/grade/export/{$this->activeplugin}/index.php", ['id' => $courseid]);
+        $backbutton = new single_button($backlink, get_string('back'), 'get');
 
         return [
             'backbutton' => $backbutton->export_for_template($output)

@@ -16,7 +16,8 @@
 
 namespace qbank_bulkmove;
 
-use moodle_exception;
+use core\exception\moodle_exception;
+use core\url;
 
 /**
  * Class bulk_move_action is the base class for moving questions.
@@ -36,8 +37,8 @@ class bulk_move_action extends \core_question\local\bank\bulk_action_base {
         return 'move';
     }
 
-    public function get_bulk_action_url(): \moodle_url {
-        return new \moodle_url('/question/bank/bulkmove/move.php');
+    public function get_bulk_action_url(): url {
+        return new url('/question/bank/bulkmove/move.php');
     }
 
     public function get_bulk_action_capabilities(): ?array {

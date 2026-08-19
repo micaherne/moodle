@@ -27,6 +27,7 @@
 require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
 
 use Behat\Gherkin\Node\TableNode as TableNode;
+use core\context\module;
 use Moodle\BehatExtension\Exception\SkippedException;
 
 /**
@@ -109,7 +110,7 @@ class behat_search extends behat_base {
             }
             list ($course, $cm) = get_course_and_cm_from_cmid($cmid);
             $rec = $DB->get_record($cm->modname, ['id' => $cm->instance], '*', MUST_EXIST);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
 
             // Set up the internal fields used in creating the search document.
             $out = new stdClass();

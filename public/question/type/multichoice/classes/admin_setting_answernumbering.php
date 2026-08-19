@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configselect;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -32,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2015 onwards Nadav Kavalerchik
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_multichoice_admin_setting_answernumbering extends admin_setting_configselect {
+class qtype_multichoice_admin_setting_answernumbering extends configselect {
 
     /**
      * This function may be used in ancestors for lazy loading of choices

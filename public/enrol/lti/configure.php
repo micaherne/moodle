@@ -22,7 +22,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
 use core\http_client;
+use core\url;
 use enrol_lti\local\ltiadvantage\lib\lti_cookie;
 use enrol_lti\local\ltiadvantage\lib\launch_cache_session;
 use enrol_lti\local\ltiadvantage\lib\issuer_database;
@@ -85,8 +88,8 @@ foreach ($resources as $resource) {
 
 
 global $USER, $CFG, $OUTPUT;
-$PAGE->set_context(context_system::instance());
-$url = new moodle_url('/enrol/lti/configure.php');
+$PAGE->set_context(system::instance());
+$url = new url('/enrol/lti/configure.php');
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('popup');
 echo $OUTPUT->header();

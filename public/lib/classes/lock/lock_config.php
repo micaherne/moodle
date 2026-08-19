@@ -25,6 +25,8 @@
 
 namespace core\lock;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,7 +55,7 @@ class lock_config {
             if (!class_exists($CFG->lock_factory)) {
                 // In this case I guess it is not safe to continue. Different cluster nodes could end up using different locking
                 // types because of an installation error.
-                throw new \coding_exception('Lock factory set in $CFG does not exist: ' . $CFG->lock_factory);
+                throw new coding_exception('Lock factory set in $CFG does not exist: ' . $CFG->lock_factory);
             }
             $lockfactoryclass = $CFG->lock_factory;
         } else {
@@ -89,7 +91,7 @@ class lock_config {
         $lockfactoryclass = self::get_lock_factory_class();
         $lockfactory = new $lockfactoryclass($type);
         if (!$lockfactory->is_available()) {
-            throw new \coding_exception("Lock factory class $lockfactoryclass is not available.");
+            throw new coding_exception("Lock factory class $lockfactoryclass is not available.");
         }
 
         // If tracking performance, insert a timing wrapper to keep track of lock delays.

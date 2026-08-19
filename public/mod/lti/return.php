@@ -23,6 +23,10 @@
  * @author     Chris Scribner
  */
 
+use core\context\course;
+use core\context\module;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/lti/lib.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
@@ -42,7 +46,7 @@ $context = null;
 if (!empty($instanceid)) {
     $lti = $DB->get_record('lti', array('id' => $instanceid), '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('lti', $lti->id, $lti->course, false, MUST_EXIST);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 }
 
 
@@ -50,7 +54,7 @@ require_login($course);
 require_sesskey();
 
 if (!empty($errormsg) || !empty($msg)) {
-    $url = new moodle_url('/mod/lti/return.php', array('course' => $courseid));
+    $url = new url('/mod/lti/return.php', array('course' => $courseid));
     $PAGE->set_url($url);
 
     $pagetitle = strip_tags($course->shortname);
@@ -77,19 +81,19 @@ if (!empty($errormsg)) {
 
     if ($unsigned == 1) {
 
-        $contextcourse = context_course::instance($courseid);
+        $contextcourse = course::instance($courseid);
         echo '<br /><br />';
         $links = new stdClass();
 
         if (has_capability('mod/lti:addcoursetool', $contextcourse)) {
-            $coursetooleditor = new moodle_url('mod/lti/coursetools.php', ['id' => $courseid]);
+            $coursetooleditor = new url('mod/lti/coursetools.php', ['id' => $courseid]);
             $links->course_tool_editor = $coursetooleditor->out(false);
 
             echo get_string('lti_launch_error_unsigned_help', 'lti', $links);
         }
 
         if (!empty($lti) && has_capability('mod/lti:requesttooladd', $contextcourse)) {
-            $adminrequesturl = new moodle_url('/mod/lti/request_tool.php', array('instanceid' => $lti->id, 'sesskey' => sesskey()));
+            $adminrequesturl = new url('/mod/lti/request_tool.php', array('instanceid' => $lti->id, 'sesskey' => sesskey()));
             $links->admin_request_url = $adminrequesturl->out(false);
 
             echo get_string('lti_launch_error_tool_request', 'lti', $links);
@@ -104,7 +108,7 @@ if (!empty($errormsg)) {
     echo $OUTPUT->footer();
 
 } else {
-    $courseurl = new moodle_url('/course/view.php', array('id' => $courseid));
+    $courseurl = new url('/course/view.php', array('id' => $courseid));
     $url = $courseurl->out();
 
     // Avoid frame-in-frame action.

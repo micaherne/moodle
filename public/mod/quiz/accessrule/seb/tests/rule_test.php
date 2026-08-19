@@ -16,6 +16,7 @@
 
 namespace quizaccess_seb;
 
+use core\context\module;
 use quizaccess_seb;
 
 defined('MOODLE_INTERNAL') || die();
@@ -128,7 +129,7 @@ final class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $form = $this->createMock('mod_quiz_mod_form');
-        $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
+        $form->method('get_context')->willReturn(module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
         $errors = quizaccess_seb::validate_settings_form_fields([], [
@@ -152,7 +153,7 @@ final class rule_test extends \advanced_testcase {
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
         $form = $this->createMock('mod_quiz_mod_form');
-        $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
+        $form->method('get_context')->willReturn(module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form and quiz instance.
         $errors = quizaccess_seb::validate_settings_form_fields([], [
@@ -174,7 +175,7 @@ final class rule_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $form = $this->createMock('mod_quiz_mod_form');
-        $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
+        $form->method('get_context')->willReturn(module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form and quiz instance.
         $errors = quizaccess_seb::validate_settings_form_fields([], [
@@ -192,11 +193,11 @@ final class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $form = $this->createMock('mod_quiz_mod_form');
-        $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
+        $form->method('get_context')->willReturn(module::instance($this->quiz->cmid));
 
         $user = $this->getDataGenerator()->create_user();
         $roleid = $this->getDataGenerator()->create_role();
-        $context = \context_module::instance($this->quiz->cmid);
+        $context = module::instance($this->quiz->cmid);
         assign_capability('quizaccess/seb:manage_seb_requiresafeexambrowser', CAP_ALLOW, $roleid, $context->id);
         $this->getDataGenerator()->role_assign($roleid, $user->id, $context->id);
 
@@ -222,7 +223,7 @@ final class rule_test extends \advanced_testcase {
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
         $form = $this->createMock('mod_quiz_mod_form');
-        $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
+        $form->method('get_context')->willReturn(module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form and quiz instance.
         $errors = quizaccess_seb::validate_settings_form_fields([], [
@@ -276,7 +277,7 @@ final class rule_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $roleid = $this->getDataGenerator()->create_role();
-        $context = \context_module::instance($this->quiz->cmid);
+        $context = module::instance($this->quiz->cmid);
         assign_capability('quizaccess/seb:manage_seb_requiresafeexambrowser', CAP_ALLOW, $roleid, $context->id);
         $this->getDataGenerator()->role_assign($roleid, $user->id, $context->id);
 
@@ -899,7 +900,7 @@ final class rule_test extends \advanced_testcase {
         $this->setUser($user);
 
         // Set the bypass SEB check capability to $USER.
-        $this->assign_user_capability('quizaccess/seb:bypassseb', \context_module::instance($this->quiz->cmid)->id);
+        $this->assign_user_capability('quizaccess/seb:bypassseb', module::instance($this->quiz->cmid)->id);
 
         // Check that correct error message is returned.
         $this->assertFalse($this->make_rule()->prevent_access());
@@ -913,7 +914,7 @@ final class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $form = $this->createMock('mod_quiz_mod_form');
-        $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
+        $form->method('get_context')->willReturn(module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
         $errors = quizaccess_seb::validate_settings_form_fields([], [
@@ -933,7 +934,7 @@ final class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $form = $this->createMock('mod_quiz_mod_form');
-        $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
+        $form->method('get_context')->willReturn(module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
         $errors = quizaccess_seb::validate_settings_form_fields([], [
@@ -956,7 +957,7 @@ final class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $form = $this->createMock('mod_quiz_mod_form');
-        $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
+        $form->method('get_context')->willReturn(module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
         $errors = quizaccess_seb::validate_settings_form_fields([], [
@@ -980,7 +981,7 @@ final class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $form = $this->createMock('mod_quiz_mod_form');
-        $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
+        $form->method('get_context')->willReturn(module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
         $errors = quizaccess_seb::validate_settings_form_fields([], [
@@ -1002,7 +1003,7 @@ final class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_NO);
 
         $form = $this->createMock('mod_quiz_mod_form');
-        $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
+        $form->method('get_context')->willReturn(module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
         $errors = quizaccess_seb::validate_settings_form_fields([], [
@@ -1187,7 +1188,7 @@ final class rule_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $roleid = $this->getDataGenerator()->create_role();
-        $context = \context_module::instance($this->quiz->cmid);
+        $context = module::instance($this->quiz->cmid);
         assign_capability('quizaccess/seb:bypassseb', CAP_ALLOW, $roleid, $context->id);
 
         $this->setUser($user);

@@ -23,6 +23,10 @@
  * @copyright  2015 Damyon Wiese
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+use core\url;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 $parentname = 'competencies';
@@ -31,19 +35,19 @@ $parentname = 'competencies';
 if (get_config('core_competency', 'enabled')) {
 
     // Manage competency frameworks page.
-    $temp = new admin_externalpage(
+    $temp = new externalpage(
         'toollpcompetencies',
         get_string('competencyframeworks', 'tool_lp'),
-        new moodle_url('/admin/tool/lp/competencyframeworks.php', array('pagecontextid' => context_system::instance()->id)),
+        new url('/admin/tool/lp/competencyframeworks.php', array('pagecontextid' => system::instance()->id)),
         array('moodle/competency:competencymanage')
     );
     $ADMIN->add($parentname, $temp);
 
     // Manage learning plans page.
-    $temp = new admin_externalpage(
+    $temp = new externalpage(
         'toollplearningplans',
         get_string('templates', 'tool_lp'),
-        new moodle_url('/admin/tool/lp/learningplans.php', array('pagecontextid' => context_system::instance()->id)),
+        new url('/admin/tool/lp/learningplans.php', array('pagecontextid' => system::instance()->id)),
         array('moodle/competency:templatemanage')
     );
     $ADMIN->add($parentname, $temp);

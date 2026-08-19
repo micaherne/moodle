@@ -16,6 +16,8 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+
 /**
  * Class deployment.
  *
@@ -54,13 +56,13 @@ class deployment {
             ?string $legacyconsumerkey = null) {
 
         if (!is_null($id) && $id <= 0) {
-            throw new \coding_exception('id must be a positive int');
+            throw new coding_exception('id must be a positive int');
         }
         if (empty($deploymentname)) {
-            throw new \coding_exception("Invalid 'deploymentname' arg. Cannot be an empty string.");
+            throw new coding_exception("Invalid 'deploymentname' arg. Cannot be an empty string.");
         }
         if (empty($deploymentid)) {
-            throw new \coding_exception("Invalid 'deploymentid' arg. Cannot be an empty string.");
+            throw new coding_exception("Invalid 'deploymentid' arg. Cannot be an empty string.");
         }
         $this->deploymentname = $deploymentname;
         $this->deploymentid = $deploymentid;
@@ -139,7 +141,7 @@ class deployment {
      */
     public function add_context(string $contextid, array $types): context {
         if (!$this->get_id()) {
-            throw new \coding_exception('Can\'t add context to a deployment that hasn\'t first been saved');
+            throw new coding_exception('Can\'t add context to a deployment that hasn\'t first been saved');
         }
 
         return context::create($this->get_id(), $contextid, $types);
@@ -158,7 +160,7 @@ class deployment {
             ?int $contextid = null): resource_link {
 
         if (!$this->get_id()) {
-            throw new \coding_exception('Can\'t add resource_link to a deployment that hasn\'t first been saved');
+            throw new coding_exception('Can\'t add resource_link to a deployment that hasn\'t first been saved');
         }
         return resource_link::create($resourcelinkid, $this->get_id(), $resourceid, $contextid);
     }
@@ -171,7 +173,7 @@ class deployment {
      */
     public function set_legacy_consumer_key(string $key): void {
         if (strlen($key) > 255) {
-            throw new \coding_exception('Legacy consumer key too long. Cannot exceed 255 chars.');
+            throw new coding_exception('Legacy consumer key too long. Cannot exceed 255 chars.');
         }
         $this->legacyconsumerkey = $key;
     }

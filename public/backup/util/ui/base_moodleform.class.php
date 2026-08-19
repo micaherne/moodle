@@ -24,6 +24,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
@@ -311,7 +314,7 @@ abstract class base_moodleform extends moodleform {
                     $icon = '';
                     break;
             }
-            $context = context_course::instance($task->get_courseid());
+            $context = course::instance($task->get_courseid());
             $label = format_string($settingui->get_label($task), true, array('context' => $context));
             $labelicon = $settingui->get_icon();
             if (!empty($labelicon)) {

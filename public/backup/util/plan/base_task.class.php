@@ -27,6 +27,8 @@
  *
  * TODO: Finish phpdocs
  */
+use core\exception\moodle_exception;
+
 abstract class base_task implements checksumable, executable, loggable {
 
     /** @var string */

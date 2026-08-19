@@ -16,6 +16,7 @@
 
 namespace core_h5p;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_files;
 use core_external\external_function_parameters;
@@ -86,7 +87,7 @@ class external extends external_api {
         try {
             $h5pplayer = new player($url, $config);
             $messages = $h5pplayer->get_messages();
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $messages = (object) [
                 'code' => $e->getCode(),
             ];

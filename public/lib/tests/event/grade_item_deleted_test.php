@@ -25,6 +25,8 @@
 
 namespace core\event;
 
+use core\context\course;
+
 /**
  * Test for grade item deleted event.
  *
@@ -68,7 +70,7 @@ final class grade_item_deleted_test extends \advanced_testcase {
         $eventdata = $event->get_data();
         $this->assertEquals($gradeitem->id, $eventdata['objectid']);
         $this->assertEquals($gradeitem->courseid, $eventdata['courseid']);
-        $this->assertEquals(\context_course::instance($gradeitem->courseid)->id, $eventdata['contextid']);
+        $this->assertEquals(course::instance($gradeitem->courseid)->id, $eventdata['contextid']);
         $this->assertEquals($gradeitem->itemname, $eventdata['other']['itemname']);
         $this->assertEquals($gradeitem->itemtype, $eventdata['other']['itemtype']);
         $this->assertEquals($gradeitem->itemmodule, $eventdata['other']['itemmodule']);

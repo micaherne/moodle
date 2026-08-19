@@ -18,10 +18,10 @@ namespace mod_bigbluebuttonbn\output;
 
 use core\notification;
 use core\output\inplace_editable;
-use html_table;
-use html_writer;
+use core_table\output\html_table;
+use core\output\html_writer;
 use mod_bigbluebuttonbn\instance;
-use plugin_renderer_base;
+use core\output\plugin_renderer_base;
 
 /**
  * Renderer for the mod_bigbluebuttonbn plugin.

@@ -25,7 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\module;
+use core\output\html_writer;
 use core\url;
+use core\user;
+use core_course\cached_cm_info;
+use core_course\cm_info;
 
 /** Display folder contents on a separate page */
 define('FOLDER_DISPLAY_PAGE', 0);
@@ -115,7 +120,7 @@ function folder_add_instance($data, $mform) {
 
     // we need to use context now, so we need to make sure all needed info is already in db
     $DB->set_field('course_modules', 'instance', $data->id, array('id'=>$cmid));
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
     if ($draftitemid) {
         file_save_draft_area_files($draftitemid, $context->id, 'mod_folder', 'content', 0, array('subdirs'=>true));
@@ -145,7 +150,7 @@ function folder_update_instance($data, $mform) {
 
     $DB->update_record('folder', $data);
 
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
     if ($draftitemid = file_get_submitted_draft_itemid('files')) {
         file_save_draft_area_files($draftitemid, $context->id, 'mod_folder', 'content', 0, array('subdirs'=>true));
     }
@@ -313,7 +318,7 @@ function folder_page_type_list($pagetype, $parentcontext, $currentcontext) {
 function folder_export_contents($cm, $baseurl) {
     global $CFG, $DB;
     $contents = array();
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     $folder = $DB->get_record('folder', array('id'=>$cm->instance), '*', MUST_EXIST);
 
     $fs = get_file_storage();
@@ -381,7 +386,7 @@ function folder_dndupload_handle($uploadinfo) {
     $data->id = folder_add_instance($data, null);
 
     // Retrieve the file from the draft file area.
-    $context = context_module::instance($uploadinfo->coursemodule);
+    $context = module::instance($uploadinfo->coursemodule);
     file_save_draft_area_files($uploadinfo->draftitemid, $context->id, 'mod_folder', 'temp', 0, array('subdirs'=>true));
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'mod_folder', 'temp', 0, 'sortorder', false);
@@ -525,7 +530,7 @@ function folder_archive_available($folder, $cm) {
         return false;
     }
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     $fs = get_file_storage();
     $dir = $fs->get_area_tree($context->id, 'mod_folder', 'content', 0);
 
@@ -604,7 +609,7 @@ function folder_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
     $modinfo = get_fast_modinfo($courseid);
     $cm = $modinfo->cms[$cmid];
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     if (!has_capability('mod/folder:view', $context)) {
         return;
     }
@@ -617,10 +622,10 @@ function folder_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
             'cmid' => $cm->id,
             'sectionnum' => $cm->sectionnum,
             'timestamp' => $file->get_timemodified(),
-            'user' => core_user::get_user($file->get_userid()),
+            'user' => user::get_user($file->get_userid()),
         ];
 
-        $url = moodle_url::make_pluginfile_url(
+        $url = url::make_pluginfile_url(
             $file->get_contextid(),
             'mod_folder',
             'content',
@@ -676,7 +681,7 @@ function folder_print_recent_mod_activity($activity, $courseid, $detail, $modnam
 
     // Show the uploader.
     $fullname = fullname($activity->user, $viewfullnames);
-    $userurl = new moodle_url('/user/view.php');
+    $userurl = new url('/user/view.php');
     $userurl->params(['id' => $activity->user->id, 'course' => $courseid]);
     $by = new stdClass();
     $by->name = html_writer::link($userurl, $fullname);
@@ -747,7 +752,7 @@ function folder_print_recent_activity($course, $viewfullnames, $timestart) {
     foreach ($folders as $folder) {
         // Skip resources if the user can't view them.
         $cm = $modinfo->cms[$folder->coursemodule];
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         if (!has_capability('mod/folder:view', $context)) {
             continue;
         }
@@ -769,7 +774,7 @@ function folder_print_recent_activity($course, $viewfullnames, $timestart) {
     foreach ($newfiles as $file) {
         $filename = $file->get_filename();
         $contextid = $file->get_contextid();
-        $url = moodle_url::make_pluginfile_url(
+        $url = url::make_pluginfile_url(
             $contextid,
             'mod_folder',
             'content',
@@ -845,7 +850,7 @@ function mod_folder_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('view'),
-        new \moodle_url('/mod/folder/view.php', ['id' => $cm->id]),
+        new url('/mod/folder/view.php', ['id' => $cm->id]),
         1,
         true
     );

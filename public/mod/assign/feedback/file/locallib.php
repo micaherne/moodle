@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\user;
+use core\url;
 use mod_assign\output\assign_header;
 use core_external\external_value;
 
@@ -110,7 +113,7 @@ class assign_feedback_file extends assign_feedback_plugin {
                 return true;
             } else {
                 // We need to check that the files in the draft area are the same as in the file area.
-                $usercontext = context_user::instance($USER->id);
+                $usercontext = user::instance($USER->id);
                 $fs = get_file_storage();
                 $draftfiles = $fs->get_area_files($usercontext->id, 'user', 'draft', $data->$filekey, 'id', true);
                 $files = $fs->get_area_files(
@@ -569,7 +572,7 @@ class assign_feedback_file extends assign_feedback_plugin {
         $mform = new assignfeedback_file_batch_upload_files_form(null, $formparams);
 
         if ($mform->is_cancelled()) {
-            redirect(new moodle_url('view.php',
+            redirect(new url('view.php',
                                     array('id'=>$this->assignment->get_course_module()->id,
                                           'action'=>'grading')));
             return;
@@ -631,7 +634,7 @@ class assign_feedback_file extends assign_feedback_plugin {
                                    ASSIGNFEEDBACK_FILE_BATCH_FILEAREA,
                                    $USER->id);
 
-            redirect(new moodle_url('view.php',
+            redirect(new url('view.php',
                                     array('id'=>$this->assignment->get_course_module()->id,
                                           'action'=>'grading')));
             return;
@@ -696,7 +699,7 @@ class assign_feedback_file extends assign_feedback_plugin {
             $importer->delete_import_files($contextid);
             $urlparams = array('id'=>$this->assignment->get_course_module()->id,
                                'action'=>'grading');
-            $url = new moodle_url('view.php', $urlparams);
+            $url = new url('view.php', $urlparams);
             redirect($url);
             return;
         } else if ($confirm) {
@@ -707,7 +710,7 @@ class assign_feedback_file extends assign_feedback_plugin {
                 $importer->delete_import_files($contextid);
                 $urlparams = array('id'=>$this->assignment->get_course_module()->id,
                                    'action'=>'grading');
-                $url = new moodle_url('view.php', $urlparams);
+                $url = new url('view.php', $urlparams);
                 redirect($url);
                 return;
             }

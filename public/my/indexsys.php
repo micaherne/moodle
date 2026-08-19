@@ -35,6 +35,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\progress_bar;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/my/lib.php');
@@ -48,7 +52,7 @@ $pagetitle = get_string('mypage', 'admin');
 
 $PAGE->set_secondary_active_tab('appearance');
 $PAGE->set_blocks_editing_capability('moodle/my:configsyspages');
-$PAGE->set_url(new moodle_url('/my/indexsys.php'));
+$PAGE->set_url(new url('/my/indexsys.php'));
 admin_externalpage_setup('mypage', '', null, '', ['pagelayout' => 'mydashboard', 'nosearch' => true]);
 $PAGE->add_body_class('limitedwidth');
 $PAGE->set_pagetype('my-index');
@@ -76,7 +80,7 @@ if ($resetall && confirm_sesskey()) {
 
 // Get the My Moodle page info.  Should always return something unless the database is broken.
 if (!$currentpage = my_get_page(null, MY_PAGE_PRIVATE)) {
-    throw new \moodle_exception('mymoodlesetup');
+    throw new moodle_exception('mymoodlesetup');
 }
 $PAGE->set_subpage($currentpage->id);
 

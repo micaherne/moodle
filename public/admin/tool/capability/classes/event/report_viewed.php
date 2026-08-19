@@ -23,6 +23,9 @@
  */
 namespace tool_capability\event;
 
+use core\context\system;
+use core\url;
+
 /**
  * The tool_capability report viewed event class.
  *
@@ -41,7 +44,7 @@ class report_viewed extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 
     /**
@@ -68,7 +71,7 @@ class report_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/capability/index.php');
+        return new url('/admin/tool/capability/index.php');
     }
 }
 

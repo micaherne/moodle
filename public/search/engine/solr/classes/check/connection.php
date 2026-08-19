@@ -18,7 +18,9 @@ namespace search_solr\check;
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
 use core\output\html_writer;
+use core\url;
 
 /**
  * Check that the connection to Solr works.
@@ -34,9 +36,9 @@ class connection extends check {
     }
 
     #[\Override]
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url('/admin/settings.php', ['section' => 'searchsolr']),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url('/admin/settings.php', ['section' => 'searchsolr']),
             get_string('settings'));
     }
 
@@ -74,13 +76,13 @@ class connection extends check {
             // No connection at all.
             $result = result::ERROR;
             $resultstr = get_string('check_notconnected', 'search_solr');
-            $resultdetails .= \html_writer::tag('p', s($status['error']));
+            $resultdetails .= html_writer::tag('p', s($status['error']));
 
         } else if (!$status['foundcore']) {
             // There's a connection, but the core doesn't seem to exist.
             $result = result::ERROR;
             $resultstr = get_string('check_nocore', 'search_solr');
-            $resultdetails .= \html_writer::tag('p', s($status['error']));
+            $resultdetails .= html_writer::tag('p', s($status['error']));
 
         } else {
             // Errors related to finding the core size only show if the size warning is configured.
@@ -89,7 +91,7 @@ class connection extends check {
                 if ($sizelimit) {
                     $result = result::ERROR;
                     $resultstr = get_string('check_nosize', 'search_solr');
-                    $resultdetails .= \html_writer::tag('p', s($status['error']));
+                    $resultdetails .= html_writer::tag('p', s($status['error']));
                 }
             } else {
                 // Show the index size in result, even if we aren't checking it.
@@ -98,7 +100,7 @@ class connection extends check {
                     'search_solr',
                     display_size($status['indexsize']),
                 );
-                $resultdetails .= \html_writer::tag('p', $sizestr);
+                $resultdetails .= html_writer::tag('p', $sizestr);
                 if ($sizelimit) {
                     // Error at specified index size, warning at 90% of it.
                     $sizewarning = ($sizelimit * 9) / 10;
@@ -118,7 +120,7 @@ class connection extends check {
 
         $ex = $status['exception'] ?? null;
         if ($ex) {
-            $resultdetails .= \html_writer::tag('pre', str_replace($CFG->dirroot, '', s($ex->getTraceAsString())));
+            $resultdetails .= html_writer::tag('pre', str_replace($CFG->dirroot, '', s($ex->getTraceAsString())));
         }
 
         return new result($result, $resultstr, $resultdetails);

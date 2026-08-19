@@ -23,6 +23,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**

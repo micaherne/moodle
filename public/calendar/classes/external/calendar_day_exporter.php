@@ -16,12 +16,13 @@
 
 namespace core_calendar\external;
 
+use core\context\course;
 use core\external\exporter;
 use core_calendar\output\humantimeperiod;
 use core_date;
 use DateTimeImmutable;
-use renderer_base;
-use moodle_url;
+use core\output\renderer_base;
+use core\url;
 use core_calendar\local\event\container;
 
 /**
@@ -134,7 +135,7 @@ class calendar_day_exporter extends exporter {
         $timestamp = $this->calendar->time;
 
         $cache = $this->related['cache'];
-        $url = new moodle_url('/calendar/view.php', [
+        $url = new url('/calendar/view.php', [
             'view' => 'day',
             'time' => $timestamp,
         ]);
@@ -165,7 +166,7 @@ class calendar_day_exporter extends exporter {
             $humanperiod = humantimeperiod::create_from_timestamp(
                 starttimestamp: $legacyevent->timestart,
                 endtimestamp: $legacyevent->timestart + $legacyevent->timeduration,
-                link: new moodle_url(CALENDAR_URL . 'view.php'),
+                link: new url(CALENDAR_URL . 'view.php'),
             );
             $data->formattedtime = $output->render($humanperiod);
 
@@ -187,10 +188,10 @@ class calendar_day_exporter extends exporter {
         $nextperiod = $this->get_next_day_data();
         $date = $this->related['type']->timestamp_to_date_array($this->calendar->time);
 
-        $nextperiodlink = new moodle_url($this->url);
+        $nextperiodlink = new url($this->url);
         $nextperiodlink->param('time', $nextperiod[0]);
 
-        $previousperiodlink = new moodle_url($this->url);
+        $previousperiodlink = new url($this->url);
         $previousperiodlink->param('time', $previousperiod[0]);
 
         $days = calendar_get_days();
@@ -230,7 +231,7 @@ class calendar_day_exporter extends exporter {
      */
     protected function get_default_add_context() {
         if (calendar_user_can_add_event($this->calendar->course)) {
-            return \context_course::instance($this->calendar->course->id);
+            return course::instance($this->calendar->course->id);
         }
 
         return null;

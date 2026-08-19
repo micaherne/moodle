@@ -23,7 +23,10 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+use core\context\module;
 use core\url;
+use core_course\cached_cm_info;
+use core_course\cm_info;
 
 /**
  * List of features supported in Page module
@@ -118,7 +121,7 @@ function page_add_instance($data, $mform = null) {
 
     // we need to use context now, so we need to make sure all needed info is already in db
     $DB->set_field('course_modules', 'instance', $data->id, array('id'=>$cmid));
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
     if ($mform and !empty($data->page['itemid'])) {
         $draftitemid = $data->page['itemid'];
@@ -163,7 +166,7 @@ function page_update_instance($data, $mform) {
 
     $DB->update_record('page', $data);
 
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
     if ($draftitemid) {
         $data->content = file_save_draft_area_files($draftitemid, $context->id, 'mod_page', 'content', 0, page_get_editor_options($context), $data->content);
         $DB->update_record('page', $data);
@@ -402,7 +405,7 @@ function page_page_type_list($pagetype, $parentcontext, $currentcontext) {
 function page_export_contents($cm, $baseurl) {
     global $CFG, $DB;
     $contents = array();
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 
@@ -581,7 +584,7 @@ function mod_page_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('view'),
-        new \moodle_url('/mod/page/view.php', ['id' => $cm->id]),
+        new url('/mod/page/view.php', ['id' => $cm->id]),
         1,
         true
     );

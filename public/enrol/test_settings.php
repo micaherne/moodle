@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\url;
+
 require(__DIR__.'/../config.php');
 require_once("$CFG->libdir/adminlib.php");
 
@@ -32,10 +35,10 @@ if (!core_component::is_valid_plugin_name('enrol', $enrol)) {
     $enrol = '';
 }
 
-navigation_node::override_active_url(new moodle_url('/admin/settings.php', array('section'=>'manageenrols')));
+navigation_node::override_active_url(new url('/admin/settings.php', array('section'=>'manageenrols')));
 admin_externalpage_setup('enroltestsettings');
 
-$returnurl = new moodle_url('/admin/settings.php', array('section'=>'manageenrols'));
+$returnurl = new url('/admin/settings.php', array('section'=>'manageenrols'));
 
 echo $OUTPUT->header();
 
@@ -56,7 +59,7 @@ if (!$enrol) {
 
     echo $OUTPUT->heading(get_string('testsettings', 'core_enrol'));
 
-    $url = new moodle_url('/enrol/test_settings.php');
+    $url = new url('/enrol/test_settings.php');
     echo $OUTPUT->single_select($url, 'enrol', $options);
 
     echo $OUTPUT->footer();

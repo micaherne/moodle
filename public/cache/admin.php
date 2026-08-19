@@ -25,6 +25,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\url;
 use core_cache\factory as cache_factory;
 use core_cache\helper as cache_helper;
 
@@ -50,7 +52,7 @@ $notifications = array();
 $forminfo = [];
 
 $PAGE->set_primary_active_tab('siteadminnode');
-$PAGE->navbar->add(get_string('cacheconfig', 'cache'), new moodle_url('/cache/admin.php'));
+$PAGE->navbar->add(get_string('cacheconfig', 'cache'), new url('/cache/admin.php'));
 
 // Handle page actions in admin helper class.
 if (!empty($action)) {

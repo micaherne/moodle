@@ -25,6 +25,8 @@
  * @param string $mode scorm display mode type
  * @return array The default values that should be used for SCORM 1.2 package
  */
+use core\exception\moodle_exception;
+
 function get_scorm_default (&$userdata, $scorm, $scoid, $attempt, $mode) {
     global $USER;
 
@@ -49,10 +51,10 @@ function get_scorm_default (&$userdata, $scorm, $scoid, $attempt, $mode) {
             $userdata->$key = $value;
         }
     } else {
-        throw new \moodle_exception('cannotfindsco', 'scorm');
+        throw new moodle_exception('cannotfindsco', 'scorm');
     }
     if (!$sco = scorm_get_sco($scoid)) {
-        throw new \moodle_exception('cannotfindsco', 'scorm');
+        throw new moodle_exception('cannotfindsco', 'scorm');
     }
 
     if (isset($userdata->status)) {

@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\action_link;
+use core\output\actions\popup_action;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -66,7 +70,7 @@ class report_loglive_table_log_ajax extends report_loglive_table_log {
      * @param string $name
      * @return string
      */
-    protected function action_link(moodle_url $url, $text, $name = 'popup') {
+    protected function action_link(url $url, $text, $name = 'popup') {
         global $OUTPUT;
 
         $link = new action_link($url, $text, null, [

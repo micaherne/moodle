@@ -28,6 +28,10 @@ namespace core_block\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
+use core\context\block;
+use core\context\course;
+use core\context\user;
+use core\url;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\transform;
@@ -56,10 +60,10 @@ final class provider_test extends provider_testcase {
         $c2 = $dg->create_course();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $manager = $this->get_block_manager(['region-a'], $c1ctx);
         $manager->add_block('myprofile', 'region-a', 0, false);
@@ -106,7 +110,7 @@ final class provider_test extends provider_testcase {
 
         $course = $this->getDataGenerator()->create_course();
 
-        $manager = $this->get_block_manager(['region-a'], \context_course::instance($course->id));
+        $manager = $this->get_block_manager(['region-a'], course::instance($course->id));
         $manager->add_block('myprofile', 'region-a', 0, false);
         $manager->load_blocks();
         $blockmyprofile = $manager->get_blocks_for_region('region-a')[0];
@@ -118,7 +122,7 @@ final class provider_test extends provider_testcase {
 
         $records = $DB->get_records('block_instances', ['blockname' => 'myprofile']);
         $record = array_shift($records);
-        $blockcontext = \context_block::instance($record->id);
+        $blockcontext = block::instance($record->id);
 
         $userlist = new \core_privacy\local\request\userlist($blockcontext, 'core_block');
         provider::get_users_in_context($userlist);
@@ -133,10 +137,10 @@ final class provider_test extends provider_testcase {
         $c2 = $dg->create_course();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $manager = $this->get_block_manager(['region-a'], $c1ctx);
         $manager->add_block('myprofile', 'region-a', 0, false);
@@ -203,10 +207,10 @@ final class provider_test extends provider_testcase {
         $c2 = $dg->create_course();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $manager = $this->get_block_manager(['region-a'], $c1ctx);
         $manager->add_block('myprofile', 'region-a', 0, false);
@@ -310,7 +314,7 @@ final class provider_test extends provider_testcase {
 
         $course = $this->getDataGenerator()->create_course();
 
-        $manager = $this->get_block_manager(['region-a'], \context_course::instance($course->id));
+        $manager = $this->get_block_manager(['region-a'], course::instance($course->id));
         $manager->add_block('myprofile', 'region-a', 0, false);
         $manager->load_blocks();
         $blockmyprofile = $manager->get_blocks_for_region('region-a')[0];
@@ -322,7 +326,7 @@ final class provider_test extends provider_testcase {
 
         $records = $DB->get_records('block_instances', ['blockname' => 'myprofile']);
         $record = array_shift($records);
-        $blockcontext = \context_block::instance($record->id);
+        $blockcontext = block::instance($record->id);
 
         $userlist = new \core_privacy\local\request\userlist($blockcontext, 'core_block');
         provider::get_users_in_context($userlist);
@@ -347,10 +351,10 @@ final class provider_test extends provider_testcase {
         $c2 = $dg->create_course();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
         $yes = transform::yesno(true);
         $no = transform::yesno(false);
 
@@ -404,7 +408,7 @@ final class provider_test extends provider_testcase {
         $page->set_context($context);
         $page->set_pagetype($pagetype);
         $page->set_subpage($subpage);
-        $page->set_url(new \moodle_url('/'));
+        $page->set_url(new url('/'));
 
         $blockmanager = new \block_manager($page);
         $blockmanager->add_regions($regions, false);

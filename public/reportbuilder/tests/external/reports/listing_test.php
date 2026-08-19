@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\external\reports;
 
-use context_system;
+use core\context\system;
 use core_customfield_generator;
 use core_reportbuilder_generator;
 use core_external\external_api;
@@ -102,7 +102,7 @@ final class listing_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest();
 
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user'], MUST_EXIST);
-        assign_capability('moodle/reportbuilder:view', CAP_PROHIBIT, $userrole, context_system::instance(), true);
+        assign_capability('moodle/reportbuilder:view', CAP_PROHIBIT, $userrole, system::instance(), true);
 
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);

@@ -24,6 +24,8 @@
 
 namespace core_analytics\local\indicator;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -41,7 +43,7 @@ abstract class discrete extends base {
      * @return string[]
      */
     protected static function get_classes() {
-        throw new \coding_exception('Please overwrite get_classes() specifying your discrete-values\' indicator classes');
+        throw new coding_exception('Please overwrite get_classes() specifying your discrete-values\' indicator classes');
     }
 
     /**
@@ -123,7 +125,7 @@ abstract class discrete extends base {
             $classindex = array_search(intval($calculatedvalue), $classes, true);
 
             if ($classindex === false && !is_null($calculatedvalue)) {
-                throw new \coding_exception(get_class($this) . ' calculated value "' . $calculatedvalue .
+                throw new coding_exception(get_class($this) . ' calculated value "' . $calculatedvalue .
                     '" is not one of its defined classes (' . json_encode($classes) . ')');
             }
 
@@ -151,7 +153,7 @@ abstract class discrete extends base {
 
         // Using intval as it may come as a float from the db.
         if (!in_array(intval($calculatedvalue), static::get_classes())) {
-            throw new \coding_exception(get_class($this) . ' calculated value "' . $calculatedvalue .
+            throw new coding_exception(get_class($this) . ' calculated value "' . $calculatedvalue .
                 '" is not one of its defined classes (' . json_encode(static::get_classes()) . ')');
         }
         return true;

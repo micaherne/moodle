@@ -23,6 +23,8 @@
  * @license  http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -78,7 +80,7 @@ final class reportlib_test extends advanced_testcase {
         // One activity will be hidden.
         $course = $this->getDataGenerator()->create_course();
         $coursegradeitem = grade_item::fetch_course_item($course->id);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $data = $this->getDataGenerator()->create_module('data', array('assessed' => 1, 'scale' => 100, 'course' => $course->id));
         $datacm = get_coursemodule_from_id('data', $data->cmid);
@@ -154,7 +156,7 @@ final class reportlib_test extends advanced_testcase {
         // 2) That $report->blank_hidden_total() correctly moves on to the new course.
         $course = $this->getDataGenerator()->create_course();
         $coursegradeitem = grade_item::fetch_course_item($course->id);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $data = $this->getDataGenerator()->create_module('data', array('assessed' => 1, 'scale' => 100, 'course' => $course->id));
         $datacm = get_coursemodule_from_id('data', $data->cmid);

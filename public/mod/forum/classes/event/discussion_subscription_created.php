@@ -24,6 +24,9 @@
 
 namespace mod_forum\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +81,7 @@ class discussion_subscription_created extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/forum/subscribe.php', array(
+        return new url('/mod/forum/subscribe.php', array(
             'id' => $this->other['forumid'],
             'd' => $this->other['discussion'],
         ));
@@ -94,19 +97,19 @@ class discussion_subscription_created extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['forumid'])) {
-            throw new \coding_exception('The \'forumid\' value must be set in other.');
+            throw new coding_exception('The \'forumid\' value must be set in other.');
         }
 
         if (!isset($this->other['discussion'])) {
-            throw new \coding_exception('The \'discussion\' value must be set in other.');
+            throw new coding_exception('The \'discussion\' value must be set in other.');
         }
 
         if ($this->contextlevel != CONTEXT_MODULE) {
-            throw new \coding_exception('Context level must be CONTEXT_MODULE.');
+            throw new coding_exception('Context level must be CONTEXT_MODULE.');
         }
     }
 

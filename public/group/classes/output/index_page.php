@@ -24,10 +24,10 @@
 namespace core_group\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Group index page class.

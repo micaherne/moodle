@@ -23,14 +23,21 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configmultiselect;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_heading('factor_webauthn/description', '',
+    $settings->add(new heading('factor_webauthn/description', '',
         new lang_string('settings:description', 'factor_webauthn')));
-    $settings->add(new admin_setting_heading('factor_webauthn/settings', new lang_string('settings', 'moodle'), ''));
+    $settings->add(new heading('factor_webauthn/settings', new lang_string('settings', 'moodle'), ''));
 
-    $enabled = new admin_setting_configcheckbox('factor_webauthn/enabled',
+    $enabled = new configcheckbox('factor_webauthn/enabled',
         new lang_string('settings:enablefactor', 'tool_mfa'),
         new lang_string('settings:enablefactor_help', 'tool_mfa'), 0);
     $enabled->set_updatedcallback(function() {
@@ -38,7 +45,7 @@ if ($ADMIN->fulltree) {
     });
     $settings->add($enabled);
 
-    $settings->add(new admin_setting_configtext('factor_webauthn/weight',
+    $settings->add(new configtext('factor_webauthn/weight',
         new lang_string('settings:weight', 'tool_mfa'),
         new lang_string('settings:weight_help', 'tool_mfa'), 100, PARAM_INT));
 
@@ -49,12 +56,12 @@ if ($ADMIN->fulltree) {
         'hybrid' => get_string('authenticator:hybrid', 'factor_webauthn'),
         'internal' => get_string('authenticator:internal', 'factor_webauthn'),
     ];
-    $settings->add(new admin_setting_configmultiselect('factor_webauthn/authenticatortypes',
+    $settings->add(new configmultiselect('factor_webauthn/authenticatortypes',
         new lang_string('settings:authenticatortypes', 'factor_webauthn'),
         new lang_string('settings:authenticatortypes_help', 'factor_webauthn'),
         array_keys($authenticators), $authenticators));
 
-    $settings->add(new admin_setting_configselect('factor_webauthn/userverification',
+    $settings->add(new configselect('factor_webauthn/userverification',
         new lang_string('settings:userverification', 'factor_webauthn'),
         new lang_string('settings:userverification_help', 'factor_webauthn'),
         'preferred',

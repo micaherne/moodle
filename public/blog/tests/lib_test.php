@@ -25,6 +25,8 @@
 namespace core_blog;
 
 use blog_listing;
+use core\context\course;
+use core\context\module;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -223,7 +225,7 @@ final class lib_test extends \advanced_testcase {
 
     public function test_blog_get_listing_course(): void {
         $this->setAdminUser();
-        $coursecontext = \context_course::instance($this->courseid);
+        $coursecontext = course::instance($this->courseid);
         $anothercourse = $this->getDataGenerator()->create_course();
 
         // Add blog associations with a course.
@@ -253,8 +255,8 @@ final class lib_test extends \advanced_testcase {
 
     public function test_blog_get_listing_module(): void {
         $this->setAdminUser();
-        $coursecontext = \context_course::instance($this->courseid);
-        $contextmodule = \context_module::instance($this->cmid);
+        $coursecontext = course::instance($this->courseid);
+        $contextmodule = module::instance($this->cmid);
         $anothermodule = $this->getDataGenerator()->create_module('page', array('course' => $this->courseid));
 
         // Add blog associations with a course.

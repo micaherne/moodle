@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace mod_forum\completion;
 
+use core\exception\moodle_exception;
 use core_completion\activity_custom_completion;
 
 /**
@@ -47,7 +48,7 @@ class custom_completion extends activity_custom_completion {
         $forumid = $this->cm->instance;
 
         if (!$forum = $DB->get_record('forum', ['id' => $forumid])) {
-            throw new \moodle_exception('Unable to find forum with id ' . $forumid);
+            throw new moodle_exception('Unable to find forum with id ' . $forumid);
         }
 
         $postcountparams = ['userid' => $userid, 'forumid' => $forumid];

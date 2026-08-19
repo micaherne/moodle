@@ -16,6 +16,10 @@
 
 namespace tool_policy;
 
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
 use tool_mobile\external as external_mobile;
 
 defined('MOODLE_INTERNAL') || die();
@@ -81,8 +85,8 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->parent = $this->getDataGenerator()->create_user();
         $this->adult = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $childcontext = \context_user::instance($this->child->id);
+        $syscontext = system::instance();
+        $childcontext = user::instance($this->child->id);
 
         $roleminorid = create_role('Digital minor', 'digiminor', 'Not old enough to accept site policies themselves');
         $roleparentid = create_role('Parent', 'parent', 'Can accept policies on behalf of their child');
@@ -185,9 +189,9 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Make sure user can not login.
         $toolconsentpage = $sitepolicymanager->get_redirect_url();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('sitepolicynotagreed', 'error', $toolconsentpage->out()));
-        \core_user_external::validate_context(\context_system::instance());
+        \core_user_external::validate_context(system::instance());
 
         // Call WS to agree to the site policy. It will call tool_policy handler.
         $result = \core_user_external::agree_site_policy();
@@ -213,7 +217,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $this->resetAfterTest(true);
         $CFG->sitepolicyhandler = 'tool_policy';
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $sitepolicymanager = new \core_privacy\local\sitepolicy\manager();
 
         $adult = $this->getDataGenerator()->create_user();
@@ -234,7 +238,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($child);
         $result = external_mobile::get_config();
         $result = \core_external\external_api::clean_returnvalue(external_mobile::get_config_returns(), $result);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $sitepolicymanager->accept();
     }
 
@@ -311,7 +315,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         }
 
         // Get other user acceptances without permission.
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $policies = \tool_policy\external\get_user_acceptances::execute($user->id);
     }
 
@@ -422,7 +426,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         }
 
         // Try to accept on behalf of other user with no permissions.
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $policies = \tool_policy\external\set_acceptances_status::execute([['versionid' => $optionalpolicynew->get('id'), 'status' => 1]], $user->id);
     }
 
@@ -437,7 +441,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->parent->policyagreed = 1;
         $this->setUser($this->parent);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('errorpolicyversioncompulsory', 'tool_policy'));
         $ids = [['versionid' => $this->policy2->get('id'), 'status' => 0]];
         $policies = \tool_policy\external\set_acceptances_status::execute($ids, $this->child->id);

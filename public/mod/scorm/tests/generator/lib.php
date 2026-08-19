@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\user as core_user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -127,7 +131,7 @@ class mod_scorm_generator extends testing_module_generator {
         }
 
         if (!empty($record->userid)) {
-            \core_user::get_user($record->userid, '*', MUST_EXIST);
+            core_user::get_user($record->userid, '*', MUST_EXIST);
         }
         $userid = $record->userid ?? $USER->id;
         $scoes = scorm_get_scoes($scormid);

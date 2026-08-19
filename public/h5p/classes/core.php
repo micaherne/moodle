@@ -20,11 +20,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/filelib.php");
 
+use core\context\system;
+use core_cache\cache;
 use Moodle\H5PCore;
 use Moodle\H5PFrameworkInterface;
 use Moodle\H5PHubEndpoints;
 use stdClass;
-use moodle_url;
+use core\url;
 use core_h5p\local\library\autoloader;
 
 // phpcs:disable moodle.NamingConventions.ValidFunctionName.LowercaseMethod
@@ -81,10 +83,10 @@ class core extends H5PCore {
     public function get_dependency_roots(int $id): array {
         $roots = [];
         $dependencies = $this->h5pF->loadContentDependencies($id);
-        $context = \context_system::instance();
+        $context = system::instance();
         foreach ($dependencies as $dependency) {
             $library = $this->find_library($dependency);
-            $roots[self::libraryToFolderName($dependency)] = (moodle_url::make_pluginfile_url(
+            $roots[self::libraryToFolderName($dependency)] = (url::make_pluginfile_url(
                 $context->id,
                 'core_h5p',
                 'libraries',
@@ -149,7 +151,7 @@ class core extends H5PCore {
                 'ver' => $jsrev,
             ]);
         }
-        $urls[] = new moodle_url("/h5p/js/h5p_overrides.js", [
+        $urls[] = new url("/h5p/js/h5p_overrides.js", [
             'ver' => $jsrev,
         ]);
 
@@ -237,7 +239,7 @@ class core extends H5PCore {
 
         // Delete any existing file, if it was not deleted during a previous download.
         $existing = $fs->get_file(
-            (\context_system::instance())->id,
+            (system::instance())->id,
             'core_h5p',
             'library_sources',
             0,
@@ -254,7 +256,7 @@ class core extends H5PCore {
                 'component' => 'core_h5p',
                 'filearea' => 'library_sources',
                 'itemid' => 0,
-                'contextid' => (\context_system::instance())->id,
+                'contextid' => (system::instance())->id,
                 'filepath' => '/',
                 'filename' => $library['machineName'],
             ],
@@ -314,14 +316,14 @@ class core extends H5PCore {
      * @param string $endpoint The endpoint required. Valid values: "site", "content".
      * @return moodle_url The endpoint moodle_url object.
      */
-    public function get_api_endpoint(?string $library = null, string $endpoint = 'content'): moodle_url {
+    public function get_api_endpoint(?string $library = null, string $endpoint = 'content'): url {
         if ($endpoint == 'site') {
             $h5purl = H5PHubEndpoints::createURL(H5PHubEndpoints::SITES );
         } else if ($endpoint == 'content') {
             $h5purl = H5PHubEndpoints::createURL(H5PHubEndpoints::CONTENT_TYPES ) . $library;
         }
 
-        return new moodle_url($h5purl);
+        return new url($h5purl);
     }
 
     /**
@@ -459,7 +461,7 @@ class core extends H5PCore {
         }
 
         // Check if this information has been saved previously into the cache.
-        $libcache = \cache::make('core', 'h5p_libraries');
+        $libcache = cache::make('core', 'h5p_libraries');
         $librarykey = helper::get_cache_librarykey($libString);
         $libraryId = $libcache->get($librarykey);
         if ($libraryId === false) {

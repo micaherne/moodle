@@ -16,6 +16,8 @@
 
 namespace core\external;
 
+use core\context;
+use core\exception\invalid_parameter_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -53,7 +55,7 @@ class record_userfeedback_action extends external_api {
             'contextid' => $contextid,
         ]);
 
-        $context = \context::instance_by_id($contextid);
+        $context = context::instance_by_id($contextid);
         self::validate_context($context);
 
         switch ($action) {
@@ -68,7 +70,7 @@ class record_userfeedback_action extends external_api {
                 $event->trigger();
                 break;
             default:
-                throw new \invalid_parameter_exception('Invalid value for action parameter (value: ' . $action . '),' .
+                throw new invalid_parameter_exception('Invalid value for action parameter (value: ' . $action . '),' .
                         'allowed values are: give,remind');
         }
     }

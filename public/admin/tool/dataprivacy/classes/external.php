@@ -26,19 +26,20 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/dataprivacy/lib.php');
 
-use context_helper;
-use context_system;
-use context_user;
+use core\context_helper;
+use core\context\system;
+use core\context\user as context_user;
 use core\notification;
-use core_user;
+use core\plugin_manager;
+use core\user as core_user;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use moodle_exception;
-use required_capability_exception;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
 use tool_dataprivacy\external\category_exporter;
 use tool_dataprivacy\external\data_request_exporter;
 use tool_dataprivacy\external\purpose_exporter;
@@ -104,7 +105,7 @@ class external extends external_api {
             if ($datasubject !== (int) $USER->id) {
                 // The user is not the subject. Check that they can cancel this request.
                 if (!api::can_create_data_request_for_user($datasubject)) {
-                    $forusercontext = \context_user::instance($datasubject);
+                    $forusercontext = context_user::instance($datasubject);
                     throw new required_capability_exception($forusercontext,
                             'tool/dataprivacy:makedatarequestsforchildren', 'nopermissions', '');
                 }
@@ -266,7 +267,7 @@ class external extends external_api {
         $requestid = $params['requestid'];
 
         // Validate context and access to manage the registry.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         api::check_can_manage_data_registry();
 
@@ -330,7 +331,7 @@ class external extends external_api {
         $requestid = $params['requestid'];
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         $requestpersistent = new data_request($requestid);
         require_capability('tool/dataprivacy:managedatarequests', $context);
@@ -390,7 +391,7 @@ class external extends external_api {
         $requestid = $params['requestid'];
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('tool/dataprivacy:managedatarequests', $context);
 
@@ -465,7 +466,7 @@ class external extends external_api {
         $requestids = $params['requestids'];
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('tool/dataprivacy:managedatarequests', $context);
 
@@ -541,7 +542,7 @@ class external extends external_api {
         $requestid = $params['requestid'];
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('tool/dataprivacy:managedatarequests', $context);
 
@@ -616,7 +617,7 @@ class external extends external_api {
         $requestids = $params['requestids'];
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('tool/dataprivacy:managedatarequests', $context);
 
@@ -691,7 +692,7 @@ class external extends external_api {
         $query = $params['query'];
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('tool/dataprivacy:managedatarequests', $context);
 
@@ -782,7 +783,7 @@ class external extends external_api {
         ]);
 
         // Validate context and access to manage the registry.
-        self::validate_context(\context_system::instance());
+        self::validate_context(system::instance());
         api::check_can_manage_data_registry();
 
         $serialiseddata = json_decode($params['jsonformdata']);
@@ -800,7 +801,7 @@ class external extends external_api {
             throw new moodle_exception('generalerror');
         }
 
-        $exporter = new purpose_exporter($purpose, ['context' => \context_system::instance()]);
+        $exporter = new purpose_exporter($purpose, ['context' => system::instance()]);
         return [
             'purpose' => $exporter->export($PAGE->get_renderer('core')),
             'validationerrors' => $validationerrors,
@@ -852,7 +853,7 @@ class external extends external_api {
         ]);
 
         // Validate context and access to manage the registry.
-        self::validate_context(\context_system::instance());
+        self::validate_context(system::instance());
         api::check_can_manage_data_registry();
 
         $result = api::delete_purpose($params['id']);
@@ -905,7 +906,7 @@ class external extends external_api {
         ]);
 
         // Validate context and access to manage the registry.
-        self::validate_context(\context_system::instance());
+        self::validate_context(system::instance());
         api::check_can_manage_data_registry();
 
         $serialiseddata = json_decode($params['jsonformdata']);
@@ -923,7 +924,7 @@ class external extends external_api {
             throw new moodle_exception('generalerror');
         }
 
-        $exporter = new category_exporter($category, ['context' => \context_system::instance()]);
+        $exporter = new category_exporter($category, ['context' => system::instance()]);
         return [
             'category' => $exporter->export($PAGE->get_renderer('core')),
             'validationerrors' => $validationerrors,
@@ -975,7 +976,7 @@ class external extends external_api {
         ]);
 
         // Validate context and access to manage the registry.
-        self::validate_context(\context_system::instance());
+        self::validate_context(system::instance());
         api::check_can_manage_data_registry();
 
         $result = api::delete_category($params['id']);
@@ -1028,7 +1029,7 @@ class external extends external_api {
         ]);
 
         // Validate context and access to manage the registry.
-        self::validate_context(\context_system::instance());
+        self::validate_context(system::instance());
         api::check_can_manage_data_registry();
 
         $serialiseddata = json_decode($params['jsonformdata']);
@@ -1098,7 +1099,7 @@ class external extends external_api {
         ]);
 
         // Validate context and access to manage the registry.
-        self::validate_context(\context_system::instance());
+        self::validate_context(system::instance());
         api::check_can_manage_data_registry();
 
         $serialiseddata = json_decode($params['jsonformdata']);
@@ -1184,7 +1185,7 @@ class external extends external_api {
                 $branches = data_registry_page::get_blocks_branch($context);
                 break;
             default:
-                throw new \moodle_exception('Unsupported element provided.');
+                throw new moodle_exception('Unsupported element provided.');
         }
 
         return [
@@ -1240,7 +1241,7 @@ class external extends external_api {
         $ids = $params['ids'];
 
         // Validate context and access to manage the registry.
-        self::validate_context(\context_system::instance());
+        self::validate_context(system::instance());
         api::check_can_manage_data_registry();
 
         $result = true;
@@ -1251,7 +1252,7 @@ class external extends external_api {
                 $expiredcontext = new expired_context($id);
                 $targetcontext = context_helper::instance_by_id($expiredcontext->get('contextid'));
 
-                if (!$targetcontext instanceof \context_user) {
+                if (!$targetcontext instanceof context_user) {
                     // Fetch this context's child contexts. Make sure that all of the child contexts are flagged for deletion.
                     // User context children do not need to be considered.
                     $childcontexts = $targetcontext->get_child_contexts();
@@ -1361,7 +1362,7 @@ class external extends external_api {
         $override = $params['override'];
 
         // Validate context.
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         api::check_can_manage_data_registry();
 
@@ -1415,7 +1416,7 @@ class external extends external_api {
         $includeinherit = $params['includeinherit'];
         $includenotset = $params['includenotset'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         api::check_can_manage_data_registry();
 
@@ -1483,7 +1484,7 @@ class external extends external_api {
         $includeinherit = $params['includeinherit'];
         $includenotset = $params['includenotset'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $purposes = api::get_purposes();
@@ -1548,11 +1549,11 @@ class external extends external_api {
         ]);
         $nodefaults = $params['nodefaults'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         // Get activity module plugin info.
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $modplugins = $pluginmanager->get_enabled_plugins('mod');
         $modoptions = [];
 

@@ -16,7 +16,7 @@
 
 namespace filter_algebra;
 
-use cache;
+use core_cache\cache;
 use core\context\system as context_system;
 use core\output\actions\popup_action;
 use core\url;

@@ -25,9 +25,9 @@
 namespace mod_h5pactivity\event;
 
 use advanced_testcase;
-use moodle_url;
-use coding_exception;
-use context_module;
+use core\url;
+use core\exception\coding_exception;
+use core\context\module;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -81,7 +81,7 @@ final class report_viewed_test extends advanced_testcase {
             $urlparams['attemptid'] = $attempt->id;
         }
         $params = [
-            'context' => context_module::instance($activity->cmid),
+            'context' => module::instance($activity->cmid),
             'objectid' => $activity->id,
             'other' => $other,
         ];
@@ -101,11 +101,11 @@ final class report_viewed_test extends advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_h5pactivity\event\report_viewed', $event);
-        $this->assertEquals(context_module::instance($activity->cmid), $event->get_context());
+        $this->assertEquals(module::instance($activity->cmid), $event->get_context());
         $this->assertEquals($activity->id, $event->objectid);
 
         $eventurl = $event->get_url();
-        $url = new moodle_url('/mod/h5pactivity/report.php', $urlparams);
+        $url = new url('/mod/h5pactivity/report.php', $urlparams);
         $this->assertTrue($eventurl->compare($url));
     }
 

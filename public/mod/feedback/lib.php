@@ -23,6 +23,17 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\output\html_writer;
+use core\output\user_picture;
+use core\url;
+use core_course\cached_cm_info;
+use core_course\cm_info;
 use mod_feedback\manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -101,7 +112,7 @@ function feedback_add_instance($feedback) {
         $cm = get_coursemodule_from_id('feedback', $feedback->id);
         $feedback->coursemodule = $cm->id;
     }
-    $context = context_module::instance($feedback->coursemodule);
+    $context = module::instance($feedback->coursemodule);
 
     if (!empty($feedback->completionexpected)) {
         \core_completion\api::update_completion_date_event($feedback->coursemodule, 'feedback', $feedback->id,
@@ -149,7 +160,7 @@ function feedback_update_instance($feedback) {
     $completionexpected = (!empty($feedback->completionexpected)) ? $feedback->completionexpected : null;
     \core_completion\api::update_completion_date_event($feedback->coursemodule, 'feedback', $feedback->id, $completionexpected);
 
-    $context = context_module::instance($feedback->coursemodule);
+    $context = module::instance($feedback->coursemodule);
 
     $editoroptions = feedback_get_editor_options();
 
@@ -339,7 +350,7 @@ function feedback_user_outline($course, $user, $mod, $feedback) {
     $params = array('userid' => $user->id, 'feedback' => $feedback->id,
         'anonymous_response' => FEEDBACK_ANONYMOUS_NO);
     $status = null;
-    $context = context_module::instance($mod->id);
+    $context = module::instance($mod->id);
     if ($completed = $DB->get_record('feedback_completed', $params)) {
         // User has completed feedback.
         $outline->info = get_string('completed', 'feedback');
@@ -424,7 +435,7 @@ function feedback_get_recent_mod_activity(&$activities, &$index,
         return;
     }
 
-    $cm_context = context_module::instance($cm->id);
+    $cm_context = module::instance($cm->id);
 
     if (!has_capability('mod/feedback:view', $cm_context)) {
         return;
@@ -533,11 +544,11 @@ function feedback_user_complete($course, $user, $mod, $feedback) {
     $params = array('userid' => $user->id, 'feedback' => $feedback->id,
         'anonymous_response' => FEEDBACK_ANONYMOUS_NO);
     $url = $status = null;
-    $context = context_module::instance($mod->id);
+    $context = module::instance($mod->id);
     if ($completed = $DB->get_record('feedback_completed', $params)) {
         // User has completed feedback.
         if (has_capability('mod/feedback:viewreports', $context)) {
-            $url = new moodle_url('/mod/feedback/show_entries.php',
+            $url = new url('/mod/feedback/show_entries.php',
                 ['id' => $mod->id, 'userid' => $user->id,
                     'showcompleted' => $completed->id]);
         }
@@ -934,7 +945,7 @@ function feedback_get_incomplete_users(cm_info $cm,
 
     global $DB;
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     //first get all user who can complete this feedback
     $cap = 'mod/feedback:complete';
@@ -1055,7 +1066,7 @@ function feedback_get_complete_users($cm,
 
     global $DB;
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $params = (array)$params;
 
@@ -1102,7 +1113,7 @@ function feedback_get_complete_users($cm,
  */
 function feedback_get_viewreports_users($cmid, $groups = false) {
 
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
     //description of the call below:
     //get_users_by_capability($context, $capability, $fields='', $sort='', $limitfrom='',
@@ -1127,7 +1138,7 @@ function feedback_get_viewreports_users($cmid, $groups = false) {
  * @return stdClass[] the userrecords
  */
 function feedback_get_receivemail_users($cmid, $groups = false) {
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
     $allusers = get_users_by_capability($context,
                             'mod/feedback:receivemail',
@@ -1212,12 +1223,12 @@ function feedback_save_as_template($feedback, $name, $ispublic = 0) {
     //if the template is public the files are in the system context
     //files in the feedback_item are in the feedback_context of the feedback
     if ($ispublic) {
-        $s_context = context_system::instance();
+        $s_context = system::instance();
     } else {
-        $s_context = context_course::instance($newtempl->course);
+        $s_context = course::instance($newtempl->course);
     }
     $cm = get_coursemodule_from_instance('feedback', $feedback->id);
-    $f_context = context_module::instance($cm->id);
+    $f_context = module::instance($cm->id);
 
     //create items of this new template
     //depend items we are storing temporary in an mapping list array(new id => dependitem)
@@ -1317,13 +1328,13 @@ function feedback_items_from_template($feedback, $templateid, $deleteold = false
     //files in the template_item are in the context of the current course
     //files in the feedback_item are in the feedback_context of the feedback
     if ($template->ispublic) {
-        $s_context = context_system::instance();
+        $s_context = system::instance();
     } else {
-        $s_context = context_course::instance($feedback->course);
+        $s_context = course::instance($feedback->course);
     }
     $course = $DB->get_record('course', array('id'=>$feedback->course));
     $cm = get_coursemodule_from_instance('feedback', $feedback->id);
-    $f_context = context_module::instance($cm->id);
+    $f_context = module::instance($cm->id);
 
     //if deleteold then delete all old items before
     //get all items
@@ -1580,9 +1591,9 @@ function feedback_delete_item($itemid, $renumber = true, $template = false) {
 
     if ($template) {
         if ($template->ispublic) {
-            $context = context_system::instance();
+            $context = system::instance();
         } else {
-            $context = context_course::instance($template->course);
+            $context = course::instance($template->course);
         }
         $templatefiles = $fs->get_area_files($context->id,
                                     'mod_feedback',
@@ -1598,7 +1609,7 @@ function feedback_delete_item($itemid, $renumber = true, $template = false) {
         if (!$cm = get_coursemodule_from_instance('feedback', $item->feedback)) {
             return false;
         }
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $itemfiles = $fs->get_area_files($context->id,
                                     'mod_feedback',
@@ -2641,7 +2652,7 @@ function feedback_send_email_anonym($cm, $feedback, $course) {
  * @return string the text you want to post
  */
 function feedback_send_email_text($info, $course) {
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
     $courseshortname = format_string($course->shortname, true, array('context' => $coursecontext));
     $posttext  = $courseshortname.' -> '.get_string('modulenameplural', 'feedback').' -> '.
                     $info->feedback."\n";
@@ -2662,7 +2673,7 @@ function feedback_send_email_text($info, $course) {
  */
 function feedback_send_email_html($info, $course, $cm) {
     global $CFG;
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
     $courseshortname = format_string($course->shortname, true, array('context' => $coursecontext));
     $course_url = $CFG->wwwroot.'/course/view.php?id='.$course->id;
     $feedback_all_url = $CFG->wwwroot.'/mod/feedback/index.php?id='.$course->id;
@@ -2699,34 +2710,34 @@ function feedback_encode_target_url($url) {
  */
 function feedback_extend_settings_navigation(settings_navigation $settings, navigation_node $feedbacknode) {
     $hassecondary = $settings->get_page()->has_secondary_navigation();
-    if (!$context = context_module::instance($settings->get_page()->cm->id, IGNORE_MISSING)) {
-        throw new \moodle_exception('badcontext');
+    if (!$context = module::instance($settings->get_page()->cm->id, IGNORE_MISSING)) {
+        throw new moodle_exception('badcontext');
     }
 
     if (has_capability('mod/feedback:edititems', $context)) {
         $feedbacknode->add(get_string('questions', 'feedback'),
-            new moodle_url('/mod/feedback/edit.php', ['id' => $settings->get_page()->cm->id]),
+            new url('/mod/feedback/edit.php', ['id' => $settings->get_page()->cm->id]),
             navigation_node::TYPE_CUSTOM, null, 'questionnode');
 
         $feedbacknode->add(get_string('templates', 'feedback'),
-            new moodle_url('/mod/feedback/manage_templates.php', ['id' => $settings->get_page()->cm->id]),
+            new url('/mod/feedback/manage_templates.php', ['id' => $settings->get_page()->cm->id]),
             navigation_node::TYPE_CUSTOM, null, 'templatenode');
     }
 
     if (has_capability('mod/feedback:mapcourse', $context) && $settings->get_page()->course->id == SITEID) {
         $feedbacknode->add(get_string('mappedcourses', 'feedback'),
-            new moodle_url('/mod/feedback/mapcourse.php', ['id' => $settings->get_page()->cm->id]),
+            new url('/mod/feedback/mapcourse.php', ['id' => $settings->get_page()->cm->id]),
             navigation_node::TYPE_CUSTOM, null, 'mapcourse');
     }
 
     $feedback = $settings->get_page()->activityrecord;
     if ($feedback->course == SITEID) {
         $analysisnode = navigation_node::create(get_string('analysis', 'feedback'),
-            new moodle_url('/mod/feedback/analysis_course.php', ['id' => $settings->get_page()->cm->id]),
+            new url('/mod/feedback/analysis_course.php', ['id' => $settings->get_page()->cm->id]),
             navigation_node::TYPE_CUSTOM, null, 'feedbackanalysis');
     } else {
         $analysisnode = navigation_node::create(get_string('analysis', 'feedback'),
-            new moodle_url('/mod/feedback/analysis.php', ['id' => $settings->get_page()->cm->id]),
+            new url('/mod/feedback/analysis.php', ['id' => $settings->get_page()->cm->id]),
             navigation_node::TYPE_CUSTOM, null, 'feedbackanalysis');
     }
 
@@ -2734,7 +2745,7 @@ function feedback_extend_settings_navigation(settings_navigation $settings, navi
         if (manager::can_see_others_in_groups($settings->get_page()->cm)) {
             $feedbacknode->add_node($analysisnode);
             $feedbacknode->add(get_string(($hassecondary ? 'responses' : 'show_entries'), 'feedback'),
-                new moodle_url('/mod/feedback/show_entries.php', ['id' => $settings->get_page()->cm->id]),
+                new url('/mod/feedback/show_entries.php', ['id' => $settings->get_page()->cm->id]),
                 navigation_node::TYPE_CUSTOM, null, 'responses');
         }
     } else {
@@ -2935,7 +2946,7 @@ function mod_feedback_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('answerquestions', 'feedback'),
-        new \moodle_url('/mod/feedback/view.php', ['id' => $cm->id]),
+        new url('/mod/feedback/view.php', ['id' => $cm->id]),
         1,
         $actionable
     );
@@ -3095,7 +3106,7 @@ function mod_feedback_core_calendar_event_timestart_updated(\calendar_event $eve
     $modified = false;
 
     $coursemodule = get_fast_modinfo($courseid)->instances[$modulename][$instanceid];
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
 
     // The user does not have the capability to modify this activity.
     if (!has_capability('moodle/course:manageactivities', $context)) {

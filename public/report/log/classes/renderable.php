@@ -23,7 +23,14 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
+use core\context\course;
+use core\context\system;
 use core\log\manager;
+use core\output\renderable;
+use core\url;
+use core\user;
+use core_course\cm_info;
+use core_course\modinfo;
 
 /**
  * Report log renderable class.
@@ -168,9 +175,9 @@ class report_log_renderable implements renderable {
         }
         // Use page url if empty.
         if (empty($url)) {
-            $url = new moodle_url($PAGE->url);
+            $url = new url($PAGE->url);
         } else {
-            $url = new moodle_url($url);
+            $url = new url($url);
         }
         $this->selectedlogreader = $logreader;
         $url->param('logreader', $logreader);
@@ -239,7 +246,7 @@ class report_log_renderable implements renderable {
         $disabled = [];
 
         // For site just return site errors option.
-        $sitecontext = context_system::instance();
+        $sitecontext = system::instance();
         if ($this->course->id == SITEID && has_capability('report/log:view', $sitecontext)) {
             $activities["site_errors"] = get_string("siteerrors");
             return [$activities, $disabled];
@@ -297,7 +304,7 @@ class report_log_renderable implements renderable {
      * @param array $cms List of cm ids in the section.
      * @return array list of activities.
      */
-    protected function get_delegated_section_activities(course_modinfo $modinfo, array $cmids): array {
+    protected function get_delegated_section_activities(modinfo $modinfo, array $cmids): array {
         $activities = [];
         $indenter = '&nbsp;&nbsp;&nbsp;&nbsp;';
         foreach ($cmids as $cmid) {
@@ -346,7 +353,7 @@ class report_log_renderable implements renderable {
             return 0;
         }
 
-        $context = context_course::instance($this->course->id);
+        $context = course::instance($this->course->id);
 
         $selectedgroup = 0;
         // Setup for group handling.
@@ -387,13 +394,13 @@ class report_log_renderable implements renderable {
      * @return string user fullname.
      */
     public function get_selected_user_fullname() {
-        $user = core_user::get_user($this->userid);
+        $user = user::get_user($this->userid);
         if (empty($this->course)) {
             // We are in system context.
-            $context = context_system::instance();
+            $context = system::instance();
         } else {
             // We are in course context.
-            $context = context_course::instance($this->course->id);
+            $context = course::instance($this->course->id);
         }
         return fullname($user, has_capability('moodle/site:viewfullnames', $context));
     }
@@ -408,7 +415,7 @@ class report_log_renderable implements renderable {
 
         $courses = array();
 
-        $sitecontext = context_system::instance();
+        $sitecontext = system::instance();
         // First check to see if we can override showcourses and showusers.
         $numcourses = $DB->count_records("course");
         if ($numcourses < COURSE_MAX_COURSES_PER_DROPDOWN && !$this->showcourses) {
@@ -454,7 +461,7 @@ class report_log_renderable implements renderable {
             return [];
         }
 
-        $context = context_course::instance($this->course->id);
+        $context = course::instance($this->course->id);
         $groupmode = groups_get_course_groupmode($this->course);
         $grouplist = [];
         $userid = $groupmode == SEPARATEGROUPS ? $USER->id : 0;
@@ -480,7 +487,7 @@ class report_log_renderable implements renderable {
         if (!empty($this->course)) {
             $courseid = $this->course->id;
         }
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
         $limitfrom = empty($this->showusers) ? 0 : '';
         $limitnum = empty($this->showusers) ? COURSE_MAX_USERS_PER_DROPDOWN + 1 : '';
         $userfieldsapi = \core_user\fields::for_name();
@@ -641,7 +648,7 @@ class report_log_renderable implements renderable {
         $filename = 'logs_' . userdate(time(), get_string('backupnameformat', 'langconfig'), 99, false);
         if ($this->course->id !== SITEID) {
             $courseshortname = format_string($this->course->shortname, true,
-                    array('context' => context_course::instance($this->course->id)));
+                    array('context' => course::instance($this->course->id)));
             $filename = clean_filename('logs_' . $courseshortname . '_' . userdate(time(),
                     get_string('backupnameformat', 'langconfig'), 99, false));
         }

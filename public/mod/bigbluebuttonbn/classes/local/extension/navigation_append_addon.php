@@ -16,6 +16,9 @@
 
 namespace mod_bigbluebuttonbn\local\extension;
 
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+
 /**
  * Interface for appending to the settings navigation in BigBlueButtonBN subplugins.
  *
@@ -35,5 +38,5 @@ interface navigation_append_addon {
      * @param \navigation_node $nodenav
      * @return void
      */
-    public function append_settings_navigation(\settings_navigation $settingsnav, \navigation_node $nodenav): void;
+    public function append_settings_navigation(settings_navigation $settingsnav, navigation_node $nodenav): void;
 }

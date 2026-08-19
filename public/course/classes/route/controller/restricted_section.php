@@ -16,6 +16,7 @@
 
 namespace core_course\route\controller;
 
+use core\context\course;
 use core\router\route;
 use core\router\require_login;
 use core_course\modinfo;
@@ -67,7 +68,7 @@ class restricted_section {
             return $this->redirect($response, $url);
         }
         $course = get_course($section->course);
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $format = course_get_format($course->id);
         $format->set_sectionid($section->id);
         // We always want to show the restrictions expanded in the restricted section page.

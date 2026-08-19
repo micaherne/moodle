@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace mod_quiz;
 
 use advanced_testcase;
-use cm_info;
+use core_course\cm_info;
 use core_completion\cm_completion_details;
 use grade_item;
 use mod_quiz\completion\custom_completion;
@@ -365,7 +365,7 @@ final class custom_completion_test extends advanced_testcase {
             'tosubmit' => [1 => ['answer' => '3.14']]
         ]);
         $completioninfo = new \completion_info($course);
-        $cminfo = \cm_info::create($cm);
+        $cminfo = cm_info::create($cm);
         $completiondetails = new cm_completion_details($completioninfo, $cminfo, (int) $student->id);
 
         // Check the results. Completion is fail because gradepass = 80.

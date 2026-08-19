@@ -31,6 +31,9 @@
  */
 
 // disable moodle specific debug messages and any errors in output
+use core\context\course;
+use core\exception\moodle_exception;
+
 define('NO_DEBUG_DISPLAY', true);
 
 require_once('config.php');
@@ -41,16 +44,16 @@ $forcedownload = optional_param('forcedownload', 0, PARAM_BOOL);
 
 // relative path must start with '/', because of backup/restore!!!
 if (!$relativepath) {
-    throw new \moodle_exception('invalidargorconf');
+    throw new moodle_exception('invalidargorconf');
 } else if ($relativepath[0] != '/') {
-    throw new \moodle_exception('pathdoesnotstartslash');
+    throw new moodle_exception('pathdoesnotstartslash');
 }
 
 // extract relative path components
 $args = explode('/', ltrim($relativepath, '/'));
 
 if (count($args) == 0) { // always at least courseid, may search for index.html in course root
-    throw new \moodle_exception('invalidarguments');
+    throw new moodle_exception('invalidarguments');
 }
 
 $courseid = (int)array_shift($args);
@@ -77,7 +80,7 @@ if ($course->id != SITEID) {
     }
 }
 
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 $fs = get_file_storage();
 

@@ -22,38 +22,43 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 $action  = required_param('action', PARAM_ALPHANUMEXT);
 $formatname   = required_param('format', PARAM_PLUGIN);
 
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 $PAGE->set_url('/admin/courseformats.php');
 $PAGE->set_context($syscontext);
 
 require_admin();
 require_sesskey();
 
-$return = new moodle_url('/admin/settings.php', array('section' => 'manageformats'));
+$return = new url('/admin/settings.php', array('section' => 'manageformats'));
 
-$formatplugins = core_plugin_manager::instance()->get_plugins_of_type('format');
+$formatplugins = plugin_manager::instance()->get_plugins_of_type('format');
 $sortorder = array_flip(array_keys($formatplugins));
 
 if (!isset($formatplugins[$formatname])) {
-    throw new \moodle_exception('courseformatnotfound', 'error', $return, $formatname);
+    throw new moodle_exception('courseformatnotfound', 'error', $return, $formatname);
 }
 
 switch ($action) {
     case 'disable':
         if ($formatplugins[$formatname]->is_enabled()) {
-            $class = \core_plugin_manager::resolve_plugininfo_class('format');
+            $class = plugin_manager::resolve_plugininfo_class('format');
             $class::enable_plugin($formatname, false);
         }
         break;
     case 'enable':
         if (!$formatplugins[$formatname]->is_enabled()) {
-            $class = \core_plugin_manager::resolve_plugininfo_class('format');
+            $class = plugin_manager::resolve_plugininfo_class('format');
             $class::enable_plugin($formatname, true);
         }
         break;

@@ -21,6 +21,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') or die('Direct access to this script is forbidden.');
 
 class cc11_quiz extends entities11 {

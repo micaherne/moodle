@@ -23,10 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\store;
+
 $definitions = array(
     // This MUST NOT be a local cache, sorry cluster lovers.
     'concepts' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true, // The course id or 0 for global.
         'simpledata' => false,
         'staticacceleration' => true,

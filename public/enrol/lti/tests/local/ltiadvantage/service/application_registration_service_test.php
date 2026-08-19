@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\service;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\url;
 use enrol_lti\helper;
 use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
 use enrol_lti\local\ltiadvantage\repository\context_repository;
@@ -70,7 +73,7 @@ final class application_registration_service_test extends \lti_advantage_testcas
         $this->assertFalse($draftreg->is_complete());
 
         // Try to create a draft omitting name.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $service->create_draft_application_registration((object) []);
     }
 
@@ -101,11 +104,11 @@ final class application_registration_service_test extends \lti_advantage_testcas
         // Verify details saved and complete status.
         $this->assertEquals($updatedto->id, $reg->get_id());
         $this->assertEquals($updatedto->name, $reg->get_name());
-        $this->assertEquals(new \moodle_url($updatedto->platformid), $reg->get_platformid());
+        $this->assertEquals(new url($updatedto->platformid), $reg->get_platformid());
         $this->assertEquals($updatedto->clientid, $reg->get_clientid());
-        $this->assertEquals(new \moodle_url($updatedto->authenticationrequesturl), $reg->get_authenticationrequesturl());
-        $this->assertEquals(new \moodle_url($updatedto->jwksurl), $reg->get_jwksurl());
-        $this->assertEquals(new \moodle_url($updatedto->accesstokenurl), $reg->get_accesstokenurl());
+        $this->assertEquals(new url($updatedto->authenticationrequesturl), $reg->get_authenticationrequesturl());
+        $this->assertEquals(new url($updatedto->jwksurl), $reg->get_jwksurl());
+        $this->assertEquals(new url($updatedto->accesstokenurl), $reg->get_accesstokenurl());
         $this->assertTrue($reg->is_complete());
 
         // Update again.
@@ -123,16 +126,16 @@ final class application_registration_service_test extends \lti_advantage_testcas
         // Verify again.
         $this->assertEquals($updatedto->id, $reg->get_id());
         $this->assertEquals($updatedto->name, $reg->get_name());
-        $this->assertEquals(new \moodle_url($updatedto->platformid), $reg->get_platformid());
+        $this->assertEquals(new url($updatedto->platformid), $reg->get_platformid());
         $this->assertEquals($updatedto->clientid, $reg->get_clientid());
-        $this->assertEquals(new \moodle_url($updatedto->authenticationrequesturl), $reg->get_authenticationrequesturl());
-        $this->assertEquals(new \moodle_url($updatedto->jwksurl), $reg->get_jwksurl());
-        $this->assertEquals(new \moodle_url($updatedto->accesstokenurl), $reg->get_accesstokenurl());
+        $this->assertEquals(new url($updatedto->authenticationrequesturl), $reg->get_authenticationrequesturl());
+        $this->assertEquals(new url($updatedto->jwksurl), $reg->get_jwksurl());
+        $this->assertEquals(new url($updatedto->accesstokenurl), $reg->get_accesstokenurl());
         $this->assertTrue($reg->is_complete());
 
         // Update missing id.
         unset($updatedto->id);
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $service->update_application_registration($updatedto);
     }
 
@@ -177,7 +180,7 @@ final class application_registration_service_test extends \lti_advantage_testcas
         $this->assertCount(1, $users);
         $user = array_pop($users);
 
-        $enrolledusers = get_enrolled_users(\context_course::instance($course->id));
+        $enrolledusers = get_enrolled_users(course::instance($course->id));
         $this->assertCount(1, $enrolledusers);
 
         // Now delete the application_registration using the service.
@@ -192,7 +195,7 @@ final class application_registration_service_test extends \lti_advantage_testcas
         $this->assertFalse($userrepo->exists($user->get_id()));
 
         // Verify that all users are unenrolled.
-        $enrolledusers = get_enrolled_users(\context_course::instance($course->id));
+        $enrolledusers = get_enrolled_users(course::instance($course->id));
         $this->assertCount(0, $enrolledusers);
 
         // Verify the tool record stays in place (I.e. the published resource is still available).

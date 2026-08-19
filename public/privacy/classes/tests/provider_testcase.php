@@ -24,6 +24,10 @@
 
 namespace core_privacy\tests;
 
+use core\context;
+use core\exception\coding_exception;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -66,7 +70,7 @@ abstract class provider_testcase extends \advanced_testcase {
         $contextlist = $this->get_contexts_for_userid($userid, $component);
 
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($userid),
+            user::get_user($userid),
             $component,
             $contextlist->get_contextids()
         );
@@ -82,9 +86,9 @@ abstract class provider_testcase extends \advanced_testcase {
      * @param   \context    $context    The context to export data for.
      * @param   string      $component  The component to get export data for.
      */
-    public function export_context_data_for_user(int $userid, \context $context, string $component) {
+    public function export_context_data_for_user(int $userid, context $context, string $component) {
         $contextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($userid),
+            user::get_user($userid),
             $component,
             [$context->id]
         );
@@ -103,16 +107,16 @@ abstract class provider_testcase extends \advanced_testcase {
         $classname = "\\{$component}\\privacy\\provider";
 
         if (!class_exists($classname)) {
-            throw new \coding_exception("{$component} does not implement any provider");
+            throw new coding_exception("{$component} does not implement any provider");
         }
 
         $rc = new \ReflectionClass($classname);
         if (!$rc->implementsInterface(\core_privacy\local\metadata\provider::class)) {
-            throw new \coding_exception("{$component} does not implement metadata provider");
+            throw new coding_exception("{$component} does not implement metadata provider");
         }
 
         if (!$rc->implementsInterface(\core_privacy\local\request\core_user_data_provider::class)) {
-            throw new \coding_exception("{$component} does not declare that it provides any user data");
+            throw new coding_exception("{$component} does not declare that it provides any user data");
         }
 
         return $classname;

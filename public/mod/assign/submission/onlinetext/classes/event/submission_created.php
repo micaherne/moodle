@@ -24,6 +24,8 @@
 
 namespace assignsubmission_onlinetext\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +79,7 @@ class submission_created extends \mod_assign\event\submission_created {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['onlinetextwordcount'])) {
-            throw new \coding_exception('The \'onlinetextwordcount\' value must be set in other.');
+            throw new coding_exception('The \'onlinetextwordcount\' value must be set in other.');
         }
     }
 

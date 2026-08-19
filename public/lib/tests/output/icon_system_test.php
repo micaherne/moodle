@@ -26,7 +26,7 @@
 namespace core\output;
 
 use advanced_testcase;
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Unit tests for the `icon_system` class.

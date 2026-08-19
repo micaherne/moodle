@@ -16,6 +16,8 @@
 
 namespace core\plugininfo;
 
+use core\plugin_manager;
+
 /**
  * Defines classes used for plugin info.
  *
@@ -79,7 +81,7 @@ class editor extends base {
             add_to_config_log('editor_visibility', !$enabled, $enabled, $pluginname);
             set_config('texteditors', $new);
             // Reset caches.
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -163,7 +165,7 @@ class editor extends base {
     public static function get_sorted_plugins(bool $enabledonly = false): ?array {
         global $CFG;
 
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugins = $pluginmanager->get_plugins_of_type('editor');
 
         // The Editor list is stored in an ordered string.
@@ -209,7 +211,7 @@ class editor extends base {
                 $activeeditors[$key + 1] = $fsave;
                 add_to_config_log('editor_position', $key, $key + 1, $pluginname);
                 set_config('texteditors', implode(',', $activeeditors));
-                \core_plugin_manager::reset_caches();
+                plugin_manager::reset_caches();
 
                 return true;
             }
@@ -220,7 +222,7 @@ class editor extends base {
                 $activeeditors[$key - 1] = $fsave;
                 add_to_config_log('editor_position', $key, $key - 1, $pluginname);
                 set_config('texteditors', implode(',', $activeeditors));
-                \core_plugin_manager::reset_caches();
+                plugin_manager::reset_caches();
 
                 return true;
             }

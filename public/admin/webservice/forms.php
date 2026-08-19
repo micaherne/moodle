@@ -22,6 +22,8 @@
  * @copyright 2009 Moodle Pty Ltd (http://moodle.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+
 require_once $CFG->libdir . '/formslib.php';
 
 /**
@@ -100,7 +102,7 @@ class external_service_form extends moodleform {
         }
 
         // Prepare the list of capabilities to choose from
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $allcapabilities = $systemcontext->get_capabilities();
         $capabilitychoices = array();
         $capabilitychoices['norequiredcapability'] = get_string('norequiredcapability',

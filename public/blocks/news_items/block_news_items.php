@@ -29,6 +29,8 @@
  * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\module;
+
 class block_news_items extends block_base {
     function init() {
         $this->title = get_string('pluginname', 'block_news_items');
@@ -70,7 +72,7 @@ class block_news_items extends block_base {
                 return '';
             }
 
-            $context = context_module::instance($cm->id);
+            $context = module::instance($cm->id);
 
         /// User must have perms to view discussions in that forum
             if (!has_capability('mod/forum:viewdiscussion', $context)) {

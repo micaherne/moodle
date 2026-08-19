@@ -23,6 +23,10 @@
  */
 namespace mod_lti\privacy;
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -168,7 +172,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!is_a($context, \context_module::class)) {
+        if (!is_a($context, module::class)) {
             return;
         }
 
@@ -230,10 +234,10 @@ class provider implements
      *
      * @param \context $context the context to delete in.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
 
@@ -256,7 +260,7 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
-            if (!$context instanceof \context_module) {
+            if (!$context instanceof module) {
                 continue;
             }
             $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
@@ -274,7 +278,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_module) {
+        if ($context instanceof module) {
             $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
 
             list($insql, $inparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
@@ -323,7 +327,7 @@ class provider implements
             ];
             return $carry;
         }, function($ltiid, $data) use ($user, $ltiidstocmids) {
-            $context = \context_module::instance($ltiidstocmids[$ltiid]);
+            $context = module::instance($ltiidstocmids[$ltiid]);
             $contextdata = helper::get_context_data($context, $user);
             $finaldata = (object) array_merge((array) $contextdata, ['submissions' => $data]);
             helper::export_context_files($context, $user);
@@ -357,7 +361,7 @@ class provider implements
         $params = array_merge($inparams, ['userid' => $user->id]);
         $ltitypes = $DB->get_recordset_select('lti_types', "course $insql AND createdby = :userid", $params, 'timecreated ASC');
         self::recordset_loop_and_export($ltitypes, 'course', [], function($carry, $record) {
-            $context = \context_course::instance($record->course);
+            $context = course::instance($record->course);
             $options = ['context' => $context];
             $carry[] = [
                 'name' => format_string($record->name, true, $options),
@@ -367,7 +371,7 @@ class provider implements
             ];
             return $carry;
         }, function($courseid, $data) {
-            $context = \context_course::instance($courseid);
+            $context = course::instance($courseid);
             $finaldata = (object) ['lti_types' => $data];
             writer::with_context($context)->export_data([], $finaldata);
         });
@@ -392,7 +396,7 @@ class provider implements
 
         $user = $contextlist->get_user();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         $data = [];
         $ltiproxies = $DB->get_recordset('lti_tool_proxies', ['createdby' => $user->id], 'timecreated ASC');

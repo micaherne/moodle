@@ -28,6 +28,7 @@ declare(strict_types=1);
 namespace filter_tex;
 
 use advanced_testcase;
+use core_cache\cache;
 
 global $CFG;
 require_once($CFG->dirroot . '/filter/tex/lib.php');
@@ -82,7 +83,7 @@ final class lib_test extends advanced_testcase {
         ];
         $fs->create_file_from_string($filerecord, 'test content');
 
-        $cache = \cache::make('filter_tex', 'rendered_images');
+        $cache = cache::make('filter_tex', 'rendered_images');
         $cache->set('testimage_png', 1);
 
         $this->assertTrue($fs->file_exists($syscontext->id, 'filter_tex', 'rendered_images', 0, '/', 'testimage.png'));

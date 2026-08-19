@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\context\user;
 use mod_quiz\local\access_rule_base;
 use mod_quiz\quiz_attempt;
 use quizaccess_seb\seb_access_manager;
@@ -107,9 +109,9 @@ trait quizaccess_seb_test_helper_trait {
         global $USER;
 
         $itemid = 0;
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $filerecord = [
-            'contextid' => \context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'component' => 'user',
             'filearea' => 'draft',
             'itemid' => $itemid,
@@ -137,7 +139,7 @@ trait quizaccess_seb_test_helper_trait {
         $itemid = 0;
         $fs = get_file_storage();
         $filerecord = [
-            'contextid' => \context_module::instance($cmid)->id,
+            'contextid' => module::instance($cmid)->id,
             'component' => 'quizaccess_seb',
             'filearea' => 'filemanager_sebconfigfile',
             'itemid' => $itemid,
@@ -170,7 +172,7 @@ trait quizaccess_seb_test_helper_trait {
 
         // Create a question bank.
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbankcontext = context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
 
         // Create a couple of questions.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -271,7 +273,7 @@ trait quizaccess_seb_test_helper_trait {
         global $PAGE;
 
         $page = new \moodle_page();
-        $page->set_context(\context_module::instance($this->quiz->cmid));
+        $page->set_context(module::instance($this->quiz->cmid));
         $page->set_course($this->course);
         $page->set_pagelayout('standard');
         $page->set_pagetype("mod-quiz-view");

@@ -23,6 +23,9 @@
  */
 
 
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -157,7 +160,7 @@ class qtype_ddtoimage_renderer_base extends qtype_with_combined_feedback_rendere
                 if ($file->is_directory()) {
                     continue;
                 }
-                $url = moodle_url::make_pluginfile_url($question->contextid, $componentname,
+                $url = url::make_pluginfile_url($question->contextid, $componentname,
                                             $filearea, "$qubaid/$slot/{$itemid}", '/',
                                             $file->get_filename());
                 return $url->out();

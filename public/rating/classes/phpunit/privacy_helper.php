@@ -26,6 +26,7 @@ namespace core_rating\phpunit;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use \core_privacy\tests\request\content_writer;
 
 global $CFG;
@@ -44,7 +45,7 @@ trait privacy_helper {
      * @param   array               $subcontext The subcontext path to check.
      * @return  \stdClass|array
      */
-    protected function get_ratings_on_subcontext(\context $context, array $subcontext) {
+    protected function get_ratings_on_subcontext(context $context, array $subcontext) {
         $writer = \core_privacy\local\request\writer::with_context($context);
         return $writer->get_related_data($subcontext, 'rating');
     }
@@ -61,7 +62,7 @@ trait privacy_helper {
      */
     protected function assert_all_own_ratings_on_context(
         int $userid,
-        \context $context,
+        context $context,
         array $subcontext,
         $component,
         $ratingarea,
@@ -100,7 +101,7 @@ trait privacy_helper {
      * @param   string              $ratingarea The rating area to store results for.
      * @param   int                 $itemid     The itemid to store.
      */
-    protected function assert_all_ratings_on_context(\context $context, array $subcontext, $component, $ratingarea, $itemid) {
+    protected function assert_all_ratings_on_context(context $context, array $subcontext, $component, $ratingarea, $itemid) {
         $writer = \core_privacy\local\request\writer::with_context($context);
         $rm = new \rating_manager();
         $dbratings = $rm->get_all_ratings_for_item((object) [

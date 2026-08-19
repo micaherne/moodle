@@ -26,6 +26,11 @@ require_once(__DIR__ . '/../config.php');
 require_once("{$CFG->libdir}/adminlib.php");
 require_once("tool/task/lib.php");
 
+use core\context\system;
+use core\lang_string;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
 use core_admin\reportbuilder\local\systemreports\task_logs;
 use core_reportbuilder\system_report_factory;
 
@@ -33,11 +38,11 @@ $logid = optional_param('logid', null, PARAM_INT);
 $download = optional_param('download', false, PARAM_BOOL);
 $filter = optional_param('filter', null, PARAM_TEXT);
 
-$PAGE->set_url(new \moodle_url('/admin/tasklogs.php', array_filter([
+$PAGE->set_url(new url('/admin/tasklogs.php', array_filter([
     'logid' => $logid,
     'filter' => $filter,
 ])));
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('admin');
 $strheading = get_string('tasklogs', 'admin');
 $PAGE->set_title($strheading);
@@ -72,7 +77,7 @@ if (null !== $logid) {
     echo tool_task_mtrace_wrapper($log->output);
     echo html_writer::end_tag('pre');
     echo $OUTPUT->action_link(
-        new moodle_url('/admin/tasklogs.php'),
+        new url('/admin/tasklogs.php'),
         $strheading,
         null,
         null,
@@ -80,7 +85,7 @@ if (null !== $logid) {
     );
     echo ' ';
     echo $OUTPUT->action_link(
-        new moodle_url('/admin/tasklogs.php', ['logid' => $log->id, 'download' => true]),
+        new url('/admin/tasklogs.php', ['logid' => $log->id, 'download' => true]),
         new lang_string('download'),
         null,
         null,
@@ -92,7 +97,7 @@ if (null !== $logid) {
 }
 
 echo $OUTPUT->header();
-$report = system_report_factory::create(task_logs::class, context_system::instance());
+$report = system_report_factory::create(task_logs::class, system::instance());
 
 if (!empty($filter)) {
     $report->set_filter_values([

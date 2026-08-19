@@ -16,6 +16,13 @@
 
 namespace mod_forum;
 
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
+use core_cache\cache;
+use core_course\cm_info;
 use mod_forum_generator;
 
 defined('MOODLE_INTERNAL') || die();
@@ -54,7 +61,7 @@ final class lib_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id));
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
 
         $this->setUser($user->id);
         $fakepost = (object) array('id' => 123, 'message' => 'Yay!', 'discussion' => 100);
@@ -275,7 +282,7 @@ final class lib_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $cache = \cache::make('mod_forum', 'forum_is_tracked');
+        $cache = cache::make('mod_forum', 'forum_is_tracked');
         $useron = $this->getDataGenerator()->create_user(array('trackforums' => 1));
         $useroff = $this->getDataGenerator()->create_user(array('trackforums' => 0));
         $course = $this->getDataGenerator()->create_course();
@@ -549,7 +556,7 @@ final class lib_test extends \advanced_testcase {
         // Prevent the non-editing teacher from reading private replies in forum 2.
         $teacherroleid = $DB->get_field('role', 'id', ['shortname' => 'teacher']);
         $forum2cm = get_coursemodule_from_instance('forum', $forum2->id);
-        $forum2context = \context_module::instance($forum2cm->id);
+        $forum2context = module::instance($forum2cm->id);
         role_change_permission($teacherroleid, $forum2context, 'mod/forum:readprivatereplies', CAP_PREVENT);
 
         // Create discussion by s1.
@@ -676,7 +683,7 @@ final class lib_test extends \advanced_testcase {
         // Prevent the non-editing teacher from reading private replies in forum 2.
         $teacherroleid = $DB->get_field('role', 'id', ['shortname' => 'teacher']);
         $forum2cm = get_coursemodule_from_instance('forum', $forum2->id);
-        $forum2context = \context_module::instance($forum2cm->id);
+        $forum2context = module::instance($forum2cm->id);
         role_change_permission($teacherroleid, $forum2context, 'mod/forum:readprivatereplies', CAP_PREVENT);
 
         // Create discussion by s1.
@@ -1001,12 +1008,12 @@ final class lib_test extends \advanced_testcase {
 
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $options = array('course' => $course->id, 'forcesubscribe' => FORUM_CHOOSESUBSCRIBE);
         $forum = $this->getDataGenerator()->create_module('forum', $options);
         $forumcm = get_coursemodule_from_instance('forum', $forum->id);
-        $forumcontext = \context_module::instance($forumcm->id);
+        $forumcontext = module::instance($forumcm->id);
 
         // First check that specifying the context results in the correct context being returned.
         // Do this before we set up the page object and we should return from the coursemodule record.
@@ -1093,7 +1100,7 @@ final class lib_test extends \advanced_testcase {
 
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id));
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $record = new \stdClass();
         $record->course = $course->id;
@@ -1342,7 +1349,7 @@ final class lib_test extends \advanced_testcase {
 
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id, 'type' => 'blog'));
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $record = new \stdClass();
         $record->course = $course->id;
@@ -1538,8 +1545,8 @@ final class lib_test extends \advanced_testcase {
         $forum2 = $this->getDataGenerator()->create_module('forum', array('course' => $course->id, 'groupmode' => SEPARATEGROUPS));
         $cm1 = get_coursemodule_from_instance('forum', $forum1->id);
         $cm2 = get_coursemodule_from_instance('forum', $forum2->id);
-        $context1 = \context_module::instance($cm1->id);
-        $context2 = \context_module::instance($cm2->id);
+        $context1 = module::instance($cm1->id);
+        $context2 = module::instance($cm2->id);
 
         // Creating discussions in both forums.
         $record = new \stdClass();
@@ -1737,8 +1744,8 @@ final class lib_test extends \advanced_testcase {
                 'groupmode' => SEPARATEGROUPS));
         $cm1 = get_coursemodule_from_instance('forum', $forum1->id);
         $cm2 = get_coursemodule_from_instance('forum', $forum2->id);
-        $context1 = \context_module::instance($cm1->id);
-        $context2 = \context_module::instance($cm2->id);
+        $context1 = module::instance($cm1->id);
+        $context2 = module::instance($cm2->id);
 
         // Creating blog posts in both forums.
         $record = new \stdClass();
@@ -2002,7 +2009,7 @@ final class lib_test extends \advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id));
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
 
         $student = $this->getDataGenerator()->create_user();
@@ -2086,7 +2093,7 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id),
                                                             array('completion' => 2, 'completionview' => 1));
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
 
         // Trigger and capture the event.
@@ -2103,7 +2110,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_forum\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $url = new \moodle_url('/mod/forum/view.php', array('f' => $forum->id));
+        $url = new url('/mod/forum/view.php', array('f' => $forum->id));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -2128,7 +2135,7 @@ final class lib_test extends \advanced_testcase {
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id));
         $discussion = $this->create_single_discussion_with_replies($forum, $USER, 2);
 
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
 
         // Trigger and capture the event.
@@ -2271,7 +2278,7 @@ final class lib_test extends \advanced_testcase {
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id));
         $generator = self::getDataGenerator()->get_plugin_generator('mod_forum');
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Create users.
         $user1 = $this->getDataGenerator()->create_user();
@@ -2492,7 +2499,7 @@ final class lib_test extends \advanced_testcase {
         $record->course = $course->id;
         $forum = self::getDataGenerator()->create_module('forum', $record, array('groupmode' => SEPARATEGROUPS));
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         self::setUser($user);
 
@@ -2594,7 +2601,7 @@ final class lib_test extends \advanced_testcase {
         $record->cutoffdate = time() - 1;
         $forum = self::getDataGenerator()->create_module('forum', $record);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         self::setUser($student);
 
@@ -3680,7 +3687,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertDoesNotMatchRegularExpression('/'.$post31->subject.'/', $res->content);
 
         // User can search forum posts inside a course.
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $res = mod_forum_get_tagged_posts($tag, /*$exclusivemode = */false,
             /*$fromctx = */0, /*$ctx = */$coursecontext->id, /*$rec = */1, /*$post = */0);
         $this->assertMatchesRegularExpression('/'.$post11->subject.'/', $res->content);
@@ -3741,8 +3748,8 @@ final class lib_test extends \advanced_testcase {
             'completionreplies' => 0,
             'completionposts' => 0
         ]);
-        $cm1 = \cm_info::create(get_coursemodule_from_instance('forum', $forum1->id));
-        $cm2 = \cm_info::create(get_coursemodule_from_instance('forum', $forum2->id));
+        $cm1 = cm_info::create(get_coursemodule_from_instance('forum', $forum1->id));
+        $cm2 = cm_info::create(get_coursemodule_from_instance('forum', $forum2->id));
 
         // Data for the stdClass input type.
         // This type of input would occur when checking the default completion rules for an activity type, where we don't have
@@ -3774,7 +3781,7 @@ final class lib_test extends \advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id));
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
 
         $author = $this->getDataGenerator()->create_user();
@@ -4073,7 +4080,7 @@ final class lib_test extends \advanced_testcase {
      * @param mixed $forum The forum data.
      */
     public function test_forum_check_throttling_early_exceptions($forum): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->assertFalse(forum_check_throttling($forum));
     }
 
@@ -4085,7 +4092,7 @@ final class lib_test extends \advanced_testcase {
     public function test_forum_check_throttling_nonexistent_numeric_id(): void {
         $this->resetAfterTest();
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         forum_check_throttling(1);
     }
 
@@ -4103,7 +4110,7 @@ final class lib_test extends \advanced_testcase {
             'blockafter' => 2,
             'blockperiod' => DAYSECS,
         ];
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         forum_check_throttling($dummyforum);
     }
 

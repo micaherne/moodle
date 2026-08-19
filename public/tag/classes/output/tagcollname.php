@@ -24,11 +24,11 @@
 
 namespace core_tag\output;
 
-use context_system;
-use lang_string;
-use html_writer;
+use core\context\system;
+use core\lang_string;
+use core\output\html_writer;
 use core_tag_collection;
-use moodle_url;
+use core\url;
 
 /**
  * Class to preapare a tag name for display.
@@ -45,12 +45,12 @@ class tagcollname extends \core\output\inplace_editable {
      * @param \stdClass $tagcoll
      */
     public function __construct($tagcoll) {
-        $editable = has_capability('moodle/tag:manage', context_system::instance());
+        $editable = has_capability('moodle/tag:manage', system::instance());
         $edithint = new lang_string('editcollname', 'core_tag');
         $value = $tagcoll->name;
         $name = \core_tag_collection::display_name($tagcoll);
         $editlabel = new lang_string('newcollnamefor', 'core_tag', $name);
-        $manageurl = new moodle_url('/tag/manage.php', array('tc' => $tagcoll->id));
+        $manageurl = new url('/tag/manage.php', array('tc' => $tagcoll->id));
         $displayvalue = html_writer::link($manageurl, $name);
         parent::__construct('core_tag', 'tagcollname', $tagcoll->id, $editable, $displayvalue, $value, $edithint, $editlabel);
     }
@@ -64,7 +64,7 @@ class tagcollname extends \core\output\inplace_editable {
      */
     public static function update($itemid, $newvalue) {
         global $DB;
-        require_capability('moodle/tag:manage', context_system::instance());
+        require_capability('moodle/tag:manage', system::instance());
         $tagcoll = $DB->get_record('tag_coll', array('id' => $itemid), '*', MUST_EXIST);
         \core_tag_collection::update($tagcoll, array('name' => $newvalue));
         return new self($tagcoll);

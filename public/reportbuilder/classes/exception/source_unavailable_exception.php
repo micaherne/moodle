@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\exception;
 
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Unavailable report source exception

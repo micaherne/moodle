@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\coding_exception;
+
 /**
  * Unit tests for parameter management.
  *
@@ -64,7 +66,7 @@ final class param_test extends \advanced_testcase {
      * Ensure that we throw an exception if an invalid parameter type is used.
      */
     public function test_from_type_invalid(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         param::from_type('not_a_param');
     }
 
@@ -109,7 +111,7 @@ final class param_test extends \advanced_testcase {
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('deprecated_param_provider')]
     public function test_deprecated_params_except(param $param): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $param->clean('foo');
     }
 

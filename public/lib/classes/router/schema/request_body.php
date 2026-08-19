@@ -16,6 +16,8 @@
 
 namespace core\router\schema;
 
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
 use core\router\schema\response\content\media_type;
 use core\router\schema\response\content\payload_response_type;
 use Psr\Http\Message\ServerRequestInterface;
@@ -63,7 +65,7 @@ class request_body extends openapi_base {
             if (is_array($content)) {
                 foreach ($content as $contentitem) {
                     if (!($contentitem instanceof media_type)) {
-                        throw new \coding_exception('Content must be an instance of media_type.');
+                        throw new coding_exception('Content must be an instance of media_type.');
                     }
                 }
             }
@@ -127,7 +129,7 @@ class request_body extends openapi_base {
             }
         }
 
-        throw new \invalid_parameter_exception('No matching content type found.');
+        throw new invalid_parameter_exception('No matching content type found.');
     }
 
     /**

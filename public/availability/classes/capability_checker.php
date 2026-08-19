@@ -27,6 +27,8 @@
 
 namespace core_availability;
 
+use core\context;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -51,7 +53,7 @@ class capability_checker {
      *
      * @param \context $context Context
      */
-    public function __construct(\context $context) {
+    public function __construct(context $context) {
         $this->context = $context;
     }
 

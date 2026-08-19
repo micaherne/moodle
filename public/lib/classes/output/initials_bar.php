@@ -16,7 +16,7 @@
 
 namespace core\output;
 
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**

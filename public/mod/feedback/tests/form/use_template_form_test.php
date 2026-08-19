@@ -16,6 +16,8 @@
 
 namespace mod_feedback\form;
 
+use core\exception\moodle_exception;
+
 /**
  * Tests the confirm use template form
  *
@@ -84,7 +86,7 @@ final class use_template_form_test extends \advanced_testcase {
 
         $submitdata = use_template_form::mock_ajax_submit($data);
         if (!$expected) {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         }
         $form = new use_template_form(null, null, 'post', '', null, true,
             $submitdata, true);

@@ -16,8 +16,9 @@
 namespace report_loglive;
 
 use advanced_testcase;
-use context_course;
-use core_user;
+use core\context\course;
+use core\url;
+use core\user;
 
 /**
  * Tests for table log and groups.
@@ -273,7 +274,7 @@ final class table_log_test extends advanced_testcase {
         foreach ($this->courses as $course) {
             foreach ($this->users as $user) {
                 $eventdata = [
-                    'context' => context_course::instance($course->id),
+                    'context' => course::instance($course->id),
                     'userid' => $user->id,
                 ];
                 $event = \core\event\course_viewed::create($eventdata);
@@ -297,7 +298,7 @@ final class table_log_test extends advanced_testcase {
         $stores = $manager->get_readers();
         $store = $stores['logstore_standard'];
         // Build the report.
-        $url = new \moodle_url("/report/loglive/index.php");
+        $url = new url("/report/loglive/index.php");
         $renderable = new \report_loglive_renderable('logstore_standard', $this->courses[$courseindex], $url);
         $table = $renderable->get_table();
         $currentuser = $this->users[$username];
@@ -310,7 +311,7 @@ final class table_log_test extends advanced_testcase {
             );
         $usernames = array_map(
             function($event) {
-                $user = core_user::get_user($event->userid, '*', MUST_EXIST);
+                $user = user::get_user($event->userid, '*', MUST_EXIST);
                 return $user->username;
             },
             $filteredevents);

@@ -25,6 +25,7 @@
  */
 
 use core\context;
+use core\context\system;
 use core\notification;
 use core_external\external_api;
 use core_external\external_description;
@@ -100,7 +101,7 @@ class core_question_external extends external_api {
         );
 
         $warnings = array();
-        self::validate_context(context_system::instance());
+        self::validate_context(system::instance());
 
         // The checksum will be checked to provide security flagging other users questions.
         question_flags::update_flag($params['qubaid'], $params['questionid'], $params['qaid'], $params['slot'], $params['checksum'],
@@ -190,11 +191,11 @@ class core_question_external extends external_api {
         $limit = $params['limit'];
         $offset = $params['offset'];
 
-        $context = \context::instance_by_id($contextid);
+        $context = context::instance_by_id($contextid);
         self::validate_context($context);
 
         $categorycontextid = $DB->get_field('question_categories', 'contextid', ['id' => $categoryid], MUST_EXIST);
-        $categorycontext = \context::instance_by_id($categorycontextid);
+        $categorycontext = context::instance_by_id($categorycontextid);
         $editcontexts = new \core_question\local\bank\question_edit_contexts($categorycontext);
         // The user must be able to view all questions in the category that they are requesting.
         $editcontexts->require_cap('moodle/question:viewall');

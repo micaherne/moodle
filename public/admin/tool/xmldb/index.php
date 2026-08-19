@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 require('../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/ddllib.php');
@@ -102,16 +104,16 @@ if (file_exists($actionpath) && is_readable($actionpath)) {
             }
         } else {
             // TODO: need more detailed error info
-            throw new \moodle_exception('xmldberror');
+            throw new moodle_exception('xmldberror');
         }
     } else {
         $a = new stdClass();
         $a->action = $action;
         $a->actionclass = $actionclass;
-        throw new \moodle_exception('cannotinstantiateclass', 'tool_xmldb', '', $a);
+        throw new moodle_exception('cannotinstantiateclass', 'tool_xmldb', '', $a);
     }
 } else {
-    throw new \moodle_exception('invalidaction');
+    throw new moodle_exception('invalidaction');
 }
 
 if ($xmldb_action->getDoesGenerate() != ACTION_GENERATE_XML) {

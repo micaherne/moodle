@@ -23,6 +23,8 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -114,7 +116,7 @@ class course_viewed extends base {
         parent::validate_data();
 
         if ($this->contextlevel != CONTEXT_COURSE) {
-            throw new \coding_exception('Context level must be CONTEXT_COURSE.');
+            throw new coding_exception('Context level must be CONTEXT_COURSE.');
         }
     }
 

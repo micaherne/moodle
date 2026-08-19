@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->libdir . '/filelib.php');
 
+use core\context;
+use core\url;
 use mod_quiz\question\display_options;
 
 /**
@@ -430,7 +432,7 @@ function quiz_no_questions_message($quiz, $cm, $context) {
     $output = '';
     $output .= $OUTPUT->notification(get_string('noquestions', 'quiz'));
     if (has_capability('mod/quiz:manage', $context)) {
-        $output .= $OUTPUT->single_button(new moodle_url('/mod/quiz/edit.php',
+        $output .= $OUTPUT->single_button(new url('/mod/quiz/edit.php',
         ['cmid' => $cm->id]), get_string('editquiz', 'quiz'), 'get');
     }
 

@@ -22,15 +22,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 
 require_login(null, false);
 
-$context = context_system::instance();
+$context = system::instance();
 require_capability('moodle/site:config', $context);
 
 $pagetitle = get_string('h5poverview', 'core_h5p');
-$url = new \moodle_url("/h5p/overview.php");
+$url = new url("/h5p/overview.php");
 
 $PAGE->set_context($context);
 $PAGE->set_url($url);

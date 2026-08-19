@@ -16,6 +16,8 @@
 
 namespace mod_forum\h5p;
 
+use core\context;
+
 /**
  * Class to check if the H5P content can be edited for this plugin.
  *
@@ -60,7 +62,7 @@ class canedit {
                 }
             } else {
                 // For any other fileare, check whether the user can add/edit them.
-                $context = \context::instance_by_id($file->get_contextid());
+                $context = context::instance_by_id($file->get_contextid());
                 $plugins = \core_component::get_plugin_list($type);
                 $isvalid = array_key_exists($component, $plugins);
                 if ($isvalid && has_capability("$type/$component:addinstance", $context)) {

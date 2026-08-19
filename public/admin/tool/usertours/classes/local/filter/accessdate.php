@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace tool_usertours\local\filter;
 
-use context;
+use core\context;
 use tool_usertours\tour;
 
 /**

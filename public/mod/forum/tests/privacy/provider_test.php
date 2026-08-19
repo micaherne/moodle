@@ -30,6 +30,9 @@ global $CFG;
 require_once(__DIR__ . '/../generator_trait.php');
 require_once($CFG->dirroot . '/rating/lib.php');
 
+use core\context\module;
+use core\context\system;
+use core\user;
 use mod_forum\privacy\provider;
 
 /**
@@ -142,7 +145,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         list($user, $otheruser) = $this->helper_create_users($course, 2);
         list($discussion, $post) = $this->helper_post_to_forum($forum, $otheruser);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Test that no contexts were retrieved.
         $contextlist = $this->get_contexts_for_userid($user->id, 'mod_forum');
@@ -179,7 +182,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         list($user, $otheruser) = $this->helper_create_users($course, 2);
         list($discussion, $post) = $this->helper_post_to_forum($forum, $otheruser);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Subscribe the user to the forum.
         \mod_forum\subscriptions::subscribe_user($user->id, $forum);
@@ -207,7 +210,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Delete the data now.
         // Only the post by the user under test will be removed.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_forum',
             [$context->id]
         );
@@ -236,7 +239,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->helper_post_to_forum($forum, $otheruser);
         list($discussion, $post) = $this->helper_post_to_forum($forum, $otheruser);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Subscribe the user to the discussion.
         \mod_forum\subscriptions::subscribe_user_to_discussion($user->id, $discussion);
@@ -277,7 +280,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Delete the data now.
         // Only the post by the user under test will be removed.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_forum',
             [$context->id]
         );
@@ -303,7 +306,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         list($discussion, $post) = $this->helper_post_to_forum($forum, $user);
         list($otherdiscussion, $otherpost) = $this->helper_post_to_forum($forum, $otheruser);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Retrieve all contexts - only this context should be returned.
         $contextlist = $this->get_contexts_for_userid($user->id, 'mod_forum');
@@ -343,7 +346,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         list($discussion, $post) = $this->helper_post_to_forum($forum, $otheruser);
         list($otherdiscussion, $otherpost) = $this->helper_post_to_forum($forum, $otheruser);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Post a reply to the other person's post.
         $reply = $this->helper_reply_to_post($post, $user);
@@ -379,7 +382,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Delete the data now.
         // Only the post by the user under test will be removed.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_forum',
             [$context->id]
         );
@@ -405,7 +408,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         [$student, $otherstudent] = $this->helper_create_users($course, 2, 'student');
         [$teacher, $otherteacher] = $this->helper_create_users($course, 2, 'teacher');
@@ -498,7 +501,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         list($user, $otheruser) = $this->helper_create_users($course, 2);
         list($discussion, $post) = $this->helper_post_to_forum($forum, $otheruser);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Rate the other users content.
         $rm = new \rating_manager();
@@ -544,7 +547,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Delete the data of the user who rated the other user.
         // The rating should not be deleted as it the rating is considered grading data.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_forum',
             [$context->id]
         );
@@ -568,7 +571,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         list($user, $otheruser, $anotheruser) = $this->helper_create_users($course, 3);
         list($discussion, $post) = $this->helper_post_to_forum($forum, $user);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Other users rate my content.
         $rm = new \rating_manager();
@@ -611,7 +614,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Delete the data of the user who was rated.
         // The rating should now be deleted.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_forum',
             [$context->id]
         );
@@ -631,19 +634,19 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forum0 = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm0 = get_coursemodule_from_instance('forum', $forum0->id);
-        $context0 = \context_module::instance($cm0->id);
+        $context0 = module::instance($cm0->id);
 
         $forum1 = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm1 = get_coursemodule_from_instance('forum', $forum1->id);
-        $context1 = \context_module::instance($cm1->id);
+        $context1 = module::instance($cm1->id);
 
         $forum2 = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm2 = get_coursemodule_from_instance('forum', $forum2->id);
-        $context2 = \context_module::instance($cm2->id);
+        $context2 = module::instance($cm2->id);
 
         $forum3 = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm3 = get_coursemodule_from_instance('forum', $forum3->id);
-        $context3 = \context_module::instance($cm3->id);
+        $context3 = module::instance($cm3->id);
 
         list($user) = $this->helper_create_users($course, 1);
 
@@ -681,7 +684,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Delete the data for one of the users in one of the forums.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_forum',
             [$context1->id]
         );
@@ -706,11 +709,11 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forumoff = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cmoff = get_coursemodule_from_instance('forum', $forumoff->id);
-        $contextoff = \context_module::instance($cmoff->id);
+        $contextoff = module::instance($cmoff->id);
 
         $forumon = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cmon = get_coursemodule_from_instance('forum', $forumon->id);
-        $contexton = \context_module::instance($cmon->id);
+        $contexton = module::instance($cmon->id);
 
         list($user) = $this->helper_create_users($course, 1);
 
@@ -733,7 +736,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Delete the data for one of the users in the 'on' forum.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_forum',
             [$contexton->id]
         );
@@ -748,7 +751,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Delete the data for one of the users in the 'off' forum.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_forum',
             [$contextoff->id]
         );
@@ -769,19 +772,19 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forum1 = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm1 = get_coursemodule_from_instance('forum', $forum1->id);
-        $context1 = \context_module::instance($cm1->id);
+        $context1 = module::instance($cm1->id);
 
         $forum2 = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm2 = get_coursemodule_from_instance('forum', $forum2->id);
-        $context2 = \context_module::instance($cm2->id);
+        $context2 = module::instance($cm2->id);
 
         $forum3 = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm3 = get_coursemodule_from_instance('forum', $forum3->id);
-        $context3 = \context_module::instance($cm3->id);
+        $context3 = module::instance($cm3->id);
 
         $forum4 = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm4 = get_coursemodule_from_instance('forum', $forum4->id);
-        $context4 = \context_module::instance($cm4->id);
+        $context4 = module::instance($cm4->id);
 
         list($author, $user) = $this->helper_create_users($course, 2);
 
@@ -920,7 +923,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Delete all data for one of the users in one of the forums.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user->id),
+            user::get_user($user->id),
             'mod_forum',
             [$context3->id]
         );
@@ -951,7 +954,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
             'scale' => 100,
         ]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Create a new discussion + post in the forum.
         list($discussion, $post) = $this->helper_post_to_forum($forum, $author);
@@ -1017,7 +1020,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
             'scale' => 100,
         ]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Create a new discussion + post in the forum.
         list($discussion, $post) = $this->helper_post_to_forum($forum, $author);
@@ -1079,7 +1082,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
                 'scale' => 100,
             ]);
             $cm = get_coursemodule_from_instance('forum', $forum->id);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
             $forums[$forum->id] = $forum;
             $contexts[$forum->id] = $context;
         }
@@ -1284,7 +1287,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
                 'scale' => 100,
             ]);
             $cm = get_coursemodule_from_instance('forum', $forum->id);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
             $forums[$forum->id] = $forum;
             $contexts[$forum->id] = $context;
         }
@@ -1406,7 +1409,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         list($otherpostinsql, $otherpostinparams) = $DB->get_in_or_equal($otherpostids, SQL_PARAMS_NAMED);
 
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
-            \core_user::get_user($user1->id),
+            user::get_user($user1->id),
             'mod_forum',
             [$firstcontext->id]
         );
@@ -1499,7 +1502,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
                 'scale' => 100,
             ]);
             $cm = get_coursemodule_from_instance('forum', $forum->id);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
             $forums[$forum->id] = $forum;
             $contexts[$forum->id] = $context;
         }
@@ -1704,7 +1707,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         list($author, $user) = $this->helper_create_users($course, 2);
 
@@ -1729,7 +1732,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         list($author, $user, $other) = $this->helper_create_users($course, 3);
 
@@ -1763,7 +1766,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         list($author, $user, $other) = $this->helper_create_users($course, 3);
 
@@ -1812,11 +1815,11 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $otherforum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $othercm = get_coursemodule_from_instance('forum', $otherforum->id);
-        $othercontext = \context_module::instance($othercm->id);
+        $othercontext = module::instance($othercm->id);
 
         list($user, $otheruser) = $this->helper_create_users($course, 2);
 
@@ -1850,11 +1853,11 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $otherforum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $othercm = get_coursemodule_from_instance('forum', $otherforum->id);
-        $othercontext = \context_module::instance($othercm->id);
+        $othercontext = module::instance($othercm->id);
 
         list($user, $otheruser) = $this->helper_create_users($course, 2);
 
@@ -1887,11 +1890,11 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $otherforum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $othercm = get_coursemodule_from_instance('forum', $otherforum->id);
-        $othercontext = \context_module::instance($othercm->id);
+        $othercontext = module::instance($othercm->id);
 
         list($author, $user, $otheruser) = $this->helper_create_users($course, 3);
 
@@ -1929,11 +1932,11 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $otherforum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $othercm = get_coursemodule_from_instance('forum', $otherforum->id);
-        $othercontext = \context_module::instance($othercm->id);
+        $othercontext = module::instance($othercm->id);
 
         list($author, $user, $otheruser) = $this->helper_create_users($course, 3);
 
@@ -1971,11 +1974,11 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $otherforum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $othercm = get_coursemodule_from_instance('forum', $otherforum->id);
-        $othercontext = \context_module::instance($othercm->id);
+        $othercontext = module::instance($othercm->id);
 
         list($author, $user, $otheruser) = $this->helper_create_users($course, 3);
 
@@ -2019,7 +2022,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Export test users preferences.
         provider::export_user_preferences($user->id);
 
-        $writer = \core_privacy\local\request\writer::with_context(\context_system::instance());
+        $writer = \core_privacy\local\request\writer::with_context(system::instance());
         $this->assertTrue($writer->has_any_data());
 
         $preferences = (array) $writer->get_user_preferences('mod_forum');

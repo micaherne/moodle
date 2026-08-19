@@ -16,14 +16,14 @@
 
 namespace core_courseformat;
 
-use action_menu;
-use cm_info;
+use core\output\action_menu;
+use core_course\cm_info;
 use core_courseformat\base as course_format;
 use core_courseformat\formatactions;
 use core_courseformat\output\local\content\section\controlmenu;
 use core_courseformat\stateupdates;
-use renderer_base;
-use section_info;
+use core\output\renderer_base;
+use core_course\section_info;
 use stdClass;
 
 /**

@@ -17,13 +17,13 @@
 namespace core_courseformat;
 
 use core\event\course_module_updated;
-use cm_info;
-use section_info;
+use core_course\cm_info;
+use core_course\section_info;
 use stdClass;
-use course_modinfo;
-use moodle_exception;
-use context_module;
-use context_course;
+use core_course\modinfo;
+use core\exception\moodle_exception;
+use core\context\module;
+use core\context\course;
 
 /**
  * Contains the core course state actions.
@@ -169,7 +169,7 @@ class stateactions {
 
         $this->validate_sections($course, $ids, __FUNCTION__);
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         require_capability('moodle/course:movesections', $coursecontext);
 
         // Section will move after the target section. This means it should be processed in
@@ -248,7 +248,7 @@ class stateactions {
         ?int $targetcmid = null
     ): void {
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         require_capability('moodle/course:update', $coursecontext);
 
         $modinfo = get_fast_modinfo($course);
@@ -290,7 +290,7 @@ class stateactions {
         ?int $targetcmid = null
     ): void {
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         require_capability('moodle/course:update', $coursecontext);
         require_capability('moodle/course:movesections', $coursecontext);
 
@@ -332,7 +332,7 @@ class stateactions {
         ?int $targetsectionid = null,
         ?int $targetcmid = null
     ): void {
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         require_capability('moodle/course:update', $coursecontext);
 
         foreach ($ids as $sectionid) {
@@ -399,7 +399,7 @@ class stateactions {
         int $visible
     ) {
         $this->validate_sections($course, $ids, __FUNCTION__);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         require_all_capabilities(['moodle/course:update', 'moodle/course:sectionvisibility'], $coursecontext);
 
         $modinfo = get_fast_modinfo($course);
@@ -506,12 +506,12 @@ class stateactions {
             }
             set_coursemodule_visible($cm->id, $visible, $coursevisible, false);
         }
-        course_modinfo::purge_course_modules_cache($course->id, $ids);
+        modinfo::purge_course_modules_cache($course->id, $ids);
         rebuild_course_cache($course->id, false, true);
 
         $delegatedsections = [];
         foreach ($cms as $cm) {
-            $modcontext = context_module::instance($cm->id);
+            $modcontext = module::instance($cm->id);
             course_module_updated::create_from_cm($cm, $modcontext)->trigger();
             $updates->add_cm_put($cm->id);
             if (!$delegatedsection = $cm->get_delegated_section_info()) {
@@ -702,7 +702,7 @@ class stateactions {
         $DB->set_field_select('course_modules', 'indent', $indent, "id $insql", $inparams);
         rebuild_course_cache($course->id, false, true);
         foreach ($cms as $cm) {
-            $modcontext = context_module::instance($cm->id);
+            $modcontext = module::instance($cm->id);
             course_module_updated::create_from_cm($cm, $modcontext)->trigger();
             $updates->add_cm_put($cm->id);
         }
@@ -788,7 +788,7 @@ class stateactions {
         $DB->set_field_select('course_modules', 'groupmode', $groupmode, "id $insql", $inparams);
         rebuild_course_cache($course->id, false, true);
         foreach ($cms as $cm) {
-            $modcontext = context_module::instance($cm->id);
+            $modcontext = module::instance($cm->id);
             course_module_updated::create_from_cm($cm, $modcontext)->trigger();
             $updates->add_cm_put($cm->id);
         }
@@ -801,7 +801,7 @@ class stateactions {
      * @param int[] $ids the course modules $ids
      * @return cm_info[] the extracted cm_info objects
      */
-    protected function get_cm_info(course_modinfo $modinfo, array $ids): array {
+    protected function get_cm_info(modinfo $modinfo, array $ids): array {
         $cms = [];
         foreach ($ids as $cmid) {
             $cms[$cmid] = $modinfo->get_cm($cmid);
@@ -816,7 +816,7 @@ class stateactions {
      * @param int[] $ids the course modules $ids
      * @return section_info[] the extracted section_info objects
      */
-    protected function get_section_info(course_modinfo $modinfo, array $ids): array {
+    protected function get_section_info(modinfo $modinfo, array $ids): array {
         $sections = [];
         foreach ($ids as $sectionid) {
             $sections[$sectionid] = $modinfo->get_section_info_by_id($sectionid);
@@ -953,7 +953,7 @@ class stateactions {
 
         $this->validate_cms($course, array_keys($cmids), __FUNCTION__);
 
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
 
         foreach (array_keys($cmids) as $cmid) {
 
@@ -1005,7 +1005,7 @@ class stateactions {
 
         $this->validate_sections($course, array_keys($sectionids), __FUNCTION__);
 
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
 
         foreach (array_keys($sectionids) as $sectionid) {
             $sectioninfo = $modinfo->get_section_info_by_id($sectionid);
@@ -1049,7 +1049,7 @@ class stateactions {
         ?int $targetcmid = null
     ): void {
 
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
 
         $updates->add_course_put();
 
@@ -1139,11 +1139,11 @@ class stateactions {
         if (!empty($capabilities)) {
             if ($usemodcontext) {
                 foreach ($cmids as $cmid) {
-                    $modcontext = context_module::instance($cmid);
+                    $modcontext = module::instance($cmid);
                     require_all_capabilities($capabilities, $modcontext);
                 }
             } else {
-                $coursecontext = context_course::instance($course->id);
+                $coursecontext = course::instance($course->id);
                 require_all_capabilities($capabilities, $coursecontext);
             }
         }
@@ -1177,7 +1177,7 @@ class stateactions {
 
         \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         require_capability('moodle/course:update', $coursecontext);
 
         // Method "can_add_moduleinfo" called in "prepare_new_moduleinfo_data" will handle the capability checks.
@@ -1208,7 +1208,7 @@ class stateactions {
         global $CFG;
         require_once($CFG->dirroot . '/course/modlib.php');
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         require_capability('moodle/course:update', $coursecontext);
 
         $modinfo = get_fast_modinfo($course);

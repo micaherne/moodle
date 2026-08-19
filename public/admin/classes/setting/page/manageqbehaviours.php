@@ -16,6 +16,7 @@
 
 namespace core_admin\setting\page;
 
+use core\url;
 use core_admin\admin_search;
 
 /**
@@ -34,7 +35,7 @@ class manageqbehaviours extends \core_admin\setting\tree\externalpage {
         parent::__construct(
             'manageqbehaviours',
             get_string('manageqbehaviours', 'admin'),
-            new \moodle_url('/admin/qbehaviours.php')
+            new url('/admin/qbehaviours.php')
         );
     }
 

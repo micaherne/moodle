@@ -23,6 +23,10 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once($CFG->dirroot . '/repository/lib.php');
 
 /**
@@ -52,7 +56,7 @@ class repository_dropbox extends repository {
         $options['page'] = optional_param('p', 1, PARAM_INT);
         parent::__construct($repositoryid, $context, $options);
 
-        $returnurl = new moodle_url('/repository/repository_callback.php', [
+        $returnurl = new url('/repository/repository_callback.php', [
                 'callback'  => 'yes',
                 'repo_id'   => $repositoryid,
                 'sesskey'   => sesskey(),
@@ -413,7 +417,7 @@ class repository_dropbox extends repository {
      * @return string
      */
     protected function get_file_download_link($sharedurl) {
-        $url = new \moodle_url($sharedurl);
+        $url = new url($sharedurl);
         $url->param('dl', 1);
 
         return $url->out(false);
@@ -565,7 +569,7 @@ class repository_dropbox extends repository {
     public static function get_oauth2callbackurl() {
         global $CFG;
 
-        return new moodle_url('/admin/oauth2callback.php');
+        return new url('/admin/oauth2callback.php');
     }
 
     /**
@@ -755,7 +759,7 @@ class repository_dropbox extends repository {
      */
     protected function get_thumbnail_url($entry) {
         if ($this->dropbox->supports_thumbnail($entry)) {
-            $thumburl = new moodle_url('/repository/dropbox/thumbnail.php', [
+            $thumburl = new url('/repository/dropbox/thumbnail.php', [
                 // The id field in dropbox is unique - no need to specify a revision.
                 'source'    => $entry->id,
                 'path'      => $entry->path_lower,

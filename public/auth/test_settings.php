@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\url;
+
 require(__DIR__.'/../config.php');
 require_once("$CFG->libdir/adminlib.php");
 
@@ -32,10 +35,10 @@ if (!core_component::is_valid_plugin_name('auth', $auth)) {
     $auth = '';
 }
 
-navigation_node::override_active_url(new moodle_url('/admin/settings.php', array('section'=>'manageauths')));
+navigation_node::override_active_url(new url('/admin/settings.php', array('section'=>'manageauths')));
 admin_externalpage_setup('authtestsettings');
 
-$returnurl = new moodle_url('/admin/settings.php', array('section'=>'manageauths'));
+$returnurl = new url('/admin/settings.php', array('section'=>'manageauths'));
 
 echo $OUTPUT->header();
 
@@ -56,7 +59,7 @@ if (!$auth) {
 
     echo $OUTPUT->heading(get_string('testsettings', 'core_auth'));
 
-    $url = new moodle_url('/auth/test_settings.php');
+    $url = new url('/auth/test_settings.php');
     echo $OUTPUT->single_select($url, 'auth', $options);
 
     echo $OUTPUT->footer();

@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\lang_string;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**

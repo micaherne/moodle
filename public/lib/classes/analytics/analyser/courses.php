@@ -24,6 +24,9 @@
 
 namespace core\analytics\analyser;
 
+use core\context\course;
+use core\output\pix_icon;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -79,7 +82,7 @@ class courses extends \core_analytics\local\analyser\by_course {
      * @return \context
      */
     public function sample_access_context($sampleid) {
-        return \context_course::instance($sampleid);
+        return course::instance($sampleid);
     }
 
     /**
@@ -90,7 +93,7 @@ class courses extends \core_analytics\local\analyser\by_course {
      */
     public function get_all_samples(\core_analytics\analysable $course) {
 
-        $context = \context_course::instance($course->get_id());
+        $context = course::instance($course->get_id());
 
         // Just 1 sample per analysable.
         return array(
@@ -115,7 +118,7 @@ class courses extends \core_analytics\local\analyser\by_course {
         $sampleids = array_combine($courseids, $courseids);
 
         $courses = array_map(function($course) {
-            return array('course' => $course, 'context' => \context_course::instance($course->id));
+            return array('course' => $course, 'context' => course::instance($course->id));
         }, $courses);
 
         // No related data attached.
@@ -133,7 +136,7 @@ class courses extends \core_analytics\local\analyser\by_course {
     public function sample_description($sampleid, $contextid, $sampledata) {
         $description = format_string(
             get_course_display_name_for_list($sampledata['course']), true, array('context' => $sampledata['context']));
-        $courseimage = new \pix_icon('i/course', get_string('course'));
+        $courseimage = new pix_icon('i/course', get_string('course'));
         return array($description, $courseimage);
     }
 }

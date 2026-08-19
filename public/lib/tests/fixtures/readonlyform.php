@@ -22,6 +22,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/formslib.php');
 
@@ -60,7 +62,7 @@ class test_read_only_form extends moodleform {
     }
 }
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url('/lib/tests/fixtures/readonlyform.php');
 
 $form = new test_read_only_form(null, $sections, 'post', '', null, false); // The false here is $editable.

@@ -24,13 +24,13 @@
 namespace tool_lp\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
-use renderer_base;
-use single_button;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
+use core\output\single_button;
 use stdClass;
-use moodle_url;
-use context_system;
+use core\url;
+use core\context\system;
 use core_competency\api;
 use core_competency\competency;
 use core_competency\competency_framework;
@@ -82,7 +82,7 @@ class manage_competencies_page implements renderable, templatable {
         $this->search = $search;
         $this->competency = $competency;
         $addpage = new single_button(
-           new moodle_url('/admin/tool/lp/editcompetencyframework.php'),
+           new url('/admin/tool/lp/editcompetencyframework.php'),
            get_string('addnewcompetency', 'tool_lp')
         );
         $this->navigation[] = $addpage;
@@ -103,7 +103,7 @@ class manage_competencies_page implements renderable, templatable {
         $data->canmanage = $this->canmanage;
         $data->search = $this->search;
         $data->pagecontextid = $this->pagecontext->id;
-        $data->pluginbaseurl = (new moodle_url('/admin/tool/lp'))->out(true);
+        $data->pluginbaseurl = (new url('/admin/tool/lp'))->out(true);
 
         $data->competencyid = 0;
         if ($this->competency) {

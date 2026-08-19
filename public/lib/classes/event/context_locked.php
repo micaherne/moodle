@@ -25,6 +25,9 @@
 
 namespace core\event;
 
+use core\context;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -63,11 +66,11 @@ class context_locked extends base {
     public function get_url() {
         // Try to get the url for the context.
         try {
-            $context = \context::instance_by_id($this->objectid);
+            $context = context::instance_by_id($this->objectid);
             $url = $context->get_url();
         } catch (\dml_missing_record_exception $e) {
             // The context no longer exists, give them the system url instead.
-            $url = \context_system::instance()->get_url();
+            $url = system::instance()->get_url();
         }
         return $url;
     }

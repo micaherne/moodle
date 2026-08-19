@@ -24,8 +24,10 @@
 namespace tool_lp\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
+use core\exception\invalid_parameter_exception;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use core_competency\api;
 use tool_lp\external\user_competency_summary_in_plan_exporter;
 
@@ -61,7 +63,7 @@ class user_competency_summary_in_plan implements renderable, templatable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         global $DB;
 
         $plan = api::read_plan($this->planid);
@@ -71,7 +73,7 @@ class user_competency_summary_in_plan implements renderable, templatable {
         $usercompetencyplan = $pc->usercompetencyplan;
 
         if (empty($competency)) {
-            throw new \invalid_parameter_exception('Invalid params. The competency does not belong to the plan.');
+            throw new invalid_parameter_exception('Invalid params. The competency does not belong to the plan.');
         }
 
         $relatedcompetencies = api::list_related_competencies($competency->get('id'));

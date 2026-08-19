@@ -16,12 +16,15 @@
 
 namespace qbank_columnsortorder\output;
 
+use core\context\system;
+use core\output\action_menu;
+use core\output\renderer_base;
 use core_question\local\bank\column_base;
 use qbank_columnsortorder\local\bank\column_action_remove;
-use moodle_url;
+use core\url;
 use qbank_columnsortorder\column_manager;
-use renderable;
-use templatable;
+use core\output\renderable;
+use core\output\templatable;
 
 /**
  * Renderable for the column sort admin UI.
@@ -44,18 +47,18 @@ class column_sort_ui implements renderable, templatable {
      */
     const MIN_COLUMN_WIDTH = 30;
 
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $columnmanager = new column_manager(true);
         $enabledcolumns = $columnmanager->get_columns();
         $disabledcolumns = $columnmanager->get_disabled_columns();
         $columnsizes = $columnmanager->get_colsize_map();
         $qbank = $columnmanager->get_questionbank();
-        $returnurl = new moodle_url('/question/bank/columnsortorder/sortcolumns.php');
+        $returnurl = new url('/question/bank/columnsortorder/sortcolumns.php');
         $params = [];
-        $params['formaction'] = new moodle_url('/question/bank/columnsortorder/actions.php');
+        $params['formaction'] = new url('/question/bank/columnsortorder/actions.php');
         $params['sesskey'] = sesskey();
         $params['disabled'] = $disabledcolumns;
-        $params['contextid'] = \context_system::instance()->id;
+        $params['contextid'] = system::instance()->id;
         $params['minwidth'] = self::MIN_COLUMN_WIDTH;
         foreach ($enabledcolumns as $column) {
             if (in_array($column->id, $columnmanager->hiddencolumns) || array_key_exists($column->id, $disabledcolumns)) {
@@ -66,7 +69,7 @@ class column_sort_ui implements renderable, templatable {
 
             $removeaction = new column_action_remove($qbank);
             $removeaction->set_global(true);
-            $actionmenu = new \action_menu([
+            $actionmenu = new action_menu([
                 $removeaction->get_action_menu_link($column->class::from_column_name($qbank, $column->colname)),
             ]);
             $params['names'][] = [
@@ -89,10 +92,10 @@ class column_sort_ui implements renderable, templatable {
         $resetcolums = new reset_columns($returnurl);
         $params['resetcolumns'] = $resetcolums->export_for_template($output);
         $params['extraclasses'] = 'pe-1';
-        $urltoredirect = new moodle_url('/admin/settings.php', ['section' => 'manageqbanks']);
+        $urltoredirect = new url('/admin/settings.php', ['section' => 'manageqbanks']);
 
         $params['urltomanageqbanks'] = get_string('qbankgotomanageqbanks', 'qbank_columnsortorder', $urltoredirect->out());
-        $params['previewurl'] = new moodle_url('/question/bank/columnsortorder/sortcolumns.php', [
+        $params['previewurl'] = new url('/question/bank/columnsortorder/sortcolumns.php', [
             'preview' => true,
         ]);
         return $params;

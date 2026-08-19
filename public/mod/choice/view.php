@@ -1,5 +1,13 @@
 <?php
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_course\cm_info;
+
 require_once("../../config.php");
 require_once("lib.php");
 require_once($CFG->libdir . '/completionlib.php');
@@ -10,31 +18,31 @@ $attemptids = optional_param_array('attemptid', array(), PARAM_INT); // Get arra
 $userids    = optional_param_array('userid', array(), PARAM_INT); // Get array of users whose choices need to be modified.
 $notify     = optional_param('notify', '', PARAM_ALPHA);
 
-$url = new moodle_url('/mod/choice/view.php', array('id'=>$id));
+$url = new url('/mod/choice/view.php', array('id'=>$id));
 if ($action !== '') {
     $url->param('action', $action);
 }
 $PAGE->set_url($url);
 
 if (! $cm = get_coursemodule_from_id('choice', $id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 $cm = cm_info::create($cm);
 
 if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
-    throw new \moodle_exception('coursemisconf');
+    throw new moodle_exception('coursemisconf');
 }
 
 require_course_login($course, false, $cm);
 
 if (!$choice = choice_get_choice($cm->instance)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 $strchoice = get_string('modulename', 'choice');
 $strchoices = get_string('modulenameplural', 'choice');
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 list($choiceavailable, $warnings) = choice_get_availability_status($choice);
 
@@ -84,12 +92,12 @@ if (data_submitted() && !empty($action) && confirm_sesskey()) {
 
     if ($answer && is_enrolled($context, null, 'mod/choice:choose')) {
         choice_user_submit_response($answer, $choice, $USER->id, $course, $cm);
-        redirect(new moodle_url('/mod/choice/view.php',
+        redirect(new url('/mod/choice/view.php',
             array('id' => $cm->id, 'notify' => 'choicesaved', 'sesskey' => sesskey())));
     } else if (empty($answer) and $action === 'makechoice') {
         // We cannot use the 'makechoice' alone because there might be some legacy renderers without it,
         // outdated renderers will not get the 'mustchoose' message - bad luck.
-        redirect(new moodle_url('/mod/choice/view.php',
+        redirect(new url('/mod/choice/view.php',
             array('id' => $cm->id, 'notify' => 'mustchooseone', 'sesskey' => sesskey())));
     }
 }
@@ -200,24 +208,24 @@ if ( (!$current or $choice->allowupdate) and $choiceopen and is_enrolled($contex
 }
 
 if (!$choiceformshown) {
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
 
     if (isguestuser()) {
         // Guest account
         echo $OUTPUT->confirm(get_string('noguestchoose', 'choice').'<br /><br />'.get_string('liketologin'),
-                     get_login_url(), new moodle_url('/course/view.php', array('id'=>$course->id)));
+                     get_login_url(), new url('/course/view.php', array('id'=>$course->id)));
     } else if (!is_enrolled($context)) {
         // Only people enrolled can make a choice
         $SESSION->wantsurl = qualified_me();
         $SESSION->enrolcancel = get_local_referer(false);
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $courseshortname = format_string($course->shortname, true, array('context' => $coursecontext));
 
         echo $OUTPUT->box_start('generalbox', 'notice');
         echo '<p align="center">'. get_string('notenrolledchoose', 'choice') .'</p>';
         echo $OUTPUT->container_start('continuebutton');
-        echo $OUTPUT->single_button(new moodle_url('/enrol/index.php?', array('id'=>$course->id)), get_string('enrolme', 'core_enrol', $courseshortname));
+        echo $OUTPUT->single_button(new url('/enrol/index.php?', array('id'=>$course->id)), get_string('enrolme', 'core_enrol', $courseshortname));
         echo $OUTPUT->container_end();
         echo $OUTPUT->box_end();
 
@@ -234,7 +242,7 @@ if (choice_can_view_results($choice, $current, $choiceopen)) {
 
     if ($groupmode) { // If group mode is enabled, display the groups selector.
         groups_get_activity_group($cm, true);
-        $groupsactivitymenu = groups_print_activity_menu($cm, new moodle_url('/mod/choice/view.php', ['id' => $id]),
+        $groupsactivitymenu = groups_print_activity_menu($cm, new url('/mod/choice/view.php', ['id' => $id]),
             true);
         echo html_writer::div($groupsactivitymenu, 'mt-3 mb-1');
     }

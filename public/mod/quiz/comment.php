@@ -23,6 +23,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\action_link;
+use core\output\html_writer;
+use core\output\user_picture;
+use core\url;
 use mod_quiz\output\attempt_summary_information;
 
 require_once('../../config.php');
@@ -41,7 +46,7 @@ $student = $DB->get_record('user', ['id' => $attemptobj->get_userid()]);
 
 // Can only grade finished attempts.
 if (!$attemptobj->is_finished()) {
-    throw new \moodle_exception('attemptclosed', 'quiz');
+    throw new moodle_exception('attemptclosed', 'quiz');
 }
 
 // Check login and permissions.
@@ -65,7 +70,7 @@ $summary->set_caption(get_string('summaryofattempt', 'quiz'));
 $userpicture = new user_picture($student);
 $userpicture->courseid = $attemptobj->get_courseid();
 $summary->add_item('user', $userpicture, new action_link(
-        new moodle_url('/user/view.php', [ 'id' => $student->id, 'course' => $attemptobj->get_courseid()]),
+        new url('/user/view.php', [ 'id' => $student->id, 'course' => $attemptobj->get_courseid()]),
         fullname($student, true)));
 
 // Quiz name.

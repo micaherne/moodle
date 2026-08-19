@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\exception\required_capability_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -53,9 +58,9 @@ $title = get_string('competencies', 'core_competency');
 $pagetitle = get_string('competenciesforframework', 'tool_lp', $framework->get('shortname'));
 
 // Set up the page.
-$url = new moodle_url("/admin/tool/lp/competencies.php", array('competencyframeworkid' => $framework->get('id'),
+$url = new url("/admin/tool/lp/competencies.php", array('competencyframeworkid' => $framework->get('id'),
     'pagecontextid' => $pagecontextid));
-$frameworksurl = new moodle_url('/admin/tool/lp/competencyframeworks.php', array('pagecontextid' => $pagecontextid));
+$frameworksurl = new url('/admin/tool/lp/competencyframeworks.php', array('pagecontextid' => $pagecontextid));
 
 $PAGE->set_context($pagecontext);
 $PAGE->navigation->override_active_url($frameworksurl);

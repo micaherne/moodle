@@ -17,7 +17,7 @@
 namespace mod_h5pactivity\external;
 
 use core_external\external_api;
-use context_module;
+use core\context\module;
 
 /**
  * External function test for get_h5pactivities_by_courses.
@@ -48,7 +48,7 @@ final class get_h5pactivities_by_courses_test extends \core_external\tests\exter
         $activities[] = $this->getDataGenerator()->create_module('h5pactivity', $params);
         // Add filename and contextid to make easier the asserts.
         $activities[0]->filename = 'filltheblanks.h5p';
-        $context = context_module::instance($activities[0]->cmid);
+        $context = module::instance($activities[0]->cmid);
         $activities[0]->contextid = $context->id;
 
         $params = [
@@ -59,7 +59,7 @@ final class get_h5pactivities_by_courses_test extends \core_external\tests\exter
         $activities[] = $this->getDataGenerator()->create_module('h5pactivity', $params);
         // Add filename and contextid to make easier the asserts.
         $activities[1]->filename = 'greeting-card.h5p';
-        $context = context_module::instance($activities[1]->cmid);
+        $context = module::instance($activities[1]->cmid);
         $activities[1]->contextid = $context->id;
 
         $course2 = $this->getDataGenerator()->create_course();
@@ -70,7 +70,7 @@ final class get_h5pactivities_by_courses_test extends \core_external\tests\exter
         ];
         $activities[] = $this->getDataGenerator()->create_module('h5pactivity', $params);
         $activities[2]->filename = 'guess-the-answer.h5p';
-        $context = context_module::instance($activities[2]->cmid);
+        $context = module::instance($activities[2]->cmid);
         $activities[2]->contextid = $context->id;
 
         // Create a fake deploy H5P file.

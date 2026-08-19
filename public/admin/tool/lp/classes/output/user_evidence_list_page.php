@@ -23,16 +23,16 @@
  */
 namespace tool_lp\output;
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
-use single_button;
-use moodle_url;
+use core\output\single_button;
+use core\url;
 use core_competency\api;
 use tool_lp\external\user_evidence_summary_exporter;
 use core_competency\user_evidence;
-use context_user;
+use core\context\user;
 
 /**
  * Class for the page listing the evidence of prior learning of a user.
@@ -65,13 +65,13 @@ class user_evidence_list_page implements renderable, templatable {
      */
     public function __construct($userid) {
         $this->userid = $userid;
-        $this->context = context_user::instance($userid);
+        $this->context = user::instance($userid);
         $this->evidence = api::list_user_evidence($userid);
         $this->canmanage = user_evidence::can_manage_user($this->userid);
 
         if ($this->canmanage) {
             $addevidence = new single_button(
-               new moodle_url('/admin/tool/lp/user_evidence_edit.php', array('userid' => $userid)),
+               new url('/admin/tool/lp/user_evidence_edit.php', array('userid' => $userid)),
                get_string('addnewuserevidence', 'tool_lp'), 'get'
             );
             $this->navigation[] = $addevidence;
@@ -87,7 +87,7 @@ class user_evidence_list_page implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
         $data->userid = $this->userid;
-        $data->pluginbaseurl = (new moodle_url('/admin/tool/lp'))->out(true);
+        $data->pluginbaseurl = (new url('/admin/tool/lp'))->out(true);
         $data->canmanage = $this->canmanage;
 
         $data->evidence = array();

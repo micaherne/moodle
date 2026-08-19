@@ -16,6 +16,9 @@
 
 namespace availability_grade;
 
+use core\context\module;
+use core\exception\coding_exception;
+
 /**
  * Unit tests for the grade condition.
  *
@@ -42,7 +45,7 @@ final class condition_test extends \advanced_testcase {
         // Make assign module.
         $assignrow = $this->getDataGenerator()->create_module('assign', array(
                 'course' => $course->id, 'name' => 'Test!'));
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
         $modinfo = get_fast_modinfo($course);
         $cm = $modinfo->get_cm($assignrow->cmid);
 
@@ -147,7 +150,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->id', $e->getMessage());
         }
 
@@ -156,7 +159,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->id', $e->getMessage());
         }
 
@@ -166,7 +169,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->min', $e->getMessage());
         }
 
@@ -176,7 +179,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->max', $e->getMessage());
         }
 

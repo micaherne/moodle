@@ -16,10 +16,14 @@
 
 namespace mod_feedback\external;
 
+use core\context\course;
+use core\context\module;
+use core\url;
+use core_course\modinfo;
 use core_external\external_api;
 use feedback_item_multichoice;
 use mod_feedback_external;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -62,7 +66,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $this->course = $this->getDataGenerator()->create_course();
         $this->feedback = $this->getDataGenerator()->create_module('feedback',
             array('course' => $this->course->id, 'email_notification' => 1));
-        $this->context = \context_module::instance($this->feedback->cmid);
+        $this->context = module::instance($this->feedback->cmid);
         $this->cm = get_coursemodule_from_instance('feedback', $this->feedback->id);
 
         // Create users.
@@ -313,7 +317,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_feedback\event\course_module_viewed', $event);
         $this->assertEquals($this->context, $event->get_context());
-        $moodledata = new \moodle_url('/mod/feedback/view.php', array('id' => $this->cm->id));
+        $moodledata = new url('/mod/feedback/view.php', array('id' => $this->cm->id));
         $this->assertEquals($moodledata, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -414,11 +418,11 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         if (array_key_exists('complete', $info) && !$info['complete']) {
             $studentrole = $DB->get_record('role', array('shortname' => 'student'));
-            $coursecontext = \context_course::instance($this->course->id);
+            $coursecontext = course::instance($this->course->id);
             assign_capability('mod/feedback:complete', CAP_PROHIBIT, $studentrole->id, $coursecontext->id);
             // Empty all the caches that may be affected by this change.
             accesslib_clear_all_caches_for_unit_testing();
-            \course_modinfo::clear_instance_cache();
+            modinfo::clear_instance_cache();
         }
 
         $result = mod_feedback_external::get_items($feedback->id);
@@ -608,11 +612,11 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         if (array_key_exists('complete', $info) && !$info['complete']) {
             $studentrole = $DB->get_record('role', array('shortname' => 'student'));
-            $coursecontext = \context_course::instance($this->course->id);
+            $coursecontext = course::instance($this->course->id);
             assign_capability('mod/feedback:complete', CAP_PROHIBIT, $studentrole->id, $coursecontext->id);
             // Empty all the caches that may be affected by this change.
             accesslib_clear_all_caches_for_unit_testing();
-            \course_modinfo::clear_instance_cache();
+            modinfo::clear_instance_cache();
         }
 
         $result = mod_feedback_external::get_page_items($feedback->id, 0);

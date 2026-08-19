@@ -21,6 +21,10 @@
  * @copyright 2014 Adrian Greeve <adrian@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
+
 class report_eventlist_list_generator {
 
     /**
@@ -132,7 +136,7 @@ class report_eventlist_list_generator {
         foreach ($events as $key => $observers) {
             foreach ($observers as $observerskey => $observer) {
                 $events[$key][$observerskey]->parentplugin =
-                        \core_plugin_manager::instance()->get_parent_of_subplugin($observer->plugintype);
+                        plugin_manager::instance()->get_parent_of_subplugin($observer->plugintype);
             }
         }
         return $events;
@@ -149,11 +153,11 @@ class report_eventlist_list_generator {
         // Get general event information.
         $eventdata[$eventfullpath] = $eventfullpath::get_static_info();
         // Create a link for further event detail.
-        $url = new \moodle_url('eventdetail.php', array('eventname' => $eventfullpath));
-        $link = \html_writer::link($url, $eventfullpath::get_name_with_info());
-        $eventdata[$eventfullpath]['fulleventname'] = \html_writer::span($link);
-        $eventdata[$eventfullpath]['fulleventname'] .= \html_writer::empty_tag('br');
-        $eventdata[$eventfullpath]['fulleventname'] .= \html_writer::span($eventdata[$eventfullpath]['eventname'],
+        $url = new url('eventdetail.php', array('eventname' => $eventfullpath));
+        $link = html_writer::link($url, $eventfullpath::get_name_with_info());
+        $eventdata[$eventfullpath]['fulleventname'] = html_writer::span($link);
+        $eventdata[$eventfullpath]['fulleventname'] .= html_writer::empty_tag('br');
+        $eventdata[$eventfullpath]['fulleventname'] .= html_writer::span($eventdata[$eventfullpath]['eventname'],
                 'report-eventlist-name');
 
         $eventdata[$eventfullpath]['crud'] = self::get_crud_string($eventdata[$eventfullpath]['crud']);
@@ -176,7 +180,7 @@ class report_eventlist_list_generator {
             $component = $eventdata[$eventfullpath]['component'];
             $manager = get_string_manager();
             if ($manager->string_exists('pluginname', $pluginstring[1])) {
-                $eventdata[$eventfullpath]['component'] = \html_writer::span(get_string('pluginname', $pluginstring[1]));
+                $eventdata[$eventfullpath]['component'] = html_writer::span(get_string('pluginname', $pluginstring[1]));
             }
         }
 

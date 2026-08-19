@@ -21,6 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/forum/lib.php');
 
+use core\context\module;
 use mod_forum\local\exporters\forum as forum_exporter;
 
 /**
@@ -65,7 +66,7 @@ final class exporters_forum_test extends \advanced_testcase {
             'forcesubscribe' => FORUM_FORCESUBSCRIBE,
         ]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $entityfactory = \mod_forum\local\container::get_entity_factory();
         $forum = $entityfactory->get_forum_from_stdClass($forum, $context, $coursemodule, $course);
 

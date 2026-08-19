@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\plugin_manager;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/tablelib.php');
@@ -30,12 +34,12 @@ $action = required_param('action', PARAM_ALPHANUMEXT);
 $plugin = required_param('plugin', PARAM_PLUGIN);
 
 $PAGE->set_url('/admin/editors.php', ['action' => $action, 'editor' => $plugin]);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 require_admin();
 require_sesskey();
 
-$returnurl = new moodle_url('/admin/settings.php', ['section' => 'manageeditors']);
+$returnurl = new url('/admin/settings.php', ['section' => 'manageeditors']);
 
 // Get currently installed and enabled auth plugins.
 $availableeditors = editors_get_available();
@@ -53,14 +57,14 @@ foreach ($activeeditors as $key => $active) {
 switch ($action) {
     case 'disable':
         // Remove from enabled list.
-        $class = \core_plugin_manager::resolve_plugininfo_class('editor');
+        $class = plugin_manager::resolve_plugininfo_class('editor');
         $class::enable_plugin($plugin, false);
         break;
 
     case 'enable':
         // Add to enabled list.
         if (!in_array($plugin, $activeeditors)) {
-            $class = \core_plugin_manager::resolve_plugininfo_class('editor');
+            $class = plugin_manager::resolve_plugininfo_class('editor');
             $class::enable_plugin($plugin, true);
         }
         break;
@@ -75,7 +79,7 @@ switch ($action) {
                 $activeeditors[$key + 1] = $fsave;
                 add_to_config_log('editor_position', $key, $key + 1, $plugin);
                 set_config('texteditors', implode(',', $activeeditors));
-                core_plugin_manager::reset_caches();
+                plugin_manager::reset_caches();
             }
         }
         break;
@@ -90,7 +94,7 @@ switch ($action) {
                 $activeeditors[$key - 1] = $fsave;
                 add_to_config_log('editor_position', $key, $key - 1, $plugin);
                 set_config('texteditors', implode(',', $activeeditors));
-                core_plugin_manager::reset_caches();
+                plugin_manager::reset_caches();
             }
         }
         break;

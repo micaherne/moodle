@@ -26,6 +26,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\output\theme_config;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -57,7 +64,7 @@ function xmldb_main_install() {
     global $CFG, $DB, $SITE, $OUTPUT;
 
     // Make sure system context exists
-    $syscontext = context_system::instance(0, MUST_EXIST, false);
+    $syscontext = system::instance(0, MUST_EXIST, false);
     if ($syscontext->id != SYSCONTEXTID) {
         throw new moodle_exception('generalexceptionmessage', 'error', '', 'Unexpected new system context id!');
     }
@@ -95,7 +102,7 @@ function xmldb_main_install() {
         throw new moodle_exception('generalexceptionmessage', 'error', '', 'Unexpected new site course id!');
     }
     // Make sure site course context exists
-    context_course::instance($SITE->id);
+    course::instance($SITE->id);
     // Update the global frontpage cache
     $SITE = $DB->get_record('course', array('id'=>$newsite->id), '*', MUST_EXIST);
 
@@ -113,7 +120,7 @@ function xmldb_main_install() {
     $catid = $DB->insert_record('course_categories', $cat);
     $DB->set_field('course_categories', 'path', '/'.$catid, array('id'=>$catid));
     // Make sure category context exists
-    context_coursecat::instance($catid);
+    coursecat::instance($catid);
 
 
     $defaults = array(
@@ -220,7 +227,7 @@ function xmldb_main_install() {
     // Store guest id
     set_config('siteguest', $guest->id);
     // Make sure user context exists
-    context_user::instance($guest->id);
+    user::instance($guest->id);
 
 
     // Now create admin user
@@ -249,7 +256,7 @@ function xmldb_main_install() {
     // Store list of admins
     set_config('siteadmins', $admin->id);
     // Make sure user context exists
-    context_user::instance($admin->id);
+    user::instance($admin->id);
 
 
     // Install the roles system.

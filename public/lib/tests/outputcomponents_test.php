@@ -16,15 +16,17 @@
 
 namespace core;
 
-use block_contents;
-use custom_menu;
-use custom_menu_item;
-use paging_bar;
-use renderer_base;
-use single_button;
-use single_select;
-use theme_config;
-use url_select;
+use core\context\system;
+use core\context\user;
+use core_block\output\block_contents;
+use core\output\custom_menu;
+use core\output\custom_menu_item;
+use core\output\paging_bar;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\single_select;
+use core\output\theme_config;
+use core\output\url_select;
 use core\output\user_picture;
 
 /**
@@ -147,23 +149,23 @@ final class outputcomponents_test extends \advanced_testcase {
         // Create some users.
         $page = new \moodle_page();
         $page->set_url('/user/profile.php');
-        $page->set_context(\context_system::instance());
+        $page->set_context(system::instance());
         $renderer = $page->get_renderer('core');
 
         $user1 = $this->getDataGenerator()->create_user(array('picture'=>11, 'email'=>'user1@example.com'));
-        $context1 = \context_user::instance($user1->id);
+        $context1 = user::instance($user1->id);
         $user2 = $this->getDataGenerator()->create_user(array('picture'=>0, 'email'=>'user2@example.com'));
-        $context2 = \context_user::instance($user2->id);
+        $context2 = user::instance($user2->id);
 
         // User 3 is deleted.
         $user3 = $this->getDataGenerator()->create_user(array('picture'=>1, 'deleted'=>1, 'email'=>'user3@example.com'));
-        $this->assertNotEmpty(\context_user::instance($user3->id));
+        $this->assertNotEmpty(user::instance($user3->id));
         $this->assertEquals(0, $user3->picture);
         $this->assertNotEquals('user3@example.com', $user3->email);
 
         // User 4 is incorrectly deleted with its context deleted as well (testing legacy code).
         $user4 = $this->getDataGenerator()->create_user(['picture' => 1, 'deleted' => 1, 'email' => 'user4@example.com']);
-        \context_helper::delete_instance(CONTEXT_USER, $user4->id);
+        context_helper::delete_instance(CONTEXT_USER, $user4->id);
         $this->assertEquals(0, $user4->picture);
         $this->assertNotEquals('user4@example.com', $user4->email);
 
@@ -174,7 +176,7 @@ final class outputcomponents_test extends \advanced_testcase {
         $user1->picture = 11;
 
         // Try valid user with picture when user context is not cached - 1 query expected.
-        \context_helper::reset_caches();
+        context_helper::reset_caches();
         $reads = $DB->perf_get_reads();
         $up1 = new user_picture($user1);
         $this->assertEquals($reads, $DB->perf_get_reads());
@@ -183,7 +185,7 @@ final class outputcomponents_test extends \advanced_testcase {
 
         // Try valid user with contextid hint - no queries expected.
         $user1->contextid = $context1->id;
-        \context_helper::reset_caches();
+        context_helper::reset_caches();
         $reads = $DB->perf_get_reads();
         $up1 = new user_picture($user1);
         $this->assertEquals($reads, $DB->perf_get_reads());
@@ -191,7 +193,7 @@ final class outputcomponents_test extends \advanced_testcase {
         $this->assertEquals($reads, $DB->perf_get_reads());
 
         // Try valid user without image - no queries expected.
-        \context_helper::reset_caches();
+        context_helper::reset_caches();
         $reads = $DB->perf_get_reads();
         $up2 = new user_picture($user2);
         $this->assertEquals($reads, $DB->perf_get_reads());
@@ -200,7 +202,7 @@ final class outputcomponents_test extends \advanced_testcase {
 
         // Try guessing of deleted users - no queries expected.
         unset($user3->deleted);
-        \context_helper::reset_caches();
+        context_helper::reset_caches();
         $reads = $DB->perf_get_reads();
         $up3 = new user_picture($user3);
         $this->assertEquals($reads, $DB->perf_get_reads());
@@ -309,7 +311,7 @@ final class outputcomponents_test extends \advanced_testcase {
         $CFG->slasharguments = 0;
         $page = new \moodle_page();
         $page->set_url('/user/profile.php');
-        $page->set_context(\context_system::instance());
+        $page->set_context(system::instance());
         $renderer = $page->get_renderer('core');
 
         $up3 = new user_picture($user3);
@@ -348,7 +350,7 @@ EOF;
         $this->assertCount(3, $item->get_children());
         $this->assertEquals('Moodle community', $item->get_text());
         $itemurl = $item->get_url();
-        $this->assertTrue($itemurl instanceof \moodle_url);
+        $this->assertTrue($itemurl instanceof url);
         $this->assertEquals('http://moodle.org', $itemurl->out());
         $this->assertNull($item->get_title()); // Implicit title.
 
@@ -544,7 +546,7 @@ EOF;
         $options = [ "Option A", "Option B", "Option C" ];
         $nothing = ['' => 'choosedots'];
 
-        $url = new \moodle_url('/');
+        $url = new url('/');
 
         $singleselect = new single_select($url, $realname, $options, null, $nothing, 'someformid');
         $singleselect->class = $realclass;
@@ -587,7 +589,7 @@ EOF;
      */
     public function test_single_button(): void {
         global $PAGE;
-        $url = new \moodle_url('/');
+        $url = new url('/');
         $realname = 'realname';
         $attributes = [
             'data-dummy' => 'dummy',
@@ -651,9 +653,9 @@ EOF;
             'style' => $labelstyle
         ];
 
-        $url1 = new \moodle_url("/#a");
-        $url2 = new \moodle_url("/#b");
-        $url3 = new \moodle_url("/#c");
+        $url1 = new url("/#a");
+        $url2 = new url("/#b");
+        $url3 = new url("/#c");
 
         $urls = [
             $url1->out() => 'A',
@@ -704,9 +706,9 @@ EOF;
      */
     public function test_url_select_disabled_options(): void {
         global $PAGE;
-        $url1 = new \moodle_url("/#a");
-        $url2 = new \moodle_url("/#b");
-        $url3 = new \moodle_url("/#c");
+        $url1 = new url("/#a");
+        $url2 = new url("/#b");
+        $url3 = new url("/#c");
 
         $urls = [
             $url1->out() => 'A',

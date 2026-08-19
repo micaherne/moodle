@@ -16,7 +16,13 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 
 /**
  * Custom fields management.
@@ -31,7 +37,7 @@ class managecustomfields extends \core_admin\setting {
      */
     public function __construct() {
         $this->nosave = true;
-        parent::__construct('customfieldsui', new \lang_string('managecustomfields', 'core_admin'), '', '');
+        parent::__construct('customfieldsui', new lang_string('managecustomfields', 'core_admin'), '', '');
     }
 
     /**
@@ -73,7 +79,7 @@ class managecustomfields extends \core_admin\setting {
         if (parent::is_related($query)) {
             return true;
         }
-        $formats = \core_plugin_manager::instance()->get_plugins_of_type('customfield');
+        $formats = plugin_manager::instance()->get_plugins_of_type('customfield');
         foreach ($formats as $format) {
             if (strpos($format->component, $query) !== false) {
                 $this->searchmatchtype = admin_search::SEARCH_MATCH_SETTING_SHORT_NAME;
@@ -97,16 +103,16 @@ class managecustomfields extends \core_admin\setting {
     public function output_html($data, $query = '') {
         global $CFG, $OUTPUT;
         $return = '';
-        $return = $OUTPUT->heading(new \lang_string('customfields', 'core_customfield'), 3, 'main');
+        $return = $OUTPUT->heading(new lang_string('customfields', 'core_customfield'), 3, 'main');
         $return .= $OUTPUT->box_start('generalbox customfieldsui');
 
-        $fields = \core_plugin_manager::instance()->get_plugins_of_type('customfield');
+        $fields = plugin_manager::instance()->get_plugins_of_type('customfield');
 
         $txt = get_strings(['settings', 'name', 'enable', 'disable', 'up', 'down']);
         $txt->uninstall = get_string('uninstallplugin', 'core_admin');
         $txt->updown = "$txt->up/$txt->down";
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [$txt->name, $txt->enable, $txt->uninstall, $txt->settings];
         $table->align = ['left', 'center', 'center', 'center'];
         $table->attributes['class'] = 'managecustomfieldtable table generaltable admintable table-striped table-hover';
@@ -114,7 +120,7 @@ class managecustomfields extends \core_admin\setting {
 
         $spacer = $OUTPUT->pix_icon('spacer', '', 'moodle', ['class' => 'iconsmall']);
         foreach ($fields as $field) {
-            $url = new \moodle_url(
+            $url = new url(
                 '/admin/customfields.php',
                 ['sesskey' => sesskey(), 'field' => $field->name]
             );
@@ -122,31 +128,31 @@ class managecustomfields extends \core_admin\setting {
             if ($field->is_enabled()) {
                 $strfieldname = $field->displayname;
                 $class = '';
-                $hideshow = \html_writer::link(
+                $hideshow = html_writer::link(
                     $url->out(false, ['action' => 'disable']),
                     $OUTPUT->pix_icon('t/hide', $txt->disable, 'moodle', ['class' => 'iconsmall'])
                 );
             } else {
                 $strfieldname = $field->displayname;
                 $class = 'dimmed_text';
-                $hideshow = \html_writer::link(
+                $hideshow = html_writer::link(
                     $url->out(false, ['action' => 'enable']),
                     $OUTPUT->pix_icon('t/show', $txt->enable, 'moodle', ['class' => 'iconsmall'])
                 );
             }
             $settings = '';
             if ($field->get_settings_url()) {
-                $settings = \html_writer::link($field->get_settings_url(), $txt->settings);
+                $settings = html_writer::link($field->get_settings_url(), $txt->settings);
             }
             $uninstall = '';
-            if ($uninstallurl = \core_plugin_manager::instance()->get_uninstall_url('customfield_' . $field->name, 'manage')) {
-                $uninstall = \html_writer::link($uninstallurl, $txt->uninstall);
+            if ($uninstallurl = plugin_manager::instance()->get_uninstall_url('customfield_' . $field->name, 'manage')) {
+                $uninstall = html_writer::link($uninstallurl, $txt->uninstall);
             }
-            $row = new \html_table_row([$strfieldname, $hideshow, $uninstall, $settings]);
+            $row = new html_table_row([$strfieldname, $hideshow, $uninstall, $settings]);
             $row->attributes['class'] = $class;
             $table->data[] = $row;
         }
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
         $return .= $OUTPUT->box_end();
         return highlight($query, $return);
     }

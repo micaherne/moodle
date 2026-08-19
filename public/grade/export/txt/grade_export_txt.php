@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+
 require_once($CFG->dirroot.'/grade/export/lib.php');
 require_once($CFG->libdir . '/csvlib.class.php');
 
@@ -52,7 +54,7 @@ class grade_export_txt extends grade_export {
         $strgrades = get_string('grades');
         $profilefields = grade_helper::get_user_profile_fields($this->course->id, $this->usercustomfields);
 
-        $shortname = format_string($this->course->shortname, true, array('context' => context_course::instance($this->course->id)));
+        $shortname = format_string($this->course->shortname, true, array('context' => course::instance($this->course->id)));
         $downloadfilename = clean_filename("$shortname $strgrades");
         $csvexport = new csv_export_writer($this->separator);
         $csvexport->set_filename($downloadfilename);

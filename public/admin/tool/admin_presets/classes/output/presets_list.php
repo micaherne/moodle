@@ -23,10 +23,14 @@
  */
 namespace tool_admin_presets\output;
 
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\output\pix_icon;
+use core\url;
 use core_adminpresets\manager;
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
 /**
  * Class containing data for admin_presets tool
@@ -87,32 +91,32 @@ class presets_list implements renderable, templatable {
 
             if ($this->showactions) {
                 // Preset actions.
-                $actionsmenu = new \action_menu();
+                $actionsmenu = new action_menu();
                 $actionsmenu->set_menu_trigger(get_string('actions'));
                 $actionsmenu->set_owner_selector('preset-actions-' . $preset->id);
 
-                $loadlink = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'load', 'id' => $preset->id]);
-                $actionsmenu->add(new \action_menu_link_secondary(
-                    $loadlink, new \pix_icon('t/play', ''),
+                $loadlink = new url('/admin/tool/admin_presets/index.php', ['action' => 'load', 'id' => $preset->id]);
+                $actionsmenu->add(new link_secondary(
+                    $loadlink, new pix_icon('t/play', ''),
                     get_string('applyaction', 'tool_admin_presets')
                 ));
-                $downloadlink = new \moodle_url('/admin/tool/admin_presets/index.php',
+                $downloadlink = new url('/admin/tool/admin_presets/index.php',
                     ['action' => 'export', 'mode' => 'download_xml', 'sesskey' => sesskey(), 'id' => $preset->id]
                 );
-                $actionsmenu->add(new \action_menu_link_secondary(
+                $actionsmenu->add(new link_secondary(
                     $downloadlink,
-                    new \pix_icon('t/download', ''),
+                    new pix_icon('t/download', ''),
                     get_string('download')
                 ));
 
                 // Delete button won't be displayed for the pre-installed core "Starter" and "Full" presets.
                 if ($preset->iscore == manager::NONCORE_PRESET) {
-                    $deletelink = new \moodle_url('/admin/tool/admin_presets/index.php',
+                    $deletelink = new url('/admin/tool/admin_presets/index.php',
                     ['action' => 'delete', 'id' => $preset->id]
                     );
-                    $actionsmenu->add(new \action_menu_link_secondary(
+                    $actionsmenu->add(new link_secondary(
                         $deletelink,
-                        new \pix_icon('i/delete', ''),
+                        new pix_icon('i/delete', ''),
                         get_string('delete')
                     ));
                 }
@@ -120,10 +124,10 @@ class presets_list implements renderable, templatable {
                 // Look for preset applications.
                 if ($DB->get_records('adminpresets_app', ['adminpresetid' => $preset->id])) {
                     $params = ['action' => 'rollback', 'id' => $preset->id];
-                    $rollbacklink = new \moodle_url('/admin/tool/admin_presets/index.php', $params);
-                    $actionsmenu->add(new \action_menu_link_secondary(
+                    $rollbacklink = new url('/admin/tool/admin_presets/index.php', $params);
+                    $actionsmenu->add(new link_secondary(
                         $rollbacklink,
-                        new \pix_icon('i/reload', ''),
+                        new pix_icon('i/reload', ''),
                         get_string('showhistory', 'tool_admin_presets')
                     ));
                 }

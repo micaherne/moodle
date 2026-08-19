@@ -25,6 +25,10 @@
 
 namespace block_rss_client\output;
 
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -35,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
  * @author    Brendan Anderson <brendan_anderson@hcpss.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block implements \renderable, \templatable {
+class block implements renderable, templatable {
 
     /**
      * An array of renderable feeds
@@ -59,7 +63,7 @@ class block implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $data = array('feeds' => array());
 
         foreach ($this->feeds as $feed) {

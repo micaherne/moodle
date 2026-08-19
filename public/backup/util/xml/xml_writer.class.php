@@ -37,6 +37,8 @@
  * TODO: Provide UTF-8 safe strtoupper() function if using casefolding and non-ascii tags/attrs names
  * TODO: Finish phpdocs
  */
+use core\exception\moodle_exception;
+
 class xml_writer {
 
     protected $output;     // @xml_output that defines how to output XML

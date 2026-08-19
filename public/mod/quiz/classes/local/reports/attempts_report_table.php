@@ -20,13 +20,14 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/tablelib.php');
 
-use coding_exception;
-use context_module;
-use html_writer;
+use core\exception\coding_exception;
+use core\context\module;
+use core\output\html_writer;
+use core_table\sql_table;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
-use moodle_url;
-use popup_action;
+use core\url;
+use core\output\actions\popup_action;
 use question_state;
 use qubaid_condition;
 use qubaid_join;
@@ -41,7 +42,7 @@ use stdClass;
  * @copyright 2010 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class attempts_report_table extends \table_sql {
+abstract class attempts_report_table extends sql_table {
     public $useridfield = 'userid';
 
     /** @var moodle_url the URL of this report. */
@@ -188,7 +189,7 @@ abstract class attempts_report_table extends \table_sql {
         }
 
         return $html . html_writer::empty_tag('br') . html_writer::link(
-                new moodle_url('/mod/quiz/review.php', ['attempt' => $attempt->attempt]),
+                new url('/mod/quiz/review.php', ['attempt' => $attempt->attempt]),
                 get_string('reviewattempt', 'quiz'), ['class' => 'reviewlink']);
     }
 
@@ -350,7 +351,7 @@ abstract class attempts_report_table extends \table_sql {
         if (isset($attempt->try)) {
             $reviewparams['step'] = $this->step_no_for_try($attempt->usageid, $slot, $attempt->try);
         }
-        $url = new moodle_url('/mod/quiz/reviewquestion.php', $reviewparams);
+        $url = new url('/mod/quiz/reviewquestion.php', $reviewparams);
         $output = $OUTPUT->action_link($url, $output,
                 new popup_action('click', $url, 'reviewquestion',
                         ['height' => 450, 'width' => 650]),

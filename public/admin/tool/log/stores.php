@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\plugin_manager;
+use core\url;
+
 require_once('../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -29,7 +33,7 @@ $action = required_param('action', PARAM_ALPHANUMEXT);
 $store = required_param('store', PARAM_PLUGIN);
 
 $PAGE->set_url('/admin/tool/log/stores.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 require_admin();
 require_sesskey();
@@ -42,18 +46,18 @@ if (!$enabled) {
     $enabled = array_flip(explode(',', $enabled));
 }
 
-$return = new moodle_url('/admin/settings.php', array('section' => 'managelogging'));
+$return = new url('/admin/settings.php', array('section' => 'managelogging'));
 
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 
 switch ($action) {
     case 'disable':
-        $class = \core_plugin_manager::resolve_plugininfo_class('logstore');
+        $class = plugin_manager::resolve_plugininfo_class('logstore');
         $class::enable_plugin($store, false);
         break;
 
     case 'enable':
-        $class = \core_plugin_manager::resolve_plugininfo_class('logstore');
+        $class = plugin_manager::resolve_plugininfo_class('logstore');
         $class::enable_plugin($store, true);
         break;
 

@@ -16,9 +16,10 @@
 
 namespace core;
 
-use coding_exception;
+use core\exception\coding_exception;
+use core\output\core_renderer;
 use core_php_time_limit;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 
 // Disable the moodle.PHP.ForbiddenFunctions.FoundWithAlternative sniff for this file.
@@ -340,7 +341,7 @@ class cron {
     public static function run_adhoc_task(int $taskid): void {
         $task = \core\task\manager::get_adhoc_task($taskid);
         if (!$task->get_fail_delay() && $task->get_next_run_time() > time()) {
-            throw new \moodle_exception('wontrunfuturescheduledtask');
+            throw new moodle_exception('wontrunfuturescheduledtask');
         }
 
         self::run_inner_adhoc_task($task);
@@ -480,10 +481,10 @@ class cron {
 
         if ($userid = $task->get_userid()) {
             // This task has a userid specified.
-            if ($user = \core_user::get_user($userid)) {
+            if ($user = user::get_user($userid)) {
                 // User found. Check that they are suitable.
                 try {
-                    \core_user::require_active_user($user, true, true);
+                    user::require_active_user($user, true, true);
                 } catch (moodle_exception $e) {
                     mtrace("User {$userid} cannot be used to run an adhoc task: " . get_class($task) . ". Cancelling task.");
                     $user = null;
@@ -630,7 +631,7 @@ class cron {
             // Cron tasks may produce output to be used in web, so we must use the appropriate renderer target.
             // This allows correct use of templates, etc.
             $PAGE = new \moodle_page();
-            $OUTPUT = new \core_renderer($PAGE, RENDERER_TARGET_GENERAL);
+            $OUTPUT = new core_renderer($PAGE, RENDERER_TARGET_GENERAL);
         }
     }
 

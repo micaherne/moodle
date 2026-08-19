@@ -24,6 +24,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\progress_trace\progress_trace_buffer;
+use core\output\progress_trace\text_progress_trace;
+use core\plugin_manager;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/filelib.php');
@@ -42,12 +49,12 @@ $confirminstallupdate = optional_param('confirminstallupdate', false, PARAM_BOOL
 //       full admin tree which is not possible during uninstallation.
 
 require_admin();
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 
 // URL params we want to maintain on redirects.
-$pageurl = new moodle_url('/admin/plugins.php');
+$pageurl = new url('/admin/plugins.php');
 
-$pluginman = core_plugin_manager::instance();
+$pluginman = plugin_manager::instance();
 
 $PAGE->set_primary_active_tab('siteadminnode');
 
@@ -84,7 +91,7 @@ if ($uninstall) {
     }
 
     if (!$confirmed) {
-        $continueurl = new moodle_url($PAGE->url, array('uninstall' => $pluginfo->component, 'sesskey' => sesskey(), 'confirm' => 1, 'return'=>$return));
+        $continueurl = new url($PAGE->url, array('uninstall' => $pluginfo->component, 'sesskey' => sesskey(), 'confirm' => 1, 'return'=>$return));
         $cancelurl = $pluginfo->get_return_url_after_uninstall($return);
         echo $output->plugin_uninstall_confirm_page($pluginman, $pluginfo, $continueurl, $cancelurl);
         exit();
@@ -97,7 +104,7 @@ if ($uninstall) {
         $progress->finished();
 
         if ($pluginman->is_plugin_folder_removable($pluginfo->component)) {
-            $continueurl = new moodle_url($PAGE->url, array('delete' => $pluginfo->component, 'sesskey' => sesskey(), 'confirm' => 1));
+            $continueurl = new url($PAGE->url, array('delete' => $pluginfo->component, 'sesskey' => sesskey(), 'confirm' => 1));
             echo $output->plugin_uninstall_results_removable_page($pluginman, $pluginfo, $progress, $continueurl);
             // Reset op code caches.
             if (function_exists('opcache_reset')) {
@@ -157,7 +164,7 @@ if ($delete and $confirmed) {
     $pluginman->remove_plugin_folder($pluginfo);
 
     // We need to execute upgrade to make sure everything including caches is up to date.
-    redirect(new moodle_url('/admin/index.php'));
+    redirect(new url('/admin/index.php'));
 }
 
 // Install all avilable updates.
@@ -173,7 +180,7 @@ if ($installupdatex) {
     $installable = $pluginman->filter_installable($pluginman->available_updates());
     upgrade_install_plugins($installable, $confirminstallupdate,
         get_string('updateavailableinstallallhead', 'core_admin'),
-        new moodle_url($PAGE->url, array('installupdatex' => 1, 'confirminstallupdate' => 1))
+        new url($PAGE->url, array('installupdatex' => 1, 'confirminstallupdate' => 1))
     );
 }
 
@@ -191,7 +198,7 @@ if ($installupdate and $installupdateversion) {
         $installable = array($pluginman->get_remote_plugin_info($installupdate, $installupdateversion, true));
         upgrade_install_plugins($installable, $confirminstallupdate,
             get_string('updateavailableinstallallhead', 'core_admin'),
-            new moodle_url($PAGE->url, array('installupdate' => $installupdate,
+            new url($PAGE->url, array('installupdate' => $installupdate,
                 'installupdateversion' => $installupdateversion, 'confirminstallupdate' => 1)
             )
         );

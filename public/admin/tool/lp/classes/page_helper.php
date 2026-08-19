@@ -25,13 +25,14 @@
 namespace tool_lp;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use context;
-use moodle_exception;
-use moodle_url;
-use core_user;
-use context_user;
-use context_course;
+use core\exception\coding_exception;
+use core\context;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+use core\user as core_user;
+use core\context\user as context_user;
+use core\context\course;
 use stdClass;
 
 /**
@@ -59,10 +60,10 @@ class page_helper {
      *               - Page sub title
      *               - Return URL (course competencies page)
      */
-    public static function setup_for_course(moodle_url $url, $course, $subtitle = '') {
+    public static function setup_for_course(url $url, $course, $subtitle = '') {
         global $PAGE;
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $PAGE->set_course($course);
 
@@ -72,7 +73,7 @@ class page_helper {
             $title = get_string('coursecompetencies', 'tool_lp');
         }
 
-        $returnurl = new moodle_url('/admin/tool/lp/coursecompetencies.php', array('courseid' => $course->id));
+        $returnurl = new url('/admin/tool/lp/coursecompetencies.php', array('courseid' => $course->id));
 
         $heading = $context->get_context_name();
         $PAGE->set_pagelayout('incourse');
@@ -107,7 +108,7 @@ class page_helper {
      *               - Page sub title
      *               - Return URL
      */
-    public static function setup_for_template($pagecontextid, moodle_url $url, $template = null, $subtitle = '',
+    public static function setup_for_template($pagecontextid, url $url, $template = null, $subtitle = '',
                                               $returntype = null) {
         global $PAGE, $SITE;
 
@@ -117,10 +118,10 @@ class page_helper {
             $context = $template->get_context();
         }
 
-        $templatesurl = new moodle_url('/admin/tool/lp/learningplans.php', array('pagecontextid' => $pagecontextid));
+        $templatesurl = new url('/admin/tool/lp/learningplans.php', array('pagecontextid' => $pagecontextid));
         $templateurl = null;
         if ($template) {
-            $templateurl = new moodle_url('/admin/tool/lp/templatecompetencies.php', [
+            $templateurl = new url('/admin/tool/lp/templatecompetencies.php', [
                 'templateid' => $template->get('id'),
                 'pagecontextid' => $pagecontextid
             ]);
@@ -146,7 +147,7 @@ class page_helper {
         } else if ($pagecontext->contextlevel == CONTEXT_COURSECAT) {
             \core_course_category::page_setup();
             // Set the learning plan templates node active in the settings navigation block.
-            if ($learningplannode = $PAGE->settingsnav->find('learningplantemplates', \navigation_node::TYPE_SETTING)) {
+            if ($learningplannode = $PAGE->settingsnav->find('learningplantemplates', navigation_node::TYPE_SETTING)) {
                 $learningplannode->make_active();
             }
         } else {
@@ -188,21 +189,21 @@ class page_helper {
      *               - Page sub title
      *               - Return URL (main plan page)
      */
-    public static function setup_for_plan($userid, moodle_url $url, $plan = null, $subtitle = '', $returntype = null) {
+    public static function setup_for_plan($userid, url $url, $plan = null, $subtitle = '', $returntype = null) {
         global $PAGE, $USER;
 
         // Check that the user is a valid user.
         $user = core_user::get_user($userid);
         if (!$user || !core_user::is_real_user($userid)) {
-            throw new \moodle_exception('invaliduser', 'error');
+            throw new moodle_exception('invaliduser', 'error');
         }
 
         $context = context_user::instance($user->id);
 
-        $plansurl = new moodle_url('/admin/tool/lp/plans.php', array('userid' => $userid));
+        $plansurl = new url('/admin/tool/lp/plans.php', array('userid' => $userid));
         $planurl = null;
         if ($plan) {
-            $planurl = new moodle_url('/admin/tool/lp/plan.php', array('id' => $plan->get('id')));
+            $planurl = new url('/admin/tool/lp/plan.php', array('id' => $plan->get('id')));
         }
 
         $returnurl = $plansurl;
@@ -261,21 +262,21 @@ class page_helper {
      *               - Page sub title
      *               - Return URL (main plan page)
      */
-    public static function setup_for_user_evidence($userid, moodle_url $url, $evidence = null, $subtitle = '', $returntype = null) {
+    public static function setup_for_user_evidence($userid, url $url, $evidence = null, $subtitle = '', $returntype = null) {
         global $PAGE, $USER;
 
         // Check that the user is a valid user.
         $user = core_user::get_user($userid);
         if (!$user || !core_user::is_real_user($userid)) {
-            throw new \moodle_exception('invaliduser', 'error');
+            throw new moodle_exception('invaliduser', 'error');
         }
 
         $context = context_user::instance($user->id);
 
-        $evidencelisturl = new moodle_url('/admin/tool/lp/user_evidence_list.php', array('userid' => $userid));
+        $evidencelisturl = new url('/admin/tool/lp/user_evidence_list.php', array('userid' => $userid));
         $evidenceurl = null;
         if ($evidence) {
-            $evidenceurl = new moodle_url('/admin/tool/lp/user_evidence.php', array('id' => $evidence->get('id')));
+            $evidenceurl = new url('/admin/tool/lp/user_evidence.php', array('id' => $evidence->get('id')));
         }
 
         $returnurl = $evidencelisturl;
@@ -338,11 +339,11 @@ class page_helper {
         global $PAGE, $SITE;
 
         // We keep the original context in the URLs, so that we remain in the same context.
-        $url = new moodle_url("/admin/tool/lp/editcompetencyframework.php", array('id' => $id, 'pagecontextid' => $pagecontextid));
+        $url = new url("/admin/tool/lp/editcompetencyframework.php", array('id' => $id, 'pagecontextid' => $pagecontextid));
         if ($returntype) {
             $url->param('return', $returntype);
         }
-        $frameworksurl = new moodle_url('/admin/tool/lp/competencyframeworks.php', array('pagecontextid' => $pagecontextid));
+        $frameworksurl = new url('/admin/tool/lp/competencyframeworks.php', array('pagecontextid' => $pagecontextid));
 
         $context = context::instance_by_id($pagecontextid);
         $PAGE->set_context($context);
@@ -354,7 +355,7 @@ class page_helper {
         if ($context->contextlevel == CONTEXT_COURSECAT) {
             \core_course_category::page_setup();
             // Set the competency frameworks node active in the settings navigation block.
-            if ($competencyframeworksnode = $PAGE->settingsnav->find('competencyframeworks', \navigation_node::TYPE_SETTING)) {
+            if ($competencyframeworksnode = $PAGE->settingsnav->find('competencyframeworks', navigation_node::TYPE_SETTING)) {
                 $competencyframeworksnode->make_active();
             }
         } else if ($context->contextlevel == CONTEXT_SYSTEM) {
@@ -374,7 +375,7 @@ class page_helper {
             $pagetitle = $framework->get('shortname');
             $pagesubtitle = get_string('editcompetencyframework', 'tool_lp');
             if ($returntype == 'competencies') {
-                $frameworksurl = new moodle_url('/admin/tool/lp/competencies.php', array(
+                $frameworksurl = new url('/admin/tool/lp/competencies.php', array(
                     'pagecontextid' => $pagecontextid,
                     'competencyframeworkid' => $id
                 ));
@@ -409,7 +410,7 @@ class page_helper {
      *               - Return URL (main competencies page)
      * @throws coding_exception
      */
-    public static function setup_for_competency($pagecontextid, moodle_url $url, $framework, $competency = null, $parent = null) {
+    public static function setup_for_competency($pagecontextid, url $url, $framework, $competency = null, $parent = null) {
         global $PAGE, $SITE;
 
         // Set page context.
@@ -427,7 +428,7 @@ class page_helper {
         $PAGE->set_heading($heading);
 
         // Set override active url.
-        $frameworksurl = new moodle_url('/admin/tool/lp/competencyframeworks.php', ['pagecontextid' => $pagecontextid]);
+        $frameworksurl = new url('/admin/tool/lp/competencyframeworks.php', ['pagecontextid' => $pagecontextid]);
         $PAGE->navigation->override_active_url($frameworksurl);
 
         // Set return url.
@@ -435,7 +436,7 @@ class page_helper {
             'competencyframeworkid' => $framework->get('id'),
             'pagecontextid' => $pagecontextid
         ];
-        $returnurl = new moodle_url('/admin/tool/lp/competencies.php', $returnurloptions);
+        $returnurl = new url('/admin/tool/lp/competencies.php', $returnurloptions);
         $PAGE->navbar->add($framework->get('shortname'), $returnurl);
 
         // Set page layout.

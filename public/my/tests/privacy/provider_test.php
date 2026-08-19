@@ -26,6 +26,7 @@ namespace core_my\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\user;
 use core_privacy\local\request\writer;
 use core_my\privacy\provider;
 
@@ -62,7 +63,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Test the user preferences export contains 1 user preference record for the User.
         provider::export_user_preferences($user->id);
-        $contextuser = \context_user::instance($user->id);
+        $contextuser = user::instance($user->id);
         $writer = writer::with_context($contextuser);
         $this->assertTrue($writer->has_any_data());
 

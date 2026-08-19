@@ -16,6 +16,12 @@
 
 namespace search_solr;
 
+use core\context\block;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -245,7 +251,7 @@ final class engine_test extends \advanced_testcase {
 
         // Based on core_mocksearch\search\indexer.
         $this->assertEquals($USER->id, $results[0]->get('userid'));
-        $this->assertEquals(\context_course::instance(SITEID)->id, $results[0]->get('contextid'));
+        $this->assertEquals(course::instance(SITEID)->id, $results[0]->get('contextid'));
 
         // Do a test to make sure we aren't searching non-query fields, like areaid.
         $querydata->q = \core_search\manager::generate_areaid('core_mocksearch', 'mock_search_area');
@@ -478,7 +484,7 @@ final class engine_test extends \advanced_testcase {
 
         // Now we are going to make some files.
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $files = array();
 
@@ -574,7 +580,7 @@ final class engine_test extends \advanced_testcase {
 
         // Now we are going to make some files.
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         // We need to make a file greater than 1kB in size, which is the lowest filter size.
         $filerecord = new \stdClass();
@@ -806,18 +812,18 @@ final class engine_test extends \advanced_testcase {
         // Create 2 courses and some forums.
         $generator = $this->getDataGenerator();
         $course1 = $generator->create_course(['fullname' => 'Course 1', 'summary' => 'xyzzy']);
-        $contextc1 = \context_course::instance($course1->id);
+        $contextc1 = course::instance($course1->id);
         $course1forum1 = $generator->create_module('forum', ['course' => $course1,
                 'name' => 'C1F1', 'intro' => 'xyzzy']);
-        $contextc1f1 = \context_module::instance($course1forum1->cmid);
+        $contextc1f1 = module::instance($course1forum1->cmid);
         $course1forum2 = $generator->create_module('forum', ['course' => $course1,
                 'name' => 'C1F2', 'intro' => 'xyzzy']);
-        $contextc1f2 = \context_module::instance($course1forum2->cmid);
+        $contextc1f2 = module::instance($course1forum2->cmid);
         $course2 = $generator->create_course(['fullname' => 'Course 2', 'summary' => 'xyzzy']);
-        $contextc2 = \context_course::instance($course1->id);
+        $contextc2 = course::instance($course1->id);
         $course2forum = $generator->create_module('forum', ['course' => $course2,
                 'name' => 'C2F', 'intro' => 'xyzzy']);
-        $contextc2f = \context_module::instance($course2forum->cmid);
+        $contextc2f = module::instance($course2forum->cmid);
 
         // Index the courses and forums.
         $this->search->index();
@@ -1032,7 +1038,7 @@ final class engine_test extends \advanced_testcase {
                 ['Entry1', 'Post1', 'Post2'], $results);
 
         // Restriction to users 1 and 2 combined with context restriction.
-        $querydata->contextids = [\context_module::instance($glossary->cmid)->id];
+        $querydata->contextids = [module::instance($glossary->cmid)->id];
         $results = $this->search->search($querydata);
         $this->assert_result_titles(
                 ['Entry1'], $results);
@@ -1131,12 +1137,12 @@ final class engine_test extends \advanced_testcase {
         global $DB;
 
         // System or category context: relevance only.
-        $orders = $this->engine->get_supported_orders(\context_system::instance());
+        $orders = $this->engine->get_supported_orders(system::instance());
         $this->assertCount(1, $orders);
         $this->assertArrayHasKey('relevance', $orders);
 
         $categoryid = $DB->get_field_sql('SELECT MIN(id) FROM {course_categories}');
-        $orders = $this->engine->get_supported_orders(\context_coursecat::instance($categoryid));
+        $orders = $this->engine->get_supported_orders(coursecat::instance($categoryid));
         $this->assertCount(1, $orders);
         $this->assertArrayHasKey('relevance', $orders);
     }
@@ -1151,7 +1157,7 @@ final class engine_test extends \advanced_testcase {
         // Test with course context.
         $generator = $this->getDataGenerator();
         $course = $generator->create_course(['fullname' => 'Frogs']);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $orders = $this->engine->get_supported_orders($coursecontext);
         $this->assertCount(2, $orders);
@@ -1162,7 +1168,7 @@ final class engine_test extends \advanced_testcase {
         // Test with activity context.
         $page = $generator->create_module('page', ['course' => $course->id, 'name' => 'Toads']);
 
-        $orders = $this->engine->get_supported_orders(\context_module::instance($page->cmid));
+        $orders = $this->engine->get_supported_orders(module::instance($page->cmid));
         $this->assertCount(2, $orders);
         $this->assertArrayHasKey('relevance', $orders);
         $this->assertArrayHasKey('location', $orders);
@@ -1174,7 +1180,7 @@ final class engine_test extends \advanced_testcase {
                 'defaultweight' => 0, 'timecreated' => 1, 'timemodified' => 1,
                 'configdata' => ''];
         $blockid = $DB->insert_record('block_instances', $instance);
-        $blockcontext = \context_block::instance($blockid);
+        $blockcontext = block::instance($blockid);
 
         $orders = $this->engine->get_supported_orders($blockcontext);
         $this->assertCount(2, $orders);
@@ -1190,13 +1196,13 @@ final class engine_test extends \advanced_testcase {
         // Create 2 courses and 2 activities.
         $generator = $this->getDataGenerator();
         $course1 = $generator->create_course(['fullname' => 'Course 1']);
-        $course1context = \context_course::instance($course1->id);
+        $course1context = course::instance($course1->id);
         $course1page = $generator->create_module('page', ['course' => $course1]);
-        $course1pagecontext = \context_module::instance($course1page->cmid);
+        $course1pagecontext = module::instance($course1page->cmid);
         $course2 = $generator->create_course(['fullname' => 'Course 2']);
-        $course2context = \context_course::instance($course2->id);
+        $course2context = course::instance($course2->id);
         $course2page = $generator->create_module('page', ['course' => $course2]);
-        $course2pagecontext = \context_module::instance($course2page->cmid);
+        $course2pagecontext = module::instance($course2page->cmid);
 
         // Create one search record in each activity and course.
         $this->create_search_record($course1->id, $course1context->id, 'C1', 'Xyzzy');
@@ -1238,7 +1244,7 @@ final class engine_test extends \advanced_testcase {
     public function test_bogus_content(): void {
         $generator = $this->getDataGenerator();
         $course1 = $generator->create_course(['fullname' => 'Course 1']);
-        $course1context = \context_course::instance($course1->id);
+        $course1context = course::instance($course1->id);
 
         // It is possible to enter into a Moodle database content containing these characters,
         // which are Unicode non-characters / byte order marks. If sent to Solr, these cause
@@ -1293,15 +1299,15 @@ final class engine_test extends \advanced_testcase {
         // Create some courses and activities.
         $generator = $this->getDataGenerator();
         $course1 = $generator->create_course(['fullname' => 'Course 1']);
-        $course1context = \context_course::instance($course1->id);
+        $course1context = course::instance($course1->id);
         $course1page1 = $generator->create_module('page', ['course' => $course1]);
-        $course1page1context = \context_module::instance($course1page1->cmid);
+        $course1page1context = module::instance($course1page1->cmid);
         $course1page2 = $generator->create_module('page', ['course' => $course1]);
-        $course1page2context = \context_module::instance($course1page2->cmid);
+        $course1page2context = module::instance($course1page2->cmid);
         $course2 = $generator->create_course(['fullname' => 'Course 2']);
-        $course2context = \context_course::instance($course2->id);
+        $course2context = course::instance($course2->id);
         $course2page = $generator->create_module('page', ['course' => $course2]);
-        $course2pagecontext = \context_module::instance($course2page->cmid);
+        $course2pagecontext = module::instance($course2page->cmid);
 
         // Create one search record in each activity and course.
         $this->create_search_record($course1->id, $course1context->id, 'C1', 'Xyzzy');

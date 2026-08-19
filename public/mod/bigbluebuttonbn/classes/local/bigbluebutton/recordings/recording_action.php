@@ -16,6 +16,7 @@
 
 namespace mod_bigbluebuttonbn\local\bigbluebutton\recordings;
 
+use core\exception\moodle_exception;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\logger;
 use mod_bigbluebuttonbn\recording;
@@ -101,11 +102,11 @@ class recording_action {
         $recordingid = $recording->get('id');
         if (!(bool) config::get('recording_protect_editable')) {
             // Recording protect action through UI is disabled, there is no need to do anything else.
-            throw new \moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'unprotect');
+            throw new moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'unprotect');
         }
         if ($recording->get('imported')) {
             // Imported recordings can not be unprotected. There is no need to do anything else.
-            throw new \moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'unprotect');
+            throw new moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'unprotect');
         }
         $recording->set('protected', false);
         // Update the recording.
@@ -124,11 +125,11 @@ class recording_action {
         $recordingid = $recording->get('id');
         if (!(bool) config::get('recording_protect_editable')) {
             // Recording protect action through UI is disabled, there is no need to do anything else.
-            throw new \moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'protect');
+            throw new moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'protect');
         }
         if ($recording->get('imported')) {
             // Imported recordings can not be unprotected. There is no need to do anything else.
-            throw new \moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'protect');
+            throw new moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'protect');
         }
         $recording->set('protected', true);
         // Update the recording.
@@ -149,7 +150,7 @@ class recording_action {
             /* Since the recording link is the one fetched from the BBB server, imported recordings can not be
              * unpublished. There is no need to do anything else.
              */
-            throw new \moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'unpublish');
+            throw new moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'unpublish');
         }
         $recording->set('published', false);
         // Update the recording.
@@ -170,7 +171,7 @@ class recording_action {
             /* Since the recording link is the one fetched from the BBB server, imported recordings can not be
              * unpublished. There is no need to do anything else.
              */
-            throw new \moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'publish');
+            throw new moodle_exception('cannotperformaction', 'mod_bigblubuebuttobn', '', 'publish');
         }
         $recording->set('published', true);
         $recording->update();

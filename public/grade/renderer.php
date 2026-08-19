@@ -16,7 +16,11 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+use core\context;
+use core\context\course;
 use core\output\comboboxsearch;
+use core\output\plugin_renderer_base;
+use core\url;
 use core_grades\output\action_bar;
 use core_grades\output\penalty_indicator;
 use core_message\helper;
@@ -82,7 +86,7 @@ class core_grades_renderer extends plugin_renderer_base {
 
         $buttondata = ['label' => $label];
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         if ($groupmode == VISIBLEGROUPS || has_capability('moodle/site:accessallgroups', $context)) {
             $allowedgroups = groups_get_all_groups($course->id, 0, $course->defaultgroupingid);
@@ -144,7 +148,7 @@ class core_grades_renderer extends plugin_renderer_base {
         // User search.
         $searchvalue = optional_param('gpr_search', null, PARAM_NOTAGS);
         $userid = optional_param('grp_userid', null, PARAM_INT);
-        $url = new moodle_url($slug, ['id' => $course->id]);
+        $url = new url($slug, ['id' => $course->id]);
         $firstinitial = $SESSION->gradereport["filterfirstname-{$context->id}"] ?? '';
         $lastinitial  = $SESSION->gradereport["filtersurname-{$context->id}"] ?? '';
 
@@ -187,7 +191,7 @@ class core_grades_renderer extends plugin_renderer_base {
         global $USER;
 
         $headingdata = [
-            'userprofileurl' => (new moodle_url('/user/view.php', ['id' => $user->id, 'course' => $courseid]))->out(false),
+            'userprofileurl' => (new url('/user/view.php', ['id' => $user->id, 'course' => $courseid]))->out(false),
             'name' => fullname($user),
             'image' => $this->user_picture($user, ['size' => 50, 'link' => false])
         ];
@@ -201,7 +205,7 @@ class core_grades_renderer extends plugin_renderer_base {
 
             $headingdata['buttons'][] = [
                 'title' => get_string('message', 'message'),
-                'url' => (new moodle_url('/message/index.php', ['id' => $user->id]))->out(false),
+                'url' => (new url('/message/index.php', ['id' => $user->id]))->out(false),
                 'icon' => ['name' => 't/message', 'component' => 'core'],
                 'linkattributes' => $messagelinkattributes
             ];
@@ -225,7 +229,7 @@ class core_grades_renderer extends plugin_renderer_base {
 
                 $headingdata['buttons'][] = [
                     'title' => get_string($contacttitle, 'message'),
-                    'url' => (new moodle_url('/message/index.php', ['user1' => $USER->id, 'user2' => $user->id,
+                    'url' => (new url('/message/index.php', ['user1' => $USER->id, 'user2' => $user->id,
                         $contacturlaction => $user->id, 'sesskey' => sesskey()]))->out(false),
                     'icon' => ['name' => $contacticon, 'component' => 'core'],
                     'linkattributes' => $togglecontactlinkattributes

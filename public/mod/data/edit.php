@@ -23,6 +23,10 @@
  * @package mod_data
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
 use mod_data\manager;
 
 require_once('../../config.php');
@@ -37,7 +41,7 @@ $mode = 'addtemplate'; // Define the mode for this page, only 1 mode available.
 $tags = optional_param_array('tags', [], PARAM_TAGLIST);
 $redirectbackto = optional_param('backto', '', PARAM_LOCALURL); // The location to redirect back.
 
-$url = new moodle_url('/mod/data/edit.php');
+$url = new url('/mod/data/edit.php');
 
 $record = null;
 
@@ -88,17 +92,17 @@ if (!has_capability('mod/data:manageentries', $context)) {
     if ($rid) {
         // User is editing an existing record.
         if (!data_user_can_manage_entry($record, $data, $context)) {
-            throw new \moodle_exception('noaccess', 'data');
+            throw new moodle_exception('noaccess', 'data');
         }
     } else if (!data_user_can_add_entry($data, $currentgroup, $groupmode, $context)) {
         // User is trying to create a new record.
-        throw new \moodle_exception('noaccess', 'data');
+        throw new moodle_exception('noaccess', 'data');
     }
 }
 
 // RSS and CSS and JS meta.
 if (!empty($CFG->enablerssfeeds) && !empty($CFG->data_enablerssfeeds) && $data->rssarticles > 0) {
-    $courseshortname = format_string($course->shortname, true, array('context' => context_course::instance($course->id)));
+    $courseshortname = format_string($course->shortname, true, array('context' => course::instance($course->id)));
     $rsstitle = $courseshortname . \moodle_page::TITLE_SEPARATOR . format_string($data->name);
     rss_add_http_header($context, 'mod_data', $data, $rsstitle);
 }
@@ -167,7 +171,7 @@ if ($datarecord && confirm_sesskey()) {
                 // User has clicked "Save and add another". Reset all of the fields.
                 $datarecord = null;
             } else {
-                $viewurl = new moodle_url('/mod/data/view.php', [
+                $viewurl = new url('/mod/data/view.php', [
                     'd' => $data->id,
                     'rid' => $recordid,
                 ]);
@@ -196,7 +200,7 @@ $template = $manager->get_template($mode);
 echo $template->parse_add_entry($processeddata, $rid, $datarecord);
 
 if (empty($redirectbackto)) {
-    $redirectbackto = new \moodle_url('/mod/data/view.php', ['id' => $cm->id]);
+    $redirectbackto = new url('/mod/data/view.php', ['id' => $cm->id]);
 }
 
 $actionbuttons = '';
@@ -239,6 +243,6 @@ foreach ($possiblefields as $field) {
 
 // Finish the page.
 if (empty($possiblefields)) {
-    throw new \moodle_exception('nofieldindatabase', 'data');
+    throw new moodle_exception('nofieldindatabase', 'data');
 }
 echo $OUTPUT->footer();

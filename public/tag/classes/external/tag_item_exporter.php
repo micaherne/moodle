@@ -27,7 +27,7 @@ namespace core_tag\external;
 defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Contains related class for displaying information of a tag item.

@@ -25,6 +25,9 @@
 
 namespace core_mnet\event;
 
+use core\context\system;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -66,9 +69,9 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\mnet_access_control_created', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $url = new \moodle_url('/admin/mnet/access_control.php');
+        $url = new url('/admin/mnet/access_control.php');
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -93,9 +96,9 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\mnet_access_control_updated', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $url = new \moodle_url('/admin/mnet/access_control.php');
+        $url = new url('/admin/mnet/access_control.php');
         $this->assertEquals($url, $event->get_url());
     }
 }

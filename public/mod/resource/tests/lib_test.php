@@ -25,6 +25,11 @@
  */
 namespace mod_resource;
 
+use core\context\module;
+use core\context\user;
+use core\url;
+use core_course\cm_info;
+
 /**
  * Unit tests for mod_resource lib
  *
@@ -60,7 +65,7 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
         $resource = $this->getDataGenerator()->create_module('resource', array('course' => $course->id),
                                                             array('completion' => 2, 'completionview' => 1));
-        $context = \context_module::instance($resource->cmid);
+        $context = module::instance($resource->cmid);
         $cm = get_coursemodule_from_instance('resource', $resource->id);
 
         // Trigger and capture the event.
@@ -76,7 +81,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_resource\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/resource/view.php', array('id' => $cm->id));
+        $moodleurl = new url('/mod/resource/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -110,7 +115,7 @@ final class lib_test extends \advanced_testcase {
 
         // Create a resource with one file.
         $draftid = file_get_unused_draft_itemid();
-        $contextid = \context_user::instance($USER->id)->id;
+        $contextid = user::instance($USER->id)->id;
         $filerecord = array('component' => 'user', 'filearea' => 'draft', 'contextid' => $contextid,
                 'itemid' => $draftid, 'filename' => 'r2.txt', 'filepath' => '/');
         $fs = get_file_storage();
@@ -271,7 +276,7 @@ final class lib_test extends \advanced_testcase {
         // Create the activity.
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('resource', ['course' => $course->id]);
-        $cminfo = \cm_info::create(get_coursemodule_from_instance('resource', $module->id));
+        $cminfo = cm_info::create(get_coursemodule_from_instance('resource', $module->id));
 
         $navigationurl = $cminfo->get_navigation_url();
         $this->assertInstanceOf(\core\url::class, $navigationurl);

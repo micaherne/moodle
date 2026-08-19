@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 
@@ -32,9 +35,9 @@ $courseid = required_param('id', PARAM_INT);
 $returnto = optional_param('returnto', 'course', PARAM_ALPHANUM); // Generic navigation return page switch.
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL); // A return URL. returnto must also be set to 'url'.
 
-$url = new moodle_url('/backup/copy.php', array('id' => $courseid));
+$url = new url('/backup/copy.php', array('id' => $courseid));
 $course = get_course($courseid);
-$coursecontext = context_course::instance($course->id);
+$coursecontext = course::instance($course->id);
 
 // Security and access checks.
 require_login($course, false);
@@ -42,13 +45,13 @@ $copycaps = \core_course\management\helper::get_course_copy_capabilities();
 require_all_capabilities($copycaps, $coursecontext);
 
 if ($returnurl != '') {
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 } else if ($returnto == 'catmanage') {
     // Redirect to category management page.
-    $returnurl = new moodle_url('/course/management.php', array('categoryid' => $course->category));
+    $returnurl = new url('/course/management.php', array('categoryid' => $course->category));
 } else {
     // Redirect back to course page if we came from there.
-    $returnurl = new moodle_url('/course/view.php', array('id' => $courseid));
+    $returnurl = new url('/course/view.php', array('id' => $courseid));
 }
 
 // Setup the page.
@@ -76,11 +79,11 @@ if ($mform->is_cancelled()) {
 
     if (!empty($mdata->submitdisplay)) {
         // Redirect to the copy progress overview.
-        $progressurl = new moodle_url('/backup/copyprogress.php', array('id' => $courseid));
+        $progressurl = new url('/backup/copyprogress.php', array('id' => $courseid));
         redirect($progressurl);
     } else {
         // Redirect to the course view page.
-        $coursesurl = new moodle_url('/course/view.php', array('id' => $courseid));
+        $coursesurl = new url('/course/view.php', array('id' => $courseid));
         redirect($coursesurl);
     }
 

@@ -18,7 +18,7 @@ namespace core_grades;
 
 use grade_grade;
 use grade_item;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * An object for storing and aggregating penalty information.

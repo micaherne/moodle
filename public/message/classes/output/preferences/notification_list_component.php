@@ -28,8 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/message/lib.php');
 
-use renderable;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Class to create context for a notification component on the message preferences page.
@@ -112,7 +113,7 @@ class notification_list_component implements templatable, renderable {
         return $preferencekey !== 'message_provider_moodle_instantmessage';
     }
 
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $processors = $this->processors;
         $providers = $this->providers;
         $preferences = $this->preferences;

@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\external\reports;
 
-use context_system;
+use core\context\system;
 use core_external\external_api;
 use core_external\external_value;
 use core_external\external_single_structure;
@@ -70,7 +70,7 @@ class listing extends external_api {
             'perpage' => $perpage,
         ]);
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         permission::require_can_view_reports_list(null, $context);

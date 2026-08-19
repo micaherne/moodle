@@ -25,6 +25,7 @@ namespace block_myoverview\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
 use core_privacy\local\request\writer;
 use block_myoverview\privacy\provider;
 /**
@@ -41,7 +42,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
         provider::export_user_preferences($user->id);
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertFalse($writer->has_any_data());
     }
 
@@ -58,7 +59,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $user = $this->getDataGenerator()->create_user();
         set_user_preference($type, $value, $user);
         provider::export_user_preferences($user->id);
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $blockpreferences = $writer->get_user_preferences('block_myoverview');
         if (!$expected) {
             $expected = get_string($value, 'block_myoverview');
@@ -97,7 +98,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         set_user_preference($name, 1, $user);
         provider::export_user_preferences($user->id);
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $blockpreferences = $writer->get_user_preferences('block_myoverview');
 
         $this->assertEquals(

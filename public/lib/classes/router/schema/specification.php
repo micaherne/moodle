@@ -16,7 +16,7 @@
 
 namespace core\router\schema;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core\router\response\invalid_parameter_response;
 use core\router\response\not_found_response;
 use core\router\route;

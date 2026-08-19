@@ -16,9 +16,10 @@
 
 namespace mod_subsection\courseformat;
 
+use core\plugin_manager;
 use mod_subsection\courseformat\sectiondelegate as testsectiondelegatemodule;
-use section_info;
-use cm_info;
+use core_course\section_info;
+use core_course\cm_info;
 use stdClass;
 
 /**
@@ -110,7 +111,7 @@ final class sectiondelegatemodule_test extends \advanced_testcase {
         $this->assertTrue($delegated->is_enabled());
 
         // Disabling the plugin should disable the delegate.
-        $manager = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $manager = plugin_manager::resolve_plugininfo_class('mod');
         $manager::enable_plugin('subsection', 0);
         rebuild_course_cache($course->id, true);
 

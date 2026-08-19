@@ -16,6 +16,8 @@
 
 namespace quizaccess_seb;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/test_helper_trait.php');
@@ -89,7 +91,7 @@ final class access_manager_test extends \advanced_testcase {
         $this->setUser($user);
 
         // Set the bypass SEB check capability to $USER.
-        $this->assign_user_capability('quizaccess/seb:bypassseb', \context_module::instance($this->quiz->cmid)->id);
+        $this->assign_user_capability('quizaccess/seb:bypassseb', module::instance($this->quiz->cmid)->id);
 
         $accessmanager = $this->get_access_manager();
         $this->assertTrue($accessmanager->can_bypass_seb());

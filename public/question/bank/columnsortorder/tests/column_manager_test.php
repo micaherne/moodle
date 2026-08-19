@@ -19,11 +19,12 @@ namespace qbank_columnsortorder;
 defined('MOODLE_INTERNAL') || die();
 
 use advanced_testcase;
-use context_course;
+use core\context\course;
+use core\context\module;
 use core_question\local\bank\column_base;
 use core_question\local\bank\question_edit_contexts;
 use core_question\local\bank\view;
-use moodle_url;
+use core\url;
 
 global $CFG;
 require_once($CFG->dirroot . '/question/tests/fixtures/testable_core_question_column.php');
@@ -50,8 +51,8 @@ final class column_manager_test extends advanced_testcase {
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
         $cm = get_coursemodule_from_id('qbank', $qbank->cmid);
         $questionbank = new view(
-            new question_edit_contexts(\context_module::instance($qbank->cmid)),
-            new moodle_url('/'),
+            new question_edit_contexts(module::instance($qbank->cmid)),
+            new url('/'),
             $course,
             $cm
         );

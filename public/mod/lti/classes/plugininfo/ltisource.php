@@ -24,6 +24,8 @@
 namespace mod_lti\plugininfo;
 
 use core\plugininfo\base;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -48,7 +50,7 @@ class ltisource extends base {
      * @param string $parentnodename
      * @param bool $hassiteconfig whether the current user has moodle/site:config capability
      */
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
         global $CFG, $USER, $DB, $OUTPUT, $PAGE; // In case settings.php wants to refer to them.
         $ADMIN      = $adminroot; // May be used in settings.php.
         $plugininfo = $this; // Also can be used inside settings.php.
@@ -60,7 +62,7 @@ class ltisource extends base {
             return;
         }
         $section  = $this->get_settings_section_name();
-        $settings = new \admin_settingpage($section, $this->displayname,
+        $settings = new settingpage($section, $this->displayname,
             'moodle/site:config', $this->is_enabled() === false);
 
         include($this->full_path('settings.php')); // This may also set $settings to null.

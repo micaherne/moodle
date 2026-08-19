@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\context\user;
+use core\url;
+
 require(__DIR__.'/../../../../config.php');
 require_once(__DIR__.'/locallib.php');
 require_once(__DIR__.'/import_form.php');
@@ -35,7 +39,7 @@ $book = $DB->get_record('book', array('id'=>$cm->instance), '*', MUST_EXIST);
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('booktool/importhtml:import', $context);
 
 $PAGE->set_url('/mod/book/tool/importhtml/index.php', array('id' => $id));
@@ -76,13 +80,13 @@ if ($mform->is_cancelled()) {
     // this is a bloody hack - children do not try this at home!
     $fs = get_file_storage();
     $draftid = file_get_submitted_draft_itemid('importfile');
-    if (!$files = $fs->get_area_files(context_user::instance($USER->id)->id, 'user', 'draft', $draftid, 'id DESC', false)) {
+    if (!$files = $fs->get_area_files(user::instance($USER->id)->id, 'user', 'draft', $draftid, 'id DESC', false)) {
         redirect($PAGE->url);
     }
     $file = reset($files);
     toolbook_importhtml_import_chapters($file, $data->type, $book, $context);
 
-    echo $OUTPUT->continue_button(new moodle_url('/mod/book/view.php', array('id'=>$id)));
+    echo $OUTPUT->continue_button(new url('/mod/book/view.php', array('id'=>$id)));
     echo $OUTPUT->footer();
     die;
 }

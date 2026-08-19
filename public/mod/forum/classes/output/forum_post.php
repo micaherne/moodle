@@ -24,6 +24,13 @@
 
 namespace mod_forum\output;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -34,7 +41,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @property boolean $viewfullnames Whether to override fullname()
  */
-class forum_post implements \renderable, \templatable {
+class forum_post implements renderable, templatable {
 
     /**
      * The course that the forum post is in.
@@ -140,7 +147,7 @@ class forum_post implements \renderable, \templatable {
      * @param bool $plaintext Whethe the target is a plaintext target
      * @return array Data ready for use in a mustache template
      */
-    public function export_for_template(\renderer_base $renderer, $plaintext = false) {
+    public function export_for_template(renderer_base $renderer, $plaintext = false) {
         if ($plaintext) {
             return $this->export_for_template_text($renderer);
         } else {
@@ -263,7 +270,7 @@ class forum_post implements \renderable, \templatable {
         }
 
         // Throw an error rather than fail silently.
-        throw new \coding_exception('Tried to set unknown property "' . $key . '"');
+        throw new coding_exception('Tried to set unknown property "' . $key . '"');
     }
 
     /**
@@ -281,7 +288,7 @@ class forum_post implements \renderable, \templatable {
      * @return string
      */
     public function get_courselink() {
-        $link = new \moodle_url(
+        $link = new url(
             // Posts are viewed on the topic.
             '/course/view.php', array(
                 'id'    => $this->course->id,
@@ -297,7 +304,7 @@ class forum_post implements \renderable, \templatable {
      * @return string
      */
     public function get_forumindexlink() {
-        $link = new \moodle_url(
+        $link = new url(
             // Posts are viewed on the topic.
             '/mod/forum/index.php', array(
                 'id'    => $this->course->id,
@@ -313,7 +320,7 @@ class forum_post implements \renderable, \templatable {
      * @return string
      */
     public function get_forumviewlink() {
-        $link = new \moodle_url(
+        $link = new url(
             // Posts are viewed on the topic.
             '/mod/forum/view.php', array(
                 'f' => $this->forum->id,
@@ -329,7 +336,7 @@ class forum_post implements \renderable, \templatable {
      * @return string
      */
     protected function _get_discussionlink() {
-        return new \moodle_url(
+        return new url(
             // Posts are viewed on the topic.
             '/mod/forum/discuss.php', array(
                 // Within a discussion.
@@ -379,7 +386,7 @@ class forum_post implements \renderable, \templatable {
      * @return string
      */
     public function get_authorlink() {
-        $link = new \moodle_url(
+        $link = new url(
             '/user/view.php', array(
                 'id' => $this->post->userid,
                 'course' => $this->course->id,
@@ -398,7 +405,7 @@ class forum_post implements \renderable, \templatable {
         if (!\mod_forum\subscriptions::is_subscribable($this->forum)) {
             return null;
         }
-        $link = new \moodle_url(
+        $link = new url(
             '/mod/forum/subscribe.php', array(
                 'id' => $this->forum->id,
             )
@@ -416,7 +423,7 @@ class forum_post implements \renderable, \templatable {
         if (!\mod_forum\subscriptions::is_subscribable($this->forum)) {
             return null;
         }
-        $link = new \moodle_url(
+        $link = new url(
             '/mod/forum/subscribe.php', array(
                 'id'  => $this->forum->id,
                 'd'   => $this->discussion->id,
@@ -432,7 +439,7 @@ class forum_post implements \renderable, \templatable {
      * @return string
      */
     public function get_replylink() {
-        return new \moodle_url(
+        return new url(
             '/mod/forum/post.php', array(
                 'reply' => $this->post->id,
             )
@@ -473,7 +480,7 @@ class forum_post implements \renderable, \templatable {
      */
     public function get_coursefullname() {
         return format_string($this->course->fullname, true, array(
-            'context' => \context_course::instance($this->course->id),
+            'context' => course::instance($this->course->id),
         ));
     }
 
@@ -484,7 +491,7 @@ class forum_post implements \renderable, \templatable {
      */
     public function get_coursename() {
         return format_string($this->course->shortname, true, array(
-            'context' => \context_course::instance($this->course->id),
+            'context' => course::instance($this->course->id),
         ));
     }
 
@@ -563,7 +570,7 @@ class forum_post implements \renderable, \templatable {
      * @param   \renderer_base $renderer
      * @return string
      */
-    public function get_author_picture(\renderer_base $renderer) {
+    public function get_author_picture(renderer_base $renderer) {
         return $renderer->user_picture($this->author, array('courseid' => $this->course->id));
     }
 
@@ -573,7 +580,7 @@ class forum_post implements \renderable, \templatable {
      * @param   \renderer_base $renderer
      * @return string
      */
-    public function get_group_picture(\renderer_base $renderer) {
+    public function get_group_picture(renderer_base $renderer) {
         if (isset($this->userfrom->groups)) {
             $groups = $this->userfrom->groups[$this->forum->id];
         } else {

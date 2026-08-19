@@ -18,8 +18,8 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\output;
 
-use html_writer;
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 use core\output\inplace_editable;
 use core_external\external_api;
 use core_reportbuilder\permission;
@@ -49,8 +49,8 @@ class report_name_editable extends inplace_editable {
         $editable = permission::can_edit_report($report);
 
         $url = $editable
-            ? new moodle_url('/reportbuilder/edit.php', ['id' => $report->get('id')])
-            : new moodle_url('/reportbuilder/view.php', ['id' => $report->get('id')]);
+            ? new url('/reportbuilder/edit.php', ['id' => $report->get('id')])
+            : new url('/reportbuilder/view.php', ['id' => $report->get('id')]);
 
         $displayvalue = html_writer::link($url, $report->get_formatted_name());
 

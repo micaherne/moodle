@@ -28,6 +28,11 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\module;
+use core\context\system;
+use core\context\user as context_user;
+use core\test\testing_util;
+use core\user as core_user;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\writer;
 use gradingform_guide\privacy\provider;
@@ -45,10 +50,10 @@ final class provider_test extends provider_testcase {
      * Ensure that export_user_preferences returns no data if the user has no data.
      */
     public function test_export_user_preferences_not_defined(): void {
-        $user = \core_user::get_user_by_username('admin');
+        $user = core_user::get_user_by_username('admin');
         provider::export_user_preferences($user->id);
 
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertFalse($writer->has_any_data());
     }
 
@@ -66,7 +71,7 @@ final class provider_test extends provider_testcase {
 
         // Validate exported data.
         provider::export_user_preferences($user->id);
-        $context = \context_user::instance($user->id);
+        $context = context_user::instance($user->id);
         /** @var \core_privacy\tests\request\content_writer $writer */
         $writer = writer::with_context($context);
         $this->assertTrue($writer->has_any_data());
@@ -92,7 +97,7 @@ final class provider_test extends provider_testcase {
 
         $this->setUser($user);
 
-        $modulecontext = \context_module::instance($module->cmid);
+        $modulecontext = module::instance($module->cmid);
         $controller = $this->get_test_guide($modulecontext);
 
         // In the situation of mod_assign this would be the id from assign_grades.
@@ -130,7 +135,7 @@ final class provider_test extends provider_testcase {
 
         $this->setUser($user);
 
-        $modulecontext = \context_module::instance($module->cmid);
+        $modulecontext = module::instance($module->cmid);
         $controller = $this->get_test_guide($modulecontext);
 
         // In the situation of mod_assign this would be the id from assign_grades.
@@ -176,8 +181,8 @@ final class provider_test extends provider_testcase {
      * @param \context_module $context
      * @return \gradingform_guide_controller
      */
-    protected function get_test_guide(\context_module $context): \gradingform_guide_controller {
-        $generator = \testing_util::get_data_generator();
+    protected function get_test_guide(module $context): \gradingform_guide_controller {
+        $generator = testing_util::get_data_generator();
         $guidegenerator = $generator->get_plugin_generator('gradingform_guide');
 
         return $guidegenerator->get_test_guide($context);
@@ -202,7 +207,7 @@ final class provider_test extends provider_testcase {
         float $picturescore,
         string $pictureremark
     ): array {
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $guidegenerator = $generator->get_plugin_generator('gradingform_guide');
 
         return $guidegenerator->get_test_form_data(

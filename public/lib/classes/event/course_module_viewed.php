@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -74,7 +77,7 @@ abstract class course_module_viewed extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url("/mod/$this->objecttable/view.php", array('id' => $this->contextinstanceid));
+        return new url("/mod/$this->objecttable/view.php", array('id' => $this->contextinstanceid));
     }
 
     /**
@@ -87,11 +90,11 @@ abstract class course_module_viewed extends base {
         parent::validate_data();
         // Make sure this class is never used without proper object details.
         if (empty($this->objectid) || empty($this->objecttable)) {
-            throw new \coding_exception('The course_module_viewed event must define objectid and object table.');
+            throw new coding_exception('The course_module_viewed event must define objectid and object table.');
         }
         // Make sure the context level is set to module.
         if ($this->contextlevel != CONTEXT_MODULE) {
-            throw new \coding_exception('Context level must be CONTEXT_MODULE.');
+            throw new coding_exception('Context level must be CONTEXT_MODULE.');
         }
     }
 }

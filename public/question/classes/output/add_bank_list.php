@@ -16,9 +16,13 @@
 
 namespace core_question\output;
 
-use action_link;
+use core\output\action_link;
+use core\output\pix_icon;
+use core\output\renderable;
+use core\output\templatable;
+use core\url;
 use core_question\local\bank\question_bank_helper;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 /**
@@ -29,7 +33,7 @@ use stdClass;
  * @author     Simon Adams <simon.adams@catalyst-eu.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class add_bank_list implements \renderable, \templatable {
+class add_bank_list implements renderable, templatable {
 
     /**
      * Instantiate the output class.
@@ -62,7 +66,7 @@ class add_bank_list implements \renderable, \templatable {
             }
 
             $link = new action_link(
-                new \moodle_url('/course/modedit.php', [
+                new url('/course/modedit.php', [
                     'add' => $plugin,
                     'course' => $this->course->id,
                     'section' => 0,
@@ -73,7 +77,7 @@ class add_bank_list implements \renderable, \templatable {
                 get_string('addanotherbank', $plugin),
                 null,
                 null,
-                new \pix_icon('t/add', get_string('addanotherbank', $plugin))
+                new pix_icon('t/add', get_string('addanotherbank', $plugin))
             );
             $addbanks[] = $link->export_for_template($output);
         }

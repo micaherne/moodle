@@ -18,14 +18,14 @@ declare(strict_types=1);
 
 namespace core_webservice\reportbuilder\local\systemreports;
 
-use context_system;
+use core\context\system;
 use core_reportbuilder\local\entities\user;
 use core_reportbuilder\local\report\{action, column};
 use core_reportbuilder\system_report;
 use core_webservice\reportbuilder\local\entities\{token, service};
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 
 /**
  * Tokens system report
@@ -72,7 +72,7 @@ class tokens extends system_report {
         $this->add_base_fields("{$entitytokenalias}.id");
 
         // Only show tokens created by the current user for non-manager users.
-        if (!has_capability('moodle/webservice:managealltokens', context_system::instance())) {
+        if (!has_capability('moodle/webservice:managealltokens', system::instance())) {
             $this->add_base_condition_simple("{$entitytokenalias}.creatorid", $USER->id);
         }
 
@@ -89,7 +89,7 @@ class tokens extends system_report {
      * @return bool
      */
     protected function can_view(): bool {
-        return has_capability('moodle/site:config', context_system::instance());
+        return has_capability('moodle/site:config', system::instance());
     }
 
     /**
@@ -127,7 +127,7 @@ class tokens extends system_report {
             ->set_title(new lang_string('service', 'core_webservice'));
         $this->get_column('creator:fullnamewithlink')
             ->set_title(new lang_string('tokencreator', 'core_webservice'))
-            ->set_is_available(has_capability('moodle/webservice:managealltokens', context_system::instance()));
+            ->set_is_available(has_capability('moodle/webservice:managealltokens', system::instance()));
 
         $this->add_column((new column(
             'missingcapabilities',
@@ -192,7 +192,7 @@ class tokens extends system_report {
 
         // Action to delete token.
         $this->add_action((new action(
-            new moodle_url('/admin/webservice/tokens.php', [
+            new url('/admin/webservice/tokens.php', [
                 'action' => 'delete',
                 'tokenid' => ':id',
             ]),

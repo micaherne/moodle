@@ -23,6 +23,9 @@
  */
 namespace core_message\search;
 
+use core\context;
+use core\user;
+
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -42,7 +45,7 @@ class message_received extends base_message {
      * @param \context|null $context Optional context to restrict scope of returned results
      * @return moodle_recordset|null Recordset (or null if no results)
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         return $this->get_document_recordset_helper($modifiedfrom, $context, 'useridto');
     }
 
@@ -83,8 +86,8 @@ class message_received extends base_message {
             return \core_search\manager::ACCESS_DELETED;
         }
 
-        $userfrom = \core_user::get_user($message->useridfrom, 'id, deleted');
-        $userto = \core_user::get_user($message->useridto, 'id, deleted');
+        $userfrom = user::get_user($message->useridfrom, 'id, deleted');
+        $userto = user::get_user($message->useridto, 'id, deleted');
 
         if (!$userfrom || !$userto || $userfrom->deleted || $userto->deleted) {
             return \core_search\manager::ACCESS_DELETED;

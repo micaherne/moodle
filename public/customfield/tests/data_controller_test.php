@@ -16,6 +16,9 @@
 
 namespace core_customfield;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_customfield_generator;
 use customfield_checkbox;
 use customfield_date;
@@ -71,7 +74,7 @@ final class data_controller_test extends \advanced_testcase {
         $fielddata->type = 'textarea';
         $field4 = $this->get_generator()->create_field($fielddata);
 
-        $params = ['instanceid' => $course->id, 'contextid' => \context_course::instance($course->id)->id];
+        $params = ['instanceid' => $course->id, 'contextid' => course::instance($course->id)->id];
 
         // Generate new data_controller records for these fields, specifying field controller or fieldid or both.
         $data0 = data_controller::create(0, (object)$params, $field0);
@@ -130,7 +133,7 @@ final class data_controller_test extends \advanced_testcase {
         $field = $this->get_generator()->create_field(['categoryid' => $category->get('id')]);
         $course = $this->getDataGenerator()->create_course();
         $data = data_controller::create(0, (object)['instanceid' => $course->id,
-            'contextid' => \context_course::instance($course->id)->id], $field);
+            'contextid' => course::instance($course->id)->id], $field);
         $data->save();
 
         $datarecord = $DB->get_record(\core_customfield\data::TABLE, ['id' => $data->get('id')], '*', MUST_EXIST);
@@ -158,7 +161,7 @@ final class data_controller_test extends \advanced_testcase {
         try {
             data_controller::create(0, (object)['instanceid' => $course->id]);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Not enough parameters to ' .
                 'initialise data_controller - unknown field', $e->getMessage());
         }
@@ -167,7 +170,7 @@ final class data_controller_test extends \advanced_testcase {
         try {
             data_controller::create(0, (object)['instanceid' => $course->id, 'fieldid' => $field->get('id') + 1], $field);
             $this->fail('Expected exception');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals('Coding error detected, it must be fixed by a programmer: Field id from the record ' .
                 'does not match field from the parameter', $e->getMessage());
         }
@@ -177,7 +180,7 @@ final class data_controller_test extends \advanced_testcase {
             $field->set('type', 'invalid');
             data_controller::create(0, (object)['instanceid' => $course->id], $field);
             $this->fail('Expected exception');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('Field type invalid not found', $e->getMessage());
         }
     }

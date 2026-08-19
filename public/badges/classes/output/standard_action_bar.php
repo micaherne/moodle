@@ -17,9 +17,9 @@
 namespace core_badges\output;
 
 use moodle_page;
-use moodle_url;
-use renderer_base;
-use single_button;
+use core\url;
+use core\output\renderer_base;
+use core\output\single_button;
 
 /**
  * Class standard_action_bar - Display the action bar
@@ -41,7 +41,7 @@ class standard_action_bar extends base_action_bar {
         /** @var bool $showaddbadge Whether or not to show the add badges button. */
         protected bool $showaddbadge = true,
         /** @var moodle_url $backurl BackURL to be used when the back button is required. */
-        protected ?moodle_url $backurl = null,
+        protected ?url $backurl = null,
     ) {
         parent::__construct($page, $type);
 
@@ -88,7 +88,7 @@ class standard_action_bar extends base_action_bar {
                 $editparams['courseid'] = $params['id'];
             }
             $buttons[] = new single_button(
-                new moodle_url(
+                new url(
                     '/badges/edit.php',
                     $editparams,
                 ),

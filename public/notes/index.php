@@ -20,6 +20,12 @@
  * if a course id is specified then the entries from that course are shown
  * if a user id is specified only notes related to that user are shown
  */
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
@@ -30,10 +36,10 @@ $filtertype   = optional_param('filtertype', '', PARAM_ALPHA);
 $filterselect = optional_param('filterselect', 0, PARAM_INT);
 
 if (empty($CFG->enablenotes)) {
-    throw new \moodle_exception('notesdisabled', 'notes');
+    throw new moodle_exception('notesdisabled', 'notes');
 }
 
-$url = new moodle_url('/notes/index.php');
+$url = new url('/notes/index.php');
 if ($courseid != SITEID) {
     $url->param('course', $courseid);
 }
@@ -80,39 +86,39 @@ require_login($course);
 
 // Output HTML.
 if ($course->id == SITEID) {
-    $coursecontext = context_system::instance();
+    $coursecontext = system::instance();
 } else {
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
 }
 
 require_capability('moodle/notes:view', $coursecontext);
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 
 // Trigger event.
 note_view($coursecontext, $userid);
 
 $strnotes = get_string('notes', 'notes');
 if ($userid && $course->id == SITEID) {
-    $PAGE->set_context(context_user::instance($user->id));
+    $PAGE->set_context(user::instance($user->id));
     $PAGE->navigation->extend_for_user($user);
     // If we are looking at our own notes, then change focus to 'my notes'.
     if ($userid == $USER->id) {
         $notenode = $PAGE->navigation->find('notes', null)->make_inactive();
     }
 
-    $notesurl = new moodle_url('/notes/index.php', array('user' => $userid));
+    $notesurl = new url('/notes/index.php', array('user' => $userid));
     $PAGE->navbar->add(get_string('notes', 'notes'), $notesurl);
 } else if ($course->id != SITEID) {
     $notenode = $PAGE->navigation->find('currentcoursenotes', null)->make_inactive();
 
-    $notesurl = new moodle_url('/notes/index.php', array('user' => $userid, 'course' => $courseid));
+    $notesurl = new url('/notes/index.php', array('user' => $userid, 'course' => $courseid));
     $PAGE->navbar->add(get_string('notes', 'notes'), $notesurl);
 
-    $PAGE->set_context(context_course::instance($courseid));
+    $PAGE->set_context(course::instance($courseid));
 } else {
     $link = null;
     if (course_can_view_participants($coursecontext) || course_can_view_participants($systemcontext)) {
-        $link = new moodle_url('/user/index.php', array('id' => $course->id));
+        $link = new url('/user/index.php', array('id' => $course->id));
     }
 }
 
@@ -127,7 +133,7 @@ if ($course->id == SITEID) {
 echo $OUTPUT->header();
 
 if ($course->id != SITEID) {
-    $backurl = new moodle_url('/user/view.php', ['id' => $userid, 'course' => $courseid]);
+    $backurl = new url('/user/view.php', ['id' => $userid, 'course' => $courseid]);
     echo $OUTPUT->single_button($backurl, get_string('back'), 'get', ['class' => 'mb-3']);
 
     $headerinfo = array('heading' => fullname($user), 'user' => $user);
@@ -144,7 +150,7 @@ $straddnewnote = get_string('addnewnote', 'notes');
 echo $OUTPUT->box_start();
 
 if ($courseid != SITEID) {
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
     $addid = has_capability('moodle/notes:manage', $context) ? $courseid : 0;
     $view = has_capability('moodle/notes:view', $context);
     $fullname = format_string($course->fullname, true, array('context' => $context));
@@ -186,7 +192,7 @@ if ($courseid != SITEID) {
     if (!empty($userid)) {
         $courses = enrol_get_users_courses($userid);
         foreach ($courses as $c) {
-            $ccontext = context_course::instance($c->id);
+            $ccontext = course::instance($c->id);
             $cfullname = format_string($c->fullname, true, array('context' => $ccontext));
             $header = '<a href="' . $CFG->wwwroot . '/course/view.php?id=' . $c->id . '">' . $cfullname . '</a>';
             $viewcoursenotes = has_capability('moodle/notes:view', $ccontext);

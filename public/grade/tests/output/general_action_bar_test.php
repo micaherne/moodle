@@ -18,8 +18,8 @@ namespace core_grades\output;
 
 use advanced_testcase;
 use grade_helper;
-use context_course;
-use moodle_url;
+use core\context\course;
+use core\url;
 
 /**
  * A test class used to test general_action_bar.
@@ -100,7 +100,7 @@ final class general_action_bar_test extends advanced_testcase {
 
         // Create a course.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         if ($userrole === 'admin') {
             $this->setAdminUser();
@@ -115,7 +115,7 @@ final class general_action_bar_test extends advanced_testcase {
         }
 
         $generalactionbar = new general_action_bar($coursecontext,
-            new moodle_url('/grade/report/user/index.php', ['id' => $course->id]), 'report', 'user');
+            new url('/grade/report/user/index.php', ['id' => $course->id]), 'report', 'user');
         $renderer = $PAGE->get_renderer('core');
         $generalactionbardata = $generalactionbar->export_for_template($renderer);
 

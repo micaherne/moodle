@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -79,7 +81,7 @@ class course_content_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->other['options'])) {
-            throw new \coding_exception('The \'options\' value must be set in other.');
+            throw new coding_exception('The \'options\' value must be set in other.');
         }
     }
 

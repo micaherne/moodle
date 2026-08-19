@@ -24,7 +24,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\output\pix_icon;
 use core\report_helper;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -42,7 +45,7 @@ function report_loglive_extend_navigation_course($navigation, $course, $context)
         has_capability('report/log:view', $context)
         && report_helper::has_valid_group($context)
     ) {
-        $url = new moodle_url('/report/loglive/index.php', array('id' => $course->id));
+        $url = new url('/report/loglive/index.php', array('id' => $course->id));
         $navigation->add(get_string('pluginname', 'report_loglive'), $url, navigation_node::TYPE_SETTING, null, null,
                 new pix_icon('i/report', ''));
     }

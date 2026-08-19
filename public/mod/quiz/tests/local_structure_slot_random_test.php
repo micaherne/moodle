@@ -18,7 +18,9 @@ namespace mod_quiz;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\module;
 use mod_quiz\question\bank\qbank_helper;
+use mod_quiz\tests\question_helper_test_trait;
 
 global $CFG;
 require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
@@ -36,7 +38,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  */
 final class local_structure_slot_random_test extends \advanced_testcase {
 
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /**
      * Constructor test.
@@ -73,7 +75,7 @@ final class local_structure_slot_random_test extends \advanced_testcase {
         $randomslotdata = new \stdClass();
         $randomslotdata->quizid = $quiz->id;
         $randomslotdata->maxmark = 1;
-        $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
+        $randomslotdata->usingcontextid = module::instance($quiz->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
         // Insert the random question to the quiz.
@@ -117,7 +119,7 @@ final class local_structure_slot_random_test extends \advanced_testcase {
         $randomslotdata = new \stdClass();
         $randomslotdata->quizid = $quiz->id;
         $randomslotdata->maxmark = 1;
-        $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
+        $randomslotdata->usingcontextid = module::instance($quiz->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
         $randomslot = new \mod_quiz\local\structure\slot_random($randomslotdata);
@@ -153,7 +155,7 @@ final class local_structure_slot_random_test extends \advanced_testcase {
         $randomslotdata = new \stdClass();
         $randomslotdata->quizid = $quiz->id;
         $randomslotdata->maxmark = 1;
-        $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
+        $randomslotdata->usingcontextid = module::instance($quiz->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
         $randomslot = new \mod_quiz\local\structure\slot_random($randomslotdata);
@@ -188,7 +190,7 @@ final class local_structure_slot_random_test extends \advanced_testcase {
         $randomslotdata = new \stdClass();
         $randomslotdata->quizid = $quiz->id;
         $randomslotdata->maxmark = 1;
-        $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
+        $randomslotdata->usingcontextid = module::instance($quiz->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
         $randomslot = new \mod_quiz\local\structure\slot_random($randomslotdata);
@@ -235,7 +237,7 @@ final class local_structure_slot_random_test extends \advanced_testcase {
         // Create a quiz.
         $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
         $quiz = $quizgenerator->create_instance(['course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0]);
-        $quizcontext = \context_module::instance($quiz->cmid);
+        $quizcontext = module::instance($quiz->cmid);
 
         // Create a question category in the system context.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');

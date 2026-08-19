@@ -17,9 +17,10 @@
 namespace core_courseformat\output\local\content;
 
 use core\output\named_templatable;
+use core\output\renderer_base;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use renderable;
+use core\output\renderable;
 
 /**
  * Course bulk edit mode toggler button.
@@ -49,7 +50,7 @@ class bulkedittoggler implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $section = optional_param('section', 0, PARAM_INT);
         $format = $this->format;
         $course = $format->get_course();

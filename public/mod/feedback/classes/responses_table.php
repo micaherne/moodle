@@ -22,6 +22,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\module;
+use core\output\actions\confirm_action;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\user_picture;
+use core\url;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -34,7 +43,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright 2016 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_feedback_responses_table extends table_sql {
+class mod_feedback_responses_table extends sql_table {
 
     /**
      * Maximum number of feedback questions to display in the "Show responses" table
@@ -93,7 +102,7 @@ class mod_feedback_responses_table extends table_sql {
         parent::__construct('feedback-showentry-list-' . $feedbackstructure->get_cm()->instance);
 
         $this->showall = optional_param($this->showallparamname, 0, PARAM_BOOL);
-        $this->define_baseurl(new moodle_url('/mod/feedback/show_entries.php',
+        $this->define_baseurl(new url('/mod/feedback/show_entries.php',
             ['id' => $this->feedbackstructure->get_cm()->id]));
         if ($courseid = $this->feedbackstructure->get_courseid()) {
             $this->baseurl->param('courseid', $courseid);
@@ -187,7 +196,7 @@ class mod_feedback_responses_table extends table_sql {
      * @return context_module
      */
     public function get_context(): context {
-        return context_module::instance($this->feedbackstructure->get_cm()->id);
+        return module::instance($this->feedbackstructure->get_cm()->id);
     }
 
     /**
@@ -226,7 +235,7 @@ class mod_feedback_responses_table extends table_sql {
      */
     public function col_deleteentry($row) {
         global $OUTPUT;
-        $deleteentryurl = new moodle_url($this->baseurl, ['delete' => $row->id, 'sesskey' => sesskey()]);
+        $deleteentryurl = new url($this->baseurl, ['delete' => $row->id, 'sesskey' => sesskey()]);
         $deleteaction = new confirm_action(get_string('confirmdeleteentry', 'feedback'));
         return $OUTPUT->action_icon($deleteentryurl,
             new pix_icon('t/delete', get_string('delete_entry', 'feedback')), $deleteaction);
@@ -238,7 +247,7 @@ class mod_feedback_responses_table extends table_sql {
      * @return \moodle_url
      */
     protected function get_link_single_entry($row) {
-        return new moodle_url($this->baseurl, ['userid' => $row->{$this->useridfield}, 'showcompleted' => $row->id]);
+        return new url($this->baseurl, ['userid' => $row->{$this->useridfield}, 'showcompleted' => $row->id]);
     }
 
     /**
@@ -446,10 +455,10 @@ class mod_feedback_responses_table extends table_sql {
         // Toggle 'Show all' link.
         if ($this->totalrows > FEEDBACK_DEFAULT_PAGE_COUNT) {
             if (!$this->use_pages) {
-                echo html_writer::div(html_writer::link(new moodle_url($this->baseurl, [$this->showallparamname => 0]),
+                echo html_writer::div(html_writer::link(new url($this->baseurl, [$this->showallparamname => 0]),
                         get_string('showperpage', '', FEEDBACK_DEFAULT_PAGE_COUNT)), 'showall');
             } else {
-                echo html_writer::div(html_writer::link(new moodle_url($this->baseurl, [$this->showallparamname => 1]),
+                echo html_writer::div(html_writer::link(new url($this->baseurl, [$this->showallparamname => 1]),
                         get_string('showall', '', $this->totalrows)), 'showall');
             }
         }
@@ -486,7 +495,7 @@ class mod_feedback_responses_table extends table_sql {
         }
         return [
             $lastrow ? $this->get_link_single_entry($lastrow) : null,
-            new moodle_url($this->baseurl, [$this->request[TABLE_VAR_PAGE] => $page]),
+            new url($this->baseurl, [$this->request[TABLE_VAR_PAGE] => $page]),
             $nextrow ? $this->get_link_single_entry($nextrow) : null,
         ];
     }

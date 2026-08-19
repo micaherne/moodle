@@ -24,13 +24,18 @@
  * @package course
  */
 
+use core\context\course;
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+
 require_once("../config.php");
 require_once("lib.php");
 
 $id   = required_param('id', PARAM_INT);               // course id
 $scaleid  = optional_param('scaleid', 0, PARAM_INT);   // scale id (show only this one)
 
-$url = new moodle_url('/course/scales.php', array('id'=>$id));
+$url = new url('/course/scales.php', array('id'=>$id));
 if ($scaleid !== 0) {
     $url->param('scaleid', $scaleid);
 }
@@ -40,11 +45,11 @@ $PAGE->set_pagelayout('popup');
 $context = null;
 if ($course = $DB->get_record('course', array('id'=>$id))) {
     require_login($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
 } else {
     //$id will be 0 for site level scales
     require_login();
-    $context = context_system::instance();
+    $context = system::instance();
 }
 
 $PAGE->set_context($context);
@@ -83,7 +88,7 @@ if ($scaleid) {
     }
 }
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 
 if ($scales = $DB->get_records("scale", array("courseid"=>$course->id), "name ASC")) {
     echo $OUTPUT->heading($strcustomscales);

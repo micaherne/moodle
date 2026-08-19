@@ -35,6 +35,8 @@
  *
  * TODO: Finish phpdocs
  */
+use core\exception\moodle_exception;
+
 abstract class xml_output {
 
     const DEFAULT_BUFFER_SIZE = 4096; // Use a default buffer size of 4K

@@ -30,6 +30,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\lang_string;
+use core\output\bootstrap_renderer;
+use core\output\html_writer;
+use core\url;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Constants.
@@ -504,7 +515,7 @@ function format_text($text, $format = FORMAT_MOODLE, $options = null, $courseidd
 
     if ($format === FORMAT_WIKI) {
         // This format was deprecated in Moodle 1.5.
-        throw new \coding_exception(
+        throw new coding_exception(
             'Wiki-like formatting is not supported.'
         );
     }
@@ -868,7 +879,7 @@ function format_text_email($text, $format) {
 function format_module_intro($module, $activity, $cmid, $filter=true) {
     global $CFG;
     require_once("$CFG->libdir/filelib.php");
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
     $options = array('noclean' => true, 'para' => false, 'filter' => $filter, 'context' => $context, 'overflowdiv' => true);
     $intro = file_rewrite_pluginfile_urls($activity->intro, 'pluginfile.php', $context->id, 'mod_'.$module, 'intro', null);
     return trim(format_text($intro, $activity->introformat, $options, null));
@@ -1851,14 +1862,14 @@ function print_group_picture($group, $courseid, $large = false, $return = false,
         return;
     }
 
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
 
     $groupname = format_string($group->name, true, ['context' => $context, 'escape' => false]);
     $pictureimage = html_writer::img($pictureurl, $groupname, ['title' => $groupname]);
 
     $output = '';
     if ($link or has_capability('moodle/site:accessallgroups', $context)) {
-        $linkurl = new moodle_url('/user/index.php', ['id' => $courseid, 'group' => $group->id]);
+        $linkurl = new url('/user/index.php', ['id' => $courseid, 'group' => $group->id]);
         $output .= html_writer::link($linkurl, $pictureimage);
     } else {
         $output .= $pictureimage;
@@ -1887,7 +1898,7 @@ function print_group_picture($group, $courseid, $large = false, $return = false,
 function get_group_picture_url($group, $courseid, $large = false, $includetoken = false) {
     global $CFG;
 
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
 
     // If there is no picture, do nothing.
     if (!$group->picture) {
@@ -1900,7 +1911,7 @@ function get_group_picture_url($group, $courseid, $large = false, $includetoken 
         $file = 'f2';
     }
 
-    $grouppictureurl = moodle_url::make_pluginfile_url(
+    $grouppictureurl = url::make_pluginfile_url(
             $context->id, 'group', 'icon', $group->id, '/', $file, false, $includetoken);
     $grouppictureurl->param('rev', $group->picture);
     return $grouppictureurl;
@@ -1924,7 +1935,7 @@ function print_recent_activity_note($time, $user, $text, $link, $return=false, $
     $output = '';
 
     if (is_null($viewfullnames)) {
-        $context = context_system::instance();
+        $context = system::instance();
         $viewfullnames = has_capability('moodle/site:viewfullnames', $context);
     }
 
@@ -1970,7 +1981,7 @@ function navmenulist($course, $sections, $modinfo, $strsection, $strjumpto, $wid
     $doneheading = false;
 
     $courseformatoptions = course_get_format($course)->get_format_options();
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
 
     $menu[] = '<ul class="navmenulist"><li class="jumpto section"><span>'.$strjumpto.'</span><ul>';
     foreach ($modinfo->cms as $mod) {
@@ -2123,7 +2134,7 @@ function redirect($url, $message='', $delay=null, $messagetype = \core\output\no
         $PAGE->set_title(get_string('pageshouldredirect', 'moodle'));
     }
 
-    if ($url instanceof moodle_url) {
+    if ($url instanceof url) {
         $url = $url->out(false);
     }
 
@@ -2328,7 +2339,7 @@ function obfuscate_mailto($email, $label='', $dimmed=false, $subject = '', $body
     $label = obfuscate_text($label);
     $email = obfuscate_email($email);
     $mailto = obfuscate_text('mailto');
-    $url = new moodle_url("mailto:$email");
+    $url = new url("mailto:$email");
     $attrs = array();
 
     if (!empty($subject)) {
@@ -2711,7 +2722,7 @@ function get_formatted_help_string($identifier, $component, $ajax = false, $a = 
             $linktext = get_string('morehelp');
 
             $data->doclink = new stdClass();
-            $url = new moodle_url(get_docs_url($link));
+            $url = new url(get_docs_url($link));
             if ($ajax) {
                 $data->doclink->link = $url->out();
                 $data->doclink->linktext = $linktext;

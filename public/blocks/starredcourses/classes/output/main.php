@@ -24,9 +24,9 @@
 namespace block_starredcourses\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use core_course\external\course_summary_exporter;
 
 require_once($CFG->dirroot . '/course/lib.php');

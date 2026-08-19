@@ -22,6 +22,9 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+use core\url;
+
 require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->libdir . '/filelib.php');
 
@@ -461,7 +464,7 @@ class repository_filesystem extends repository {
      */
     public static function instance_config_form($mform) {
         global $CFG;
-        if (has_capability('moodle/site:config', context_system::instance())) {
+        if (has_capability('moodle/site:config', system::instance())) {
             $path = $CFG->dataroot . '/repository/';
             if (!is_dir($path)) {
                 mkdir($path, $CFG->directorypermissions, true);
@@ -508,10 +511,10 @@ class repository_filesystem extends repository {
      * @return mixed
      */
     public static function create($type, $userid, $context, $params, $readonly=0) {
-        if (has_capability('moodle/site:config', context_system::instance())) {
+        if (has_capability('moodle/site:config', system::instance())) {
             return parent::create($type, $userid, $context, $params, $readonly);
         } else {
-            require_capability('moodle/site:config', context_system::instance());
+            require_capability('moodle/site:config', system::instance());
             return false;
         }
     }
@@ -686,7 +689,7 @@ class repository_filesystem extends repository {
      * @return moodle_url
      */
     protected function get_thumbnail_url($filepath, $thumbsize, $token) {
-        return moodle_url::make_pluginfile_url($this->context->id, 'repository_filesystem', $thumbsize, $this->id,
+        return url::make_pluginfile_url($this->context->id, 'repository_filesystem', $thumbsize, $this->id,
                 '/' . trim($filepath, '/') . '/', $token);
     }
 

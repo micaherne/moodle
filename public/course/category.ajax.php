@@ -25,6 +25,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 define('AJAX_SCRIPT', true);
 
 require_once(__DIR__ . '/../config.php');
@@ -33,7 +35,7 @@ if ($CFG->forcelogin) {
     require_login();
 }
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $courserenderer = $PAGE->get_renderer('core', 'course');
 
 echo json_encode($courserenderer->coursecat_ajax());

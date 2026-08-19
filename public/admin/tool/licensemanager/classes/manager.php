@@ -16,6 +16,8 @@
 
 namespace tool_licensemanager;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use tool_licensemanager\form\edit_license;
 use license_manager;
 use stdClass;
@@ -105,7 +107,7 @@ class manager {
                 require_sesskey();
                 try {
                     license_manager::delete($license);
-                } catch (\moodle_exception $e) {
+                } catch (moodle_exception $e) {
                     $message = $e->getMessage();
                 }
                 redirect($redirect, $message);
@@ -143,7 +145,7 @@ class manager {
     private function edit(string $action, string $licenseshortname): bool {
 
         if ($action != self::ACTION_CREATE && $action != self::ACTION_UPDATE) {
-            throw new \coding_exception('license edit actions are limited to create and update');
+            throw new coding_exception('license edit actions are limited to create and update');
         }
 
         $form = new form\edit_license($action, $licenseshortname);
@@ -156,14 +158,14 @@ class manager {
             if ($action == self::ACTION_CREATE) {
                 // Check that license shortname isn't already in use.
                 if (!empty(license_manager::get_license_by_shortname($data->shortname))) {
-                    throw new \moodle_exception('duplicatelicenseshortname', 'tool_licensemanager',
+                    throw new moodle_exception('duplicatelicenseshortname', 'tool_licensemanager',
                         helper::get_licensemanager_url(),
                         $data->shortname);
                 }
                 $license->shortname = $data->shortname;
             } else {
                 if (empty(license_manager::get_license_by_shortname($licenseshortname))) {
-                    throw new \moodle_exception('licensenotfoundshortname', 'license',
+                    throw new moodle_exception('licensenotfoundshortname', 'license',
                         helper::get_licensemanager_url(),
                         $licenseshortname);
                 }

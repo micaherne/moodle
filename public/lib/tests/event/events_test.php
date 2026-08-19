@@ -25,6 +25,12 @@
 
 namespace core\event;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\context\user;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/../fixtures/event_fixtures.php');
@@ -53,8 +59,8 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\course_category_created', $event);
-        $this->assertEquals(\context_coursecat::instance($category->id), $event->get_context());
-        $url = new \moodle_url('/course/management.php', array('categoryid' => $event->objectid));
+        $this->assertEquals(coursecat::instance($category->id), $event->get_context());
+        $url = new url('/course/management.php', array('categoryid' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -81,8 +87,8 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\course_category_updated', $event);
-        $this->assertEquals(\context_coursecat::instance($category->id), $event->get_context());
-        $url = new \moodle_url('/course/editcategory.php', array('id' => $event->objectid));
+        $this->assertEquals(coursecat::instance($category->id), $event->get_context());
+        $url = new url('/course/editcategory.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
 
         // Create another category and a child category.
@@ -97,7 +103,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\course_category_updated', $event);
-        $this->assertEquals(\context_coursecat::instance($childcat->id), $event->get_context());
+        $this->assertEquals(coursecat::instance($childcat->id), $event->get_context());
 
         // Trigger and capture the event for changing the sortorder of a category.
         $sink = $this->redirectEvents();
@@ -107,7 +113,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\course_category_updated', $event);
-        $this->assertEquals(\context_coursecat::instance($category2->id), $event->get_context());
+        $this->assertEquals(coursecat::instance($category2->id), $event->get_context());
 
         // Trigger and capture the event for deleting a category and moving it's children to another.
         $sink = $this->redirectEvents();
@@ -117,7 +123,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\course_category_updated', $event);
-        $this->assertEquals(\context_coursecat::instance($childcat->id), $event->get_context());
+        $this->assertEquals(coursecat::instance($childcat->id), $event->get_context());
 
         // Trigger and capture the event for hiding a category.
         $sink = $this->redirectEvents();
@@ -127,7 +133,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\course_category_updated', $event);
-        $this->assertEquals(\context_coursecat::instance($category2->id), $event->get_context());
+        $this->assertEquals(coursecat::instance($category2->id), $event->get_context());
 
         // Trigger and capture the event for unhiding a category.
         $sink = $this->redirectEvents();
@@ -137,7 +143,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\course_category_updated', $event);
-        $this->assertEquals(\context_coursecat::instance($category2->id), $event->get_context());
+        $this->assertEquals(coursecat::instance($category2->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -150,7 +156,7 @@ final class events_test extends \advanced_testcase {
     public function test_email_failed(): void {
         // Trigger event for failing to send email.
         $event = \core\event\email_failed::create(array(
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'userid' => 1,
             'relateduserid' => 2,
             'other' => array(
@@ -167,7 +173,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         $this->assertInstanceOf('\core\event\email_failed', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -178,7 +184,7 @@ final class events_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $eventparams = array();
         $eventparams['context'] = $context;
@@ -194,7 +200,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         $this->assertInstanceOf('\core\event\course_user_report_viewed', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -205,7 +211,7 @@ final class events_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // First try with no optional parameters.
         $eventparams = array();
@@ -219,7 +225,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         $this->assertInstanceOf('\core\event\course_viewed', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
 
         // Now try with optional parameters.
@@ -238,7 +244,7 @@ final class events_test extends \advanced_testcase {
 
 
         $this->assertInstanceOf('\core\event\course_viewed', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
 
         delete_course($course->id, false);
@@ -252,7 +258,7 @@ final class events_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $event = \core\event\recent_activity_viewed::create(array('context' => $context));
 
@@ -265,7 +271,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\core\event\recent_activity_viewed', $event);
         $this->assertEquals($context, $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $url = new \moodle_url('/course/recent.php', array('id' => $course->id));
+        $url = new url('/course/recent.php', array('id' => $course->id));
         $this->assertEquals($url, $event->get_url());
         $event->get_name();
     }
@@ -276,7 +282,7 @@ final class events_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // User profile viewed in course context.
         $eventparams = array(
@@ -302,7 +308,7 @@ final class events_test extends \advanced_testcase {
         $this->assertEventContextNotUsed($event);
 
         // User profile viewed in user context.
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $eventparams['context'] = $usercontext;
         unset($eventparams['courseid'], $eventparams['other']);
         $event = \core\event\user_profile_viewed::create($eventparams);
@@ -326,7 +332,7 @@ final class events_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $event = \core_tests\event\grade_report_viewed::create(
             array(
@@ -366,7 +372,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\database_text_field_content_replaced', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals('searchstring', $event->other['search']);
         $this->assertEquals('replacestring', $event->other['replace']);
     }

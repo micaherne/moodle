@@ -24,6 +24,7 @@
 namespace core\event;
 
 use core\event\base;
+use core\exception\coding_exception;
 use core_competency\evidence;
 use core_competency\user_competency;
 
@@ -60,17 +61,17 @@ class competency_evidence_created extends base {
     final public static function create_from_evidence(evidence $evidence, user_competency $usercompetency, $recommend) {
         // Make sure we have a valid evidence.
         if (!$evidence->get('id')) {
-            throw new \coding_exception('The evidence ID must be set.');
+            throw new coding_exception('The evidence ID must be set.');
         }
 
         // Make sure we have a valid user competency.
         if (!$usercompetency->get('id')) {
-            throw new \coding_exception('The user competency ID must be set.');
+            throw new coding_exception('The user competency ID must be set.');
         }
 
         // Make sure that the a proper user competecy is linked to the evidence.
         if ($evidence->get('usercompetencyid') != $usercompetency->get('id')) {
-            throw new \coding_exception('The user competency linked with this evidence is invalid.');
+            throw new coding_exception('The user competency linked with this evidence is invalid.');
         }
 
         $event = static::create([
@@ -149,23 +150,23 @@ class competency_evidence_created extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['usercompetencyid'])) {
-            throw new \coding_exception('The \'usercompetencyid\' data in \'other\' must be set.');
+            throw new coding_exception('The \'usercompetencyid\' data in \'other\' must be set.');
         }
 
         if (!isset($this->other['competencyid'])) {
-            throw new \coding_exception('The \'competencyid\' data in \'other\' must be set.');
+            throw new coding_exception('The \'competencyid\' data in \'other\' must be set.');
         }
 
         if (!isset($this->other['action'])) {
-            throw new \coding_exception('The \'action\' data in \'other\' must be set.');
+            throw new coding_exception('The \'action\' data in \'other\' must be set.');
         }
 
         if (!isset($this->other['recommend'])) {
-            throw new \coding_exception('The \'recommend\' data in \'other\' must be set.');
+            throw new coding_exception('The \'recommend\' data in \'other\' must be set.');
         }
     }
 }

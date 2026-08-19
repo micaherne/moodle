@@ -30,6 +30,10 @@ use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Session;
 use Behat\Testwork\Hook\Scope\HookScope;
+use core\context;
+use core\exception\coding_exception;
+use core\url;
+use core_course\cm_info;
 use Facebook\WebDriver\Exception\NoSuchWindowException;
 use Facebook\WebDriver\Exception\ScriptTimeoutException;
 use Facebook\WebDriver\WebDriverBy;
@@ -1287,7 +1291,7 @@ EOF;
     protected function execute_js_on_node(NodeElement $node, string $script, bool $async = false): void {
         $driver = $this->getSession()->getDriver();
         if (!($driver instanceof \Moodle\BehatExtension\Driver\WebDriver)) {
-            throw new \coding_exception('Unknown driver');
+            throw new coding_exception('Unknown driver');
         }
 
         if (preg_match('/^function[\s\(]/', $script)) {
@@ -1340,7 +1344,7 @@ EOF;
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_url(string $page): moodle_url {
+    protected function resolve_page_url(string $page): url {
         throw new Exception('Component "' . get_class($this) .
                 '" does not support the generic \'When I am on the "' . $page .
                 '" page\' navigation step.');
@@ -1368,7 +1372,7 @@ EOF;
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
         throw new Exception('Component "' . get_class($this) .
                 '" does not support the generic \'When I am on the "' . $identifier .
                 '" "' . $type . '" page\' navigation step.');

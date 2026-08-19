@@ -24,6 +24,11 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use \core_badges\badge;
+use core\exception\moodle_exception;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /*
@@ -176,7 +181,7 @@ abstract class award_criteria {
         $types = badges_list_criteria(false);
 
         if (!isset($params['criteriatype']) || !isset($types[$params['criteriatype']])) {
-            throw new \moodle_exception('error:invalidcriteriatype', 'badges');
+            throw new moodle_exception('error:invalidcriteriatype', 'badges');
         }
 
         $class = 'award_criteria_' . $types[$params['criteriatype']];
@@ -264,9 +269,9 @@ abstract class award_criteria {
         global $OUTPUT;
         $agg = $data->get_aggregation_methods();
 
-        $editurl = new moodle_url('/badges/criteria_settings.php',
+        $editurl = new url('/badges/criteria_settings.php',
                 array('badgeid' => $this->badgeid, 'edit' => true, 'type' => $this->criteriatype, 'crit' => $this->id));
-        $deleteurl = new moodle_url('/badges/criteria_action.php',
+        $deleteurl = new url('/badges/criteria_action.php',
                 array('badgeid' => $this->badgeid, 'delete' => true, 'type' => $this->criteriatype));
         $editaction = $OUTPUT->action_icon($editurl, new pix_icon('t/edit', get_string('edit')), null, array('class' => 'criteria-action'));
         $deleteaction = $OUTPUT->action_icon($deleteurl, new pix_icon('t/delete', get_string('delete')), null, array('class' => 'criteria-action'));

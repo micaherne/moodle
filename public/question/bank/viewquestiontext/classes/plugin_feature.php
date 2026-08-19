@@ -17,6 +17,7 @@
 namespace qbank_viewquestiontext;
 
 use core\context;
+use core\url;
 use core_question\local\bank\plugin_features_base;
 use core_question\local\bank\view;
 use qbank_viewquestiontext\output\question_text_format;
@@ -39,7 +40,7 @@ class plugin_feature extends plugin_features_base {
      */
     public function get_question_columns(view $qbank): array {
         $row = new question_text_row($qbank);
-        $preference = (int)question_get_display_preference($row->get_preference_key(), '0', PARAM_INT, new \moodle_url('/'));
+        $preference = (int)question_get_display_preference($row->get_preference_key(), '0', PARAM_INT, new url('/'));
         if ($preference != question_text_format::OFF) {
             return [
                 $row,

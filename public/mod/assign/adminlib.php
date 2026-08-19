@@ -22,7 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
+use core_admin\setting\tree\externalpage;
+use core_table\flexible_table;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -35,7 +42,7 @@ require_once($CFG->libdir . '/adminlib.php');
  * @copyright 2012 NetSpot {@link http://www.netspot.com.au}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class assign_admin_page_manage_assign_plugins extends admin_externalpage {
+class assign_admin_page_manage_assign_plugins extends externalpage {
 
     /** @var string the name of plugin subtype */
     private $subtype = '';
@@ -47,7 +54,7 @@ class assign_admin_page_manage_assign_plugins extends admin_externalpage {
      */
     public function __construct($subtype) {
         $this->subtype = $subtype;
-        $url = new moodle_url('/mod/assign/adminmanageplugins.php', array('subtype'=>$subtype));
+        $url = new url('/mod/assign/adminmanageplugins.php', array('subtype'=>$subtype));
         parent::__construct('manage' . $subtype . 'plugins',
                             get_string('manage' . $subtype . 'plugins', 'assign'),
                             $url);
@@ -108,7 +115,7 @@ class assign_plugin_manager {
      * @param string $subtype - either assignsubmission or assignfeedback
      */
     public function __construct($subtype) {
-        $this->pageurl = new moodle_url('/mod/assign/adminmanageplugins.php', array('subtype'=>$subtype));
+        $this->pageurl = new url('/mod/assign/adminmanageplugins.php', array('subtype'=>$subtype));
         $this->subtype = $subtype;
     }
 
@@ -154,14 +161,14 @@ class assign_plugin_manager {
         $url = $this->pageurl;
 
         if ($action === 'delete') {
-            $url = core_plugin_manager::instance()->get_uninstall_url($this->subtype.'_'.$plugin, 'manage');
+            $url = plugin_manager::instance()->get_uninstall_url($this->subtype.'_'.$plugin, 'manage');
             if (!$url) {
                 return '&nbsp;';
             }
             return html_writer::link($url, get_string('uninstallplugin', 'core_admin'));
         }
 
-        return $OUTPUT->action_icon(new moodle_url($url,
+        return $OUTPUT->action_icon(new url($url,
                 array('action' => $action, 'plugin'=> $plugin, 'sesskey' => sesskey())),
                 new pix_icon($icon, $alt, 'moodle', array('title' => $alt)),
                 null, array('title' => $alt)) . ' ';
@@ -221,7 +228,7 @@ class assign_plugin_manager {
 
             $exists = file_exists($CFG->dirroot . '/mod/assign/' . $shortsubtype . '/' . $plugin . '/settings.php');
             if ($row[1] != '' && $exists) {
-                $row[] = html_writer::link(new moodle_url('/admin/settings.php',
+                $row[] = html_writer::link(new url('/admin/settings.php',
                         array('section' => $this->subtype . '_' . $plugin)), get_string('settings'));
             } else {
                 $row[] = '&nbsp;';
@@ -267,7 +274,7 @@ class assign_plugin_manager {
     private function check_permissions() {
         // Check permissions.
         require_login();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         require_capability('moodle/site:config', $systemcontext);
     }
 
@@ -278,7 +285,7 @@ class assign_plugin_manager {
      * @return string The next page to display
      */
     public function hide_plugin($plugin) {
-        $class = \core_plugin_manager::resolve_plugininfo_class($this->subtype);
+        $class = plugin_manager::resolve_plugininfo_class($this->subtype);
         $class::enable_plugin($plugin, false);
         return 'view';
     }
@@ -337,7 +344,7 @@ class assign_plugin_manager {
      * @return string The next page to display
      */
     public function show_plugin($plugin) {
-        $class = \core_plugin_manager::resolve_plugininfo_class($this->subtype);
+        $class = plugin_manager::resolve_plugininfo_class($this->subtype);
         $class::enable_plugin($plugin, true);
         return 'view';
     }

@@ -22,6 +22,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/formslib.php');
 
@@ -88,12 +92,12 @@ class core_max_input_vars_form extends moodleform {
 
 require_login();
 
-$context = context_system::instance();
+$context = system::instance();
 
 $type = optional_param('type', '', PARAM_ALPHA);
 
 // Set up the page details.
-$PAGE->set_url(new moodle_url('/lib/tests/fixtures/max_input_vars.php'));
+$PAGE->set_url(new url('/lib/tests/fixtures/max_input_vars.php'));
 $PAGE->set_context($context);
 
 if ($type) {

@@ -24,7 +24,8 @@
 
 namespace core_tag\output;
 
-use context_system;
+use core\context\system;
+use core\output\renderer_base;
 
 /**
  * Class to display tag area enabled control
@@ -41,7 +42,7 @@ class tagareaenabled extends \core\output\inplace_editable {
      * @param \stdClass $tagarea
      */
     public function __construct($tagarea) {
-        $editable = has_capability('moodle/tag:manage', context_system::instance());
+        $editable = has_capability('moodle/tag:manage', system::instance());
         $value = $tagarea->enabled ? 1 : 0;
 
         parent::__construct('core_tag', 'tagareaenable', $tagarea->id, $editable, '', $value);
@@ -54,7 +55,7 @@ class tagareaenabled extends \core\output\inplace_editable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         if ($this->value) {
             $this->edithint = get_string('disable');
             $this->displayvalue = $output->pix_icon('i/hide', get_string('disable'));
@@ -75,7 +76,7 @@ class tagareaenabled extends \core\output\inplace_editable {
      */
     public static function update($itemid, $newvalue) {
         global $DB;
-        require_capability('moodle/tag:manage', context_system::instance());
+        require_capability('moodle/tag:manage', system::instance());
         $tagarea = $DB->get_record('tag_area', array('id' => $itemid), '*', MUST_EXIST);
         $newvalue = $newvalue ? 1 : 0;
         $data = array('enabled' => $newvalue);

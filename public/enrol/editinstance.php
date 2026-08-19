@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require('../config.php');
 require_once('editinstance_form.php');
 
@@ -30,7 +35,7 @@ $type   = required_param('type', PARAM_COMPONENT);
 $instanceid = optional_param('id', 0, PARAM_INT);
 $return = optional_param('returnurl', 0, PARAM_LOCALURL);
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 
 $plugin = enrol_get_plugin($type);
 if (!$plugin) {
@@ -40,16 +45,16 @@ if (!$plugin) {
 require_login($course);
 
 if (!has_any_capability(['enrol/' . $type . ':config', 'moodle/course:editcoursewelcomemessage'], $context)) {
-    throw new \moodle_exception('nopermissiontoaccesspage', 'error');
+    throw new moodle_exception('nopermissiontoaccesspage', 'error');
 }
 
-$url = new moodle_url('/enrol/editinstance.php', ['courseid' => $course->id, 'id' => $instanceid, 'type' => $type]);
+$url = new url('/enrol/editinstance.php', ['courseid' => $course->id, 'id' => $instanceid, 'type' => $type]);
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_docs_path('enrol/' . $type . '/edit');
 
 if (empty($return)) {
-    $return = new moodle_url('/enrol/instances.php', array('id' => $course->id));
+    $return = new url('/enrol/instances.php', array('id' => $course->id));
 }
 
 if (!enrol_is_enabled($type)) {
@@ -59,7 +64,7 @@ if (!enrol_is_enabled($type)) {
 if ($instanceid) {
     $instance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => $type, 'id' => $instanceid), '*', MUST_EXIST);
     if ($instance->status == ENROL_INSTANCE_DISABLED) { // The instance is currently disabled.
-        navigation_node::override_active_url(new moodle_url('/enrol/instances.php', ['id' => $course->id]));
+        navigation_node::override_active_url(new url('/enrol/instances.php', ['id' => $course->id]));
         $name = $instance->name ?: get_string('pluginname', 'enrol_' . $type);
         $PAGE->navbar->add($name, $url);
     }
@@ -67,7 +72,7 @@ if ($instanceid) {
 } else {
     require_capability('moodle/course:enrolconfig', $context);
     // No instance yet, we have to add new instance.
-    navigation_node::override_active_url(new moodle_url('/enrol/instances.php', array('id' => $course->id)));
+    navigation_node::override_active_url(new url('/enrol/instances.php', array('id' => $course->id)));
 
     $instance = (object)$plugin->get_instance_defaults();
     $instance->id       = null;

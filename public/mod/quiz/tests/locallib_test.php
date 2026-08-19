@@ -24,8 +24,13 @@
  */
 namespace mod_quiz;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\url;
 use mod_quiz\output\renderer;
 use mod_quiz\question\display_options;
+use mod_quiz\tests\question_helper_test_trait;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -41,7 +46,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  */
 final class locallib_test extends \advanced_testcase {
 
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     public function test_quiz_rescale_grade(): void {
         $quiz = new \stdClass();
@@ -128,7 +133,7 @@ final class locallib_test extends \advanced_testcase {
      */
     public function test_quiz_question_tostring_with_tags(): void {
         $this->resetAfterTest();
-        $context = \context_coursecat::instance($this->getDataGenerator()->create_category()->id);
+        $context = coursecat::instance($this->getDataGenerator()->create_category()->id);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $questioncat = $questiongenerator->create_question_category(['contextid' => $context->id]);
         // Create a question.
@@ -177,7 +182,7 @@ final class locallib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id],
                                                             ['completion' => 2, 'completionview' => 1]);
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $cm = get_coursemodule_from_instance('quiz', $quiz->id);
 
         // Trigger and capture the event.
@@ -193,7 +198,7 @@ final class locallib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_quiz\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/quiz/view.php', ['id' => $cm->id]);
+        $moodleurl = new url('/mod/quiz/view.php', ['id' => $cm->id]);
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -679,7 +684,7 @@ final class locallib_test extends \advanced_testcase {
         // Allow recipent to receive email confirm submission.
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         assign_capability('mod/quiz:emailconfirmsubmission', CAP_ALLOW, $studentrole->id,
-            \context_course::instance($course->id), true);
+            course::instance($course->id), true);
         $this->getDataGenerator()->enrol_user($recipient->id, $course->id, $studentrole->id, 'manual');
 
         $timenow = time();

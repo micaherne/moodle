@@ -16,7 +16,7 @@
 
 namespace core\hook\output;
 
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Hook to allow subscribers to add HTML content to the footer.

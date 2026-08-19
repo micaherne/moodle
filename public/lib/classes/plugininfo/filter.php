@@ -16,6 +16,9 @@
 
 namespace core\plugininfo;
 
+use core\context\system;
+use core\plugin_manager;
+
 /**
  * Defines classes used for plugin info.
  *
@@ -45,7 +48,7 @@ class filter extends base {
 
         $enabled = [];
         $filters = $DB->get_records_select('filter_active', "active <> :disabled AND contextid = :contextid", [
-            'disabled' => TEXTFILTER_DISABLED, 'contextid' => \context_system::instance()->id], 'filter ASC', 'id, filter');
+            'disabled' => TEXTFILTER_DISABLED, 'contextid' => system::instance()->id], 'filter ASC', 'id, filter');
         foreach ($filters as $filter) {
             $enabled[$filter->filter] = $filter->filter;
         }
@@ -75,7 +78,7 @@ class filter extends base {
         }
 
         reset_text_filters_cache();
-        \core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
 
         return true;
     }
@@ -94,7 +97,7 @@ class filter extends base {
         global $DB, $CFG;
         require_once("$CFG->libdir/filterlib.php");
 
-        $conditions = ['filter' => $pluginname, 'contextid' => \context_system::instance()->id];
+        $conditions = ['filter' => $pluginname, 'contextid' => system::instance()->id];
         $record = $DB->get_record('filter_active', $conditions, 'active');
 
         return $record ? (int) $record->active : TEXTFILTER_DISABLED;

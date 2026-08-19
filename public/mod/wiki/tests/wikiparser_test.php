@@ -16,6 +16,7 @@
 
 namespace mod_wiki;
 
+use core\exception\moodle_exception;
 use wiki_parser_proxy;
 
 defined('MOODLE_INTERNAL') || die;
@@ -348,7 +349,7 @@ final class wikiparser_test extends \advanced_testcase {
         $wiki = $generator->create_module('wiki', array_merge(['course' => $course->id, 'defaultformat' => $format]));
         $wikigenerator = $this->getDataGenerator()->get_plugin_generator('mod_wiki');
         if ($expected === 'exception') {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         }
         $page = $wikigenerator->create_page($wiki);
         $version = wiki_get_current_version($page->id);

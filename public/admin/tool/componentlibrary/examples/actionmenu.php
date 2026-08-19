@@ -26,12 +26,21 @@
 
 declare(strict_types=1);
 
+use core\context\system;
+use core\output\action_menu;
+use core\output\action_menu\link;
+use core\output\action_menu\link_primary;
+use core\output\action_menu\subpanel;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+
 require_once(__DIR__ . '/../../../../config.php');
 
 global $PAGE;
 
-$PAGE->set_url(new moodle_url('/admin/tool/componentlibrary/examples/actionmenu.php'));
-$PAGE->set_context(context_system::instance());
+$PAGE->set_url(new url('/admin/tool/componentlibrary/examples/actionmenu.php'));
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('embedded');
 
 $PAGE->set_heading('Moodle action menus');
@@ -58,15 +67,15 @@ $choice->set_selected_value('statusb');
 // Those are some examples of action items.
 
 // Action menu links is the most used action item.
-$basicactionlink = new action_menu_link(
-    new moodle_url($PAGE->url),
+$basicactionlink = new link(
+    new url($PAGE->url),
     new pix_icon('t/emptystar', ''),
     'Action link example',
     false
 );
 
 // Subpanels display lateral panels on hovered or clicked.
-$subpanel = new core\output\local\action_menu\subpanel(
+$subpanel = new subpanel(
     'Subpanel example',
     $choice
 );
@@ -99,7 +108,7 @@ $menu->set_additional_classes('fields-actions');
 
 $menu->add($basicactionlink);
 $menu->add($basicactionlink);
-$menu->add(new core\output\local\action_menu\subpanel(
+$menu->add(new subpanel(
     'Subpanel example',
     $choice
 ));
@@ -117,7 +126,7 @@ $menu->set_menu_trigger(get_string('edit'));
 
 $menu->add($basicactionlink);
 $menu->add($basicactionlink);
-$menu->add(new core\output\local\action_menu\subpanel(
+$menu->add(new subpanel(
     'Subpanel example',
     $choice
 ));
@@ -177,17 +186,17 @@ $menu->set_menu_trigger(get_string('edit'));
 
 $menu->add($basicactionlink);
 $menu->add($basicactionlink);
-$menu->add(new core\output\local\action_menu\subpanel(
+$menu->add(new subpanel(
     'Subpanel example',
     $choice
 ));
 $menu->add($basicactionlink);
-$menu->add(new action_menu_link_primary(
+$menu->add(new link_primary(
     $PAGE->url,
     new pix_icon('t/emptystar', ''),
     'Action link example',
 ));
-$menu->add(new action_menu_link_primary(
+$menu->add(new link_primary(
     $PAGE->url,
     new pix_icon('t/user', ''),
     'Action link example',

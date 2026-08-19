@@ -17,12 +17,13 @@
 namespace core\route\controller;
 
 use core\form\error_feedback;
+use core\output\html_writer;
 use core\router;
 use core\router\route;
 use core\router\schema\parameters\query_parameter;
 use core\router\util;
 use core\url;
-use core_user;
+use core\user;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -106,7 +107,7 @@ class page_not_found_controller {
         $response->getBody()->write($OUTPUT->supportemail(['class' => 'text-center d-block mb-3 fw-bold']));
 
         if ($mform) {
-            $response->getBody()->write(\html_writer::tag('h4', get_string('sendmessage', 'error')));
+            $response->getBody()->write(html_writer::tag('h4', get_string('sendmessage', 'error')));
             $response->getBody()->write($mform->render());
         } else {
             $response->getBody()->write($OUTPUT->continue_button($CFG->wwwroot));
@@ -127,11 +128,11 @@ class page_not_found_controller {
         ResponseInterface $response,
     ): ?\moodleform {
         $canmessage = has_capability('moodle/site:senderrormessage', \core\context\system::instance());
-        $supportuser = core_user::get_support_user();
+        $supportuser = user::get_support_user();
 
         // We can only message support if both the user has the capability
         // and the support user is a real user.
-        $canmessage = $canmessage && core_user::is_real_user($supportuser->id);
+        $canmessage = $canmessage && user::is_real_user($supportuser->id);
 
         if (!$canmessage) {
             return null;
@@ -159,7 +160,7 @@ class page_not_found_controller {
             $message->component        = 'moodle';
             $message->name             = 'errors';
             $message->userfrom          = $USER;
-            $message->userto            = core_user::get_support_user();
+            $message->userto            = user::get_support_user();
             $message->subject           = 'Error: ' . $data->referer . ' -> ' . $data->requested;
             $message->fullmessage       = $data->text;
             $message->fullmessageformat = FORMAT_PLAIN;

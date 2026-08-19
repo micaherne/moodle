@@ -16,6 +16,7 @@
 
 namespace core_badges\local\backpack;
 
+use core\exception\coding_exception;
 use core_badges\achievement_credential;
 
 /**
@@ -35,7 +36,7 @@ class helper {
      */
     public static function convert_apiversion(string $apiversion): string {
         if (!is_numeric($apiversion)) {
-            throw new \coding_exception('Invalid Open Badges API version');
+            throw new coding_exception('Invalid Open Badges API version');
         }
 
         if (strpos($apiversion, '.') === false) {

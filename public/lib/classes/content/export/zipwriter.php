@@ -23,9 +23,10 @@
  */
 namespace core\content\export;
 
-use context;
-use context_system;
-use moodle_url;
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
 use stdClass;
 use stored_file;
 
@@ -79,7 +80,7 @@ class zipwriter {
             $this->parse_options($options);
         }
 
-        $this->rootcontext = context_system::instance();
+        $this->rootcontext = system::instance();
     }
 
     /**
@@ -248,7 +249,7 @@ class zipwriter {
         global $CFG, $PAGE, $SITE, $USER;
 
         $exportedcourse = $this->get_course();
-        $courselink = (new moodle_url('/course/view.php', ['id' => $exportedcourse->id]))->out(false);
+        $courselink = (new url('/course/view.php', ['id' => $exportedcourse->id]))->out(false);
         $coursename = format_string($exportedcourse->fullname, true, ['context' => $this->coursecontext]);
 
         $this->add_template_requirements();
@@ -256,7 +257,7 @@ class zipwriter {
         $templatedata->global = (object) [
             'righttoleft' => right_to_left(),
             'language' => get_html_lang_attribute_value(current_language()),
-            'sitename' => format_string($SITE->fullname, true, ['context' => context_system::instance()]),
+            'sitename' => format_string($SITE->fullname, true, ['context' => system::instance()]),
             'siteurl' => $CFG->wwwroot,
             'pathtotop' => $this->get_relative_context_path($context, $this->rootcontext, '/'),
             'contentexportfooter' => get_string('contentexport_footersummary', 'core', (object) [
@@ -334,7 +335,7 @@ class zipwriter {
      */
     public function get_context_path(context $context, string $filepathinzip): string {
         if (!$context->is_child_of($this->rootcontext, true)) {
-            throw new \coding_exception("Unexpected path requested");
+            throw new coding_exception("Unexpected path requested");
         }
 
         // Fetch the path from the course down.

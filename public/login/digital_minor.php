@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+use core_cache\cache;
+
 require('../config.php');
 require_once($CFG->libdir . '/authlib.php');
 
@@ -30,22 +34,22 @@ $authplugin = signup_is_enabled();
 
 if (!$authplugin || !\core_auth\digital_consent::is_age_digital_consent_verification_enabled()) {
     // Redirect user if signup or digital age of consent verification is disabled.
-    redirect(new moodle_url('/'), get_string('verifyagedigitalconsentnotpossible', 'error'));
+    redirect(new url('/'), get_string('verifyagedigitalconsentnotpossible', 'error'));
 }
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url($CFG->wwwroot.'/login/digital_minor.php');
 
 if (isloggedin() and !isguestuser()) {
     // Prevent signing up when already logged in.
-    redirect(new moodle_url('/'), get_string('cannotsignup', 'error', fullname($USER)));
+    redirect(new url('/'), get_string('cannotsignup', 'error', fullname($USER)));
 }
 
 $cache = cache::make('core', 'presignup');
 $isminor = $cache->get('isminor');
 if ($isminor !== 'yes') {
     // Redirect when the signup session does not exists, minor check has not been done or the user is not a minor.
-    redirect(new moodle_url('/login/index.php'));
+    redirect(new url('/login/index.php'));
 }
 
 $PAGE->navbar->add(get_string('login'));

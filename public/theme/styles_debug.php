@@ -24,6 +24,10 @@
 
 // Disable moodle specific debug messages and any errors in output,
 // comment out when debugging or better look into error log!
+use core\output\theme_config;
+use core_cache\cache;
+use core_cache\store;
+
 define('NO_DEBUG_DISPLAY', true);
 define('NO_UPGRADE_CHECK', true);
 define('NO_MOODLE_COOKIES', true);
@@ -58,7 +62,7 @@ if ($type === 'editor') {
 // We need some kind of caching here because otherwise the page navigation becomes
 // way too slow in theme designer mode. Feel free to create full cache definition later...
 $key = "$type $subtype $sheet $usesvg $rtl";
-$cache = cache::make_from_params(cache_store::MODE_APPLICATION, 'core', 'themedesigner', array('theme' => $themename));
+$cache = cache::make_from_params(store::MODE_APPLICATION, 'core', 'themedesigner', array('theme' => $themename));
 if ($content = $cache->get($key)) {
     if ($content['created'] > time() - THEME_DESIGNER_CACHE_LIFETIME) {
         $csscontent = $content['data'];

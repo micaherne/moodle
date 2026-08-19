@@ -27,6 +27,9 @@
 
 namespace qbank_editquestion\output;
 
+use core\output\plugin_renderer_base;
+use core\output\renderable;
+
 /**
  * Renderer for add/edit/copy
  *
@@ -35,7 +38,7 @@ namespace qbank_editquestion\output;
  * @author     Safat Shahin <safatshahin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Render a qbank_chooser.
@@ -43,7 +46,7 @@ class renderer extends \plugin_renderer_base {
      * @param \renderable $qbankchooser The chooser.
      * @return string
      */
-    public function render_qbank_chooser(\renderable $qbankchooser) {
+    public function render_qbank_chooser(renderable $qbankchooser) {
         return $this->render_from_template('qbank_editquestion/qbank_chooser', $qbankchooser->export_for_template($this));
     }
 

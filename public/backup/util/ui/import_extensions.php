@@ -31,6 +31,8 @@
  * @copyright 2010 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+
 class import_ui extends backup_ui {
 
     /**
@@ -64,7 +66,7 @@ class import_ui extends backup_ui {
                 'class' => join(' ', $classes)
             );
             if ($stage < $currentstage && $currentstage < self::STAGE_COMPLETE && (!self::$skipcurrentstage || $stage * 2 != $currentstage)) {
-                $item['link'] = new moodle_url(
+                $item['link'] = new url(
                     $PAGE->url,
                     $this->stage->get_params() + array('backup' => $this->get_backupid(), 'stage' => $stage)
                 );
@@ -72,7 +74,7 @@ class import_ui extends backup_ui {
             array_unshift($items, $item);
             $stage = floor($stage / 2);
         }
-        $selectorlink = new moodle_url($PAGE->url, $this->stage->get_params());
+        $selectorlink = new url($PAGE->url, $this->stage->get_params());
         $selectorlink->remove_params('importid');
 
         $classes = ["backup_stage"];

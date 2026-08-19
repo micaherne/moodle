@@ -26,6 +26,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/mod/lti/register_form.php');
@@ -37,14 +39,14 @@ $tab          = optional_param('tab', '', PARAM_ALPHAEXT);
 $returnto     = optional_param('returnto', '', PARAM_ALPHA);
 
 if ($returnto == 'toolconfigure') {
-    $returnurl = new moodle_url($CFG->wwwroot . '/mod/lti/toolconfigure.php');
+    $returnurl = new url($CFG->wwwroot . '/mod/lti/toolconfigure.php');
 }
 
 // No guest autologin.
 require_login(0, false);
 
 $isupdate = !empty($id);
-$pageurl = new moodle_url('/mod/lti/registersettings.php');
+$pageurl = new url('/mod/lti/registersettings.php');
 if ($isupdate) {
     $pageurl->param('id', $id);
 }
@@ -55,7 +57,7 @@ $PAGE->set_url($pageurl);
 
 admin_externalpage_setup('ltitoolproxies');
 
-$redirect = new moodle_url('/mod/lti/toolproxies.php', array('tab' => $tab));
+$redirect = new url('/mod/lti/toolproxies.php', array('tab' => $tab));
 $redirect = $redirect->out();
 if (!empty($returnurl)) {
     $redirect = $returnurl;

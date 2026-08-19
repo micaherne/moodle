@@ -16,6 +16,7 @@
 
 use core\context\coursecat as context_coursecat;
 use core\exception\moodle_exception;
+use core\navigation\navigation_node;
 use core\url;
 use core_course\course_request;
 use core_course\form\request_course as request_course_form;

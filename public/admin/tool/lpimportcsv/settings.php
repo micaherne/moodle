@@ -23,22 +23,25 @@
  * @copyright  2015 Damyon Wiese
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 if (get_config('core_competency', 'enabled')) {
     // Manage competency frameworks page.
-    $temp = new admin_externalpage(
+    $temp = new externalpage(
         'toollpimportcsv',
         get_string('pluginname', 'tool_lpimportcsv'),
-        new moodle_url('/admin/tool/lpimportcsv/index.php'),
+        new url('/admin/tool/lpimportcsv/index.php'),
         'moodle/competency:competencymanage'
     );
     $ADMIN->add('competencies', $temp);
     // Export competency framework page.
-    $temp = new admin_externalpage(
+    $temp = new externalpage(
         'toollpexportcsv',
         get_string('exportnavlink', 'tool_lpimportcsv'),
-        new moodle_url('/admin/tool/lpimportcsv/export.php'),
+        new url('/admin/tool/lpimportcsv/export.php'),
         'moodle/competency:competencymanage'
     );
     $ADMIN->add('competencies', $temp);

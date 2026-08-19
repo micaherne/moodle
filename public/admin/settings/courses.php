@@ -26,12 +26,33 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/pdflib.php');
 
+use core\context\system;
+use core\lang_string;
+use core\url;
 use core_admin\local\settings\filesize;
+use core_admin\setting\setting\configbackupfilenamemustachetemplate;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configcheckbox_with_lock;
+use core_admin\setting\setting\configduration;
+use core_admin\setting\setting\confightmleditor;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configselect_with_lock;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\configtime;
+use core_admin\setting\setting\coursecat_select;
+use core_admin\setting\setting\description;
+use core_admin\setting\setting\heading;
+use core_admin\setting\setting\special_backup_auto_destination;
+use core_admin\setting\setting\special_backupdays;
+use core_admin\setting\setting\users_with_capability;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
 
-$ADMIN->add('courses', new admin_category('coursedefaultsettings', new lang_string('defaultsettingscategory', 'course')));
-$ADMIN->add('courses', new admin_category('groups', new lang_string('groups')));
-$ADMIN->add('courses', new admin_category('activitychooser', new lang_string('activitychoosercategory', 'course')));
-$ADMIN->add('courses', new admin_category('backups', new lang_string('backups', 'admin')));
+$ADMIN->add('courses', new category('coursedefaultsettings', new lang_string('defaultsettingscategory', 'course')));
+$ADMIN->add('courses', new category('groups', new lang_string('groups')));
+$ADMIN->add('courses', new category('activitychooser', new lang_string('activitychoosercategory', 'course')));
+$ADMIN->add('courses', new category('backups', new lang_string('backups', 'admin')));
 
 $capabilities = [
     'moodle/backup:backupcourse',
@@ -47,34 +68,34 @@ $capabilities = [
 if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     // Speedup for non-admins, add all caps used on this page.
     $ADMIN->add('courses',
-        new admin_externalpage('coursemgmt', new lang_string('coursemgmt', 'admin'),
+        new externalpage('coursemgmt', new lang_string('coursemgmt', 'admin'),
             $CFG->wwwroot . '/course/management.php',
             array('moodle/category:manage', 'moodle/course:create')
         )
     );
     $ADMIN->add('courses',
-        new admin_externalpage('addcategory', new lang_string('addcategory', 'admin'),
-            new moodle_url('/course/editcategory.php', array('parent' => 0)),
+        new externalpage('addcategory', new lang_string('addcategory', 'admin'),
+            new url('/course/editcategory.php', array('parent' => 0)),
             array('moodle/category:manage')
         )
     );
     $ADMIN->add('courses',
-        new admin_externalpage('addnewcourse', new lang_string('addnewcourse'),
-            new moodle_url('/course/edit.php', array('category' => 0)),
+        new externalpage('addnewcourse', new lang_string('addnewcourse'),
+            new url('/course/edit.php', array('category' => 0)),
             array('moodle/category:manage')
         )
     );
     $ADMIN->add('courses',
-        new admin_externalpage('restorecourse', new lang_string('restorecourse', 'admin'),
-            new moodle_url('/backup/restorefile.php', array('contextid' => context_system::instance()->id)),
+        new externalpage('restorecourse', new lang_string('restorecourse', 'admin'),
+            new url('/backup/restorefile.php', array('contextid' => system::instance()->id)),
             array('moodle/restore:restorecourse')
         )
     );
 
     // Settings page for options related to course deletion.
-    $coursedeletionsettings = new admin_settingpage('coursedeletionsettings', get_string('coursedeletionsettings', 'course'));
+    $coursedeletionsettings = new settingpage('coursedeletionsettings', get_string('coursedeletionsettings', 'course'));
     $coursedeletionsettings->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'moodlecourse/enablecourseasyncdeletion',
             new lang_string('enablecourseasyncdeletion', 'course'),
             new lang_string('enablecourseasyncdeletion_help', 'course'),
@@ -84,9 +105,9 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     $ADMIN->add('courses', $coursedeletionsettings);
 
     // Download course content.
-    $downloadcoursedefaulturl = new moodle_url('/admin/settings.php', ['section' => 'coursesettings']);
-    $temp = new admin_settingpage('downloadcoursecontent', new lang_string('downloadcoursecontent', 'course'));
-    $temp->add(new admin_setting_configcheckbox('downloadcoursecontentallowed',
+    $downloadcoursedefaulturl = new url('/admin/settings.php', ['section' => 'coursesettings']);
+    $temp = new settingpage('downloadcoursecontent', new lang_string('downloadcoursecontent', 'course'));
+    $temp->add(new configcheckbox('downloadcoursecontentallowed',
             new lang_string('downloadcoursecontentallowed', 'admin'),
             new lang_string('downloadcoursecontentallowed_desc', 'admin', $downloadcoursedefaulturl->out()), 0));
 
@@ -99,17 +120,17 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     $ADMIN->add('courses', $temp);
 
     // "courserequests" settingpage.
-    $temp = new admin_settingpage('courserequest', new lang_string('courserequest'));
-    $temp->add(new admin_setting_configcheckbox('enablecourserequests',
+    $temp = new settingpage('courserequest', new lang_string('courserequest'));
+    $temp->add(new configcheckbox('enablecourserequests',
         new lang_string('enablecourserequests', 'admin'),
         new lang_string('configenablecourserequests', 'admin'), 1));
-    $temp->add(new admin_settings_coursecat_select('defaultrequestcategory',
+    $temp->add(new coursecat_select('defaultrequestcategory',
         new lang_string('defaultrequestcategory', 'admin'),
         new lang_string('configdefaultrequestcategory', 'admin'), 1));
-    $temp->add(new admin_setting_configcheckbox('lockrequestcategory',
+    $temp->add(new configcheckbox('lockrequestcategory',
         new lang_string('lockrequestcategory', 'admin'),
         new lang_string('configlockrequestcategory', 'admin'), 0));
-    $temp->add(new admin_setting_users_with_capability(
+    $temp->add(new users_with_capability(
         'courserequestnotify',
         new lang_string('courserequestnotify', 'admin'),
         new lang_string('configcourserequestnotify2', 'admin'),
@@ -120,7 +141,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
 
     // Pending course requests.
     if (!empty($CFG->enablecourserequests)) {
-        $ADMIN->add('courses', new admin_externalpage('coursespending', new lang_string('pendingrequests'),
+        $ADMIN->add('courses', new externalpage('coursespending', new lang_string('pendingrequests'),
                 $CFG->wwwroot . '/course/pending.php', array('moodle/site:approvecourse')));
     }
 
@@ -129,13 +150,13 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     // NOTE: these settings must be applied after all other settings because they depend on them.
 
     // Main course settings.
-    $temp = new admin_settingpage('coursesettings', new lang_string('coursesettings'));
+    $temp = new settingpage('coursesettings', new lang_string('coursesettings'));
     require_once($CFG->dirroot.'/course/lib.php');
 
     $choices = array();
     $choices['0'] = new lang_string('hide');
     $choices['1'] = new lang_string('show');
-    $temp->add(new admin_setting_configselect('moodlecourse/visible', new lang_string('visible'), new lang_string('visible_help'),
+    $temp->add(new configselect('moodlecourse/visible', new lang_string('visible'), new lang_string('visible_help'),
         1, $choices));
 
     // Enable/disable download course content.
@@ -143,14 +164,14 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
         DOWNLOAD_COURSE_CONTENT_DISABLED => new lang_string('no'),
         DOWNLOAD_COURSE_CONTENT_ENABLED => new lang_string('yes'),
     ];
-    $downloadcontentsitedefault = new admin_setting_configselect('moodlecourse/downloadcontentsitedefault',
+    $downloadcontentsitedefault = new configselect('moodlecourse/downloadcontentsitedefault',
             new lang_string('enabledownloadcoursecontent', 'course'),
             new lang_string('downloadcoursecontent_help', 'course'), 0, $choices);
     $downloadcontentsitedefault->add_dependent_on('downloadcoursecontentallowed');
     $temp->add($downloadcontentsitedefault);
 
     $temp->add(
-            new admin_setting_configtext(
+            new configtext(
                 'moodlecourse/participantsperpage',
                 new lang_string('participants:perpage', 'course'),
                 new lang_string('participants:perpage_help', 'course'),
@@ -159,21 +180,21 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
         );
 
     // Course format.
-    $temp->add(new admin_setting_heading('courseformathdr', new lang_string('type_format', 'plugin'), ''));
+    $temp->add(new heading('courseformathdr', new lang_string('type_format', 'plugin'), ''));
 
     $courseformats = get_sorted_course_formats(true);
     $formcourseformats = array();
     foreach ($courseformats as $courseformat) {
         $formcourseformats[$courseformat] = new lang_string('pluginname', "format_$courseformat");
     }
-    $temp->add(new admin_setting_configselect('moodlecourse/format', new lang_string('format'), new lang_string('coursehelpformat'),
+    $temp->add(new configselect('moodlecourse/format', new lang_string('format'), new lang_string('coursehelpformat'),
         'topics', $formcourseformats));
 
     // TODO: remove this setting in Moodle 6.0 (MDL-85272).
-    $temp->add(new admin_setting_configtext('moodlecourse/maxsections', new lang_string('maxnumberweeks'),
+    $temp->add(new configtext('moodlecourse/maxsections', new lang_string('maxnumberweeks'),
         new lang_string('maxnumberweeks_desc'), 52));
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         name: 'moodlecourse/numsections',
         visiblename: new lang_string('numberweeks'),
         description: new lang_string('coursehelpnumberweeks'),
@@ -184,38 +205,38 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     $choices = array();
     $choices['1'] = new lang_string('hiddensectionsinvisible');
     $choices['0'] = new lang_string('hiddensectionscollapsed');
-    $temp->add(new admin_setting_configselect('moodlecourse/hiddensections', new lang_string('hiddensections'),
+    $temp->add(new configselect('moodlecourse/hiddensections', new lang_string('hiddensections'),
         new lang_string('coursehelphiddensections'), 1, $choices));
 
     $choices = array();
     $choices[COURSE_DISPLAY_SINGLEPAGE] = new lang_string('coursedisplay_single');
     $choices[COURSE_DISPLAY_MULTIPAGE] = new lang_string('coursedisplay_multi');
-    $temp->add(new admin_setting_configselect('moodlecourse/coursedisplay', new lang_string('coursedisplay'),
+    $temp->add(new configselect('moodlecourse/coursedisplay', new lang_string('coursedisplay'),
         new lang_string('coursedisplay_help'), COURSE_DISPLAY_SINGLEPAGE, $choices));
 
-    $temp->add(new admin_setting_configcheckbox('moodlecourse/courseenddateenabled', get_string('courseenddateenabled'),
+    $temp->add(new configcheckbox('moodlecourse/courseenddateenabled', get_string('courseenddateenabled'),
         get_string('courseenddateenabled_desc'), 1));
 
-    $temp->add(new admin_setting_configduration('moodlecourse/courseduration', get_string('courseduration'),
+    $temp->add(new configduration('moodlecourse/courseduration', get_string('courseduration'),
         get_string('courseduration_desc'), YEARSECS));
 
     // Appearance.
-    $temp->add(new admin_setting_heading('appearancehdr', new lang_string('appearance'), ''));
+    $temp->add(new heading('appearancehdr', new lang_string('appearance'), ''));
 
     $languages = array();
     $languages[''] = new lang_string('forceno');
     $languages += get_string_manager()->get_list_of_translations();
-    $temp->add(new admin_setting_configselect('moodlecourse/lang', new lang_string('forcelanguage'), '', key($languages),
+    $temp->add(new configselect('moodlecourse/lang', new lang_string('forcelanguage'), '', key($languages),
         $languages));
 
     $options = range(0, 10);
-    $temp->add(new admin_setting_configselect('moodlecourse/newsitems', new lang_string('newsitemsnumber'),
+    $temp->add(new configselect('moodlecourse/newsitems', new lang_string('newsitemsnumber'),
         new lang_string('coursehelpnewsitemsnumber'), 5, $options));
-    $temp->add(new admin_setting_configselect('moodlecourse/showgrades', new lang_string('showgrades'),
+    $temp->add(new configselect('moodlecourse/showgrades', new lang_string('showgrades'),
         new lang_string('coursehelpshowgrades'), 1, array(0 => new lang_string('no'), 1 => new lang_string('yes'))));
-    $temp->add(new admin_setting_configselect('moodlecourse/showreports', new lang_string('showreports'), '', 0,
+    $temp->add(new configselect('moodlecourse/showreports', new lang_string('showreports'), '', 0,
         array(0 => new lang_string('no'), 1 => new lang_string('yes'))));
-    $temp->add(new admin_setting_configselect('moodlecourse/showactivitydates',
+    $temp->add(new configselect('moodlecourse/showactivitydates',
         new lang_string('showactivitydates'),
         new lang_string('showactivitydates_help'), 1, [
             0 => new lang_string('no'),
@@ -224,11 +245,11 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     ));
 
     // Files and uploads.
-    $temp->add(new admin_setting_heading('filesanduploadshdr', new lang_string('filesanduploads'), ''));
+    $temp->add(new heading('filesanduploadshdr', new lang_string('filesanduploads'), ''));
 
     if (!empty($CFG->legacyfilesinnewcourses)) {
         $choices = array('0'=>new lang_string('no'), '2'=>new lang_string('yes'));
-        $temp->add(new admin_setting_configselect('moodlecourse/legacyfiles', new lang_string('courselegacyfiles'),
+        $temp->add(new configselect('moodlecourse/legacyfiles', new lang_string('courselegacyfiles'),
             new lang_string('courselegacyfiles_help'), key($choices), $choices));
     }
 
@@ -238,7 +259,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     } else {
         $choices = get_max_upload_sizes(0, 0, 0, $currentmaxbytes);
     }
-    $temp->add(new admin_setting_configselect('moodlecourse/maxbytes', new lang_string('maximumupload'),
+    $temp->add(new configselect('moodlecourse/maxbytes', new lang_string('maximumupload'),
         new lang_string('coursehelpmaximumupload'), key($choices), $choices));
 
     if (!empty($CFG->enablepdfexportfont)) {
@@ -246,7 +267,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
         $fontlist = $pdf->get_export_fontlist();
         // Show the option if the font is defined more than one.
         if (count($fontlist) > 1) {
-            $temp->add(new admin_setting_configselect('moodlecourse/pdfexportfont',
+            $temp->add(new configselect('moodlecourse/pdfexportfont',
                 new lang_string('pdfexportfont', 'course'),
                 new lang_string('pdfexportfont_help', 'course'),
                 'freesans', $fontlist
@@ -255,12 +276,12 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     }
 
     // Completion tracking.
-    $temp->add(new admin_setting_heading('progress', new lang_string('completion','completion'), ''));
-    $temp->add(new admin_setting_configselect('moodlecourse/enablecompletion', new lang_string('completion', 'completion'),
+    $temp->add(new heading('progress', new lang_string('completion','completion'), ''));
+    $temp->add(new configselect('moodlecourse/enablecompletion', new lang_string('completion', 'completion'),
         new lang_string('enablecompletion_help', 'completion'), 1, array(0 => new lang_string('no'), 1 => new lang_string('yes'))));
 
     // Display completion conditions.
-    $temp->add(new admin_setting_configselect('moodlecourse/showcompletionconditions',
+    $temp->add(new configselect('moodlecourse/showcompletionconditions',
         new lang_string('showcompletionconditions', 'completion'),
         new lang_string('showcompletionconditions_help', 'completion'), 1, [
             0 => new lang_string('no'),
@@ -269,48 +290,48 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     ));
 
     // Groups.
-    $temp->add(new admin_setting_heading('groups', new lang_string('groups', 'group'), ''));
+    $temp->add(new heading('groups', new lang_string('groups', 'group'), ''));
     $choices = array();
     $choices[NOGROUPS] = new lang_string('groupsnone', 'group');
     $choices[SEPARATEGROUPS] = new lang_string('groupsseparate', 'group');
     $choices[VISIBLEGROUPS] = new lang_string('groupsvisible', 'group');
-    $temp->add(new admin_setting_configselect('moodlecourse/groupmode', new lang_string('groupmode'), '', key($choices),$choices));
-    $temp->add(new admin_setting_configselect('moodlecourse/groupmodeforce', new lang_string('force'), new lang_string('coursehelpforce'), 0,array(0 => new lang_string('no'), 1 => new lang_string('yes'))));
+    $temp->add(new configselect('moodlecourse/groupmode', new lang_string('groupmode'), '', key($choices),$choices));
+    $temp->add(new configselect('moodlecourse/groupmodeforce', new lang_string('force'), new lang_string('coursehelpforce'), 0,array(0 => new lang_string('no'), 1 => new lang_string('yes'))));
 
     // Communication.
-    $temp->add(new admin_setting_heading('communication',
+    $temp->add(new heading('communication',
         new lang_string('communication', 'core_communication'), ''));
 
     list($communicationproviders, $defaulprovider) = \core_communication\api::
         get_enabled_providers_and_default();
 
-    $temp->add(new admin_setting_configselect('moodlecourse/coursecommunicationprovider',
+    $temp->add(new configselect('moodlecourse/coursecommunicationprovider',
         new lang_string('selectcommunicationprovider', 'communication'),
         new lang_string('coursecommunication_desc', 'course'),
         $defaulprovider, $communicationproviders));
 
     $ADMIN->add('coursedefaultsettings', $temp);
     if (!empty($CFG->enablecompletion)) {
-        $ADMIN->add('coursedefaultsettings', new admin_externalpage(
+        $ADMIN->add('coursedefaultsettings', new externalpage(
                 'sitedefaultcompletion',
                 new lang_string('defaultcompletion', 'completion'),
-                new moodle_url('/course/defaultcompletion.php', ['id' => $SITE->id]),
+                new url('/course/defaultcompletion.php', ['id' => $SITE->id]),
                 ['moodle/course:manageactivities'])
         );
     }
-    $ADMIN->add('coursedefaultsettings', new admin_externalpage(
+    $ADMIN->add('coursedefaultsettings', new externalpage(
         'course_customfield',
         new lang_string('course_customfield', 'admin'),
         $CFG->wwwroot . '/course/customfield.php',
         ['moodle/course:configurecustomfields'])
     );
 
-    $temp = new admin_settingpage('activitychoosersettings', new lang_string('activitychoosersettings', 'course'));
+    $temp = new settingpage('activitychoosersettings', new lang_string('activitychoosersettings', 'course'));
 
     // Add to the 'Groups' category.
     $ADMIN->add(
         'groups',
-        new admin_externalpage(
+        new externalpage(
             'group_customfield',
             new lang_string('group_customfield', 'admin'),
             $CFG->wwwroot . '/group/customfield.php',
@@ -319,7 +340,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     );
     $ADMIN->add(
         'groups',
-        new admin_externalpage(
+        new externalpage(
             'grouping_customfield',
             new lang_string('grouping_customfield', 'admin'),
             $CFG->wwwroot . '/group/grouping_customfield.php',
@@ -328,7 +349,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     );
 
     // Add to the 'Activity Chooser' category.
-    $temp = new admin_settingpage('activitychoosersettings', new lang_string('activitychoosersettings', 'course'));
+    $temp = new settingpage('activitychoosersettings', new lang_string('activitychoosersettings', 'course'));
 
     // Build a list of plugins that use the footer callback.
     $pluginswithfunction = get_plugins_with_function('custom_chooser_footer', 'lib.php');
@@ -345,7 +366,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
 
     // Select what plugin to show in the footer.
     $temp->add(
-        new admin_setting_configselect(
+        new configselect(
             'activitychooseractivefooter',
             new lang_string('activitychooseractivefooter', 'course'),
             new lang_string('activitychooseractivefooter_desc', 'course'),
@@ -356,8 +377,8 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
 
     $ADMIN->add('activitychooser', $temp);
     $ADMIN->add('activitychooser',
-        new admin_externalpage('activitychooserrecommended', new lang_string('activitychooserrecommendations', 'course'),
-            new moodle_url('/course/recommendations.php'),
+        new externalpage('activitychooserrecommended', new lang_string('activitychooserrecommendations', 'course'),
+            new url('/course/recommendations.php'),
             array('moodle/course:recommendactivity')
         )
     );
@@ -365,10 +386,10 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     // Add to the 'Backups' category.
 
     // Create a page for general backups configuration and defaults.
-    $temp = new admin_settingpage('backupgeneralsettings', new lang_string('generalbackdefaults', 'backup'), 'moodle/backup:backupcourse');
+    $temp = new settingpage('backupgeneralsettings', new lang_string('generalbackdefaults', 'backup'), 'moodle/backup:backupcourse');
 
     // General configuration section.
-    $temp->add(new admin_setting_configselect('backup/loglifetime', new lang_string('loglifetime', 'backup'), new lang_string('configloglifetime', 'backup'), 30, array(
+    $temp->add(new configselect('backup/loglifetime', new lang_string('loglifetime', 'backup'), new lang_string('configloglifetime', 'backup'), 30, array(
         1   => new lang_string('numdays', '', 1),
         2   => new lang_string('numdays', '', 2),
         3   => new lang_string('numdays', '', 3),
@@ -386,46 +407,46 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     )));
 
     // General defaults section.
-    $temp->add(new admin_setting_heading('generalsettings', new lang_string('generalsettings', 'backup'), ''));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_users', new lang_string('generalusers','backup'), new lang_string('configgeneralusers','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_anonymize', new lang_string('generalanonymize','backup'), new lang_string('configgeneralanonymize','backup'), array('value'=>0, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_role_assignments', new lang_string('generalroleassignments','backup'), new lang_string('configgeneralroleassignments','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_activities', new lang_string('generalactivities','backup'), new lang_string('configgeneralactivities','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_blocks', new lang_string('generalblocks','backup'), new lang_string('configgeneralblocks','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock(
+    $temp->add(new heading('generalsettings', new lang_string('generalsettings', 'backup'), ''));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_users', new lang_string('generalusers','backup'), new lang_string('configgeneralusers','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_anonymize', new lang_string('generalanonymize','backup'), new lang_string('configgeneralanonymize','backup'), array('value'=>0, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_role_assignments', new lang_string('generalroleassignments','backup'), new lang_string('configgeneralroleassignments','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_activities', new lang_string('generalactivities','backup'), new lang_string('configgeneralactivities','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_blocks', new lang_string('generalblocks','backup'), new lang_string('configgeneralblocks','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock(
             'backup/backup_general_files',
             new lang_string('generalfiles', 'backup'),
             new lang_string('configgeneralfiles', 'backup'),
             array('value' => '1', 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_filters', new lang_string('generalfilters','backup'), new lang_string('configgeneralfilters','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_comments', new lang_string('generalcomments','backup'), new lang_string('configgeneralcomments','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_badges', new lang_string('generalbadges','backup'), new lang_string('configgeneralbadges','backup'), array('value'=>1,'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_calendarevents', new lang_string('generalcalendarevents','backup'), new lang_string('configgeneralcalendarevents','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_userscompletion', new lang_string('generaluserscompletion','backup'), new lang_string('configgeneraluserscompletion','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_logs', new lang_string('generallogs','backup'), new lang_string('configgenerallogs','backup'), array('value'=>0, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_histories', new lang_string('generalhistories','backup'), new lang_string('configgeneralhistories','backup'), array('value'=>0, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_groups',
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_filters', new lang_string('generalfilters','backup'), new lang_string('configgeneralfilters','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_comments', new lang_string('generalcomments','backup'), new lang_string('configgeneralcomments','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_badges', new lang_string('generalbadges','backup'), new lang_string('configgeneralbadges','backup'), array('value'=>1,'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_calendarevents', new lang_string('generalcalendarevents','backup'), new lang_string('configgeneralcalendarevents','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_userscompletion', new lang_string('generaluserscompletion','backup'), new lang_string('configgeneraluserscompletion','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_logs', new lang_string('generallogs','backup'), new lang_string('configgenerallogs','backup'), array('value'=>0, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_histories', new lang_string('generalhistories','backup'), new lang_string('configgeneralhistories','backup'), array('value'=>0, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_groups',
             new lang_string('generalgroups', 'backup'), new lang_string('configgeneralgroups', 'backup'),
             array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_competencies', new lang_string('generalcompetencies','backup'), new lang_string('configgeneralcompetencies','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock(
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_competencies', new lang_string('generalcompetencies','backup'), new lang_string('configgeneralcompetencies','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock(
         'backup/backup_general_customfield',
         new lang_string('generalcustomfield', 'backup'),
         new lang_string('configgeneralcustomfield', 'backup'),
         ['value' => 1, 'locked' => 0],
     ));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_contentbankcontent',
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_contentbankcontent',
         new lang_string('generalcontentbankcontent', 'backup'),
         new lang_string('configgeneralcontentbankcontent', 'backup'),
         ['value' => 1, 'locked' => 0])
     );
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_xapistate',
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_xapistate',
         new lang_string('generalxapistate', 'backup'),
         new lang_string('configgeneralxapistate', 'backup'),
         ['value' => 1, 'locked' => 0])
     );
 
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_general_legacyfiles',
+    $temp->add(new configcheckbox_with_lock('backup/backup_general_legacyfiles',
         new lang_string('generallegacyfiles', 'backup'),
         new lang_string('configlegacyfiles', 'backup'), array('value' => 1, 'locked' => 0)));
 
@@ -433,7 +454,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     // Until MDL-83618 is fixed, this must be required as it will not be autoloaded.
     require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
     $temp->add(
-        new admin_setting_heading(
+        new heading(
             'defaultbackupfilenamesettings',
             new lang_string('defaultbackupfilenamesettings', 'backup'),
             ''
@@ -441,7 +462,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     );
 
     $temp->add(
-        new admin_setting_description(
+        new description(
             'defaultbackupfilenamesettings_help',
             '',
             new lang_string('defaultbackupfilenamesettings_help', 'backup'),
@@ -450,7 +471,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     );
 
     $temp->add(
-        new admin_setting_configbackupfilenamemustachetemplate(
+        new configbackupfilenamemustachetemplate(
             'backup/backup_default_filename_template_course',
             new lang_string('defaultbackupfilenamecourse', 'backup'),
             new lang_string('defaultbackupfilenamecourse_desc', 'backup'),
@@ -462,7 +483,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     );
 
     $temp->add(
-        new admin_setting_configbackupfilenamemustachetemplate(
+        new configbackupfilenamemustachetemplate(
             'backup/backup_default_filename_template_section',
             new lang_string('defaultbackupfilenamesection', 'backup'),
             new lang_string('defaultbackupfilenamesection_desc', 'backup'),
@@ -474,7 +495,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     );
 
     $temp->add(
-        new admin_setting_configbackupfilenamemustachetemplate(
+        new configbackupfilenamemustachetemplate(
             'backup/backup_default_filename_template_activity',
             new lang_string('defaultbackupfilenameactivity', 'backup'),
             new lang_string('defaultbackupfilenameactivity_desc', 'backup'),
@@ -488,70 +509,70 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     $ADMIN->add('backups', $temp);
 
     // Create a page for general import configuration and defaults.
-    $temp = new admin_settingpage('importgeneralsettings', new lang_string('importgeneralsettings', 'backup'), 'moodle/backup:backupcourse');
-    $temp->add(new admin_setting_configtext('backup/import_general_maxresults', new lang_string('importgeneralmaxresults', 'backup'), new lang_string('importgeneralmaxresults_desc', 'backup'), 10));
-    $temp->add(new admin_setting_configcheckbox('backup/import_general_duplicate_admin_allowed',
+    $temp = new settingpage('importgeneralsettings', new lang_string('importgeneralsettings', 'backup'), 'moodle/backup:backupcourse');
+    $temp->add(new configtext('backup/import_general_maxresults', new lang_string('importgeneralmaxresults', 'backup'), new lang_string('importgeneralmaxresults_desc', 'backup'), 10));
+    $temp->add(new configcheckbox('backup/import_general_duplicate_admin_allowed',
             new lang_string('importgeneralduplicateadminallowed', 'backup'),
             new lang_string('importgeneralduplicateadminallowed_desc', 'backup'), 0));
 
     // Import defaults section.
-    $temp->add(new admin_setting_heading('importsettings', new lang_string('importsettings', 'backup'), ''));
-    $temp->add(new admin_setting_configcheckbox_with_lock(
+    $temp->add(new heading('importsettings', new lang_string('importsettings', 'backup'), ''));
+    $temp->add(new configcheckbox_with_lock(
             'backup/backup_import_permissions',
             new lang_string('generalpermissions', 'backup'),
             new lang_string('configgeneralpermissions', 'backup'),
             array('value' => 0, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_import_activities', new lang_string('generalactivities','backup'), new lang_string('configgeneralactivities','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_import_blocks', new lang_string('generalblocks','backup'), new lang_string('configgeneralblocks','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_import_filters', new lang_string('generalfilters','backup'), new lang_string('configgeneralfilters','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock(
+    $temp->add(new configcheckbox_with_lock('backup/backup_import_activities', new lang_string('generalactivities','backup'), new lang_string('configgeneralactivities','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_import_blocks', new lang_string('generalblocks','backup'), new lang_string('configgeneralblocks','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_import_filters', new lang_string('generalfilters','backup'), new lang_string('configgeneralfilters','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock(
         'backup/backup_import_badges',
         new lang_string('generalbadges', 'backup'),
         new lang_string('configgeneralbadges', 'backup'),
         ['value' => 0, 'locked' => 0],
     ));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_import_calendarevents', new lang_string('generalcalendarevents','backup'), new lang_string('configgeneralcalendarevents','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_import_groups',
+    $temp->add(new configcheckbox_with_lock('backup/backup_import_calendarevents', new lang_string('generalcalendarevents','backup'), new lang_string('configgeneralcalendarevents','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock('backup/backup_import_groups',
             new lang_string('generalgroups', 'backup'), new lang_string('configgeneralgroups', 'backup'),
             array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_import_competencies', new lang_string('generalcompetencies','backup'), new lang_string('configgeneralcompetencies','backup'), array('value'=>1, 'locked'=>0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock(
+    $temp->add(new configcheckbox_with_lock('backup/backup_import_competencies', new lang_string('generalcompetencies','backup'), new lang_string('configgeneralcompetencies','backup'), array('value'=>1, 'locked'=>0)));
+    $temp->add(new configcheckbox_with_lock(
         'backup/backup_import_customfield',
         new lang_string('generalcustomfield', 'backup'),
         new lang_string('configgeneralcustomfield', 'backup'),
         ['value' => 1, 'locked' => 0],
     ));
-    $temp->add(new admin_setting_configcheckbox_with_lock(
+    $temp->add(new configcheckbox_with_lock(
         'backup/backup_import_contentbankcontent',
         new lang_string('generalcontentbankcontent', 'backup'),
         new lang_string('configgeneralcontentbankcontent', 'backup'),
         ['value' => 1, 'locked' => 0])
     );
-    $temp->add(new admin_setting_configcheckbox_with_lock('backup/backup_import_legacyfiles',
+    $temp->add(new configcheckbox_with_lock('backup/backup_import_legacyfiles',
         new lang_string('generallegacyfiles', 'backup'),
         new lang_string('configlegacyfiles', 'backup'), array('value' => 1, 'locked' => 0)));
 
     $ADMIN->add('backups', $temp);
 
     // Create a page for automated backups configuration and defaults.
-    $temp = new admin_settingpage('automated', new lang_string('automatedsetup','backup'), 'moodle/backup:backupcourse');
+    $temp = new settingpage('automated', new lang_string('automatedsetup','backup'), 'moodle/backup:backupcourse');
 
     // Automated configuration section.
-    $temp->add(new admin_setting_configselect('backup/backup_auto_active', new lang_string('active'),  new lang_string('autoactivedescription', 'backup'), 0, array(
+    $temp->add(new configselect('backup/backup_auto_active', new lang_string('active'),  new lang_string('autoactivedescription', 'backup'), 0, array(
         0 => new lang_string('autoactivedisabled', 'backup'),
         1 => new lang_string('autoactiveenabled', 'backup'),
         2 => new lang_string('autoactivemanual', 'backup')
     )));
-    $temp->add(new admin_setting_special_backupdays());
-    $temp->add(new admin_setting_configtime('backup/backup_auto_hour', 'backup_auto_minute', new lang_string('executeat'),
+    $temp->add(new special_backupdays());
+    $temp->add(new configtime('backup/backup_auto_hour', 'backup_auto_minute', new lang_string('executeat'),
             new lang_string('backupexecuteathelp'), array('h' => 0, 'm' => 0)));
     $storageoptions = array(
         0 => new lang_string('storagecourseonly', 'backup'),
         1 => new lang_string('storageexternalonly', 'backup'),
         2 => new lang_string('storagecourseandexternal', 'backup')
     );
-    $temp->add(new admin_setting_configselect('backup/backup_auto_storage', new lang_string('automatedstorage', 'backup'), new lang_string('automatedstoragehelp', 'backup'), 0, $storageoptions));
-    $temp->add(new admin_setting_special_backup_auto_destination());
+    $temp->add(new configselect('backup/backup_auto_storage', new lang_string('automatedstorage', 'backup'), new lang_string('automatedstoragehelp', 'backup'), 0, $storageoptions));
+    $temp->add(new special_backup_auto_destination());
 
     $maxkeptoptions = array(
         0 => new lang_string('all'), 1 => '1',
@@ -569,7 +590,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
         300 => '300',
         400 => '400',
         500 => '500');
-    $temp->add(new admin_setting_configselect('backup/backup_auto_max_kept', new lang_string('automatedmaxkept', 'backup'),
+    $temp->add(new configselect('backup/backup_auto_max_kept', new lang_string('automatedmaxkept', 'backup'),
             new lang_string('automatedmaxkepthelp', 'backup'), 1, $maxkeptoptions));
 
     $automateddeletedaysoptions = array(
@@ -586,7 +607,7 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
         5    => new lang_string('numdays', '', 5),
         2    => new lang_string('numdays', '', 2)
     );
-    $temp->add(new admin_setting_configselect('backup/backup_auto_delete_days', new lang_string('automateddeletedays', 'backup'),
+    $temp->add(new configselect('backup/backup_auto_delete_days', new lang_string('automateddeletedays', 'backup'),
             '', 0, $automateddeletedaysoptions));
 
     $minkeptoptions = array(
@@ -604,12 +625,12 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
         300 => '300',
         400 => '400'
     );
-    $temp->add(new admin_setting_configselect('backup/backup_auto_min_kept', new lang_string('automatedminkept', 'backup'),
+    $temp->add(new configselect('backup/backup_auto_min_kept', new lang_string('automatedminkept', 'backup'),
             new lang_string('automatedminkepthelp', 'backup'), 0, $minkeptoptions));
 
-    $temp->add(new admin_setting_configcheckbox('backup/backup_shortname', new lang_string('backup_shortname', 'admin'), new lang_string('backup_shortnamehelp', 'admin'), 0));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_skip_hidden', new lang_string('skiphidden', 'backup'), new lang_string('skiphiddenhelp', 'backup'), 1));
-    $temp->add(new admin_setting_configselect('backup/backup_auto_skip_modif_days', new lang_string('skipmodifdays', 'backup'), new lang_string('skipmodifdayshelp', 'backup'), 30, array(
+    $temp->add(new configcheckbox('backup/backup_shortname', new lang_string('backup_shortname', 'admin'), new lang_string('backup_shortnamehelp', 'admin'), 0));
+    $temp->add(new configcheckbox('backup/backup_auto_skip_hidden', new lang_string('skiphidden', 'backup'), new lang_string('skiphiddenhelp', 'backup'), 1));
+    $temp->add(new configselect('backup/backup_auto_skip_modif_days', new lang_string('skipmodifdays', 'backup'), new lang_string('skipmodifdayshelp', 'backup'), 30, array(
         0 => new lang_string('never'),
         1 => new lang_string('numdays', '', 1),
         2 => new lang_string('numdays', '', 2),
@@ -626,49 +647,49 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
         180 => new lang_string('numdays', '', 180),
         365 => new lang_string('numdays', '', 365)
     )));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_skip_modif_prev', new lang_string('skipmodifprev', 'backup'), new lang_string('skipmodifprevhelp', 'backup'), 0));
+    $temp->add(new configcheckbox('backup/backup_auto_skip_modif_prev', new lang_string('skipmodifprev', 'backup'), new lang_string('skipmodifprevhelp', 'backup'), 0));
 
     // Automated defaults section.
-    $temp->add(new admin_setting_heading('automatedsettings', new lang_string('automatedsettings','backup'), new lang_string('recyclebin_desc', 'backup')));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_users', new lang_string('generalusers', 'backup'), new lang_string('configgeneralusers', 'backup'), 1));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_role_assignments', new lang_string('generalroleassignments','backup'), new lang_string('configgeneralroleassignments','backup'), 1));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_activities', new lang_string('generalactivities', 'backup'),
+    $temp->add(new heading('automatedsettings', new lang_string('automatedsettings','backup'), new lang_string('recyclebin_desc', 'backup')));
+    $temp->add(new configcheckbox('backup/backup_auto_users', new lang_string('generalusers', 'backup'), new lang_string('configgeneralusers', 'backup'), 1));
+    $temp->add(new configcheckbox('backup/backup_auto_role_assignments', new lang_string('generalroleassignments','backup'), new lang_string('configgeneralroleassignments','backup'), 1));
+    $temp->add(new configcheckbox('backup/backup_auto_activities', new lang_string('generalactivities', 'backup'),
         new lang_string('backupautoactivitiesdescription', 'backup'), 1));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_blocks', new lang_string('generalblocks','backup'), new lang_string('configgeneralblocks','backup'), 1));
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox('backup/backup_auto_blocks', new lang_string('generalblocks','backup'), new lang_string('configgeneralblocks','backup'), 1));
+    $temp->add(new configcheckbox(
             'backup/backup_auto_files',
             new lang_string('generalfiles', 'backup'),
             new lang_string('configgeneralfiles', 'backup'), '1'));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_filters', new lang_string('generalfilters','backup'), new lang_string('configgeneralfilters','backup'), 1));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_comments', new lang_string('generalcomments','backup'), new lang_string('configgeneralcomments','backup'), 1));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_badges', new lang_string('generalbadges','backup'), new lang_string('configgeneralbadges','backup'), 1));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_calendarevents', new lang_string('generalcalendarevents','backup'), new lang_string('configgeneralcalendarevents','backup'), 1));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_userscompletion', new lang_string('generaluserscompletion','backup'), new lang_string('configgeneraluserscompletion','backup'), 1));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_logs', new lang_string('generallogs', 'backup'), new lang_string('configgenerallogs', 'backup'), 0));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_histories', new lang_string('generalhistories','backup'), new lang_string('configgeneralhistories','backup'), 0));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_groups', new lang_string('generalgroups', 'backup'),
+    $temp->add(new configcheckbox('backup/backup_auto_filters', new lang_string('generalfilters','backup'), new lang_string('configgeneralfilters','backup'), 1));
+    $temp->add(new configcheckbox('backup/backup_auto_comments', new lang_string('generalcomments','backup'), new lang_string('configgeneralcomments','backup'), 1));
+    $temp->add(new configcheckbox('backup/backup_auto_badges', new lang_string('generalbadges','backup'), new lang_string('configgeneralbadges','backup'), 1));
+    $temp->add(new configcheckbox('backup/backup_auto_calendarevents', new lang_string('generalcalendarevents','backup'), new lang_string('configgeneralcalendarevents','backup'), 1));
+    $temp->add(new configcheckbox('backup/backup_auto_userscompletion', new lang_string('generaluserscompletion','backup'), new lang_string('configgeneraluserscompletion','backup'), 1));
+    $temp->add(new configcheckbox('backup/backup_auto_logs', new lang_string('generallogs', 'backup'), new lang_string('configgenerallogs', 'backup'), 0));
+    $temp->add(new configcheckbox('backup/backup_auto_histories', new lang_string('generalhistories','backup'), new lang_string('configgeneralhistories','backup'), 0));
+    $temp->add(new configcheckbox('backup/backup_auto_groups', new lang_string('generalgroups', 'backup'),
             new lang_string('configgeneralgroups', 'backup'), 1));
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_competencies', new lang_string('generalcompetencies','backup'), new lang_string('configgeneralcompetencies','backup'), 1));
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox('backup/backup_auto_competencies', new lang_string('generalcompetencies','backup'), new lang_string('configgeneralcompetencies','backup'), 1));
+    $temp->add(new configcheckbox(
         'backup/backup_auto_customfield',
         new lang_string('generalcustomfield', 'backup'),
         new lang_string('configgeneralcustomfield', 'backup'),
         1,
     ));
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'backup/backup_auto_contentbankcontent',
         new lang_string('generalcontentbankcontent', 'backup'),
         new lang_string('configgeneralcontentbankcontent', 'backup'),
         1)
     );
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'backup/backup_auto_xapistate',
         new lang_string('generalxapistate', 'backup'),
         new lang_string('configgeneralxapistate', 'backup'),
         1)
     );
 
-    $temp->add(new admin_setting_configcheckbox('backup/backup_auto_legacyfiles',
+    $temp->add(new configcheckbox('backup/backup_auto_legacyfiles',
         new lang_string('generallegacyfiles', 'backup'),
         new lang_string('configlegacyfiles', 'backup'), 1));
 
@@ -678,12 +699,12 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     $ADMIN->add('backups', $temp);
 
     // Create a page for general restore configuration and defaults.
-    $temp = new admin_settingpage('restoregeneralsettings', new lang_string('generalrestoredefaults', 'backup'));
+    $temp = new settingpage('restoregeneralsettings', new lang_string('generalrestoredefaults', 'backup'));
 
     // General restore defaults.
-    $temp->add(new admin_setting_heading('generalsettings', new lang_string('generalrestoresettings', 'backup'), ''));
+    $temp->add(new heading('generalsettings', new lang_string('generalrestoresettings', 'backup'), ''));
 
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_users',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_users',
         new lang_string('generalusers', 'backup'), new lang_string('configrestoreusers', 'backup'),
         array('value' => 1, 'locked' => 0)));
     // Can not use actual constants here because we'd need to include 100 of backup/restore files.
@@ -692,103 +713,103 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
         1/*backup::ENROL_WITHUSERS*/ => get_string('rootsettingenrolments_withusers', 'backup'),
         2/*backup::ENROL_ALWAYS*/    => get_string('rootsettingenrolments_always', 'backup'),
     ];
-    $temp->add(new admin_setting_configselect_with_lock('restore/restore_general_enrolments',
+    $temp->add(new configselect_with_lock('restore/restore_general_enrolments',
         new lang_string('generalenrolments', 'backup'), new lang_string('configrestoreenrolments', 'backup'),
         array('value' => 1/*backup::ENROL_WITHUSERS*/, 'locked' => 0), $options));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_role_assignments',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_role_assignments',
         new lang_string('generalroleassignments', 'backup'),
         new lang_string('configrestoreroleassignments', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_permissions',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_permissions',
         new lang_string('generalpermissions', 'backup'),
         new lang_string('configrestorepermissions', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_activities',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_activities',
         new lang_string('generalactivities', 'backup'),
         new lang_string('configrestoreactivities', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_blocks',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_blocks',
         new lang_string('generalblocks', 'backup'),
         new lang_string('configrestoreblocks', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_filters',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_filters',
         new lang_string('generalfilters', 'backup'),
         new lang_string('configrestorefilters', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_comments',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_comments',
         new lang_string('generalcomments', 'backup'),
         new lang_string('configrestorecomments', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_badges',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_badges',
         new lang_string('generalbadges', 'backup'),
         new lang_string('configrestorebadges', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_calendarevents',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_calendarevents',
         new lang_string('generalcalendarevents', 'backup'),
         new lang_string('configrestorecalendarevents', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_userscompletion',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_userscompletion',
         new lang_string('generaluserscompletion', 'backup'),
         new lang_string('configrestoreuserscompletion', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_logs',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_logs',
         new lang_string('generallogs', 'backup'),
         new lang_string('configrestorelogs', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_histories',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_histories',
         new lang_string('generalhistories', 'backup'),
         new lang_string('configrestorehistories', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_groups',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_groups',
         new lang_string('generalgroups', 'backup'), new lang_string('configrestoregroups', 'backup'),
         array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_competencies',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_competencies',
         new lang_string('generalcompetencies', 'backup'),
         new lang_string('configrestorecompetencies', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock(
+    $temp->add(new configcheckbox_with_lock(
         'restore/restore_general_customfield',
         new lang_string('generalcustomfield', 'backup'),
         new lang_string('configrestorecustomfield', 'backup'),
         ['value' => 1, 'locked' => 0],
     ));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_contentbankcontent',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_contentbankcontent',
         new lang_string('generalcontentbankcontent', 'backup'),
         new lang_string('configrestorecontentbankcontent', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_xapistate',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_xapistate',
         new lang_string('generalxapistate', 'backup'),
         new lang_string('configrestorexapistate', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_general_legacyfiles',
+    $temp->add(new configcheckbox_with_lock('restore/restore_general_legacyfiles',
         new lang_string('generallegacyfiles', 'backup'),
         new lang_string('configlegacyfiles', 'backup'), array('value' => 1, 'locked' => 0)));
 
     // Restore defaults when merging into another course.
-    $temp->add(new admin_setting_heading('mergerestoredefaults', new lang_string('mergerestoredefaults', 'backup'), ''));
+    $temp->add(new heading('mergerestoredefaults', new lang_string('mergerestoredefaults', 'backup'), ''));
 
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_merge_overwrite_conf',
+    $temp->add(new configcheckbox_with_lock('restore/restore_merge_overwrite_conf',
         new lang_string('setting_overwrite_conf', 'backup'),
     new lang_string('config_overwrite_conf', 'backup'), array('value' => 0, 'locked' => 0)));
 
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_merge_course_fullname',
+    $temp->add(new configcheckbox_with_lock('restore/restore_merge_course_fullname',
         new lang_string('setting_overwrite_course_fullname', 'backup'),
         new lang_string('config_overwrite_course_fullname', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_merge_course_shortname',
+    $temp->add(new configcheckbox_with_lock('restore/restore_merge_course_shortname',
         new lang_string('setting_overwrite_course_shortname', 'backup'),
         new lang_string('config_overwrite_course_shortname', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_merge_course_startdate',
+    $temp->add(new configcheckbox_with_lock('restore/restore_merge_course_startdate',
         new lang_string('setting_overwrite_course_startdate', 'backup'),
         new lang_string('config_overwrite_course_startdate', 'backup'), array('value' => 1, 'locked' => 0)));
 
     // Restore defaults when replacing course contents.
-    $temp->add(new admin_setting_heading('replacerestoredefaults', new lang_string('replacerestoredefaults', 'backup'), ''));
+    $temp->add(new heading('replacerestoredefaults', new lang_string('replacerestoredefaults', 'backup'), ''));
 
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_replace_overwrite_conf',
+    $temp->add(new configcheckbox_with_lock('restore/restore_replace_overwrite_conf',
         new lang_string('setting_overwrite_conf', 'backup'),
         new lang_string('config_overwrite_conf', 'backup'), array('value' => 0, 'locked' => 0)));
 
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_replace_course_fullname',
+    $temp->add(new configcheckbox_with_lock('restore/restore_replace_course_fullname',
         new lang_string('setting_overwrite_course_fullname', 'backup'),
         new lang_string('config_overwrite_course_fullname', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_replace_course_shortname',
+    $temp->add(new configcheckbox_with_lock('restore/restore_replace_course_shortname',
         new lang_string('setting_overwrite_course_shortname', 'backup'),
         new lang_string('config_overwrite_course_shortname', 'backup'), array('value' => 1, 'locked' => 0)));
-    $temp->add(new admin_setting_configcheckbox_with_lock('restore/restore_replace_course_startdate',
+    $temp->add(new configcheckbox_with_lock('restore/restore_replace_course_startdate',
         new lang_string('setting_overwrite_course_startdate', 'backup'),
         new lang_string('config_overwrite_course_startdate', 'backup'), array('value' => 1, 'locked' => 0)));
 
-    $temp->add(new admin_setting_configselect_with_lock('restore/restore_replace_keep_roles_and_enrolments',
+    $temp->add(new configselect_with_lock('restore/restore_replace_keep_roles_and_enrolments',
         new lang_string('setting_keep_roles_and_enrolments', 'backup'),
         new lang_string('config_keep_roles_and_enrolments', 'backup'), array('value' => 0, 'locked' => 0),
         array(1 => get_string('yes'), 0 => get_string('no'))));
-    $temp->add(new admin_setting_configselect_with_lock('restore/restore_replace_keep_groups_and_groupings',
+    $temp->add(new configselect_with_lock('restore/restore_replace_keep_groups_and_groupings',
         new lang_string('setting_keep_groups_and_groupings', 'backup'),
         new lang_string('config_keep_groups_and_groupings', 'backup'), array('value' => 0, 'locked' => 0),
         array(1 => get_string('yes'), 0 => get_string('no'))));
@@ -796,25 +817,25 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     $ADMIN->add('backups', $temp);
 
     // Create a page for asynchronous backup and restore configuration and defaults.
-    $temp = new admin_settingpage('asyncgeneralsettings', new lang_string('asyncgeneralsettings', 'backup'));
+    $temp = new settingpage('asyncgeneralsettings', new lang_string('asyncgeneralsettings', 'backup'));
 
-    $temp->add(new admin_setting_configcheckbox('enableasyncbackup', new lang_string('enableasyncbackup', 'backup'),
+    $temp->add(new configcheckbox('enableasyncbackup', new lang_string('enableasyncbackup', 'backup'),
             new lang_string('enableasyncbackup_help', 'backup'), 1, 1, 0));
 
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
             'backup/backup_async_message_users',
             new lang_string('asyncemailenable', 'backup'),
             new lang_string('asyncemailenabledetail', 'backup'), 1));
     $temp->hide_if('backup/backup_async_message_users', 'enableasyncbackup');
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
             'backup/backup_async_message_subject',
             new lang_string('asyncmessagesubject', 'backup'),
             new lang_string('asyncmessagesubjectdetail', 'backup'),
             new lang_string('asyncmessagesubjectdefault', 'backup')));
     $temp->hide_if('backup/backup_async_message_subject', 'backup/backup_async_message_users');
 
-    $temp->add(new admin_setting_confightmleditor(
+    $temp->add(new confightmleditor(
             'backup/backup_async_message',
             new lang_string('asyncmessagebody', 'backup'),
             new lang_string('asyncmessagebodydetail', 'backup'),

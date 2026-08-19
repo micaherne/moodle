@@ -17,9 +17,9 @@
 namespace core_calendar\external;
 
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
-use moodle_url;
+use core\url;
 
 /**
  * Class for exporting calendar footer view options data.
@@ -74,7 +74,7 @@ class footer_options_exporter extends exporter {
      */
     protected function get_manage_subscriptions_link(): ?string {
         if (calendar_user_can_add_event($this->calendar->course)) {
-            $managesubscriptionurl = new moodle_url('/calendar/managesubscriptions.php', ['course' => $this->calendar->courseid]);
+            $managesubscriptionurl = new url('/calendar/managesubscriptions.php', ['course' => $this->calendar->courseid]);
             return $managesubscriptionurl->out(true);
         }
         return null;
@@ -142,7 +142,7 @@ class footer_options_exporter extends exporter {
      * @return string The calendar URL.
      */
     public function get_calendar_url() {
-        $url = new moodle_url('/calendar/view.php', [
+        $url = new url('/calendar/view.php', [
             'view' => 'month',
             'time' => $this->calendar->time,
             'course' => $this->calendar->courseid,

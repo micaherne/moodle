@@ -16,6 +16,7 @@
 
 namespace core\message;
 
+use core\exception\coding_exception;
 use core\url;
 
 /**
@@ -275,7 +276,7 @@ class message {
         if (in_array($prop, $this->properties)) {
             return $this->$prop;
         }
-        throw new \coding_exception("Invalid property $prop specified");
+        throw new coding_exception("Invalid property $prop specified");
     }
 
     /**
@@ -297,7 +298,7 @@ class message {
         if (in_array($prop, $this->properties)) {
             return $this->$prop = $value;
         }
-        throw new \coding_exception("Invalid property $prop specified");
+        throw new coding_exception("Invalid property $prop specified");
     }
 
     /**
@@ -311,7 +312,7 @@ class message {
         if (in_array($prop, $this->properties)) {
             return isset($this->$prop);
         }
-        throw new \coding_exception("Invalid property $prop specified");
+        throw new coding_exception("Invalid property $prop specified");
     }
 
     /**

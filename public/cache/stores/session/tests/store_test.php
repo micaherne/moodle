@@ -16,7 +16,8 @@
 
 namespace cachestore_session;
 
-use cache_store;
+use core_cache\cache;
+use core_cache\store;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -47,20 +48,20 @@ final class store_test extends \cachestore_tests {
     public function test_maxsize(): void {
         $config = \cache_config_testing::instance();
         $config->phpunit_add_definition('phpunit/one', array(
-            'mode' => cache_store::MODE_SESSION,
+            'mode' => store::MODE_SESSION,
             'component' => 'phpunit',
             'area' => 'one',
             'maxsize' => 3
         ));
 
         $config->phpunit_add_definition('phpunit/two', array(
-            'mode' => cache_store::MODE_SESSION,
+            'mode' => store::MODE_SESSION,
             'component' => 'phpunit',
             'area' => 'two',
             'maxsize' => 3
         ));
 
-        $cacheone = \cache::make('phpunit', 'one');
+        $cacheone = cache::make('phpunit', 'one');
 
         $this->assertTrue($cacheone->set('key1', 'value1'));
         $this->assertTrue($cacheone->set('key2', 'value2'));
@@ -118,7 +119,7 @@ final class store_test extends \cachestore_tests {
             'key4', 'key5', 'key6', 'key7', 'keyA', 'keyB', 'keyC'
         )));
 
-        $cachetwo = \cache::make('phpunit', 'two');
+        $cachetwo = cache::make('phpunit', 'two');
 
         // Test adding many.
         $this->assertEquals(3, $cacheone->set_many(array(
@@ -169,14 +170,14 @@ final class store_test extends \cachestore_tests {
     public function test_ttl(): void {
         $config = \cache_config_testing::instance();
         $config->phpunit_add_definition('phpunit/three', array(
-            'mode' => cache_store::MODE_SESSION,
+            'mode' => store::MODE_SESSION,
             'component' => 'phpunit',
             'area' => 'three',
             'maxsize' => 3,
             'ttl' => 3
         ));
 
-        $cachethree = \cache::make('phpunit', 'three');
+        $cachethree = cache::make('phpunit', 'three');
 
         // Make sure that when cache with ttl is full the elements that were added first are deleted first regardless of access time.
         $cachethree->set('key1', 'value1');

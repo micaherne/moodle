@@ -17,6 +17,7 @@
 namespace core\external;
 
 use core\output\pix_icon;
+use core\output\renderer_base;
 
 /**
  * Class pix_icon_exporter
@@ -88,7 +89,7 @@ class pix_icon_exporter extends exporter {
     }
 
     #[\Override]
-    protected function get_other_values(\renderer_base $output) {
+    protected function get_other_values(renderer_base $output) {
         /** @var pix_icon $source */
         $source = $this->data;
 

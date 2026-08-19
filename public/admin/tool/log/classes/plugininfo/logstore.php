@@ -16,6 +16,8 @@
 
 namespace tool_log\plugininfo;
 
+use core\plugin_manager;
+
 /**
  * Subplugin info class.
  *
@@ -62,7 +64,7 @@ class logstore extends \core\plugininfo\base {
             add_to_config_log('tool_logstore_visibility', !$enabled, $enabled, $pluginname);
             set_config('enabled_stores', $new, 'tool_log');
             // Reset caches.
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;

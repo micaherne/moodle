@@ -19,12 +19,12 @@ declare(strict_types=1);
 namespace core_reportbuilder;
 
 use core_reportbuilder\local\report\action;
-use lang_string;
+use core\lang_string;
 use core_reportbuilder\local\filters\text;
 use core_reportbuilder\local\report\column;
 use core_reportbuilder\local\report\filter;
-use moodle_url;
-use pix_icon;
+use core\url;
+use core\output\pix_icon;
 
 /**
  * Testable system report fixture
@@ -65,7 +65,7 @@ class system_report_available extends system_report {
         $withactions = $this->get_parameter('withactions', false, PARAM_BOOL);
         if ($withactions) {
             $this->add_action(new action(
-                new moodle_url('/user/profile.php', ['id' => ':id']),
+                new url('/user/profile.php', ['id' => ':id']),
                 new pix_icon('e/search', get_string('view')),
                 [],
                 true,

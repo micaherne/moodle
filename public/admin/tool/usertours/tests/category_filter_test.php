@@ -16,11 +16,11 @@
 
 namespace tool_usertours;
 
-use context_course;
-use context_coursecat;
-use context_system;
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
 use tool_usertours\local\filter\category;
-use context;
+use core\context;
 
 /**
  * Tests for category filter.
@@ -137,9 +137,9 @@ final class category_filter_test extends \advanced_testcase {
         $instanceid = isset($parts[1]) && is_numeric($parts[1]) ? (int)$parts[1] : 0;
 
         return match ($contextlevel) {
-            'system' => context_system::instance(),
-            'category' => context_coursecat::instance($instanceid),
-            'course' => context_course::instance($instanceid)
+            'system' => system::instance(),
+            'category' => coursecat::instance($instanceid),
+            'course' => course::instance($instanceid)
         };
     }
 

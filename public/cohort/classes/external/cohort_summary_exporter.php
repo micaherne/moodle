@@ -24,7 +24,7 @@
 namespace core_cohort\external;
 defined('MOODLE_INTERNAL') || die();
 
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Class for exporting a cohort summary from an stdClass.

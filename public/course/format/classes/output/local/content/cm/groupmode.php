@@ -16,15 +16,16 @@
 
 namespace core_courseformat\output\local\content\cm;
 
-use cm_info;
+use core\output\renderer_base;
+use core_course\cm_info;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
 use core\output\named_templatable;
 use core\output\choicelist;
 use core\output\local\dropdown\status;
-use pix_icon;
-use renderable;
-use section_info;
+use core\output\pix_icon;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -70,7 +71,7 @@ class groupmode implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass|null data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): ?stdClass {
+    public function export_for_template(renderer_base $output): ?stdClass {
         if (!$this->format->show_groupmode($this->mod)) {
             return null;
         }
@@ -90,7 +91,7 @@ class groupmode implements named_templatable, renderable {
      * @param \renderer_base $output
      * @return stdClass
      */
-    protected function build_static_data(\renderer_base $output): stdClass {
+    protected function build_static_data(renderer_base $output): stdClass {
         switch ($this->mod->effectivegroupmode) {
             case SEPARATEGROUPS:
                 $groupalt = get_string('groupsseparate', 'group');
@@ -119,7 +120,7 @@ class groupmode implements named_templatable, renderable {
      * @param \renderer_base $output
      * @return stdClass
      */
-    protected function build_editor_data(\renderer_base $output): stdClass {
+    protected function build_editor_data(renderer_base $output): stdClass {
         $choice = $this->get_choice_list();
         $result = $this->get_dropdown_data($output, $choice);
         $result->autohide = ($this->mod->effectivegroupmode === NOGROUPS);
@@ -132,7 +133,7 @@ class groupmode implements named_templatable, renderable {
      * @param choicelist $choice the choice list
      * @return stdClass
      */
-    protected function get_dropdown_data(\renderer_base $output, choicelist $choice): stdClass {
+    protected function get_dropdown_data(renderer_base $output, choicelist $choice): stdClass {
         $buttondata = $this->build_static_data($output);
         $dropdown = new status(
             $buttondata->groupicon,

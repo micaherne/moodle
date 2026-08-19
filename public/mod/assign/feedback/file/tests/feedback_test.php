@@ -17,6 +17,7 @@
 namespace assignfeedback_file;
 
 use assignfeedback_file\feedback_helper_trait;
+use core\context\user;
 use mod_assign_test_generator;
 
 defined('MOODLE_INTERNAL') || die();
@@ -57,7 +58,7 @@ final class feedback_test extends \advanced_testcase {
         $this->setUser($teacher);
 
         $fs = get_file_storage();
-        $context = \context_user::instance($teacher->id);
+        $context = user::instance($teacher->id);
         $draftitemid = file_get_unused_draft_itemid();
         file_prepare_draft_area($draftitemid, $context->id, 'assignfeedback_file', 'feedback_files', 1);
 

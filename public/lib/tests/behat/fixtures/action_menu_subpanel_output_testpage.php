@@ -22,6 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\action_menu;
+use core\output\action_menu\link;
+use core\output\action_menu\subpanel;
+use core\output\pix_icon;
+use core\url;
+
 require_once(__DIR__ . '/../../../../config.php');
 
 defined('BEHAT_SITE_RUNNING') || die();
@@ -39,12 +45,12 @@ echo $OUTPUT->header();
 
 $choice1 = new core\output\choicelist('Choice example');
 $choice1->add_option("statusa", "Status A", [
-    'url' => new moodle_url($PAGE->url, ['foo' => 'Aardvark']),
+    'url' => new url($PAGE->url, ['foo' => 'Aardvark']),
     'description' => 'Status A description',
     'icon' => new pix_icon('t/user', '', ''),
 ]);
 $choice1->add_option("statusb", "Status B", [
-    'url' => new moodle_url($PAGE->url, ['foo' => 'Beetle']),
+    'url' => new url($PAGE->url, ['foo' => 'Beetle']),
     'description' => 'Status B description',
     'icon' => new pix_icon('t/groupv', '', ''),
 ]);
@@ -52,19 +58,19 @@ $choice1->set_selected_value('statusb');
 
 $choice2 = new core\output\choicelist('Choice example');
 $choice2->add_option("statusc", "Status C", [
-    'url' => new moodle_url($PAGE->url, ['foo' => 'Caterpillar']),
+    'url' => new url($PAGE->url, ['foo' => 'Caterpillar']),
     'description' => 'Status C description',
     'icon' => new pix_icon('t/groups', '', ''),
 ]);
 $choice2->add_option("statusd", "Status D", [
-    'url' => new moodle_url($PAGE->url, ['foo' => 'Donkey']),
+    'url' => new url($PAGE->url, ['foo' => 'Donkey']),
     'description' => 'Status D description',
     'icon' => new pix_icon('t/hide', '', ''),
 ]);
 $choice2->set_selected_value('statusc');
 
-$normalactionlink = new action_menu_link(
-    new moodle_url($PAGE->url, ['foo' => 'bar']),
+$normalactionlink = new link(
+    new url($PAGE->url, ['foo' => 'bar']),
     new pix_icon('t/emptystar', ''),
     'Action link example',
     false
@@ -84,13 +90,13 @@ $menu = new action_menu();
 $menu->add($normalactionlink);
 $menu->add($normalactionlink);
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Subpanel example',
         $choice1
     )
 );
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Another subpanel',
         $choice2
     )
@@ -112,7 +118,7 @@ $menu->set_menu_left();
 $menu->add($normalactionlink);
 $menu->add($normalactionlink);
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Subpanel example',
         $choice1,
         null,
@@ -120,7 +126,7 @@ $menu->add(
     )
 );
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Another subpanel',
         $choice2,
         null,
@@ -142,7 +148,7 @@ $menu = new action_menu();
 $menu->add($normalactionlink);
 $menu->add($normalactionlink);
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Subpanel example',
         $choice1,
         null,
@@ -150,7 +156,7 @@ $menu->add(
     )
 );
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Another subpanel',
         $choice2,
         null,
@@ -173,7 +179,7 @@ $menu->set_menu_left();
 $menu->add($normalactionlink);
 $menu->add($normalactionlink);
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Subpanel example',
         $choice1,
         null,
@@ -181,7 +187,7 @@ $menu->add(
     )
 );
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Another subpanel',
         $choice2,
         null,
@@ -200,14 +206,14 @@ $menu = new action_menu();
 $menu->add($normalactionlink);
 $menu->add($normalactionlink);
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Subpanel example',
         $choice1,
         ['data-extra' => 'some extra value']
     )
 );
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Another subpanel',
         $choice2,
         ['data-extra' => 'some other value']
@@ -238,13 +244,13 @@ $menu = new action_menu();
 $menu->add($normalactionlink);
 $menu->add($normalactionlink);
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Subpanel example',
         $choice1
     )
 );
 $menu->add(
-    new core\output\local\action_menu\subpanel(
+    new subpanel(
         'Another subpanel',
         $choice2
     )
@@ -256,9 +262,9 @@ echo '</div></div>';
 
 echo '</div>';
 
-$link1 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Alpha');
-$link2 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Beta');
-$link3 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Gamma');
+$link1 = new core\output\action_menu\link_secondary(new url('#'), null, 'Alpha');
+$link2 = new core\output\action_menu\link_secondary(new url('#'), null, 'Beta');
+$link3 = new core\output\action_menu\link_secondary(new url('#'), null, 'Gamma');
 
 // Submenu basic example.
 echo '<div id="basicsubmenuexample" class="mb-4">';
@@ -266,9 +272,9 @@ echo '<h3>Submenu basic example</h3>';
 
 $submenu = new core\output\submenu([$link1, $link2, $link3]);
 
-$item1 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Item 1');
+$item1 = new core\output\action_menu\link_secondary(new url('#'), null, 'Item 1');
 $item2 = new core\output\action_menu\subpanel('Item 2 with submenu', $submenu);
-$item3 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Item 3');
+$item3 = new core\output\action_menu\link_secondary(new url('#'), null, 'Item 3');
 $menu = new action_menu([$item1, $item2, $item3]);
 
 echo '<div class="border p-2 d-flex flex-row">';
@@ -288,9 +294,9 @@ $submenu = (new core\output\submenu())
     ->add_item($link2)
     ->add_item($link3);
 
-$item1 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Item 1');
+$item1 = new core\output\action_menu\link_secondary(new url('#'), null, 'Item 1');
 $item2 = new core\output\action_menu\subpanel('Item 2 with submenu', $submenu);
-$item3 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Item 3');
+$item3 = new core\output\action_menu\link_secondary(new url('#'), null, 'Item 3');
 $menu = new action_menu([$item1, $item2, $item3]);
 $menu->set_menu_left();
 
@@ -307,8 +313,8 @@ echo '<div id="nestedsubmenuexample" class="mb-4">';
 echo '<h3>Submenu with nested choicelist example</h3>';
 
 $nestedchoices = new core\output\choicelist('Nested choices');
-$nestedchoices->add_option('opt1', 'Option 1', ['url' => new moodle_url($PAGE->url, ['item' => 'opt1'])]);
-$nestedchoices->add_option('opt2', 'Option 2', ['url' => new moodle_url($PAGE->url, ['item' => 'opt2'])]);
+$nestedchoices->add_option('opt1', 'Option 1', ['url' => new url($PAGE->url, ['item' => 'opt1'])]);
+$nestedchoices->add_option('opt2', 'Option 2', ['url' => new url($PAGE->url, ['item' => 'opt2'])]);
 $nestedchoices->set_selected_value('opt1');
 
 $submenu = new core\output\submenu([
@@ -317,9 +323,9 @@ $submenu = new core\output\submenu([
     new core\output\action_menu\subpanel('More options', $nestedchoices),
 ]);
 
-$item1 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Item 1');
+$item1 = new core\output\action_menu\link_secondary(new url('#'), null, 'Item 1');
 $item2 = new core\output\action_menu\subpanel('Item 2 with submenu', $submenu);
-$item3 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Item 3');
+$item3 = new core\output\action_menu\link_secondary(new url('#'), null, 'Item 3');
 $menu = new action_menu([$item1, $item2, $item3]);
 
 echo '<div class="border p-2 d-flex flex-row">';
@@ -335,24 +341,24 @@ echo '<div id="submenuicons" class="mb-4">';
 echo '<h3>Submenu with icons</h3>';
 
 $subitem1 = new core\output\action_menu\link_secondary(
-    new moodle_url($PAGE->url, ['item' => 'edit']),
+    new url($PAGE->url, ['item' => 'edit']),
     new pix_icon('t/edit', 'Edit icon'),
     'Edit',
 );
 $subitem2 = new core\output\action_menu\link_secondary(
-    new moodle_url($PAGE->url, ['item' => 'hide']),
+    new url($PAGE->url, ['item' => 'hide']),
     new pix_icon('t/hide', 'Hide icon'),
     'Hide',
 );
 $subitem3 = new core\output\action_menu\link_secondary(
-    new moodle_url($PAGE->url, ['item' => 'delete']),
+    new url($PAGE->url, ['item' => 'delete']),
     new pix_icon('t/delete', 'Delete icon'),
     'Delete',
 );
 $submenu = new core\output\submenu([$subitem1, $subitem2, $subitem3]);
 
 $item1 = new core\output\action_menu\link_secondary(
-    new moodle_url('#'),
+    new url('#'),
     new pix_icon('i/log', ''),
     'Item 1',
 );
@@ -363,7 +369,7 @@ $item2 = new core\output\action_menu\subpanel(
     new pix_icon('i/search', ''),
 );
 $item3 = new core\output\action_menu\link_secondary(
-    new moodle_url('#'),
+    new url('#'),
     new pix_icon('t/download', ''),
     'Item 3',
 );
@@ -381,9 +387,9 @@ echo '</div>';
 echo '<div id="nestedsubmenuwithlinkexample" class="mb-4">';
 echo '<h3>Submenu left nested with link example</h3>';
 
-$link4 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Yota');
-$link5 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Zeta');
-$link6 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Omega');
+$link4 = new core\output\action_menu\link_secondary(new url('#'), null, 'Yota');
+$link5 = new core\output\action_menu\link_secondary(new url('#'), null, 'Zeta');
+$link6 = new core\output\action_menu\link_secondary(new url('#'), null, 'Omega');
 $submenu2 = new core\output\submenu([
     $link4,
     $link5,
@@ -393,12 +399,12 @@ $submenu2 = new core\output\submenu([
 $submenu1 = new core\output\submenu([
     $link1,
     $link2,
-    new core\output\action_menu\subpanel(text: 'Gamma', subpanel: $submenu2, url: new moodle_url('/my')),
+    new core\output\action_menu\subpanel(text: 'Gamma', subpanel: $submenu2, url: new url('/my')),
 ]);
 
-$item1 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Item 1');
+$item1 = new core\output\action_menu\link_secondary(new url('#'), null, 'Item 1');
 $item2 = new core\output\action_menu\subpanel('Item 2 with submenu', $submenu1);
-$item3 = new core\output\action_menu\link_secondary(new moodle_url('#'), null, 'Item 3');
+$item3 = new core\output\action_menu\link_secondary(new url('#'), null, 'Item 3');
 $menu = new action_menu([$item1, $item2, $item3]);
 $menu->set_menu_left();
 

@@ -26,13 +26,14 @@
 
 namespace core_courseformat\output\local\content;
 
-use context_course;
+use core\context\course;
 use core\output\named_templatable;
+use core\output\renderer_base;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use moodle_url;
-use renderable;
-use section_info;
+use core\url;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -75,7 +76,7 @@ class frontpagesection implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
         global $USER;
 
         $format = $this->format;
@@ -95,7 +96,7 @@ class frontpagesection implements named_templatable, renderable {
 
         if ($format->show_editor(['moodle/course:update'])) {
             $data->showsettings = true;
-            $data->settingsurl = new moodle_url('/course/editsection.php', ['id' => $section->id]);
+            $data->settingsurl = new url('/course/editsection.php', ['id' => $section->id]);
         }
 
         return $data;

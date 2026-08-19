@@ -16,6 +16,7 @@
 
 namespace core_admin\setting\page;
 
+use core\url;
 use core_admin\admin_search;
 
 /**
@@ -34,7 +35,7 @@ class managemessageoutputs extends \core_admin\setting\tree\externalpage {
         parent::__construct(
             'managemessageoutputs',
             get_string('defaultmessageoutputs', 'message'),
-            new \moodle_url('/admin/message.php')
+            new url('/admin/message.php')
         );
     }
 

@@ -27,6 +27,9 @@
  */
 
 /** General rendering target, usually normal browser page */
+use core_cache\cache;
+use core_cache\store;
+
 define('RENDERER_TARGET_GENERAL', 'general');
 
 /** General rendering target, usually normal browser page, but with limited capacity to avoid API use */
@@ -274,7 +277,7 @@ function theme_reset_all_caches() {
     theme_set_revision($next);
 
     if (!empty($CFG->themedesignermode)) {
-        $cache = cache::make_from_params(cache_store::MODE_APPLICATION, 'core', 'themedesigner');
+        $cache = cache::make_from_params(store::MODE_APPLICATION, 'core', 'themedesigner');
         $cache->purge();
     }
 
@@ -317,7 +320,7 @@ function theme_set_designer_mod($state) {
  * Purge theme used in context caches.
  */
 function theme_purge_used_in_context_caches() {
-    \cache::make('core', 'theme_usedincontext')->purge();
+    cache::make('core', 'theme_usedincontext')->purge();
 }
 
 /**
@@ -332,11 +335,11 @@ function theme_purge_used_in_context_caches() {
 function theme_delete_used_in_context_cache(string $newtheme, string $oldtheme): void {
     if ((strlen($newtheme) > 0) && (strlen($oldtheme) > 0)) {
         // Theme -> theme.
-        \cache::make('core', 'theme_usedincontext')->delete($oldtheme);
-        \cache::make('core', 'theme_usedincontext')->delete($newtheme);
+        cache::make('core', 'theme_usedincontext')->delete($oldtheme);
+        cache::make('core', 'theme_usedincontext')->delete($newtheme);
     } else {
         // No theme -> theme, or theme -> no theme.
-        \cache::make('core', 'theme_usedincontext')->delete($newtheme . $oldtheme);
+        cache::make('core', 'theme_usedincontext')->delete($newtheme . $oldtheme);
     }
 }
 

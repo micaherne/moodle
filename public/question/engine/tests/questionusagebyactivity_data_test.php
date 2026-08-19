@@ -16,6 +16,7 @@
 
 namespace core_question;
 
+use core\context\system;
 use question_bank;
 use question_state;
 use question_test_recordset;
@@ -36,7 +37,7 @@ require_once(__DIR__ . '/helpers.php');
  */
 final class questionusagebyactivity_data_test extends \data_loading_method_test_base {
     public function test_load(): void {
-        $scid = \context_system::instance()->id;
+        $scid = system::instance()->id;
         $records = new question_test_recordset(array(
         array('qubaid', 'contextid', 'component', 'preferredbehaviour',
                                                'questionattemptid', 'questionusageid', 'slot',
@@ -94,7 +95,7 @@ final class questionusagebyactivity_data_test extends \data_loading_method_test_
         // The code had a bug where if one question_attempt had no steps,
         // load_from_records got stuck in an infinite loop. This test is to
         // verify that no longer happens.
-        $scid = \context_system::instance()->id;
+        $scid = system::instance()->id;
         $records = new question_test_recordset(array(
         array('qubaid', 'contextid', 'component', 'preferredbehaviour',
                                                    'questionattemptid', 'questionusageid', 'slot',
@@ -126,7 +127,7 @@ final class questionusagebyactivity_data_test extends \data_loading_method_test_
         // The code had a bug where if a question_usage had no question_attempts,
         // load_from_records got stuck in an infinite loop. This test is to
         // verify that no longer happens.
-        $scid = \context_system::instance()->id;
+        $scid = system::instance()->id;
         $records = new question_test_recordset(array(
         array('qubaid', 'contextid', 'component', 'preferredbehaviour',
                                                    'questionattemptid', 'questionusageid', 'slot',

@@ -16,6 +16,10 @@
 
 namespace core_grades\external;
 
+use core\exception\invalid_parameter_exception;
+use core\exception\require_login_exception;
+use core\exception\required_capability_exception;
+
 /**
  * Unit tests for the core_grades\external\get_feedback webservice.
  *
@@ -151,18 +155,18 @@ final class get_feedback_test extends \core_external\tests\externallib_testcase 
             'Logged user does not have permissions to view feedback.' => [
                 'user',
                 false,
-                ['exceptionclass' => \required_capability_exception::class]
+                ['exceptionclass' => required_capability_exception::class]
             ],
             'Guest user cannot view feedback.' => [
                 'guest',
                 false,
-                ['exceptionclass' => \require_login_exception::class]
+                ['exceptionclass' => require_login_exception::class]
             ],
             'Request feedback for a grade item which is not a part of the course.' => [
                 'admin',
                 true,
                 [
-                    'exceptionclass' => \invalid_parameter_exception::class,
+                    'exceptionclass' => invalid_parameter_exception::class,
                     'exceptionmessage' => 'Course ID and item ID mismatch',
                 ]
             ]

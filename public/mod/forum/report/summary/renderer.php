@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\output\plugin_renderer_base;
+use core\url;
 use forumreport_summary\summary_table;
 
 /**
@@ -43,7 +45,7 @@ class forumreport_summary_renderer extends plugin_renderer_base {
      * @param array $filters Optional array of currently applied filter values.
      * @return string The filter form HTML.
      */
-    public function render_filters_form(stdClass $course, array $cms, moodle_url $actionurl, array $filters = []): string {
+    public function render_filters_form(stdClass $course, array $cms, url $actionurl, array $filters = []): string {
         $renderable = new \forumreport_summary\output\filters($course, $cms, $actionurl, $filters);
         $templatecontext = $renderable->export_for_template($this);
 

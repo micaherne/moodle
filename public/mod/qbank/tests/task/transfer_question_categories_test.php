@@ -16,11 +16,11 @@
 
 namespace mod_qbank\task;
 
-use context;
-use context_course;
-use context_coursecat;
-use context_module;
-use context_system;
+use core\context;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module as context_module;
+use core\context\system as context_system;
 use core\context\module;
 use core\context\system;
 use core\exception\moodle_exception;
@@ -143,7 +143,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
         $quizgenerator = self::getDataGenerator()->get_plugin_generator('mod_quiz');
 
         // Setup 2 categories at site level context, with a question in each.
-        $sitecontext = context_system::instance();
+        $sitecontext = system::instance();
         $site = get_site();
 
         $siteparentcat = $this->create_question_category('Site Parent Cat', $sitecontext->id);
@@ -195,7 +195,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
 
         // Create a course category and then a question category attached to that context.
         $coursecategory = self::getDataGenerator()->create_category();
-        $this->coursecatcontext = context_coursecat::instance($coursecategory->id);
+        $this->coursecatcontext = coursecat::instance($coursecategory->id);
         $coursecatcat = $this->create_question_category('Course Cat Parent Cat', $this->coursecatcontext->id);
 
         // Add a question to the category just made.
@@ -212,7 +212,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
 
         // Create 2 nested categories with questions in them at course context level.
         $course = self::getDataGenerator()->create_course();
-        $this->coursecontext = context_course::instance($course->id);
+        $this->coursecontext = course::instance($course->id);
         $coursegrandparentcat = $this->create_question_category('Course Grandparent Cat', $this->coursecontext->id);
         $courseparentcat1 = $this->create_question_category(
             'Course Parent Cat',
@@ -249,13 +249,13 @@ final class transfer_question_categories_test extends \advanced_testcase {
 
         // Create some nested categories with no questions in use.
         $course = self::getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $courseparentcat1 = $this->create_question_category('Stale Course Parent Cat1', $context->id);
         $coursechildcat1 = $this->create_question_category('Stale Course Child Cat1', $context->id, $courseparentcat1->id);
         $courseparentcat2 = $this->create_question_category('Stale Course Parent Cat2', $context->id);
         $coursechildcat2 = $this->create_question_category('Stale Course Child Cat2', $context->id, $courseparentcat2->id);
         $coursegrandchildcat1 = $this->create_question_category('Stale Course Grandchild Cat1', $context->id, $coursechildcat2->id);
-        $this->stalecoursecontext = context_course::instance($course->id);
+        $this->stalecoursecontext = course::instance($course->id);
 
         // Make all the questions hidden.
         $this->stalequestions[] = $questiongenerator->create_question('shortanswer',
@@ -295,7 +295,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
         // Set up a quiz with some categories and questions attached to it.
         $course = self::getDataGenerator()->create_course();
         $quiz = $quizgenerator->create_instance(['course' => $course->id, 'grade' => 100.0, 'sumgrades' => 2, 'layout' => '1,0']);
-        $this->quizcontext = context_module::instance($quiz->cmid);
+        $this->quizcontext = module::instance($quiz->cmid);
         $quizparentcat1 = $this->create_question_category('Quiz Mod Parent Cat1', $this->quizcontext->id);
         $quizchildcat1 = $this->create_question_category('Quiz Mod Child Cat1', $this->quizcontext->id, $quizparentcat1->id);
         $question1 = $questiongenerator->create_question('shortanswer', null, ['category' => $quizparentcat1->id]);
@@ -308,7 +308,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
         // - One contains questions that are not used anywhere, but are in "ready" state.
         // - One contains no questions.
         $course = self::getDataGenerator()->create_course(['shortname' => 'Used-Unused-Empty']);
-        $this->usedunusedcontext = context_course::instance($course->id);
+        $this->usedunusedcontext = course::instance($course->id);
         $usedcategory = $this->create_question_category(name: 'Used Question Cat', contextid: $this->usedunusedcontext->id);
         $unusedcategory = $this->create_question_category('Unused Question Cat', $this->usedunusedcontext->id);
         $emptycategory = $this->create_question_category('Empty Cat', $this->usedunusedcontext->id);
@@ -344,7 +344,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setup_pre_install_data();
 
-        $sitecontext = context_system::instance();
+        $sitecontext = system::instance();
         $allsitecats = $DB->get_records('question_categories', ['contextid' => $sitecontext->id], 'id ASC');
 
         // Make sure we have 2 site level question categories below 'top' and that the child is below the parent.
@@ -468,7 +468,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
 
         // Site context checks.
 
-        $sitecontext = context_system::instance();
+        $sitecontext = system::instance();
         $sitecontextcats = $DB->get_records('question_categories', ['contextid' => $sitecontext->id]);
 
         // Should be no site context question categories left, not even 'top'.
@@ -486,7 +486,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
 
         // It should have our determined name.
         $this->assertEquals('System shared question bank', $siteqbank->name);
-        $sitemodcontext = context_module::instance($siteqbank->get_course_module_record()->id);
+        $sitemodcontext = module::instance($siteqbank->get_course_module_record()->id);
 
         // The 3 question categories including 'top' should now be at the new module context with their order intact.
         $sitemodcats = $DB->get_records_select('question_categories',
@@ -668,14 +668,14 @@ final class transfer_question_categories_test extends \advanced_testcase {
         // We need to do this by creating in a real context, then deleting the context,
         // because create category logs, which needs a valid context id.
         $tamperedstamp = make_unique_id_code();
-        $context1 = context_course::instance(self::getDataGenerator()->create_course()->id);
+        $context1 = course::instance(self::getDataGenerator()->create_course()->id);
         $oldcat1 = $this->create_question_category('Lost category 1', $context1->id);
         $oldcat1->stamp = $tamperedstamp;
         $oldcat1->idnumber = 'tamperedidnumber';
         $DB->update_record('question_categories', $oldcat1);
         $DB->delete_records('context', ['id' => $context1->id]);
 
-        $context2 = context_course::instance(self::getDataGenerator()->create_course()->id);
+        $context2 = course::instance(self::getDataGenerator()->create_course()->id);
         $oldcat2 = $this->create_question_category('Lost category 2', $context2->id);
         $oldcat2->stamp = $tamperedstamp;
         $oldcat2->idnumber = 'tamperedidnumber';
@@ -711,7 +711,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
         $this->assertEquals('System shared question bank', $siteqbank->name);
 
         // The two previously orphaned categories should now be in this site questions bank, with a top category.
-        $sitemodcontext = context_module::instance($siteqbank->get_course_module_record()->id);
+        $sitemodcontext = module::instance($siteqbank->get_course_module_record()->id);
         $sitemodcats = $DB->get_records_select(
             'question_categories',
             'parent <> 0 AND contextid = :contextid',
@@ -746,7 +746,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
 
         // Create a second course.
         $course2 = self::getDataGenerator()->create_course();
-        $course2context = context_course::instance($course2->id);
+        $course2context = course::instance($course2->id);
 
         // In course2 we build this category structure:
         // - $course2parentcat -- context $course2context
@@ -812,7 +812,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
 
         // Create a second course.
         $course2 = self::getDataGenerator()->create_course();
-        $course2context = context_course::instance($course2->id);
+        $course2context = course::instance($course2->id);
 
         // Create a parent category, and 2 child categories in a non-existant context.
         $course2parentcat = $this->create_question_category('Course2 parent cat', $course2context->id);
@@ -978,7 +978,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
         $testqbanks = $testmodinfo->get_instances_of('qbank');
         $testqbank = reset($testqbanks);
         $testqbankcontext = module::instance($testqbank->id);
-        $sitetags = \core_tag_tag::get_tags_by_area_in_contexts('core_question', 'question', [context_system::instance()]);
+        $sitetags = \core_tag_tag::get_tags_by_area_in_contexts('core_question', 'question', [system::instance()]);
         $this->assertCount(2, $sitetags);
         $coursetags = \core_tag_tag::get_tags_by_area_in_contexts('core_question', 'question', [$this->coursecontext]);
         $this->assertCount(2, $coursetags); // The stale tag was removed with the stale question when the categories were moved.
@@ -1071,7 +1071,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
 
         // Create a second course.
         $course = self::getDataGenerator()->create_course();
-        $course2context = context_course::instance($course->id);
+        $course2context = course::instance($course->id);
 
         // Create a parent category, and 2 child categories in a non-existant context.
         $coursecat = $this->create_question_category('Course2 parent cat', $course2context->id);
@@ -1130,7 +1130,7 @@ final class transfer_question_categories_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setup_pre_install_data();
 
-        $sitecontext = context_system::instance();
+        $sitecontext = system::instance();
         $expectedcategoryids = [
             $DB->get_field('question_categories', 'id', ['contextid' => $sitecontext->id, 'name' => 'Site Parent Cat'], MUST_EXIST),
             $DB->get_field('question_categories', 'id', ['contextid' => $sitecontext->id, 'name' => 'Site Child Cat'], MUST_EXIST),

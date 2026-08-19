@@ -16,6 +16,7 @@
 
 namespace tool_admin_presets\local\action;
 
+use core\url;
 use tool_admin_presets\form\import_form;
 
 /**
@@ -32,7 +33,7 @@ class import extends base {
      * Displays the import moodleform
      */
     public function show(): void {
-        $url = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'import', 'mode' => 'execute']);
+        $url = new url('/admin/tool/admin_presets/index.php', ['action' => 'import', 'mode' => 'execute']);
         $this->moodleform = new import_form($url);
     }
 
@@ -40,11 +41,11 @@ class import extends base {
      * Imports the xmlfile into DB
      */
     public function execute(): void {
-        $url = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'import', 'mode' => 'execute']);
+        $url = new url('/admin/tool/admin_presets/index.php', ['action' => 'import', 'mode' => 'execute']);
         $this->moodleform = new import_form($url);
 
         if ($this->moodleform->is_cancelled()) {
-            $url = new \moodle_url('/admin/tool/admin_presets/index.php');
+            $url = new url('/admin/tool/admin_presets/index.php');
             redirect($url);
         }
 
@@ -53,7 +54,7 @@ class import extends base {
             $xmlcontent = $this->moodleform->get_file_content('xmlfile');
             list($xml, $preset, $settingsfound, $pluginsfound) = $this->manager->import_preset($xmlcontent, $data->name);
             if (!$xml) {
-                $url = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'import']);
+                $url = new url('/admin/tool/admin_presets/index.php', ['action' => 'import']);
                 redirect($url, get_string('wrongfile', 'tool_admin_presets'));
             }
 
@@ -64,14 +65,14 @@ class import extends base {
 
             // If there are no valid or selected settings, raise an error.
             if (!$settingsfound && !$pluginsfound) {
-                $url = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'import']);
+                $url = new url('/admin/tool/admin_presets/index.php', ['action' => 'import']);
                 redirect($url, get_string('novalidsettings', 'tool_admin_presets'));
             }
 
             // Trigger it after execute finishes.
             $this->log();
 
-            $url = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'load', 'id' => $preset->id]);
+            $url = new url('/admin/tool/admin_presets/index.php', ['action' => 'load', 'id' => $preset->id]);
             redirect($url);
         }
     }

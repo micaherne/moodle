@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\exception\coding_exception;
+use core\url;
 use enrol_lti\local\ltiadvantage\entity\application_registration;
 use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
 use enrol_lti\local\ltiadvantage\repository\deployment_repository;
@@ -47,11 +49,11 @@ class enrol_lti_generator extends component_generator_base {
             $registration = application_registration::create(
                 $data['name'],
                 $uniqueid,
-                new moodle_url($data['platformid']),
+                new url($data['platformid']),
                 $data['clientid'],
-                new moodle_url($data['authrequesturl']),
-                new moodle_url($data['jwksurl']),
-                new moodle_url($data['accesstokenurl'])
+                new url($data['authrequesturl']),
+                new url($data['jwksurl']),
+                new url($data['accesstokenurl'])
             );
         }
 

@@ -22,7 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\module;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
 use core\url;
+use core_course\cm_info;
 
 /**
  * Extend the course navigation with a penalty rule settings.
@@ -48,7 +53,7 @@ function gradepenalty_duedate_extend_navigation_course(navigation_node $navigati
  * @return void
  */
 function gradepenalty_duedate_extend_navigation_module(navigation_node $navigation, cm_info $cm): void {
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     if (has_capability('gradepenalty/duedate:manage', $context)) {
         $url = new url('/grade/penalty/duedate/manage_penalty_rule.php', ['contextid' => $context->id]);
         $name = get_string('penaltyrule', 'gradepenalty_duedate');

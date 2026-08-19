@@ -26,6 +26,7 @@ namespace mod_scorm\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\module;
 use mod_scorm\privacy\provider;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -283,7 +284,7 @@ final class provider_test extends provider_testcase {
         $course = $this->getDataGenerator()->create_course();
         $params = array('course' => $course->id, 'name' => 'SCORM1');
         $scorm = $this->getDataGenerator()->create_module('scorm', $params);
-        $this->context = \context_module::instance($scorm->cmid);
+        $this->context = module::instance($scorm->cmid);
 
         // Users enrolments.
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));

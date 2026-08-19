@@ -24,10 +24,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 // Just a link to course report.
-$ADMIN->add('reports', new admin_externalpage('reportlog', get_string('log', 'admin'),
+$ADMIN->add('reports', new externalpage('reportlog', get_string('log', 'admin'),
         $CFG->wwwroot . "/report/log/index.php?id=0", 'report/log:view'));
 
 // No report settings.

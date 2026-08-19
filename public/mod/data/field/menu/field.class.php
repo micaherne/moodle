@@ -22,6 +22,8 @@
 //                                                                       //
 ///////////////////////////////////////////////////////////////////////////
 
+use core\output\html_writer;
+
 class data_field_menu extends data_field_base {
 
     var $type = 'menu';

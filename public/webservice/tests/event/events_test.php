@@ -25,6 +25,9 @@
 
 namespace core_webservice\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+
 /**
  * Unit tests for Web service events.
  *
@@ -59,7 +62,7 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(1, $events);
         $event = reset($events);
 
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals('A function', $event->other['function']);
         $this->assertEventContextNotUsed($event);
     }
@@ -85,7 +88,7 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(1, $events);
         $event = reset($events);
 
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals($params['other']['reason'], $event->other['reason']);
         $this->assertEquals($params['other']['method'], $event->other['method']);
         $this->assertEquals($params['other']['tokenid'], $event->other['tokenid']);
@@ -95,7 +98,7 @@ final class events_test extends \advanced_testcase {
         try {
             $event = \core\event\webservice_login_failed::create($params);
             $this->fail('The token cannot be allowed in \core\event\webservice_login_failed');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
         }
         $this->assertEventContextNotUsed($event);
     }
@@ -137,7 +140,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Assert that the event contains the right information.
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals($service->id, $event->objectid);
         $this->assertEventContextNotUsed($event);
     }
@@ -179,7 +182,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Assert that the event contains the right information.
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals($service->id, $event->objectid);
         $this->assertEventContextNotUsed($event);
     }
@@ -221,7 +224,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Assert that the event contains the right information.
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals($service->id, $event->objectid);
         $this->assertEventContextNotUsed($event);
     }
@@ -246,7 +249,7 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(1, $events);
         $event = reset($events);
 
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals(1, $event->objectid);
         $this->assertEquals(2, $event->relateduserid);
         $this->assertEventContextNotUsed($event);
@@ -272,7 +275,7 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(1, $events);
         $event = reset($events);
 
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals(1, $event->objectid);
         $this->assertEquals(2, $event->relateduserid);
         $this->assertEventContextNotUsed($event);
@@ -299,7 +302,7 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(1, $events);
         $event = reset($events);
 
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals(1, $event->objectid);
         $this->assertEquals(2, $event->relateduserid);
         $this->assertEventContextNotUsed($event);
@@ -328,7 +331,7 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(1, $events);
         $event = reset($events);
 
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals(1, $event->objectid);
         $this->assertEventContextNotUsed($event);
     }

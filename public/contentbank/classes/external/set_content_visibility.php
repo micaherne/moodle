@@ -16,6 +16,8 @@
 
 namespace core_contentbank\external;
 
+use core\context;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -68,7 +70,7 @@ class set_content_visibility extends external_api {
             $record = $DB->get_record('contentbank_content', ['id' => $params['contentid']], '*', MUST_EXIST);
             $contenttypeclass = "\\$record->contenttype\\contenttype";
             if (class_exists($contenttypeclass)) {
-                $context = \context::instance_by_id($record->contextid, MUST_EXIST);
+                $context = context::instance_by_id($record->contextid, MUST_EXIST);
                 self::validate_context($context);
                 $contenttype = new $contenttypeclass($context);
                 $contentclass = "\\$record->contenttype\\content";
@@ -95,7 +97,7 @@ class set_content_visibility extends external_api {
                     ];
                 }
             }
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             // The content or the context don't exist.
             $warnings[] = [
                 'item' => $params['contentid'],

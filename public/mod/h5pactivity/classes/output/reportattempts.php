@@ -28,10 +28,10 @@ defined('MOODLE_INTERNAL') || die();
 
 use mod_h5pactivity\local\attempt;
 use mod_h5pactivity\output\attempt as output_attempt;
-use renderable;
-use templatable;
-use renderer_base;
-use user_picture;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
+use core\output\user_picture;
 use stdClass;
 
 /**

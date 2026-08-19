@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\navigation\navigation_node;
 use core\test\phpunit\phpunit_util;
 
 /**
@@ -325,9 +326,9 @@ STRING;
      * Test that the navigation node URL is overridden correctly.
      */
     public function test_set_navigation_url(): void {
-        \navigation_node::override_active_url(new \core\url('/foo/bar/baz'));
+        navigation_node::override_active_url(new \core\url('/foo/bar/baz'));
         $this->assertNotNull(
-            (new \ReflectionClass(\navigation_node::class))->getStaticPropertyValue('fullmeurl', null),
+            (new \ReflectionClass(navigation_node::class))->getStaticPropertyValue('fullmeurl', null),
         );
     }
 
@@ -337,7 +338,7 @@ STRING;
     #[\PHPUnit\Framework\Attributes\Depends('test_set_navigation_url')]
     public function test_navigation_url_reset(): void {
         $this->assertNull(
-            (new \ReflectionClass(\navigation_node::class))->getStaticPropertyValue('fullmeurl', null),
+            (new \ReflectionClass(navigation_node::class))->getStaticPropertyValue('fullmeurl', null),
         );
     }
 }

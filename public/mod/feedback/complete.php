@@ -22,6 +22,11 @@
  * @package mod_feedback
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -39,7 +44,7 @@ $PAGE->set_url('/mod/feedback/complete.php', $urlparams);
 require_course_login($course, true, $cm);
 $PAGE->set_activity_record($feedback);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 $feedbackcompletion = new mod_feedback_completion($feedback, $cm, $courseid);
 
 $courseid = $feedbackcompletion->get_courseid();
@@ -59,7 +64,7 @@ if ($courseid AND $courseid != SITEID) {
 }
 
 if (!$feedbackcompletion->can_complete()) {
-    throw new \moodle_exception('error');
+    throw new moodle_exception('error');
 }
 
 $PAGE->navbar->add(get_string('feedback:complete', 'feedback'));
@@ -118,7 +123,7 @@ if ($feedbackcompletion->is_empty()) {
         }
         if (!$PAGE->has_secondary_navigation() && $feedbackcompletion->can_view_analysis()) {
             echo '<p class="text-center">';
-            $analysisurl = new moodle_url('/mod/feedback/analysis.php', array('id' => $cm->id, 'courseid' => $courseid));
+            $analysisurl = new url('/mod/feedback/analysis.php', array('id' => $cm->id, 'courseid' => $courseid));
             echo html_writer::link($analysisurl, get_string('completed_feedbacks', 'feedback'));
             echo '</p>';
         }

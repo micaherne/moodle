@@ -21,6 +21,9 @@
  * @copyright  2004 Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\html_writer;
+use core\url;
+
 class block_calendar_upcoming extends block_base {
 
     /**
@@ -55,7 +58,7 @@ class block_calendar_upcoming extends block_base {
         $renderer = $this->page->get_renderer('core_calendar');
         $this->content->text .= $renderer->render_from_template($template, $data);
 
-        $url = new \moodle_url('/calendar/view.php', ['view' => 'upcoming']);
+        $url = new url('/calendar/view.php', ['view' => 'upcoming']);
         if ($courseid != SITEID) {
             $url->param('course', $this->page->course->id);
         } else if (!empty($categoryid)) {

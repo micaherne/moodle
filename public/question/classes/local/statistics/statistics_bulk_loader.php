@@ -16,6 +16,7 @@
 
 namespace core_question\local\statistics;
 
+use core\context;
 use core_question\local\bank\column_base;
 use core_question\statistics\questions\all_calculated_for_qubaid_condition;
 use core_component;
@@ -62,7 +63,7 @@ class statistics_bulk_loader {
         // Load the data for each place, and add to the running totals.
         foreach ($places as $place) {
             $statistics = self::load_statistics_for_place($place->component,
-                    \context::instance_by_id($place->contextid));
+                    context::instance_by_id($place->contextid));
             if ($statistics === null) {
                 continue;
             }
@@ -136,7 +137,7 @@ class statistics_bulk_loader {
      */
     protected static function load_statistics_for_place(
         string $component,
-        \context $context
+        context $context
     ): ?all_calculated_for_qubaid_condition {
         // This check is basically if (component_exists).
         if (empty(core_component::get_component_directory($component))) {

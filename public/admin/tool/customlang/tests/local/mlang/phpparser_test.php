@@ -25,7 +25,7 @@
 namespace tool_customlang\local\mlang;
 
 use advanced_testcase;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * PHP lang parser test class.

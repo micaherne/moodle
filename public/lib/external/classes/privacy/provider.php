@@ -16,8 +16,8 @@
 
 namespace core_external\privacy;
 
-use context;
-use context_user;
+use core\context;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\transform;
@@ -111,7 +111,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof user) {
             return;
         }
 
@@ -196,7 +196,7 @@ class provider implements
             $recordset->close();
 
             if (!empty($data)) {
-                writer::with_context(context_user::instance($userid))->export_data($path, (object) $data);
+                writer::with_context(user::instance($userid))->export_data($path, (object) $data);
             };
         }
 
@@ -218,7 +218,7 @@ class provider implements
                 $carry[] = static::transform_token($record);
                 return $carry;
             }, function($userid, $data) use ($path) {
-                writer::with_context(context_user::instance($userid))->export_related_data($path, 'created_by_you', (object) [
+                writer::with_context(user::instance($userid))->export_related_data($path, 'created_by_you', (object) [
                     'tokens' => $data
                 ]);
             });
@@ -246,7 +246,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_user) {
+        if ($context instanceof user) {
             static::delete_user_data($context->instanceid);
         }
     }

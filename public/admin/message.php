@@ -21,6 +21,10 @@
  * @copyright  2011 Lancaster University Network Services Limited
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+use core\plugin_manager;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/message/lib.php');
 require_once($CFG->libdir.'/adminlib.php');
@@ -47,16 +51,16 @@ if (($form = data_submitted()) && confirm_sesskey()) {
     // Save processors enabled/disabled status.
     foreach ($allprocessors as $processor) {
         $enabled = isset($form->{$processor->name});
-        $class = \core_plugin_manager::resolve_plugininfo_class('message');
+        $class = plugin_manager::resolve_plugininfo_class('message');
         $class::enable_plugin($processor->name, $enabled);
     }
 
-    $url = new moodle_url('message.php');
+    $url = new url('message.php');
     redirect($url);
 }
 
 // Page settings.
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $renderer = $PAGE->get_renderer('core', 'message');
 
 // Display the page.

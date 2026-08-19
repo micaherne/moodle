@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+use core\context\module;
+use core\output\html_writer;
 use core\url;
 
 require_once("$CFG->libdir/filelib.php");
@@ -67,8 +69,8 @@ function resource_display_embed($resource, $cm, $course, $file) {
 
     $clicktoopen = resource_get_clicktoopen($file, $resource->revision);
 
-    $context = context_module::instance($cm->id);
-    $moodleurl = moodle_url::make_pluginfile_url($context->id, 'mod_resource', 'content', $resource->revision,
+    $context = module::instance($cm->id);
+    $moodleurl = url::make_pluginfile_url($context->id, 'mod_resource', 'content', $resource->revision,
             $file->get_filepath(), $file->get_filename());
 
     $mimetype = $file->get_mimetype();
@@ -134,7 +136,7 @@ function resource_display_frame($resource, $cm, $course, $file) {
 
     } else {
         $config = get_config('resource');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $fileurl = url::make_pluginfile_url(
             contextid: $context->id,
             component: 'mod_resource',
@@ -296,7 +298,7 @@ function resource_get_file_details($resource, $cm) {
     $options = empty($resource->displayoptions) ? [] : (array) unserialize_array($resource->displayoptions);
     $filedetails = array();
     if (!empty($options['showsize']) || !empty($options['showtype']) || !empty($options['showdate'])) {
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $fs = get_file_storage();
         $files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false);
         // For a typical file resource, the sortorder is 1 for the main file
@@ -567,7 +569,7 @@ function resource_set_mainfile($data) {
     $cmid = $data->coursemodule;
     $draftitemid = $data->files;
 
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
     if ($draftitemid) {
         $options = array('subdirs' => true, 'embed' => false);
         if ($data->display == RESOURCELIB_DISPLAY_EMBED) {

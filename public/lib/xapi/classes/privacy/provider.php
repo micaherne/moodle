@@ -16,6 +16,7 @@
 
 namespace core_xapi\privacy;
 
+use core\context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\transform;
@@ -147,7 +148,7 @@ class provider implements
      * @param string $component The component name.
      * @throws \dml_exception if any errors are encountered during deletion.
      */
-    public static function delete_states_for_all_users(\context $context, string $component) {
+    public static function delete_states_for_all_users(context $context, string $component) {
         global $DB;
 
         $params = [

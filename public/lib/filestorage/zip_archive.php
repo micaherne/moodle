@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/filestorage/file_archive.php");
@@ -460,7 +462,7 @@ class zip_archive extends file_archive {
             $this->close();
             $res = $this->open($this->archivepathname, file_archive::OPEN, $this->encoding);
             if ($res !== true) {
-                throw new \moodle_exception('cannotopenzip');
+                throw new moodle_exception('cannotopenzip');
             }
         }
         $this->usedmem += strlen($contents);

@@ -16,6 +16,8 @@
 
 namespace tool_brickfield\local\tool;
 
+use core\context;
+use core\exception\coding_exception;
 use tool_brickfield\manager;
 
 /**
@@ -130,7 +132,7 @@ abstract class tool {
      */
     public function get_data(): \stdClass {
         if (!$this->filter) {
-            throw new \coding_exception('Filter has not been set.');
+            throw new coding_exception('Filter has not been set.');
         }
 
         if (empty($this->data)) {
@@ -168,7 +170,7 @@ abstract class tool {
      */
     public function set_filter(filter $filter): void {
         if ($this->filter) {
-            throw new \coding_exception('Filter can only be set once.');
+            throw new coding_exception('Filter can only be set once.');
         }
 
         $this->filter = $filter;
@@ -191,7 +193,7 @@ abstract class tool {
     public function get_output_target() {
         $filter = $this->get_filter();
         if (!$filter) {
-            throw new \coding_exception('Filter has not been set.');
+            throw new coding_exception('Filter has not been set.');
         }
         return $filter->target;
     }
@@ -236,7 +238,7 @@ abstract class tool {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function can_access(filter $filter, ?\context $context = null): bool {
+    public function can_access(filter $filter, ?context $context = null): bool {
         return $filter->can_access($context);
     }
 

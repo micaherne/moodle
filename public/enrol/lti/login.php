@@ -27,6 +27,9 @@
  */
 
 use auth_lti\local\ltiadvantage\utility\cookie_helper;
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
 use enrol_lti\local\ltiadvantage\lib\lti_cookie;
 use enrol_lti\local\ltiadvantage\lib\issuer_database;
 use enrol_lti\local\ltiadvantage\lib\launch_cache_session;
@@ -59,8 +62,8 @@ $ltimessagehint = optional_param('lti_message_hint', null, PARAM_RAW);
 // https://purl.imsglobal.org/spec/lti/claim/target_link_uri claim instead of the target_link_uri value provided here.
 // See here: http://www.imsglobal.org/spec/lti/v1p3/#target-link-uri.
 $validuris = [
-    (new moodle_url('/enrol/lti/launch.php'))->out(false), // Resource link launches.
-    (new moodle_url('/enrol/lti/launch_deeplink.php'))->out(false) // Deep linking launches.
+    (new url('/enrol/lti/launch.php'))->out(false), // Resource link launches.
+    (new url('/enrol/lti/launch_deeplink.php'))->out(false) // Deep linking launches.
 ];
 
 // This code verifies the target_link_uri. Only two values are permitted (see endpoints listed above).
@@ -81,7 +84,7 @@ if (empty($_REQUEST['client_id']) && !empty($_REQUEST['id'])) {
 // taken to set cookies in 3rd party contexts. Skip the check if the user is already auth'd. This means that either cookies aren't
 // an issue in the current browser/launch context.
 if (!isloggedin()) {
-    cookie_helper::do_cookie_check(new moodle_url('/enrol/lti/login.php', [
+    cookie_helper::do_cookie_check(new url('/enrol/lti/login.php', [
         'iss' => $iss,
         'login_hint' => $loginhint,
         'target_link_uri' => $targetlinkuri,
@@ -90,8 +93,8 @@ if (!isloggedin()) {
     ]));
     if (!cookie_helper::cookies_supported()) {
         global $OUTPUT, $PAGE;
-        $PAGE->set_context(context_system::instance());
-        $PAGE->set_url(new moodle_url('/enrol/lti/login.php'));
+        $PAGE->set_context(system::instance());
+        $PAGE->set_url(new url('/enrol/lti/login.php'));
         $PAGE->set_pagelayout('popup');
         echo $OUTPUT->header();
         $renderer = $PAGE->get_renderer('enrol_lti');

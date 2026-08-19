@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/question/format/xml/format.php');
@@ -36,11 +39,11 @@ $urlparams = ['sesskey' => sesskey()];
 
 $cm = get_coursemodule_from_id(null, $cmid);
 require_login($cm->course, false, $cm);
-$thiscontext = context_module::instance($cmid);
+$thiscontext = module::instance($cmid);
 $urlparams['cmid'] = $cmid;
 
 if ($returnurl) {
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 }
 // Load the necessary data.
 $contexts = new core_question\local\bank\question_edit_contexts($thiscontext);

@@ -16,6 +16,10 @@
 
 namespace core_admin;
 
+use core\exception\moodle_exception;
+use core\lang_string;
+use core\output\html_writer;
+
 /**
  * Admin settings class. Only exists on setting pages.
  *
@@ -93,7 +97,7 @@ abstract class setting {
      * @param bool $default - The default for the flag
      */
     public function set_enabled_flag_options($enabled, $default) {
-        $this->set_flag_options($enabled, $default, 'enabled', new \lang_string('enabled', 'core_admin'));
+        $this->set_flag_options($enabled, $default, 'enabled', new lang_string('enabled', 'core_admin'));
     }
 
     /**
@@ -103,7 +107,7 @@ abstract class setting {
      * @param bool $default - The default for the flag
      */
     public function set_advanced_flag_options($enabled, $default) {
-        $this->set_flag_options($enabled, $default, 'adv', new \lang_string('advanced'));
+        $this->set_flag_options($enabled, $default, 'adv', new lang_string('advanced'));
     }
 
 
@@ -114,7 +118,7 @@ abstract class setting {
      * @param bool $default - The default for the flag
      */
     public function set_locked_flag_options($enabled, $default) {
-        $this->set_flag_options($enabled, $default, 'locked', new \lang_string('locked', 'core_admin'));
+        $this->set_flag_options($enabled, $default, 'locked', new lang_string('locked', 'core_admin'));
     }
 
     /**
@@ -124,7 +128,7 @@ abstract class setting {
      * @param bool $default - The default for the flag.
      */
     public function set_required_flag_options($enabled, $default) {
-        $this->set_flag_options($enabled, $default, 'required', new \lang_string('required', 'core_admin'));
+        $this->set_flag_options($enabled, $default, 'required', new lang_string('required', 'core_admin'));
     }
 
     /**
@@ -193,7 +197,7 @@ abstract class setting {
         }
 
         if (!empty($output)) {
-            return \html_writer::tag('span', $output, ['class' => 'adminsettingsflags']);
+            return html_writer::tag('span', $output, ['class' => 'adminsettingsflags']);
         }
         return $output;
     }
@@ -225,18 +229,18 @@ abstract class setting {
     private function parse_setting_name($name) {
         $bits = explode('/', $name);
         if (count($bits) > 2) {
-            throw new \moodle_exception('invalidadminsettingname', '', '', $name);
+            throw new moodle_exception('invalidadminsettingname', '', '', $name);
         }
         $this->name = array_pop($bits);
         if (!preg_match('/^[a-zA-Z0-9_]+$/', $this->name)) {
-            throw new \moodle_exception('invalidadminsettingname', '', '', $name);
+            throw new moodle_exception('invalidadminsettingname', '', '', $name);
         }
         if (!empty($bits)) {
             $this->plugin = array_pop($bits);
             if ($this->plugin === 'moodle') {
                 $this->plugin = null;
             } else if (!preg_match('/^[a-zA-Z0-9_]+$/', $this->plugin)) {
-                    throw new \moodle_exception('invalidadminsettingname', '', '', $name);
+                    throw new moodle_exception('invalidadminsettingname', '', '', $name);
             }
         }
     }

@@ -25,8 +25,8 @@
 namespace mod_h5pactivity\event;
 
 use advanced_testcase;
-use context_course;
-use context_module;
+use core\context\course;
+use core\context\module;
 
 /**
  * H5P activity events test cases.
@@ -50,7 +50,7 @@ final class course_module_instance_list_viewed_test extends advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $params = [
-            'context' => context_course::instance($course->id)
+            'context' => course::instance($course->id)
         ];
         $event = course_module_instance_list_viewed::create($params);
 
@@ -63,7 +63,7 @@ final class course_module_instance_list_viewed_test extends advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_h5pactivity\event\course_module_instance_list_viewed', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 }

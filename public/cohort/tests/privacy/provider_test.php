@@ -26,6 +26,9 @@ namespace core_cohort\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\coursecat;
+use core\context\system;
+use core\context\user;
 use core_cohort\privacy\provider;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
@@ -54,8 +57,8 @@ final class provider_test extends provider_testcase {
     public function test_get_contexts_for_userid(): void {
         // Create system cohort and category cohort.
         $coursecategory = $this->getDataGenerator()->create_category();
-        $coursecategoryctx = \context_coursecat::instance($coursecategory->id);
-        $systemctx = \context_system::instance();
+        $coursecategoryctx = coursecat::instance($coursecategory->id);
+        $systemctx = system::instance();
         $categorycohort = $this->getDataGenerator()->create_cohort([
                 'contextid' => $coursecategoryctx->id,
                 'name' => 'Category cohort 1',
@@ -83,8 +86,8 @@ final class provider_test extends provider_testcase {
     public function test_export_user_data(): void {
         // Create system cohort and category cohort.
         $coursecategory = $this->getDataGenerator()->create_category();
-        $coursecategoryctx = \context_coursecat::instance($coursecategory->id);
-        $systemctx = \context_system::instance();
+        $coursecategoryctx = coursecat::instance($coursecategory->id);
+        $systemctx = system::instance();
         $categorycohort = $this->getDataGenerator()->create_cohort([
                 'contextid' => $coursecategoryctx->id,
                 'name' => 'Category cohort 1',
@@ -128,8 +131,8 @@ final class provider_test extends provider_testcase {
 
         // Create system cohort and category cohort.
         $coursecategory = $this->getDataGenerator()->create_category();
-        $coursecategoryctx = \context_coursecat::instance($coursecategory->id);
-        $systemctx = \context_system::instance();
+        $coursecategoryctx = coursecat::instance($coursecategory->id);
+        $systemctx = system::instance();
         $categorycohort = $this->getDataGenerator()->create_cohort([
                 'contextid' => $coursecategoryctx->id,
                 'name' => 'Category cohort 1',
@@ -173,8 +176,8 @@ final class provider_test extends provider_testcase {
 
         // Create system cohort and category cohort.
         $coursecategory = $this->getDataGenerator()->create_category();
-        $coursecategoryctx = \context_coursecat::instance($coursecategory->id);
-        $systemctx = \context_system::instance();
+        $coursecategoryctx = coursecat::instance($coursecategory->id);
+        $systemctx = system::instance();
         $categorycohort = $this->getDataGenerator()->create_cohort([
                 'contextid' => $coursecategoryctx->id,
                 'name' => 'Category cohort 1',
@@ -206,7 +209,7 @@ final class provider_test extends provider_testcase {
 
         $contextlist = provider::get_contexts_for_userid($user1->id);
         $contexts = [];
-        $contexts[] = \context_user::instance($user1->id)->id;
+        $contexts[] = user::instance($user1->id)->id;
         $contexts = array_merge($contexts, $contextlist->get_contextids());
         $approvedcontextlist = new approved_contextlist($user1, 'cohort', $contexts);
         provider::delete_data_for_user($approvedcontextlist);
@@ -230,15 +233,15 @@ final class provider_test extends provider_testcase {
 
         // Create system cohort and category cohort.
         $coursecategory = $this->getDataGenerator()->create_category();
-        $coursecategoryctx = \context_coursecat::instance($coursecategory->id);
-        $systemctx = \context_system::instance();
+        $coursecategoryctx = coursecat::instance($coursecategory->id);
+        $systemctx = system::instance();
         $categorycohort = $this->getDataGenerator()->create_cohort([
             'contextid' => $coursecategoryctx->id,
             'name' => 'Category cohort 1',
         ]);
         // Create user.
         $user = $this->getDataGenerator()->create_user();
-        $userctx = \context_user::instance($user->id);
+        $userctx = user::instance($user->id);
 
         $userlist1 = new \core_privacy\local\request\userlist($coursecategoryctx, $component);
         provider::get_users_in_context($userlist1);
@@ -286,15 +289,15 @@ final class provider_test extends provider_testcase {
 
         // Create system cohort and category cohort.
         $coursecategory = $this->getDataGenerator()->create_category();
-        $coursecategoryctx = \context_coursecat::instance($coursecategory->id);
-        $systemctx = \context_system::instance();
+        $coursecategoryctx = coursecat::instance($coursecategory->id);
+        $systemctx = system::instance();
         $categorycohort = $this->getDataGenerator()->create_cohort([
             'contextid' => $coursecategoryctx->id,
             'name' => 'Category cohort 1',
         ]);
         // Create user1.
         $user1 = $this->getDataGenerator()->create_user();
-        $userctx1 = \context_user::instance($user1->id);
+        $userctx1 = user::instance($user1->id);
         // Create user2.
         $user2 = $this->getDataGenerator()->create_user();
 

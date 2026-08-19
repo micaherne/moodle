@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once '../../../config.php';
 require_once $CFG->dirroot.'/grade/lib.php';
 require_once $CFG->libdir.'/mathslib.php';
@@ -32,22 +37,22 @@ $id        = required_param('id', PARAM_INT);
 $section   = optional_param('section', 'calculation', PARAM_ALPHA);
 $idnumbers = optional_param_array('idnumbers', null, PARAM_RAW);
 
-$url = new moodle_url('/grade/edit/tree/calculation.php', array('id'=>$id, 'courseid'=>$courseid));
+$url = new url('/grade/edit/tree/calculation.php', array('id'=>$id, 'courseid'=>$courseid));
 if ($section !== 'calculation') {
     $url->param('section', $section);
 }
 $PAGE->set_url($url);
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/grade:manage', $context);
 
 $PAGE->set_pagelayout('admin');
-navigation_node::override_active_url(new moodle_url('/grade/edit/tree/index.php',
+navigation_node::override_active_url(new url('/grade/edit/tree/index.php',
     array('id'=>$course->id)));
 
 // default return url
@@ -55,7 +60,7 @@ $gpr = new grade_plugin_return();
 $returnurl = $gpr->get_return_url($CFG->wwwroot.'/grade/report/index.php?id='.$course->id);
 
 if (!$grade_item = grade_item::fetch(array('id'=>$id, 'courseid'=>$course->id))) {
-    throw new \moodle_exception('invaliditemid');
+    throw new moodle_exception('invaliditemid');
 }
 
 // activity items and items without grade can not have calculation

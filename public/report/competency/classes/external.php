@@ -16,7 +16,7 @@
 
 namespace report_competency;
 
-use context_course;
+use core\context\course;
 use core_competency\external\user_competency_course_exporter;
 use core_course\external\course_summary_exporter;
 use core_external\external_api;
@@ -84,7 +84,7 @@ class external extends external_api {
                 'moduleid' => $moduleid
             )
         );
-        $context = context_course::instance($params['courseid']);
+        $context = course::instance($params['courseid']);
         self::validate_context($context);
         if (!is_enrolled($context, $params['userid'], 'moodle/competency:coursecompetencygradable')) {
             throw new coding_exception('invaliduser');

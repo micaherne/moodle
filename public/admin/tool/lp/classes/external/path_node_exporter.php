@@ -24,7 +24,7 @@
 namespace tool_lp\external;
 defined('MOODLE_INTERNAL') || die();
 
-use context_system;
+use core\context\system;
 
 /**
  * Class for exporting path_node data.
@@ -46,7 +46,7 @@ class path_node_exporter extends \core\external\exporter {
             // We let developers know that they must fix their code without breaking anything,
             // and fallback on the previous behaviour. This should be removed at a later stage: Moodle 3.5.
             debugging('Missing related context in path_node_exporter.', DEBUG_DEVELOPER);
-            $related['context'] = context_system::instance();
+            $related['context'] = system::instance();
         }
         parent::__construct($data, $related);
     }

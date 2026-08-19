@@ -16,7 +16,7 @@
 
 namespace core_admin\table;
 
-use moodle_url;
+use core\url;
 
 /**
  * Tiny admin settings.
@@ -32,12 +32,12 @@ class editor_management_table extends \core_admin\table\plugin_management_table 
 
     public function guess_base_url(): void {
         $this->define_baseurl(
-            new moodle_url('/admin/settings.php', ['section' => 'manageeditors'])
+            new url('/admin/settings.php', ['section' => 'manageeditors'])
         );
     }
 
-    protected function get_action_url(array $params = []): moodle_url {
-        return new moodle_url('/admin/editors.php', $params);
+    protected function get_action_url(array $params = []): url {
+        return new url('/admin/editors.php', $params);
     }
 
     protected function order_plugins(array $plugins): array {

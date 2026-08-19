@@ -24,6 +24,8 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -100,7 +102,7 @@ class all_submissions_downloaded extends base {
      */
     protected function validate_data() {
         if (self::$preventcreatecall) {
-            throw new \coding_exception('cannot call all_submissions_downloaded::create() directly, use all_submissions_downloaded::create_from_assign() instead.');
+            throw new coding_exception('cannot call all_submissions_downloaded::create() directly, use all_submissions_downloaded::create_from_assign() instead.');
         }
 
         parent::validate_data();

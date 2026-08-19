@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace core_courseformat\external;
 
 use core\exception\moodle_exception;
+use core\plugin_manager;
 use stdClass;
 
 /**
@@ -48,7 +49,7 @@ final class new_module_test extends \core_external\tests\externallib_testcase {
         $this->resetAfterTest();
 
         $modname = 'subsection';
-        $manager = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $manager = plugin_manager::resolve_plugininfo_class('mod');
         $manager::enable_plugin($modname, 1);
 
         // Create a course with an activity.
@@ -77,7 +78,7 @@ final class new_module_test extends \core_external\tests\externallib_testcase {
     public function test_execute_with_format_override(): void {
         $this->resetAfterTest();
 
-        $manager = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $manager = plugin_manager::resolve_plugininfo_class('mod');
         $manager::enable_plugin('subsection', 1);
 
         // Create a course.

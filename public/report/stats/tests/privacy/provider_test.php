@@ -23,6 +23,8 @@
  */
 namespace report_stats\privacy;
 
+use core\context\course;
+use core\context\system;
 use report_stats\privacy\provider;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\tests\provider_testcase;
@@ -71,9 +73,9 @@ final class provider_test extends provider_testcase {
         $course2 = $this->getDataGenerator()->create_course();
         $course3 = $this->getDataGenerator()->create_course();
 
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
-        $context3 = \context_course::instance($course3->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
+        $context3 = course::instance($course3->id);
 
         $this->create_stats($course1->id, $user1->id, 'stats_user_daily');
         $this->create_stats($course2->id, $user1->id, 'stats_user_monthly');
@@ -98,8 +100,8 @@ final class provider_test extends provider_testcase {
         $user = $this->getDataGenerator()->create_user();
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
         $this->create_stats($course1->id, $user->id, 'stats_user_daily');
         $this->create_stats($course1->id, $user->id, 'stats_user_daily');
         $this->create_stats($course2->id, $user->id, 'stats_user_weekly');
@@ -139,8 +141,8 @@ final class provider_test extends provider_testcase {
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
         $this->create_stats($course1->id, $user1->id, 'stats_user_daily');
         $this->create_stats($course1->id, $user1->id, 'stats_user_daily');
         $this->create_stats($course1->id, $user1->id, 'stats_user_monthly');
@@ -178,8 +180,8 @@ final class provider_test extends provider_testcase {
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
         $this->create_stats($course1->id, $user1->id, 'stats_user_daily');
         $this->create_stats($course1->id, $user1->id, 'stats_user_daily');
         $this->create_stats($course1->id, $user1->id, 'stats_user_monthly');
@@ -220,10 +222,10 @@ final class provider_test extends provider_testcase {
         $user2 = $this->getDataGenerator()->create_user();
         // Create course1.
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         // Create course2.
         $course2 = $this->getDataGenerator()->create_course();
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext2 = course::instance($course2->id);
 
         $userlist1 = new \core_privacy\local\request\userlist($coursecontext1, $component);
         provider::get_users_in_context($userlist1);
@@ -248,7 +250,7 @@ final class provider_test extends provider_testcase {
         $this->assertTrue(in_array($user1->id, $userlist2->get_userids()));
 
         // The list of users within other contexts than course should be empty.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist3 = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist3);
         $this->assertCount(0, $userlist3);
@@ -270,10 +272,10 @@ final class provider_test extends provider_testcase {
         $user3 = $this->getDataGenerator()->create_user();
         // Create course1.
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         // Create course2.
         $course2 = $this->getDataGenerator()->create_course();
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext2 = course::instance($course2->id);
 
         $this->create_stats($course1->id, $user1->id, 'stats_user_daily');
         $this->create_stats($course2->id, $user1->id, 'stats_user_monthly');
@@ -307,7 +309,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // Convert $userlist2 into an approved_contextlist in the system context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $approvedlist2 = new approved_userlist($systemcontext, $component, $userlist2->get_userids());
         // Delete using delete_data_for_user.
         provider::delete_data_for_users($approvedlist2);

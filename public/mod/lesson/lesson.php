@@ -29,6 +29,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 
@@ -42,11 +47,11 @@ $lesson = new lesson($DB->get_record('lesson', array('id' => $cm->instance), '*'
 
 require_login($course, false, $cm);
 
-$url = new moodle_url('/mod/lesson/lesson.php', array('id'=>$id,'action'=>$action));
+$url = new url('/mod/lesson/lesson.php', array('id'=>$id,'action'=>$action));
 $PAGE->set_url($url);
 $PAGE->set_show_navigation_footer(false);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/lesson:edit', $context);
 require_sesskey();
 
@@ -68,7 +73,7 @@ switch ($action) {
             echo "<p align=\"center\">\n";
             foreach ($answers as $answer) {
                 if (!$title = $DB->get_field("lesson_pages", "title", array("id" => $answer->pageid))) {
-                    throw new \moodle_exception('cannotfindpagetitle', 'lesson');
+                    throw new moodle_exception('cannotfindpagetitle', 'lesson');
                 }
                 echo $title."<br />\n";
             }
@@ -87,7 +92,7 @@ switch ($action) {
 
         $params = array ("lessonid" => $lesson->id, "prevpageid" => 0);
         if (!$page = $DB->get_record_select("lesson_pages", "lessonid = :lessonid AND prevpageid = :prevpageid", $params)) {
-            throw new \moodle_exception('cannotfindfirstpage', 'lesson');
+            throw new moodle_exception('cannotfindfirstpage', 'lesson');
         }
 
         echo html_writer::start_tag('div', array('class' => 'move-page'));
@@ -111,7 +116,7 @@ switch ($action) {
             }
             if ($page->nextpageid) {
                 if (!$page = $DB->get_record("lesson_pages", array("id" => $page->nextpageid))) {
-                    throw new \moodle_exception('cannotfindnextpage', 'lesson');
+                    throw new moodle_exception('cannotfindnextpage', 'lesson');
                 }
             } else {
                 // last page reached
@@ -134,10 +139,10 @@ switch ($action) {
         break;
     case 'duplicate':
             $lesson->duplicate_page($pageid);
-            redirect(new moodle_url('/mod/lesson/edit.php', array('id' => $cm->id)));
+            redirect(new url('/mod/lesson/edit.php', array('id' => $cm->id)));
         break;
     default:
-        throw new \moodle_exception('unknowaction');
+        throw new moodle_exception('unknowaction');
         break;
 }
 

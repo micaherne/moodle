@@ -16,10 +16,11 @@
 
 namespace mod_feedback\output;
 
-use moodle_url;
-use action_menu;
-use action_menu_link;
-use pix_icon;
+use core\context\module;
+use core\url;
+use core\output\action_menu;
+use core\output\action_menu\link;
+use core\output\pix_icon;
 
 /**
  * Class actionbar - Display the action bar
@@ -41,7 +42,7 @@ class edit_action_bar extends base_action_bar {
      * @param moodle_url $pageurl The current page url
      * @param int|null $lastposition Index of the last question in the feedback
      */
-    public function __construct(int $cmid, moodle_url $pageurl, ?int $lastposition = null) {
+    public function __construct(int $cmid, url $pageurl, ?int $lastposition = null) {
         parent::__construct($cmid);
         $this->currenturl = $pageurl;
         $this->lastposition = $lastposition;
@@ -73,8 +74,8 @@ class edit_action_bar extends base_action_bar {
         $addselect->set_menu_left();
         $addselectparams = ['cmid' => $this->cmid, 'position' => $this->lastposition, 'sesskey' => sesskey()];
         foreach (feedback_load_feedback_items_options() as $key => $value) {
-            $addselect->add(new action_menu_link(
-                new moodle_url('/mod/feedback/edit_item.php', $addselectparams + ['typ' => $key]),
+            $addselect->add(new link(
+                new url('/mod/feedback/edit_item.php', $addselectparams + ['typ' => $key]),
                 null,
                 $value,
                 false,
@@ -98,8 +99,8 @@ class edit_action_bar extends base_action_bar {
         $hasitems = $DB->record_exists('feedback_item', ['feedback' => $this->feedback->id]);
         // Export.
         if ($hasitems) {
-            $exporturl = new moodle_url('/mod/feedback/export.php', $this->urlparams + ['action' => 'exportfile']);
-            $actionsselect->add(new action_menu_link(
+            $exporturl = new url('/mod/feedback/export.php', $this->urlparams + ['action' => 'exportfile']);
+            $actionsselect->add(new link(
                 $exporturl,
                 new pix_icon('i/file_export', get_string('export_questions', 'feedback')),
                 get_string('export_questions', 'feedback'),
@@ -108,8 +109,8 @@ class edit_action_bar extends base_action_bar {
         }
 
         // Import.
-        $importurl = new moodle_url('/mod/feedback/import.php', $this->urlparams);
-        $actionsselect->add(new action_menu_link(
+        $importurl = new url('/mod/feedback/import.php', $this->urlparams);
+        $actionsselect->add(new link(
             $importurl,
             new pix_icon('i/file_import', get_string('import_questions', 'feedback')),
             get_string('import_questions', 'feedback'),
@@ -119,11 +120,11 @@ class edit_action_bar extends base_action_bar {
         // Save as template.
         $cancreatetemplates = has_any_capability([
             'mod/feedback:createprivatetemplate',
-            'mod/feedback:createpublictemplate'], \context_module::instance($this->cmid));
+            'mod/feedback:createpublictemplate'], module::instance($this->cmid));
         if ($cancreatetemplates && $hasitems) {
             $PAGE->requires->js_call_amd('mod_feedback/createtemplate', 'init');
-            $actionsselect->add(new action_menu_link(
-                new moodle_url('#'),
+            $actionsselect->add(new link(
+                new url('#'),
                 new pix_icon('i/file_plus', get_string('save_as_new_template', 'feedback')),
                 get_string('save_as_new_template', 'feedback'),
                 false,

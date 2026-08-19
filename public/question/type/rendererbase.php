@@ -24,6 +24,9 @@
  */
 
 
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+
 defined('MOODLE_INTERNAL') || die();
 
 

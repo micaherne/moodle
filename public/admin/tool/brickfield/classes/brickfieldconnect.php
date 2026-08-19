@@ -23,7 +23,7 @@ global $CFG;
 require_once("{$CFG->libdir}/filelib.php");
 
 use curl;
-use moodle_url;
+use core\url;
 
 /**
  * Class brickfieldconnect. Contains all function to connect to Brickfield external services.
@@ -189,7 +189,7 @@ class brickfieldconnect extends curl {
      * @return  string
      */
     protected function get_siteurl(): string {
-        return (new moodle_url('/'))->out(false);
+        return (new url('/'))->out(false);
     }
 
     /**

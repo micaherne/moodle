@@ -16,6 +16,10 @@
 
 namespace core_competency\event;
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
 use core_competency\api;
 use core_competency\plan;
 use core_competency\url;
@@ -706,7 +710,7 @@ final class events_test extends \advanced_testcase {
             api::user_competency_viewed_in_plan($uc, $plan->get('id'));
             $this->fail('To log the user competency in a completed plan '
                     . 'use the user_competency_plan_viewed method.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression('/To log the user competency in a completed plan '
                     . 'use the user_competency_plan_viewed method./', $e->getMessage());
         }
@@ -742,7 +746,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_user_competency_viewed_in_plan::create($params)->trigger();
             $this->fail('The \'competencyid\' and \'planid\' values must be set.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression("/The 'competencyid' and 'planid' values must be set./", $e->getMessage());
         }
 
@@ -751,7 +755,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_user_competency_viewed_in_plan::create($params)->trigger();
             $this->fail('The \'competencyid\' value must be set.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression("/The 'competencyid' value must be set./", $e->getMessage());
         }
 
@@ -760,7 +764,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_user_competency_viewed_in_plan::create($params)->trigger();
             $this->fail('The \'planid\' value must be set.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression("/The 'planid' value must be set./", $e->getMessage());
         }
     }
@@ -793,7 +797,7 @@ final class events_test extends \advanced_testcase {
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\competency_user_competency_viewed_in_course', $event);
         $this->assertEquals($ucc->get('id'), $event->objectid);
-        $this->assertEquals(\context_course::instance($course->id)->id, $event->contextid);
+        $this->assertEquals(course::instance($course->id)->id, $event->contextid);
         $this->assertEquals($ucc->get('userid'), $event->relateduserid);
         $this->assertEquals($course->id, $event->courseid);
         $this->assertEquals($c->get('id'), $event->other['competencyid']);
@@ -812,17 +816,17 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_user_competency_viewed_in_course::create($params)->trigger();
             $this->fail('The \'courseid\' value must be set.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression("/The 'courseid' value must be set./", $e->getMessage());
         }
 
-        $params['contextid'] = \context_course::instance($course->id)->id;
+        $params['contextid'] = course::instance($course->id)->id;
         $params['courseid'] = $course->id;
         // Missing competencyid.
         try {
             \core\event\competency_user_competency_viewed_in_course::create($params)->trigger();
             $this->fail('The \'competencyid\' value must be set.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression("/The 'competencyid' value must be set./", $e->getMessage());
         }
     }
@@ -851,7 +855,7 @@ final class events_test extends \advanced_testcase {
             api::user_competency_plan_viewed($ucp);
             $this->fail('To log the user competency in non-completed plan '
                     . 'use user_competency_viewed_in_plan method.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression('/To log the user competency in non-completed plan '
                     . 'use user_competency_viewed_in_plan method./', $e->getMessage());
         }
@@ -889,7 +893,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_user_competency_plan_viewed::create($params)->trigger();
             $this->fail('The \'competencyid\' and \'planid\' values must be set.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression("/The 'competencyid' and 'planid' values must be set./", $e->getMessage());
         }
 
@@ -898,7 +902,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_user_competency_plan_viewed::create($params)->trigger();
             $this->fail('The \'competencyid\' value must be set.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression("/The 'competencyid' value must be set./", $e->getMessage());
         }
 
@@ -907,7 +911,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_user_competency_plan_viewed::create($params)->trigger();
             $this->fail('The \'planid\' value must be set.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression("/The 'planid' value must be set./", $e->getMessage());
         }
     }
@@ -957,7 +961,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_user_competency_viewed::create($params)->trigger();
             $this->fail('The \'competencyid\' value must be set.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression("/The 'competencyid' value must be set./", $e->getMessage());
         }
     }
@@ -1229,7 +1233,7 @@ final class events_test extends \advanced_testcase {
         $user = $dg->create_user();
         $this->setUser($user);
         $plan = $lpg->create_plan(array('userid' => $user->id));
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $cmt = new \stdClass();
         $cmt->context = $context;
@@ -1267,7 +1271,7 @@ final class events_test extends \advanced_testcase {
         $user1 = $dg->create_user();
         $plan = $lpg->create_plan(array('userid' => $user1->id));
 
-        $context = \context_user::instance($user1->id);
+        $context = user::instance($user1->id);
 
         $cmt = new \stdClass();
         $cmt->context = $context;
@@ -1300,7 +1304,7 @@ final class events_test extends \advanced_testcase {
 
         $this->resetAfterTest(true);
         $dg = $this->getDataGenerator();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         // Create a student.
         $student = $dg->create_user();
@@ -1357,7 +1361,7 @@ final class events_test extends \advanced_testcase {
     public function test_evidence_created_with_invalid_user_competency(): void {
         $this->resetAfterTest(true);
         $dg = $this->getDataGenerator();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         // Create students.
         $student = $dg->create_user();
@@ -1400,7 +1404,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_evidence_created::create($eventdata)->trigger();
             $this->fail('Coding exception should have been thrown: ' . $errormsg);
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString($errormsg, $e->getMessage());
         }
         $eventdata['relateduserid'] = 1;
@@ -1410,7 +1414,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_evidence_created::create($eventdata)->trigger();
             $this->fail('Coding exception should have been thrown: ' . $errormsg);
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString($errormsg, $e->getMessage());
         }
         $eventdata['other']['usercompetencyid'] = 1;
@@ -1420,7 +1424,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_evidence_created::create($eventdata)->trigger();
             $this->fail('Coding exception should have been thrown: ' . $errormsg);
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString($errormsg, $e->getMessage());
         }
         $eventdata['other']['competencyid'] = 1;
@@ -1430,7 +1434,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_evidence_created::create($eventdata)->trigger();
             $this->fail('Coding exception should have been thrown: ' . $errormsg);
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString($errormsg, $e->getMessage());
         }
         $eventdata['other']['action'] = 1;
@@ -1440,7 +1444,7 @@ final class events_test extends \advanced_testcase {
         try {
             \core\event\competency_evidence_created::create($eventdata)->trigger();
             $this->fail('Coding exception should have been thrown: ' . $errormsg);
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString($errormsg, $e->getMessage());
         }
         $eventdata['other']['recommend'] = 1;
@@ -1546,7 +1550,7 @@ final class events_test extends \advanced_testcase {
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\competency_evidence_created', $evidencecreatedevent);
         $this->assertInstanceOf('\core\event\competency_user_competency_rated_in_course', $event);
-        $this->assertEquals(\context_course::instance($course->id)->id, $event->contextid);
+        $this->assertEquals(course::instance($course->id)->id, $event->contextid);
         $this->assertEquals($course->id, $event->courseid);
         $this->assertEquals($uc->get('userid'), $event->relateduserid);
         $this->assertEquals($uc->get('competencyid'), $event->other['competencyid']);
@@ -1623,7 +1627,7 @@ final class events_test extends \advanced_testcase {
             'competencyid' => $c->get('id')
         ));
 
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $cmt = new \stdClass();
         $cmt->context = $context;
         $cmt->area = 'user_competency';
@@ -1663,7 +1667,7 @@ final class events_test extends \advanced_testcase {
             'userid' => $user->id,
             'competencyid' => $c->get('id')
         ));
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $cmt = new \stdClass();
         $cmt->context = $context;

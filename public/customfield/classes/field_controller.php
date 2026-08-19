@@ -24,6 +24,9 @@
 
 namespace core_customfield;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -90,19 +93,19 @@ abstract class field_controller {
         }
         if ($id) {
             if (!$record = $DB->get_record(field::TABLE, array('id' => $id), '*', IGNORE_MISSING)) {
-                throw new \moodle_exception('fieldnotfound', 'core_customfield');
+                throw new moodle_exception('fieldnotfound', 'core_customfield');
             }
         }
 
         if (empty($record->categoryid)) {
             if (!$category) {
-                throw new \coding_exception('Not enough parameters to initialise field_controller - unknown category');
+                throw new coding_exception('Not enough parameters to initialise field_controller - unknown category');
             } else {
                 $record->categoryid = $category->get('id');
             }
         }
         if (empty($record->type)) {
-            throw new \coding_exception('Not enough parameters to initialise field_controller - unknown field type');
+            throw new coding_exception('Not enough parameters to initialise field_controller - unknown field type');
         }
 
         $type = $record->type;
@@ -110,12 +113,12 @@ abstract class field_controller {
             $category = category_controller::create($record->categoryid);
         }
         if ($category->get('id') != $record->categoryid) {
-            throw new \coding_exception('Category of the field does not match category from the parameter');
+            throw new coding_exception('Category of the field does not match category from the parameter');
         }
 
         $customfieldtype = "\\customfield_{$type}\\field_controller";
         if (!class_exists($customfieldtype) || !is_subclass_of($customfieldtype, self::class)) {
-            throw new \moodle_exception('errorfieldtypenotfound', 'core_customfield', '', s($type));
+            throw new moodle_exception('errorfieldtypenotfound', 'core_customfield', '', s($type));
         }
         $fieldcontroller = new $customfieldtype(0, $record);
         $fieldcontroller->category = $category;

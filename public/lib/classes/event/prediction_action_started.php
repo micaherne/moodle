@@ -29,6 +29,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -79,7 +82,7 @@ class prediction_action_started extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/insights/prediction.php', array('id' => $this->objectid));
+        return new url('/report/insights/prediction.php', array('id' => $this->objectid));
     }
 
     /**
@@ -92,7 +95,7 @@ class prediction_action_started extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->objectid)) {
-            throw new \coding_exception('The \'objectid\' must be set.');
+            throw new coding_exception('The \'objectid\' must be set.');
         }
     }
 

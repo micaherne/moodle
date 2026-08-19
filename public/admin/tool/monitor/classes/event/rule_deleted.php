@@ -24,6 +24,8 @@
 
 namespace tool_monitor\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -71,7 +73,7 @@ class rule_deleted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/monitor/managerules.php', array('courseid' => $this->courseid));
+        return new url('/admin/tool/monitor/managerules.php', array('courseid' => $this->courseid));
     }
 
     public static function get_objectid_mapping() {

@@ -25,9 +25,12 @@ namespace core_course\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
-use url_select;
+use core\output\action_link;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\url_select;
+use core\url;
 
 /**
  * The class activity navigation renderable.
@@ -65,7 +68,7 @@ class activity_navigation implements renderable, templatable {
 
         // Check if there is a previous module to display.
         if ($prevmod) {
-            $linkurl = new \moodle_url($prevmod->url, array('forceview' => 1));
+            $linkurl = new url($prevmod->url, array('forceview' => 1));
             $linkname = $prevmod->get_formatted_name();
             if (!$prevmod->visible) {
                 $linkname .= ' ' . get_string('hiddenwithbrackets');
@@ -76,12 +79,12 @@ class activity_navigation implements renderable, templatable {
                 'id' => 'prev-activity-link',
                 'aria-label' => get_string('activitynavigation:preva', 'course', $linkname),
             ];
-            $this->prevlink = new \action_link($linkurl, $OUTPUT->larrow() . ' ' . $linkname, null, $attributes);
+            $this->prevlink = new action_link($linkurl, $OUTPUT->larrow() . ' ' . $linkname, null, $attributes);
         }
 
         // Check if there is a next module to display.
         if ($nextmod) {
-            $linkurl = new \moodle_url($nextmod->url, array('forceview' => 1));
+            $linkurl = new url($nextmod->url, array('forceview' => 1));
             $linkname = $nextmod->get_formatted_name();
             if (!$nextmod->visible) {
                 $linkname .= ' ' . get_string('hiddenwithbrackets');
@@ -92,7 +95,7 @@ class activity_navigation implements renderable, templatable {
                 'id' => 'next-activity-link',
                 'aria-label' => get_string('activitynavigation:nexta', 'course', $linkname),
             ];
-            $this->nextlink = new \action_link($linkurl, $linkname . ' ' . $OUTPUT->rarrow(), null, $attributes);
+            $this->nextlink = new action_link($linkurl, $linkname . ' ' . $OUTPUT->rarrow(), null, $attributes);
         }
 
         // Render the activity list dropdown menu if available.
@@ -110,7 +113,7 @@ class activity_navigation implements renderable, templatable {
      * @param \renderer_base $output Renderer base.
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $data = new \stdClass();
         if ($this->prevlink) {
             $data->prevlink = $this->prevlink->export_for_template($output);

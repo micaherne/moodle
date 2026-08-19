@@ -29,6 +29,10 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/question/engine/lib.php');
 require_once($CFG->libdir . '/questionlib.php');
 
+use core\context;
+use core\context\course;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_question\versions;
 
 /**
@@ -545,7 +549,7 @@ class question_type {
         $result = $this->save_question_options($form);
 
         if (!empty($result->error)) {
-            throw new \moodle_exception($result->error);
+            throw new moodle_exception($result->error);
         }
 
         if (!empty($result->notice)) {
@@ -1413,7 +1417,7 @@ class question_type {
         $form->status = \core_question\local\bank\question_version_status::QUESTION_STATUS_READY;
         $form->generalfeedback = "Well done";
 
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
         $newcategory = question_make_default_categories(array($context));
         $form->category = $newcategory->id . ',1';
 

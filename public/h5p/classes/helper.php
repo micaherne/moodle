@@ -24,9 +24,12 @@
 
 namespace core_h5p;
 
-use context_system;
+use core\context;
+use core\context\system;
+use core\output\html_writer;
+use core\url;
 use core_h5p\local\library\autoloader;
-use core_user;
+use core\user;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -190,8 +193,8 @@ class helper {
             return true;
         }
 
-        $context = \context::instance_by_id($file->get_contextid());
-        $fileuser = core_user::get_user($userid);
+        $context = context::instance_by_id($file->get_contextid());
+        $fileuser = user::get_user($userid);
         if (empty($fileuser) || $fileuser->deleted) {
             $userid = null;
         }
@@ -214,8 +217,8 @@ class helper {
             return true;
         }
         // Check if the owner of the .h5p file has the capability to manage content-types.
-        $context = \context::instance_by_id($file->get_contextid());
-        $fileuser = core_user::get_user($userid);
+        $context = context::instance_by_id($file->get_contextid());
+        $fileuser = user::get_user($userid);
         if (empty($fileuser) || $fileuser->deleted) {
             $userid = null;
         }
@@ -232,9 +235,9 @@ class helper {
      * @return \stored_file The file created
      */
     public static function create_fake_stored_file_from_path(string $filepath, int $userid = 0,
-            ?\context $context = null): \stored_file {
+            ?context $context = null): \stored_file {
         if (is_null($context)) {
-            $context = context_system::instance();
+            $context = system::instance();
         }
         $filerecord = [
             'contextid' => $context->id,
@@ -263,7 +266,7 @@ class helper {
         // Getting information from available H5P tools one by one because their enabled/disabled options are totally different.
         // Check the Display H5P filter status.
         $link = \core\plugininfo\filter::get_manage_url();
-        $status = filter_get_active_state('displayh5p', context_system::instance()->id);
+        $status = filter_get_active_state('displayh5p', system::instance()->id);
         $tools[] = self::convert_info_into_array('filter_displayh5p', $link, $status);
 
         // Check H5P scheduled task.
@@ -272,13 +275,13 @@ class helper {
         $statusaction = '';
         if ($task = \core\task\manager::get_scheduled_task('\core\task\h5p_get_content_types_task')) {
             $status = !$task->get_disabled();
-            $link = new \moodle_url(
+            $link = new url(
                 '/admin/tool/task/scheduledtasks.php',
                 array('action' => 'edit', 'task' => get_class($task))
             );
             if ($status && \core\task\manager::is_runnable() && get_config('tool_task', 'enablerunnow')) {
-                $statusaction = \html_writer::link(
-                    new \moodle_url('/admin/tool/task/schedule_task.php',
+                $statusaction = html_writer::link(
+                    new url('/admin/tool/task/schedule_task.php',
                         array('task' => get_class($task))),
                     get_string('runnow', 'tool_task'));
             }
@@ -297,7 +300,7 @@ class helper {
      * @return array
      */
     private static function convert_info_into_array(string $tool,
-        \moodle_url $link,
+        url $link,
         int $status,
         string $statusaction = ''): array {
 
@@ -347,7 +350,7 @@ class helper {
         global $CFG, $USER;
 
         $basepath = $CFG->wwwroot . '/';
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         // H5P doesn't currently support xAPI State. It implements a mechanism in contentUserDataAjax() in h5p.js to update user
         // data. However, in our case, we're overriding this method to call the xAPI State web services.
@@ -417,7 +420,7 @@ class helper {
         // Add core stylesheets.
         foreach (core::$styles as $style) {
             $settings['core']['styles'][] = $relpath . $style . $cachebuster;
-            $PAGE->requires->css(new \moodle_url($liburl . $style . $cachebuster));
+            $PAGE->requires->css(new url($liburl . $style . $cachebuster));
         }
         // Add core JavaScript.
         foreach (core::get_scripts() as $script) {
@@ -471,7 +474,7 @@ class helper {
      * @param  factory $factory The \core_h5p\factory object
      * @return array|null The information export file otherwise null.
      */
-    public static function get_export_info(string $exportfilename, ?\moodle_url $url = null, ?factory $factory = null): ?array {
+    public static function get_export_info(string $exportfilename, ?url $url = null, ?factory $factory = null): ?array {
 
         if (!$factory) {
             $factory = new factory();
@@ -492,7 +495,7 @@ class helper {
         $file['timemodified'] = $fileh5p->get_timemodified();
 
         if (!$url) {
-            $url  = \moodle_url::make_webservice_pluginfile_url(
+            $url  = url::make_webservice_pluginfile_url(
                 $fileh5p->get_contextid(),
                 $fileh5p->get_component(),
                 $fileh5p->get_filearea(),

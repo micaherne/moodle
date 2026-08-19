@@ -24,7 +24,8 @@
 
 namespace tool_langimport;
 
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/filelib.php');
@@ -66,7 +67,7 @@ class controller {
      *
      * @param moodle_url $url
      */
-    public function redirect(moodle_url $url): void {
+    public function redirect(url $url): void {
         if ($this->info) {
             $info = implode('<br />', $this->info);
             \core\notification::success($info);
@@ -103,7 +104,7 @@ class controller {
                     $a->url  = $this->installer->lang_pack_url($langcode);
                     $a->dest = $CFG->dataroot.'/lang';
                     $this->errors[] = get_string('remotedownloaderror', 'error', $a);
-                    throw new \moodle_exception('remotedownloaderror', 'error', '', $a);
+                    throw new moodle_exception('remotedownloaderror', 'error', '', $a);
                     break;
                 case \lang_installer::RESULT_INSTALLED:
                     $updatedpacks++;
@@ -216,7 +217,7 @@ class controller {
 
         try {
             $updated = $this->install_languagepacks($neededlangs, true);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->errors[] = 'An exception occurred while installing language packs: ' . $e->getMessage();
             return false;
         }

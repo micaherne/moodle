@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -83,10 +85,10 @@ class course_section_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->other['sectionnum'])) {
-            throw new \coding_exception('The \'sectionnum\' value must be set in other.');
+            throw new coding_exception('The \'sectionnum\' value must be set in other.');
         }
         if (!isset($this->other['sectionname'])) {
-            throw new \coding_exception('The \'sectionname\' value must be set in other.');
+            throw new coding_exception('The \'sectionname\' value must be set in other.');
         }
     }
 }

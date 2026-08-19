@@ -26,7 +26,10 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/tablelib.php');
 
+use core\output\html_writer;
+use core\url;
 use \core_question\statistics\questions\calculated_question_summary;
+use core_table\flexible_table;
 
 /**
  * This table has one row for each question in the quiz, with sub-rows when
@@ -239,17 +242,17 @@ class quiz_statistics_table extends flexible_table {
             return $name;
         }
 
-        $baseurl = new moodle_url($this->baseurl);
+        $baseurl = new url($this->baseurl);
         if (!is_null($questionstat->variant)) {
             if ($questionstat->subquestion) {
                 // Variant of a sub-question.
-                $url = new moodle_url($baseurl, ['qid' => $questionstat->questionid, 'variant' => $questionstat->variant]);
+                $url = new url($baseurl, ['qid' => $questionstat->questionid, 'variant' => $questionstat->variant]);
                 $name = html_writer::link($url, $name, ['title' => get_string('detailedanalysisforvariant',
                                                                                    'quiz_statistics',
                                                                                    $questionstat->variant)]);
             } else if ($questionstat->slot) {
                 // Variant of a question in a slot.
-                $url = new moodle_url($baseurl, ['slot' => $questionstat->slot, 'variant' => $questionstat->variant]);
+                $url = new url($baseurl, ['slot' => $questionstat->slot, 'variant' => $questionstat->variant]);
                 $name = html_writer::link($url, $name, ['title' => get_string('detailedanalysisforvariant',
                                                                                    'quiz_statistics',
                                                                                    $questionstat->variant)]);
@@ -257,14 +260,14 @@ class quiz_statistics_table extends flexible_table {
         } else {
             if ($questionstat->subquestion && !$questionstat->get_variants()) {
                 // Sub question without variants.
-                $url = new moodle_url($baseurl, ['qid' => $questionstat->questionid]);
+                $url = new url($baseurl, ['qid' => $questionstat->questionid]);
                 $name = html_writer::link($url, $name, ['title' => get_string('detailedanalysis', 'quiz_statistics')]);
             } else if ($baseurl->param('slot') === null && $questionstat->slot) {
                 // Question in a slot, we are not on a page showing structural analysis of one slot,
                 // we don't want linking on those pages.
                 $number = $questionstat->question->number;
                 $israndomquestion = $questionstat->question->random;
-                $url = new moodle_url($baseurl, ['slot' => $questionstat->slot]);
+                $url = new url($baseurl, ['slot' => $questionstat->slot]);
 
                 if ($this->is_calculated_question_summary($questionstat)) {
                     // Only make the random question summary row name link to the slot structure

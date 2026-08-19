@@ -25,7 +25,11 @@
 
 namespace core;
 
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
 use core_filetypes;
+use core_filters\filter_manager;
 use curl;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use repository;
@@ -257,7 +261,7 @@ final class filelib_test extends \advanced_testcase {
 
         // Test a request with a basic hostname filter applied.
         $testhtml = $this->getExternalTestFileUrl('/test.html');
-        $url = new \moodle_url($testhtml);
+        $url = new url($testhtml);
         $host = $url->get_host();
         set_config('curlsecurityblockedhosts', $host); // Blocks $host.
 
@@ -276,7 +280,7 @@ final class filelib_test extends \advanced_testcase {
 
         $this->assertEquals('\core\event\url_blocked', $event->eventname);
         $this->assertEquals("Blocked $testhtml: $expected", $event->get_description());
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEquals($testhtml, $event->other['url']);
         $this->assertEventContextNotUsed($event);
 
@@ -608,7 +612,7 @@ final class filelib_test extends \advanced_testcase {
 
         $fs = get_file_storage();
         $filerecord = array(
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'test',
             'filearea' => 'curl_post',
             'itemid' => 0,
@@ -631,7 +635,7 @@ final class filelib_test extends \advanced_testcase {
 
         $fs = get_file_storage();
         $filerecord = array(
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'test',
             'filearea' => 'curl_post',
             'itemid' => 0,
@@ -700,7 +704,7 @@ final class filelib_test extends \advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $USER = $DB->get_record('user', array('id'=>$user->id));
 
         $repositorypluginname = 'user';
@@ -713,7 +717,7 @@ final class filelib_test extends \advanced_testcase {
 
         $fs = get_file_storage();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $component = 'core';
         $filearea  = 'unittest';
         $itemid    = 0;
@@ -811,7 +815,7 @@ final class filelib_test extends \advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $USER = $DB->get_record('user', array('id'=>$user->id));
 
         $repositorypluginname = 'user';
@@ -823,7 +827,7 @@ final class filelib_test extends \advanced_testcase {
         $this->assertInstanceOf('repository', $userrepository);
 
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $filecontent = 'User file content';
 
@@ -882,7 +886,7 @@ final class filelib_test extends \advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $USER = $DB->get_record('user', array('id' => $user->id));
 
         $repositorypluginname = 'user';
@@ -894,7 +898,7 @@ final class filelib_test extends \advanced_testcase {
         $this->assertInstanceOf('repository', $userrepository);
 
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $filecontent = 'User file content';
 
@@ -951,8 +955,8 @@ final class filelib_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $fs = get_file_storage();
-        $syscontext = \context_system::instance();
-        $usercontext = \context_user::instance($USER->id);
+        $syscontext = system::instance();
+        $usercontext = user::instance($USER->id);
         $filename = 'license.jpg';
         $originalrecord = [
             'contextid' => $syscontext->id,
@@ -996,7 +1000,7 @@ final class filelib_test extends \advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $USER = $DB->get_record('user', ['id' => $user->id]);
 
         $draftitemid = 0;
@@ -1280,7 +1284,7 @@ EOF;
                 get_mimetype_description(array('filename' => 'test.frog')));
 
         // Test custom description using multilang filter.
-        \filter_manager::reset_caches();
+        filter_manager::reset_caches();
         filter_set_global_state('multilang', TEXTFILTER_ON);
         filter_set_applies_to_strings('multilang', true);
         core_filetypes::update_type('frog', 'frog', 'application/x-frog', 'document',
@@ -1387,7 +1391,7 @@ EOF;
      */
     public function test_file_rewrite_pluginfile_urls(): void {
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $originaltext = 'Fake test with an image <img src="@@PLUGINFILE@@/image.png">';
 
         // Do the rewrite.
@@ -1412,7 +1416,7 @@ EOF;
 
         $this->resetAfterTest();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $originaltext = 'Fake test with an image <img src="@@PLUGINFILE@@/image.png">';
         $options = ['includetoken' => true];
 
@@ -1421,7 +1425,7 @@ EOF;
                 $originaltext, 'pluginfile.php', $syscontext->id, 'user', 'private', 0, $options);
 
         $token = get_user_key('core_files', $USER->id);
-        $expectedurl = new \moodle_url("/tokenpluginfile.php/{$token}/{$syscontext->id}/user/private/0/image.png");
+        $expectedurl = new url("/tokenpluginfile.php/{$token}/{$syscontext->id}/user/private/0/image.png");
         $expectedtext = "Fake test with an image <img src=\"{$expectedurl}\">";
         $this->assertEquals($expectedtext, $finaltext);
 
@@ -1446,7 +1450,7 @@ EOF;
                 $originaltext, 'pluginfile.php', $syscontext->id, 'user', 'private', 0, $options);
 
         $token = get_user_key('core_files', $user->id);
-        $expectedurl = new \moodle_url("/tokenpluginfile.php/{$token}/{$syscontext->id}/user/private/0/image.png");
+        $expectedurl = new url("/tokenpluginfile.php/{$token}/{$syscontext->id}/user/private/0/image.png");
         $expectedtext = "Fake test with an image <img src=\"{$expectedurl}\">";
         $this->assertEquals($expectedtext, $finaltext);
     }
@@ -1461,7 +1465,7 @@ EOF;
 
         $this->resetAfterTest();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $originaltext = 'Fake test with an image <img src="@@PLUGINFILE@@/image.png">';
         $options = ['includetoken' => true];
 
@@ -1470,7 +1474,7 @@ EOF;
                 $originaltext, 'pluginfile.php', $syscontext->id, 'user', 'private', 0, $options);
 
         $token = get_user_key('core_files', $USER->id);
-        $expectedurl = new \moodle_url("/tokenpluginfile.php");
+        $expectedurl = new url("/tokenpluginfile.php");
         $expectedurl .= "?token={$token}&file=/{$syscontext->id}/user/private/0/image.png";
         $expectedtext = "Fake test with an image <img src=\"{$expectedurl}\">";
         $this->assertEquals($expectedtext, $finaltext);
@@ -1511,7 +1515,7 @@ EOF;
         if (isset($filedata['contextid'])) {
             $filerecord['contextid'] = $filedata['contextid'];
         } else {
-            $usercontext = \context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             $filerecord['contextid'] = $usercontext->id;
         }
         $source = isset($filedata['source']) ? $filedata['source'] : serialize((object)array('source' => 'From string'));
@@ -1532,7 +1536,7 @@ EOF;
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $fs = get_file_storage();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
 
         // Create a draft file.
         $filename = 'data.txt';
@@ -1646,7 +1650,7 @@ EOF;
 
         // Add new file.
         file_merge_files_from_draft_area_into_filearea($file->get_itemid(), $file->get_contextid(), 'user', 'private', 0, $options);
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $files = $fs->get_area_files($usercontext->id, 'user', 'private', 0);
         $this->assertCount(0, $files);
     }
@@ -1671,7 +1675,7 @@ EOF;
 
         // Add new file.
         file_merge_files_from_draft_area_into_filearea($file->get_itemid(), $file->get_contextid(), 'user', 'private', 0, $options);
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         // Check we only get the base directory, not a new file.
         $files = $fs->get_area_files($usercontext->id, 'user', 'private', 0);
         $this->assertCount(1, $files);
@@ -1697,7 +1701,7 @@ EOF;
 
         // Add new file.
         file_merge_files_from_draft_area_into_filearea($file->get_itemid(), $file->get_contextid(), 'user', 'private', 0, $options);
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         // Check we only get the base directory, not a new file.
         $files = $fs->get_area_files($usercontext->id, 'user', 'private', 0);
         $this->assertCount(1, $files);
@@ -1730,7 +1734,7 @@ EOF;
         $size += $file->get_filesize();
 
         // Create directory.
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $dir = $fs->create_directory($usercontext->id, 'user', 'draft', $draftitemid, '/testsubdir/');
         // Add file to directory.
         $filerecord = array(
@@ -1787,7 +1791,7 @@ EOF;
         $size += $file->get_filesize();
 
         // Create directory.
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $dir = $fs->create_directory($usercontext->id, 'user', 'draft', $draftitemid, '/testsubdir/');
         // Add file to directory.
         $filerecord = array(
@@ -1842,7 +1846,7 @@ EOF;
 
         // Confirm the user drafts area lists 3 files.
         $fs = get_file_storage();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $draftfiles = $fs->get_area_files($usercontext->id, 'user', 'draft', $draftitemid, 'itemid', 0);
         $this->assertCount(4, $draftfiles);
 
@@ -1960,7 +1964,7 @@ EOF;
 
         // Confirm one file in each draft area.
         $fs = get_file_storage();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $draftfiles = $fs->get_area_files($usercontext->id, 'user', 'draft', $file1->get_itemid(), 'itemid', 0);
         $this->assertCount(1, $draftfiles);
         $draftfiles = $fs->get_area_files($usercontext->id, 'user', 'draft', $file2->get_itemid(), 'itemid', 0);
@@ -2059,7 +2063,7 @@ EOF;
     public function test_file_prepare_standard_editor_clean_text(): void {
         $text = "lala <object>xx</object>";
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $object = new \stdClass();
         $object->some = $text;
@@ -2254,7 +2258,7 @@ EOF;
         $this->assertArrayNotHasKey('CURLOPT_CONNECTTIMEOUT', $curl->get_options());
 
         // Passing a non-string option (integer constant) should throw a coding_exception.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $curl->removeopt([CURLOPT_VERBOSE]);
     }
 }

@@ -23,6 +23,10 @@
  */
 namespace tool_monitor;
 
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -54,10 +58,10 @@ class rule_manager {
         if ($ruledata->id) {
             if (!empty($ruledata->courseid)) {
                 $courseid = $ruledata->courseid;
-                $context = \context_course::instance($ruledata->courseid);
+                $context = course::instance($ruledata->courseid);
             } else {
                 $courseid = 0;
-                $context = \context_system::instance();
+                $context = system::instance();
             }
 
             $params = array(
@@ -127,12 +131,12 @@ class rule_manager {
             if (!is_null($coursecontext)) {
                 $context = $coursecontext;
                 $courseid = $rule->courseid;
-            } else if (!empty($rule->courseid) && ($context = \context_course::instance($rule->courseid,
+            } else if (!empty($rule->courseid) && ($context = course::instance($rule->courseid,
                     IGNORE_MISSING))) {
                 $courseid = $rule->courseid;
             } else {
                 $courseid = 0;
-                $context = \context_system::instance();
+                $context = system::instance();
             }
 
             $params = array(
@@ -177,7 +181,7 @@ class rule_manager {
     public static function update_rule($ruledata) {
         global $DB;
         if (!self::get_rule($ruledata->id)) {
-            throw new \coding_exception('Invalid rule ID.');
+            throw new coding_exception('Invalid rule ID.');
         }
         $ruledata->timemodified = time();
 
@@ -193,9 +197,9 @@ class rule_manager {
             }
 
             if (!empty($courseid)) {
-                $context = \context_course::instance($courseid);
+                $context = course::instance($courseid);
             } else {
-                $context = \context_system::instance();
+                $context = system::instance();
             }
 
             $params = array(

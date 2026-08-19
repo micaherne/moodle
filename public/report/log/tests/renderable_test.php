@@ -16,8 +16,8 @@
 
 namespace report_log;
 
-use context_course;
-use core_user;
+use core\context\course;
+use core\user;
 
 /**
  * Class report_log\renderable_test to cover functions in \report_log_renderable.
@@ -337,7 +337,7 @@ final class renderable_test extends \advanced_testcase {
         $usersid = array_keys($userlist);
 
         $users = array_map(function($userid) {
-            return core_user::get_user($userid);
+            return user::get_user($userid);
         }, $usersid);
 
         // Now check that the users are the expected ones.
@@ -403,7 +403,7 @@ final class renderable_test extends \advanced_testcase {
         foreach ($this->courses as $course) {
             foreach ($this->users as $user) {
                 $eventdata = [
-                    'context' => context_course::instance($course->id),
+                    'context' => course::instance($course->id),
                     'userid' => $user->id,
                 ];
                 $event = \core\event\course_viewed::create($eventdata);
@@ -430,7 +430,7 @@ final class renderable_test extends \advanced_testcase {
             if (get_class($event) !== \core\event\course_viewed::class) {
                 continue;
             }
-            $user = core_user::get_user($event->userid, '*', MUST_EXIST);
+            $user = user::get_user($event->userid, '*', MUST_EXIST);
             $usernames[] = $user->username;
         }
         sort($expectedusers);

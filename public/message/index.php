@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\url;
+use core\user as core_user;
+
 require_once('../config.php');
 
 require_login(null, false);
@@ -31,7 +36,7 @@ if (isguestuser()) {
 }
 
 if (empty($CFG->messaging)) {
-    throw new \moodle_exception('disabled', 'message');
+    throw new moodle_exception('disabled', 'message');
 }
 
 // The id of the user we want to view messages from.
@@ -62,7 +67,7 @@ if ($userid) {
     }
 }
 
-$url = new moodle_url('/message/index.php');
+$url = new url('/message/index.php');
 if ($userid) {
     $url->param('id', $userid);
 }

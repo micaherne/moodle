@@ -24,6 +24,15 @@
 
 namespace tool_monitor\output\managesubs;
 
+use core\context\course;
+use core\context\system;
+use core\output\action_link;
+use core\output\html_writer;
+use core\output\renderable;
+use core\output\single_select;
+use core\url;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/tablelib.php');
@@ -36,7 +45,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class rules extends \table_sql implements \renderable {
+class rules extends sql_table implements renderable {
 
     /**
      * @var int course id.
@@ -61,7 +70,7 @@ class rules extends \table_sql implements \renderable {
      * @param int $courseid course id.
      * @param int $perpage Number of rules to display per page.
      */
-    public function __construct($uniqueid, \moodle_url $url, $courseid = 0, $perpage = 100) {
+    public function __construct($uniqueid, url $url, $courseid = 0, $perpage = 100) {
         parent::__construct($uniqueid);
 
         $this->set_attribute('class', 'toolmonitor subscriberules table generaltable');
@@ -78,8 +87,8 @@ class rules extends \table_sql implements \renderable {
         );
         $this->courseid = $courseid;
         $this->pagesize = $perpage;
-        $systemcontext = \context_system::instance();
-        $this->context = empty($courseid) ? $systemcontext : \context_course::instance($courseid);
+        $systemcontext = system::instance();
+        $this->context = empty($courseid) ? $systemcontext : course::instance($courseid);
         $this->collapsible(false);
         $this->sortable(false);
         $this->pageable(true);
@@ -122,7 +131,7 @@ class rules extends \table_sql implements \renderable {
         if (empty($courseid)) {
             return $coursename;
         } else {
-            return \html_writer::link(new \moodle_url('/course/view.php', array('id' => $this->courseid)), $coursename);
+            return html_writer::link(new url('/course/view.php', array('id' => $this->courseid)), $coursename);
         }
     }
 
@@ -168,13 +177,13 @@ class rules extends \table_sql implements \renderable {
         $options = $rule->get_subscribe_options($this->courseid);
         $text = get_string('subscribeto', 'tool_monitor', $rule->get_name($this->context));
 
-        if ($options instanceof \single_select) {
+        if ($options instanceof single_select) {
             $options->set_label($text, array('class' => 'accesshide'));
             return $OUTPUT->render($options);
-        } else if ($options instanceof \moodle_url) {
+        } else if ($options instanceof url) {
             // A \moodle_url to subscribe.
             $icon = $OUTPUT->pix_icon('t/add', $text);
-            $link = new \action_link($options, $icon);
+            $link = new action_link($options, $icon);
             return $OUTPUT->render($link);
         } else {
             return $options;
@@ -219,8 +228,8 @@ class rules extends \table_sql implements \renderable {
             $selected = null;
             $nothing = array('choosedots');
         }
-        $url = new \moodle_url('/admin/tool/monitor/index.php');
-        $select = new \single_select($url, 'courseid', $options, $selected, $nothing);
+        $url = new url('/admin/tool/monitor/index.php');
+        $select = new single_select($url, 'courseid', $options, $selected, $nothing);
         $select->set_label(get_string('selectacourse', 'tool_monitor'));
         return $select;
     }

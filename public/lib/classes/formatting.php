@@ -16,6 +16,11 @@
 
 namespace core;
 
+use core\exception\coding_exception;
+use core\output\html_writer;
+use core_filters\filter_manager;
+use core_filters\null_filter_manager;
+
 /**
  * Content formatting methods for Moodle.
  *
@@ -81,7 +86,7 @@ class formatting {
             $context = $PAGE->context;
             if (!$context) {
                 // We did not find any context? weird.
-                throw new \coding_exception(
+                throw new coding_exception(
                     'Unable to identify context for format_string()',
                 );
             }
@@ -110,7 +115,7 @@ class formatting {
         }
 
         if (!empty($this->get_filterall()) && $filter) {
-            $filtermanager = \filter_manager::instance();
+            $filtermanager = filter_manager::instance();
             $filtermanager->setup_page_for_filters($PAGE, $context); // Setup global stuff filters may have.
             $string = $filtermanager->filter_string($string, $context);
         }
@@ -213,14 +218,14 @@ class formatting {
         }
 
         if ($filter) {
-            $filtermanager = \filter_manager::instance();
+            $filtermanager = filter_manager::instance();
             $filtermanager->setup_page_for_filters($PAGE, $context); // Setup global stuff filters may have.
             $filteroptions = [
                 'originalformat' => $format,
                 'noclean' => !$clean,
             ];
         } else {
-            $filtermanager = new \null_filter_manager();
+            $filtermanager = new null_filter_manager();
             $filteroptions = [];
         }
 
@@ -277,7 +282,7 @@ class formatting {
                 $text = $filtermanager->filter_text($text, $context, $filteroptions);
                 break;
             default:  // FORMAT_MOODLE or anything else.
-                throw new \coding_exception("Unknown format passed to format_text: {$format}");
+                throw new coding_exception("Unknown format passed to format_text: {$format}");
         }
 
         if ($filter) {
@@ -298,7 +303,7 @@ class formatting {
         }
 
         if (!empty($overflowdiv)) {
-            $text = \html_writer::tag('div', $text, ['class' => 'no-overflow']);
+            $text = html_writer::tag('div', $text, ['class' => 'no-overflow']);
         }
 
         if ($blanktarget) {

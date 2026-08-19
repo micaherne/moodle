@@ -28,6 +28,10 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . "/mod/data/locallib.php");
 
+use core\context\module;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\output\user_picture;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -102,7 +106,7 @@ class mod_data_external extends external_api {
 
             foreach ($databases as $database) {
 
-                $context = context_module::instance($database->coursemodule);
+                $context = module::instance($database->coursemodule);
                 // Remove fields added by get_all_instances_in_courses.
                 unset($database->coursemodule, $database->section, $database->visible, $database->groupmode, $database->groupingid);
 
@@ -175,7 +179,7 @@ class mod_data_external extends external_api {
         $database = $DB->get_record('data', array('id' => $databaseid), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($database, 'data');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
         require_capability('mod/data:viewentry', $context);
 

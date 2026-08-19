@@ -25,6 +25,9 @@
 
 namespace core\task;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/../fixtures/task_fixtures.php');
 
@@ -318,7 +321,7 @@ final class logging_test extends \advanced_testcase {
         $task = $this->get_test_adhoc_task();
         logmanager::start_logging($task);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         logmanager::start_logging($task);
     }
 
@@ -580,8 +583,8 @@ class logging_test_mocked_logger implements task_logger {
      * @param   string      $classname The task class to fetch for
      * @return  \moodle_url
      */
-    public static function get_url_for_task_class(string $classname): \moodle_url {
-        return new \moodle_url('');
+    public static function get_url_for_task_class(string $classname): url {
+        return new url('');
     }
 
 }

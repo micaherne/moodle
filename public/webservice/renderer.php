@@ -14,9 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\single_button;
+use core\url;
 use core_external\external_api;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
 
 /**
  * Web service documentation renderer.
@@ -91,7 +99,7 @@ class core_webservice_renderer extends plugin_renderer_base {
 
         $formcontent = html_writer::tag('div', $formcontent);
 
-        $actionurl = new moodle_url('/' . $CFG->admin . '/webservice/service_users.php',
+        $actionurl = new url('/' . $CFG->admin . '/webservice/service_users.php',
                         array('id' => $options->serviceid));
         $html = html_writer::tag('form', $formcontent,
                         array('id' => 'assignform', 'action' => $actionurl, 'method' => 'post'));
@@ -109,10 +117,10 @@ class core_webservice_renderer extends plugin_renderer_base {
         global $CFG;
 
         $listitems = [];
-        $extrafields = \core_user\fields::get_identity_fields(context_system::instance());
+        $extrafields = \core_user\fields::get_identity_fields(system::instance());
 
         foreach ($users as $user) {
-            $settingsurl = new moodle_url('/admin/webservice/service_user_settings.php',
+            $settingsurl = new url('/admin/webservice/service_user_settings.php',
                 ['userid' => $user->id, 'serviceid' => $serviceid]);
 
             $identity = [];
@@ -158,9 +166,9 @@ class core_webservice_renderer extends plugin_renderer_base {
         $optionsyes = array('id' => $service->id, 'action' => 'delete',
             'confirm' => 1, 'sesskey' => sesskey(), 'fid' => $function->id);
         $optionsno = array('id' => $service->id);
-        $formcontinue = new single_button(new moodle_url('service_functions.php',
+        $formcontinue = new single_button(new url('service_functions.php',
                                 $optionsyes), get_string('remove'));
-        $formcancel = new single_button(new moodle_url('service_functions.php',
+        $formcancel = new single_button(new url('service_functions.php',
                                 $optionsno), get_string('cancel'), 'get');
         return $this->output->confirm(get_string('removefunctionconfirm', 'webservice',
                         (object) array('service' => $service->name, 'function' => $function->name)),
@@ -178,10 +186,10 @@ class core_webservice_renderer extends plugin_renderer_base {
         $optionsyes = array('id' => $service->id, 'action' => 'delete',
             'confirm' => 1, 'sesskey' => sesskey());
         $optionsno = array('section' => 'externalservices');
-        $formcontinue = new single_button(new moodle_url('service.php', $optionsyes),
+        $formcontinue = new single_button(new url('service.php', $optionsyes),
                         get_string('delete'), 'post');
         $formcancel = new single_button(
-                        new moodle_url($CFG->wwwroot . "/" . $CFG->admin . "/settings.php", $optionsno),
+                        new url($CFG->wwwroot . "/" . $CFG->admin . "/settings.php", $optionsno),
                         get_string('cancel'), 'get');
         return $this->output->confirm(get_string('deleteserviceconfirm', 'webservice', $service->name),
                 $formcontinue, $formcancel);
@@ -227,7 +235,7 @@ class core_webservice_renderer extends plugin_renderer_base {
                                 array('class' => 'functiondesc'));
                 //display remove function operation (except for build-in service)
                 if (empty($service->component)) {
-                    $removeurl = new moodle_url('/' . $CFG->admin . '/webservice/service_functions.php',
+                    $removeurl = new url('/' . $CFG->admin . '/webservice/service_functions.php',
                                     array('sesskey' => sesskey(), 'fid' => $function->id,
                                         'id' => $service->id,
                                         'action' => 'delete'));
@@ -251,7 +259,7 @@ class core_webservice_renderer extends plugin_renderer_base {
             if (!empty($anydeprecated)) {
                 debugging('This service uses deprecated functions, replace them by the proposed ones and update your client/s.', DEBUG_DEVELOPER);
             }
-            $addurl = new moodle_url('/' . $CFG->admin . '/webservice/service_functions.php',
+            $addurl = new url('/' . $CFG->admin . '/webservice/service_functions.php',
                             array('sesskey' => sesskey(), 'id' => $service->id, 'action' => 'add'));
             $html .= html_writer::tag('a', get_string('addfunctions', 'webservice'), array('href' => $addurl));
         }
@@ -268,8 +276,8 @@ class core_webservice_renderer extends plugin_renderer_base {
     public function user_reset_token_confirmation($token) {
         $managetokenurl = '/user/managetoken.php';
         $optionsyes = ['tokenid' => $token->id, 'action' => 'resetwstoken', 'confirm' => 1];
-        $formcontinue = new single_button(new moodle_url($managetokenurl, $optionsyes), get_string('reset'));
-        $formcancel = new single_button(new moodle_url($managetokenurl), get_string('cancel'), 'get');
+        $formcontinue = new single_button(new url($managetokenurl, $optionsyes), get_string('reset'));
+        $formcancel = new single_button(new url($managetokenurl), get_string('cancel'), 'get');
         $html = $this->output->confirm(get_string('resettokenconfirm', 'webservice',
                                 (object) array('user' => $token->firstname . " " .
                                     $token->lastname, 'service' => $token->name)),
@@ -316,7 +324,7 @@ class core_webservice_renderer extends plugin_renderer_base {
             foreach ($tokens as $token) {
 
                 if ($token->creatorid == $userid) {
-                    $reset = html_writer::link(new moodle_url('/user/managetoken.php', [
+                    $reset = html_writer::link(new url('/user/managetoken.php', [
                         'action' => 'resetwstoken',
                         'tokenid' => $token->id,
                     ]), get_string('reset'));
@@ -328,7 +336,7 @@ class core_webservice_renderer extends plugin_renderer_base {
                     $reset = '';
                 }
 
-                $userprofilurl = new moodle_url('/user/view.php?id=' . $token->creatorid);
+                $userprofilurl = new url('/user/view.php?id=' . $token->creatorid);
                 $creatoratag = html_writer::start_tag('a', array('href' => $userprofilurl));
                 $creatoratag .= $creator;
                 $creatoratag .= html_writer::end_tag('a');
@@ -350,7 +358,7 @@ class core_webservice_renderer extends plugin_renderer_base {
                 $row = array($token->tokenname, $servicename, $validuntil, $lastaccess, $creatoratag, $reset);
 
                 if ($documentation) {
-                    $doclink = new moodle_url('/webservice/wsdoc.php',
+                    $doclink = new url('/webservice/wsdoc.php',
                             array('id' => $token->id));
                     $row[] = html_writer::tag('a', get_string('doc', 'webservice'),
                             array('href' => $doclink));
@@ -653,7 +661,7 @@ EOF;
 EOF;
         // Some general information
         $docinfo = new stdClass();
-        $docurl = new moodle_url('http://docs.moodle.org/dev/Creating_a_web_service_client');
+        $docurl = new url('http://docs.moodle.org/dev/Creating_a_web_service_client');
         $docinfo->doclink = html_writer::tag('a',
                         get_string('wsclientdoc', 'webservice'), array('href' => $docurl));
         $documentationhtml .= get_string('wsdocumentationintro', 'webservice', $docinfo);
@@ -662,7 +670,7 @@ EOF;
 
         // Print button
         $authparams['print'] = true;
-        $url = new moodle_url($parenturl, $authparams); // Required
+        $url = new url($parenturl, $authparams); // Required
         $documentationhtml .= $this->output->single_button($url, get_string('print', 'webservice'));
         $documentationhtml .= $br;
 

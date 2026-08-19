@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/'.$CFG->admin.'/user/lib.php');
@@ -48,7 +50,7 @@ if ($data = $actionform->get_data()) {
     // Check if an action should be performed and do so.
     $bulkactions = $actionform->get_actions();
     if (array_key_exists($data->action, $bulkactions)) {
-        redirect(new moodle_url($bulkactions[$data->action]->url, ['returnurl' => $data->returnurl ?: null]));
+        redirect(new url($bulkactions[$data->action]->url, ['returnurl' => $data->returnurl ?: null]));
     }
 
 }

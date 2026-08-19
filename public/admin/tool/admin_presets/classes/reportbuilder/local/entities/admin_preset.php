@@ -18,7 +18,8 @@ declare(strict_types=1);
 
 namespace tool_admin_presets\reportbuilder\local\entities;
 
-use lang_string;
+use core\context\system;
+use core\lang_string;
 use core\output\inplace_editable;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\text;
@@ -73,7 +74,7 @@ class admin_preset extends base {
             ->set_callback(static function(?string $value, \stdClass $row): string {
                 global $OUTPUT;
                 $edithint = get_string('editadminpresetname', 'tool_admin_presets');
-                $displayvalue = format_string($row->name, true, ['context' => \context_system::instance(), 'escape' => false]);
+                $displayvalue = format_string($row->name, true, ['context' => system::instance(), 'escape' => false]);
                 $editlabel = get_string('newvaluefor', 'form', $displayvalue);
                 $canedit = (int)$row->iscore === \core_adminpresets\manager::NONCORE_PRESET;
                 $inlineeditable = new inplace_editable('tool_admin_presets', 'presetname', $row->id, $canedit,
@@ -91,7 +92,7 @@ class admin_preset extends base {
             ->add_field("{$apalias}.comments")
             ->set_is_sortable(true)
             ->set_callback(static function(?string $description): string {
-                return format_text($description, FORMAT_HTML, ['context' => \context_system::instance()]);
+                return format_text($description, FORMAT_HTML, ['context' => system::instance()]);
             });
 
         return $columns;

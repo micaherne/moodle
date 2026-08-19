@@ -22,6 +22,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core\user;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
 use core_user\fields;
 
 require_once($CFG->libdir.'/gradelib.php');
@@ -191,7 +198,7 @@ abstract class grade_report {
         global $CFG, $COURSE, $DB;
 
         if (empty($CFG->gradebookroles)) {
-            throw new \moodle_exception('norolesdefined', 'grades');
+            throw new moodle_exception('norolesdefined', 'grades');
         }
 
         $this->courseid  = $courseid;
@@ -311,7 +318,7 @@ abstract class grade_report {
      * @param bool $otherplugins If we need to insert links to other plugins
      * @return ?stdClass Updated template context
      */
-    public static function get_additional_context(context_course $context, int $courseid, array $element,
+    public static function get_additional_context(course $context, int $courseid, array $element,
             grade_plugin_return $gpr, string $mode, stdClass $templatecontext, bool $otherplugins = false): ?stdClass {
 
         if (!$otherplugins) {
@@ -468,7 +475,7 @@ abstract class grade_report {
             [
                 'where' => $keywordswhere,
                 'params' => $keywordsparams,
-            ] = \core_user::get_users_search_sql($this->context, $this->usersearch);
+            ] = user::get_users_search_sql($this->context, $this->usersearch);
             $this->userwheresql .= " AND $keywordswhere";
             $this->userwheresql_params = array_merge($this->userwheresql_params, $keywordsparams);
         }
@@ -479,7 +486,7 @@ abstract class grade_report {
      * @param string $direction
      * @param moodle_url|null $sortlink
      */
-    protected function get_sort_arrow(string $direction = 'down', ?moodle_url $sortlink = null) {
+    protected function get_sort_arrow(string $direction = 'down', ?url $sortlink = null) {
         global $OUTPUT;
         $pix = ['up' => 't/sort_desc', 'down' => 't/sort_asc'];
         $matrix = ['up' => 'desc', 'down' => 'asc'];
@@ -853,7 +860,7 @@ abstract class grade_report {
         global $CFG;
         require_once($CFG->dirroot . '/grade/lib.php');
 
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
         $defaultgradeshowactiveenrol = !empty($CFG->grade_report_showonlyactiveenrol);
         $onlyactiveenrol = get_user_preferences('grade_report_showonlyactiveenrol', $defaultgradeshowactiveenrol) ||
             !has_capability('moodle/course:viewsuspendedusers', $context);

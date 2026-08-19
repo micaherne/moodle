@@ -16,11 +16,16 @@
 
 namespace core_ai;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\coding_exception;
 use core_ai\aiactions\generate_image;
 use core_ai\aiactions\generate_text;
 use core_ai\aiactions\summarise_text;
 use core_ai\aiactions\explain_text;
 use core_ai\aiactions\responses\response_generate_image;
+use core_cache\cache;
 
 /**
  * Test ai subsystem manager methods.
@@ -49,7 +54,7 @@ final class manager_test extends \advanced_testcase {
         $this->assertEquals('aiplacement_fooplacement\\placement', $classname);
 
         // Test an invalid plugin.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Plugin name does not start with \'aiprovider_\' or \'aiplacement_\': bar');
         $method->invoke($manager, 'bar');
     }
@@ -102,7 +107,7 @@ final class manager_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         // Should throw an exception as the class is not a provider.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage(' Provider class not valid: ' . $this::class);
 
         // Create the provider instance.
@@ -494,7 +499,7 @@ final class manager_test extends \advanced_testcase {
             $record2,
         ]);
 
-        $policycache = \cache::make('core', 'ai_policy');
+        $policycache = cache::make('core', 'ai_policy');
 
         // Test single user.
         $this->assertFalse($policycache->has($user1->id));
@@ -759,7 +764,7 @@ final class manager_test extends \advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $manager = \core\di::get(manager::class);
         $aitoolsenabled = $manager::is_ai_tools_enabled_in_course($context);
@@ -799,7 +804,7 @@ final class manager_test extends \advanced_testcase {
         ]);
 
         // Set the page context to the module context.
-        $ctx = \context_module::instance($module->cmid);
+        $ctx = module::instance($module->cmid);
         $PAGE->set_context($ctx);
 
         // Get all enabled actions in a course module.
@@ -832,7 +837,7 @@ final class manager_test extends \advanced_testcase {
         ]);
 
         // Set the page context to the module context.
-        $modulecontext = \context_module::instance($module->cmid);
+        $modulecontext = module::instance($module->cmid);
         $PAGE->set_context($modulecontext);
 
         // Only the generate text action should be available.
@@ -842,7 +847,7 @@ final class manager_test extends \advanced_testcase {
         $this->assertFalse($result);
 
         // Explain text should be available outside the module context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $result = $manager->is_action_enabled_in_context($systemcontext, explain_text::class);
         $this->assertTrue($result);
     }

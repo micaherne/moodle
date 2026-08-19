@@ -16,6 +16,9 @@
 
 namespace core_customfield;
 
+use core\context\course;
+use core\context\system;
+
 /**
  * Functional test for class \core_customfield\api
  *
@@ -114,7 +117,7 @@ final class api_test extends \advanced_testcase {
             'component' => 'core_course',
             'area'      => 'course',
             'itemid'    => 0,
-            'contextid' => \context_system::instance()->id
+            'contextid' => system::instance()->id
         ];
         $category0 = $this->get_generator()->create_category(['name' => 'aaaa'] + $options);
         $category1 = $this->get_generator()->create_category(['name' => 'bbbb'] + $options);
@@ -146,7 +149,7 @@ final class api_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $params = ['component' => 'core_course', 'area' => 'course', 'itemid' => 0, 'name' => 'Cat1',
-            'contextid' => \context_system::instance()->id];
+            'contextid' => system::instance()->id];
         $c1 = category_controller::create(0, (object)$params);
         api::save_category($c1);
         $this->assertNotEmpty($c1->get('id'));
@@ -230,11 +233,11 @@ final class api_test extends \advanced_testcase {
             'component' => 'core_course',
             'area'      => 'course',
             'itemid'    => 0,
-            'contextid' => \context_system::instance()->id
+            'contextid' => system::instance()->id
         ];
         $lpg = $this->get_generator();
         $course = $this->getDataGenerator()->create_course();
-        $dataparams = ['instanceid' => $course->id, 'contextid' => \context_course::instance($course->id)->id];
+        $dataparams = ['instanceid' => $course->id, 'contextid' => course::instance($course->id)->id];
         $category0 = $lpg->create_category($options);
         $category1 = $lpg->create_category($options);
         for ($i = 0; $i < 6; $i++) {

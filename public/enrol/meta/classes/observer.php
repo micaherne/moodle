@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/enrol/meta/locallib.php');
@@ -197,7 +200,7 @@ class enrol_meta_observer extends enrol_meta_handler {
                 $plugin->update_status($enrol, ENROL_INSTANCE_DISABLED);
             }
             if ($unenrolaction == ENROL_EXT_REMOVED_SUSPENDNOROLES) {
-                $context = context_course::instance($enrol->courseid);
+                $context = course::instance($enrol->courseid);
                 role_unassign_all(array('contextid'=>$context->id, 'component'=>'enrol_meta', 'itemid'=>$enrol->id));
             }
         }

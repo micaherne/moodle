@@ -22,12 +22,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
+
 require('../../config.php');
 
 require_once($CFG->libdir.'/adminlib.php');
 
 require_login();
-$context = context_system::instance();
+$context = system::instance();
 $PAGE->set_context($context);
 $adminroot = admin_get_root(false, false); // settings not required - only pages
 
@@ -41,7 +47,7 @@ if ($section = optional_param('section', '', PARAM_SAFEPATH) and confirm_sesskey
         $key = array_search($section, $bookmarks);
 
         if ($key === false) {
-            throw new \moodle_exception('nonexistentbookmark', 'admin');
+            throw new moodle_exception('nonexistentbookmark', 'admin');
             die;
         }
 
@@ -51,11 +57,11 @@ if ($section = optional_param('section', '', PARAM_SAFEPATH) and confirm_sesskey
 
         $temp = $adminroot->locate($section);
 
-        if ($temp instanceof admin_externalpage) {
+        if ($temp instanceof externalpage) {
             redirect($temp->url, get_string('bookmarkdeleted','admin'));
-        } elseif ($temp instanceof admin_settingpage) {
+        } elseif ($temp instanceof settingpage) {
             redirect($CFG->wwwroot . '/' . $CFG->admin . '/settings.php?section=' . $section);
-        } else if ($temp instanceof admin_category) {
+        } else if ($temp instanceof category) {
             redirect($CFG->wwwroot . '/' . $CFG->admin . '/category.php?category=' . $section);
         } else {
             redirect($CFG->wwwroot);
@@ -65,11 +71,11 @@ if ($section = optional_param('section', '', PARAM_SAFEPATH) and confirm_sesskey
 
     }
 
-    throw new \moodle_exception('nobookmarksforuser', 'admin');
+    throw new moodle_exception('nobookmarksforuser', 'admin');
     die;
 
 } else {
-    throw new \moodle_exception('invalidsection', 'admin');
+    throw new moodle_exception('invalidsection', 'admin');
     die;
 }
 

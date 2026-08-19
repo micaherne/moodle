@@ -22,6 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+use core_course\cm_info;
 use \mod_assign\output\assign_submission_status;
 
 defined('MOODLE_INTERNAL') || die();
@@ -795,8 +801,8 @@ class assign_files implements renderable {
      * @param stored_file
      * @return moodle_url
      */
-    public function get_file_url(stored_file $file): moodle_url {
-        return \moodle_url::make_pluginfile_url(
+    public function get_file_url(stored_file $file): url {
+        return url::make_pluginfile_url(
             $this->context->id,
             $file->get_component(),
             $file->get_filearea(),

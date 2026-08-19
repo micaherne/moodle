@@ -29,6 +29,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\plugin_manager;
+
 define('CLI_SCRIPT', true);
 define('NO_DEBUG_DISPLAY', false);
 
@@ -850,7 +852,7 @@ if (!$envstatus) {
 
 // Test plugin dependencies.
 $failed = array();
-if (!core_plugin_manager::instance()->all_plugins_ok($version, $failed)) {
+if (!plugin_manager::instance()->all_plugins_ok($version, $failed)) {
     cli_problem(get_string('pluginscheckfailed', 'admin', array('pluginslist' => implode(', ', array_unique($failed)))));
     cli_error(get_string('pluginschecktodo', 'admin'));
 }

@@ -23,7 +23,8 @@
  */
 namespace core\plugininfo;
 
-use part_of_admin_tree, admin_settingpage;
+use core\context\system;
+use core_admin\setting\tree\part_of_admin_tree, core_admin\setting\settingpage\settingpage;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -61,10 +62,10 @@ class calendartype extends base {
         $section = $this->get_settings_section_name();
 
         $settings = null;
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         if (($hassiteconfig) &&
             file_exists($this->full_path('settings.php'))) {
-            $settings = new admin_settingpage($section, $this->displayname,
+            $settings = new settingpage($section, $this->displayname,
                 'moodle/site:config', $this->is_enabled() === false);
             include($this->full_path('settings.php')); // This may also set $settings to null.
         }

@@ -16,9 +16,9 @@
 
 namespace core_admin\table;
 
-use moodle_url;
+use core\url;
 use stdClass;
-use html_writer;
+use core\output\html_writer;
 use get_string_manager;
 
 /**
@@ -37,13 +37,13 @@ class availability_management_table extends plugin_management_table {
         return 'availability';
     }
 
-    protected function get_action_url(array $params = []): moodle_url {
-        return new moodle_url('/admin/tool/availabilityconditions/', $params);
+    protected function get_action_url(array $params = []): url {
+        return new url('/admin/tool/availabilityconditions/', $params);
     }
 
     public function guess_base_url(): void {
         $this->define_baseurl(
-            new moodle_url('/admin/tool/availabilityconditions/')
+            new url('/admin/tool/availabilityconditions/')
         );
     }
 
@@ -76,7 +76,7 @@ class availability_management_table extends plugin_management_table {
             'plugin' => $row->plugininfo->name,
             'displaymode' => $displaymode,
         ];
-        $urldisplaymode = new moodle_url('/' . $CFG->admin . '/tool/availabilityconditions/', $paramsdisplaymode);
+        $urldisplaymode = new url('/' . $CFG->admin . '/tool/availabilityconditions/', $paramsdisplaymode);
 
         return html_writer::link($urldisplaymode, $OUTPUT->pix_icon(
             't/' . $displaymode,

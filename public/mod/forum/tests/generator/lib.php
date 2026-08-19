@@ -22,6 +22,10 @@
  * @copyright  2012 Petr Skoda {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\module;
+use core\exception\coding_exception;
+use core\output\html_writer;
+
 class mod_forum_generator extends testing_module_generator {
     /**
      * @var int keep track of how many forum discussions have been created.
@@ -234,7 +238,7 @@ class mod_forum_generator extends testing_module_generator {
             $tags = is_array($record->tags) ? $record->tags : preg_split('/,/', $record->tags);
 
             core_tag_tag::set_item_tags('mod_forum', 'forum_posts', $post->id,
-                context_module::instance($cm->id), $tags);
+                module::instance($cm->id), $tags);
         }
 
         return $record;
@@ -337,7 +341,7 @@ class mod_forum_generator extends testing_module_generator {
             $tags = is_array($record->tags) ? $record->tags : preg_split('/,/', $record->tags);
 
             core_tag_tag::set_item_tags('mod_forum', 'forum_posts', $record->id,
-                context_module::instance($cm->id), $tags);
+                module::instance($cm->id), $tags);
         }
 
         // Update the last post.

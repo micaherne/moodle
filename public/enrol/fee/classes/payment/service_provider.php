@@ -25,6 +25,8 @@
 
 namespace enrol_fee\payment;
 
+use core\url;
+
 /**
  * Payment subsystem callback implementation for enrol_fee.
  *
@@ -56,12 +58,12 @@ class service_provider implements \core_payment\local\callback\service_provider 
      * @param int $instanceid The enrolment instance id
      * @return \moodle_url
      */
-    public static function get_success_url(string $paymentarea, int $instanceid): \moodle_url {
+    public static function get_success_url(string $paymentarea, int $instanceid): url {
         global $DB;
 
         $courseid = $DB->get_field('enrol', 'courseid', ['enrol' => 'fee', 'id' => $instanceid], MUST_EXIST);
 
-        return new \moodle_url('/course/view.php', ['id' => $courseid]);
+        return new url('/course/view.php', ['id' => $courseid]);
     }
 
     /**

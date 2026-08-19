@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configselect;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -31,7 +33,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2013 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_singleactivity_admin_setting_activitytype extends admin_setting_configselect {
+class format_singleactivity_admin_setting_activitytype extends configselect {
     /**
      * This function may be used in ancestors for lazy loading of choices
      *

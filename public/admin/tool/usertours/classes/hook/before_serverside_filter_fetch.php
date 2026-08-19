@@ -16,6 +16,8 @@
 
 namespace tool_usertours\hook;
 
+use core\exception\coding_exception;
+
 /**
  * Provides the ability to add and remove custom server-side filters to the user tour filter list.
  *
@@ -45,11 +47,11 @@ class before_serverside_filter_fetch {
      */
     public function add_filter_by_classname(string $classname): self {
         if (!\is_a($classname, \tool_usertours\local\filter\base::class, true)) {
-            throw new \coding_exception("Invalid filter class {$classname}");
+            throw new coding_exception("Invalid filter class {$classname}");
         }
 
         if (\is_a($classname, \tool_usertours\local\clientside_filter\clientside_filter::class, true)) {
-            throw new \coding_exception("Invalid filter class {$classname} (client-side filter for server-side hook)");
+            throw new coding_exception("Invalid filter class {$classname} (client-side filter for server-side hook)");
         }
 
         $this->filters[] = $classname;

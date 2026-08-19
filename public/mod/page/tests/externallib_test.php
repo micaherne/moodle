@@ -16,6 +16,10 @@
 
 namespace mod_page;
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+use core_course\modinfo;
 use core_external\external_api;
 use mod_page_external;
 
@@ -40,14 +44,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
         $page = $this->getDataGenerator()->create_module('page', array('course' => $course->id));
-        $context = \context_module::instance($page->cmid);
+        $context = module::instance($page->cmid);
         $cm = get_coursemodule_from_instance('page', $page->id);
 
         // Test invalid instance id.
         try {
             mod_page_external::view_page(0);
             $this->fail('Exception expected due to invalid mod_page instance id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidrecord', $e->errorcode);
         }
 
@@ -57,7 +61,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_page_external::view_page($page->id);
             $this->fail('Exception expected due to not enrolled user.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -78,7 +82,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_page\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodlepage = new \moodle_url('/mod/page/view.php', array('id' => $cm->id));
+        $moodlepage = new url('/mod/page/view.php', array('id' => $cm->id));
         $this->assertEquals($moodlepage, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -88,12 +92,12 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         assign_capability('mod/page:view', CAP_PROHIBIT, $studentrole->id, $context->id);
         // Empty all the caches that may be affected by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
         try {
             mod_page_external::view_page($page->id);
             $this->fail('Exception expected due to missing capability.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -195,7 +199,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Add a file to the intro.
         $filename = "file.txt";
         $filerecordinline = array(
-            'contextid' => \context_module::instance($page2->cmid)->id,
+            'contextid' => module::instance($page2->cmid)->id,
             'component' => 'mod_page',
             'filearea'  => 'intro',
             'itemid'    => 0,

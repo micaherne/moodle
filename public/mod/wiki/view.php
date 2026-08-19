@@ -31,6 +31,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/wiki/lib.php');
 require_once($CFG->dirroot . '/mod/wiki/locallib.php');
@@ -65,7 +69,7 @@ $PAGE->add_body_class('limitedwidth');
 if ($id) {
     // Cheacking course module instance
     if (!$cm = get_coursemodule_from_id('wiki', $id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 
     // Checking course instance
@@ -75,7 +79,7 @@ if ($id) {
 
     // Checking wiki instance
     if (!$wiki = wiki_get_wiki($cm->instance)) {
-        throw new \moodle_exception('incorrectwikiid', 'wiki');
+        throw new moodle_exception('incorrectwikiid', 'wiki');
     }
     $PAGE->set_cm($cm);
 
@@ -97,14 +101,14 @@ if ($id) {
     // Getting subwiki. If it does not exists, redirecting to create page
     if (!$subwiki = wiki_get_subwiki_by_group($wiki->id, $currentgroup, $userid)) {
         $params = array('wid' => $wiki->id, 'group' => $currentgroup, 'uid' => $userid, 'title' => $wiki->firstpagetitle);
-        $url = new moodle_url('/mod/wiki/create.php', $params);
+        $url = new url('/mod/wiki/create.php', $params);
         redirect($url);
     }
 
     // Getting first page. If it does not exists, redirecting to create page
     if (!$page = wiki_get_first_page($subwiki->id, $wiki)) {
         $params = array('swid'=>$subwiki->id, 'title'=>$wiki->firstpagetitle);
-        $url = new moodle_url('/mod/wiki/create.php', $params);
+        $url = new url('/mod/wiki/create.php', $params);
         redirect($url);
     }
 
@@ -120,22 +124,22 @@ if ($id) {
 
     // Checking page instance
     if (!$page = wiki_get_page($pageid)) {
-        throw new \moodle_exception('incorrectpageid', 'wiki');
+        throw new moodle_exception('incorrectpageid', 'wiki');
     }
 
     // Checking subwiki
     if (!$subwiki = wiki_get_subwiki($page->subwikiid)) {
-        throw new \moodle_exception('incorrectsubwikiid', 'wiki');
+        throw new moodle_exception('incorrectsubwikiid', 'wiki');
     }
 
     // Checking wiki instance of that subwiki
     if (!$wiki = wiki_get_wiki($subwiki->wikiid)) {
-        throw new \moodle_exception('incorrectwikiid', 'wiki');
+        throw new moodle_exception('incorrectwikiid', 'wiki');
     }
 
     // Checking course module instance
     if (!$cm = get_coursemodule_from_instance("wiki", $subwiki->wikiid)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 
     $currentgroup = $subwiki->groupid;
@@ -163,12 +167,12 @@ if ($id) {
 
     // Setting wiki instance
     if (!$wiki = wiki_get_wiki($wid)) {
-        throw new \moodle_exception('incorrectwikiid', 'wiki');
+        throw new moodle_exception('incorrectwikiid', 'wiki');
     }
 
     // Checking course module
     if (!$cm = get_coursemodule_from_instance("wiki", $wiki->id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 
     // Checking course instance
@@ -197,7 +201,7 @@ if ($id) {
 
     // Getting subwiki instance. If it does not exists, redirect to create page
     if (!$subwiki = wiki_get_subwiki_by_group($wiki->id, $gid, $uid)) {
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $modeanduser = $wiki->wikimode == 'individual' && $uid != $USER->id;
         $modeandgroupmember = $wiki->wikimode == 'collaborative' && !groups_is_member($gid);
@@ -207,11 +211,11 @@ if ($id) {
         $manageandedit = $manage && $edit;
 
         if ($groupmode == VISIBLEGROUPS and ($modeanduser || $modeandgroupmember) and !$manageandedit) {
-            throw new \moodle_exception('nocontent', 'wiki');
+            throw new moodle_exception('nocontent', 'wiki');
         }
 
         $params = array('wid' => $wiki->id, 'group' => $gid, 'uid' => $uid, 'title' => $title);
-        $url = new moodle_url('/mod/wiki/create.php', $params);
+        $url = new url('/mod/wiki/create.php', $params);
         redirect($url);
     }
 
@@ -220,9 +224,9 @@ if ($id) {
         $params = array('wid' => $wiki->id, 'group' => $gid, 'uid' => $uid, 'title' => $wiki->firstpagetitle);
         // Check to see if the first page has been created
         if (!wiki_get_page_by_title($subwiki->id, $wiki->firstpagetitle)) {
-            $url = new moodle_url('/mod/wiki/create.php', $params);
+            $url = new url('/mod/wiki/create.php', $params);
         } else {
-            $url = new moodle_url('/mod/wiki/view.php', $params);
+            $url = new url('/mod/wiki/view.php', $params);
         }
         redirect($url);
     }
@@ -275,11 +279,11 @@ if ($id) {
     //     * Error. No more options
     //     */
 } else {
-    throw new \moodle_exception('invalidparameters', 'wiki');
+    throw new moodle_exception('invalidparameters', 'wiki');
 }
 
 if (!wiki_user_can_view($subwiki, $wiki)) {
-    throw new \moodle_exception('cannotviewpage', 'wiki');
+    throw new moodle_exception('cannotviewpage', 'wiki');
 }
 
 if (($edit != - 1) and $PAGE->user_allowed_editing()) {
@@ -291,7 +295,7 @@ $wikipage = new page_wiki_view($wiki, $subwiki, $cm);
 $wikipage->set_gid($currentgroup);
 $wikipage->set_page($page);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 if ($pageid) {
     wiki_page_view($wiki, $page, $course, $cm, $context, null, null, $subwiki);
 } else if ($id) {

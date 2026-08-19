@@ -26,6 +26,8 @@ namespace core_tag\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\system;
 use \core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\contextlist;
@@ -116,7 +118,7 @@ class provider implements
      */
     public static function export_item_tags(
         int $userid,
-        \context $context,
+        context $context,
         array $subcontext,
         string $component,
         string $itemtype,
@@ -166,7 +168,7 @@ class provider implements
      * @param   int         $itemid The itemid within that component and itemtype (optional)
      * @param   int         $userid Only delete tag instances made by this user, per-user tags must be enabled for the tagarea
      */
-    public static function delete_item_tags(\context $context, $component, $itemtype,
+    public static function delete_item_tags(context $context, $component, $itemtype,
             $itemid = null, $userid = null) {
         global $DB;
         $params = ['contextid' => $context->id, 'component' => $component, 'itemtype' => $itemtype];
@@ -193,7 +195,7 @@ class provider implements
      *      and may not use named parameters called contextid, component or itemtype.
      * @param array $params any query params used by $itemidstest.
      */
-    public static function delete_item_tags_select(\context $context, $component, $itemtype,
+    public static function delete_item_tags_select(context $context, $component, $itemtype,
                                             $itemidstest, $params = []) {
         global $DB;
         $params += ['contextid' => $context->id, 'component' => $component, 'itemtype' => $itemtype];
@@ -226,7 +228,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_system) {
+        if (!$context instanceof system) {
             return;
         }
 
@@ -243,7 +245,7 @@ class provider implements
      */
     public static function export_user_data(approved_contextlist $contextlist) {
         global $DB;
-        $context = \context_system::instance();
+        $context = system::instance();
         if (!$contextlist->count() || !in_array($context->id, $contextlist->get_contextids())) {
             return;
         }
@@ -281,10 +283,10 @@ class provider implements
      *
      * @param context $context   The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
         // Tags can only be defined in system context.
-        if ($context->id == \context_system::instance()->id) {
+        if ($context->id == system::instance()->id) {
             $DB->delete_records('tag_instance');
             $DB->delete_records('tag', []);
         }
@@ -300,7 +302,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_system) {
+        if ($context instanceof system) {
             // Do not delete tags themselves in case they are used by somebody else.
             // If the user is the only one using the tag, it will be automatically deleted anyway during the
             // next cron cleanup.
@@ -316,7 +318,7 @@ class provider implements
      */
     public static function delete_data_for_user(approved_contextlist $contextlist) {
         global $DB;
-        $context = \context_system::instance();
+        $context = system::instance();
         if (!$contextlist->count() || !in_array($context->id, $contextlist->get_contextids())) {
             return;
         }

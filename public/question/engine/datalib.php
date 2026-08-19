@@ -42,6 +42,10 @@
  */
 
 
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -1707,7 +1711,7 @@ class question_file_saver implements question_response_files {
         global $USER;
 
         $fs = get_file_storage();
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
 
         $files = $fs->get_area_files($usercontext->id, 'user', 'draft',
                 $draftitemid, 'sortorder, filepath, filename', false);
@@ -1785,7 +1789,7 @@ class question_file_saver implements question_response_files {
         global $USER;
 
         $fs = get_file_storage();
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
 
         return $fs->get_area_files($usercontext->id, 'user', 'draft',
                 $this->draftitemid, 'sortorder, filepath, filename', false);

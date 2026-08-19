@@ -27,6 +27,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/my/lib.php');
 require_once($CFG->libdir.'/adminlib.php');
@@ -53,11 +56,11 @@ $PAGE->blocks->add_region('content');
 
 // Get the Public Profile page info.  Should always return something unless the database is broken.
 if (!$currentpage = my_get_page(null, MY_PAGE_PUBLIC)) {
-    throw new \moodle_exception('publicprofilesetup');
+    throw new moodle_exception('publicprofilesetup');
 }
 $PAGE->set_subpage($currentpage->id);
 
-$url = new moodle_url($PAGE->url, array('resetall' => 1));
+$url = new url($PAGE->url, array('resetall' => 1));
 $button = $OUTPUT->single_button($url, get_string('reseteveryonesprofile', 'my'));
 $PAGE->set_button($button . $PAGE->button);
 

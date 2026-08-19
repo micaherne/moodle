@@ -31,6 +31,14 @@
  * @copyright 2009 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\navigation\global_navigation;
+use core\navigation\navigation_node;
+use core\output\action_link;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\renderable;
+use core\url;
+
 class block_navigation_renderer extends plugin_renderer_base {
 
     /**
@@ -131,7 +139,7 @@ class block_navigation_renderer extends plugin_renderer_base {
                 $link->text = $icon.html_writer::span($link->text, 'item-content-wrap');
                 $link->attributes = array_merge($link->attributes, $attributes);
                 $content = $this->output->render($link);
-            } else if ($item->action instanceof moodle_url) {
+            } else if ($item->action instanceof url) {
                 $content = html_writer::link($item->action, $content, $attributes);
             }
 

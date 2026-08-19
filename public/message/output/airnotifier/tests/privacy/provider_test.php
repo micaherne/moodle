@@ -24,6 +24,8 @@ namespace message_airnotifier\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user;
 use core_privacy\tests\provider_testcase;
 use message_airnotifier\privacy\provider;
 use core_privacy\local\request\approved_userlist;
@@ -89,7 +91,7 @@ final class provider_test extends provider_testcase {
     public function test_get_contexts_for_userid(): void {
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $this->add_device($user, 'apuJih874kj');
         $this->add_device($user, 'bdu09Ikjjsu');
@@ -103,7 +105,7 @@ final class provider_test extends provider_testcase {
      */
     public function test_export_user_data(): void {
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $this->add_device($user, 'apuJih874kj');
         $this->add_device($user, 'bdu09Ikjjsu');
@@ -128,7 +130,7 @@ final class provider_test extends provider_testcase {
         global $DB;
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $this->add_device($user, 'apuJih874kj');
 
@@ -150,7 +152,7 @@ final class provider_test extends provider_testcase {
         global $DB;
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         $this->add_device($user, 'apuJih874kj');
 
@@ -174,7 +176,7 @@ final class provider_test extends provider_testcase {
 
         // Create user.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         // The lists of users for the user context should be empty.
         // Related user data have not been created yet.
@@ -193,7 +195,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // The list of users should only return users in the user context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist1 = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist1);
         $this->assertCount(0, $userlist1);
@@ -207,10 +209,10 @@ final class provider_test extends provider_testcase {
 
         // Create user1.
         $user1 = $this->getDataGenerator()->create_user();
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         // Create user2.
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext2 = user::instance($user2->id);
 
         $this->add_device($user1, 'apuJih874kj');
         $this->add_device($user1, 'cpuJih874kp');
@@ -241,7 +243,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // User data should only be removed in the user context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $approvedlist = new approved_userlist($systemcontext, $component, $userlist2->get_userids());
         // Delete using delete_data_for_user.
         provider::delete_data_for_users($approvedlist);

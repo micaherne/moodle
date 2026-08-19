@@ -16,6 +16,8 @@
 
 namespace tool_dataprivacy\external;
 
+use core\context\course;
+use core\context\system;
 use tool_dataprivacy\api;
 
 /**
@@ -41,10 +43,10 @@ final class submit_selected_courses_form_test extends \core_external\tests\exter
         $u1 = $generator->create_user();
         $u1->ignoresesskey = true;
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $course = $this->getDataGenerator()->create_course([]);
 
-        $coursecontext1 = \context_course::instance($course->id);
+        $coursecontext1 = course::instance($course->id);
 
         $this->getDataGenerator()->enrol_user($s1->id, $course->id, 'student');
 

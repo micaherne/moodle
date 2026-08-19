@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\renderable;
+use core\url;
+
 class block_settings_renderer extends plugin_renderer_base {
 
     public function settings_tree(settings_navigation $navigation) {
@@ -140,7 +147,7 @@ class block_settings_renderer extends plugin_renderer_base {
         }
     }
 
-    public function search_form(moodle_url $formtarget, $searchvalue) {
+    public function search_form(url $formtarget, $searchvalue) {
         $data = [
             'action' => $formtarget,
             'inputname' => 'query',

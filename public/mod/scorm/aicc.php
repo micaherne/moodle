@@ -15,6 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 // Prevent Caching Headers.
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 header("Cache-Control: no-cache");
 header("Pragma: no-cache");
@@ -35,7 +39,7 @@ $aiccdata = optional_param('aicc_data', '', PARAM_RAW);
 
 $cfgscorm = get_config('scorm');
 
-$url = new moodle_url('/mod/scorm/aicc.php', array('command' => $command, 'session_id' => $sessionid));
+$url = new url('/mod/scorm/aicc.php', array('command' => $command, 'session_id' => $sessionid));
 if ($aiccdata !== 0) {
     $url->param('aicc_data', $aiccdata);
 }
@@ -44,14 +48,14 @@ $PAGE->set_url($url);
 if (empty($cfgscorm->allowaicchacp)) {
     require_login();
     if (!confirm_sesskey($sessionid)) {
-        throw new \moodle_exception('invalidsesskey');
+        throw new moodle_exception('invalidsesskey');
     }
     $aiccuser = $USER;
     $scormsession = $SESSION->scorm;
 } else {
     $scormsession = scorm_aicc_confirm_hacp_session($sessionid);
     if (empty($scormsession)) {
-        throw new \moodle_exception('invalidhacpsession', 'scorm');
+        throw new moodle_exception('invalidhacpsession', 'scorm');
     }
     $aiccuser = $DB->get_record('user', array('id' => $scormsession->userid), 'id,username,lastname,firstname', MUST_EXIST);
 }
@@ -62,7 +66,7 @@ if (!empty($command)) {
     if (isset($scormsession->scoid)) {
         $scoid = $scormsession->scoid;
     } else {
-        throw new \moodle_exception('cannotcallscript');
+        throw new moodle_exception('cannotcallscript');
     }
     $mode = 'normal';
     if (isset($scormsession->scormmode)) {
@@ -80,10 +84,10 @@ if (!empty($command)) {
     $attemptobject = scorm_get_attempt($aiccuser->id, $scormsession->scormid, $attempt);
     if ($sco = scorm_get_sco($scoid, SCO_ONLY)) {
         if (!$scorm = $DB->get_record('scorm', array('id' => $sco->scorm))) {
-            throw new \moodle_exception('cannotcallscript');
+            throw new moodle_exception('cannotcallscript');
         }
     } else {
-        throw new \moodle_exception('cannotcallscript');
+        throw new moodle_exception('cannotcallscript');
     }
     $aiccrequest = "MOODLE scoid: $scoid"
                  . "\r\nMOODLE mode: $mode"
@@ -198,7 +202,7 @@ if (!empty($command)) {
                         echo 'Max_Time_Allowed='.$userdata->max_time_allowed."\r\n";
                         echo 'Time_Limit_Action='.$userdata->time_limit_action."\r\n";
                     } else {
-                        throw new \moodle_exception('cannotfindsco', 'scorm');
+                        throw new moodle_exception('cannotfindsco', 'scorm');
                     }
                 }
             break;
@@ -207,7 +211,7 @@ if (!empty($command)) {
                     if (! $cm = get_coursemodule_from_instance("scorm", $scorm->id, $scorm->course)) {
                         echo "error=1\r\nerror_text=Unknown\r\n"; // No one must see this error message if not hacked.
                     }
-                    $savetrack = has_capability('mod/scorm:savetrack', context_module::instance($cm->id), $aiccuser->id);
+                    $savetrack = has_capability('mod/scorm:savetrack', module::instance($cm->id), $aiccuser->id);
                     if (!empty($aiccdata) && $savetrack) {
                         $initlessonstatus = 'not attempted';
                         $lessonstatus = 'not attempted';

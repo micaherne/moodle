@@ -16,7 +16,13 @@
 
 namespace core_question\admin;
 
+use core\lang_string;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 
 /**
  * Manage question banks page.
@@ -34,7 +40,7 @@ class manage_qbank_plugins_page extends \core_admin\setting {
         $this->nosave = true;
         parent::__construct(
             'manageqbanks',
-            new \lang_string('manageqbanks', 'admin'),
+            new lang_string('manageqbanks', 'admin'),
             '',
             ''
         );
@@ -61,7 +67,7 @@ class manage_qbank_plugins_page extends \core_admin\setting {
         if (parent::is_related($query)) {
             return true;
         }
-        $types = \core_plugin_manager::instance()->get_plugins_of_type('qbank');
+        $types = plugin_manager::instance()->get_plugins_of_type('qbank');
         foreach ($types as $type) {
             if (strpos($type->component, $query) !== false) {
                 $this->searchmatchtype = admin_search::SEARCH_MATCH_SETTING_SHORT_NAME;
@@ -80,7 +86,7 @@ class manage_qbank_plugins_page extends \core_admin\setting {
         global $CFG, $OUTPUT;
         $return = '';
 
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $types = $pluginmanager->get_plugins_of_type('qbank');
         if (empty($types)) {
             return get_string('noquestionbanks', 'question');
@@ -88,7 +94,7 @@ class manage_qbank_plugins_page extends \core_admin\setting {
         $txt = get_strings(['settings', 'name', 'enable', 'disable', 'default']);
         $txt->uninstall = get_string('uninstallplugin', 'core_admin');
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [$txt->name, $txt->enable, $txt->settings, $txt->uninstall];
         $table->align = ['left', 'center', 'center', 'center', 'center'];
         $table->attributes['class'] = 'manageqbanktable table generaltable admintable table-hover';
@@ -103,12 +109,12 @@ class manage_qbank_plugins_page extends \core_admin\setting {
         }
 
         foreach ($types as $type) {
-            $url = new \moodle_url('/admin/qbankplugins.php', ['sesskey' => sesskey(), 'name' => $type->name]);
+            $url = new url('/admin/qbankplugins.php', ['sesskey' => sesskey(), 'name' => $type->name]);
 
             $class = '';
             if (
                 $pluginmanager->get_plugin_info('qbank_' . $type->name)->get_status() ===
-                    \core_plugin_manager::PLUGIN_STATUS_MISSING
+                    plugin_manager::PLUGIN_STATUS_MISSING
             ) {
                 $strtypename = $type->displayname . ' (' . get_string('missingfromdisk') . ')';
             } else {
@@ -116,13 +122,13 @@ class manage_qbank_plugins_page extends \core_admin\setting {
             }
 
             if ($type->is_enabled()) {
-                $hideshow = \html_writer::link(
+                $hideshow = html_writer::link(
                     $url->out(false, ['action' => 'disable']),
                     $OUTPUT->pix_icon('t/hide', $txt->disable, 'moodle', ['class' => 'iconsmall'])
                 );
             } else {
                 $class = 'dimmed_text';
-                $hideshow = \html_writer::link(
+                $hideshow = html_writer::link(
                     $url->out(false, ['action' => 'enable']),
                     $OUTPUT->pix_icon('t/show', $txt->enable, 'moodle', ['class' => 'iconsmall'])
                 );
@@ -130,20 +136,20 @@ class manage_qbank_plugins_page extends \core_admin\setting {
 
             $settings = '';
             if ($type->get_settings_url()) {
-                $settings = \html_writer::link($type->get_settings_url(), $txt->settings);
+                $settings = html_writer::link($type->get_settings_url(), $txt->settings);
             }
 
             $uninstall = '';
             if (
-                $uninstallurl = \core_plugin_manager::instance()->get_uninstall_url(
+                $uninstallurl = plugin_manager::instance()->get_uninstall_url(
                     'qbank_' . $type->name,
                     'manage'
                 )
             ) {
-                $uninstall = \html_writer::link($uninstallurl, $txt->uninstall);
+                $uninstall = html_writer::link($uninstallurl, $txt->uninstall);
             }
 
-            $row = new \html_table_row([$strtypename, $hideshow, $settings, $uninstall]);
+            $row = new html_table_row([$strtypename, $hideshow, $settings, $uninstall]);
             if ($class) {
                 $row->attributes['class'] = $class;
             }
@@ -162,7 +168,7 @@ class manage_qbank_plugins_page extends \core_admin\setting {
             return $aid < $bid ? -1 : 1;
         });
 
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
         return highlight($query, $return);
     }
 }

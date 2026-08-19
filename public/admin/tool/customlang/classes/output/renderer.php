@@ -25,6 +25,8 @@
 
 namespace tool_customlang\output;
 
+use core\output\plugin_renderer_base;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -34,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2019 Bas Brands <bas@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Defer to template.

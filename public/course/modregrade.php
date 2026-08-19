@@ -26,13 +26,17 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 require('../config.php');
 require_once($CFG->libdir . '/gradelib.php');
 
 $cmid = required_param('id', PARAM_INT);
 $urlpath = required_param('url', PARAM_LOCALURL);
-$url = new moodle_url($urlpath);
+$url = new url($urlpath);
 
 // Check that an absolute url/path was specified e.g. /course/view.php (it probably isn't a
 // security risk to allow a relative one, but isn't necessary here).
@@ -42,10 +46,10 @@ if (!$url->get_host()) {
 
 // Get course.
 [$course, $cm] = get_course_and_cm_from_cmid($cmid);
-$context = \context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 // Set up page for display.
-$PAGE->set_url(new moodle_url('/course/modregrade.php', ['id' => $cmid, 'url' => $url]));
+$PAGE->set_url(new url('/course/modregrade.php', ['id' => $cmid, 'url' => $url]));
 $PAGE->set_context($context);
 $PAGE->set_title($course->shortname . ': ' . get_string('recalculatinggrades', 'grades'));
 

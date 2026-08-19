@@ -16,7 +16,8 @@
 
 namespace factor_sms;
 
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 use stdClass;
 use tool_mfa\local\factor\object_factor_base;
 use tool_mfa\local\secret_manager;
@@ -108,7 +109,7 @@ class factor extends object_factor_base {
             $phonenumber = $DB->get_field('tool_mfa', 'label', ['factor' => $this->name, 'userid' => $USER->id, 'revoked' => 0])
         )) {
             redirect(
-                new \moodle_url('/admin/tool/mfa/user_preferences.php'),
+                new url('/admin/tool/mfa/user_preferences.php'),
                 get_string('factorsetup', 'tool_mfa', $phonenumber),
                 null,
                 \core\output\notification::NOTIFY_SUCCESS);
@@ -129,10 +130,10 @@ class factor extends object_factor_base {
             $mform->setType('phonenumber', PARAM_TEXT);
 
             // HTML to display a message about the phone number.
-            $message = \html_writer::tag('div', '', ['class' => 'col-md-3']);
-            $message .= \html_writer::tag(
-                'div', \html_writer::tag('p', get_string('phonehelp', 'factor_sms')), ['class' => 'col-md-9']);
-            $mform->addElement('html', \html_writer::tag('div', $message, ['class' => 'row']));
+            $message = html_writer::tag('div', '', ['class' => 'col-md-3']);
+            $message .= html_writer::tag(
+                'div', html_writer::tag('p', get_string('phonehelp', 'factor_sms')), ['class' => 'col-md-9']);
+            $mform->addElement('html', html_writer::tag('div', $message, ['class' => 'row']));
         }
 
         return $mform;
@@ -159,17 +160,17 @@ class factor extends object_factor_base {
         }
         $message = get_string('logindesc', 'factor_sms', '<b>' . $phonenumber . '</b><br/>');
         $message .= get_string('editphonenumberinfo', 'factor_sms');
-        $mform->addElement('html', \html_writer::tag('p', $OUTPUT->notification($message, 'success')));
+        $mform->addElement('html', html_writer::tag('p', $OUTPUT->notification($message, 'success')));
 
         $mform->addElement(new \tool_mfa\local\form\verification_field());
         $mform->setType('verificationcode', PARAM_ALPHANUM);
 
-        $editphonenumber = \html_writer::link(
-            new \moodle_url('/admin/tool/mfa/factor/sms/editphonenumber.php', ['sesskey' => sesskey()]),
+        $editphonenumber = html_writer::link(
+            new url('/admin/tool/mfa/factor/sms/editphonenumber.php', ['sesskey' => sesskey()]),
             get_string('editphonenumber', 'factor_sms'),
             ['class' => 'btn btn-secondary', 'type' => 'button']);
 
-        $mform->addElement('html', \html_writer::tag('div', $editphonenumber, ['class' => 'float-sm-start col-md-4']));
+        $mform->addElement('html', html_writer::tag('div', $editphonenumber, ['class' => 'float-sm-start col-md-4']));
 
         // Disable the form check prompt.
         $mform->disable_form_change_checker();
@@ -262,7 +263,7 @@ class factor extends object_factor_base {
         if (empty($SESSION->tool_mfa_sms_number)) {
             $SESSION->tool_mfa_sms_number = !empty($data->phonenumber) ? $data->phonenumber : '';
 
-            $addurl = new \moodle_url('/admin/tool/mfa/action.php', [
+            $addurl = new url('/admin/tool/mfa/action.php', [
                 'action' => 'setup',
                 'factor' => 'sms',
             ]);
@@ -400,7 +401,7 @@ class factor extends object_factor_base {
         global $CFG, $SITE;
 
         // Here we should get the information, then construct the message.
-        $url = new moodle_url($CFG->wwwroot);
+        $url = new url($CFG->wwwroot);
         $content = [
             'fullname' => $SITE->fullname,
             'url' => $url->get_host(),

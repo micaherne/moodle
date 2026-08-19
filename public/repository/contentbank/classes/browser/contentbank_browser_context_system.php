@@ -24,6 +24,8 @@
 
 namespace repository_contentbank\browser;
 
+use core\context\system;
+
 /**
  * Represents the content bank browser in the system context.
  *
@@ -38,7 +40,7 @@ class contentbank_browser_context_system extends contentbank_browser {
      *
      * @param \context_system $context The current context
      */
-    public function __construct(\context_system $context) {
+    public function __construct(system $context) {
         $this->context = $context;
     }
 

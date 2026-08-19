@@ -23,6 +23,11 @@
  */
 namespace core_course\search;
 
+use core\context;
+use core\context\course as context_course;
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -48,7 +53,7 @@ class course extends \core_search\base {
      * @param \context|null $context Restriction context
      * @return \moodle_recordset|null Recordset or null if no change possible
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
 
         list ($contextjoin, $contextparams) = $this->get_course_level_context_restriction_sql(
@@ -74,8 +79,8 @@ class course extends \core_search\base {
      */
     public function get_document($record, $options = array()) {
         try {
-            $context = \context_course::instance($record->id);
-        } catch (\moodle_exception $ex) {
+            $context = context_course::instance($record->id);
+        } catch (moodle_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving ' . $this->areaid . ' ' . $record->id . ' document, not all required data is available: ' .
                 $ex->getMessage(), DEBUG_DEVELOPER);
@@ -137,7 +142,7 @@ class course extends \core_search\base {
      * @return \moodle_url
      */
     public function get_context_url(\core_search\document $doc) {
-        return new \moodle_url('/course/view.php', array('id' => $doc->get('courseid')));
+        return new url('/course/view.php', array('id' => $doc->get('courseid')));
     }
 
     /**

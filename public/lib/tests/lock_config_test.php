@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
+
 /**
  * Unit tests for our locking configuration.
  *
@@ -52,7 +54,7 @@ final class lock_config_test extends \advanced_testcase {
         try {
             $factory = \core\lock\lock_config::get_lock_factory('cache');
             $this->fail('Exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
 
@@ -70,7 +72,7 @@ final class lock_config_test extends \advanced_testcase {
         try {
             $factory = \core\lock\lock_config::get_lock_factory('cache');
             $this->fail('Exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
 

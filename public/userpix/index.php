@@ -6,6 +6,8 @@
   // to administrators only (see below)
 
 
+use core\context\system;
+
 require('../config.php');
 
 $PAGE->set_url('/userpix/index.php');
@@ -13,7 +15,7 @@ $PAGE->set_url('/userpix/index.php');
 require_login();
 
 /// Remove the following three lines if you want everyone to access it
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 require_capability('moodle/site:config', $syscontext);
 
 $title = get_string("users");

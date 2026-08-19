@@ -24,6 +24,10 @@
 
 namespace core\event;
 
+use core\context\user;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -50,7 +54,7 @@ class user_password_updated extends base {
      */
     public static function create_from_user(\stdClass $user, $forgottenreset = false) {
         $data = array(
-            'context' => \context_user::instance($user->id),
+            'context' => user::instance($user->id),
             'relateduserid' => $user->id,
             'other' => array('forgottenreset' => $forgottenreset),
         );
@@ -98,7 +102,7 @@ class user_password_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/user/profile.php', array('id' => $this->relateduserid));
+        return new url('/user/profile.php', array('id' => $this->relateduserid));
     }
 
     /**
@@ -110,11 +114,11 @@ class user_password_updated extends base {
         parent::validate_data();
 
         if (!$this->relateduserid) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['forgottenreset'])) {
-            throw new \coding_exception('The \'forgottenreset\' value must be set in other.');
+            throw new coding_exception('The \'forgottenreset\' value must be set in other.');
         }
     }
 

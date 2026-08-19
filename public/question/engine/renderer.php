@@ -23,7 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\actions\popup_action;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
 use core_question\output\question_version_info;
+use core_table\output\html_table;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -347,11 +352,11 @@ class core_question_renderer extends plugin_renderer_base {
         }
 
         $params = $options->editquestionparams;
-        if ($params['returnurl'] instanceof moodle_url) {
+        if ($params['returnurl'] instanceof url) {
             $params['returnurl'] = $params['returnurl']->out_as_local_url(false);
         }
         $params['id'] = $qa->get_question_id();
-        $editurl = new moodle_url('/question/bank/editquestion/question.php', $params);
+        $editurl = new url('/question/bank/editquestion/question.php', $params);
 
         return html_writer::tag('div', html_writer::link(
                 $editurl, $this->pix_icon('t/edit', get_string('edit'), '', array('class' => 'iconsmall')) .
@@ -456,7 +461,7 @@ class core_question_renderer extends plugin_renderer_base {
             if ($stepno == $qa->get_num_steps()) {
                 $rowclass = 'current';
             } else if (!empty($options->questionreviewlink)) {
-                $url = new moodle_url($options->questionreviewlink,
+                $url = new url($options->questionreviewlink,
                         array('slot' => $qa->get_slot(), 'step' => $i));
                 $stepno = $this->output->action_link($url, $stepno,
                         new popup_action('click', $url, 'reviewquestion',
@@ -496,7 +501,7 @@ class core_question_renderer extends plugin_renderer_base {
     protected function action_author(question_attempt_step $step, question_display_options $options): string {
         if ($options->userinfoinhistory && $step->get_user_id() != $options->userinfoinhistory) {
             return html_writer::link(
-                    new moodle_url('/user/view.php', ['id' => $step->get_user_id(), 'course' => $this->page->course->id]),
+                    new url('/user/view.php', ['id' => $step->get_user_id(), 'course' => $this->page->course->id]),
                     $step->get_user_fullname(), ['class' => 'd-table-cell']);
         } else {
             return '';

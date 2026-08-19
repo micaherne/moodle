@@ -16,7 +16,7 @@
 
 namespace editor_tiny;
 
-use context;
+use core\context;
 
 /**
  * An interface representing a plugin with menu items.

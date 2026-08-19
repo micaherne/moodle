@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\context\user;
+
 /**
  * Test script for message class.
  *
@@ -59,7 +61,7 @@ final class message_test extends \advanced_testcase {
         $message->set_additional_content('test', $content);
 
         // Create a file instance.
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $file = new \stdClass;
         $file->contextid = $usercontext->id;
         $file->component = 'user';

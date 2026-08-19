@@ -26,6 +26,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 define('NO_MOODLE_COOKIES', true);
 
 require_once(__DIR__ . '/config.php');
@@ -39,7 +41,7 @@ $SESSION->lang = $lang;
 
 $PAGE->set_url('/help.php');
 $PAGE->set_pagelayout('popup');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 $data = get_formatted_help_string($identifier, $component, false);
 if (!empty($data->heading)) {

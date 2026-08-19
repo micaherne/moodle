@@ -18,10 +18,10 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\systemreports;
 
-use context;
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\context;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 use stdClass;
 use core_reportbuilder\permission;
 use core_reportbuilder\system_report;
@@ -312,7 +312,7 @@ class report_schedules extends system_report {
     protected function add_actions(): void {
         // Edit action.
         $this->add_action((new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('t/edit', ''),
             ['data-action' => 'schedule-edit', 'data-schedule-id' => ':id'],
             false,
@@ -325,7 +325,7 @@ class report_schedules extends system_report {
 
         // Send now action.
         $this->add_action((new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('t/play', ''),
             ['data-action' => 'schedule-send', 'data-schedule-id' => ':id', 'data-schedule-name' => ':name'],
             false,
@@ -346,7 +346,7 @@ class report_schedules extends system_report {
 
         // Delete action.
         $this->add_action((new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('t/delete', ''),
             [
                 'data-action' => 'schedule-delete',

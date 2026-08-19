@@ -21,6 +21,10 @@ require_once(__DIR__ . '/behat_question_base.php');
 use Behat\Gherkin\Node\TableNode as TableNode;
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
 use Behat\Mink\Exception\ElementNotFoundException as ElementNotFoundException;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\url;
+use core_course\cm_info;
 
 /**
  * Steps definitions related with the question bank management.
@@ -42,7 +46,7 @@ class behat_core_question extends behat_question_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_url(string $page): moodle_url {
+    protected function resolve_page_url(string $page): url {
         switch (strtolower($page)) {
             default:
                 throw new Exception('Unrecognised core_question page type "' . $page . '."');
@@ -68,14 +72,14 @@ class behat_core_question extends behat_question_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
         switch (strtolower($type)) {
             case 'course question bank':
                 // The question bank does not handle fields at the edge of the viewport well.
                 // Increase the size to avoid this.
                 $this->execute('behat_general::i_change_window_size_to', ['window', 'large']);
                 $qbank = $this->get_default_bank_for_course_identifier($identifier);
-                return new moodle_url('/question/edit.php', [
+                return new url('/question/edit.php', [
                     'cmid' => $qbank->id,
                 ]);
 
@@ -83,51 +87,51 @@ class behat_core_question extends behat_question_base {
                 // The question bank does not handle fields at the edge of the viewport well.
                 // Increase the size to avoid this.
                 $this->execute('behat_general::i_change_window_size_to', ['window', 'large']);
-                return new moodle_url('/question/edit.php',
+                return new url('/question/edit.php',
                     ['cmid' => $this->get_cm_by_activity_name('qbank', $identifier)->id]
                 );
 
             case 'course question categories':
                 $qbank = $this->get_default_bank_for_course_identifier($identifier);
-                return new moodle_url('/question/bank/managecategories/category.php',
+                return new url('/question/bank/managecategories/category.php',
                     ['cmid' => $qbank->id]
                 );
 
             case 'question categories':
-                return new moodle_url('/question/bank/managecategories/category.php',
+                return new url('/question/bank/managecategories/category.php',
                     ['cmid' => $this->get_cm_by_activity_name('qbank', $identifier)->id]
                 );
 
             case 'course question import':
                 $qbank = $this->get_default_bank_for_course_identifier($identifier);
-                return new moodle_url('/question/bank/importquestions/import.php',
+                return new url('/question/bank/importquestions/import.php',
                     ['cmid' => $qbank->id]
                 );
 
             case 'question import':
-                return new moodle_url('/question/bank/importquestions/import.php',
+                return new url('/question/bank/importquestions/import.php',
                     ['cmid' => $this->get_cm_by_activity_name('qbank', $identifier)->id]
                 );
 
             case 'course question export':
                 $qbank = $this->get_default_bank_for_course_identifier($identifier);
-                return new moodle_url('/question/bank/exportquestions/export.php',
+                return new url('/question/bank/exportquestions/export.php',
                     ['cmid' => $qbank->id]
                 );
 
             case 'question export':
-                return new moodle_url('/question/bank/exportquestions/export.php',
+                return new url('/question/bank/exportquestions/export.php',
                     ['cmid' => $this->get_cm_by_activity_name('qbank', $identifier)->id]
                 );
 
             case 'preview':
                 [$questionid, $otheridtype, $otherid] = $this->find_question_by_name($identifier);
-                return new moodle_url('/question/bank/previewquestion/preview.php',
+                return new url('/question/bank/previewquestion/preview.php',
                         ['id' => $questionid, $otheridtype => $otherid]);
 
             case 'edit':
                 [$questionid, $otheridtype, $otherid] = $this->find_question_by_name($identifier);
-                return new moodle_url('/question/bank/editquestion/question.php',
+                return new url('/question/bank/editquestion/question.php',
                         ['id' => $questionid, $otheridtype => $otherid]);
 
             default:

@@ -24,14 +24,16 @@
 namespace tool_dataprivacy\output;
 defined('MOODLE_INTERNAL') || die();
 
-use action_menu_link_primary;
-use coding_exception;
-use moodle_exception;
-use moodle_url;
-use renderable;
-use renderer_base;
+use core\context_helper;
+use core\output\action_menu\link_primary;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\pix_icon;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 use tool_dataprivacy\data_registry;
 use tool_dataprivacy\external\category_exporter;
 use tool_dataprivacy\external\purpose_exporter;
@@ -88,10 +90,10 @@ class defaults_page implements renderable, templatable {
         $data = new stdClass();
 
         // Set tab URLs.
-        $coursecaturl = new moodle_url('/admin/tool/dataprivacy/defaults.php', ['mode' => CONTEXT_COURSECAT]);
-        $courseurl = new moodle_url('/admin/tool/dataprivacy/defaults.php', ['mode' => CONTEXT_COURSE]);
-        $moduleurl = new moodle_url('/admin/tool/dataprivacy/defaults.php', ['mode' => CONTEXT_MODULE]);
-        $blockurl = new moodle_url('/admin/tool/dataprivacy/defaults.php', ['mode' => CONTEXT_BLOCK]);
+        $coursecaturl = new url('/admin/tool/dataprivacy/defaults.php', ['mode' => CONTEXT_COURSECAT]);
+        $courseurl = new url('/admin/tool/dataprivacy/defaults.php', ['mode' => CONTEXT_COURSE]);
+        $moduleurl = new url('/admin/tool/dataprivacy/defaults.php', ['mode' => CONTEXT_MODULE]);
+        $blockurl = new url('/admin/tool/dataprivacy/defaults.php', ['mode' => CONTEXT_BLOCK]);
         $data->coursecaturl = $coursecaturl;
         $data->courseurl = $courseurl;
         $data->moduleurl = $moduleurl;
@@ -117,7 +119,7 @@ class defaults_page implements renderable, templatable {
         }
 
         // Set config variables.
-        $configname = \context_helper::get_class_for_level($this->mode);
+        $configname = context_helper::get_class_for_level($this->mode);
         list($purposevar, $categoryvar) = data_registry::var_names_from_context($configname);
         $data->categoryvar = $categoryvar;
         $data->purposevar = $purposevar;
@@ -132,7 +134,7 @@ class defaults_page implements renderable, templatable {
 
         // Set other defaults.
         $otherdefaults = [];
-        $url = new moodle_url('#');
+        $url = new url('#');
         foreach ($this->otherdefaults as $pluginname => $values) {
             $defaults = [
                 'name' => $values->name,
@@ -149,7 +151,7 @@ class defaults_page implements renderable, templatable {
                     'data-category' => $values->category,
                     'data-purpose' => $values->purpose,
                 ];
-                $editlink = new action_menu_link_primary($url, new \pix_icon('t/edit', get_string('edit')),
+                $editlink = new link_primary($url, new pix_icon('t/edit', get_string('edit')),
                     get_string('edit'), $editattrs);
                 $actions[] = $editlink->export_for_template($output);
 
@@ -160,7 +162,7 @@ class defaults_page implements renderable, templatable {
                     'data-activityname' => $pluginname,
                     'data-activitydisplayname' => $values->name,
                 ];
-                $deletelink = new action_menu_link_primary($url, new \pix_icon('t/delete', get_string('delete')),
+                $deletelink = new link_primary($url, new pix_icon('t/delete', get_string('delete')),
                     get_string('delete'), $deleteattrs);
                 $actions[] = $deletelink->export_for_template($output);
 

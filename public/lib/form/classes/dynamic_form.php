@@ -16,9 +16,9 @@
 
 namespace core_form;
 
-use context;
+use core\context;
 use core_external\external_api;
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -145,5 +145,5 @@ abstract class dynamic_form extends \moodleform {
      *
      * @return moodle_url
      */
-    abstract protected function get_page_url_for_dynamic_submission(): moodle_url;
+    abstract protected function get_page_url_for_dynamic_submission(): url;
 }

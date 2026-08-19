@@ -24,15 +24,18 @@
 
 namespace gradereport_singleview\local\screen;
 
-use context_course;
+use core\context\course;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core_table\output\html_table_cell;
 use grade_report;
 use gradereport_singleview\local\ui\range;
 use gradereport_singleview\local\ui\bulk_insert;
 use grade_grade;
 use grade_item;
-use moodle_url;
-use pix_icon;
-use html_writer;
+use core\url;
+use core\output\pix_icon;
+use core\output\html_writer;
 use gradereport_singleview;
 
 defined('MOODLE_INTERNAL') || die;
@@ -221,7 +224,7 @@ class grade extends tablelike implements selectable_items, filterable_items {
 
         // Show hidden icon if the grade is hidden and the user has permission to view hidden grades.
         $showhiddenicon = $grade->is_hidden() &&
-            has_capability('moodle/grade:viewhidden', context_course::instance($this->courseid));
+            has_capability('moodle/grade:viewhidden', course::instance($this->courseid));
 
         $context = [
             'hidden' => $showhiddenicon,
@@ -233,14 +236,14 @@ class grade extends tablelike implements selectable_items, filterable_items {
             $gradestatus = $OUTPUT->render_from_template('core_grades/status_icons', $context);
         }
 
-        if (has_capability('moodle/site:viewfullnames', \context_course::instance($this->courseid))) {
+        if (has_capability('moodle/site:viewfullnames', course::instance($this->courseid))) {
             $fullname = fullname($item, true);
         } else {
             $fullname = fullname($item);
         }
 
         $item->imagealt = $fullname;
-        $url = new moodle_url("/user/view.php", ['id' => $item->id, 'course' => $this->courseid]);
+        $url = new url("/user/view.php", ['id' => $item->id, 'course' => $this->courseid]);
         $grade->label = $fullname;
         $userpic = $OUTPUT->user_picture($item, ['link' => false, 'visibletoscreenreaders' => false]);
 
@@ -264,7 +267,7 @@ class grade extends tablelike implements selectable_items, filterable_items {
         $outputline = [];
         $i = 0;
         foreach ($line as $key => $value) {
-            $cell = new \html_table_cell($value);
+            $cell = new html_table_cell($value);
             if ($isheader = $i == 0) {
                 $cell->header = $isheader;
                 $cell->scope = "row";
@@ -311,7 +314,7 @@ class grade extends tablelike implements selectable_items, filterable_items {
 
         return $OUTPUT->paging_bar(
             $this->totalitemcount, $this->page, $this->perpage,
-            new moodle_url('/grade/report/singleview/index.php', [
+            new url('/grade/report/singleview/index.php', [
                 'perpage' => $this->perpage,
                 'id' => $this->courseid,
                 'group' => $this->groupid,
@@ -419,10 +422,10 @@ class grade extends tablelike implements selectable_items, filterable_items {
         global $OUTPUT;
 
         $menuitems = [];
-        $url = new moodle_url($this->format_link('user', $user->id));
+        $url = new url($this->format_link('user', $user->id));
         $title = get_string('showallgrades', 'core_grades');
-        $menuitems[] = new \action_menu_link_secondary($url, null, $title);
-        $menu = new \action_menu($menuitems);
+        $menuitems[] = new link_secondary($url, null, $title);
+        $menu = new action_menu($menuitems);
         $label = get_string('actions');
         $icon = $OUTPUT->pix_icon('i/moremenu', '') . \core\output\html_writer::span($label, 'visually-hidden d-inline-block');
         $extraclasses = 'btn btn-icon d-flex';

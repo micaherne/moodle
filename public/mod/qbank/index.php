@@ -23,6 +23,8 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once("../../config.php");
 
 $id = required_param('id', PARAM_INT);
@@ -30,4 +32,4 @@ $course = get_course($id);
 require_login($course);
 
 // Redirect to /question/banks.php as that page shows all the available banks on the course.
-redirect(new moodle_url('/question/banks.php', ['courseid' => $course->id]));
+redirect(new url('/question/banks.php', ['courseid' => $course->id]));

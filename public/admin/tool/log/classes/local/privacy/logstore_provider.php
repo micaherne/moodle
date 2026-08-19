@@ -26,7 +26,7 @@
 namespace tool_log\local\privacy;
 defined('MOODLE_INTERNAL') || die();
 
-use context;
+use core\context;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
 

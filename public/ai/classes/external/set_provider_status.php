@@ -16,7 +16,7 @@
 
 namespace core_ai\external;
 
-use context_system;
+use core\context\system;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -61,7 +61,7 @@ class set_provider_status extends external_api {
             'state' => $state,
         ]);
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 

@@ -23,6 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
 use mod_quiz\quiz_attempt;
 
 defined('MOODLE_INTERNAL') || die();

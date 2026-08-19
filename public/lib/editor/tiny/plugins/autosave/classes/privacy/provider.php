@@ -16,6 +16,7 @@
 
 namespace tiny_autosave\privacy;
 
+use core\context;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
 use core_privacy\local\metadata\collection;
@@ -144,7 +145,7 @@ class provider implements
      */
     protected static function export_autosaves(stdClass $user, \moodle_recordset $autosaves) {
         foreach ($autosaves as $autosave) {
-            $context = \context::instance_by_id($autosave->contextid);
+            $context = context::instance_by_id($autosave->contextid);
             $subcontext = [
                 get_string('pluginname', 'tiny_autosave'),
                 $autosave->id,
@@ -174,7 +175,7 @@ class provider implements
      *
      * @param \context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         $DB->delete_records('tiny_autosave', [

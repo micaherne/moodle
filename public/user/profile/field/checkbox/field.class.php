@@ -21,6 +21,9 @@
  * @copyright  2008 onwards Shane Elliot {@link http://pukunui.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context;
+use core\context\system;
+
 class profile_field_checkbox extends profile_field_base {
 
     /**
@@ -34,7 +37,7 @@ class profile_field_checkbox extends profile_field_base {
             $checkbox->setChecked(true);
         }
         $mform->setType($this->inputname, PARAM_BOOL);
-        if ($this->is_required() and !has_capability('moodle/user:update', context_system::instance())) {
+        if ($this->is_required() and !has_capability('moodle/user:update', system::instance())) {
             $mform->addRule($this->inputname, get_string('required'), 'nonzero', null, 'client');
         }
     }

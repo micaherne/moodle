@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_reportbuilder;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
 use core_reportbuilder\local\report\action;
 
 /**
@@ -40,7 +40,7 @@ final class system_report_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance(),
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance(),
             '', '', 0, ['withactions' => true]);
         $actions = $systemreport->get_actions();
         $this->assertCount(1, $actions);
@@ -62,7 +62,7 @@ final class system_report_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance(),
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance(),
             '', '', 0, ['withactions' => true]);
 
         $this->assertEquals(['withactions' => true], $systemreport->get_parameters());
@@ -84,7 +84,7 @@ final class system_report_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
         $systemreport->set_initial_sort_column('user:username', SORT_DESC);
         $column = $systemreport->get_column('user:username');
 

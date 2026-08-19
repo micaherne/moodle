@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require('../../config.php');
@@ -35,7 +37,7 @@ $url = '/report/performance/index.php';
 $table = new core\check\table('performance', $url, $detail);
 
 if (!empty($table->detail)) {
-    $PAGE->set_docs_path(new moodle_url($url, ['detail' => $detail]));
+    $PAGE->set_docs_path(new url($url, ['detail' => $detail]));
     $PAGE->navbar->add($table->detail->get_name());
 }
 

@@ -26,6 +26,9 @@
 /**
  * Block type of list. Contents of block should be set as an associative array in the content object as items ($this->content->items). Optionally include footer text in $this->content->footer.
  */
+use core\context\block;
+use core_block\output\block_contents;
+
 define('BLOCK_TYPE_LIST',    1);
 
 /**
@@ -461,7 +464,7 @@ class block_base {
             $this->config = unserialize_object(base64_decode($instance->configdata));
         }
         $this->instance = $instance;
-        $this->context = context_block::instance($instance->id);
+        $this->context = block::instance($instance->id);
         $this->page = $page;
         $this->specialization();
     }

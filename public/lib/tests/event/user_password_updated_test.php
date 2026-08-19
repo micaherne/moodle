@@ -16,6 +16,8 @@
 
 namespace core\event;
 
+use core\context\user;
+
 /**
  * Tests for event \core\event\user_password_updated
  *
@@ -32,9 +34,9 @@ final class user_password_updated_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $user1 = $this->getDataGenerator()->create_user();
-        $context1 = \context_user::instance($user1->id);
+        $context1 = user::instance($user1->id);
         $user2 = $this->getDataGenerator()->create_user();
-        $context2 = \context_user::instance($user2->id);
+        $context2 = user::instance($user2->id);
 
         $this->setUser($user1);
 

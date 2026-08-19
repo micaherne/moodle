@@ -27,6 +27,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\renderable;
+use core\output\user_picture;
+use core\url;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/lib.php');     // we extend this library here
@@ -230,7 +238,7 @@ class workshop {
             $this->cm = $modinfo->get_cm($cm->id);
         }
         if (is_null($context)) {
-            $this->context = context_module::instance($this->cm->id);
+            $this->context = module::instance($this->cm->id);
         } else {
             $this->context = $context;
         }
@@ -1207,9 +1215,9 @@ class workshop {
         $summary->gradeinfo->received = $this->real_grade($example->grade);
         $summary->gradeinfo->max      = $this->real_grade(100);
 
-        $summary->url       = new moodle_url($this->exsubmission_url($example->id));
-        $summary->editurl   = new moodle_url($this->exsubmission_url($example->id), array('edit' => 'on'));
-        $summary->assessurl = new moodle_url($this->exsubmission_url($example->id), array('assess' => 'on', 'sesskey' => sesskey()));
+        $summary->url       = new url($this->exsubmission_url($example->id));
+        $summary->editurl   = new url($this->exsubmission_url($example->id), array('edit' => 'on'));
+        $summary->assessurl = new url($this->exsubmission_url($example->id), array('assess' => 'on', 'sesskey' => sesskey()));
 
         return $summary;
     }
@@ -1706,7 +1714,7 @@ class workshop {
      */
     public function view_url() {
         global $CFG;
-        return new moodle_url('/mod/workshop/view.php', array('id' => $this->cm->id));
+        return new url('/mod/workshop/view.php', array('id' => $this->cm->id));
     }
 
     /**
@@ -1714,7 +1722,7 @@ class workshop {
      */
     public function editform_url() {
         global $CFG;
-        return new moodle_url('/mod/workshop/editform.php', array('cmid' => $this->cm->id));
+        return new url('/mod/workshop/editform.php', array('cmid' => $this->cm->id));
     }
 
     /**
@@ -1722,7 +1730,7 @@ class workshop {
      */
     public function previewform_url() {
         global $CFG;
-        return new moodle_url('/mod/workshop/editformpreview.php', array('cmid' => $this->cm->id));
+        return new url('/mod/workshop/editformpreview.php', array('cmid' => $this->cm->id));
     }
 
     /**
@@ -1732,7 +1740,7 @@ class workshop {
     public function assess_url($assessmentid) {
         global $CFG;
         $assessmentid = clean_param($assessmentid, PARAM_INT);
-        return new moodle_url('/mod/workshop/assessment.php', array('asid' => $assessmentid));
+        return new url('/mod/workshop/assessment.php', array('asid' => $assessmentid));
     }
 
     /**
@@ -1742,7 +1750,7 @@ class workshop {
     public function exassess_url($assessmentid) {
         global $CFG;
         $assessmentid = clean_param($assessmentid, PARAM_INT);
-        return new moodle_url('/mod/workshop/exassessment.php', array('asid' => $assessmentid));
+        return new url('/mod/workshop/exassessment.php', array('asid' => $assessmentid));
     }
 
     /**
@@ -1750,7 +1758,7 @@ class workshop {
      */
     public function submission_url($id=null) {
         global $CFG;
-        return new moodle_url('/mod/workshop/submission.php', array('cmid' => $this->cm->id, 'id' => $id));
+        return new url('/mod/workshop/submission.php', array('cmid' => $this->cm->id, 'id' => $id));
     }
 
     /**
@@ -1759,7 +1767,7 @@ class workshop {
      */
     public function exsubmission_url($id) {
         global $CFG;
-        return new moodle_url('/mod/workshop/exsubmission.php', array('cmid' => $this->cm->id, 'id' => $id));
+        return new url('/mod/workshop/exsubmission.php', array('cmid' => $this->cm->id, 'id' => $id));
     }
 
     /**
@@ -1770,7 +1778,7 @@ class workshop {
     public function compare_url($sid, array $aids) {
         global $CFG;
 
-        $url = new moodle_url('/mod/workshop/compare.php', array('cmid' => $this->cm->id, 'sid' => $sid));
+        $url = new url('/mod/workshop/compare.php', array('cmid' => $this->cm->id, 'sid' => $sid));
         $i = 0;
         foreach ($aids as $aid) {
             $url->param("aid{$i}", $aid);
@@ -1786,7 +1794,7 @@ class workshop {
      */
     public function excompare_url($sid, $aid) {
         global $CFG;
-        return new moodle_url('/mod/workshop/excompare.php', array('cmid' => $this->cm->id, 'sid' => $sid, 'aid' => $aid));
+        return new url('/mod/workshop/excompare.php', array('cmid' => $this->cm->id, 'sid' => $sid, 'aid' => $aid));
     }
 
     /**
@@ -1794,7 +1802,7 @@ class workshop {
      */
     public function updatemod_url() {
         global $CFG;
-        return new moodle_url('/course/modedit.php', array('update' => $this->cm->id, 'return' => 1));
+        return new url('/course/modedit.php', array('update' => $this->cm->id, 'return' => 1));
     }
 
     /**
@@ -1807,7 +1815,7 @@ class workshop {
         if (!empty($method)) {
             $params['method'] = $method;
         }
-        return new moodle_url('/mod/workshop/allocation.php', $params);
+        return new url('/mod/workshop/allocation.php', $params);
     }
 
     /**
@@ -1817,7 +1825,7 @@ class workshop {
     public function switchphase_url($phasecode) {
         global $CFG;
         $phasecode = clean_param($phasecode, PARAM_INT);
-        return new moodle_url('/mod/workshop/switchphase.php', array('cmid' => $this->cm->id, 'phase' => $phasecode));
+        return new url('/mod/workshop/switchphase.php', array('cmid' => $this->cm->id, 'phase' => $phasecode));
     }
 
     /**
@@ -1825,7 +1833,7 @@ class workshop {
      */
     public function aggregate_url() {
         global $CFG;
-        return new moodle_url('/mod/workshop/aggregate.php', array('cmid' => $this->cm->id));
+        return new url('/mod/workshop/aggregate.php', array('cmid' => $this->cm->id));
     }
 
     /**
@@ -1833,7 +1841,7 @@ class workshop {
      */
     public function toolbox_url($tool) {
         global $CFG;
-        return new moodle_url('/mod/workshop/toolbox.php', array('id' => $this->cm->id, 'tool' => $tool));
+        return new url('/mod/workshop/toolbox.php', array('id' => $this->cm->id, 'tool' => $tool));
     }
 
     /**
@@ -1846,7 +1854,7 @@ class workshop {
      * @param bool $return true to return the arguments for add_to_log.
      * @return void|array array of arguments for add_to_log if $return is true
      */
-    public function log($action, ?moodle_url $url = null, $info = null, $return = false) {
+    public function log($action, ?url $url = null, $info = null, $return = false) {
         debugging('The log method is now deprecated, please use event classes instead', DEBUG_DEVELOPER);
 
         if (is_null($url)) {
@@ -3106,12 +3114,12 @@ class workshop {
         $canviewallsubmissions = $canviewallsubmissions && $this->check_group_membership($submission->authorid);
 
         if (!$isreviewer and !$isauthor and !($canviewallassessments and $canviewallsubmissions)) {
-            throw new \moodle_exception('nopermissions', 'error', $this->view_url(), 'view this assessment');
+            throw new moodle_exception('nopermissions', 'error', $this->view_url(), 'view this assessment');
         }
 
         if ($isauthor and !$isreviewer and !$canviewallassessments and $this->phase != self::PHASE_CLOSED) {
             // Authors can see assessments of their work at the end of workshop only.
-            throw new \moodle_exception('nopermissions', 'error', $this->view_url(),
+            throw new moodle_exception('nopermissions', 'error', $this->view_url(),
                 'view assessment of own work before workshop is closed');
         }
     }
@@ -3654,11 +3662,11 @@ class workshop {
      * @param moodle_url $url absolute URL
      * @return string
      */
-    protected function log_convert_url(moodle_url $fullurl) {
+    protected function log_convert_url(url $fullurl) {
         static $baseurl;
 
         if (!isset($baseurl)) {
-            $baseurl = new moodle_url('/mod/workshop/');
+            $baseurl = new url('/mod/workshop/');
             $baseurl = $baseurl->out();
         }
 
@@ -4471,7 +4479,7 @@ abstract class workshop_assessment_base {
      * @param string $label action label
      * @param string $method get|post
      */
-    public function add_action(moodle_url $url, $label, $method = 'get') {
+    public function add_action(url $url, $label, $method = 'get') {
 
         $action = new stdClass();
         $action->url = $url;
@@ -4594,9 +4602,9 @@ class workshop_assessment extends workshop_assessment_base implements renderable
             }
             $filepath = $file->get_filepath();
             $filename = $file->get_filename();
-            $fileurl = moodle_url::make_pluginfile_url($this->workshop->context->id, 'mod_workshop',
+            $fileurl = url::make_pluginfile_url($this->workshop->context->id, 'mod_workshop',
                 'overallfeedback_attachment', $this->id, $filepath, $filename, true);
-            $previewurl = new moodle_url(moodle_url::make_pluginfile_url($this->workshop->context->id, 'mod_workshop',
+            $previewurl = new url(url::make_pluginfile_url($this->workshop->context->id, 'mod_workshop',
                 'overallfeedback_attachment', $this->id, $filepath, $filename, false), array('preview' => 'bigthumb'));
             $attachments[] = (object)array(
                 'filepath' => $filepath,
@@ -4707,7 +4715,7 @@ class workshop_message implements renderable {
      * @param moodle_url $url to follow on action
      * @param string $label action label
      */
-    public function set_action(moodle_url $url, $label) {
+    public function set_action(url $url, $label) {
         $this->actionurl    = $url;
         $this->actionlabel  = $label;
     }

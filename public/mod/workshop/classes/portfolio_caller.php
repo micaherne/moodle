@@ -23,6 +23,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/portfolio/caller.php');
 
@@ -449,7 +453,7 @@ class mod_workshop_portfolio_caller extends portfolio_module_caller_base {
      */
     public function get_return_url() {
 
-        $returnurl = new moodle_url('/mod/workshop/submission.php', ['cmid' => $this->cm->id, 'id' => $this->submissionid]);
+        $returnurl = new url('/mod/workshop/submission.php', ['cmid' => $this->cm->id, 'id' => $this->submissionid]);
         return $returnurl->out();
     }
 
@@ -482,7 +486,7 @@ class mod_workshop_portfolio_caller extends portfolio_module_caller_base {
      * @return boolean
      */
     public function check_permissions() {
-        return has_capability('mod/workshop:exportsubmissions', context_module::instance($this->cm->id));
+        return has_capability('mod/workshop:exportsubmissions', module::instance($this->cm->id));
     }
 
     /**

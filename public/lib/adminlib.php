@@ -102,6 +102,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\lang_string;
+use core\navigation\navigation_node;
+use core\output\bootstrap_renderer;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
+use core_admin\setting\tree\part_of_admin_tree;
+use core_admin\setting\tree\root;
+
 define('INSECURE_DATAROOT_WARNING', 1);
 define('INSECURE_DATAROOT_ERROR', 2);
 
@@ -174,10 +187,10 @@ function uninstall_plugin($type, $name) {
     }
 
     // Specific plugin type cleanup.
-    $plugininfo = core_plugin_manager::instance()->get_plugin_info($component);
+    $plugininfo = plugin_manager::instance()->get_plugin_info($component);
     if ($plugininfo) {
         $plugininfo->uninstall_cleanup();
-        core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
     }
     $plugininfo = null;
 
@@ -473,7 +486,7 @@ function set_cron_lock($name, $until, $ignorecurrent=false) {
 function admin_critical_warnings_present() {
     global $SESSION;
 
-    if (!has_capability('moodle/site:config', context_system::instance())) {
+    if (!has_capability('moodle/site:config', system::instance())) {
         return 0;
     }
 
@@ -635,7 +648,7 @@ function enable_cli_maintenance_mode() {
         $data = get_string('sitemaintenance', 'admin');
         $data = bootstrap_renderer::early_error_content($data, null, null, null);
         $data = bootstrap_renderer::plain_page(get_string('sitemaintenancetitle', 'admin',
-            format_string($SITE->fullname, true, ['context' => context_system::instance()])), $data);
+            format_string($SITE->fullname, true, ['context' => system::instance()])), $data);
     }
 
     file_put_contents("$CFG->dataroot/climaintenance.html", $data);
@@ -680,22 +693,22 @@ function admin_externalpage_setup($section, $extrabutton = '', ?array $extraurlp
     $adminroot = admin_get_root(false, false); // settings not required for external pages
     $extpage = $adminroot->locate($section, true);
 
-    $hassiteconfig = has_capability('moodle/site:config', context_system::instance());
-    if (empty($extpage) or !($extpage instanceof admin_externalpage)) {
+    $hassiteconfig = has_capability('moodle/site:config', system::instance());
+    if (empty($extpage) or !($extpage instanceof externalpage)) {
         // The requested section isn't in the admin tree
         // It could be because the user has inadequate capapbilities or because the section doesn't exist
         if (!$hassiteconfig) {
             // The requested section could depend on a different capability
             // but most likely the user has inadequate capabilities
-            throw new \moodle_exception('accessdenied', 'admin');
+            throw new moodle_exception('accessdenied', 'admin');
         } else {
-            throw new \moodle_exception('sectionerror', 'admin', "$CFG->wwwroot/$CFG->admin/");
+            throw new moodle_exception('sectionerror', 'admin', "$CFG->wwwroot/$CFG->admin/");
         }
     }
 
     // this eliminates our need to authenticate on the actual pages
     if (!$extpage->check_access()) {
-        throw new \moodle_exception('accessdenied', 'admin');
+        throw new moodle_exception('accessdenied', 'admin');
         die;
     }
 
@@ -742,10 +755,10 @@ function admin_externalpage_setup($section, $extrabutton = '', ?array $extraurlp
     if ($PAGE->user_allowed_editing() && !$PAGE->theme->haseditswitch) {
         if ($PAGE->user_is_editing()) {
             $caption = get_string('blockseditoff');
-            $url = new moodle_url($PAGE->url, array('adminedit'=>'0', 'sesskey'=>sesskey()));
+            $url = new url($PAGE->url, array('adminedit'=>'0', 'sesskey'=>sesskey()));
         } else {
             $caption = get_string('blocksediton');
-            $url = new moodle_url($PAGE->url, array('adminedit'=>'1', 'sesskey'=>sesskey()));
+            $url = new url($PAGE->url, array('adminedit'=>'1', 'sesskey'=>sesskey()));
         }
         $PAGE->set_button($OUTPUT->single_button($url, $caption, 'get'));
     }
@@ -755,7 +768,7 @@ function admin_externalpage_setup($section, $extrabutton = '', ?array $extraurlp
 
     if ($hassiteconfig && empty($options['nosearch'])) {
         $PAGE->add_header_action($OUTPUT->render_from_template('core_admin/header_search_input', [
-            'action' => new moodle_url('/admin/search.php'),
+            'action' => new url('/admin/search.php'),
             'query' => $PAGE->url->get_param('query'),
         ]));
     }
@@ -774,7 +787,7 @@ function admin_get_root($reload=false, $requirefulltree=true) {
 
     if (is_null($ADMIN)) {
     // create the admin tree!
-        $ADMIN = new admin_root($requirefulltree);
+        $ADMIN = new root($requirefulltree);
     }
 
     if ($reload or ($requirefulltree and !$ADMIN->fulltree)) {
@@ -824,7 +837,7 @@ function admin_apply_default_settings(?part_of_admin_tree $node = null, bool $un
         // is used during install when normal caching is disabled.
         $token = new \core_cache\allow_temporary_caches(); // Value not used intentionally, see its destructor.
 
-        core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
         $root = admin_get_root(true, true);
         $saved = admin_apply_default_settings($root, $unconditional);
         if (!$saved) {
@@ -832,7 +845,7 @@ function admin_apply_default_settings(?part_of_admin_tree $node = null, bool $un
         }
 
         for ($i = 1; $i <= 3; $i++) {
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
             $root = admin_get_root(true, true);
             // No need to force defaults in repeated runs.
             $moresaved = admin_apply_default_settings($root, false);
@@ -844,26 +857,26 @@ function admin_apply_default_settings(?part_of_admin_tree $node = null, bool $un
         }
 
         // We should not get here unless there are some problematic settings.php files.
-        core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
         return $saved;
     }
 
     // Recursive applying of defaults in admin tree.
     $saved = [];
-    if ($node instanceof admin_category) {
+    if ($node instanceof category) {
         foreach ($node->children as $child) {
             if ($child === null) {
                 // This should not happen,
                 // this is to prevent theoretical infinite loops.
                 continue;
             }
-            if ($child instanceof admin_externalpage) {
+            if ($child instanceof externalpage) {
                 continue;
             }
             $saved += admin_apply_default_settings($child, $unconditional);
         }
 
-    } else if ($node instanceof admin_settingpage) {
+    } else if ($node instanceof settingpage) {
         /** @var admin_setting $setting */
         foreach ((array)$node->settings as $setting) {
             if ($setting->nosave) {
@@ -890,7 +903,7 @@ function admin_apply_default_settings(?part_of_admin_tree $node = null, bool $un
             if ($error === '') {
                 $setting->write_setting_flags(null);
                 if (is_int($defaultsetting) || $defaultsetting instanceof lang_string
-                    || $defaultsetting instanceof moodle_url) {
+                    || $defaultsetting instanceof url) {
                     $defaultsetting = (string)$defaultsetting;
                 }
                 $saved[$settingname] = $defaultsetting;
@@ -974,7 +987,7 @@ function admin_find_write_settings($node, $data) {
         return $return;
     }
 
-    if ($node instanceof admin_category) {
+    if ($node instanceof category) {
         if ($node->check_access()) {
             $entries = array_keys($node->children);
             foreach ($entries as $entry) {
@@ -982,7 +995,7 @@ function admin_find_write_settings($node, $data) {
             }
         }
 
-    } else if ($node instanceof admin_settingpage) {
+    } else if ($node instanceof settingpage) {
         if ($node->check_access()) {
             foreach ($node->settings as $setting) {
                 $fullname = $setting->get_full_name();
@@ -1033,10 +1046,10 @@ function admin_search_settings_html($query) {
 
         $heading = highlight($query, $page->visiblename);
         $headingurl = null;
-        if ($page instanceof admin_externalpage) {
-            $headingurl = new moodle_url($page->url);
-        } else if ($page instanceof admin_settingpage) {
-            $headingurl = new moodle_url('/admin/settings.php', ['section' => $page->name]);
+        if ($page instanceof externalpage) {
+            $headingurl = new url($page->url);
+        } else if ($page instanceof settingpage) {
+            $headingurl = new url('/admin/settings.php', ['section' => $page->name]);
         } else {
             continue;
         }
@@ -1091,13 +1104,13 @@ function admin_output_new_settings_by_page($node) {
     global $OUTPUT;
     $return = array();
 
-    if ($node instanceof admin_category) {
+    if ($node instanceof category) {
         $entries = array_keys($node->children);
         foreach ($entries as $entry) {
             $return += admin_output_new_settings_by_page($node->children[$entry]);
         }
 
-    } else if ($node instanceof admin_settingpage) {
+    } else if ($node instanceof settingpage) {
             $newsettings = array();
             foreach ($node->settings as $setting) {
                 if (is_null($setting->get_setting())) {
@@ -1219,7 +1232,7 @@ function format_admin_setting($setting, $title='', $form='', $description='', $l
  */
 function any_new_admin_settings($node) {
 
-    if ($node instanceof admin_category) {
+    if ($node instanceof category) {
         $entries = array_keys($node->children);
         foreach ($entries as $entry) {
             if (any_new_admin_settings($node->children[$entry])) {
@@ -1227,7 +1240,7 @@ function any_new_admin_settings($node) {
             }
         }
 
-    } else if ($node instanceof admin_settingpage) {
+    } else if ($node instanceof settingpage) {
             foreach ($node->settings as $setting) {
                 if ($setting->get_setting() === NULL) {
                     return true;
@@ -1338,7 +1351,7 @@ function db_replace($search, $replace, $additionalskiptables = '') {
 
     // Trigger an event.
     $eventargs = [
-        'context' => context_system::instance(),
+        'context' => system::instance(),
         'other' => [
             'search' => $search,
             'replace' => $replace

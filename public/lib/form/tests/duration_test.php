@@ -16,6 +16,7 @@
 
 namespace core_form;
 
+use core\exception\coding_exception;
 use moodleform;
 use MoodleQuickForm;
 
@@ -64,7 +65,7 @@ final class duration_test extends \basic_testcase {
     public function test_constructor_rejects_invalid_unit(): void {
         // Test trying to create with an invalid unit.
         $mform = $this->get_test_form();
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $mform->addElement('duration', 'testel', null, ['defaultunit' => 123, 'optional' => false]);
     }
 

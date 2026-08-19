@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 use mod_forum\local\entities\forum as forum_entity;
 use mod_forum\local\exporters\post as post_exporter;
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 /**

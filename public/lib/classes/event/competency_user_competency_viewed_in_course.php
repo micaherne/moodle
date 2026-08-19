@@ -25,8 +25,9 @@
 namespace core\event;
 
 use core\event\base;
+use core\exception\coding_exception;
 use core_competency\user_competency_course;
-use context_course;
+use core\context\course;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,7 +54,7 @@ class competency_user_competency_viewed_in_course extends base {
      */
     public static function create_from_user_competency_viewed_in_course(user_competency_course $usercompetencycourse) {
         if (!$usercompetencycourse->get('id')) {
-            throw new \coding_exception('The user competency course ID must be set.');
+            throw new coding_exception('The user competency course ID must be set.');
         }
         $params = array(
             'objectid' => $usercompetencycourse->get('id'),
@@ -62,7 +63,7 @@ class competency_user_competency_viewed_in_course extends base {
                 'competencyid' => $usercompetencycourse->get('competencyid')
             )
         );
-        $coursecontext = context_course::instance($usercompetencycourse->get('courseid'));
+        $coursecontext = course::instance($usercompetencycourse->get('courseid'));
         $params['contextid'] = $coursecontext->id;
         $params['courseid'] = $usercompetencycourse->get('courseid');
 
@@ -127,11 +128,11 @@ class competency_user_competency_viewed_in_course extends base {
      */
     protected function validate_data() {
         if (!$this->courseid) {
-            throw new \coding_exception('The \'courseid\' value must be set.');
+            throw new coding_exception('The \'courseid\' value must be set.');
         }
 
         if (!isset($this->other) || !isset($this->other['competencyid'])) {
-            throw new \coding_exception('The \'competencyid\' value must be set.');
+            throw new coding_exception('The \'competencyid\' value must be set.');
         }
     }
 

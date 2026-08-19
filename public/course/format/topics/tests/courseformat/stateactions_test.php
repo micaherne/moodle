@@ -17,7 +17,7 @@
 namespace format_topics\courseformat;
 
 use core_courseformat\stateupdates;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 
 /**

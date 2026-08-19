@@ -21,8 +21,8 @@ use core\task\manager;
 use assignfeedback_editpdf\document_services;
 use assignfeedback_editpdf\combined_document;
 use assignfeedback_editpdf\pdf;
-use context_module;
-use moodle_exception;
+use core\context\module;
+use core\exception\moodle_exception;
 use assign;
 
 /**
@@ -56,7 +56,7 @@ class convert_submission extends adhoc_task {
         }
 
         $cm = get_coursemodule_from_instance('assign', $submission->assignment, 0, false, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new assign($context, null, null);
 
         if ($submission->userid) {
@@ -100,7 +100,7 @@ class convert_submission extends adhoc_task {
                     mtrace(
                         "Conversion has failed. Failed task will retry with a fail-delay. Attempts remaining: {$remainingattempts}."
                     );
-                    throw new \moodle_exception('documentcombinationfailed');
+                    throw new moodle_exception('documentcombinationfailed');
             }
 
             document_services::get_page_images_for_attempt($assign, $userid, $data->submissionattempt, false);

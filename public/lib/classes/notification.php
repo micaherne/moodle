@@ -24,6 +24,9 @@ namespace core;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\output\html_writer;
+use core\output\renderer_base;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -63,13 +66,13 @@ class notification {
             // Currently in the page body - just render and exit immediately.
             // We insert some code to immediately insert this into the user-notifications created by the header.
             $id = uniqid();
-            echo \html_writer::span(
+            echo html_writer::span(
                 $PAGE->get_renderer('core')->render(new \core\output\notification($message, $level)),
                 '', array('id' => $id));
 
             // Insert this JS here using a script directly rather than waiting for the page footer to load to avoid
             // ensure that the message is added to the user-notifications section as soon as possible after it is created.
-            echo \html_writer::script(
+            echo html_writer::script(
                     "(function() {" .
                         "var notificationHolder = document.getElementById('user-notifications');" .
                         "if (!notificationHolder) { return; }" .
@@ -126,8 +129,8 @@ class notification {
 
         if ($PAGE && $PAGE->state === \moodle_page::STATE_IN_BODY) {
             $id = uniqid();
-            echo \html_writer::span($notification, '', ['id' => $id]);
-            echo \html_writer::script(
+            echo html_writer::span($notification, '', ['id' => $id]);
+            echo html_writer::script(
                     "(function() {" .
                     "var notificationHolder = document.getElementById('user-notifications');" .
                     "if (!notificationHolder) { return; }" .
@@ -138,7 +141,7 @@ class notification {
                     "})();"
             );
         } else {
-            throw new \coding_exception('You are calling add_call_to_action() either too early or too late.');
+            throw new coding_exception('You are calling add_call_to_action() either too early or too late.');
         }
     }
 
@@ -171,7 +174,7 @@ class notification {
      *
      * @return array All of the notifications in the stack
      */
-    public static function fetch_as_array(\renderer_base $renderer) {
+    public static function fetch_as_array(renderer_base $renderer) {
         $notifications = [];
         foreach (self::fetch() as $notification) {
             $notifications[] = [

@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+
 require('../../config.php');
 require_once($CFG->dirroot.'/mod/page/lib.php');
 require_once($CFG->dirroot.'/mod/page/locallib.php');
@@ -34,13 +38,13 @@ $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
 
 if ($p) {
     if (!$page = $DB->get_record('page', array('id'=>$p))) {
-        throw new \moodle_exception('invalidaccessparameter');
+        throw new moodle_exception('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('page', $page->id, $page->course, false, MUST_EXIST);
 
 } else {
     if (!$cm = get_coursemodule_from_id('page', $id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     $page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 }
@@ -48,7 +52,7 @@ if ($p) {
 $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/page:view', $context);
 
 // Completion and trigger events.

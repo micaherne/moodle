@@ -16,6 +16,8 @@
 
 namespace core_search;
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/fixtures/testable_core_search.php');
@@ -120,7 +122,7 @@ final class engine_test extends \advanced_testcase {
      */
     public function test_get_supported_orders(): void {
         $engine = new \mock_search\engine();
-        $orders = $engine->get_supported_orders(\context_system::instance());
+        $orders = $engine->get_supported_orders(system::instance());
         $this->assertCount(1, $orders);
         $this->assertArrayHasKey('relevance', $orders);
     }

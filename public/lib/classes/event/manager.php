@@ -16,6 +16,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -62,7 +65,7 @@ class manager {
             return;
         }
         if (!$event->is_triggered() or $event->is_dispatched()) {
-            throw new \coding_exception('Illegal event dispatching attempted.');
+            throw new coding_exception('Illegal event dispatching attempted.');
         }
 
         self::$buffer[] = $event;
@@ -197,7 +200,7 @@ class manager {
         }
 
         if (!PHPUNIT_TEST and !during_initial_install()) {
-            $cache = \cache::make('core', 'observers');
+            $cache = cache::make('core', 'observers');
             $cached = $cache->get('all');
             $dirroot = $cache->get('dirroot');
             if ($dirroot === $CFG->dirroot and is_array($cached)) {
@@ -325,7 +328,7 @@ class manager {
      */
     public static function phpunit_replace_observers(array $observers) {
         if (!PHPUNIT_TEST) {
-            throw new \coding_exception('Cannot override event observers outside of phpunit tests!');
+            throw new coding_exception('Cannot override event observers outside of phpunit tests!');
         }
 
         self::phpunit_reset();
@@ -346,7 +349,7 @@ class manager {
      */
     public static function phpunit_reset() {
         if (!PHPUNIT_TEST) {
-            throw new \coding_exception('Cannot reset event manager outside of phpunit tests!');
+            throw new coding_exception('Cannot reset event manager outside of phpunit tests!');
         }
         self::$buffer = array();
         self::$extbuffer = array();

@@ -16,10 +16,12 @@
 
 namespace mod_data\output;
 
+use core\output\renderer_base;
+use core\output\single_button;
 use mod_data\manager;
-use moodle_url;
-use templatable;
-use renderable;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Renderable class for the action bar elements in the zero state (no fields created) pages in the database activity.
@@ -48,7 +50,7 @@ class zero_state_action_bar implements templatable, renderable {
      * @param \renderer_base $output The renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $PAGE;
 
         $data = [];
@@ -57,18 +59,18 @@ class zero_state_action_bar implements templatable, renderable {
             $instance = $this->manager->get_instance();
             $params = ['id' => $cm->id, 'backto' => $PAGE->url->out(false)];
 
-            $usepresetlink = new moodle_url('/mod/data/preset.php', $params);
-            $usepresetbutton = new \single_button($usepresetlink,
-                get_string('usestandard', 'mod_data'), 'get', \single_button::BUTTON_PRIMARY);
+            $usepresetlink = new url('/mod/data/preset.php', $params);
+            $usepresetbutton = new single_button($usepresetlink,
+                get_string('usestandard', 'mod_data'), 'get', single_button::BUTTON_PRIMARY);
             $data['usepresetbutton'] = $usepresetbutton->export_for_template($output);
 
             $actionbar = new \mod_data\output\action_bar($instance->id, $PAGE->url);
             $createfieldbutton = $actionbar->get_create_fields();
             $data['createfieldbutton'] = $createfieldbutton->export_for_template($output);
 
-            $importpresetlink = new moodle_url('/mod/data/preset.php', $params);
-            $importpresetbutton = new \single_button($importpresetlink,
-                get_string('importapreset', 'mod_data'), 'get', \single_button::BUTTON_SECONDARY, [
+            $importpresetlink = new url('/mod/data/preset.php', $params);
+            $importpresetbutton = new single_button($importpresetlink,
+                get_string('importapreset', 'mod_data'), 'get', single_button::BUTTON_SECONDARY, [
                     'data-action' => 'importpresets',
                     'data-dataid' => $cm->id,
                 ]);

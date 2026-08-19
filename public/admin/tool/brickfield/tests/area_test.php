@@ -16,6 +16,9 @@
 
 namespace tool_brickfield;
 
+use core\context\course;
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -54,7 +57,7 @@ final class area_test extends area_test_base {
         $this->assertEquals([
             (object)[
                 'type' => area_base::TYPE_FIELD,
-                'contextid' => \context_module::instance($cm1->id)->id,
+                'contextid' => module::instance($cm1->id)->id,
                 'component' => $c->get_component(),
                 'tablename' => $c->get_tablename(),
                 'fieldorarea' => $c->get_fieldname(),
@@ -65,7 +68,7 @@ final class area_test extends area_test_base {
             ],
             (object)[
                 'type' => area_base::TYPE_FIELD,
-                'contextid' => \context_module::instance($cm2->id)->id,
+                'contextid' => module::instance($cm2->id)->id,
                 'component' => $c->get_component(),
                 'tablename' => $c->get_tablename(),
                 'fieldorarea' => $c->get_fieldname(),
@@ -103,7 +106,7 @@ final class area_test extends area_test_base {
         $this->assert_area_in_array(
             $course1areas,
             $component,
-            \context_module::instance($qbank->cmid)->id,
+            module::instance($qbank->cmid)->id,
             $questions[0]->id,
             $course->id,
             null
@@ -111,7 +114,7 @@ final class area_test extends area_test_base {
 
         // Emulate the question_created event.
         $event = \core\event\question_created::create_from_question_instance($questions[1],
-            \context_module::instance($qbank->cmid));
+            module::instance($qbank->cmid));
         $relevantresults = $this->array_from_recordset($c->find_relevant_areas($event));
         $this->assert_area_in_array(
                 $relevantresults,
@@ -134,7 +137,7 @@ final class area_test extends area_test_base {
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $course = $this->getDataGenerator()->create_course();
         $qbank = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $cat = $generator->create_question_category(['contextid' => \context_module::instance($qbank->cmid)->id]);
+        $cat = $generator->create_question_category(['contextid' => module::instance($qbank->cmid)->id]);
         $question1 = $generator->create_question('multichoice', null,
             ['name' => 'Example multichoice question', 'category' => $cat->id]);
         $question2 = $generator->create_question('numerical', null,
@@ -152,7 +155,7 @@ final class area_test extends area_test_base {
 
         // Emulate the question_updated event.
         $event = \core\event\question_updated::create_from_question_instance($question1,
-            \context_course::instance($course->id));
+            course::instance($course->id));
         $relevantresultsrs = $c->find_relevant_areas($event);
         // Set up a relevantresults array from the recordset for easier testing.
         $relevantresults = $this->array_from_recordset($relevantresultsrs);

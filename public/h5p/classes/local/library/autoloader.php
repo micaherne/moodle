@@ -24,6 +24,9 @@
 
 namespace core_h5p\local\library;
 
+use core\exception\moodle_exception;
+use core\url;
+
 /**
  * H5P autoloader management class.
  *
@@ -102,7 +105,7 @@ class autoloader {
         $defaulthandler = self::get_default_handler();
         if (empty($defaulthandler)) {
             // If there is no default handler, throw an exception.
-            throw new \moodle_exception('noh5plibhandlerdefined', 'core_h5p');
+            throw new moodle_exception('noh5plibhandlerdefined', 'core_h5p');
         }
 
         return $defaulthandler;
@@ -124,7 +127,7 @@ class autoloader {
      * @param array $params these params override current params or add new
      * @return null|moodle_url
      */
-    public static function get_h5p_core_library_url(?string $filepath = null, ?array $params = null): ?\moodle_url {
+    public static function get_h5p_core_library_url(?string $filepath = null, ?array $params = null): ?url {
         return component_class_callback(self::get_handler_classname(), 'get_h5p_core_library_url', [$filepath, $params]);
     }
 
@@ -135,7 +138,7 @@ class autoloader {
      * @param array $params These params override current params or add new.
      * @return null|\moodle_url The moodle_url instance to a file in the H5P Editor library.
      */
-    public static function get_h5p_editor_library_url(?string $filepath = null, ?array $params = null): ?\moodle_url {
+    public static function get_h5p_editor_library_url(?string $filepath = null, ?array $params = null): ?url {
         return component_class_callback(self::get_handler_classname(), 'get_h5p_editor_library_url', [$filepath, $params]);
     }
 

@@ -26,10 +26,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-    require_once("../../config.php");
+    use core\context\system;
+use core\exception\moodle_exception;
+
+require_once("../../config.php");
 
     if (!filter_is_enabled('tex')) {
-        throw new \moodle_exception('filternotenabled');
+        throw new moodle_exception('filternotenabled');
     }
 
     require_once($CFG->libdir.'/filelib.php');
@@ -40,7 +43,7 @@
     $texexp = optional_param('tex', '', PARAM_RAW);
 
     require_login();
-    require_capability('moodle/site:config', context_system::instance(), $USER->id); /// Required cap to run this. MDL-18552
+    require_capability('moodle/site:config', system::instance(), $USER->id); /// Required cap to run this. MDL-18552
     if ($action || $texexp) {
         require_sesskey();
     }

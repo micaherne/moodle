@@ -25,6 +25,9 @@
 
 namespace core\event;
 
+use core\context\system;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -35,11 +38,11 @@ class context_used_in_event_correct extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 
     public function get_url() {
-        return new \moodle_url('/somepath/somefile.php'); // No context used.
+        return new url('/somepath/somefile.php'); // No context used.
     }
 
     public function get_description() {
@@ -55,11 +58,11 @@ class context_used_in_event_get_url extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 
     public function get_url() {
-        return new \moodle_url('/somepath/somefile.php', ['id' => $this->context->instanceid]); // Causes a PHP Warning.
+        return new url('/somepath/somefile.php', ['id' => $this->context->instanceid]); // Causes a PHP Warning.
     }
 }
 
@@ -71,7 +74,7 @@ class context_used_in_event_get_description extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 
     public function get_description() {

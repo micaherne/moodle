@@ -17,6 +17,7 @@
 namespace mod_quiz\external;
 
 use advanced_testcase;
+use core\exception\moodle_exception;
 use core_question\local\bank\condition;
 use mod_quiz\event\slot_filtercondition_updated;
 use mod_quiz\quiz_settings;
@@ -161,7 +162,7 @@ final class update_filter_condition_test extends advanced_testcase {
 
         // Try to call the service with an invalid array of filterconditions.
         $filtercondition = ['invalid' => true];
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         update_filter_condition::execute($cm->id, $qsetref->itemid, json_encode($filtercondition));
 
     }
@@ -183,7 +184,7 @@ final class update_filter_condition_test extends advanced_testcase {
 
         // Try to call the service with an invalid question category set in the $filtercondition.
         $filtercondition['filter']['category']['values'] = [123];
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         update_filter_condition::execute($cm->id, $qsetref->itemid, json_encode($filtercondition));
 
     }

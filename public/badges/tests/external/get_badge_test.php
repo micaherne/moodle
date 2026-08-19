@@ -16,6 +16,7 @@
 
 namespace core_badges\external;
 
+use core\exception\moodle_exception;
 use core_badges\tests\external_helper;
 
 /**
@@ -41,7 +42,7 @@ final class get_badge_test extends \core_external\tests\externallib_testcase {
         // Badges are not enabled on this site.
         set_config('enablebadges', 0);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage('Badges are not enabled on this site.');
         get_badge::execute($data['sitebadge']['id']);
     }
@@ -94,7 +95,7 @@ final class get_badge_test extends \core_external\tests\externallib_testcase {
     public function test_get_badge_with_invalid_badge_id(): void {
         $this->prepare_test_data();
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         get_badge::execute(123);
     }
 }

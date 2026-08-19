@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 
@@ -38,7 +42,7 @@ $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EX
 
 require_login($course, false, $cm);
 if (isguestuser()) {
-    throw new \moodle_exception('guestsarenotallowed');
+    throw new moodle_exception('guestsarenotallowed');
 }
 
 $workshop = $DB->get_record('workshop', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -75,7 +79,7 @@ if ($example->id and ($canmanage or ($workshop->assessing_examples_allowed() and
 } elseif (is_null($example->id) and $canmanage) {
     // ok you can go
 } else {
-    throw new \moodle_exception('nopermissions', 'error', $workshop->view_url(), 'view or manage example submission');
+    throw new moodle_exception('nopermissions', 'error', $workshop->view_url(), 'view or manage example submission');
 }
 
 if ($id and $delete and $confirm and $canmanage) {
@@ -204,12 +208,12 @@ if ($edit and $canmanage) {
 if ($example->id) {
     if ($canmanage and $delete) {
     echo $output->confirm(get_string('exampledeleteconfirm', 'workshop'),
-            new moodle_url($PAGE->url, array('delete' => 1, 'confirm' => 1)), $workshop->view_url());
+            new url($PAGE->url, array('delete' => 1, 'confirm' => 1)), $workshop->view_url());
     }
     if ($canmanage and !$delete and !$DB->record_exists_select('workshop_assessments',
             'grade IS NOT NULL AND weight=1 AND submissionid = ?', array($example->id))) {
         echo $output->confirm(get_string('assessmentreferenceneeded', 'workshop'),
-                new moodle_url($PAGE->url, array('assess' => 1)), $workshop->view_url());
+                new url($PAGE->url, array('assess' => 1)), $workshop->view_url());
     }
     echo $output->render($workshop->prepare_example_submission($example));
 }
@@ -217,16 +221,16 @@ if ($example->id) {
 echo $output->container_start('buttonsbar');
 if ($canmanage) {
     if (empty($edit) and empty($delete)) {
-        $aurl = new moodle_url($workshop->exsubmission_url($example->id), array('edit' => 'on'));
+        $aurl = new url($workshop->exsubmission_url($example->id), array('edit' => 'on'));
         echo $output->single_button($aurl, get_string('exampleedit', 'workshop'), 'get');
 
-        $aurl = new moodle_url($workshop->exsubmission_url($example->id), array('delete' => 'on'));
+        $aurl = new url($workshop->exsubmission_url($example->id), array('delete' => 'on'));
         echo $output->single_button($aurl, get_string('exampledelete', 'workshop'), 'get');
     }
 }
 // ...and optionally assess it
 if ($canassess or ($canmanage and empty($edit) and empty($delete))) {
-    $aurl = new moodle_url($workshop->exsubmission_url($example->id), array('assess' => 'on', 'sesskey' => sesskey()));
+    $aurl = new url($workshop->exsubmission_url($example->id), array('assess' => 'on', 'sesskey' => sesskey()));
     echo $output->single_button($aurl, get_string('exampleassess', 'workshop'), 'get');
 }
 echo $output->container_end(); // buttonsbar

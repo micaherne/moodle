@@ -16,6 +16,7 @@
 
 namespace tool_dataprivacy;
 
+use core\user;
 use data_privacy_testcase;
 
 defined('MOODLE_INTERNAL') || die();
@@ -83,7 +84,7 @@ final class manager_observer_test extends data_privacy_testcase {
         $messages = $mailsink->get_messages();
         $message = reset($messages);
 
-        $admin = \core_user::get_user_by_username('admin');
+        $admin = user::get_user_by_username('admin');
         $this->assertEquals($admin->id, $message->useridto);
     }
 }

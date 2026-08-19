@@ -24,6 +24,11 @@
 
 namespace core\plugininfo;
 
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
+
 /**
  * Payment gateway subplugin info class.
  *
@@ -44,7 +49,7 @@ class paygw extends base {
         return 'paymentgateway' . $this->name;
     }
 
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
         global $CFG, $USER, $DB, $OUTPUT, $PAGE; // In case settings.php wants to refer to them.
         /** @var \admin_root $ADMIN */
         $ADMIN = $adminroot; // May be used in settings.php.
@@ -62,7 +67,7 @@ class paygw extends base {
 
         $settings = null;
         if (file_exists($this->full_path('settings.php'))) {
-            $settings = new \admin_settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
+            $settings = new settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
             include($this->full_path('settings.php')); // This may also set $settings to null.
         }
         if ($settings) {
@@ -71,7 +76,7 @@ class paygw extends base {
     }
 
     public static function get_manage_url() {
-        return new \moodle_url('/admin/settings.php', array('section' => 'managepaymentgateways'));
+        return new url('/admin/settings.php', array('section' => 'managepaymentgateways'));
     }
 
     public static function get_enabled_plugins() {
@@ -79,7 +84,7 @@ class paygw extends base {
 
         $order = (!empty($CFG->paygw_plugins_sortorder)) ? explode(',', $CFG->paygw_plugins_sortorder) : [];
         if ($order) {
-            $plugins = \core_plugin_manager::instance()->get_installed_plugins('paygw');
+            $plugins = plugin_manager::instance()->get_installed_plugins('paygw');
             $order = array_intersect($order, array_keys($plugins));
         }
 
@@ -134,11 +139,11 @@ class paygw extends base {
             $list = explode(',', $list);
         }
         if ($list) {
-            $plugins = \core_plugin_manager::instance()->get_installed_plugins('paygw');
+            $plugins = plugin_manager::instance()->get_installed_plugins('paygw');
             $list = array_intersect($list, array_keys($plugins));
         }
         set_config('paygw_plugins_sortorder', join(',', $list));
-        \core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
     }
 
     /**

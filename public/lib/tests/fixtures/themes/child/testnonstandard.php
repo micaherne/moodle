@@ -22,6 +22,8 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require_once("../../../../../config.php");
 global $CFG, $SITE, $PAGE, $OUTPUT;
 require_once($CFG->dirroot . '/course/lib.php');
@@ -32,7 +34,7 @@ $heading = $SITE->fullname;
 
 $PAGE->set_pagelayout('standardnonav');
 $PAGE->set_url('/theme/child/testnonstandardlayout.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 echo $OUTPUT->header();
 echo $OUTPUT->heading($heading);
 echo $OUTPUT->box('This is a test of a non-standard layout.');

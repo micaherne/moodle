@@ -23,6 +23,8 @@
  */
 
 namespace mod_scorm\event;
+
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -62,7 +64,7 @@ class scoreraw_submitted extends cmielement_submitted {
         parent::validate_data();
 
         if (!strstr($this->other['cmielement'], '.score.raw')) {
-            throw new \coding_exception(
+            throw new coding_exception(
                 "The 'cmielement' must represents a valid CMI raw score ({$this->other['cmielement']}).");
         }
 

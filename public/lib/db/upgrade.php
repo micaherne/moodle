@@ -82,6 +82,8 @@
  * @param int $oldversion
  * @return bool always true
  */
+use core\plugin_manager;
+
 function xmldb_main_upgrade($oldversion) {
     global $CFG, $DB;
 
@@ -575,7 +577,7 @@ function xmldb_main_upgrade($oldversion) {
         // Enable mod_subsection unless 'keepsubsectiondisabled' is set.
         if ((empty($CFG->keepsubsectiondisabled) || !$CFG->keepsubsectiondisabled)
                 && $DB->get_record('modules', ['name' => 'subsection'])) {
-            $manager = \core_plugin_manager::resolve_plugininfo_class('mod');
+            $manager = plugin_manager::resolve_plugininfo_class('mod');
             $manager::enable_plugin('subsection', 1);
         }
 
@@ -720,7 +722,7 @@ function xmldb_main_upgrade($oldversion) {
         if (!file_exists("{$CFG->dirroot}/lib/editor/atto/version.php")) {
             // Remove each of the subplugins first. These are no longer on disk so the standard `uninstall_plugin` approach
             // on atto itself will not remove them.
-            $plugins = array_keys(core_plugin_manager::instance()->get_plugins_of_type('atto'));
+            $plugins = array_keys(plugin_manager::instance()->get_plugins_of_type('atto'));
 
             // Now remove each.
             foreach ($plugins as $pluginname) {
@@ -1311,7 +1313,7 @@ function xmldb_main_upgrade($oldversion) {
         $DB->delete_records('adminpresets_plug', ['plugin' => 'format', 'name' => 'social']);
 
         // Disable Social course format.
-        $manager = \core_plugin_manager::resolve_plugininfo_class('format');
+        $manager = plugin_manager::resolve_plugininfo_class('format');
         $manager::enable_plugin('social', 0);
 
         // Main savepoint reached.

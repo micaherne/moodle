@@ -16,6 +16,8 @@
 
 namespace core_course;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
@@ -345,7 +347,7 @@ final class targets_test extends \advanced_testcase {
 
         try {
             $course = $this->getDataGenerator()->create_course($courseparams);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $course = $this->getDataGenerator()->create_course();
             $courserecord = $courseparams;
             $courserecord['id'] = $course->id;

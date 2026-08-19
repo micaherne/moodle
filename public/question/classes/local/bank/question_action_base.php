@@ -24,6 +24,10 @@
 
 namespace core_question\local\bank;
 
+use core\output\action_menu\link;
+use core\output\action_menu\link_secondary;
+use core\output\pix_icon;
+
 /**
  * Base class to make it easier to implement actions that are menuable_actions.
  *
@@ -67,11 +71,11 @@ abstract class question_action_base extends view_component {
      * @param \stdClass $question
      * @return \action_menu_link|null
      */
-    public function get_action_menu_link(\stdClass $question): ?\action_menu_link {
+    public function get_action_menu_link(\stdClass $question): ?link {
         [$url, $icon, $label] = $this->get_url_icon_and_label($question);
         if (!$url) {
             return null;
         }
-        return new \action_menu_link_secondary($url, new \pix_icon($icon, ''), $label);
+        return new link_secondary($url, new pix_icon($icon, ''), $label);
     }
 }

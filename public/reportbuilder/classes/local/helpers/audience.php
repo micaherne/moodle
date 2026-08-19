@@ -18,14 +18,14 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\helpers;
 
-use cache;
-use context;
-use context_system;
+use core_cache\cache;
+use core\context;
+use core\context\system;
 use core_collator;
 use core_component;
 use core_reportbuilder\local\audiences\base;
 use core_reportbuilder\local\models\{audience as audience_model, schedule};
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 
 /**
  * Class containing report audience helper methods
@@ -179,7 +179,7 @@ class audience {
         global $USER;
 
         if ($context === null) {
-            $context = context_system::instance();
+            $context = system::instance();
         }
 
         if (has_any_capability(['moodle/reportbuilder:editall', 'moodle/reportbuilder:viewall'], $context, $userid)) {

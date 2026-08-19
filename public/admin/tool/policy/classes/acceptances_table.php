@@ -24,10 +24,17 @@
 
 namespace tool_policy;
 
+use core\context\system;
+use core\context\user as context_user;
+use core\context_helper;
+use core\output\html_writer;
+use core\output\user_picture;
+use core\url;
+use core_table\sql_table;
 use tool_policy\output\acceptances_filter;
 use tool_policy\output\renderer;
 use tool_policy\output\user_agreement;
-use core_user;
+use core\user;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -42,7 +49,7 @@ require_once($CFG->dirroot.'/lib/tablelib.php');
  * @copyright   2018 Marina Glancy
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class acceptances_table extends \table_sql {
+class acceptances_table extends sql_table {
 
     /** @var array */
     protected $versionids;
@@ -92,7 +99,7 @@ class acceptances_table extends \table_sql {
         }
 
         // TODO Does not support custom user profile fields (MDL-70456).
-        $userfieldsapi = \core_user\fields::for_identity(\context_system::instance(), false)->with_userpic();
+        $userfieldsapi = \core_user\fields::for_identity(system::instance(), false)->with_userpic();
         $userfields = $userfieldsapi->get_sql('u', false, '', '', false)->selects;
         $extrafields = $userfieldsapi->get_required_fields([\core_user\fields::PURPOSE_IDENTITY]);
 
@@ -108,9 +115,9 @@ class acceptances_table extends \table_sql {
             $this->add_column_header($field, \core_user\fields::get_display_name($field));
         }
 
-        if (!$this->is_downloading() && !has_capability('tool/policy:acceptbehalf', \context_system::instance())) {
+        if (!$this->is_downloading() && !has_capability('tool/policy:acceptbehalf', system::instance())) {
             // We will need to check capability to accept on behalf in each user's context, preload users contexts.
-            $this->sql->fields .= ',' . \context_helper::get_preload_record_columns_sql('ctx');
+            $this->sql->fields .= ',' . context_helper::get_preload_record_columns_sql('ctx');
             $this->sql->from .= ' JOIN {context} ctx ON ctx.contextlevel = :usercontextlevel AND ctx.instanceid = u.id';
             $this->sql->params['usercontextlevel'] = CONTEXT_USER;
         }
@@ -294,7 +301,7 @@ class acceptances_table extends \table_sql {
                     "u.maildisplay <> :$maildisplay " .
                     "OR u.id = :$userid1". // User can always find himself.
                     "))";
-                $params[$maildisplay] = core_user::MAILDISPLAY_HIDE;
+                $params[$maildisplay] = user::MAILDISPLAY_HIDE;
                 $params[$userid1] = $USER->id;
             }
             $conditions[] = $email;
@@ -350,7 +357,7 @@ class acceptances_table extends \table_sql {
             return;
         }
 
-        list($neededroles, $forbiddenroles) = get_roles_with_cap_in_context(\context_system::instance(), 'tool/policy:accept');
+        list($neededroles, $forbiddenroles) = get_roles_with_cap_in_context(system::instance(), 'tool/policy:accept');
 
         if (empty($neededroles)) {
             // There are no roles that allow to accept agreement on one own's behalf.
@@ -422,13 +429,13 @@ class acceptances_table extends \table_sql {
      * downloading.
      */
     public function wrap_html_start() {
-        echo \html_writer::start_tag('form',
-            ['action' => new \moodle_url('/admin/tool/policy/accept.php')]);
-        echo \html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-        echo \html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'returnurl',
+        echo html_writer::start_tag('form',
+            ['action' => new url('/admin/tool/policy/accept.php')]);
+        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
+        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'returnurl',
             'value' => $this->get_return_url()]);
         foreach (array_keys($this->versionids) as $versionid) {
-            echo \html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'versionids[]',
+            echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'versionids[]',
                 'value' => $versionid]);
         }
     }
@@ -441,10 +448,10 @@ class acceptances_table extends \table_sql {
     public function wrap_html_finish() {
         global $PAGE;
         if ($this->canagreeany) {
-            echo \html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'accept']);
-            echo \html_writer::empty_tag('input', ['type' => 'submit', 'data-action' => 'acceptmodal',
+            echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'accept']);
+            echo html_writer::empty_tag('input', ['type' => 'submit', 'data-action' => 'acceptmodal',
                 'value' => get_string('consentbulk', 'tool_policy'), 'class' => 'btn btn-primary mt-1']);
-            $PAGE->requires->js_call_amd('tool_policy/acceptmodal', 'getInstance', [\context_system::instance()->id]);
+            $PAGE->requires->js_call_amd('tool_policy/acceptmodal', 'getInstance', [system::instance()->id]);
         }
         echo "</form>\n";
     }
@@ -467,18 +474,18 @@ class acceptances_table extends \table_sql {
      * @return array one row for the table, added using add_data_keyed method.
      */
     public function format_row($row) {
-        \context_helper::preload_from_record($row);
+        context_helper::preload_from_record($row);
         $row->canaccept = false;
-        $row->user = \user_picture::unalias($row, [], $this->useridfield);
+        $row->user = user_picture::unalias($row, [], $this->useridfield);
         $row->select = null;
         if (!$this->is_downloading()) {
-            if (has_capability('tool/policy:acceptbehalf', \context_system::instance()) ||
-                has_capability('tool/policy:acceptbehalf', \context_user::instance($row->id))) {
+            if (has_capability('tool/policy:acceptbehalf', system::instance()) ||
+                has_capability('tool/policy:acceptbehalf', context_user::instance($row->id))) {
                 $row->canaccept = true;
-                $row->select = \html_writer::empty_tag('input',
+                $row->select = html_writer::empty_tag('input',
                     ['type' => 'checkbox', 'name' => 'userids[]', 'value' => $row->id, 'class' => 'usercheckbox',
                     'id' => 'selectuser' . $row->id]) .
-                \html_writer::tag('label', get_string('selectuser', 'tool_policy', $this->username($row->user, false)),
+                html_writer::tag('label', get_string('selectuser', 'tool_policy', $this->username($row->user, false)),
                     ['for' => 'selectuser' . $row->id, 'class' => 'accesshide']);
                 $this->canagreeany = true;
             }
@@ -506,12 +513,12 @@ class acceptances_table extends \table_sql {
      * @return string
      */
     protected function username($user, $profilelink = true) {
-        $canviewfullnames = has_capability('moodle/site:viewfullnames', \context_system::instance()) ||
-            has_capability('moodle/site:viewfullnames', \context_user::instance($user->id));
+        $canviewfullnames = has_capability('moodle/site:viewfullnames', system::instance()) ||
+            has_capability('moodle/site:viewfullnames', context_user::instance($user->id));
         $name = fullname($user, $canviewfullnames);
         if (!$this->is_downloading() && $profilelink) {
-            $profileurl = new \moodle_url('/user/profile.php', array('id' => $user->id));
-            return \html_writer::link($profileurl, $name);
+            $profileurl = new url('/user/profile.php', array('id' => $user->id));
+            return html_writer::link($profileurl, $name);
         }
         return $name;
     }
@@ -522,7 +529,7 @@ class acceptances_table extends \table_sql {
     protected function get_return_url() {
         $pageurl = $this->baseurl;
         if ($this->currpage) {
-            $pageurl = new \moodle_url($pageurl, [$this->request[TABLE_VAR_PAGE] => $this->currpage]);
+            $pageurl = new url($pageurl, [$this->request[TABLE_VAR_PAGE] => $this->currpage]);
         }
         return $pageurl;
     }

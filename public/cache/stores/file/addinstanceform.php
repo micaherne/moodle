@@ -20,6 +20,8 @@
  * @copyright  2012 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core_cache\form\cachestore_addinstance_form;
+
 class cachestore_file_addinstance_form extends cachestore_addinstance_form {
 
     /**

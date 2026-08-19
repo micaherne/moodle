@@ -28,7 +28,7 @@ namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
 use stdClass;
-use lang_string;
+use core\lang_string;
 
 /**
  * User evidence competency persistent class.

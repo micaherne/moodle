@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/portfolio/plugin.php');
@@ -137,7 +139,7 @@ class portfolio_plugin_flickr extends portfolio_plugin_push_base {
         $accesstoken = $this->get_user_config('accesstoken');
         $accesstokensecret = $this->get_user_config('accesstokensecret');
 
-        $callbackurl = new moodle_url('/portfolio/add.php', ['postcontrol' => 1, 'type' => 'flickr']);
+        $callbackurl = new url('/portfolio/add.php', ['postcontrol' => 1, 'type' => 'flickr']);
         $this->flickr = new flickr_client($this->get_config('apikey'), $this->get_config('sharedsecret'), $callbackurl);
 
         if (!empty($accesstoken) && !empty($accesstokensecret)) {
@@ -149,7 +151,7 @@ class portfolio_plugin_flickr extends portfolio_plugin_push_base {
         $reqtoken = $this->flickr->request_token();
         $this->flickr->set_request_token_secret(['caller' => 'portfolio_flickr'], $reqtoken['oauth_token_secret']);
 
-        $authurl = new moodle_url($reqtoken['authorize_url'], ['perms' => 'write']);
+        $authurl = new url($reqtoken['authorize_url'], ['perms' => 'write']);
 
         return $authurl->out(false);
     }
@@ -163,7 +165,7 @@ class portfolio_plugin_flickr extends portfolio_plugin_push_base {
             throw new portfolio_plugin_exception('noauthtoken', 'portfolio_flickr');
         }
 
-        $callbackurl = new moodle_url('/portfolio/add.php', ['postcontrol' => 1, 'type' => 'flickr']);
+        $callbackurl = new url('/portfolio/add.php', ['postcontrol' => 1, 'type' => 'flickr']);
         $this->flickr = new flickr_client($this->get_config('apikey'), $this->get_config('sharedsecret'), $callbackurl);
 
         $secret = $this->flickr->get_request_token_secret(['caller' => 'portfolio_flickr']);

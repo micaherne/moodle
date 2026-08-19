@@ -22,13 +22,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
 $badgeid = required_param('id', PARAM_ALPHANUM);
 $badgeclass = new \core_badges\output\badgeclass($badgeid);
 
-$context = !empty($badgeclass) ? $badgeclass->context : \context_system::instance();
+$context = !empty($badgeclass) ? $badgeclass->context : system::instance();
 $PAGE->set_context($context);
 $output = $PAGE->get_renderer('core', 'badges');
 $PAGE->set_url('/badges/badgeclass.php', ['id' => $badgeid]);
@@ -37,7 +41,7 @@ $PAGE->set_title(get_string('badgedetails', 'badges'));
 
 if (!empty($badgeclass->badge)) {
     $PAGE->navbar->add($badgeclass->badge->name);
-    $url = new moodle_url($CFG->wwwroot);
+    $url = new url($CFG->wwwroot);
     navigation_node::override_active_url($url);
 
     echo $OUTPUT->header();

@@ -22,6 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\context_helper;
+use core\output\html_writer;
+use core\url;
+use core\user as core_user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -36,9 +44,9 @@ function core_myprofile_navigation(core_user\output\myprofile\tree $tree, $user,
     global $CFG, $USER, $DB, $PAGE, $OUTPUT;
 
     $usercontext = context_user::instance($user->id, MUST_EXIST);
-    $systemcontext = context_system::instance();
-    $courseorusercontext = !empty($course) ? context_course::instance($course->id) : $usercontext;
-    $courseorsystemcontext = !empty($course) ? context_course::instance($course->id) : $systemcontext;
+    $systemcontext = system::instance();
+    $courseorusercontext = !empty($course) ? course::instance($course->id) : $usercontext;
+    $courseorsystemcontext = !empty($course) ? course::instance($course->id) : $systemcontext;
     $courseid = !empty($course) ? $course->id : SITEID;
 
     $contactcategory = new core_user\output\myprofile\category('contact', get_string('userdetails'));
@@ -61,7 +69,7 @@ function core_myprofile_navigation(core_user\output\myprofile\tree $tree, $user,
     // Full profile node.
     if (!empty($course)) {
         if (\core\user::can_view_profile($user, null, $usercontext)) {
-            $url = new moodle_url('/user/profile.php', array('id' => $user->id));
+            $url = new url('/user/profile.php', array('id' => $user->id));
             $node = new core_user\output\myprofile\node('miscellaneous', 'fullprofile', get_string('fullprofile'), null, $url);
             $tree->add_node($node);
         }
@@ -71,7 +79,7 @@ function core_myprofile_navigation(core_user\output\myprofile\tree $tree, $user,
     if (isloggedin() && !isguestuser($user) && !is_mnet_remote_user($user)) {
         if (($iscurrentuser || is_siteadmin($USER) || !is_siteadmin($user)) && has_capability('moodle/user:update',
                     $systemcontext)) {
-            $url = new moodle_url('/user/editadvanced.php', array('id' => $user->id, 'course' => $courseid,
+            $url = new url('/user/editadvanced.php', array('id' => $user->id, 'course' => $courseid,
                 'returnto' => 'profile'));
             $node = new core_user\output\myprofile\node('contact', 'editprofile', get_string('editmyprofile'), null, $url,
                 null, null, 'editprofile');
@@ -86,9 +94,9 @@ function core_myprofile_navigation(core_user\output\myprofile\tree $tree, $user,
                 $url = $userauthplugin->edit_profile_url();
                 if (empty($url)) {
                     if (empty($course)) {
-                        $url = new moodle_url('/user/edit.php', array('id' => $user->id, 'returnto' => 'profile'));
+                        $url = new url('/user/edit.php', array('id' => $user->id, 'returnto' => 'profile'));
                     } else {
-                        $url = new moodle_url('/user/edit.php', array('id' => $user->id, 'course' => $course->id,
+                        $url = new url('/user/edit.php', array('id' => $user->id, 'course' => $course->id,
                             'returnto' => 'profile'));
                     }
                 }
@@ -101,7 +109,7 @@ function core_myprofile_navigation(core_user\output\myprofile\tree $tree, $user,
 
     // Preference page.
     if (!$iscurrentuser && $PAGE->settingsnav->can_view_user_preferences($user->id)) {
-        $url = new moodle_url('/user/preferences.php', array('userid' => $user->id));
+        $url = new url('/user/preferences.php', array('userid' => $user->id));
         $title = get_string('preferences', 'moodle');
         $node = new core_user\output\myprofile\node('administration', 'preferences', $title, null, $url);
         $tree->add_node($node);
@@ -109,7 +117,7 @@ function core_myprofile_navigation(core_user\output\myprofile\tree $tree, $user,
 
     // Login as ...
     if (!empty(\core\session\loginas_helper::get_context_user_can_login_as($USER, $user, $course))) {
-        $url = new moodle_url('/course/loginas.php',
+        $url = new url('/course/loginas.php',
                 array('id' => $courseid, 'user' => $user->id, 'sesskey' => sesskey()));
         $node = new  core_user\output\myprofile\node('administration', 'loginas', get_string('loginas'), null, $url);
         $tree->add_node($node);
@@ -230,7 +238,7 @@ function core_myprofile_navigation(core_user\output\myprofile\tree $tree, $user,
             foreach ($mycourses as $mycourse) {
                 if ($mycourse->category) {
                     context_helper::preload_from_record($mycourse);
-                    $ccontext = context_course::instance($mycourse->id);
+                    $ccontext = course::instance($mycourse->id);
                     if (!isset($course) || $mycourse->id != $course->id) {
                         $linkattributes = null;
                         if ($mycourse->visible == 0) {
@@ -243,7 +251,7 @@ function core_myprofile_navigation(core_user\output\myprofile\tree $tree, $user,
                         if ($showallcourses) {
                             $params['showallcourses'] = 1;
                         }
-                        $url = new moodle_url('/user/view.php', $params);
+                        $url = new url('/user/view.php', $params);
                         $courselisting .= html_writer::tag('li', html_writer::link($url, $ccontext->get_context_name(false),
                                 $linkattributes));
                     } else {
@@ -254,10 +262,10 @@ function core_myprofile_navigation(core_user\output\myprofile\tree $tree, $user,
                 if (!$showallcourses && $shown == $CFG->navcourselimit) {
                     $url = null;
                     if (isset($course)) {
-                        $url = new moodle_url('/user/view.php',
+                        $url = new url('/user/view.php',
                                 array('id' => $user->id, 'course' => $course->id, 'showallcourses' => 1));
                     } else {
-                        $url = new moodle_url('/user/profile.php', array('id' => $user->id, 'showallcourses' => 1));
+                        $url = new url('/user/profile.php', array('id' => $user->id, 'showallcourses' => 1));
                     }
                     $courselisting .= html_writer::tag('li', html_writer::link($url, get_string('viewmore'),
                             array('title' => get_string('viewmore'))), array('class' => 'viewmore'));
@@ -369,7 +377,7 @@ function core_myprofile_navigation(core_user\output\myprofile\tree $tree, $user,
     // Last ip.
     if (has_capability('moodle/user:viewlastip', $usercontext) && !isset($hiddenfields['lastip'])) {
         if ($user->lastip) {
-            $iplookupurl = new moodle_url('/iplookup/index.php', array('ip' => $user->lastip, 'user' => $user->id));
+            $iplookupurl = new url('/iplookup/index.php', array('ip' => $user->lastip, 'user' => $user->id));
             $ipstring = html_writer::link($iplookupurl, $user->lastip);
         } else {
             $ipstring = get_string("none");

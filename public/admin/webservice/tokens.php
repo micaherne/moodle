@@ -23,6 +23,11 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
+use core\user;
 use core_reportbuilder\system_report_factory;
 use core_webservice\reportbuilder\local\systemreports\tokens;
 
@@ -41,7 +46,7 @@ admin_externalpage_setup('webservicetokens');
 
 $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->navbar->add(get_string('managetokens', 'webservice'),
-    new moodle_url('/admin/webservice/tokens.php'));
+    new url('/admin/webservice/tokens.php'));
 
 if ($action === 'create') {
     $PAGE->navbar->add(get_string('createtoken', 'webservice'), $PAGE->url);
@@ -66,8 +71,8 @@ if ($action === 'create') {
             }
         }
 
-        $user = \core_user::get_user($data->user, '*', MUST_EXIST);
-        \core_user::require_active_user($user);
+        $user = user::get_user($data->user, '*', MUST_EXIST);
+        user::require_active_user($user);
 
         // Generate the token.
         if (empty($errormsg)) {
@@ -75,7 +80,7 @@ if ($action === 'create') {
                 EXTERNAL_TOKEN_PERMANENT,
                 \core_external\util::get_service_by_id($data->service),
                 $data->user,
-                context_system::instance(),
+                system::instance(),
                 $data->validuntil,
                 $data->iprestriction,
                 $data->name
@@ -100,7 +105,7 @@ if ($action === 'delete') {
     $token = $webservicemanager->get_token_by_id_with_details($tokenid);
 
     if ($token->creatorid != $USER->id) {
-        require_capability('moodle/webservice:managealltokens', context_system::instance());
+        require_capability('moodle/webservice:managealltokens', system::instance());
     }
 
     if ($confirm && confirm_sesskey()) {
@@ -115,7 +120,7 @@ if ($action === 'delete') {
             'user' => $token->firstname . ' ' . $token->lastname,
             'service' => $token->name,
         ]),
-        new single_button(new moodle_url('/admin/webservice/tokens.php', [
+        new single_button(new url('/admin/webservice/tokens.php', [
             'tokenid' => $token->id,
             'action' => 'delete',
             'confirm' => 1,
@@ -131,7 +136,7 @@ if ($action === 'delete') {
 echo $OUTPUT->header();
 echo $OUTPUT->container_start('d-flex flex-wrap');
 echo $OUTPUT->heading(get_string('managetokens', 'core_webservice'));
-echo html_writer::div($OUTPUT->render(new single_button(new moodle_url($PAGE->url, ['action' => 'create']),
+echo html_writer::div($OUTPUT->render(new single_button(new url($PAGE->url, ['action' => 'create']),
     get_string('createtoken', 'core_webservice'), 'get', single_button::BUTTON_PRIMARY)), 'ms-auto');
 echo $OUTPUT->container_end();
 
@@ -151,7 +156,7 @@ if (!empty($SESSION->webservicenewlycreatedtoken)) {
     }
 }
 
-$report = system_report_factory::create(tokens::class, context_system::instance());
+$report = system_report_factory::create(tokens::class, system::instance());
 echo $report->output();
 
 echo $OUTPUT->footer();

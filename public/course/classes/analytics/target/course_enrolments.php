@@ -24,6 +24,10 @@
 
 namespace core_course\analytics\target;
 
+use core\context;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +81,7 @@ abstract class course_enrolments extends \core_analytics\local\target\binary {
      * @param  \context $context
      * @return string
      */
-    public function get_insight_subject(int $modelid, \context $context) {
+    public function get_insight_subject(int $modelid, context $context) {
         return get_string('studentsatriskincourse', 'course', $context->get_context_name(false));
     }
 
@@ -90,7 +94,7 @@ abstract class course_enrolments extends \core_analytics\local\target\binary {
      * @param  \moodle_url  $insighturl
      * @return string[]                     The plain text message and the HTML message
      */
-    public function get_insight_body(\context $context, string $contextname, \stdClass $user, \moodle_url $insighturl): array {
+    public function get_insight_body(context $context, string $contextname, \stdClass $user, url $insighturl): array {
         global $OUTPUT;
 
         $a = (object)['coursename' => $contextname, 'userfirstname' => $user->firstname];
@@ -230,9 +234,9 @@ abstract class course_enrolments extends \core_analytics\local\target\binary {
         $studentid = $sampledata['user']->id;
 
         // View outline report.
-        $url = new \moodle_url('/report/outline/user.php', array('id' => $studentid, 'course' => $sampledata['course']->id,
+        $url = new url('/report/outline/user.php', array('id' => $studentid, 'course' => $sampledata['course']->id,
                 'mode' => 'outline'));
-        $pix = new \pix_icon('i/report', get_string('outlinereport'));
+        $pix = new pix_icon('i/report', get_string('outlinereport'));
         $actions[] = new \core_analytics\prediction_action('viewoutlinereport', $prediction, $url, $pix,
                 get_string('outlinereport'), false, ['target' => '_blank']);
 
@@ -264,8 +268,8 @@ abstract class course_enrolments extends \core_analytics\local\target\binary {
             'data-bulk-sendmessage' => '1',
             'data-prediction-to-user-id' => json_encode($userids)
         );
-        $actions[] = new \core_analytics\bulk_action(self::MESSAGE_ACTION_NAME, new \moodle_url(''),
-            new \pix_icon('t/message', get_string('sendmessage', 'message')),
+        $actions[] = new \core_analytics\bulk_action(self::MESSAGE_ACTION_NAME, new url(''),
+            new pix_icon('t/message', get_string('sendmessage', 'message')),
             get_string('sendmessage', 'message'), true, $attrs);
 
         return array_merge($actions, parent::bulk_actions($predictions));

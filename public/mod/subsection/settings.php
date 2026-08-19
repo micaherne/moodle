@@ -23,10 +23,16 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\output\actions\confirm_action;
+use core\url;
+use core_admin\setting\setting\heading;
+use core_admin\setting\settingpage\settingpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $settings = new admin_settingpage('mod_subsection_settings', new lang_string('pluginname', 'mod_subsection'));
+    $settings = new settingpage('mod_subsection_settings', new lang_string('pluginname', 'mod_subsection'));
 
     if ($ADMIN->fulltree) {
         // Add description cleanup and migration links.
@@ -43,12 +49,12 @@ if ($hassiteconfig) {
                 get_string('descriptionsmigratedsuccess', 'mod_subsection'),
                 \core\output\notification::NOTIFY_SUCCESS,
             );
-            $settings->add(new admin_setting_heading(
+            $settings->add(new heading(
                 'migratedescriptionsnotification',
                 '',
                 $notification,
             ));
-            $settings->add(new admin_setting_heading(
+            $settings->add(new heading(
                 'pendingcleandescriptions',
                 '',
                 new lang_string('descriptionsmigratedpending', 'mod_subsection', $count),
@@ -61,24 +67,24 @@ if ($hassiteconfig) {
                 get_string('descriptionsdeletedsuccess', 'mod_subsection'),
                 \core\output\notification::NOTIFY_SUCCESS,
             );
-            $settings->add(new admin_setting_heading(
+            $settings->add(new heading(
                 'removedescriptionsnotification',
                 '',
                 $notification,
             ));
-            $settings->add(new admin_setting_heading(
+            $settings->add(new heading(
                 'pendingcleandescriptions',
                 '',
                 new lang_string('descriptionsdeletedpending', 'mod_subsection', $count),
             ));
         } else if ($count > 0) {
             // Show migration and deletion links.
-            $migrateaction = new \confirm_action(
+            $migrateaction = new confirm_action(
                 message: get_string('migrateconfirmtext', 'mod_subsection', $count),
                 continuelabel: get_string('migrateconfirmbutton', 'mod_subsection'),
                 title: get_string('migrateconfirmtitle', 'mod_subsection'),
             );
-            $migrateurl = new moodle_url(
+            $migrateurl = new url(
                 '/mod/subsection/cleandescriptions.php',
                 ['action' => 'migrate', 'sesskey' => sesskey()],
             );
@@ -89,13 +95,13 @@ if ($hassiteconfig) {
                 attributes: ['class' => 'btn btn-secondary'],
             );
 
-            $deleteaction = new \confirm_action(
+            $deleteaction = new confirm_action(
                 message: get_string('deleteconfirmtext', 'mod_subsection', $count),
                 continuelabel: get_string('deleteconfirmbutton', 'mod_subsection'),
                 title: get_string('deleteconfirmtitle', 'mod_subsection'),
                 dialogtype: 'delete',
             );
-            $deleteurl = new moodle_url(
+            $deleteurl = new url(
                 '/mod/subsection/cleandescriptions.php',
                 ['action' => 'delete', 'sesskey' => sesskey()],
             );
@@ -106,7 +112,7 @@ if ($hassiteconfig) {
                 attributes: ['class' => 'btn btn-secondary'],
             );
 
-            $settings->add(new admin_setting_heading(
+            $settings->add(new heading(
                 'cleandescriptions',
                 '',
                 new lang_string(

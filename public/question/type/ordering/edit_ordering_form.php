@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 // Prevent direct access to this script.
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Include required files.

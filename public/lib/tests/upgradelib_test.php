@@ -23,6 +23,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -410,7 +415,7 @@ final class upgradelib_test extends advanced_testcase {
         $contexts = array();
         for ($i = 0; $i < 45; $i++) {
             $course = $this->getDataGenerator()->create_course();
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             if (in_array($i, array(2, 5, 10, 13, 14, 19, 23, 25, 30, 34, 36))) {
                 // Assign good letter boundaries.
                 $this->assign_good_letter_boundary($context->id);
@@ -507,7 +512,7 @@ final class upgradelib_test extends advanced_testcase {
         $this->assertEquals(20160518, $CFG->{'gradebook_calculations_freeze_' . $courses[15]->id});
 
         // System setting for grade letter boundaries (custom with problem).
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $this->assign_bad_letter_boundary($systemcontext->id);
         for ($i = 0; $i < 45; $i++) {
             unset_config('gradebook_calculations_freeze_' . $courses[$i]->id);
@@ -611,7 +616,7 @@ final class upgradelib_test extends advanced_testcase {
         $contexts = array();
         for ($i = 0; $i < 3; $i++) {
             $courses[] = $this->getDataGenerator()->create_course();
-            $contexts[] = context_course::instance($courses[$i]->id);
+            $contexts[] = course::instance($courses[$i]->id);
         }
 
         // Course one is not using a letter boundary.
@@ -624,7 +629,7 @@ final class upgradelib_test extends advanced_testcase {
         $this->assign_good_letter_boundary($contexts[2]->id);
         $this->assertFalse(upgrade_letter_boundary_needs_freeze($contexts[2]));
         // Try the system context not using a letter boundary.
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $this->assertFalse(upgrade_letter_boundary_needs_freeze($systemcontext));
     }
 
@@ -820,8 +825,8 @@ final class upgradelib_test extends advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $this->setUser($user);
-        $usercontext = context_user::instance($user->id);
-        $syscontext = context_system::instance();
+        $usercontext = user::instance($user->id);
+        $syscontext = system::instance();
 
         $fs = get_file_storage();
 

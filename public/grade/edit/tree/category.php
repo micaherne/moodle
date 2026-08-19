@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
 use core_grades\form\add_category;
 
 require_once('../../../config.php');
@@ -33,21 +37,21 @@ require_once('category_form.php');
 $courseid = required_param('courseid', PARAM_INT);
 $id       = optional_param('id', 0, PARAM_INT); // grade_category->id
 
-$url = new moodle_url('/grade/edit/tree/category.php', array('courseid'=>$courseid));
+$url = new url('/grade/edit/tree/category.php', array('courseid'=>$courseid));
 if ($id !== 0) {
     $url->param('id', $id);
 }
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
-navigation_node::override_active_url(new moodle_url('/grade/edit/tree/index.php',
+navigation_node::override_active_url(new url('/grade/edit/tree/index.php',
     array('id'=>$courseid)));
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/grade:manage', $context);
 
 // default return url
@@ -59,7 +63,7 @@ $heading = get_string('categoryedit', 'grades');
 
 if ($id) {
     if (!$grade_category = grade_category::fetch(array('id'=>$id, 'courseid'=>$course->id))) {
-        throw new \moodle_exception('invalidcategory');
+        throw new moodle_exception('invalidcategory');
     }
     $grade_category->apply_forced_settings();
     $category = $grade_category->get_record_data();

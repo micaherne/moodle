@@ -26,8 +26,8 @@
 
 namespace core;
 
-use context;
-use context_helper;
+use core\context;
+use core\context_helper;
 
 defined('MOODLE_INTERNAL') || die();
 

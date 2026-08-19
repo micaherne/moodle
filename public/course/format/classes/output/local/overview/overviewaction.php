@@ -135,7 +135,7 @@ class overviewaction extends action_link implements externable, named_templatabl
     }
 
     #[\Override]
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core/action_link';
     }
 

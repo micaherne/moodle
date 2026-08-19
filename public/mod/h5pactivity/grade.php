@@ -23,6 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
 use mod_h5pactivity\local\manager;
 
 require(__DIR__.'/../../config.php');
@@ -43,7 +44,7 @@ require_login($course, true, $cm);
 $manager = manager::create_from_coursemodule($cm);
 
 if (!$manager->can_view_all_attempts() && !$manager->can_view_own_attempts()) {
-    redirect(new moodle_url('/mod/h5pactivity/view.php', ['id' => $id]));
+    redirect(new url('/mod/h5pactivity/view.php', ['id' => $id]));
 }
 
 $moduleinstance = $manager->get_instance();
@@ -59,4 +60,4 @@ if (!empty($score->attemptid)) {
     $params['attemptid'] = $score->attemptid;
 }
 
-redirect(new moodle_url('/mod/h5pactivity/report.php', $params));
+redirect(new url('/mod/h5pactivity/report.php', $params));

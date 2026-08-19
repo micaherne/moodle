@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -29,11 +32,11 @@ $bodyattributes = $OUTPUT->body_attributes();
 // Left-panel instructions. Only set when the admin has defined custom instructions;
 // the template falls back to the default welcome content when this is empty/null.
 $leftinstructions = !empty($CFG->auth_instructions)
-    ? format_text($CFG->auth_instructions, FORMAT_MOODLE, ['context' => context_system::instance()])
+    ? format_text($CFG->auth_instructions, FORMAT_MOODLE, ['context' => system::instance()])
     : null;
 
 $templatecontext = [
-    'sitename' => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),
+    'sitename' => format_string($SITE->shortname, true, ['context' => course::instance(SITEID), "escape" => false]),
     'output' => $OUTPUT,
     'bodyattributes' => $bodyattributes,
     'leftinstructions' => $leftinstructions,

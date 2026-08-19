@@ -18,11 +18,11 @@ namespace mod_data\output;
 
 use core\output\renderable;
 use core\output\templatable;
-use html_writer;
+use core\output\html_writer;
 use mod_data\manager;
 use mod_data\template;
-use moodle_url;
-use renderer_base;
+use core\url;
+use core\output\renderer_base;
 
 /**
  * Renderable class for footer in the view pages of the database activity.
@@ -65,7 +65,7 @@ class view_footer implements renderable, templatable {
         int $totalcount,
         int $currentpage,
         int $nowperpage,
-        moodle_url $baseurl,
+        url $baseurl,
         template $parser
     ) {
         $this->manager = $manager;

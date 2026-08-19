@@ -17,6 +17,8 @@
 namespace mod_quiz\event;
 
 use core\event\base;
+use core\exception\coding_exception;
+use core\url;
 
 /**
  * The quiz sub-grade that this slot contributes to has changed.
@@ -52,7 +54,7 @@ class slot_grade_item_updated extends base {
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/editgrading.php', [
+        return new url('/mod/quiz/editgrading.php', [
             'cmid' => $this->contextinstanceid,
         ]);
     }
@@ -61,23 +63,23 @@ class slot_grade_item_updated extends base {
         parent::validate_data();
 
         if (!isset($this->objectid)) {
-            throw new \coding_exception('The \'objectid\' value must be set.');
+            throw new coding_exception('The \'objectid\' value must be set.');
         }
 
         if (!isset($this->contextinstanceid)) {
-            throw new \coding_exception('The \'contextinstanceid\' value must be set.');
+            throw new coding_exception('The \'contextinstanceid\' value must be set.');
         }
 
         if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+            throw new coding_exception('The \'quizid\' value must be set in other.');
         }
 
         if (!array_key_exists('previousgradeitem', $this->other)) {
-            throw new \coding_exception('The \'previousgradeitem\' value must be set in other.');
+            throw new coding_exception('The \'previousgradeitem\' value must be set in other.');
         }
 
         if (!array_key_exists('newgradeitem', $this->other)) {
-            throw new \coding_exception('The \'newgradeitem\' value must be set in other.');
+            throw new coding_exception('The \'newgradeitem\' value must be set in other.');
         }
     }
 

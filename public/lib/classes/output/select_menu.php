@@ -98,7 +98,7 @@ class select_menu implements renderable, templatable {
                         $flattened[$groupname] = [
                             'name' => $groupname,
                             'isgroup' => true,
-                            'id' => \html_writer::random_id('select-menu-group'),
+                            'id' => html_writer::random_id('select-menu-group'),
                             'options' => [],
                         ];
                     }
@@ -110,7 +110,7 @@ class select_menu implements renderable, templatable {
                                 'name' => $optoption,
                                 'value' => $optvalue,
                                 'selected' => $this->selected == $optvalue,
-                                'id' => \html_writer::random_id('select-menu-option'),
+                                'id' => html_writer::random_id('select-menu-option'),
                                 'disableactive' => $this->disableactive,
                             ];
                         }
@@ -124,7 +124,7 @@ class select_menu implements renderable, templatable {
                         'name' => $option,
                         'value' => $value,
                         'selected' => $this->selected == $value,
-                        'id' => \html_writer::random_id('select-menu-option'),
+                        'id' => html_writer::random_id('select-menu-option'),
                         'disableactive' => $this->disableactive,
                     ];
                 }
@@ -177,7 +177,7 @@ class select_menu implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output): \stdClass {
         $data = new \stdClass();
-        $data->baseid = \html_writer::random_id('select-menu');
+        $data->baseid = html_writer::random_id('select-menu');
         $data->label = $this->label;
         $data->inlinelabel = $this->inlinelabel;
         $data->options = $this->flatten_options();

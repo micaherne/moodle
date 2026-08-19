@@ -16,6 +16,10 @@
 
 namespace mod_glossary\external;
 
+use core\context\module;
+use core\context\user;
+use core\exception\invalid_parameter_exception;
+use core\exception\require_login_exception;
 use core_external\external_api;
 use core_external\util as external_util;
 use mod_glossary_external;
@@ -112,7 +116,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $g1 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $u1 = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
 
         // Revoke permission.
         $roles = get_archetype_roles('user');
@@ -122,7 +126,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Assertion.
         $this->setUser($u1);
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         $this->expectExceptionMessage('Activity is hidden');
         mod_glossary_external::view_glossary($g1->id, 'letter');
     }
@@ -140,7 +144,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $e2 = $gg->create_content($g1, array('approved' => 0, 'userid' => $u1->id));
         $e3 = $gg->create_content($g1, array('approved' => 0, 'userid' => -1));
         $e4 = $gg->create_content($g2, array('approved' => 1));
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
         $this->setUser($u1);
 
@@ -169,12 +173,12 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             mod_glossary_external::view_entry($e3->id);
             $this->fail('Cannot view non-approved entries of others.');
-        } catch (\invalid_parameter_exception $e) {
+        } catch (invalid_parameter_exception $e) {
             // All good.
         }
 
         // Test non-readable entry.
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         $this->expectExceptionMessage('Activity is hidden');
         mod_glossary_external::view_entry($e4->id);
     }
@@ -188,7 +192,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $g1 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $g2 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $u1 = $this->getDataGenerator()->create_user();
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
 
         $e1a = $gg->create_content($g1, array('approved' => 0, 'concept' => 'Bob', 'userid' => 2, 'tags' => array('Cats', 'Dogs')));
@@ -248,7 +252,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $c1 = $this->getDataGenerator()->create_course();
         $g1 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $u1 = $this->getDataGenerator()->create_user();
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
 
         $e1a = $gg->create_content($g1, array('approved' => 1, 'concept' => '0-day', 'userid' => $u1->id));
@@ -296,7 +300,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $g1 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id, 'displayformat' => 'entrylist'));
         $g2 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $u1 = $this->getDataGenerator()->create_user();
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
 
         $now = time();
@@ -415,7 +419,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $g1 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id, 'displayformat' => 'entrylist'));
         $g2 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id, 'displayformat' => 'entrylist'));
         $u1 = $this->getDataGenerator()->create_user();
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
 
         $e1a1 = $gg->create_content($g1, array('approved' => 1, 'userid' => $u1->id, 'tags' => array('Cats', 'Dogs')));
         $e1a2 = $gg->create_content($g1, array('approved' => 1, 'userid' => $u1->id));
@@ -502,7 +506,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $u2 = $this->getDataGenerator()->create_user(array('lastname' => 'Alpha'));
         $u3 = $this->getDataGenerator()->create_user(array('lastname' => 'Omega'));
 
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
 
         $e1a = $gg->create_content($g1, array('userid' => $u1->id, 'approved' => 1));
         $e1b = $gg->create_content($g1, array('userid' => $u1->id, 'approved' => 1));
@@ -549,7 +553,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $u2 = $this->getDataGenerator()->create_user(array('lastname' => 'Ultra', 'firstname' => '1337'));
         $u3 = $this->getDataGenerator()->create_user(array('lastname' => 'Alpha', 'firstname' => 'Omega'));
         $u4 = $this->getDataGenerator()->create_user(array('lastname' => '0-day', 'firstname' => 'Zoe'));
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
 
         $e1a1 = $gg->create_content($g1, array('approved' => 1, 'userid' => $u1->id));
@@ -665,7 +669,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $u2 = $this->getDataGenerator()->create_user(array('lastname' => 'Ultra', 'firstname' => '1337'));
         $u3 = $this->getDataGenerator()->create_user(array('lastname' => 'Alpha', 'firstname' => 'Omega'));
         $u4 = $this->getDataGenerator()->create_user(array('lastname' => '0-day', 'firstname' => 'Zoe'));
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
 
         $e1a1 = $gg->create_content($g1, array('approved' => 1, 'userid' => $u1->id, 'concept' => 'Zoom',
@@ -770,7 +774,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $g1 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $g2 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $u1 = $this->getDataGenerator()->create_user();
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
         $this->setUser($u1);
 
@@ -886,7 +890,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $g1 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $g2 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $u1 = $this->getDataGenerator()->create_user();
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
 
         $this->setAdminUser();
@@ -1051,7 +1055,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $g1 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $g2 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $u1 = $this->getDataGenerator()->create_user();
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
 
         $e1a = $gg->create_content($g1, array('approved' => 0, 'concept' => 'Bob', 'userid' => $u1->id,
@@ -1160,7 +1164,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $u1 = $this->getDataGenerator()->create_user();
         $u2 = $this->getDataGenerator()->create_user();
         $u3 = $this->getDataGenerator()->create_user();
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
         $this->getDataGenerator()->enrol_user($u2->id, $c1->id);
         $this->getDataGenerator()->enrol_user($u3->id, $c1->id);
@@ -1200,14 +1204,14 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $return = mod_glossary_external::get_entry_by_id($e3->id);
             $this->fail('Cannot view unapproved entries of others.');
-        } catch (\invalid_parameter_exception $e) {
+        } catch (invalid_parameter_exception $e) {
             // All good.
         }
 
         try {
             $return = mod_glossary_external::get_entry_by_id($e4->id);
             $this->fail('Cannot view entries from another course.');
-        } catch (\require_login_exception $e) {
+        } catch (require_login_exception $e) {
             // All good.
         }
 
@@ -1314,7 +1318,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $glossary = $this->getDataGenerator()->create_module('glossary', array('course' => $course->id));
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         $this->setAdminUser();
         $concept = 'A concept';
@@ -1323,7 +1327,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Draft files.
         $draftidinlineattach = file_get_unused_draft_itemid();
         $draftidattach = file_get_unused_draft_itemid();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $filerecordinline = array(
             'contextid' => $usercontext->id,
             'component' => 'user',
@@ -1398,7 +1402,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $scale = $this->getDataGenerator()->create_scale(array('scale' => 'A,B,C,D'));
         $record->scale = "-$scale->id";
         $glossary = $this->getDataGenerator()->create_module('glossary', $record);
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         $gg = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
         $entry = $gg->create_content($glossary, array('approved' => 1, 'userid' => $user1->id));

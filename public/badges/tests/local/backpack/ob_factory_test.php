@@ -22,6 +22,8 @@ global $CFG;
 
 require_once($CFG->libdir . '/badgeslib.php');
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_badges_generator;
 use core_badges\local\backpack\ob_factory;
 
@@ -102,13 +104,13 @@ final class ob_factory_test extends \advanced_testcase {
             ],
             'Unsupported Open Badges version should raise exception' => [
                 'obversion' => '3.0',
-                'expectedclassvalid' => \coding_exception::class,
-                'expectedclassinvalid' => \coding_exception::class,
+                'expectedclassvalid' => coding_exception::class,
+                'expectedclassinvalid' => coding_exception::class,
             ],
             'Invalid Open Badges version should raise exception' => [
                 'obversion' => 'ABC',
-                'expectedclassvalid' => \coding_exception::class,
-                'expectedclassinvalid' => \coding_exception::class,
+                'expectedclassvalid' => coding_exception::class,
+                'expectedclassinvalid' => coding_exception::class,
             ],
         ];
     }
@@ -166,22 +168,22 @@ final class ob_factory_test extends \advanced_testcase {
             'Open Badges v2.0' => [
                 'obversion' => OPEN_BADGES_V2,
                 'expectedclassvalid' => \core_badges\local\backpack\ob\v2p0\badge_exporter::class,
-                'expectedclassinvalid' => \moodle_exception::class,
+                'expectedclassinvalid' => moodle_exception::class,
             ],
             'Open Badges v2.1' => [
                 'obversion' => OPEN_BADGES_V2P1,
                 'expectedclassvalid' => \core_badges\local\backpack\ob\v2p1\badge_exporter::class,
-                'expectedclassinvalid' => \moodle_exception::class,
+                'expectedclassinvalid' => moodle_exception::class,
             ],
             'Unsupported Open Badges version should raise exception' => [
                 'obversion' => '3.0',
-                'expectedclassvalid' => \coding_exception::class,
-                'expectedclassinvalid' => \coding_exception::class,
+                'expectedclassvalid' => coding_exception::class,
+                'expectedclassinvalid' => coding_exception::class,
             ],
             'Invalid Open Badges version should raise exception' => [
                 'obversion' => 'ABC',
-                'expectedclassvalid' => \coding_exception::class,
-                'expectedclassinvalid' => \coding_exception::class,
+                'expectedclassvalid' => coding_exception::class,
+                'expectedclassinvalid' => coding_exception::class,
             ],
         ];
     }
@@ -241,22 +243,22 @@ final class ob_factory_test extends \advanced_testcase {
             'Open Badges v2.0' => [
                 'obversion' => OPEN_BADGES_V2,
                 'expectedclassvalid' => \core_badges\local\backpack\ob\v2p0\badge_exporter::class,
-                'expectedclassinvalid' => \coding_exception::class,
+                'expectedclassinvalid' => coding_exception::class,
             ],
             'Open Badges v2.1' => [
                 'obversion' => OPEN_BADGES_V2P1,
                 'expectedclassvalid' => \core_badges\local\backpack\ob\v2p1\badge_exporter::class,
-                'expectedclassinvalid' => \coding_exception::class,
+                'expectedclassinvalid' => coding_exception::class,
             ],
             'Unsupported Open Badges version should raise exception' => [
                 'obversion' => '3.0',
-                'expectedclassvalid' => \coding_exception::class,
-                'expectedclassinvalid' => \coding_exception::class,
+                'expectedclassvalid' => coding_exception::class,
+                'expectedclassinvalid' => coding_exception::class,
             ],
             'Invalid Open Badges version should raise exception' => [
                 'obversion' => 'ABC',
-                'expectedclassvalid' => \coding_exception::class,
-                'expectedclassinvalid' => \coding_exception::class,
+                'expectedclassvalid' => coding_exception::class,
+                'expectedclassinvalid' => coding_exception::class,
             ],
         ];
     }
@@ -342,22 +344,22 @@ final class ob_factory_test extends \advanced_testcase {
             'Open Badges v2.0' => [
                 'obversion' => OPEN_BADGES_V2,
                 'expectedclassvalid' => \core_badges\local\backpack\ob\v2p0\issuer_exporter::class,
-                'expectedclassinvalid' => \moodle_exception::class,
+                'expectedclassinvalid' => moodle_exception::class,
             ],
             'Open Badges v2.1' => [
                 'obversion' => OPEN_BADGES_V2P1,
                 'expectedclassvalid' => \core_badges\local\backpack\ob\v2p1\issuer_exporter::class,
-                'expectedclassinvalid' => \moodle_exception::class,
+                'expectedclassinvalid' => moodle_exception::class,
             ],
             'Unsupported Open Badges version should raise exception' => [
                 'obversion' => '3.0',
-                'expectedclassvalid' => \coding_exception::class,
-                'expectedclassinvalid' => \coding_exception::class,
+                'expectedclassvalid' => coding_exception::class,
+                'expectedclassinvalid' => coding_exception::class,
             ],
             'Invalid Open Badges version should raise exception' => [
                 'obversion' => 'ABC',
-                'expectedclassvalid' => \coding_exception::class,
-                'expectedclassinvalid' => \coding_exception::class,
+                'expectedclassvalid' => coding_exception::class,
+                'expectedclassinvalid' => coding_exception::class,
             ],
         ];
     }

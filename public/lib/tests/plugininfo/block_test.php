@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace core\plugininfo;
 
 use advanced_testcase;
+use core\plugin_manager;
 
 /**
  * Unit tests for the mod plugininfo class
@@ -63,7 +64,7 @@ final class block_test extends advanced_testcase {
         string $plugin,
         bool $expected,
     ): void {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugininfo = $pluginmanager->get_plugin_info("block_{$plugin}");
         $this->assertEquals($expected, $plugininfo->is_uninstall_allowed());
     }

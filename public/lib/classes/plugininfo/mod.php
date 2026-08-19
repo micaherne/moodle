@@ -16,6 +16,10 @@
 
 namespace core\plugininfo;
 
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+
 /**
  * Defines classes used for plugin info.
  *
@@ -41,7 +45,7 @@ class mod extends base {
         global $DB;
 
         if (!$module = $DB->get_record('modules', ['name' => $pluginname])) {
-            throw new \moodle_exception('moduledoesnotexist', 'error');
+            throw new moodle_exception('moduledoesnotexist', 'error');
         }
 
         $haschanged = false;
@@ -98,7 +102,7 @@ class mod extends base {
 
             // Include this information into config changes table.
             add_to_config_log('mod_visibility', $module->visible, $enabled, $pluginname);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -250,7 +254,7 @@ class mod extends base {
         // Delete module contexts.
         if ($coursemods) {
             foreach ($coursemods as $coursemod) {
-                \context_helper::delete_instance(CONTEXT_MODULE, $coursemod->id);
+                context_helper::delete_instance(CONTEXT_MODULE, $coursemod->id);
             }
         }
 

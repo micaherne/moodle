@@ -24,6 +24,8 @@
 
 namespace core_analytics\local\indicator;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,7 +78,7 @@ abstract class binary extends discrete {
         } else if ($value == 1) {
             return get_string('yes');
         } else {
-            throw new \moodle_exception('errorpredictionformat', 'analytics');
+            throw new moodle_exception('errorpredictionformat', 'analytics');
         }
     }
 
@@ -95,7 +97,7 @@ abstract class binary extends discrete {
         } else if ($value == 1) {
             return self::OUTCOME_OK;
         } else {
-            throw new \moodle_exception('errorpredictionformat', 'analytics');
+            throw new moodle_exception('errorpredictionformat', 'analytics');
         }
     }
 

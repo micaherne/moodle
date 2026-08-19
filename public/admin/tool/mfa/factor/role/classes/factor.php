@@ -16,6 +16,7 @@
 
 namespace factor_role;
 
+use core\context\system;
 use stdClass;
 use tool_mfa\local\factor\object_factor_base;
 
@@ -83,7 +84,7 @@ class factor extends object_factor_base {
         }
 
         $selected = explode(',', $rolestring);
-        $syscon = \context_system::instance();
+        $syscon = system::instance();
         $specials = get_user_roles_with_special($syscon, $USER->id);
         // Transform the special roles to the matching format.
         $specials = array_map(function ($el) {

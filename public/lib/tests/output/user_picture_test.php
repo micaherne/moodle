@@ -16,6 +16,8 @@
 
 namespace core\output;
 
+use core\context\system;
+
 /**
  * Unit tests for the user_picture class.
  *
@@ -90,7 +92,7 @@ final class user_picture_test extends \advanced_testcase {
         // But would not be allowed if we change guest role to remove capability.
         $guestroleid = $DB->get_field('role', 'id', ['shortname' => 'guest'], MUST_EXIST);
         assign_capability('moodle/user:viewprofilepictures', CAP_INHERIT, $guestroleid,
-            \context_system::instance()->id, true);
+            system::instance()->id, true);
         $this->assertFalse(user_picture::allow_view($adminid));
     }
 
@@ -123,7 +125,7 @@ final class user_picture_test extends \advanced_testcase {
         // But would not be allowed if we change user role to remove capability.
         $userroleid = $DB->get_field('role', 'id', ['shortname' => 'user'], MUST_EXIST);
         assign_capability('moodle/user:viewprofilepictures', CAP_INHERIT, $userroleid,
-            \context_system::instance()->id, true);
+            system::instance()->id, true);
         $this->assertFalse(user_picture::allow_view($adminid));
 
         // Except you are still allowed to view your own user picture.

@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\url;
+
 define('IGNORE_COMPONENT_CACHE', true);
 
 require_once('../config.php');
@@ -30,7 +33,7 @@ require_once($CFG->libdir.'/adminlib.php');
 
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
 $returnurl = optional_param('returnurl', '/admin/purgecaches.php', PARAM_LOCALURL);
-$returnurl = new moodle_url($returnurl);
+$returnurl = new url($returnurl);
 
 admin_externalpage_setup('purgecaches');
 

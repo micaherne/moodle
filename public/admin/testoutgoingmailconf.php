@@ -21,6 +21,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+use core\user;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -28,8 +32,8 @@ require_once($CFG->libdir.'/adminlib.php');
 admin_externalpage_setup('testoutgoingmailconf');
 
 $headingtitle = get_string('testoutgoingmailconf', 'admin');
-$homeurl = new moodle_url('/admin/category.php', array('category' => 'email'));
-$returnurl = new moodle_url('/admin/testoutgoingconf.php');
+$homeurl = new url('/admin/category.php', array('category' => 'email'));
+$returnurl = new url('/admin/testoutgoingconf.php');
 
 $form = new core_admin\form\testoutgoingmailconf_form(null, ['returnurl' => $returnurl]);
 if ($form->is_cancelled()) {
@@ -55,11 +59,11 @@ if ($data) {
     // Get the user who will send this email (From:).
     $emailuserfrom = $USER;
     if ($data->from) {
-        if (!$userfrom = \core_user::get_user_by_email($data->from)) {
-            $userfrom = \core_user::get_user_by_username($data->from);
+        if (!$userfrom = user::get_user_by_email($data->from)) {
+            $userfrom = user::get_user_by_username($data->from);
         }
         if (!$userfrom && validate_email($data->from)) {
-            $dummyuser = \core_user::get_user(\core_user::NOREPLY_USER);
+            $dummyuser = user::get_user(user::NOREPLY_USER);
             $dummyuser->id = -1;
             $dummyuser->email = $data->from;
             $dummyuser->firstname = $data->from;
@@ -74,7 +78,7 @@ if ($data) {
 
     // Build the email subject.
     $subjectparams = new stdClass();
-    $subjectparams->site = format_string($SITE->fullname, true, ['context' => context_system::instance()]);
+    $subjectparams->site = format_string($SITE->fullname, true, ['context' => system::instance()]);
     if (isset($data->additionalsubject)) {
         $subjectparams->additional = format_string($data->additionalsubject);
     }

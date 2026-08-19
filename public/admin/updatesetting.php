@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\plugin_manager;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once('../config.php');
@@ -32,14 +35,14 @@ $plugin  = required_param('plugin', PARAM_PLUGIN);
 $type    = required_param('type', PARAM_PLUGIN);
 
 $PAGE->set_url('/admin/updatesetting.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 require_admin();
 require_sesskey();
 
 $plugintypeclass = "\\core\\plugininfo\\{$type}";
 
-$plugins = \core_plugin_manager::instance()->get_plugins_of_type($type);
+$plugins = plugin_manager::instance()->get_plugins_of_type($type);
 $sortorder = array_values($plugintypeclass::get_enabled_plugins());
 
 $return = $plugintypeclass::get_manage_url();
@@ -50,12 +53,12 @@ if (!array_key_exists($plugin, $plugins)) {
 
 switch ($action) {
     case 'disable':
-        $class = \core_plugin_manager::resolve_plugininfo_class($type);
+        $class = plugin_manager::resolve_plugininfo_class($type);
         $class::enable_plugin($plugin, false);
         break;
 
     case 'enable':
-        $class = \core_plugin_manager::resolve_plugininfo_class($type);
+        $class = plugin_manager::resolve_plugininfo_class($type);
         $class::enable_plugin($plugin, true);
         break;
 

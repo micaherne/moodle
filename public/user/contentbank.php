@@ -22,6 +22,8 @@
  * @package core_user
  */
 
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot.'/user/editlib.php');
 require_once($CFG->dirroot.'/user/lib.php');
@@ -41,7 +43,7 @@ $user->contentvisibility = get_user_preferences('core_contentbank_visibility',
 
 $form->set_data($user);
 
-$redirect = new moodle_url("/user/preferences.php", ['userid' => $user->id]);
+$redirect = new url("/user/preferences.php", ['userid' => $user->id]);
 
 if ($form->is_cancelled()) {
     redirect($redirect);

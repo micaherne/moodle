@@ -28,6 +28,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
 use mod_quiz\quiz_attempt;
 
 require_once(__DIR__ . '/../../config.php');

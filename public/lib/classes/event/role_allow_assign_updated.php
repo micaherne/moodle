@@ -25,6 +25,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -71,6 +73,6 @@ class role_allow_assign_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/roles/allow.php', array('mode' => 'assign'));
+        return new url('/admin/roles/allow.php', array('mode' => 'assign'));
     }
 }

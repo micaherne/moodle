@@ -16,6 +16,8 @@
 
 namespace mod_assign\tests;
 
+use core\context\module;
+
 /**
  * TODO describe file provider_testcase
  *
@@ -63,7 +65,7 @@ abstract class provider_testcase extends \core_privacy\tests\provider_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         return new \assign($context, $cm, $params['course']);
     }
 }

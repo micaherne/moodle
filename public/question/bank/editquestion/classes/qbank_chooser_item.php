@@ -24,9 +24,9 @@
 
 namespace qbank_editquestion;
 
-use context;
-use lang_string;
-use pix_icon;
+use core\context;
+use core\lang_string;
+use core\output\pix_icon;
 
 /**
  * The qbank_chooser_item renderable class.

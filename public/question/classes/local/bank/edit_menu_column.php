@@ -24,6 +24,7 @@
 
 namespace core_question\local\bank;
 
+use core\output\action_menu;
 use \core\plugininfo\qbank;
 
 /**
@@ -51,7 +52,7 @@ class edit_menu_column extends column_base {
         global $OUTPUT;
         $actions = $this->qbank->get_question_actions();
 
-        $menu = new \action_menu();
+        $menu = new action_menu();
         $menu->set_menu_trigger(get_string('edit'));
         $menu->set_boundary('window');
         foreach ($actions as $action) {

@@ -24,7 +24,7 @@
 namespace core_user\output;
 
 use core_user\fields;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 /**

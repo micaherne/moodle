@@ -25,6 +25,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot . '/' . $CFG->admin . '/mnet/services_form.php');
@@ -73,7 +75,7 @@ if ($formdata = $mform->get_data()) {
             $DB->update_record('mnet_host2service', $host2service);
         }
     }
-    $redirecturl = new moodle_url('/admin/mnet/services.php?hostid=' . $hostid);
+    $redirecturl = new url('/admin/mnet/services.php?hostid=' . $hostid);
     redirect($redirecturl, get_string('changessaved'));
 }
 

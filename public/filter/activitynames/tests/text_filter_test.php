@@ -16,6 +16,8 @@
 
 namespace filter_activitynames;
 
+use core\context\course;
+
 /**
  * Test case for the activity names auto-linking filter.
  *
@@ -31,7 +33,7 @@ final class text_filter_test extends \advanced_testcase {
 
         // Create a test course.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Create two pages that will be linked to.
         $page1 = $this->getDataGenerator()->create_module(
@@ -85,7 +87,7 @@ final class text_filter_test extends \advanced_testcase {
 
         // Create a test course.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Work around an issue with the activity names filter which maintains a static cache
         // of activities for current course ID. We can re-build the cache by switching user.
@@ -165,7 +167,7 @@ final class text_filter_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $this->getDataGenerator()->create_module(
             'page',
@@ -185,8 +187,8 @@ final class text_filter_test extends \advanced_testcase {
         // Create a test courses.
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
 
         // Create page 1.
         $page1 = $this->getDataGenerator()->create_module(

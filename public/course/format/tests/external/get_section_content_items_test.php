@@ -18,7 +18,7 @@ namespace core_courseformat\external;
 
 use core_external\external_api;
 use core_external\tests\externallib_testcase;
-use section_info;
+use core_course\section_info;
 use stdClass;
 
 /**

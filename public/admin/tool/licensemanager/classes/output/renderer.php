@@ -26,8 +26,9 @@ namespace tool_licensemanager\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\output\renderable;
 use license_manager;
-use plugin_renderer_base;
+use core\output\plugin_renderer_base;
 use tool_licensemanager\helper;
 
 /**
@@ -80,7 +81,7 @@ class renderer extends plugin_renderer_base {
      *
      * @return string HTML.
      */
-    public function render_table(\renderable $table) {
+    public function render_table(renderable $table) {
         $licenses = license_manager::get_licenses();
 
         // Add the create license button.

@@ -27,7 +27,7 @@
 
 namespace qbank_exportquestions;
 
-use moodle_url;
+use core\url;
 
 /**
  * Class exportquestions_helper contains all the library functions.
@@ -48,10 +48,10 @@ class exportquestions_helper {
      * @return moodle_url Return an URL.
      */
     public static function question_make_export_url($contextid, $categoryid, $format, $withcategories,
-                                      $withcontexts, $filename): moodle_url {
+                                      $withcontexts, $filename): url {
         global $CFG;
         $urlbase = "$CFG->wwwroot/pluginfile.php";
-        return moodle_url::make_file_url($urlbase,
+        return url::make_file_url($urlbase,
             "/$contextid/question/export/{$categoryid}/{$format}/{$withcategories}" .
             "/{$withcontexts}/{$filename}", true);
     }

@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context_helper;
+use core\lang_string;
 use core\output\html_writer;
 use core\url;
 
@@ -89,7 +92,7 @@ class enrol_meta_plugin extends enrol_plugin {
      * @return boolean
      */
     public function can_add_instance($courseid) {
-        $context = context_course::instance($courseid, MUST_EXIST);
+        $context = course::instance($courseid, MUST_EXIST);
         if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/meta:config', $context)) {
             return false;
         }
@@ -148,7 +151,7 @@ class enrol_meta_plugin extends enrol_plugin {
         }
         foreach ($courses as $courseid) {
             if (!empty($fields['customint2']) && $fields['customint2'] == ENROL_META_CREATE_GROUP) {
-                $context = context_course::instance($course->id);
+                $context = course::instance($course->id);
                 require_capability('moodle/course:managegroups', $context);
                 $groupid = enrol_meta_create_new_group($course->id, $courseid);
                 $fields['customint2'] = $groupid;
@@ -175,7 +178,7 @@ class enrol_meta_plugin extends enrol_plugin {
         require_once("$CFG->dirroot/enrol/meta/locallib.php");
 
         if (!empty($data->customint2) && $data->customint2 == ENROL_META_CREATE_GROUP) {
-            $context = context_course::instance($instance->courseid);
+            $context = course::instance($instance->courseid);
             require_capability('moodle/course:managegroups', $context);
             $groupid = enrol_meta_create_new_group($instance->courseid, $data->customint1);
             $data->customint2 = $groupid;
@@ -211,7 +214,7 @@ class enrol_meta_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/meta:config', $context);
     }
 
@@ -222,7 +225,7 @@ class enrol_meta_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/meta:config', $context);
     }
 
@@ -270,7 +273,7 @@ class enrol_meta_plugin extends enrol_plugin {
                 continue;
             }
             context_helper::preload_from_record($c);
-            $coursecontext = context_course::instance($c->id);
+            $coursecontext = course::instance($c->id);
             if (!$c->visible and !has_capability('moodle/course:viewhiddencourses', $coursecontext)) {
                 continue;
             }
@@ -372,7 +375,7 @@ class enrol_meta_plugin extends enrol_plugin {
                     $errors['customint1'] = get_string('invalidcourseid', 'error');
                 } else {
                     foreach ($coursesrecords as $coursesrecord) {
-                        $coursecontext = context_course::instance($coursesrecord->id);
+                        $coursecontext = course::instance($coursesrecord->id);
                         if (!$coursesrecord->visible and !has_capability('moodle/course:viewhiddencourses', $coursecontext)) {
                             $errors['customint1'] = get_string('nopermissions', 'error',
                                 'moodle/course:viewhiddencourses');

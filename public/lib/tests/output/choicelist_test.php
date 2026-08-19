@@ -26,6 +26,8 @@
 namespace core\output;
 
 use advanced_testcase;
+use core\context\system;
+use core\url;
 
 /**
  * Unit tests for the `icon_system` class.
@@ -43,7 +45,7 @@ final class choicelist_test extends advanced_testcase {
     public function test_empty_export(): void {
         $page = new \moodle_page();
         $page->set_url('/user/profile.php');
-        $page->set_context(\context_system::instance());
+        $page->set_context(system::instance());
         $renderer = $page->get_renderer('core');
 
         $choice = new choicelist('Choose an option');
@@ -64,7 +66,7 @@ final class choicelist_test extends advanced_testcase {
     public function test_basic_export(): void {
         $page = new \moodle_page();
         $page->set_url('/user/profile.php');
-        $page->set_context(\context_system::instance());
+        $page->set_context(system::instance());
         $renderer = $page->get_renderer('core');
 
         $choice = new choicelist('Choose an option');
@@ -90,15 +92,15 @@ final class choicelist_test extends advanced_testcase {
     public function test_option_defintion_export(): void {
         $page = new \moodle_page();
         $page->set_url('/user/profile.php');
-        $page->set_context(\context_system::instance());
+        $page->set_context(system::instance());
         $renderer = $page->get_renderer('core');
 
         $choice = new choicelist('Choose an option');
         $definition1 = [
             'disabled' => true,
             'description' => 'Description',
-            'url' => new \moodle_url('/user/profile.php'),
-            'icon' => new \pix_icon('i/grade', 'Grade'),
+            'url' => new url('/user/profile.php'),
+            'icon' => new pix_icon('i/grade', 'Grade'),
             'extras' => [
                 'data-attribute' => 'value',
             ],
@@ -135,7 +137,7 @@ final class choicelist_test extends advanced_testcase {
     public function test_option_selected_export(): void {
         $page = new \moodle_page();
         $page->set_url('/user/profile.php');
-        $page->set_context(\context_system::instance());
+        $page->set_context(system::instance());
         $renderer = $page->get_renderer('core');
 
         $choice = new choicelist('Choose an option');

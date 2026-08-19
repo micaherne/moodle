@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -152,7 +155,7 @@ class mod_wiki_generator extends testing_module_generator {
                 $wiki->cmid = $cm->id;
             }
             core_tag_tag::set_item_tags('mod_wiki', 'wiki_pages', $wikipage->id,
-                    context_module::instance($wiki->cmid), $tags);
+                    module::instance($wiki->cmid), $tags);
         }
         return $rv['page'];
     }

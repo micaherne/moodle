@@ -16,6 +16,7 @@
 
 namespace aiprovider_openai\aimodel;
 
+use core\exception\coding_exception;
 use core_ai\aimodel\base;
 
 /**
@@ -60,7 +61,7 @@ class gptimage1 extends base implements openai_base, openai_image_base {
         } else if ($ratio === 'portrait') {
             $size = '1024x1536';
         } else {
-            throw new \coding_exception('Invalid aspect ratio: ' . $ratio);
+            throw new coding_exception('Invalid aspect ratio: ' . $ratio);
         }
         return $size;
     }
@@ -72,7 +73,7 @@ class gptimage1 extends base implements openai_base, openai_image_base {
         } else if ($quality === 'hd') {
             $processedquality = 'high';
         } else {
-            throw new \coding_exception('Invalid quality: ' . $quality);
+            throw new coding_exception('Invalid quality: ' . $quality);
         }
 
         return $processedquality;

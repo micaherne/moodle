@@ -24,10 +24,15 @@
 namespace tool_dataprivacy\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
+use core\output\action_link;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\output\pix_icon;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\url;
 use stdClass;
-use templatable;
+use core\output\templatable;
 use tool_dataprivacy\external\purpose_exporter;
 use tool_dataprivacy\external\category_exporter;
 
@@ -45,8 +50,8 @@ abstract class crud_element {
      * @return \action_link[]
      */
     final protected function get_navigation() {
-        $back = new \action_link(
-            new \moodle_url('/admin/tool/dataprivacy/dataregistry.php'),
+        $back = new action_link(
+            new url('/admin/tool/dataprivacy/dataregistry.php'),
             get_string('back'),
             null,
             ['class' => 'btn btn-primary']
@@ -68,20 +73,20 @@ abstract class crud_element {
         $elementname = clean_param($elementname, PARAM_ALPHA);
 
         // Actions.
-        $actionmenu = new \action_menu();
+        $actionmenu = new action_menu();
         $actionmenu->set_menu_trigger(get_string('actions'));
         $actionmenu->set_owner_selector($elementname . '-' . $exported->id . '-actions');
 
-        $url = new \moodle_url('/admin/tool/dataprivacy/edit' . $elementname . '.php',
+        $url = new url('/admin/tool/dataprivacy/edit' . $elementname . '.php',
             ['id' => $exported->id]);
-        $link = new \action_menu_link_secondary($url, new \pix_icon('t/edit',
+        $link = new link_secondary($url, new pix_icon('t/edit',
             get_string('edit')), get_string('edit'));
         $actionmenu->add($link);
 
         if (!$persistent->is_used()) {
-            $url = new \moodle_url('#');
+            $url = new url('#');
             $attrs = ['data-id' => $exported->id, 'data-action' => 'delete' . $elementname, 'data-name' => $exported->name];
-            $link = new \action_menu_link_secondary($url, new \pix_icon('t/delete',
+            $link = new link_secondary($url, new pix_icon('t/delete',
                 get_string('delete')), get_string('delete'), $attrs);
             $actionmenu->add($link);
         }

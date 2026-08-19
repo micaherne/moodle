@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+
 include_once($CFG->dirroot . '/course/lib.php');
 
 class block_course_list extends block_list {
@@ -55,15 +59,15 @@ class block_course_list extends block_list {
         }
 
         $allcourselink =
-            (has_capability('moodle/course:update', context_system::instance())
+            (has_capability('moodle/course:update', system::instance())
             || empty($CFG->block_course_list_hideallcourseslink)) &&
             core_course_category::user_top();
 
         if (empty($CFG->disablemycourses) and isloggedin() and !isguestuser() and
-          !(has_capability('moodle/course:update', context_system::instance()) and $adminseesall)) {    // Just print My Courses
+          !(has_capability('moodle/course:update', system::instance()) and $adminseesall)) {    // Just print My Courses
             if ($courses = enrol_get_my_courses()) {
                 foreach ($courses as $course) {
-                    $coursecontext = context_course::instance($course->id);
+                    $coursecontext = course::instance($course->id);
                     $linkcss = $course->visible ? "" : " class=\"dimmed\" ";
                     $this->content->items[]="<a $linkcss title=\"" . format_string($course->shortname, true, array('context' => $coursecontext)) . "\" ".
                                "href=\"$CFG->wwwroot/course/view.php?id=$course->id\">".$icon.format_string(get_course_display_name_for_list($course)). "</a>";
@@ -100,7 +104,7 @@ class block_course_list extends block_list {
 
                 if ($courses) {
                     foreach ($courses as $course) {
-                        $coursecontext = context_course::instance($course->id);
+                        $coursecontext = course::instance($course->id);
                         $linkcss = $course->visible ? "" : " class=\"dimmed\" ";
 
                         $this->content->items[]="<a $linkcss title=\""
@@ -117,7 +121,7 @@ class block_course_list extends block_list {
 
                     $this->content->icons[] = '';
                     $this->content->items[] = get_string('nocoursesyet');
-                    if (has_capability('moodle/course:create', context_coursecat::instance($category->id))) {
+                    if (has_capability('moodle/course:create', coursecat::instance($category->id))) {
                         $this->content->footer = '<a href="'.$CFG->wwwroot.'/course/edit.php?category='.$category->id.'">'.get_string("addnewcourse").'</a> ...';
                     }
                     $this->get_remote_courses();

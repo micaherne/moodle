@@ -23,6 +23,10 @@
  */
 
 use core\output\comboboxsearch;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\single_select;
+use core\url;
 
 /**
  * Custom renderer for the user grade report
@@ -98,8 +102,8 @@ class gradereport_user_renderer extends plugin_renderer_base {
         debugging('users_selector is deprecated.', DEBUG_DEVELOPER);
 
         $courserenderer = $this->page->get_renderer('core', 'course');
-        $resetlink = new moodle_url('/grade/report/user/index.php', ['id' => $course->id, 'group' => 0]);
-        $baseurl = new moodle_url('/grade/report/user/index.php', ['id' => $course->id]);
+        $resetlink = new url('/grade/report/user/index.php', ['id' => $course->id, 'group' => 0]);
+        $baseurl = new url('/grade/report/user/index.php', ['id' => $course->id]);
         $this->page->requires->js_call_amd('gradereport_user/user', 'init', [$baseurl->out(false)]);
         return $courserenderer->render(
             new \core_course\output\actionbar\user_selector(
@@ -146,7 +150,7 @@ class gradereport_user_renderer extends plugin_renderer_base {
             $previoususer = $users[$arraykeys[$keynumber - 1]];
             $navigationdata['previoususer'] = [
                 'name' => fullname($previoususer),
-                'url' => (new moodle_url('/grade/report/user/index.php', ['id' => $courseid, 'userid' => $previoususer->id]))
+                'url' => (new url('/grade/report/user/index.php', ['id' => $courseid, 'userid' => $previoususer->id]))
                     ->out(false),
                 'previousarrow' => $previousarrow
             ];
@@ -156,7 +160,7 @@ class gradereport_user_renderer extends plugin_renderer_base {
             $nextuser = $users[$arraykeys[$keynumber + 1]];
             $navigationdata['nextuser'] = [
                 'name' => fullname($nextuser),
-                'url' => (new moodle_url('/grade/report/user/index.php', ['id' => $courseid, 'userid' => $nextuser->id]))
+                'url' => (new url('/grade/report/user/index.php', ['id' => $courseid, 'userid' => $nextuser->id]))
                     ->out(false),
                 'nextarrow' => $nextarrow
             ];
@@ -178,9 +182,9 @@ class gradereport_user_renderer extends plugin_renderer_base {
 
         debugging('view_mode_selector is deprecated.', DEBUG_DEVELOPER);
 
-        $viewasotheruser = new moodle_url('/grade/report/user/index.php', ['id' => $courseid, 'userid' => $userid,
+        $viewasotheruser = new url('/grade/report/user/index.php', ['id' => $courseid, 'userid' => $userid,
             'userview' => GRADE_REPORT_USER_VIEW_USER]);
-        $viewasmyself = new moodle_url('/grade/report/user/index.php', ['id' => $courseid, 'userid' => $userid,
+        $viewasmyself = new url('/grade/report/user/index.php', ['id' => $courseid, 'userid' => $userid,
             'userview' => GRADE_REPORT_USER_VIEW_SELF]);
 
         $selectoroptions = [

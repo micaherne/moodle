@@ -23,9 +23,10 @@
  */
 
 namespace core_availability\output;
+use core\output\renderer_base;
 use core_availability_multiple_messages;
-use renderable;
-use templatable;
+use core\output\renderable;
+use core\output\templatable;
 use stdClass;
 
 /**
@@ -55,7 +56,7 @@ class availability_info implements renderable, templatable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
 
         $template = $this->get_item_template($this->availabilitymessages);
 

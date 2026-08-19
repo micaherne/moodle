@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
+use core\output\html_writer;
 use mod_quiz\local\access_rule_base;
 use mod_quiz\quiz_attempt;
 use quizaccess_seb\seb_access_manager;
@@ -158,7 +160,7 @@ class quizaccess_seb extends access_rule_base {
      *      which is the id of the quiz being saved.
      */
     public static function save_settings($quiz) {
-        $context = context_module::instance($quiz->coursemodule);
+        $context = module::instance($quiz->coursemodule);
 
         if (!settings_provider::can_configure_seb($context)) {
             return;

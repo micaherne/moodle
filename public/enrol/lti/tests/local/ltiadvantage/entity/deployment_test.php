@@ -16,6 +16,8 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+
 /**
  * Tests for deployment.
  *
@@ -101,7 +103,7 @@ final class deployment_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => 'id must be a positive int'
                 ]
             ],
@@ -115,7 +117,7 @@ final class deployment_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid 'deploymentname' arg. Cannot be an empty string."
                 ]
             ],
@@ -129,7 +131,7 @@ final class deployment_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid 'deploymentid' arg. Cannot be an empty string."
                 ]
             ]
@@ -148,7 +150,7 @@ final class deployment_test extends \advanced_testcase {
         $this->assertEquals(55, $context->get_deploymentid());
 
         $deploymentwithoutid = deployment::create(123, 'deploymentid123', 'Global tool deployment');
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage("Can't add context to a deployment that hasn't first been saved");
         $deploymentwithoutid->add_context('context-id-345', ['Group']);
     }
@@ -168,7 +170,7 @@ final class deployment_test extends \advanced_testcase {
         $this->assertEquals(66, $resourcelink2->get_contextid());
 
         $deploymentwithoutid = deployment::create(123, 'deploymentid123', 'Global tool deployment');
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage("Can't add resource_link to a deployment that hasn't first been saved");
         $deploymentwithoutid->add_resource_link('res-link-id-123', 45);
     }
@@ -183,7 +185,7 @@ final class deployment_test extends \advanced_testcase {
         $deployment->set_legacy_consumer_key(str_repeat('a', 255));
         $this->assertEquals(str_repeat('a', 255), $deployment->get_legacy_consumer_key());
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Legacy consumer key too long. Cannot exceed 255 chars.');
         $deployment->set_legacy_consumer_key(str_repeat('a', 256));
     }

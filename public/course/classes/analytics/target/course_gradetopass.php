@@ -24,6 +24,8 @@
 
 namespace core_course\analytics\target;
 
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -113,8 +115,8 @@ class course_gradetopass extends course_enrolments {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('target:coursegradetopass', 'course');
+    public static function get_name(): lang_string {
+        return new lang_string('target:coursegradetopass', 'course');
     }
 
     /**

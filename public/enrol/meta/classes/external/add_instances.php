@@ -21,9 +21,9 @@ use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
-use invalid_parameter_exception;
-use context_course;
-use moodle_exception;
+use core\exception\invalid_parameter_exception;
+use core\context\course;
+use core\exception\moodle_exception;
 
 /**
  * Web service function relating to add enrol meta instances
@@ -80,7 +80,7 @@ class add_instances extends external_api {
                 throw new invalid_parameter_exception(get_string('wsinvalidmetacourse', 'enrol_meta', $instance['metacourseid']));
             }
             // Ensure the current user is allowed to access metacourse.
-            $contextmeta = context_course::instance($instance['metacourseid'], IGNORE_MISSING);
+            $contextmeta = course::instance($instance['metacourseid'], IGNORE_MISSING);
             try {
                 self::validate_context($contextmeta);
                 require_all_capabilities(['moodle/course:enrolconfig', 'enrol/meta:config'], $contextmeta);
@@ -95,7 +95,7 @@ class add_instances extends external_api {
             }
 
             // Ensure the current user is allowed to access linked course.
-            $context = context_course::instance($instance['courseid'], IGNORE_MISSING);
+            $context = course::instance($instance['courseid'], IGNORE_MISSING);
             try {
                 self::validate_context($context);
                 if (!$courserecord->visible) {

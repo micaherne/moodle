@@ -25,6 +25,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\require_login_exception;
+use core\navigation\global_navigation_for_ajax;
+use core\navigation\navigation_json;
+use core\navigation\navigation_node;
+use core\url;
+
 define('AJAX_SCRIPT', true);
 define('READ_ONLY_SESSION', true);
 
@@ -49,8 +57,8 @@ try {
     // This identifies the block instance requesting AJAX extension
     $instanceid = optional_param('instance', null, PARAM_INT);
 
-    $PAGE->set_url(new moodle_url('/lib/ajax/getnavbranch.php'));
-    $PAGE->set_context(context_system::instance());
+    $PAGE->set_url(new url('/lib/ajax/getnavbranch.php'));
+    $PAGE->set_context(system::instance());
 
     // Create a global nav object
     $navigation = new global_navigation_for_ajax($PAGE, $branchtype, $branchid);
@@ -117,7 +125,7 @@ try {
     // Stop buffering errors at this point
     $html = ob_get_contents();
     ob_end_clean();
-} catch (\require_login_exception $e) {
+} catch (require_login_exception $e) {
     // Activity is restricted; no navigation branch to return.
     ob_end_clean();
     exit;

@@ -20,7 +20,7 @@ use core\router\schema\response\payload_response;
 use core\router\schema\specification;
 use core\tests\router\route_testcase;
 use GuzzleHttp\Psr7\ServerRequest;
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 
 /**
  * Tests for the path parameter.

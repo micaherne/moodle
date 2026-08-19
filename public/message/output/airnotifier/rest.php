@@ -23,6 +23,9 @@
  */
 
 
+use core\context\system;
+use core\exception\moodle_exception;
+
 define('AJAX_SCRIPT', true);
 
 require_once(__DIR__ . '/../../../config.php');
@@ -34,7 +37,7 @@ $enable     = required_param('enable', PARAM_BOOL);
 require_login();
 require_sesskey();
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 
 $PAGE->set_url('/message/output/airnotifier/rest.php');
 $PAGE->set_context($systemcontext);

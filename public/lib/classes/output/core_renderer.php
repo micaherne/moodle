@@ -16,13 +16,17 @@
 
 namespace core\output;
 
-use breadcrumb_navigation_node;
-use cm_info;
+use core\navigation\breadcrumb_navigation_node;
+use core\output\action_menu\filler;
+use core\output\action_menu\link;
+use core\user;
+use core_course\cm_info;
 use core\hook\output\after_http_headers;
 use core_block\output\block_contents;
 use core_block\output\block_move_target;
 use core_completion\cm_completion_details;
 use core\context;
+use core_filters\filter_manager;
 use core_tag\output\taglist;
 use core_text;
 use core_useragent;
@@ -45,8 +49,8 @@ use core\output\local\properties\badge;
 use core\plugin_manager;
 use moodleform;
 use moodle_page;
-use moodle_url;
-use navigation_node;
+use core\url;
+use core\navigation\navigation_node;
 use rating;
 use rating_manager;
 use stdClass;
@@ -495,7 +499,7 @@ class core_renderer extends renderer_base {
                 $link = '<a title="' . $title . '" href="' . $url . '">' . $txt . '</a>';
                 $output .= '<div class="profilingfooter">' . $link . '</div>';
             }
-            $purgeurl = new moodle_url('/admin/purgecaches.php', [
+            $purgeurl = new url('/admin/purgecaches.php', [
                 'confirm' => 1,
                 'sesskey' => sesskey(),
                 'returnurl' => $this->page->url->out_as_local_url(false),
@@ -508,8 +512,8 @@ class core_renderer extends renderer_base {
         }
         if (!empty($CFG->debugvalidators)) {
             $siteurl = qualified_me();
-            $nuurl = new moodle_url('https://validator.w3.org/nu/', ['doc' => $siteurl, 'showsource' => 'yes']);
-            $waveurl = new moodle_url('https://wave.webaim.org/report#/' . urlencode($siteurl));
+            $nuurl = new url('https://validator.w3.org/nu/', ['doc' => $siteurl, 'showsource' => 'yes']);
+            $waveurl = new url('https://wave.webaim.org/report#/' . urlencode($siteurl));
             $validatorlinks = [
                 html_writer::link($nuurl, get_string('validatehtml')),
                 html_writer::link($waveurl, get_string('wcagcheck')),
@@ -593,7 +597,7 @@ class core_renderer extends renderer_base {
                 $modname .= ' ' . get_string('hiddenwithbrackets');
             }
             // Module URL.
-            $linkurl = new moodle_url($module->url, ['forceview' => 1]);
+            $linkurl = new url($module->url, ['forceview' => 1]);
             // Add module URL (as key) and name (as value) to the activity list array.
             $activitylist[$linkurl->out(false)] = $modname;
         }
@@ -727,7 +731,7 @@ class core_renderer extends renderer_base {
             $fullname = fullname($USER);
             // Since Moodle 2.0 this link always goes to the public profile page (not the course profile page)
             if ($withlinks) {
-                $userurl = new moodle_url('/user/profile.php', ['id' => $USER->id]);
+                $userurl = new url('/user/profile.php', ['id' => $USER->id]);
                 $username = html_writer::link($userurl, $fullname);
             } else {
                 $username = $fullname;
@@ -751,7 +755,7 @@ class core_renderer extends renderer_base {
                 }
                 $loggedinas = get_string('loggedinas', 'moodle', $username) . $rolename;
                 if ($withlinks) {
-                    $url = new moodle_url('/course/switchrole.php', ['id' => $course->id, 'sesskey' => sesskey(), 'switchrole' => 0, 'returnurl' => $this->page->url->out_as_local_url(false)]);
+                    $url = new url('/course/switchrole.php', ['id' => $course->id, 'sesskey' => sesskey(), 'switchrole' => 0, 'returnurl' => $this->page->url->out_as_local_url(false)]);
                     $loggedinas .= ' (' . html_writer::tag('a', get_string('switchrolereturn'), ['href' => $url]) . ')';
                 }
             } else {
@@ -780,7 +784,7 @@ class core_renderer extends renderer_base {
                     $a->attempts = $count;
                     $loggedinas .= get_string('failedloginattempts', '', $a);
                     if (file_exists("$CFG->dirroot/report/log/index.php") and has_capability('report/log:view', context_system::instance())) {
-                        $loggedinas .= ' (' . html_writer::link(new moodle_url('/report/log/index.php', [
+                        $loggedinas .= ' (' . html_writer::link(new url('/report/log/index.php', [
                             'chooselog' => 1,
                             'id' => 0,
                             'modid' => 'site_errors',
@@ -975,7 +979,7 @@ class core_renderer extends renderer_base {
         // If this theme version is below 2.4 release and this is a course view page
         if (
             (!isset($this->page->theme->settings->version) || $this->page->theme->settings->version < 2012101500) &&
-                $this->page->pagelayout === 'course' && $this->page->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)
+                $this->page->pagelayout === 'course' && $this->page->url->compare(new url('/course/view.php'), URL_MATCH_BASE)
         ) {
             // check if course content header/footer have not been output during render of theme layout
             $coursecontentheader = $this->course_content_header(true);
@@ -1260,7 +1264,7 @@ class core_renderer extends renderer_base {
      * @return string URL of the course pattern image in SVG format
      */
     public function get_generated_url_for_course(context_course $context): string {
-        return moodle_url::make_pluginfile_url($context->id, 'course', 'generated', null, '/', 'course.svg')->out();
+        return url::make_pluginfile_url($context->id, 'course', 'generated', null, '/', 'course.svg')->out();
     }
 
     /**
@@ -1463,7 +1467,7 @@ class core_renderer extends renderer_base {
         since: '4.5',
         mdl: 'MDL-83164',
     )]
-    protected function render_action_menu_link(\action_menu_link $action) {
+    protected function render_action_menu_link(link $action) {
         \core\deprecation::emit_deprecation([$this, __FUNCTION__]);
         return $this->render_action_menu__link($action);
     }
@@ -1476,7 +1480,7 @@ class core_renderer extends renderer_base {
         since: '4.5',
         mdl: 'MDL-83164',
     )]
-    protected function render_action_menu_filler(\action_menu_filler $action) {
+    protected function render_action_menu_filler(filler $action) {
         \core\deprecation::emit_deprecation([$this, __FUNCTION__]);
         return $this->render_action_menu__filler($action);
     }
@@ -1489,7 +1493,7 @@ class core_renderer extends renderer_base {
         since: '4.5',
         mdl: 'MDL-83164',
     )]
-    protected function render_action_menu_primary(\action_menu_link $action) {
+    protected function render_action_menu_primary(link $action) {
         \core\deprecation::emit_deprecation([$this, __FUNCTION__]);
         return $this->render_action_menu__link_primary($action);
     }
@@ -1502,7 +1506,7 @@ class core_renderer extends renderer_base {
         since: '4.5',
         mdl: 'MDL-83164',
     )]
-    protected function render_action_menu_secondary(\action_menu_link $action) {
+    protected function render_action_menu_secondary(link $action) {
         \core\deprecation::emit_deprecation([$this, __FUNCTION__]);
         return $this->render_action_menu__link_secondary($action);
     }
@@ -1684,8 +1688,8 @@ class core_renderer extends renderer_base {
      * @return string HTML fragment
      */
     public function action_link($url, $text, ?component_action $action = null, ?array $attributes = null, $icon = null) {
-        if (!($url instanceof moodle_url)) {
-            $url = new moodle_url($url);
+        if (!($url instanceof url)) {
+            $url = new url($url);
         }
         $link = new action_link($url, $text, $action, $attributes, $icon);
 
@@ -1730,8 +1734,8 @@ class core_renderer extends renderer_base {
         ?array $attributes = null,
         $linktext = false,
     ) {
-        if (!($url instanceof moodle_url)) {
-            $url = new moodle_url($url);
+        if (!($url instanceof url)) {
+            $url = new url($url);
         }
         $attributes = (array)$attributes;
 
@@ -1799,12 +1803,12 @@ class core_renderer extends renderer_base {
             }
         } else if (is_string($continue)) {
             $continue = new single_button(
-                new moodle_url($continue),
+                new url($continue),
                 $displayoptions['continuestr'],
                 'post',
                 $displayoptions['type'] ?? single_button::BUTTON_PRIMARY
             );
-        } else if ($continue instanceof moodle_url) {
+        } else if ($continue instanceof url) {
             $continue = new single_button(
                 $continue,
                 $displayoptions['continuestr'],
@@ -1818,8 +1822,8 @@ class core_renderer extends renderer_base {
         if ($cancel instanceof single_button) {
             // ok
         } else if (is_string($cancel)) {
-            $cancel = new single_button(new moodle_url($cancel), $displayoptions['cancelstr'], 'get');
-        } else if ($cancel instanceof moodle_url) {
+            $cancel = new single_button(new url($cancel), $displayoptions['cancelstr'], 'get');
+        } else if ($cancel instanceof url) {
             $cancel = new single_button($cancel, $displayoptions['cancelstr'], 'get');
         } else {
             throw new coding_exception('The cancel param to $OUTPUT->confirm() must be either a URL (string/moodle_url) or a single_button instance.');
@@ -1865,8 +1869,8 @@ class core_renderer extends renderer_base {
      * @return string HTML fragment
      */
     public function single_button($url, $label, $method = 'post', ?array $options = null) {
-        if (!($url instanceof moodle_url)) {
-            $url = new moodle_url($url);
+        if (!($url instanceof url)) {
+            $url = new url($url);
         }
         $button = new single_button($url, $label, $method);
 
@@ -1917,8 +1921,8 @@ class core_renderer extends renderer_base {
         $formid = null,
         $attributes = []
     ) {
-        if (!($url instanceof moodle_url)) {
-            $url = new moodle_url($url);
+        if (!($url instanceof url)) {
+            $url = new url($url);
         }
         $select = new single_select($url, $name, $options, $selected, $nothing, $formid);
 
@@ -2024,7 +2028,7 @@ class core_renderer extends renderer_base {
 
         $icon = $this->pix_icon('book', '', 'moodle');
 
-        $attributes['href'] = new moodle_url(get_docs_url($path));
+        $attributes['href'] = new url(get_docs_url($path));
         $newwindowicon = '';
         if (!empty($CFG->doctonewwindow) || $forcepopup) {
             $attributes['target'] = '_blank';
@@ -2284,7 +2288,7 @@ class core_renderer extends renderer_base {
 
         $scaleid = abs($scale->id);
 
-        $link = new moodle_url('/course/scales.php', ['id' => $courseid, 'list' => true, 'scaleid' => $scaleid]);
+        $link = new url('/course/scales.php', ['id' => $courseid, 'list' => true, 'scaleid' => $scaleid]);
         $action = new popup_action('click', $link, 'ratingscale');
 
         return html_writer::tag('span', $this->action_link($link, $icon, $action), ['class' => 'helplink']);
@@ -2417,7 +2421,7 @@ class core_renderer extends renderer_base {
 
         // Get the image html output first, auto generated based on initials if one isn't already set.
         if ($user->picture == 0 && empty($CFG->enablegravatar) && !defined('BEHAT_SITE_RUNNING')) {
-            $initials = \core_user::get_initials($user);
+            $initials = user::get_initials($user);
             $fullname = fullname($userpicture->user, $canviewfullnames);
             // Don't modify in corner cases where neither the firstname nor the lastname appears.
             $output = html_writer::tag(
@@ -2445,9 +2449,9 @@ class core_renderer extends renderer_base {
             $courseid = $userpicture->courseid;
         }
         if ($courseid == SITEID) {
-            $url = new moodle_url('/user/profile.php', ['id' => $user->id]);
+            $url = new url('/user/profile.php', ['id' => $user->id]);
         } else {
-            $url = new moodle_url('/user/view.php', ['id' => $user->id, 'course' => $courseid]);
+            $url = new url('/user/view.php', ['id' => $user->id, 'course' => $courseid]);
         }
 
         // Then wrap it in link if needed. Also we don't wrap it in link if the link redirects to itself.
@@ -2586,7 +2590,7 @@ EOD;
      * @param string $method
      * @return ?string HTML the button
      */
-    public function edit_button(moodle_url $url, string $method = 'post') {
+    public function edit_button(url $url, string $method = 'post') {
 
         if ($this->page->theme->haseditswitch == true) {
             return;
@@ -2611,7 +2615,7 @@ EOD;
     public function edit_switch() {
         if ($this->page->user_allowed_editing()) {
             $temp = (object) [
-                'legacyseturl' => (new moodle_url('/editmode.php'))->out(false),
+                'legacyseturl' => (new url('/editmode.php'))->out(false),
                 'pagecontextid' => $this->page->context->id,
                 'pageurl' => $this->page->url,
                 'sesskey' => sesskey(),
@@ -2633,7 +2637,7 @@ EOD;
         if (empty($text)) {
             $text = get_string('closewindow');
         }
-        $button = new single_button(new moodle_url('#'), $text, 'get');
+        $button = new single_button(new url('#'), $text, 'get');
         $button->add_action(new component_action('click', 'close_window'));
 
         return $this->container($this->render($button), 'closewindow');
@@ -2840,8 +2844,8 @@ EOD;
      * @return string the HTML to output.
      */
     public function continue_button($url) {
-        if (!($url instanceof moodle_url)) {
-            $url = new moodle_url($url);
+        if (!($url instanceof url)) {
+            $url = new url($url);
         }
         $button = new single_button($url, get_string('continue'), 'get', single_button::BUTTON_PRIMARY);
         $button->class = 'continuebutton';
@@ -3157,7 +3161,7 @@ EOD;
         }
 
         $data = [
-            'action' => new moodle_url('/search/index.php'),
+            'action' => new url('/search/index.php'),
             'hiddenfields' => (object) ['name' => 'context', 'value' => $this->page->context->id],
             'inputname' => 'q',
             'searchstring' => get_string('search'),
@@ -3351,7 +3355,7 @@ EOD;
                         }
 
                         $al = new action_menu\link_secondary(
-                            new \moodle_url($value->url),
+                            new url($value->url),
                             $pix,
                             $value->title,
                             ['class' => 'icon']
@@ -3423,7 +3427,7 @@ EOD;
      */
     protected function render_breadcrumb_navigation_node(breadcrumb_navigation_node $item) {
 
-        if ($item->action instanceof moodle_url) {
+        if ($item->action instanceof url) {
             $content = $item->get_content();
             $title = $item->get_title();
             $attributes = [];
@@ -3479,7 +3483,7 @@ EOD;
                 $link->text = $content;
             }
             $content = $this->render($link);
-        } else if ($item->action instanceof moodle_url) {
+        } else if ($item->action instanceof url) {
             $attributes = [];
             if ($title !== '') {
                 $attributes['title'] = $title;
@@ -3575,8 +3579,8 @@ EOD;
         // If filtering of the primary custom menu is enabled, apply only the string filters.
         if (!empty($CFG->navfilter) && !empty($CFG->stringfilters)) {
             // Apply filters that are enabled for Content and Headings.
-            $filtermanager = \filter_manager::instance();
-            $custommenuitems = $filtermanager->filter_string($custommenuitems, \context_system::instance());
+            $filtermanager = filter_manager::instance();
+            $custommenuitems = $filtermanager->filter_string($custommenuitems, context_system::instance());
         }
 
         $custommenu = new custom_menu($custommenuitems, current_language());
@@ -3598,8 +3602,8 @@ EOD;
         // If filtering of the primary custom menu is enabled, apply only the string filters.
         if (!empty($CFG->navfilter) && !empty($CFG->stringfilters)) {
             // Apply filters that are enabled for Content and Headings.
-            $filtermanager = \filter_manager::instance();
-            $custommenuitems = $filtermanager->filter_string($custommenuitems, \context_system::instance());
+            $filtermanager = filter_manager::instance();
+            $custommenuitems = $filtermanager->filter_string($custommenuitems, context_system::instance());
         }
 
         $custommenu = new custom_menu($custommenuitems, current_language());
@@ -3614,9 +3618,9 @@ EOD;
             } else {
                 $currentlang = $strlang;
             }
-            $this->language = $custommenu->add($currentlang, new moodle_url('#'), $strlang, 10000);
+            $this->language = $custommenu->add($currentlang, new url('#'), $strlang, 10000);
             foreach ($langs as $langtype => $langname) {
-                $this->language->add($langname, new moodle_url($this->page->url, ['lang' => $langtype]), $langname);
+                $this->language->add($langname, new url($this->page->url, ['lang' => $langtype]), $langname);
             }
         }
 
@@ -3651,7 +3655,7 @@ EOD;
             } else {
                 $currentlangstr = $strlang;
             }
-            $this->language = $menu->add($currentlangstr, new moodle_url('#'), $strlang, 10000);
+            $this->language = $menu->add($currentlangstr, new url('#'), $strlang, 10000);
             foreach ($langs as $langtype => $langname) {
                 $attributes = [];
                 // Set the lang attribute for languages different from the page's current language.
@@ -3661,7 +3665,7 @@ EOD;
                         'value' => get_html_lang_attribute_value($langtype),
                     ];
                 }
-                $this->language->add($langname, new moodle_url($this->page->url, ['lang' => $langtype]), null, null, $attributes);
+                $this->language->add($langname, new url($this->page->url, ['lang' => $langtype]), null, null, $attributes);
             }
         }
 
@@ -3764,7 +3768,7 @@ EOD;
             $linktext = get_string('switchdevicedefault');
             $devicetype = 'default';
         }
-        $linkurl = new moodle_url('/theme/switchdevice.php', ['url' => $this->page->url, 'device' => $devicetype, 'sesskey' => sesskey()]);
+        $linkurl = new url('/theme/switchdevice.php', ['url' => $this->page->url, 'device' => $devicetype, 'sesskey' => sesskey()]);
 
         $content  = html_writer::start_tag('div', ['id' => 'theme_switch_link']);
         $content .= html_writer::link($linkurl, $linktext, ['rel' => 'nofollow']);
@@ -3828,7 +3832,7 @@ EOD;
             $str .= html_writer::tag('a', html_writer::span($tabobject->text), ['class' => 'nolink moodle-has-zindex']);
         } else {
             // Tab name with a link.
-            if (!($tabobject->link instanceof moodle_url)) {
+            if (!($tabobject->link instanceof url)) {
                 // backward compartibility when link was passed as quoted string
                 $str .= "<a href=\"$tabobject->link\" title=\"$tabobject->title\"><span>$tabobject->text</span></a>";
             } else {
@@ -4176,7 +4180,7 @@ EOD;
         }
 
         // Use $CFG->themerev to prevent browser caching when the file changes.
-        return moodle_url::make_pluginfile_url(
+        return url::make_pluginfile_url(
             context_system::instance()->id,
             'core_admin',
             'favicon',
@@ -4268,7 +4272,7 @@ EOD;
                         'messages' => [
                             'buttontype' => 'message',
                             'title' => get_string('message', 'message'),
-                            'url' => new moodle_url('/message/index.php', ['id' => $user->id]),
+                            'url' => new url('/message/index.php', ['id' => $user->id]),
                             'image' => 't/message',
                             'linkattributes' => \core_message\helper::messageuser_link_params($user->id),
                             'page' => $this->page,
@@ -4321,7 +4325,7 @@ EOD;
                             $userbuttons['togglecontact'] = [
                                 'buttontype' => 'togglecontact',
                                 'title' => get_string($contacttitle, 'message'),
-                                'url' => new moodle_url('/message/index.php', [
+                                'url' => new url('/message/index.php', [
                                     'user1' => $USER->id,
                                     'user2' => $user->id,
                                     $contacturlaction => $user->id,
@@ -4418,7 +4422,7 @@ EOD;
         $header->headeractions = $this->page->get_header_actions();
         $header->headerextras = $this->page->get_header_extras();
         if (!empty($pagetype) && !empty($homepagetype) && $pagetype == $homepagetype) {
-            $header->welcomemessage = \core_user::welcome_message();
+            $header->welcomemessage = user::welcome_message();
         }
         return $this->render_from_template('core/full_header', $header);
     }
@@ -4575,7 +4579,7 @@ EOD;
                         $skipped = true;
                         continue;
                     }
-                    $link = new action_link(new moodle_url('#'), $menuitem->text, null, ['disabled' => true], $menuitem->icon);
+                    $link = new action_link(new url('#'), $menuitem->text, null, ['disabled' => true], $menuitem->icon);
                 }
                 if ($indent) {
                     $link->add_class('ms-4');
@@ -4977,7 +4981,7 @@ EOD;
             if (!empty($region)) {
                 $params['bui_blockregion'] = $region;
             }
-            $url = new moodle_url($this->page->url, $params);
+            $url = new url($this->page->url, $params);
             $addblockbutton = $this->render_from_template(
                 'core/add_block_button',
                 [

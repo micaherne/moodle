@@ -38,6 +38,8 @@ use auth_ldap\task\{
     sync_task,
     asynchronous_sync_task,
 };
+use core\context\system;
+use core\context\user;
 
 /**
  * LDAP authentication plugin tests.
@@ -429,7 +431,7 @@ final class auth_ldap_test extends \advanced_testcase {
         $this->assertInstanceOf('\core\event\user_loggedin', $event);
         $this->assertEquals('user', $event->objecttable);
         $this->assertEquals('2', $event->objectid);
-        $this->assertEquals(\context_system::instance()->id, $event->contextid);
+        $this->assertEquals(system::instance()->id, $event->contextid);
     }
 
     /**
@@ -553,7 +555,7 @@ final class auth_ldap_test extends \advanced_testcase {
         $event = array_pop($events);
         $this->assertInstanceOf('\core\event\user_created', $event);
         $this->assertEquals($user['id'], $event->objectid);
-        $this->assertEquals(\context_user::instance($user['id']), $event->get_context());
+        $this->assertEquals(user::instance($user['id']), $event->get_context());
 
         // First event is user_password_updated.
         $event = array_pop($events);

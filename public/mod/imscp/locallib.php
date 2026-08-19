@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\module;
 use core\url;
 
 require_once("$CFG->dirroot/mod/imscp/lib.php");
@@ -69,7 +70,7 @@ function imscp_htmllize_item($item, $imscp, $cm) {
         if (preg_match('|^https?://|', $item['href'])) {
             $url = $item['href'];
         } else {
-            $context = context_module::instance($cm->id);
+            $context = module::instance($cm->id);
             $url = url::make_pluginfile_url(
                 contextid: $context->id,
                 component: 'mod_imscp',

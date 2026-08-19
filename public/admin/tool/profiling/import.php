@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir . '/xhprof/xhprof_moodle.php');
@@ -36,7 +38,7 @@ $tempdir = 'profiling';
 make_temp_directory($tempdir);
 
 // URL where we'll end, both on success and failure.
-$url = new moodle_url('/admin/tool/profiling/index.php');
+$url = new url('/admin/tool/profiling/index.php');
 
 // Instantiate the upload profiling runs form.
 $mform = new profiling_import_form();

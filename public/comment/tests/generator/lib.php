@@ -16,6 +16,8 @@
 
 declare(strict_types=1);
 
+use core_comment\manager;
+
 /**
  * Comment test generator
  *
@@ -31,7 +33,7 @@ class core_comment_generator extends component_generator_base {
      * @param array|stdClass $record
      * @return comment
      */
-    public function create_comment($record): comment {
+    public function create_comment($record): manager {
         $record = (array) $record;
 
         $content = (string) ($record['content'] ?? '');

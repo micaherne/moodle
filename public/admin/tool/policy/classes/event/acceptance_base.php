@@ -24,7 +24,10 @@
 
 namespace tool_policy\event;
 
+use core\context\user;
 use core\event\base;
+use core\exception\coding_exception;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -55,7 +58,7 @@ abstract class acceptance_base extends base {
         $event = static::create([
             'objectid' => $record->id,
             'relateduserid' => $record->userid,
-            'context' => \context_user::instance($record->userid),
+            'context' => user::instance($record->userid),
             'other' => [
                 'policyversionid' => $record->policyversionid,
                 'note' => $record->note,
@@ -72,7 +75,7 @@ abstract class acceptance_base extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/policy/acceptance.php', array('userid' => $this->relateduserid,
+        return new url('/admin/tool/policy/acceptance.php', array('userid' => $this->relateduserid,
             'versionid' => $this->other['policyversionid']));
     }
 
@@ -94,15 +97,15 @@ abstract class acceptance_base extends base {
         parent::validate_data();
 
         if (empty($this->other['policyversionid'])) {
-            throw new \coding_exception('The \'policyversionid\' value must be set');
+            throw new coding_exception('The \'policyversionid\' value must be set');
         }
 
         if (!isset($this->other['status'])) {
-            throw new \coding_exception('The \'status\' value must be set');
+            throw new coding_exception('The \'status\' value must be set');
         }
 
         if (empty($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

@@ -16,12 +16,13 @@
 
 namespace core_search\external;
 
+use core\context\system;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_multiple_structure;
 use core_external\external_value;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * External function for retrieving search results.
@@ -92,7 +93,7 @@ class get_results extends external_api {
             ]
         );
 
-        $system = \context_system::instance();
+        $system = system::instance();
         external_api::validate_context($system);
 
         require_capability('moodle/search:query', $system);

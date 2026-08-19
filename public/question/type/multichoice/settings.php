@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
@@ -29,11 +33,11 @@ if ($ADMIN->fulltree) {
         new lang_string('answersingleno', 'qtype_multichoice'),
         new lang_string('answersingleyes', 'qtype_multichoice')
     ];
-    $settings->add(new admin_setting_configselect('qtype_multichoice/answerhowmany',
+    $settings->add(new configselect('qtype_multichoice/answerhowmany',
     new lang_string('answerhowmany', 'qtype_multichoice'),
     new lang_string('answerhowmany_desc', 'qtype_multichoice'), '1', $menu));
 
-    $settings->add(new admin_setting_configcheckbox('qtype_multichoice/shuffleanswers',
+    $settings->add(new configcheckbox('qtype_multichoice/shuffleanswers',
     new lang_string('shuffleanswers', 'qtype_multichoice'),
     new lang_string('shuffleanswers_desc', 'qtype_multichoice'), '1'));
 
@@ -41,7 +45,7 @@ if ($ADMIN->fulltree) {
     new lang_string('answernumbering', 'qtype_multichoice'),
     new lang_string('answernumbering_desc', 'qtype_multichoice'), 'abc', null));
 
-    $settings->add(new admin_setting_configcheckbox('qtype_multichoice/showstandardinstruction',
+    $settings->add(new configcheckbox('qtype_multichoice/showstandardinstruction',
             new lang_string('showstandardinstruction', 'qtype_multichoice'),
             new lang_string('showstandardinstruction_desc', 'qtype_multichoice'), 0));
 

@@ -16,6 +16,8 @@
 
 namespace tool_usertours;
 
+use core\exception\coding_exception;
+
 /**
  * Tests for helper.
  *
@@ -110,7 +112,7 @@ final class helper_test extends \advanced_testcase {
             ]),
         );
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         helper::get_all_filters();
     }
 
@@ -122,7 +124,7 @@ final class helper_test extends \advanced_testcase {
             ]),
         );
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         helper::get_all_filters();
     }
 
@@ -134,7 +136,7 @@ final class helper_test extends \advanced_testcase {
             ]),
         );
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         helper::get_all_clientside_filters();
     }
 
@@ -181,7 +183,7 @@ final class helper_test extends \advanced_testcase {
 
         $filters = helper::get_all_clientside_filters();
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessageMatches('/Could not determine component/');
         helper::get_clientside_filter_module_names($filters);
     }

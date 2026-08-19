@@ -16,6 +16,8 @@
 
 namespace tool_usertours;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -193,7 +195,7 @@ final class cache_test extends \advanced_testcase {
             $this->helper_create_step((object) ['tourid' => $tour->get_id()]);
         }
 
-        $matches = \tool_usertours\cache::get_matching_tourdata(new \moodle_url($targetmatch));
+        $matches = \tool_usertours\cache::get_matching_tourdata(new url($targetmatch));
         $this->assertCount(count($expected), $matches);
 
         for ($i = 0; $i < count($matches); $i++) {

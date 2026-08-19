@@ -16,6 +16,9 @@
 
 namespace core_notes;
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\exception\require_login_exception;
 use core_external\external_api;
 use core_notes_external;
 
@@ -48,7 +51,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $course = self::getDataGenerator()->create_course();
 
         // Set the required capabilities by the external function.
-        $contextid = \context_course::instance($course->id)->id;
+        $contextid = course::instance($course->id)->id;
         $roleid = $this->assignUserCapability('moodle/notes:manage', $contextid);
         $this->assignUserCapability('moodle/course:view', $contextid, $roleid);
 
@@ -89,7 +92,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $course = self::getDataGenerator()->create_course();
 
         // Set the required capabilities by the external function.
-        $contextid = \context_course::instance($course->id)->id;
+        $contextid = course::instance($course->id)->id;
         $roleid = $this->assignUserCapability('moodle/notes:manage', $contextid);
         $this->assignUserCapability('moodle/course:view', $contextid, $roleid);
 
@@ -141,7 +144,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $course = self::getDataGenerator()->create_course();
 
         // Set the required capabilities by the external function.
-        $contextid = \context_course::instance($course->id)->id;
+        $contextid = course::instance($course->id)->id;
         $roleid = $this->assignUserCapability('moodle/notes:manage', $contextid);
         $this->assignUserCapability('moodle/notes:view', $contextid, $roleid);
         $this->assignUserCapability('moodle/course:view', $contextid, $roleid);
@@ -195,7 +198,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $course = self::getDataGenerator()->create_course();
 
         // Set the required capabilities by the external function.
-        $contextid = \context_course::instance($course->id)->id;
+        $contextid = course::instance($course->id)->id;
         $roleid = $this->assignUserCapability('moodle/notes:manage', $contextid);
         $this->assignUserCapability('moodle/course:view', $contextid, $roleid);
 
@@ -328,7 +331,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $result = core_notes_external::get_course_notes($course2->id, $student1->id);
             $this->fail('the user is not enrolled in the course');
-        } catch (\require_login_exception $e) {
+        } catch (require_login_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -424,7 +427,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $student = $this->getDataGenerator()->create_user();
         $teacher = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Enroll students and teachers to course.
         $this->getDataGenerator()->enrol_user($student->id, $course->id, $studentrole->id);
@@ -462,14 +465,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             core_notes_external::view_notes(0);
             $this->fail('Exception expected due to invalid permissions at system level.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
         try {
             core_notes_external::view_notes($course->id, $student->id + 100);
             $this->fail('Exception expected due to invalid user id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invaliduser', $e->errorcode);
         }
     }

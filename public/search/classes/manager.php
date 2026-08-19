@@ -24,6 +24,19 @@
 
 namespace core_search;
 
+use core\context;
+use core\context\block;
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\progress_trace;
+use core\output\progress_trace\null_progress_trace;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/lib/accesslib.php');
@@ -312,7 +325,7 @@ class manager {
             $searchurl = '/course/search.php';
         }
 
-        return new \moodle_url($searchurl);
+        return new url($searchurl);
     }
 
     /**
@@ -496,7 +509,7 @@ class manager {
                 if (key_exists($name, $categories)) {
                     $categories[$name]->set_areas($searchareas);
                 } else {
-                    throw new \coding_exception('Unknown core search area category ' . $name);
+                    throw new coding_exception('Unknown core search area category ' . $name);
                 }
             }
 
@@ -587,11 +600,11 @@ class manager {
                             if (self::is_valid_area_category($plugincategory)) {
                                 $additionalcategories[] = $plugincategory;
                             } else {
-                                throw  new \coding_exception('Invalid search area category!');
+                                throw  new coding_exception('Invalid search area category!');
                             }
                         }
                     } else {
-                        throw  new \coding_exception($pluginfunction . ' should return a list of search area categories!');
+                        throw  new coding_exception($pluginfunction . ' should return a list of search area categories!');
                     }
                 }
             }
@@ -663,7 +676,7 @@ class manager {
         $parts = self::extract_areaid_parts($areaid);
 
         if (empty($parts[1])) {
-            throw new \coding_exception('Trying to parse invalid search area id ' . $areaid);
+            throw new coding_exception('Trying to parse invalid search area id ' . $areaid);
         }
 
         $component = $parts[0];
@@ -735,7 +748,7 @@ class manager {
             // the access control as we can not automate much, we can not even check guest access as some areas might
             // want to allow guests to retrieve data from them.
 
-            $systemcontextid = \context_system::instance()->id;
+            $systemcontextid = system::instance()->id;
             if (!$limitcontextids || in_array($systemcontextid, $limitcontextids)) {
                 foreach ($areasbylevel[CONTEXT_SYSTEM] as $areaid => $searchclass) {
                     $areascontexts[$areaid][$systemcontextid] = $systemcontextid;
@@ -744,7 +757,7 @@ class manager {
         }
 
         if (!empty($areasbylevel[CONTEXT_USER])) {
-            if ($usercontext = \context_user::instance($USER->id, IGNORE_MISSING)) {
+            if ($usercontext = user::instance($USER->id, IGNORE_MISSING)) {
                 if (!$limitcontextids || in_array($usercontext->id, $limitcontextids)) {
                     // Extra checking although only logged users should reach this point, guest users have a valid context id.
                     foreach ($areasbylevel[CONTEXT_USER] as $areaid => $searchclass) {
@@ -781,7 +794,7 @@ class manager {
                 continue;
             }
 
-            $coursecontext = \context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
             $hasgrouprestrictions = false;
 
             if (!empty($areasbylevel[CONTEXT_COURSE]) &&
@@ -910,8 +923,8 @@ class manager {
                 if (empty($blockcontextsbyname[$blockrec->blockname])) {
                     $blockcontextsbyname[$blockrec->blockname] = [];
                 }
-                \context_helper::preload_from_record($blockrec);
-                $blockcontextsbyname[$blockrec->blockname][] = \context_block::instance(
+                context_helper::preload_from_record($blockrec);
+                $blockcontextsbyname[$blockrec->blockname][] = block::instance(
                         $blockrec->blockinstanceid);
             }
 
@@ -1037,7 +1050,7 @@ class manager {
                 // Check query matches expected value.
                 $details = json_decode($fakeresult);
                 if ($formdata->q !== $details->query) {
-                    throw new \coding_exception('Unexpected search query: ' . $formdata->q);
+                    throw new coding_exception('Unexpected search query: ' . $formdata->q);
                 }
 
                 // Create search documents from the JSON data.
@@ -1198,15 +1211,15 @@ class manager {
      * @throws \moodle_exception
      * @return bool Whether there was any updated document or not.
      */
-    public function index($fullindex = false, $timelimit = 0, ?\progress_trace $progress = null) {
+    public function index($fullindex = false, $timelimit = 0, ?progress_trace $progress = null) {
         global $DB, $CFG;
 
         // Cannot combine time limit with reindex.
         if ($timelimit && $fullindex) {
-            throw new \coding_exception('Cannot apply time limit when reindexing');
+            throw new coding_exception('Cannot apply time limit when reindexing');
         }
         if (!$progress) {
-            $progress = new \null_progress_trace();
+            $progress = new null_progress_trace();
         }
 
         // Unlimited time.
@@ -1316,7 +1329,7 @@ class manager {
                     $batchinfo = ' (' . $batches . ' batch' . ($batches === 1 ? '' : 'es') . ')';
                 }
             } else {
-                throw new \coding_exception('engine::add_documents() should return 6 values');
+                throw new coding_exception('engine::add_documents() should return 6 values');
             }
 
             if ($numdocs > 0) {
@@ -1364,7 +1377,7 @@ class manager {
 
         if ($sumdocs > 0) {
             $event = \core\event\search_indexed::create(
-                    array('context' => \context_system::instance()));
+                    array('context' => system::instance()));
             $event->trigger();
         }
 
@@ -1391,9 +1404,9 @@ class manager {
      * @return \stdClass Object indicating success
      */
     public function index_context($context, $singleareaid = '', $timelimit = 0,
-            ?\progress_trace $progress = null, $startfromarea = '', $startfromtime = 0) {
+            ?progress_trace $progress = null, $startfromarea = '', $startfromtime = 0) {
         if (!$progress) {
-            $progress = new \null_progress_trace();
+            $progress = new null_progress_trace();
         }
 
         // Work out time to stop, if limited.
@@ -1474,7 +1487,7 @@ class manager {
                     $batchinfo = ' (' . $batches . ' batch' . ($batches === 1 ? '' : 'es') . ')';
                 }
             } else {
-                throw new \coding_exception('engine::add_documents() should return 6 values');
+                throw new coding_exception('engine::add_documents() should return 6 values');
             }
 
             if ($numdocs > 0) {
@@ -1530,7 +1543,7 @@ class manager {
         if (!empty($areaid)) {
             $searchareas = array();
             if (!$searchareas[$areaid] = static::get_search_area($areaid)) {
-                throw new \moodle_exception('errorareanotavailable', 'search', '', $areaid);
+                throw new moodle_exception('errorareanotavailable', 'search', '', $areaid);
             }
         } else {
             // Only the enabled ones.
@@ -1633,7 +1646,7 @@ class manager {
      */
     public static function trigger_search_results_viewed($other) {
         $event = \core\event\search_results_viewed::create([
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'other' => $other
         ]);
         $event->trigger();
@@ -1667,7 +1680,7 @@ class manager {
      * @param string $areaid Area to index, '' = all areas
      * @param int $priority Priority (INDEX_PRIORITY_xx constant)
      */
-    public static function request_index(\context $context, $areaid = '',
+    public static function request_index(context $context, $areaid = '',
             $priority = self::INDEX_PRIORITY_NORMAL) {
         global $DB;
 
@@ -1715,11 +1728,11 @@ class manager {
      * @param float $timelimit Time limit (0 = none)
      * @param \progress_trace|null $progress Optional progress indicator
      */
-    public function process_index_requests($timelimit = 0.0, ?\progress_trace $progress = null) {
+    public function process_index_requests($timelimit = 0.0, ?progress_trace $progress = null) {
         global $DB;
 
         if (!$progress) {
-            $progress = new \null_progress_trace();
+            $progress = new null_progress_trace();
         }
 
         $before = self::get_current_time();
@@ -1751,7 +1764,7 @@ class manager {
             }
 
             // Show a message before each request, indicating what will be indexed.
-            $context = \context::instance_by_id($request->contextid, IGNORE_MISSING);
+            $context = context::instance_by_id($request->contextid, IGNORE_MISSING);
             if (!$context) {
                 $DB->delete_records('search_index_requests', ['id' => $request->id]);
                 $progress->output('Skipped deleted context: ' . $request->contextid);
@@ -1805,8 +1818,8 @@ class manager {
                 'id, contextid, timerequested, searcharea, partialarea, partialtime, indexpriority',
                 0, 10);
         foreach ($result->topten as $item) {
-            $context = \context::instance_by_id($item->contextid);
-            $item->contextlink = \html_writer::link($context->get_url(),
+            $context = context::instance_by_id($item->contextid);
+            $item->contextlink = html_writer::link($context->get_url(),
                     s($context->get_context_name()));
             if ($item->searcharea) {
                 $item->areaname = $this->get_search_area($item->searcharea)->get_visible_name();
@@ -1939,7 +1952,7 @@ class manager {
         global $DB;
 
         if (!empty(self::get_search_area($areaid))) {
-            throw new \coding_exception("Area $areaid exists. Please use appropriate search area class to manipulate the data.");
+            throw new coding_exception("Area $areaid exists. Please use appropriate search area class to manipulate the data.");
         }
 
         $parts = self::parse_areaid($areaid);
@@ -1968,7 +1981,7 @@ class manager {
      *
      * @param \context $context Context object that has just been deleted
      */
-    public static function context_deleted(\context $context) {
+    public static function context_deleted(context $context) {
         if (self::is_indexing_enabled()) {
             try {
                 // Hold on, are we deleting a course? If so, and this context is part of the course,
@@ -1984,7 +1997,7 @@ class manager {
 
                 $engine = self::instance()->get_engine();
                 $engine->delete_index_for_context($context->id);
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 debugging('Error deleting search index data for context ' . $context->id . ': ' . $e->getMessage());
             }
         }
@@ -2023,7 +2036,7 @@ class manager {
             try {
                 $engine = self::instance()->get_engine();
                 $engine->delete_index_for_course($courseid);
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 debugging('Error deleting search index data for course ' . $courseid . ': ' . $e->getMessage());
             }
         }

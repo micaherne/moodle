@@ -20,7 +20,7 @@ namespace core_reportbuilder\reportbuilder\schedule;
 
 use advanced_testcase;
 use core_collator;
-use core_user;
+use core\user as core_user;
 use core_reportbuilder\local\filters\user;
 use core_reportbuilder\local\models\schedule;
 use core_reportbuilder\manager;

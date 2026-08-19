@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/badgeslib.php');
 
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\user as core_user;
 use core_badges\external\user_badge_exporter;
 use core_external\external_api;
 use core_external\external_function_parameters;

@@ -16,6 +16,9 @@
 
 namespace qbank_bulkmove;
 
+use core\context\module;
+use core\url;
+use core_cache\cache;
 use core_question\local\bank\question_edit_contexts;
 
 defined('MOODLE_INTERNAL') || die();
@@ -87,7 +90,7 @@ final class helper_test extends \advanced_testcase {
         // Create a course.
         $this->course = $generator->create_course();
         $qbank = self::getDataGenerator()->create_module('qbank', ['name' => 'QBANK 1', 'course' => $this->course->id]);
-        $this->context = \context_module::instance($qbank->cmid);
+        $this->context = module::instance($qbank->cmid);
 
         // Create a question in the default category.
         $this->contexts = new question_edit_contexts($this->context);
@@ -100,14 +103,14 @@ final class helper_test extends \advanced_testcase {
             'parent' => $this->cat->id]);
 
         // Ensure the question is not in the cache.
-        $cache = \cache::make('core', 'questiondata');
+        $cache = cache::make('core', 'questiondata');
         $cache->delete($this->questiondata1->id);
 
         $this->questiondata2 = $questiongenerator->create_question('numerical', null,
             ['name' => 'Example question second', 'category' => $this->cat->id]);
 
         // Ensure the question is not in the cache.
-        $cache = \cache::make('core', 'questiondata');
+        $cache = cache::make('core', 'questiondata');
         $cache->delete($this->questiondata2->id);
 
         // Posted raw data.
@@ -214,7 +217,7 @@ final class helper_test extends \advanced_testcase {
         $this->helper_setup();
         $contexts = new question_edit_contexts($this->context);
         $addcontexts = $contexts->having_cap('moodle/question:add');
-        $url = new \moodle_url('/question/bank/bulkmove/move.php');
+        $url = new url('/question/bank/bulkmove/move.php');
         $displaydata = \qbank_bulkmove\helper::get_displaydata($addcontexts, $url, $url);
         $this->assertDebuggingCalled();
         $this->assertStringContainsString('Test question category 1', $displaydata['categorydropdown']);

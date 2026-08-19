@@ -24,6 +24,7 @@
 
 namespace core_h5p;
 
+use core_cache\cache;
 use Moodle\H5PEditorAjaxInterface;
 use core\dml\table as dml_table;
 
@@ -128,7 +129,7 @@ class editor_ajax implements H5PEditorAjaxInterface {
      */
     public function getTranslations($libraries, $languagecode): array {
         $translations = [];
-        $langcache = \cache::make('core', 'h5p_content_type_translations');
+        $langcache = cache::make('core', 'h5p_content_type_translations');
 
         $missing = [];
         foreach ($libraries as $libstring) {
@@ -198,7 +199,7 @@ class editor_ajax implements H5PEditorAjaxInterface {
                  WHERE ($wheresql) AND f.filename = ?";
 
         // Get the content of all these language files and put them into the translations array.
-        $langcache = \cache::make('core', 'h5p_content_type_translations');
+        $langcache = cache::make('core', 'h5p_content_type_translations');
         $fs = get_file_storage();
         $translations = [];
         $results = $DB->get_recordset_sql($sql, $params);

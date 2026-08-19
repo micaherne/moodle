@@ -16,11 +16,11 @@
 
 namespace mod_scorm\output;
 
-use renderable;
-use renderer_base;
-use templatable;
-use moodle_url;
-use url_select;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+use core\output\url_select;
 
 /**
  * Render HTML elements for reports page on tertiary nav.
@@ -75,13 +75,13 @@ class userreportsactionbar implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output): array {
         $data = [
-            'backurl' => (new moodle_url('/mod/scorm/report.php', ['id' => $this->id, 'mode' => $this->mode]))->out(false)
+            'backurl' => (new url('/mod/scorm/report.php', ['id' => $this->id, 'mode' => $this->mode]))->out(false)
         ];
 
         if (!$this->scoid) {
-            $learnobjects = new moodle_url('/mod/scorm/report/userreport.php',
+            $learnobjects = new url('/mod/scorm/report/userreport.php',
                     ['id' => $this->id, 'user' => $this->userid, 'attempt' => $this->attempt, 'mode' => $this->mode]);
-            $interactions = new moodle_url('/mod/scorm/report/userreportinteractions.php',
+            $interactions = new url('/mod/scorm/report/userreportinteractions.php',
                     ['id' => $this->id, 'user' => $this->userid, 'attempt' => $this->attempt, 'mode' => $this->mode]);
 
             $reportmenu[$learnobjects->out(false)] = get_string('scoes', 'scorm');

@@ -29,7 +29,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
 use core\notification;
-use context_system;
+use core\context\system;
 
 /**
  * Class for submit selected courses from form.
@@ -67,7 +67,7 @@ class submit_selected_courses_form extends external_api {
             'jsonformdata' => $jsonformdata,
         ]);
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         // Make sure the user has the proper capability.

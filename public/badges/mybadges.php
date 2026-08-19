@@ -24,6 +24,12 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use \core_badges\badge;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 require_once($CFG->libdir . '/filelib.php');
@@ -40,14 +46,14 @@ $show        = optional_param('show', 0, PARAM_INT);
 require_login();
 
 if (empty($CFG->enablebadges)) {
-    throw new \moodle_exception('badgesdisabled', 'badges');
+    throw new moodle_exception('badgesdisabled', 'badges');
 }
 
-$url = new moodle_url('/badges/mybadges.php');
+$url = new url('/badges/mybadges.php');
 $PAGE->set_url($url);
 
 if (isguestuser()) {
-    $PAGE->set_context(context_system::instance());
+    $PAGE->set_context(system::instance());
     echo $OUTPUT->header();
     echo $OUTPUT->box(get_string('error:guestuseraccess', 'badges'), 'notifyproblem');
     echo $OUTPUT->footer();
@@ -82,7 +88,7 @@ if ($hide) {
     badges_download($USER->id);
 }
 
-$context = context_user::instance($USER->id);
+$context = user::instance($USER->id);
 require_capability('moodle/badges:manageownbadges', $context);
 
 $PAGE->set_context($context);
