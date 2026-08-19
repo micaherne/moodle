@@ -16,9 +16,11 @@
 
 namespace mod_data\output;
 
+use core\output\action_menu;
+use core\output\renderer_base;
 use core\output\select_menu;
-use templatable;
-use renderable;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Renderable class for the action bar elements in the template pages in the database activity.
@@ -47,7 +49,7 @@ class templates_action_bar implements templatable, renderable {
      * @param null $unused2 This parameter has been deprecated since 4.1 and should not be used anymore.
      * @param \action_menu $actionsselect The presets actions selector object.
      */
-    public function __construct(int $id, select_menu $selectmenu, $unused1, $unused2, \action_menu $actionsselect) {
+    public function __construct(int $id, select_menu $selectmenu, $unused1, $unused2, action_menu $actionsselect) {
         $this->id = $id;
         $this->selectmenu = $selectmenu;
         $this->actionsselect = $actionsselect;
@@ -59,7 +61,7 @@ class templates_action_bar implements templatable, renderable {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
 
         return [
             'd' => $this->id,

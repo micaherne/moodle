@@ -23,6 +23,8 @@
  */
 
 namespace mod_data\event;
+
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -40,7 +42,7 @@ class comment_deleted extends \core\event\comment_deleted {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/data/view.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/data/view.php', array('id' => $this->contextinstanceid));
     }
 
     /**

@@ -16,13 +16,13 @@
 
 namespace core_group\customfield;
 
-use context;
-use context_course;
-use context_system;
+use core\context;
+use core\context\course;
+use core\context\system;
 use core_customfield\api;
 use core_customfield\handler;
 use core_customfield\field_controller;
-use moodle_url;
+use core\url;
 use restore_task;
 
 /**
@@ -71,7 +71,7 @@ class grouping_handler extends handler {
      * @return context the context for configuration
      */
     public function get_configuration_context(): context {
-        return context_system::instance();
+        return system::instance();
     }
 
     /**
@@ -79,8 +79,8 @@ class grouping_handler extends handler {
      *
      * @return moodle_url The URL to configure custom fields for this component
      */
-    public function get_configuration_url(): moodle_url {
-        return new moodle_url('/group/grouping_customfield.php');
+    public function get_configuration_url(): url {
+        return new url('/group/grouping_customfield.php');
     }
 
     /**
@@ -93,11 +93,11 @@ class grouping_handler extends handler {
         global $COURSE, $DB;
         if ($instanceid > 0) {
             $grouping = $DB->get_record('groupings', ['id' => $instanceid], '*', MUST_EXIST);
-            return context_course::instance($grouping->courseid);
+            return course::instance($grouping->courseid);
         } else if (!empty($COURSE->id)) {
-            return context_course::instance($COURSE->id);
+            return course::instance($COURSE->id);
         } else {
-            return context_system::instance();
+            return system::instance();
         }
     }
 

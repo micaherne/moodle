@@ -16,7 +16,9 @@
 
 namespace mod_quiz;
 
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
+use core_course\modinfo;
 use question_bank;
 use question_engine;
 use mod_quiz\tests\question_helper_test_trait;
@@ -318,7 +320,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
             if ($expectedupdateattempterror) {
                 $this->fail('Exception expected due to preview is deleted');
             }
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             // Verify the expected exception message.
             $this->assertEquals($expectedupdateattempterror, $e->getMessage());
         }
@@ -511,7 +513,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
 
         // Teacher edits the quiz to extend the time-limit by one minute.
         $DB->set_field('quiz', 'timeclose', $originaltimeclose + MINSECS, ['id' => $quiz->id]);
-        \course_modinfo::clear_instance_cache($quiz->course);
+        modinfo::clear_instance_cache($quiz->course);
 
         // Timer expires in the student browser and thinks it is time to submit the quiz.
         // This sets $finishattempt to false - since the student did not click the button, and $timeup to true.
@@ -811,7 +813,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $this->assertInstanceOf('\mod_quiz\event\attempt_reopened', $reopenedevent);
         $this->assertEquals($attemptobj->get_context(), $reopenedevent->get_context());
         $this->assertEquals(
-            new moodle_url('/mod/quiz/review.php', ['attempt' => $attemptobj->get_attemptid()]),
+            new url('/mod/quiz/review.php', ['attempt' => $attemptobj->get_attemptid()]),
             $reopenedevent->get_url()
         );
     }
@@ -859,7 +861,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $events = $sink->get_events();
         $this->assertGreaterThanOrEqual(3, $events);
 
-        $attempturl = new moodle_url(
+        $attempturl = new url(
             '/mod/quiz/review.php',
             ['attempt' => $attemptobj->get_attemptid()],
         );

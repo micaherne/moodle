@@ -17,6 +17,7 @@
 namespace mod_assign;
 
 use assign;
+use core\context\course;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -270,9 +271,9 @@ final class markerallocation_test extends \advanced_testcase {
         list($sort, $params) = users_order_by_sql('u');
 
         // Old code, it must return 3 users: teacher1, teacher2 and Manger.
-        $oldmarkers = get_users_by_capability(\context_course::instance($this->course->id), 'mod/assign:grade', '', $sort);
+        $oldmarkers = get_users_by_capability(course::instance($this->course->id), 'mod/assign:grade', '', $sort);
         // New code, it must return 2 users: teacher1 and teacher2.
-        $newmarkers = get_enrolled_users(\context_course::instance($this->course->id), 'mod/assign:grade', 0, 'u.*', $sort);
+        $newmarkers = get_enrolled_users(course::instance($this->course->id), 'mod/assign:grade', 0, 'u.*', $sort);
 
         // Test result quantity.
         $this->assertEquals(count($oldusers), count($oldmarkers));

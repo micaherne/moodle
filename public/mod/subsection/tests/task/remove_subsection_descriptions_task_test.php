@@ -16,6 +16,8 @@
 
 namespace mod_subsection\task;
 
+use core\context\course;
+
 /**
  * Class containing unit tests for the remove existing subsection descriptions task.
  *
@@ -120,7 +122,7 @@ final class remove_subsection_descriptions_task_test extends \advanced_testcase 
         $filerecord = [
             'component' => 'course',
             'filearea' => 'section',
-            'contextid' => \context_course::instance($course->id)->id,
+            'contextid' => course::instance($course->id)->id,
             'itemid' => $subsection->id,
             'filename' => 'intro.txt',
             'filepath' => '/',

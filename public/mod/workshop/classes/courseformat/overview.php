@@ -16,7 +16,7 @@
 
 namespace mod_workshop\courseformat;
 
-use cm_info;
+use core_course\cm_info;
 use core_calendar\output\humandate;
 use core_courseformat\local\overview\overviewitem;
 use core\output\action_link;

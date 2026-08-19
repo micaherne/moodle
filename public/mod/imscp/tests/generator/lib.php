@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,7 +56,7 @@ class mod_imscp_generator extends testing_module_generator {
             if (!file_exists($record['packagepath'])) {
                 throw new coding_exception("File {$record['packagepath']} does not exist");
             }
-            $usercontext = context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
 
             // Pick a random context id for specified user.
             $record['package'] = file_get_unused_draft_itemid();

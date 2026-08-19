@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core_course\cm_info;
 use mod_forum\grades\forum_gradeitem;
 
 require_once('../../config.php');
@@ -45,18 +48,18 @@ $pagesize = optional_param('s', $CFG->forum_manydiscussions ?? 0, PARAM_INT);
 $sortorder = optional_param('o', null, PARAM_INT);
 
 if (!$cmid && !$forumid) {
-    throw new \moodle_exception('missingparameter');
+    throw new moodle_exception('missingparameter');
 }
 
 if ($cmid) {
     $forum = $forumvault->get_from_course_module_id($cmid);
     if (empty($forum)) {
-        throw new \moodle_exception('Unable to find forum with cmid ' . $cmid);
+        throw new moodle_exception('Unable to find forum with cmid ' . $cmid);
     }
 } else {
     $forum = $forumvault->get_from_id($forumid);
     if (empty($forum)) {
-        throw new \moodle_exception('Unable to find forum with id ' . $forumid);
+        throw new moodle_exception('Unable to find forum with id ' . $forumid);
     }
 }
 
@@ -74,7 +77,7 @@ $PAGE->set_url($url);
 
 $course = $forum->get_course_record();
 $coursemodule = $forum->get_course_module_record();
-$cm = \cm_info::create($coursemodule);
+$cm = cm_info::create($coursemodule);
 
 require_course_login($course, true, $cm);
 
@@ -149,7 +152,7 @@ if (!empty($CFG->enablerssfeeds) && !empty($CFG->forum_enablerssfeeds) && $forum
     require_once("{$CFG->libdir}/rsslib.php");
 
     $rsstitle = format_string($course->shortname, true, [
-            'context' => context_course::instance($course->id),
+            'context' => course::instance($course->id),
         ]) . ': ' . format_string($forum->get_name());
     rss_add_http_header($forum->get_context(), 'mod_forum', $forumrecord, $rsstitle);
 }

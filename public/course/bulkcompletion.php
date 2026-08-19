@@ -23,6 +23,11 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__.'/../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->libdir.'/completionlib.php');
@@ -35,21 +40,21 @@ if ($id) {
 
     if ($id == SITEID) {
         // Don't allow editing of 'site course' using this form.
-        throw new \moodle_exception('cannoteditsiteform');
+        throw new moodle_exception('cannoteditsiteform');
     }
 
     if (!$course = $DB->get_record('course', array('id' => $id))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
     require_login($course);
 
 } else {
     require_login();
-    throw new \moodle_exception('needcourseid');
+    throw new moodle_exception('needcourseid');
 }
 
 // Set up the page.
-navigation_node::override_active_url(new moodle_url('/course/completion.php', array('id' => $course->id)));
+navigation_node::override_active_url(new url('/course/completion.php', array('id' => $course->id)));
 $PAGE->set_course($course);
 $PAGE->set_url('/course/bulkcompletion.php', array('id' => $course->id));
 $PAGE->set_title($course->shortname);
@@ -58,7 +63,7 @@ $PAGE->set_pagelayout('admin');
 
 // Check access.
 if (!core_completion\manager::can_edit_bulk_completion($id)) {
-    require_capability('moodle/course:manageactivities', context_course::instance($course->id));
+    require_capability('moodle/course:manageactivities', course::instance($course->id));
 }
 
 // Get all that stuff I need for the renderer.

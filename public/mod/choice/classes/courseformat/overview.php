@@ -16,7 +16,8 @@
 
 namespace mod_choice\courseformat;
 
-use cm_info;
+use core\url;
+use core_course\cm_info;
 use core\output\pix_icon;
 use mod_choice\manager;
 use core\activity_dates;
@@ -93,7 +94,7 @@ class overview extends \core_courseformat\activityoverviewbase {
         $currentanswerscount = $this->manager->count_all_users_answered();
 
         $content = new action_link(
-            url: new \moodle_url('/mod/choice/report.php', ['id' => $this->cm->id]),
+            url: new url('/mod/choice/report.php', ['id' => $this->cm->id]),
             text: get_string('view'),
             attributes: ['class' => button::BODY_OUTLINE->classes()],
         );

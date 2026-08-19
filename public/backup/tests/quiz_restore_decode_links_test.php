@@ -16,6 +16,8 @@
 
 namespace core_backup;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Include all the needed stuff.
@@ -54,7 +56,7 @@ final class quiz_restore_decode_links_test extends \advanced_testcase {
         // Create questions.
 
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $cat = $questiongenerator->create_question_category(array('contextid' => $context->id));
         $question = $questiongenerator->create_question('multichoice', null, array('category' => $cat->id));
 
@@ -86,7 +88,7 @@ final class quiz_restore_decode_links_test extends \advanced_testcase {
         $newcm = \core_courseformat\formatactions::cm($course)->duplicate($quiz->cmid);
 
         $quizquestions = \mod_quiz\question\bank\qbank_helper::get_question_structure(
-                $newcm->instance, \context_module::instance($newcm->id));
+                $newcm->instance, module::instance($newcm->id));
         $questionids = [];
         foreach ($quizquestions as $quizquestion) {
             if ($quizquestion->questionid) {

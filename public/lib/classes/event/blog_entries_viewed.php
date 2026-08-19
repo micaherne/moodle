@@ -22,6 +22,9 @@
  */
 namespace core\event;
 
+use core\context\system;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -54,7 +57,7 @@ class blog_entries_viewed extends base {
      * Set basic properties for the event.
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
@@ -88,7 +91,7 @@ class blog_entries_viewed extends base {
                 $params[$param] = $this->other[$param];
             }
         }
-        return new \moodle_url('/blog/index.php', $params);
+        return new url('/blog/index.php', $params);
     }
 
     public static function get_other_mapping() {

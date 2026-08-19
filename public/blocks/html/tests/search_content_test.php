@@ -24,6 +24,11 @@
 
 namespace block_html;
 
+use core\context;
+use core\context\course;
+use core\context\user;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -60,7 +65,7 @@ final class search_content_test extends \advanced_testcase {
      * @return \moodle_page Page object representing course view
      */
     protected static function construct_page($course) {
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $page = new \moodle_page();
         $page->set_context($context);
         $page->set_course($course);
@@ -89,7 +94,7 @@ final class search_content_test extends \advanced_testcase {
         // Change block settings to add some text and a file.
         $itemid = file_get_unused_draft_itemid();
         $fs = get_file_storage();
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $fs->create_file_from_string(['component' => 'user', 'filearea' => 'draft',
                 'contextid' => $usercontext->id, 'itemid' => $itemid, 'filepath' => '/',
                 'filename' => 'file.txt'], 'File content');
@@ -112,7 +117,7 @@ final class search_content_test extends \advanced_testcase {
             $this->assertEquals($course->id, $record->courseid);
 
             // Check context is correct.
-            $blockcontext = \context::instance_by_id($record->contextid);
+            $blockcontext = context::instance_by_id($record->contextid);
             $this->assertInstanceOf('\context_block', $blockcontext);
             $coursecontext = $blockcontext->get_parent_context();
             $this->assertEquals($course->id, $coursecontext->instanceid);
@@ -154,7 +159,7 @@ final class search_content_test extends \advanced_testcase {
             $this->assertEquals(\core_search\manager::NO_OWNER_ID, $doc->get('owneruserid'));
 
             // Also check getting the doc url and context url.
-            $url = new \moodle_url('/course/view.php', ['id' => $course->id], 'inst' . $record->id);
+            $url = new url('/course/view.php', ['id' => $course->id], 'inst' . $record->id);
             $this->assertTrue($url->compare($area->get_doc_url($doc)));
             $this->assertTrue($url->compare($area->get_context_url($doc)));
         }

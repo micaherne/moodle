@@ -17,6 +17,7 @@
 namespace core_privacy;
 
 use advanced_testcase;
+use core\context\system;
 use \core_privacy\local\request\userlist_collection;
 use \core_privacy\local\request\userlist;
 use \core_privacy\local\request\approved_userlist;
@@ -38,7 +39,7 @@ final class userlist_collection_test extends advanced_testcase {
      * @covers ::add_userlist
      */
     public function test_supports_userlist(): void {
-        $cut = \context_system::instance();
+        $cut = system::instance();
         $uut = new userlist_collection($cut);
 
         $userlist = new userlist($cut, 'core_privacy');
@@ -53,7 +54,7 @@ final class userlist_collection_test extends advanced_testcase {
      * @covers ::add_userlist
      */
     public function test_supports_approved_userlist(): void {
-        $cut = \context_system::instance();
+        $cut = system::instance();
         $uut = new userlist_collection($cut);
 
         $userlist = new approved_userlist($cut, 'core_privacy', [1, 2, 3]);
@@ -68,7 +69,7 @@ final class userlist_collection_test extends advanced_testcase {
      * @covers ::get_userlist_for_component
      */
     public function test_get_userlist_for_component(): void {
-        $cut = \context_system::instance();
+        $cut = system::instance();
         $uut = new userlist_collection($cut);
 
         $privacy = new userlist($cut, 'core_privacy');
@@ -89,7 +90,7 @@ final class userlist_collection_test extends advanced_testcase {
      * @covers ::get_userlist_for_component
      */
     public function test_get_userlist_for_component_not_found(): void {
-        $cut = \context_system::instance();
+        $cut = system::instance();
         $uut = new userlist_collection($cut);
 
         $this->assertNull($uut->get_userlist_for_component('core_tests'));
@@ -101,7 +102,7 @@ final class userlist_collection_test extends advanced_testcase {
      * @covers ::add_userlist
      */
     public function test_duplicate_addition_throws(): void {
-        $cut = \context_system::instance();
+        $cut = system::instance();
         $uut = new userlist_collection($cut);
 
         $userlist = new userlist($cut, 'core_privacy');
@@ -117,7 +118,7 @@ final class userlist_collection_test extends advanced_testcase {
      * @covers ::count
      */
     public function test_countable(): void {
-        $cut = \context_system::instance();
+        $cut = system::instance();
         $uut = new userlist_collection($cut);
 
         $uut->add_userlist(new userlist($cut, 'core_privacy'));
@@ -136,7 +137,7 @@ final class userlist_collection_test extends advanced_testcase {
      * @covers ::valid
      */
     public function test_iteration(): void {
-        $cut = \context_system::instance();
+        $cut = system::instance();
         $uut = new userlist_collection($cut);
 
         $testdata = [];
@@ -166,7 +167,7 @@ final class userlist_collection_test extends advanced_testcase {
      * @covers ::get_context
      */
     public function test_get_context(): void {
-        $cut = \context_system::instance();
+        $cut = system::instance();
         $uut = new userlist_collection($cut);
 
         $this->assertSame($cut, $uut->get_context());

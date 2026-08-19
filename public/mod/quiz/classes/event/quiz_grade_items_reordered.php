@@ -16,6 +16,9 @@
 
 namespace mod_quiz\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Event to record a quiz grade item being re-ordered.
  *
@@ -43,7 +46,7 @@ class quiz_grade_items_reordered extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/editgrading.php', [
+        return new url('/mod/quiz/editgrading.php', [
             'cmid' => $this->contextinstanceid,
         ]);
     }
@@ -52,7 +55,7 @@ class quiz_grade_items_reordered extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->contextinstanceid)) {
-            throw new \coding_exception('The \'contextinstanceid\' value must be set.');
+            throw new coding_exception('The \'contextinstanceid\' value must be set.');
         }
     }
 

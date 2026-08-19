@@ -16,6 +16,7 @@
 
 namespace core_course\output\actionbar;
 
+use core\context;
 use core\output\named_templatable;
 use core\output\renderable;
 use core\output\renderer_base;
@@ -38,7 +39,7 @@ class group_selector_dropdown_form implements renderable, named_templatable {
      * @param \context $context The context instance.
      */
     public function __construct(
-        protected \context $context
+        protected context $context
     ) {
     }
 

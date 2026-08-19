@@ -24,6 +24,10 @@
 
 namespace mod_feedback\event;
 
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
+
 /**
  * Class mod_feedback_events_testcase
  *
@@ -65,7 +69,7 @@ final class events_test extends \advanced_testcase {
         $this->eventuser = $gen->create_user(); // Create a user.
         $course = $gen->create_course(); // Create a course.
         // Assign manager role, so user can see reports.
-        role_assign(1, $this->eventuser->id, \context_course::instance($course->id));
+        role_assign(1, $this->eventuser->id, course::instance($course->id));
 
         // Add a feedback activity to the created course.
         $record = new \stdClass();
@@ -173,7 +177,7 @@ final class events_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $context = \context_module::instance($this->eventcm->id);
+        $context = module::instance($this->eventcm->id);
 
         // Test not setting other['anonymous'].
         try {
@@ -184,7 +188,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\mod_feedback\\event\\response_deleted to be triggered without
                     other['anonymous']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString("The 'anonymous' value must be set in other.", $e->getMessage());
         }
     }
@@ -270,7 +274,7 @@ final class events_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $context = \context_module::instance($this->eventcm->id);
+        $context = module::instance($this->eventcm->id);
 
         // Test not setting instanceid.
         try {
@@ -283,7 +287,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\mod_feedback\\event\\response_deleted to be triggered without
                     other['instanceid']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString("The 'instanceid' value must be set in other.", $e->getMessage());
         }
 
@@ -298,7 +302,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\mod_feedback\\event\\response_deleted to be triggered without
                     other['cmid']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString("The 'cmid' value must be set in other.", $e->getMessage());
         }
 
@@ -312,7 +316,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\mod_feedback\\event\\response_deleted to be triggered without
                     other['anonymous']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString("The 'anonymous' value must be set in other.", $e->getMessage());
         }
     }

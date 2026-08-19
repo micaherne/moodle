@@ -37,6 +37,8 @@
 
 // phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
 
+use core\exception\moodle_exception;
+
 if (defined('STDIN')) {
     fwrite(STDERR, "ERROR: This script no longer supports CLI, please use admin/cli/cron.php instead\n");
     exit(1);
@@ -57,7 +59,7 @@ require_once($CFG->libdir . '/clilib.php');
 // check if execution allowed
 if (!empty($CFG->cronclionly)) {
     // This script can only be run via the cli.
-    throw new \moodle_exception('cronerrorclionly', 'admin');
+    throw new moodle_exception('cronerrorclionly', 'admin');
     exit;
 }
 // This script is being called via the web, so check the password if there is one.
@@ -65,7 +67,7 @@ if (!empty($CFG->cronremotepassword)) {
     $pass = optional_param('password', '', PARAM_RAW);
     if ($pass != $CFG->cronremotepassword) {
         // wrong password.
-        throw new \moodle_exception('cronerrorpassword', 'admin');
+        throw new moodle_exception('cronerrorpassword', 'admin');
         exit;
     }
 }

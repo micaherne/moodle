@@ -16,10 +16,13 @@
 
 namespace mod_data\output;
 
+use core\output\action_menu;
+use core\output\action_menu\link;
+use core\output\image_icon;
 use mod_data\manager;
 use mod_data\preset;
-use moodle_url;
-use url_select;
+use core\url;
+use core\output\url_select;
 
 /**
  * Class responsible for generating the action bar elements in the database module pages.
@@ -45,7 +48,7 @@ class action_bar {
      * @param int $id The database module id.
      * @param moodle_url $pageurl The URL of the current page.
      */
-    public function __construct(int $id, moodle_url $pageurl) {
+    public function __construct(int $id, url $pageurl) {
         $this->id = $id;
         [$course, $cm] = get_course_and_cm_from_instance($this->id, 'data');
         $this->cm = $cm;
@@ -98,7 +101,7 @@ class action_bar {
      * @param bool $isprimarybutton is the action trigger a primary or secondary button?
      * @return \action_menu Action menu to create a new field
      */
-    public function get_create_fields(bool $isprimarybutton = false): \action_menu {
+    public function get_create_fields(bool $isprimarybutton = false): action_menu {
         // Get the list of possible fields (plugins).
         $plugins = \core_component::get_plugin_list('datafield');
         $menufield = [];
@@ -107,16 +110,16 @@ class action_bar {
         }
         asort($menufield);
 
-        $fieldselect = new \action_menu();
+        $fieldselect = new action_menu();
         $triggerclasses = ['btn'];
         $triggerclasses[] = $isprimarybutton ? 'btn-primary' : 'btn-secondary';
         $fieldselect->set_menu_trigger(get_string('newfield', 'mod_data'), join(' ', $triggerclasses));
         $fieldselectparams = ['id' => $this->cm->id, 'mode' => 'new'];
         foreach ($menufield as $fieldtype => $fieldname) {
             $fieldselectparams['newtype'] = $fieldtype;
-            $fieldselect->add(new \action_menu_link(
-                new moodle_url('/mod/data/field.php', $fieldselectparams),
-                new \image_icon('icon', $fieldtype, 'datafield_' . $fieldtype),
+            $fieldselect->add(new link(
+                new url('/mod/data/field.php', $fieldselectparams),
+                new image_icon('icon', $fieldtype, 'datafield_' . $fieldtype),
                 $fieldname,
                 false
             ));
@@ -135,8 +138,8 @@ class action_bar {
      */
     public function get_view_action_bar(bool $hasentries, string $mode): string {
         global $PAGE;
-        $viewlistlink = new moodle_url('/mod/data/view.php', ['d' => $this->id]);
-        $viewsinglelink = new moodle_url('/mod/data/view.php', ['d' => $this->id, 'mode' => 'single']);
+        $viewlistlink = new url('/mod/data/view.php', ['d' => $this->id]);
+        $viewsinglelink = new url('/mod/data/view.php', ['d' => $this->id, 'mode' => 'single']);
         $manager = manager::create_from_coursemodule($this->cm);
         $menu = [
             $viewlistlink->out(false) => get_string('listview', 'mod_data'),
@@ -157,9 +160,9 @@ class action_bar {
         $groupmode = groups_get_activity_groupmode($cm);
         $context = $manager->get_context();
         if (data_user_can_add_entry($instance, $currentgroup, $groupmode, $context)) {
-            $backtourl = new moodle_url($this->currenturl);
+            $backtourl = new url($this->currenturl);
             $backtourl->param('mode', $mode);
-            $addentrylink = new moodle_url(
+            $addentrylink = new url(
                 '/mod/data/edit.php',
                 ['id' => $this->cm->id, 'backto' => $backtourl]
             );
@@ -185,16 +188,16 @@ class action_bar {
     public function get_templates_action_bar(): string {
         global $PAGE;
 
-        $listtemplatelink = new moodle_url('/mod/data/templates.php', ['d' => $this->id,
+        $listtemplatelink = new url('/mod/data/templates.php', ['d' => $this->id,
             'mode' => 'listtemplate']);
-        $singletemplatelink = new moodle_url('/mod/data/templates.php', ['d' => $this->id,
+        $singletemplatelink = new url('/mod/data/templates.php', ['d' => $this->id,
             'mode' => 'singletemplate']);
-        $advancedsearchtemplatelink = new moodle_url('/mod/data/templates.php', ['d' => $this->id,
+        $advancedsearchtemplatelink = new url('/mod/data/templates.php', ['d' => $this->id,
             'mode' => 'asearchtemplate']);
-        $addtemplatelink = new moodle_url('/mod/data/templates.php', ['d' => $this->id, 'mode' => 'addtemplate']);
-        $rsstemplatelink = new moodle_url('/mod/data/templates.php', ['d' => $this->id, 'mode' => 'rsstemplate']);
-        $csstemplatelink = new moodle_url('/mod/data/templates.php', ['d' => $this->id, 'mode' => 'csstemplate']);
-        $jstemplatelink = new moodle_url('/mod/data/templates.php', ['d' => $this->id, 'mode' => 'jstemplate']);
+        $addtemplatelink = new url('/mod/data/templates.php', ['d' => $this->id, 'mode' => 'addtemplate']);
+        $rsstemplatelink = new url('/mod/data/templates.php', ['d' => $this->id, 'mode' => 'rsstemplate']);
+        $csstemplatelink = new url('/mod/data/templates.php', ['d' => $this->id, 'mode' => 'csstemplate']);
+        $jstemplatelink = new url('/mod/data/templates.php', ['d' => $this->id, 'mode' => 'jstemplate']);
 
         $menu = [
             $addtemplatelink->out(false) => get_string('addtemplate', 'mod_data'),
@@ -214,9 +217,9 @@ class action_bar {
         $presetsactions = $this->get_presets_actions_select(false);
 
         // Reset single template action.
-        $resetcurrrent = new moodle_url($this->currenturl);
+        $resetcurrrent = new url($this->currenturl);
         $resetcurrrent->param('action', 'resettemplate');
-        $presetsactions->add(new \action_menu_link(
+        $presetsactions->add(new link(
             $resetcurrrent,
             null,
             get_string('resettemplate', 'mod_data'),
@@ -225,12 +228,12 @@ class action_bar {
         ));
 
         // Reset all templates action.
-        $resetallurl = new moodle_url($this->currenturl);
+        $resetallurl = new url($this->currenturl);
         $resetallurl->params([
             'action' => 'resetalltemplates',
             'sesskey' => sesskey(),
         ]);
-        $presetsactions->add(new \action_menu_link(
+        $presetsactions->add(new link(
             $resetallurl,
             null,
             get_string('resetalltemplates', 'mod_data'),
@@ -275,7 +278,7 @@ class action_bar {
         $menu = [];
         $selected = null;
         foreach (['listtemplate', 'singletemplate'] as $templatename) {
-            $link = new moodle_url('/mod/data/preset.php', [
+            $link = new url('/mod/data/preset.php', [
                 'd' => $this->id,
                 'template' => $templatename,
                 'fullname' => $fullname,
@@ -293,7 +296,7 @@ class action_bar {
             'title' => get_string('preview', manager::PLUGINNAME, preset::get_name_from_plugin($fullname)),
             'hasback' => true,
             'backtitle' => get_string('back'),
-            'backurl' => new moodle_url('/mod/data/preset.php', ['id' => $cm->id]),
+            'backurl' => new url('/mod/data/preset.php', ['id' => $cm->id]),
             'extraurlselect' => $urlselect->export_for_template($renderer),
         ];
         return $renderer->render_from_template('mod_data/action_bar', $data);
@@ -306,7 +309,7 @@ class action_bar {
      * @return \action_menu|null The selector object used to display the presets actions. Null when the import button is not
      * displayed and the database hasn't any fields.
      */
-    protected function get_presets_actions_select(bool $hasimport = false): ?\action_menu {
+    protected function get_presets_actions_select(bool $hasimport = false): ?action_menu {
         global $DB;
 
         $hasfields = $DB->record_exists('data_fields', ['dataid' => $this->id]);
@@ -316,14 +319,14 @@ class action_bar {
             return null;
         }
 
-        $actionsselect = new \action_menu();
+        $actionsselect = new action_menu();
         $actionsselect->set_menu_trigger(get_string('actions'), 'btn btn-secondary');
 
         if ($hasimport) {
             // Import.
             $actionsselectparams = ['id' => $this->cm->id];
-            $actionsselect->add(new \action_menu_link(
-                new moodle_url('/mod/data/preset.php', $actionsselectparams),
+            $actionsselect->add(new link(
+                new url('/mod/data/preset.php', $actionsselectparams),
                 null,
                 get_string('importpreset', 'mod_data'),
                 false,
@@ -335,15 +338,15 @@ class action_bar {
         if ($hasfields) {
             // Export.
             $actionsselectparams = ['id' => $this->cm->id, 'action' => 'export'];
-            $actionsselect->add(new \action_menu_link(
-                new moodle_url('/mod/data/preset.php', $actionsselectparams),
+            $actionsselect->add(new link(
+                new url('/mod/data/preset.php', $actionsselectparams),
                 null,
                 get_string('exportpreset', 'mod_data'),
                 false
             ));
             // Save as preset.
-            $actionsselect->add(new \action_menu_link(
-                new moodle_url('/mod/data/preset.php', $actionsselectparams),
+            $actionsselect->add(new link(
+                new url('/mod/data/preset.php', $actionsselectparams),
                 null,
                 get_string('saveaspreset', 'mod_data'),
                 false,

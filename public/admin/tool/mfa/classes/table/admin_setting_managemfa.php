@@ -16,6 +16,10 @@
 
 namespace tool_mfa\table;
 
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 use stdClass;
 use tool_mfa\local\factor\object_factor_base;
 
@@ -36,13 +40,13 @@ class admin_setting_managemfa extends \core_admin\table\plugin_management_table 
     #[\Override]
     public function guess_base_url(): void {
         $this->define_baseurl(
-            new \moodle_url('/admin/settings.php', ['section' => 'managemfa'])
+            new url('/admin/settings.php', ['section' => 'managemfa'])
         );
     }
 
     #[\Override]
-    protected function get_action_url(array $params = []): \moodle_url {
-        return new \moodle_url('/admin/tool/mfa/index.php', $params);
+    protected function get_action_url(array $params = []): url {
+        return new url('/admin/tool/mfa/index.php', $params);
     }
 
     #[\Override]
@@ -69,7 +73,7 @@ class admin_setting_managemfa extends \core_admin\table\plugin_management_table 
     protected function col_settings(stdClass $row): string {
         if ($settingsurl = $row->plugininfo->get_settings_url()) {
             $factor = $row->plugininfo->get_factor($row->plugininfo->name);
-            return \html_writer::link(
+            return html_writer::link(
                 url: $settingsurl,
                 text: get_string('settings'),
                 attributes: ["title" => get_string('editfactor', 'tool_mfa', $factor->get_display_name())],
@@ -121,7 +125,7 @@ class admin_setting_managemfa extends \core_admin\table\plugin_management_table 
         $factors = \tool_mfa\plugininfo\factor::get_enabled_factors();
         $combinations = $this->get_factor_combinations($factors, 0, count($factors) - 1);
 
-        echo \html_writer::tag('h3', get_string('settings:combinations', 'tool_mfa'));
+        echo html_writer::tag('h3', get_string('settings:combinations', 'tool_mfa'));
 
         if (empty($combinations)) {
             echo $OUTPUT->notification(get_string('error:notenoughfactors', 'tool_mfa'), 'notifyproblem');
@@ -129,7 +133,7 @@ class admin_setting_managemfa extends \core_admin\table\plugin_management_table 
         }
 
         $txt = get_strings(['combination', 'totalweight'], 'tool_mfa');
-        $table = new \html_table();
+        $table = new html_table();
         $table->id = 'mfacombinations';
         $table->attributes['class'] = 'admintable generaltable table table-bordered table-hover';
         $table->head  = [$txt->combination, $txt->totalweight];
@@ -142,10 +146,10 @@ class admin_setting_managemfa extends \core_admin\table\plugin_management_table 
             }, $combination['combination']);
 
             $string = implode(" {$factorstringconnector} ", $factorstrings);
-            $table->data[] = new \html_table_row([$string, $combination['totalweight']]);
+            $table->data[] = new html_table_row([$string, $combination['totalweight']]);
         }
 
-        echo \html_writer::table($table);
+        echo html_writer::table($table);
     }
 
     /**

@@ -31,6 +31,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+
 require_once('../../config.php');
 
 require_once($CFG->dirroot . '/mod/wiki/lib.php');
@@ -51,40 +54,40 @@ if (!empty($newcontent) && is_array($newcontent)) {
 }
 
 if (!$page = wiki_get_page($pageid)) {
-    throw new \moodle_exception('incorrectpageid', 'wiki');
+    throw new moodle_exception('incorrectpageid', 'wiki');
 }
 
 if (!$subwiki = wiki_get_subwiki($page->subwikiid)) {
-    throw new \moodle_exception('incorrectsubwikiid', 'wiki');
+    throw new moodle_exception('incorrectsubwikiid', 'wiki');
 }
 
 if (!$wiki = wiki_get_wiki($subwiki->wikiid)) {
-    throw new \moodle_exception('incorrectwikiid', 'wiki');
+    throw new moodle_exception('incorrectwikiid', 'wiki');
 }
 
 if (!$cm = get_coursemodule_from_instance('wiki', $wiki->id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
 if (!empty($section) && !$sectioncontent = wiki_get_section_page($page, $section)) {
-    throw new \moodle_exception('invalidsection', 'wiki');
+    throw new moodle_exception('invalidsection', 'wiki');
 }
 
 require_login($course, true, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 if (!wiki_user_can_edit($subwiki)) {
-    throw new \moodle_exception('cannoteditpage', 'wiki');
+    throw new moodle_exception('cannoteditpage', 'wiki');
 }
 
 $PAGE->set_show_navigation_footer(false);
 
 if ($option == get_string('save', 'wiki')) {
     if (!confirm_sesskey()) {
-        throw new \moodle_exception(get_string('invalidsesskey', 'wiki'));
+        throw new moodle_exception(get_string('invalidsesskey', 'wiki'));
     }
     $wikipage = new page_wiki_save($wiki, $subwiki, $cm);
     $wikipage->set_page($page);
@@ -93,7 +96,7 @@ if ($option == get_string('save', 'wiki')) {
 } else {
     if ($option == get_string('preview')) {
         if (!confirm_sesskey()) {
-            throw new \moodle_exception(get_string('invalidsesskey', 'wiki'));
+            throw new moodle_exception(get_string('invalidsesskey', 'wiki'));
         }
         $wikipage = new page_wiki_preview($wiki, $subwiki, $cm, 'modulepage');
         $wikipage->set_page($page);

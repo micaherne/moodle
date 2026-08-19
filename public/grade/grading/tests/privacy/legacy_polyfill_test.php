@@ -16,6 +16,9 @@
 
 namespace core_grading\privacy;
 
+use core\context;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -31,7 +34,7 @@ final class legacy_polyfill_test extends \advanced_testcase {
      * Test that the core_grading\privacy\legacy_polyfill works and that the static _export_gradingform_instance_data can be called.
      */
     public function test_export_gradingform_instance_data(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $mock = $this->createMock(test_gradingform_legacy_polyfill_mock_wrapper::class);
         $mock->expects($this->once())
@@ -54,7 +57,7 @@ final class legacy_polyfill_test extends \advanced_testcase {
      * Test the _delete_gradingform_for_instances shim.
      */
     public function test_delete_gradingform_for_instances(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $mock = $this->createMock(test_gradingform_legacy_polyfill_mock_wrapper::class);
         $mock->expects($this->once())
@@ -91,7 +94,7 @@ class test_legacy_polyfill_gradingform_provider implements
      * @param  int $instanceid The instance ID to export data for.
      * @param  array $subcontext The directory to export this data to.
      */
-    protected static function _export_gradingform_instance_data(\context $context, $instanceid, $subcontext) {
+    protected static function _export_gradingform_instance_data(context $context, $instanceid, $subcontext) {
         static::$mock->get_return_value(__FUNCTION__, func_get_args());
     }
 

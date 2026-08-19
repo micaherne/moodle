@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace mod_quiz\completion;
 
-use context_module;
+use core\context\module;
 use core_completion\activity_custom_completion;
 use mod_quiz\quiz_settings;
 use mod_quiz\access_manager;
@@ -68,7 +68,7 @@ class custom_completion extends activity_custom_completion {
             return false;
         }
         $lastfinishedattempt = end($attempts);
-        $context = context_module::instance($this->cm->id);
+        $context = module::instance($this->cm->id);
         $quizobj = quiz_settings::create((int) $this->cm->instance, $this->userid);
         $accessmanager = new access_manager(
             $quizobj,

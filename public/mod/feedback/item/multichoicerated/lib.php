@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') OR die('not allowed');
 require_once($CFG->dirroot.'/mod/feedback/item/feedback_item_class.php');
 
@@ -324,7 +326,7 @@ class feedback_item_multichoicerated extends feedback_item_base {
             }
             // Span to hold the element id. The id is used for drag and drop reordering.
             $objs[] = ['static', '', '', html_writer::span('', '', ['id' => 'feedback_item_' . $item->id])];
-            $separator = $info->horizontal ? ' ' : \html_writer::div('', 'w-100');
+            $separator = $info->horizontal ? ' ' : html_writer::div('', 'w-100');
             $class .= ' multichoicerated-' . ($info->horizontal ? 'horizontal' : 'vertical');
             $el = $form->add_form_group_element($item, 'group_'.$inputname, $name, $objs, $separator, $class);
             $form->set_element_type($inputname, PARAM_INT);

@@ -17,14 +17,14 @@
 
 namespace core_contentbank\output;
 
-use context;
+use core\context;
 use core_contentbank\content;
 use core_contentbank\contenttype;
-use moodle_url;
-use renderable;
-use renderer_base;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Class containing data for the content view.
@@ -75,7 +75,7 @@ class viewcontent implements renderable, templatable {
                     $newvisibility = content::VISIBILITY_UNLISTED;
                     break;
                 default:
-                    $url = new \moodle_url('/contentbank/index.php', ['contextid' => $this->content->get_contextid()]);
+                    $url = new url('/contentbank/index.php', ['contextid' => $this->content->get_contextid()]);
                     throw new moodle_exception('contentvisibilitynotfound', 'error', $url, $this->content->get_visibility());
             }
 
@@ -111,7 +111,7 @@ class viewcontent implements renderable, templatable {
         }
 
         if ($this->contenttype->can_download($this->content)) {
-            $url = new moodle_url($this->contenttype->get_download_url($this->content));
+            $url = new url($this->contenttype->get_download_url($this->content));
             $options[get_string('download')] = [
                 'url' => $url->out()
             ];
@@ -186,14 +186,14 @@ class viewcontent implements renderable, templatable {
                 'plugin' => $this->contenttype->get_plugin_name(),
                 'id' => $this->content->get_id()
             ];
-            $editcontenturl = new moodle_url('/contentbank/edit.php', $urlparams);
+            $editcontenturl = new url('/contentbank/edit.php', $urlparams);
             $data->editcontenturl = $editcontenturl->out(false);
         }
 
         // Close/exit link for those users who can access that context.
         $context = context::instance_by_id($this->content->get_contextid());
         if (has_capability('moodle/contentbank:access', $context)) {
-            $closeurl = new moodle_url('/contentbank/index.php', ['contextid' => $context->id]);
+            $closeurl = new url('/contentbank/index.php', ['contextid' => $context->id]);
             $data->closeurl = $closeurl->out(false);
         }
 

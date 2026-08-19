@@ -28,6 +28,16 @@
  * @copyright 2010 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\html_writer;
+use core\output\paging_bar;
+use core\output\plugin_renderer_base;
+use core\output\renderable;
+use core\output\single_button;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 class core_enrol_renderer extends plugin_renderer_base {
 
     /**
@@ -123,7 +133,7 @@ class core_enrol_renderer extends plugin_renderer_base {
             if ($canassign and (is_siteadmin() or isset($assignableroles[$roleid])) and !$role['unchangeable']) {
                 $strunassign = get_string('unassignarole', 'role', $role['text']);
                 $icon = $this->output->pix_icon('t/delete', $strunassign);
-                $url = new moodle_url($pageurl, array('action'=>'unassign', 'roleid'=>$roleid, 'user'=>$userid));
+                $url = new url($pageurl, array('action'=>'unassign', 'roleid'=>$roleid, 'user'=>$userid));
                 $rolesoutput .= html_writer::tag('div', $role['text'] . html_writer::link($url, $icon, array('class'=>'unassignrolelink', 'rel'=>$roleid, 'title'=>$strunassign)), array('class'=>'role role_'.$roleid));
             } else {
                 $rolesoutput .= html_writer::tag('div', $role['text'], array('class'=>'role unchangeable', 'rel'=>$roleid));
@@ -140,7 +150,7 @@ class core_enrol_renderer extends plugin_renderer_base {
                 }
             }
             if (!$hasallroles) {
-                $url = new moodle_url($pageurl, array('action' => 'assign', 'user' => $userid));
+                $url = new url($pageurl, array('action' => 'assign', 'user' => $userid));
                 $roleicon = $this->output->pix_icon('i/assignroles', get_string('assignroles', 'role'));
                 $link = html_writer::link($url, $roleicon, array('class' => 'assignrolelink'));
                 $output = html_writer::tag('div', $link, array('class'=>'addrole'));
@@ -167,7 +177,7 @@ class core_enrol_renderer extends plugin_renderer_base {
         foreach($groups as $groupid=>$name) {
             if ($canmanagegroups and groups_remove_member_allowed($groupid, $userid)) {
                 $icon = $this->output->pix_icon('t/delete', get_string('removefromgroup', 'group', $name));
-                $url = new moodle_url($pageurl, array('action'=>'removemember', 'group'=>$groupid, 'user'=>$userid));
+                $url = new url($pageurl, array('action'=>'removemember', 'group'=>$groupid, 'user'=>$userid));
                 $groupoutput .= html_writer::tag('div', $name . html_writer::link($url, $icon), array('class'=>'group', 'rel'=>$groupid));
             } else {
                 $groupoutput .= html_writer::tag('div', $name, array('class'=>'group', 'rel'=>$groupid));
@@ -175,7 +185,7 @@ class core_enrol_renderer extends plugin_renderer_base {
         }
         $output = '';
         if ($canmanagegroups && (count($groups) < count($allgroups))) {
-            $url = new moodle_url($pageurl, array('action'=>'addmember', 'user'=>$userid));
+            $url = new url($pageurl, array('action'=>'addmember', 'user'=>$userid));
             $output .= html_writer::tag('div', html_writer::link($url, $groupicon), array('class'=>'addgroup'));
         }
         $output = $output.html_writer::tag('div', $groupoutput, array('class'=>'groups'));
@@ -444,7 +454,7 @@ class course_enrolment_table extends html_table implements renderable {
                     if (!in_array($n, self::$sortablefields)) {
                         $bits[] = $l;
                     } else {
-                        $sorturl = new moodle_url($url, array(self::SORTVAR => $n, self::SORTDIRECTIONVAR => $this->get_field_sort_direction($n)));
+                        $sorturl = new url($url, array(self::SORTVAR => $n, self::SORTDIRECTIONVAR => $this->get_field_sort_direction($n)));
                         $link = html_writer::link($sorturl, $fields[$name][$n]);
                         if ($this->sort == $n) {
                             $link .= $this->get_direction_icon($output, $n);
@@ -458,7 +468,7 @@ class course_enrolment_table extends html_table implements renderable {
                 if (!in_array($name, self::$sortablefields)) {
                     $newlabel = $label;
                 } else {
-                    $sorturl = new moodle_url($url, array(self::SORTVAR => $name, self::SORTDIRECTIONVAR => $this->get_field_sort_direction($name)));
+                    $sorturl = new url($url, array(self::SORTVAR => $name, self::SORTDIRECTIONVAR => $this->get_field_sort_direction($name)));
                     $newlabel  = html_writer::link($sorturl, $fields[$name]);
                     if ($this->sort == $name) {
                         $newlabel .= $this->get_direction_icon($output, $name);
@@ -670,7 +680,7 @@ class course_enrolment_other_users_table extends course_enrolment_table {
             return false;
         }
         $count++;
-        $url = new moodle_url('/admin/roles/assign.php', array('contextid'=>$this->manager->get_context()->id, 'sesskey'=>sesskey()));
+        $url = new url('/admin/roles/assign.php', array('contextid'=>$this->manager->get_context()->id, 'sesskey'=>sesskey()));
         $control = new single_button($url, get_string('assignroles', 'role'), 'get');
         $control->class = 'singlebutton assignuserrole instance'.$count;
         if ($count == 1) {

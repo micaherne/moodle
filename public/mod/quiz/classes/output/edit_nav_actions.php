@@ -16,10 +16,10 @@
 
 namespace mod_quiz\output;
 
-use moodle_url;
-use renderable;
-use renderer_base;
-use templatable;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use core\output\select_menu;
 
 /**
@@ -56,8 +56,8 @@ class edit_nav_actions implements renderable, templatable {
     public function export_for_template(renderer_base $output): array {
 
         // Build the navigation drop-down.
-        $questionsurl = new moodle_url('/mod/quiz/edit.php', ['cmid' => $this->cmid]);
-        $gradeitemsetupurl = new moodle_url('/mod/quiz/editgrading.php', ['cmid' => $this->cmid]);
+        $questionsurl = new url('/mod/quiz/edit.php', ['cmid' => $this->cmid]);
+        $gradeitemsetupurl = new url('/mod/quiz/editgrading.php', ['cmid' => $this->cmid]);
 
         $menu = [
             $questionsurl->out(false) => get_string('questions', 'quiz'),

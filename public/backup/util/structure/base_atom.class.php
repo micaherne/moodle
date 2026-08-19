@@ -27,6 +27,8 @@
 /**
  * Abstract class representing one atom (name/value) piece of information
  */
+use core\exception\moodle_exception;
+
 abstract class base_atom {
 
     /** @var string name of the element (maps to XML name) */

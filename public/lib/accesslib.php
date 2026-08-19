@@ -107,6 +107,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\url;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** No capability change */
@@ -508,7 +519,7 @@ function has_capability($capability, context $context, $user = null, $doanything
                 return false;
             }
         } else {
-            if (!context_user::instance($userid, IGNORE_MISSING)) {
+            if (!user::instance($userid, IGNORE_MISSING)) {
                 // no user context == invalid userid
                 return false;
             }
@@ -919,13 +930,13 @@ function get_user_roles_sitewide_accessdata($userid) {
 
     // start with the default role
     if (!empty($CFG->defaultuserroleid)) {
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $accessdata['ra'][$syscontext->path][(int)$CFG->defaultuserroleid] = (int)$CFG->defaultuserroleid;
     }
 
     // load the "default frontpage role"
     if (!empty($CFG->defaultfrontpageroleid)) {
-        $frontpagecontext = context_course::instance(get_site()->id);
+        $frontpagecontext = course::instance(get_site()->id);
         if ($frontpagecontext->path) {
             $accessdata['ra'][$frontpagecontext->path][(int)$CFG->defaultfrontpageroleid] = (int)$CFG->defaultfrontpageroleid;
         }
@@ -1105,7 +1116,7 @@ function reload_all_capabilities() {
  * @param int $roleid
  * @return void
  */
-function load_temp_course_role(context_course $coursecontext, $roleid) {
+function load_temp_course_role(course $coursecontext, $roleid) {
     global $USER, $SITE;
 
     if (empty($roleid)) {
@@ -1139,7 +1150,7 @@ function load_temp_course_role(context_course $coursecontext, $roleid) {
  * @param context_course $coursecontext
  * @return void
  */
-function remove_temp_course_roles(context_course $coursecontext) {
+function remove_temp_course_roles(course $coursecontext) {
     global $DB, $USER, $SITE;
 
     if ($coursecontext->instanceid == $SITE->id) {
@@ -1201,14 +1212,14 @@ function assign_legacy_capabilities($capability, $legacyperms) {
 
     foreach ($legacyperms as $type => $perm) {
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         if ($type === 'admin') {
             debugging('Legacy type admin in access.php was renamed to manager, please update the code.');
             $type = 'manager';
         }
 
         if (!array_key_exists($type, $archetypes)) {
-            throw new \moodle_exception('invalidlegacy', '', '', $type);
+            throw new moodle_exception('invalidlegacy', '', '', $type);
         }
 
         if ($roles = get_archetype_roles($type)) {
@@ -1328,7 +1339,7 @@ function create_role($name, $shortname, $description, $archetype = '') {
     $role->id = $DB->insert_record('role', $role);
     $event = \core\event\role_created::create([
         'objectid' => $role->id,
-        'context' => context_system::instance(),
+        'context' => system::instance(),
         'other' => [
             'name' => $role->name,
             'shortname' => $role->shortname,
@@ -1372,7 +1383,7 @@ function delete_role($roleid) {
     // Trigger event.
     $event = \core\event\role_deleted::create(
         array(
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'objectid' => $roleid,
             'other' =>
                 array(
@@ -1506,7 +1517,7 @@ function unassign_capability($capability, $roleid, $contextid = null, bool $show
     // Trigger capability_assigned event.
     \core\event\capability_unassigned::create([
         'userid' => $USER->id,
-        'context' => $context ?? context_system::instance(),
+        'context' => $context ?? system::instance(),
         'objectid' => $roleid,
         'other' => [
             'capability' => $capability,
@@ -1993,7 +2004,7 @@ function can_access_course(stdClass $course, $user = null, $withcapability = '',
 
     // this function originally accepted $coursecontext parameter
     if ($course instanceof context) {
-        if ($course instanceof context_course) {
+        if ($course instanceof course) {
             debugging('deprecated context parameter, please use $course record');
             $coursecontext = $course;
             $course = $DB->get_record('course', array('id'=>$coursecontext->instanceid));
@@ -2002,7 +2013,7 @@ function can_access_course(stdClass $course, $user = null, $withcapability = '',
             return false;
         }
     } else {
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
     }
 
     if (!isset($USER->id)) {
@@ -2275,7 +2286,7 @@ function reset_role_capabilities($roleid) {
     $role = $DB->get_record('role', array('id'=>$roleid), '*', MUST_EXIST);
     $defaultcaps = get_default_capabilities($role->archetype);
 
-    $systemcontext = context_system::instance();
+    $systemcontext = system::instance();
 
     $DB->delete_records('role_capabilities',
             array('roleid' => $roleid, 'contextid' => $systemcontext->id));
@@ -2466,7 +2477,7 @@ function capabilities_cleanup($component, $newcapdef = null) {
                             roleid: $role->id,
                             showdebug: false, // Suppress debugging messages in the get_capability_info().
                         )) {
-                            throw new \moodle_exception('cannotunassigncap', 'error', '',
+                            throw new moodle_exception('cannotunassigncap', 'error', '',
                                 (object)array('cap' => $cachedcap->name, 'role' => $role->name));
                         }
                     }
@@ -2593,7 +2604,7 @@ function get_context_info_list(context $context) {
  * @return bool
  */
 function is_inside_frontpage(context $context) {
-    $frontpagecontext = context_course::instance(SITEID);
+    $frontpagecontext = course::instance(SITEID);
     return strpos($context->path . '/', $frontpagecontext->path . '/') === 0;
 }
 
@@ -2888,9 +2899,9 @@ function get_roles_used_in_context(context $context, $includeparents = true) {
 function get_user_roles_in_course($userid, $courseid) {
     global $CFG, $DB, $USER;
     if ($courseid == SITEID) {
-        $context = context_system::instance();
+        $context = system::instance();
     } else {
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
     }
     // If the current user can assign roles, then they can see all roles on the profile and participants page,
     // provided the roles are assigned to at least 1 user in the context. If not, only the policy-defined roles.
@@ -2931,7 +2942,7 @@ function get_user_roles_in_course($userid, $courseid) {
         $rolenames = array();
         foreach ($roles as $roleid => $unused) {
             if (isset($viewableroles[$roleid])) {
-                $url = new moodle_url('/user/index.php', ['contextid' => $context->id, 'roleid' => $roleid]);
+                $url = new url('/user/index.php', ['contextid' => $context->id, 'roleid' => $roleid]);
                 $rolenames[] = '<a href="' . $url . '">' . $viewableroles[$roleid] . '</a>';
             }
         }
@@ -3048,7 +3059,7 @@ function get_roles_risk_counts(array $roleids): array {
     }
 
     [$insql, $params] = $DB->get_in_or_equal($roleids, SQL_PARAMS_NAMED, 'roleid');
-    $params['contextid'] = context_system::instance()->id;
+    $params['contextid'] = system::instance()->id;
     $params['allow'] = CAP_ALLOW;
 
     $sql = "SELECT rc.roleid, cap.riskbitmask
@@ -3220,7 +3231,7 @@ function get_user_roles_with_special(context $context, $userid = 0) {
     $isfrontpage = ($context->contextlevel == CONTEXT_COURSE && $context->instanceid == SITEID) ||
             is_inside_frontpage($context);
     if ($defaultfrontpageroleid && $isfrontpage) {
-        $frontpagecontext = context_course::instance(SITEID);
+        $frontpagecontext = course::instance(SITEID);
         $ra = new stdClass();
         $ra->userid = $userid;
         $ra->contextid = $frontpagecontext->id;
@@ -3231,7 +3242,7 @@ function get_user_roles_with_special(context $context, $userid = 0) {
     // Add authenticated user role if relevant.
     $defaultuserroleid      = isset($CFG->defaultuserroleid) ? $CFG->defaultuserroleid : 0;
     if ($defaultuserroleid && !isguestuser($userid)) {
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $ra = new stdClass();
         $ra->userid = $userid;
         $ra->contextid = $systemcontext->id;
@@ -3656,7 +3667,7 @@ function get_roles_for_contextlevels($contextlevel) {
  * @return array list of the context levels at which this type of role may be assigned by default.
  */
 function get_default_contextlevels($rolearchetype) {
-    return \context_helper::get_compatible_levels($rolearchetype);
+    return context_helper::get_compatible_levels($rolearchetype);
 }
 
 /**
@@ -4519,7 +4530,7 @@ function role_switch($roleid, context $context) {
  */
 function is_role_switched($courseid) {
     global $USER;
-    $context = context_course::instance($courseid, MUST_EXIST);
+    $context = course::instance($courseid, MUST_EXIST);
     return (!empty($USER->access['rsw'][$context->path]));
 }
 
@@ -4643,7 +4654,7 @@ function role_get_name(stdClass $role, $context = null, $rolenamedisplay = ROLEN
 
     if (trim($role->name) !== '') {
         // For filtering always use context where was the thing defined - system for roles here.
-        $original = format_string($role->name, true, array('context'=>context_system::instance()));
+        $original = format_string($role->name, true, array('context'=>system::instance()));
 
     } else {
         // Empty role->name means we want to see localised role name based on shortname,
@@ -4699,7 +4710,7 @@ function role_get_name(stdClass $role, $context = null, $rolenamedisplay = ROLEN
  */
 function role_get_description(stdClass $role) {
     if (!html_is_blank($role->description)) {
-        return format_text($role->description, FORMAT_HTML, array('context'=>context_system::instance()));
+        return format_text($role->description, FORMAT_HTML, array('context'=>system::instance()));
     }
 
     switch ($role->shortname) {
@@ -4883,7 +4894,7 @@ function switch_roles($first, $second) {
 function role_cap_duplicate($sourcerole, $targetrole) {
     global $DB;
 
-    $systemcontext = context_system::instance();
+    $systemcontext = system::instance();
     $caps = $DB->get_records_sql("SELECT *
                                     FROM {role_capabilities}
                                    WHERE roleid = ? AND contextid = ?",

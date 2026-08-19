@@ -16,7 +16,7 @@
 
 namespace mod_data;
 
-use context_module;
+use core\context\module;
 use mod_data\local\exporter\csv_entries_exporter;
 use mod_data\local\exporter\ods_entries_exporter;
 use mod_data\local\exporter\utils;

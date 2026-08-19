@@ -22,9 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-    $ADMIN->add('server', new admin_externalpage('oauth2', new lang_string('pluginname', 'tool_oauth2'),
+    $ADMIN->add('server', new externalpage('oauth2', new lang_string('pluginname', 'tool_oauth2'),
          "$CFG->wwwroot/$CFG->admin/tool/oauth2/issuers.php"));
 }

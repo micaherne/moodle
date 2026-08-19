@@ -16,12 +16,13 @@
 
 namespace tool_brickfield\output;
 
+use core\output\single_button;
 use tool_brickfield\accessibility;
-use plugin_renderer_base;
-use moodle_url;
-use tabobject;
-use tabtree;
-use html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+use core\output\tabobject;
+use core\output\tabtree;
+use core\output\html_writer;
 use tool_brickfield\analysis;
 use tool_brickfield\local\tool\filter;
 use tool_brickfield\local\tool\tool;
@@ -66,7 +67,7 @@ class renderer extends plugin_renderer_base {
         $idprefix = 'tab_';
         $tabs = [];
         foreach ($tools as $toolname => $tool) {
-            $link = new moodle_url(
+            $link = new url(
                 accessibility::get_plugin_url(),
                 array_merge(['tab' => $toolname, ], $tool->toplevel_arguments($filter))
             );
@@ -111,7 +112,7 @@ class renderer extends plugin_renderer_base {
     public function cachealert(): string {
         $html = '';
         if (!analysis::is_enabled()) {
-            $html = \html_writer::div(get_string('analysistypedisabled', manager::PLUGINNAME),
+            $html = html_writer::div(get_string('analysistypedisabled', manager::PLUGINNAME),
                 '', ['class' => 'alert alert-primary']);
         }
         return $html;
@@ -127,10 +128,10 @@ class renderer extends plugin_renderer_base {
     public function analysisalert(int $courseid): string {
         $siteorcourse = ($courseid == SITEID) ? 'site' : '';
         if (scheduler::is_course_in_schedule($courseid)) {
-            $html = \html_writer::div(get_string('schedule:' . $siteorcourse . 'scheduled', manager::PLUGINNAME),
+            $html = html_writer::div(get_string('schedule:' . $siteorcourse . 'scheduled', manager::PLUGINNAME),
                 '', ['class' => 'alert alert-primary']);
         } else {
-            $html = \html_writer::div(
+            $html = html_writer::div(
                 get_string('schedule:' . $siteorcourse . 'notscheduled', manager::PLUGINNAME, manager::get_helpurl()),
                 '', ['class' => 'alert alert-primary']
             );
@@ -146,7 +147,7 @@ class renderer extends plugin_renderer_base {
      * @throws \coding_exception
      */
     public function notvalidatedalert(): string {
-        return \html_writer::div(get_string('notvalidated', manager::PLUGINNAME), '', ['class' => 'alert alert-primary']);
+        return html_writer::div(get_string('notvalidated', manager::PLUGINNAME), '', ['class' => 'alert alert-primary']);
     }
 
     /**
@@ -158,18 +159,18 @@ class renderer extends plugin_renderer_base {
      * @throws \moodle_exception
      */
     public function analysisbutton(int $courseid): string {
-        $link = new moodle_url(accessibility::get_plugin_url(), [
+        $link = new url(accessibility::get_plugin_url(), [
             'action' => 'requestanalysis',
             'courseid' => $courseid
         ]);
 
         $classname = manager::PLUGINNAME . '_analysisbutton';
 
-        $button = new \single_button(
+        $button = new single_button(
             $link,
             get_string('schedule:requestanalysis', manager::PLUGINNAME),
             'post',
-            \single_button::BUTTON_PRIMARY,
+            single_button::BUTTON_PRIMARY,
             ['class' => $classname]
         );
 

@@ -22,6 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once '../../../config.php';
 require_once $CFG->dirroot.'/grade/lib.php';
 require_once $CFG->dirroot.'/grade/report/lib.php';
@@ -30,7 +36,7 @@ require_once 'edit_form.php';
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $id       = optional_param('id', 0, PARAM_INT);
 
-$url = new moodle_url('/grade/edit/outcome/edit.php');
+$url = new url('/grade/edit/outcome/edit.php');
 if ($courseid !== 0) {
     $url->param('courseid', $courseid);
 }
@@ -40,7 +46,7 @@ if ($id !== 0) {
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 $heading = get_string('addoutcome', 'grades');
 
 // a bit complex access control :-O
@@ -49,21 +55,21 @@ if ($id) {
 
     /// editing existing outcome
     if (!$outcome_rec = $DB->get_record('grade_outcomes', array('id' => $id))) {
-        throw new \moodle_exception('invalidoutcome');
+        throw new moodle_exception('invalidoutcome');
     }
     if ($outcome_rec->courseid) {
         $outcome_rec->standard = 0;
         if (!$course = $DB->get_record('course', array('id' => $outcome_rec->courseid))) {
-            throw new \moodle_exception('invalidcourseid');
+            throw new moodle_exception('invalidcourseid');
         }
         require_login($course);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         require_capability('moodle/grade:manage', $context);
         $courseid = $course->id;
     } else {
         if ($courseid) {
             if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-                throw new \moodle_exception('invalidcourseid');
+                throw new moodle_exception('invalidcourseid');
             }
         }
         $outcome_rec->standard = 1;
@@ -77,7 +83,7 @@ if ($id) {
     /// adding new outcome from course
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
     require_login($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     require_capability('moodle/grade:manage', $context);
 
     $outcome_rec = new stdClass();
@@ -100,9 +106,9 @@ if (!$courseid) {
 
     $PAGE->set_primary_active_tab('siteadminnode');
 } else {
-    navigation_node::override_active_url(new moodle_url('/grade/edit/outcome/course.php', ['id' => $courseid]));
+    navigation_node::override_active_url(new url('/grade/edit/outcome/course.php', ['id' => $courseid]));
     $PAGE->navbar->add(get_string('manageoutcomes', 'grades'),
-        new moodle_url('/grade/edit/outcome/index.php', ['id' => $courseid]));
+        new url('/grade/edit/outcome/index.php', ['id' => $courseid]));
 }
 
 // default return url

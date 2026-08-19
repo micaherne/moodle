@@ -16,6 +16,7 @@
 
 namespace core_ai\aiactions\responses;
 
+use core\exception\coding_exception;
 use core_ai\aiactions\responses\response_summarise_text;
 
 /**
@@ -43,7 +44,7 @@ final class response_summarise_text_test extends \advanced_testcase {
      * Test constructor with error.
      */
     public function test_construct_error(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Error code and name must exist in an error response.');
         new response_summarise_text(
             success: false,

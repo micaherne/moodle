@@ -16,6 +16,9 @@
 
 namespace enrol_paypal;
 
+use core\context\course;
+use core\output\progress_trace\null_progress_trace;
+
 /**
  * paypal enrolment plugin tests.
  *
@@ -54,7 +57,7 @@ final class paypal_test extends \advanced_testcase {
         $paypalplugin = enrol_get_plugin('paypal');
 
         // Just make sure the sync does not throw any errors when nothing to do.
-        $paypalplugin->sync(new \null_progress_trace());
+        $paypalplugin->sync(new null_progress_trace());
     }
 
     public function test_expired(): void {
@@ -68,7 +71,7 @@ final class paypal_test extends \advanced_testcase {
         $this->assertNotEmpty($manualplugin);
 
         $now = time();
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
         $this->enable_plugin();
 
 
@@ -88,8 +91,8 @@ final class paypal_test extends \advanced_testcase {
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
 
         $data = array('roleid'=>$studentrole->id, 'courseid'=>$course1->id);
         $id = $paypalplugin->add_instance($course1, $data);

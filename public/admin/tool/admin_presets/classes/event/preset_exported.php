@@ -17,6 +17,7 @@
 namespace tool_admin_presets\event;
 
 use core\event\base;
+use core\url;
 
 /**
  * Admin tool presets event class exported.
@@ -36,8 +37,8 @@ class preset_exported extends base {
         return "User {$this->userid} has exported the preset with id {$this->objectid}.";
     }
 
-    public function get_url(): \moodle_url {
-        return new \moodle_url('/admin/tool/admin_presets/index.php',
+    public function get_url(): url {
+        return new url('/admin/tool/admin_presets/index.php',
             ['action' => 'load', 'mode' => 'preview', 'id' => $this->objectid]);
     }
 

@@ -16,11 +16,12 @@
 
 namespace core_admin\output;
 
-use moodle_url;
-use renderable;
-use renderer_base;
+use core\output\single_button;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Theme selector renderable.
@@ -59,12 +60,12 @@ class theme_selector implements renderable, templatable {
         // Theme data used to populate cards and modal.
         $data->themes = $this->themedata;
         // Reset theme caches button.
-        $reseturl = new moodle_url('/admin/themeselector.php', ['sesskey' => sesskey(), 'reset' => 1]);
-        $resetbutton = new \single_button(
+        $reseturl = new url('/admin/themeselector.php', ['sesskey' => sesskey(), 'reset' => 1]);
+        $resetbutton = new single_button(
             $reseturl,
             get_string('themeresetcaches', 'admin'),
             'post',
-            \single_button::BUTTON_SECONDARY
+            single_button::BUTTON_SECONDARY
         );
         $data->resetbutton = $resetbutton->export_for_template($output);
         $data->definedinconfig = $this->definedinconfig;

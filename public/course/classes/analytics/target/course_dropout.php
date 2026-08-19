@@ -24,6 +24,9 @@
 
 namespace core_course\analytics\target;
 
+use core\exception\coding_exception;
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/lib.php');
@@ -47,8 +50,8 @@ class course_dropout extends course_enrolments {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('target:coursedropout', 'course');
+    public static function get_name(): lang_string {
+        return new lang_string('target:coursedropout', 'course');
     }
 
     /**
@@ -89,7 +92,7 @@ class course_dropout extends course_enrolments {
                 'AND userid ' . $studentssql;
 
             if (!$logstore = \core_analytics\manager::get_analytics_logstore()) {
-                throw new \coding_exception('No available log stores');
+                throw new coding_exception('No available log stores');
             }
             $nlogs = $logstore->get_events_select_count($select, array_merge($params, $studentparams));
 
@@ -137,7 +140,7 @@ class course_dropout extends course_enrolments {
         }
 
         if (!$logstore = \core_analytics\manager::get_analytics_logstore()) {
-            throw new \coding_exception('No available log stores');
+            throw new coding_exception('No available log stores');
         }
 
         // No logs during the last quarter of the course.

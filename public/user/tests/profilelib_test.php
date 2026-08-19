@@ -16,6 +16,9 @@
 
 namespace core_user;
 
+use core\context\course;
+use core\context\user;
+
 /**
  * Unit tests for user/profile/lib.php.
  *
@@ -108,9 +111,9 @@ final class profilelib_test extends \advanced_testcase {
 
         // Course without sections.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $this->setUser($user);
 

@@ -22,6 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\lang_string;
+use core\url;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configduration;
+use core_admin\setting\setting\configmulticheckbox;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
@@ -29,17 +37,17 @@ if ($hassiteconfig) {
 
     if ($ADMIN->fulltree) {
         // Contact data protection officer. Disabled by default.
-        $privacysettings->add(new admin_setting_configcheckbox('tool_dataprivacy/contactdataprotectionofficer',
+        $privacysettings->add(new configcheckbox('tool_dataprivacy/contactdataprotectionofficer',
                 new lang_string('contactdataprotectionofficer', 'tool_dataprivacy'),
                 new lang_string('contactdataprotectionofficer_desc', 'tool_dataprivacy'), 0)
         );
 
-        $privacysettings->add(new admin_setting_configcheckbox('tool_dataprivacy/automaticdataexportapproval',
+        $privacysettings->add(new configcheckbox('tool_dataprivacy/automaticdataexportapproval',
                 new lang_string('automaticdataexportapproval', 'tool_dataprivacy'),
                 new lang_string('automaticdataexportapproval_desc', 'tool_dataprivacy'), 0)
         );
 
-        $privacysettings->add(new admin_setting_configcheckbox('tool_dataprivacy/automaticdatadeletionapproval',
+        $privacysettings->add(new configcheckbox('tool_dataprivacy/automaticdatadeletionapproval',
                 new lang_string('automaticdatadeletionapproval', 'tool_dataprivacy'),
                 new lang_string('automaticdatadeletionapproval_desc', 'tool_dataprivacy'), 0)
         );
@@ -47,19 +55,19 @@ if ($hassiteconfig) {
         // Automatically create delete data request for users upon user deletion.
         // Automatically create delete data request for pre-existing deleted users.
         // Enabled by default.
-        $privacysettings->add(new admin_setting_configcheckbox('tool_dataprivacy/automaticdeletionrequests',
+        $privacysettings->add(new configcheckbox('tool_dataprivacy/automaticdeletionrequests',
                 new lang_string('automaticdeletionrequests', 'tool_dataprivacy'),
                 new lang_string('automaticdeletionrequests_desc', 'tool_dataprivacy'), 1)
         );
 
         // Set days approved data requests will be accessible. 1 week default.
-        $privacysettings->add(new admin_setting_configduration('tool_dataprivacy/privacyrequestexpiry',
+        $privacysettings->add(new configduration('tool_dataprivacy/privacyrequestexpiry',
                 new lang_string('privacyrequestexpiry', 'tool_dataprivacy'),
                 new lang_string('privacyrequestexpiry_desc', 'tool_dataprivacy'),
                 WEEKSECS, 1));
 
         // Fetch roles that are assignable.
-        $assignableroles = get_assignable_roles(context_system::instance());
+        $assignableroles = get_assignable_roles(system::instance());
 
         // Fetch roles that have the capability to manage data requests.
         $capableroles = get_roles_with_capability('tool/dataprivacy:managedatarequests');
@@ -73,26 +81,26 @@ if ($hassiteconfig) {
             }
         }
         if (!empty($roles)) {
-            $privacysettings->add(new admin_setting_configmulticheckbox('tool_dataprivacy/dporoles',
+            $privacysettings->add(new configmulticheckbox('tool_dataprivacy/dporoles',
                     new lang_string('dporolemapping', 'tool_dataprivacy'),
                     new lang_string('dporolemapping_desc', 'tool_dataprivacy'), null, $roles)
             );
         }
 
         // When calculating user expiry, should courses which have no end date be considered.
-        $privacysettings->add(new admin_setting_configcheckbox('tool_dataprivacy/requireallenddatesforuserdeletion',
+        $privacysettings->add(new configcheckbox('tool_dataprivacy/requireallenddatesforuserdeletion',
                 new lang_string('requireallenddatesforuserdeletion', 'tool_dataprivacy'),
                 new lang_string('requireallenddatesforuserdeletion_desc', 'tool_dataprivacy'),
                 1));
 
         // Whether the data retention summary should be shown in the page footer and in the user profile page.
-        $privacysettings->add(new admin_setting_configcheckbox('tool_dataprivacy/showdataretentionsummary',
+        $privacysettings->add(new configcheckbox('tool_dataprivacy/showdataretentionsummary',
             new lang_string('showdataretentionsummary', 'tool_dataprivacy'),
             new lang_string('showdataretentionsummary_desc', 'tool_dataprivacy'),
             1));
 
         // Whether to allow PO to select courses for data export, instead of always exporting all data.
-        $privacysettings->add(new admin_setting_configcheckbox('tool_dataprivacy/allowfiltering',
+        $privacysettings->add(new configcheckbox('tool_dataprivacy/allowfiltering',
             new lang_string('allowfiltering', 'tool_dataprivacy'),
             new lang_string('allowfiltering_desc', 'tool_dataprivacy'),
             0));
@@ -105,22 +113,22 @@ if ($hassiteconfig) {
 // Restrict config links to the DPO.
 if (tool_dataprivacy\api::is_site_dpo($USER->id)) {
     // Link that leads to the data requests management page.
-    $ADMIN->add('privacy', new admin_externalpage('datarequests', get_string('datarequests', 'tool_dataprivacy'),
-        new moodle_url('/admin/tool/dataprivacy/datarequests.php'), 'tool/dataprivacy:managedatarequests')
+    $ADMIN->add('privacy', new externalpage('datarequests', get_string('datarequests', 'tool_dataprivacy'),
+        new url('/admin/tool/dataprivacy/datarequests.php'), 'tool/dataprivacy:managedatarequests')
     );
 
     // Link that leads to the data registry management page.
-    $ADMIN->add('privacy', new admin_externalpage('dataregistry', get_string('dataregistry', 'tool_dataprivacy'),
-        new moodle_url('/admin/tool/dataprivacy/dataregistry.php'), 'tool/dataprivacy:managedataregistry')
+    $ADMIN->add('privacy', new externalpage('dataregistry', get_string('dataregistry', 'tool_dataprivacy'),
+        new url('/admin/tool/dataprivacy/dataregistry.php'), 'tool/dataprivacy:managedataregistry')
     );
 
     // Link that leads to the review page of expired contexts that are up for deletion.
-    $ADMIN->add('privacy', new admin_externalpage('datadeletion', get_string('datadeletion', 'tool_dataprivacy'),
-            new moodle_url('/admin/tool/dataprivacy/datadeletion.php'), 'tool/dataprivacy:managedataregistry')
+    $ADMIN->add('privacy', new externalpage('datadeletion', get_string('datadeletion', 'tool_dataprivacy'),
+            new url('/admin/tool/dataprivacy/datadeletion.php'), 'tool/dataprivacy:managedataregistry')
     );
 
     // Link that leads to the other data registry management page.
-    $ADMIN->add('privacy', new admin_externalpage('pluginregistry', get_string('pluginregistry', 'tool_dataprivacy'),
-        new moodle_url('/admin/tool/dataprivacy/pluginregistry.php'), 'tool/dataprivacy:managedataregistry')
+    $ADMIN->add('privacy', new externalpage('pluginregistry', get_string('pluginregistry', 'tool_dataprivacy'),
+        new url('/admin/tool/dataprivacy/pluginregistry.php'), 'tool/dataprivacy:managedataregistry')
     );
 }

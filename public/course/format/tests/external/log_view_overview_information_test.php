@@ -16,6 +16,7 @@
 
 namespace core_courseformat\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 
 /**
@@ -55,7 +56,7 @@ final class log_view_overview_information_test extends \core_external\tests\exte
         $sink = $this->redirectEvents();
 
         if ($expectexception) {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         }
 
         $result = log_view_overview_information::execute($course->id);
@@ -107,7 +108,7 @@ final class log_view_overview_information_test extends \core_external\tests\exte
 
         $this->setUser($user);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
 
         $result = log_view_overview_information::execute(-1);
         $result = external_api::clean_returnvalue(log_view_overview_information::execute_returns(), $result);
@@ -123,7 +124,7 @@ final class log_view_overview_information_test extends \core_external\tests\exte
         // Using admin to ensure the exception is not depending on capabilities.
         $this->setAdminUser();
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
 
         $result = log_view_overview_information::execute($SITE->id);
         $result = external_api::clean_returnvalue(log_view_overview_information::execute_returns(), $result);

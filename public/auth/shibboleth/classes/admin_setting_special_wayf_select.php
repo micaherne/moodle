@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configselect;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -31,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2017 Stephen Bourget
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_shibboleth_admin_setting_special_wayf_select extends admin_setting_configselect {
+class auth_shibboleth_admin_setting_special_wayf_select extends configselect {
 
     /**
      * Calls parent::__construct with specific arguments.

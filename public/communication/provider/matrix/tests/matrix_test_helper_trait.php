@@ -17,6 +17,7 @@
 namespace communication_matrix;
 
 use core\context;
+use core\exception\coding_exception;
 use GuzzleHttp\Psr7\Response;
 
 /**
@@ -75,7 +76,7 @@ trait matrix_test_helper_trait {
      */
     public function get_matrix_server_url(): string {
         if (empty($this->matrixhomeserverurl)) {
-            throw new \coding_exception('Can not get this information without initializing the mock server.');
+            throw new coding_exception('Can not get this information without initializing the mock server.');
         }
         return $this->matrixhomeserverurl;
     }
@@ -87,7 +88,7 @@ trait matrix_test_helper_trait {
      */
     public function get_matrix_access_token(): string {
         if (empty($this->accesstoken)) {
-            throw new \coding_exception('Can not get this information without initializing the mock server.');
+            throw new coding_exception('Can not get this information without initializing the mock server.');
         }
         return $this->accesstoken;
     }

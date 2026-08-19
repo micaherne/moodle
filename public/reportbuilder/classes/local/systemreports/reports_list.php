@@ -18,10 +18,10 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\systemreports;
 
-use html_writer;
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\output\html_writer;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 use stdClass;
 use core_reportbuilder\datasource;
 use core_reportbuilder\manager;
@@ -308,7 +308,7 @@ class reports_list extends system_report {
     protected function add_actions(): void {
         // Edit content action.
         $this->add_action((new action(
-            new moodle_url('/reportbuilder/edit.php', ['id' => ':id']),
+            new url('/reportbuilder/edit.php', ['id' => ':id']),
             new pix_icon('t/right', ''),
             [],
             false,
@@ -321,7 +321,7 @@ class reports_list extends system_report {
 
         // Edit details action.
         $this->add_action((new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('i/settings', ''),
             ['data-action' => 'report-edit', 'data-report-id' => ':id'],
             false,
@@ -334,7 +334,7 @@ class reports_list extends system_report {
 
         // Preview action.
         $this->add_action((new action(
-            new moodle_url('/reportbuilder/view.php', ['id' => ':id']),
+            new url('/reportbuilder/view.php', ['id' => ':id']),
             new pix_icon('i/search', ''),
             [],
             false,
@@ -348,7 +348,7 @@ class reports_list extends system_report {
 
         // Duplicate action.
         $this->add_action((new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('t/copy', ''),
             ['data-action' => 'report-duplicate', 'data-report-id' => ':id', 'data-report-name' => ':name'],
             false,
@@ -366,7 +366,7 @@ class reports_list extends system_report {
 
         // Delete action.
         $this->add_action((new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('t/delete', ''),
             [
                 'data-action' => 'report-delete',

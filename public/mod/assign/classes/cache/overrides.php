@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace mod_assign\cache;
 
+use core\exception\coding_exception;
 use core_cache\data_source_interface;
 use core_cache\definition;
 
@@ -86,7 +87,7 @@ class overrides implements data_source_interface {
                 );
                 break;
             default:
-                throw new \coding_exception('Invalid cache key');
+                throw new coding_exception('Invalid cache key');
         }
 
         // Return null instead of false, because false will not be cached.

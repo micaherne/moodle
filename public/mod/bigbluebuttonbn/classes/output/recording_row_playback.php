@@ -16,15 +16,16 @@
 
 namespace mod_bigbluebuttonbn\output;
 
+use core\output\action_link;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\bigbluebutton\recordings\recording_data;
 use mod_bigbluebuttonbn\local\config;
 use mod_bigbluebuttonbn\local\helpers\roles;
 use mod_bigbluebuttonbn\recording;
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Renderer for recording row playback column
@@ -84,7 +85,7 @@ class recording_row_playback implements renderable, templatable {
                         'data-action' => 'play',
                         'data-target' => $playback['type'],
                     ];
-                    $actionlink = new \action_link(
+                    $actionlink = new action_link(
                         $playback['url'],
                         recording_data::type_text($playback['type']),
                         null,

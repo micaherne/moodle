@@ -32,6 +32,7 @@ global $CFG;
 require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_contenttype.php');
 require_once($CFG->dirroot . '/contentbank/tests/fixtures/testable_content.php');
 
+use core\exception\invalid_response_exception;
 use core_external\external_api;
 
 /**
@@ -98,7 +99,7 @@ final class rename_content_test extends \core_external\tests\externallib_testcas
         $this->assertEquals($expectedname, $record->name);
 
         // Call the WS using an unexisting contentid and check an error is thrown.
-        $this->expectException(\invalid_response_exception::class);
+        $this->expectException(invalid_response_exception::class);
         $result = rename_content::execute_returns($content->get_id() + 1, $oldname);
         $result = external_api::clean_returnvalue(rename_content::execute_returns(), $result);
         $this->assertFalse($result['result']);

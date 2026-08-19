@@ -16,6 +16,10 @@
 
 namespace core_favourites;
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
 use core_favourites\local\entity\favourite;
 
 /**
@@ -36,13 +40,13 @@ final class component_favourite_service_test extends \advanced_testcase {
     // Basic setup stuff to be reused in most tests.
     protected function setup_users_and_courses() {
         $user1 = self::getDataGenerator()->create_user();
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
         $user2 = self::getDataGenerator()->create_user();
-        $user2context = \context_user::instance($user2->id);
+        $user2context = user::instance($user2->id);
         $course1 = self::getDataGenerator()->create_course();
         $course2 = self::getDataGenerator()->create_course();
-        $course1context = \context_course::instance($course1->id);
-        $course2context = \context_course::instance($course2->id);
+        $course1context = course::instance($course1->id);
+        $course2context = course::instance($course2->id);
         return [$user1context, $user2context, $course1context, $course2context];
     }
 
@@ -68,7 +72,7 @@ final class component_favourite_service_test extends \advanced_testcase {
                 // Check the objects for the unique key.
                 foreach ($mockstore as $item) {
                     if ($item->uniquekey == $key) {
-                        throw new \moodle_exception('Favourite already exists');
+                        throw new moodle_exception('Favourite already exists');
                     }
                 }
                 $index = count($mockstore);     // Integer index.
@@ -249,10 +253,10 @@ final class component_favourite_service_test extends \advanced_testcase {
         $fav6 = $user2service->create_favourite('core_course', 'whatnow', $course1context->instanceid, $course1context);
 
         // Favourite the courses again, but this time in another context.
-        $fav7 = $user1service->create_favourite('core_course', 'course', $course1context->instanceid, \context_system::instance());
-        $fav8 = $user2service->create_favourite('core_course', 'course', $course1context->instanceid, \context_system::instance());
-        $fav9 = $user1service->create_favourite('core_course', 'course', $course2context->instanceid, \context_system::instance());
-        $fav10 = $user2service->create_favourite('core_course', 'course', $course2context->instanceid, \context_system::instance());
+        $fav7 = $user1service->create_favourite('core_course', 'course', $course1context->instanceid, system::instance());
+        $fav8 = $user2service->create_favourite('core_course', 'course', $course1context->instanceid, system::instance());
+        $fav9 = $user1service->create_favourite('core_course', 'course', $course2context->instanceid, system::instance());
+        $fav10 = $user2service->create_favourite('core_course', 'course', $course2context->instanceid, system::instance());
 
         // Get a component_favourite_service to perform the type based deletion.
         $service = new \core_favourites\local\service\component_favourite_service('core_course', $repo);

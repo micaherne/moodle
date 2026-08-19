@@ -24,6 +24,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\navigation\navigation_node;
+use core\url;
+
 require('../config.php');
 
 $contextid  = optional_param('contextid', 0, PARAM_INT);
@@ -35,11 +39,11 @@ $filearea  = 'legacy';
 $itemid    = 0;
 
 if (empty($contextid)) {
-    $contextid = context_course::instance(SITEID)->id;
+    $contextid = course::instance(SITEID)->id;
 }
 
 $PAGE->set_url('/files/index.php', array('contextid'=>$contextid, 'filepath'=>$filepath, 'filename'=>$filename));
-navigation_node::override_active_url(new moodle_url('/files/index.php', array('contextid'=>$contextid)));
+navigation_node::override_active_url(new url('/files/index.php', array('contextid'=>$contextid)));
 
 if ($filepath === '') {
     $filepath = null;

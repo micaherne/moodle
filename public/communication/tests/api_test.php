@@ -16,6 +16,7 @@
 
 namespace core_communication;
 
+use core\context\course;
 use core_communication\task\add_members_to_room_task;
 use core_communication\task\create_and_configure_room_task;
 use communication_matrix\matrix_test_helper_trait;
@@ -319,7 +320,7 @@ final class api_test extends \advanced_testcase {
         // Generate the data.
         $user = $this->getDataGenerator()->create_user();
         $course = $this->get_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
 

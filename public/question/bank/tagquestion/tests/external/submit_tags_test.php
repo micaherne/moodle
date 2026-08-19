@@ -16,6 +16,9 @@
 
 namespace qbank_tagquestion\external;
 
+use core\context;
+use core\context\system;
+
 /**
  * Question external functions tests.
  *
@@ -61,7 +64,7 @@ final class submit_tags_test extends \core_external\tests\externallib_testcase {
     public function test_submit_tags_form_incorrect_question_id(): void {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         list ($category, $course, $qcat, $questions) = $questiongenerator->setup_course_and_questions();
-        $questioncontext = \context::instance_by_id($qcat->contextid);
+        $questioncontext = context::instance_by_id($qcat->contextid);
         $editingcontext = $questioncontext;
         $question = $questions[0];
         // Generate an id for a question that doesn't exist.
@@ -81,7 +84,7 @@ final class submit_tags_test extends \core_external\tests\externallib_testcase {
     public function test_submit_tags_form_incorrect_context_id(): void {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         list ($category, $course, $qcat, $questions) = $questiongenerator->setup_course_and_questions();
-        $questioncontext = \context::instance_by_id($qcat->contextid);
+        $questioncontext = context::instance_by_id($qcat->contextid);
         $editingcontext = $questioncontext;
         $question = $questions[0];
         // Generate an id for a context that doesn't exist.
@@ -101,7 +104,7 @@ final class submit_tags_test extends \core_external\tests\externallib_testcase {
 
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         list ($category, $course, $qcat, $questions) = $questiongenerator->setup_course_and_questions();
-        $questioncontext = \context::instance_by_id($qcat->contextid);
+        $questioncontext = context::instance_by_id($qcat->contextid);
         $editingcontext = $questioncontext;
         $question = $questions[0];
         $user = $this->create_user_can_tag($course);
@@ -127,7 +130,7 @@ final class submit_tags_test extends \core_external\tests\externallib_testcase {
         $teacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
         $questiongenerator = $generator->get_plugin_generator('core_question');
         list ($category, $course, $qcat, $questions) = $questiongenerator->setup_course_and_questions();
-        $questioncontext = \context::instance_by_id($qcat->contextid);
+        $questioncontext = context::instance_by_id($qcat->contextid);
         $editingcontext = $questioncontext;
         $question = $questions[0];
         $formdata = $this->generate_encoded_submit_tags_form_string(
@@ -163,7 +166,7 @@ final class submit_tags_test extends \core_external\tests\externallib_testcase {
         $teacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
         $questiongenerator = $generator->get_plugin_generator('core_question');
         list ($category, $course, $qcat, $questions) = $questiongenerator->setup_course_and_questions();
-        $questioncontext = \context::instance_by_id($qcat->contextid);
+        $questioncontext = context::instance_by_id($qcat->contextid);
         $editingcontext = $questioncontext;
         $question = $questions[0];
         $formdata = $this->generate_encoded_submit_tags_form_string(
@@ -232,7 +235,7 @@ final class submit_tags_test extends \core_external\tests\externallib_testcase {
         $user = $generator->create_user();
         $roleid = $generator->create_role();
         $teacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         $generator->role_assign($roleid, $user->id, $systemcontext->id);
         $generator->enrol_user($user->id, $course->id, $teacherrole->id, 'manual');

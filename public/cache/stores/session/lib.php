@@ -26,6 +26,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\cache;
 use core_cache\definition;
 use core_cache\key_aware_cache_interface;
 use core_cache\searchable_cache_interface;

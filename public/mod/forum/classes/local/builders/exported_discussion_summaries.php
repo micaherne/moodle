@@ -26,6 +26,7 @@ namespace mod_forum\local\builders;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\user;
 use mod_forum\local\entities\discussion as discussion_entity;
 use mod_forum\local\entities\forum as forum_entity;
 use mod_forum\local\entities\post as post_entity;
@@ -34,7 +35,7 @@ use mod_forum\local\factories\exporter as exporter_factory;
 use mod_forum\local\factories\vault as vault_factory;
 use mod_forum\local\factories\manager as manager_factory;
 use rating_manager;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 /**
@@ -204,7 +205,7 @@ class exported_discussion_summaries {
         $ids = [];
 
         if (isloggedin()) {
-            $usercontext = \context_user::instance($user->id);
+            $usercontext = user::instance($user->id);
             $ufservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
             $favourites = $ufservice->find_favourites_by_type('mod_forum', 'discussions');
             foreach ($favourites as $favourite) {

@@ -24,6 +24,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require(__DIR__ . '/../../../../config.php');
 require_once('./editor_form.php');
 
@@ -34,7 +36,7 @@ defined('BEHAT_SITE_RUNNING') || die('Only available on Behat test server');
 require_login();
 
 $PAGE->set_url('/lib/editor/tests/fixtures/disable_control_example.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 // Create moodle form.
 $mform = new editor_form();

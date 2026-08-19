@@ -24,6 +24,9 @@
 
 namespace tool_monitor\output\managesubs;
 
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -34,7 +37,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Get html to display on the page.
@@ -101,10 +104,10 @@ class renderer extends \plugin_renderer_base {
      * @return string html for the link to the rule manager page.
      */
     public function render_rules_link($ruleurl) {
-        echo \html_writer::start_div();
-        $a = \html_writer::link($ruleurl, get_string('managerules', 'tool_monitor'));
-        $link = \html_writer::tag('span', get_string('manageruleslink', 'tool_monitor', $a));
+        echo html_writer::start_div();
+        $a = html_writer::link($ruleurl, get_string('managerules', 'tool_monitor'));
+        $link = html_writer::tag('span', get_string('manageruleslink', 'tool_monitor', $a));
         echo $link;
-        echo \html_writer::end_div();
+        echo html_writer::end_div();
     }
 }

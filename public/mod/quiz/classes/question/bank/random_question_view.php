@@ -16,6 +16,7 @@
 
 namespace mod_quiz\question\bank;
 
+use core\context;
 use qbank_viewquestiontype\question_type_column;
 
 /**
@@ -37,6 +38,6 @@ class random_question_view extends custom_view {
     }
 
     #[\Override]
-    protected function display_bottom_controls(\context $catcontext): void {
+    protected function display_bottom_controls(context $catcontext): void {
     }
 }

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\exception\coding_exception;
+
 function scorm_seq_exit_action_rules($seq, $userid) {
     $sco = $seq->currentactivity;
     $ancestors = scorm_get_ancestors($sco);
@@ -422,7 +424,7 @@ function scorm_seq_choice_sequencing($sco, $userid, $seq) {
 
     if ($seq->currentactivity === $sco) {
         // MDL-51757 - this part of the SCORM 2004 sequencing and navigation was not completed.
-        throw new \coding_exception('Unexpected state encountered');
+        throw new coding_exception('Unexpected state encountered');
     }
 
     $sib = scorm_get_siblings($seq->currentactivity);
@@ -453,7 +455,7 @@ function scorm_seq_choice_sequencing($sco, $userid, $seq) {
             }
         }
         // MDL-51757 - this part of the SCORM 2004 sequencing and navigation was not completed.
-        throw new \coding_exception('Unexpected state encountered');
+        throw new coding_exception('Unexpected state encountered');
     }
 
     if ($seq->currentactivity == null || $seq->currentactivity == $comancestor) {
@@ -481,7 +483,7 @@ function scorm_seq_choice_sequencing($sco, $userid, $seq) {
             }
         }
         // MDL-51757 - this part of the SCORM 2004 sequencing and navigation was not completed.
-        throw new \coding_exception('Unexpected state encountered');
+        throw new coding_exception('Unexpected state encountered');
     }
 
     if ($comancestor->id == $sco->id) {
@@ -508,7 +510,7 @@ function scorm_seq_choice_sequencing($sco, $userid, $seq) {
             }
         }
         // MDL-51757 - this part of the SCORM 2004 sequencing and navigation was not completed.
-        throw new \coding_exception('Unexpected state encountered');
+        throw new coding_exception('Unexpected state encountered');
     }
 
     if (array_search($ancestors, $comancestor) !== false) {
@@ -594,7 +596,7 @@ function scorm_seq_choice_sequencing($sco, $userid, $seq) {
             }
         }
         // MDL-51757 - this part of the SCORM 2004 sequencing and navigation was not completed.
-        throw new \coding_exception('Unexpected state encountered');
+        throw new coding_exception('Unexpected state encountered');
     }
 
     if (scorm_is_leaf ($sco)) {

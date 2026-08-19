@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\context\system;
 use file_archive;
 use file_progress;
 use zip_archive;
@@ -48,7 +49,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
         $this->testfile = __DIR__.'/fixtures/test.txt';
 
         $fs = get_file_storage();
-        $context = \context_system::instance();
+        $context = system::instance();
         if (!$file = $fs->get_file($context->id, 'phpunit', 'data', 0, '/', 'test.txt')) {
             $file = $fs->create_file_from_pathname(
                 array('contextid'=>$context->id, 'component'=>'phpunit', 'filearea'=>'data', 'itemid'=>0, 'filepath'=>'/', 'filename'=>'test.txt'),
@@ -203,7 +204,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
 
         $packer = get_file_packer('application/zip');
         $fs = get_file_storage();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $this->assertFalse($fs->file_exists($context->id, 'phpunit', 'test', 0, '/', 'archive.zip'));
         $result = $packer->archive_to_storage($this->files, $context->id, 'phpunit', 'test', 0, '/', 'archive.zip');
@@ -228,7 +229,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
 
         $packer = get_file_packer('application/zip');
         $fs = get_file_storage();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $target = "$CFG->tempdir/test/";
         $testcontent = file_get_contents($this->testfile);
@@ -342,7 +343,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
 
         $packer = get_file_packer('application/zip');
         $fs = get_file_storage();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $target = "$CFG->tempdir/onlyfiles/";
         $testcontent = file_get_contents($this->testfile);
@@ -417,7 +418,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
 
         $packer = get_file_packer('application/zip');
         $fs = get_file_storage();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $testcontent = file_get_contents($this->testfile);
 
@@ -620,7 +621,7 @@ final class zip_packer_test extends \advanced_testcase implements file_progress 
         $this->resetAfterTest(true);
         $packer = get_file_packer('application/zip');
         $archive = "$CFG->tempdir/archive.zip";
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Archive to pathname.
         $this->progress = array();

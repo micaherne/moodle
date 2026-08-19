@@ -18,8 +18,9 @@ namespace tool_admin_presets\local\action;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\url;
 use tool_admin_presets\form\export_form;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 global $CFG;
 require_once($CFG->dirroot . '/lib/filelib.php');
@@ -44,7 +45,7 @@ class export extends base {
      * the settings in a hierarchical table
      */
     public function show(): void {
-        $url = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'export', 'mode' => 'execute']);
+        $url = new url('/admin/tool/admin_presets/index.php', ['action' => 'export', 'mode' => 'execute']);
         $this->moodleform = new export_form($url);
     }
 
@@ -52,7 +53,7 @@ class export extends base {
      * Stores a preset into the DB.
      */
     public function execute(): void {
-        $url = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'export', 'mode' => 'execute']);
+        $url = new url('/admin/tool/admin_presets/index.php', ['action' => 'export', 'mode' => 'execute']);
         $this->moodleform = new export_form($url);
 
         if ($data = $this->moodleform->get_data()) {
@@ -63,7 +64,7 @@ class export extends base {
 
             // If there are no settings nor plugins, an error should be raised.
             if (!$settingsfound && !$pluginsfound) {
-                $url = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'export']);
+                $url = new url('/admin/tool/admin_presets/index.php', ['action' => 'export']);
                 redirect($url, get_string('novalidsettingsselected', 'tool_admin_presets'));
             }
         }
@@ -71,7 +72,7 @@ class export extends base {
         // Trigger the as it is usually triggered after execute finishes.
         $this->log();
 
-        $url = new \moodle_url('/admin/tool/admin_presets/index.php');
+        $url = new url('/admin/tool/admin_presets/index.php');
         redirect($url);
     }
 

@@ -24,6 +24,8 @@
 
 namespace mod_choice\analytics\indicator;
 
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,7 +55,7 @@ abstract class activity_base extends \core_analytics\local\indicator\community_o
      * @param int $after
      * @return bool
      */
-    protected function feedback_viewed(\cm_info $cm, $contextid, $userid, $after = null) {
+    protected function feedback_viewed(cm_info $cm, $contextid, $userid, $after = null) {
 
         // If results are shown after they answer a write action counts as feedback viewed.
         if ($this->instancedata[$cm->instance]->showresults == 1) {

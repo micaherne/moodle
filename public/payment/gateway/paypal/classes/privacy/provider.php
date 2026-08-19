@@ -25,6 +25,7 @@
 
 namespace paygw_paypal\privacy;
 
+use core\context;
 use core_payment\privacy\paygw_provider;
 use core_privacy\local\request\writer;
 
@@ -53,7 +54,7 @@ class provider implements \core_privacy\local\metadata\null_provider, paygw_prov
      * @param array $subcontext The location within the current context that the payment data belongs
      * @param \stdClass $payment The payment record
      */
-    public static function export_payment_data(\context $context, array $subcontext, \stdClass $payment) {
+    public static function export_payment_data(context $context, array $subcontext, \stdClass $payment) {
         global $DB;
 
         $subcontext[] = get_string('gatewayname', 'paygw_paypal');

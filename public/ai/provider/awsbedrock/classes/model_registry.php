@@ -23,6 +23,7 @@ use aiprovider_awsbedrock\aimodel\meta;
 use aiprovider_awsbedrock\aimodel\mistral;
 use aiprovider_awsbedrock\aimodel\stability;
 use aiprovider_awsbedrock\model_definition;
+use core\exception\coding_exception;
 
 /**
  * AWS Bedrock model registry.
@@ -77,7 +78,7 @@ class model_registry {
         foreach ($catalogs as $catalog) {
             foreach ($catalog::get_models() as $modelname => $modeldefinition) {
                 if (isset($modelmap[$modelname])) {
-                    throw new \coding_exception("Duplicate model definition for '{$modelname}'.");
+                    throw new coding_exception("Duplicate model definition for '{$modelname}'.");
                 }
                 $modelmap[$modelname] = $modeldefinition;
             }

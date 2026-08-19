@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
 use mod_quiz\output\navigation_panel_attempt;
 use mod_quiz\output\renderer;
 
@@ -66,7 +68,7 @@ $accessmanager->setup_attempt_page($PAGE);
 $output = $PAGE->get_renderer('mod_quiz');
 $messages = $accessmanager->prevent_access();
 if (!$attemptobj->is_preview_user() && $messages) {
-    throw new \moodle_exception('attempterror', 'quiz', $attemptobj->view_url(),
+    throw new moodle_exception('attempterror', 'quiz', $attemptobj->view_url(),
             $output->access_messages($messages));
 }
 if ($accessmanager->is_preflight_check_required($attemptobj->get_attemptid())) {

@@ -22,6 +22,9 @@
 //                                                                       //
 ///////////////////////////////////////////////////////////////////////////
 
+use core\output\file_picker;
+use core\output\html_writer;
+
 class data_field_url extends data_field_base {
     var $type = 'url';
     /**

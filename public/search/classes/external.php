@@ -24,6 +24,9 @@
 
 namespace core_search;
 
+use core\context\course;
+use core\context\system;
+use core\user;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
@@ -89,12 +92,12 @@ class external extends \core_external\external_api {
         ]);
 
         // Validate the context (search page is always system context).
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         // Get course object too.
         if ($courseid) {
-            $coursecontext = \context_course::instance($courseid);
+            $coursecontext = course::instance($courseid);
         } else {
             $coursecontext = null;
         }
@@ -106,7 +109,7 @@ class external extends \core_external\external_api {
             }
         }
 
-        $users = \core_user::search($query, $coursecontext);
+        $users = user::search($query, $coursecontext);
 
         $result = [];
         foreach ($users as $user) {

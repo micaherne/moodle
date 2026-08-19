@@ -26,6 +26,9 @@ namespace gradereport_user\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user as context_user;
+use core\user as core_user;
 use core_privacy\local\request\writer;
 
 /**
@@ -48,10 +51,10 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      * Ensure that export_user_preferences returns no data if the user has no data.
      */
     public function test_export_user_preferences_not_defined(): void {
-        $user = \core_user::get_user_by_username('admin');
+        $user = core_user::get_user_by_username('admin');
         provider::export_user_preferences($user->id);
 
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertFalse($writer->has_any_data());
     }
 
@@ -67,7 +70,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Validate exported data.
         provider::export_user_preferences($user->id);
-        $context = \context_user::instance($user->id);
+        $context = context_user::instance($user->id);
         /** @var \core_privacy\tests\request\content_writer $writer */
         $writer = writer::with_context($context);
         $this->assertTrue($writer->has_any_data());

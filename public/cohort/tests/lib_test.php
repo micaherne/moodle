@@ -16,6 +16,11 @@
 
 namespace core_cohort;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
 use core_cohort\customfield\cohort_handler;
 use core_customfield\data_controller;
 
@@ -64,7 +69,7 @@ final class lib_test extends \advanced_testcase {
         $this->create_cohort_custom_field();
 
         $cohort = new \stdClass();
-        $cohort->contextid = \context_system::instance()->id;
+        $cohort->contextid = system::instance()->id;
         $cohort->name = 'test cohort';
         $cohort->idnumber = 'testid';
         $cohort->description = 'test cohort desc';
@@ -91,13 +96,13 @@ final class lib_test extends \advanced_testcase {
 
     public function test_cohort_add_cohort_missing_name(): void {
         $cohort = new \stdClass();
-        $cohort->contextid = \context_system::instance()->id;
+        $cohort->contextid = system::instance()->id;
         $cohort->name = null;
         $cohort->idnumber = 'testid';
         $cohort->description = 'test cohort desc';
         $cohort->descriptionformat = FORMAT_HTML;
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Missing cohort name in cohort_add_cohort()');
         cohort_add_cohort($cohort);
     }
@@ -107,7 +112,7 @@ final class lib_test extends \advanced_testcase {
 
         // Setup cohort data structure.
         $cohort = new \stdClass();
-        $cohort->contextid = \context_system::instance()->id;
+        $cohort->contextid = system::instance()->id;
         $cohort->name = 'test cohort';
         $cohort->idnumber = 'testid';
         $cohort->description = 'test cohort desc';
@@ -130,7 +135,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertEquals('cohort', $event->objecttable);
         $this->assertEquals($id, $event->objectid);
         $this->assertEquals($cohort->contextid, $event->contextid);
-        $url = new \moodle_url('/cohort/index.php', array('contextid' => $event->contextid));
+        $url = new url('/cohort/index.php', array('contextid' => $event->contextid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEquals($cohort, $event->get_record_snapshot('cohort', $id));
         $this->assertEventContextNotUsed($event);
@@ -145,7 +150,7 @@ final class lib_test extends \advanced_testcase {
         $this->create_cohort_custom_field();
 
         $cohort = new \stdClass();
-        $cohort->contextid = \context_system::instance()->id;
+        $cohort->contextid = system::instance()->id;
         $cohort->name = 'test cohort';
         $cohort->idnumber = 'testid';
         $cohort->description = 'test cohort desc';
@@ -187,7 +192,7 @@ final class lib_test extends \advanced_testcase {
 
         // Setup the cohort data structure.
         $cohort = new \stdClass();
-        $cohort->contextid = \context_system::instance()->id;
+        $cohort->contextid = system::instance()->id;
         $cohort->name = 'test cohort';
         $cohort->idnumber = 'testid';
         $cohort->description = 'test cohort desc';
@@ -217,7 +222,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertEquals('cohort', $event->objecttable);
         $this->assertEquals($updatedcohort->id, $event->objectid);
         $this->assertEquals($updatedcohort->contextid, $event->contextid);
-        $url = new \moodle_url('/cohort/edit.php', array('id' => $event->objectid));
+        $url = new url('/cohort/edit.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEquals($cohort, $event->get_record_snapshot('cohort', $id));
         $this->assertEventContextNotUsed($event);
@@ -261,7 +266,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertInstanceOf('\core\event\cohort_deleted', $event);
         $this->assertEquals('cohort', $event->objecttable);
         $this->assertEquals($cohort->id, $event->objectid);
-        $url = new \moodle_url('/cohort/index.php', array('contextid' => $event->contextid));
+        $url = new url('/cohort/index.php', array('contextid' => $event->contextid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEquals($cohort, $event->get_record_snapshot('cohort', $cohort->id));
         $this->assertEventContextNotUsed($event);
@@ -274,13 +279,13 @@ final class lib_test extends \advanced_testcase {
 
         $category = $this->getDataGenerator()->create_category();
 
-        $cohort = $this->getDataGenerator()->create_cohort(array('contextid'=>\context_coursecat::instance($category->id)->id));
+        $cohort = $this->getDataGenerator()->create_cohort(array('contextid'=>coursecat::instance($category->id)->id));
 
         cohort_delete_category($category);
 
         $this->assertTrue($DB->record_exists('cohort', array('id'=>$cohort->id)));
         $newcohort = $DB->get_record('cohort', array('id'=>$cohort->id));
-        $this->assertEquals(\context_system::instance()->id, $newcohort->contextid);
+        $this->assertEquals(system::instance()->id, $newcohort->contextid);
     }
 
     public function test_cohort_add_member(): void {
@@ -321,7 +326,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertEquals($cohort->id, $event->objectid);
         $this->assertEquals($user->id, $event->relateduserid);
         $this->assertEquals($USER->id, $event->userid);
-        $url = new \moodle_url('/cohort/assign.php', array('id' => $event->objectid));
+        $url = new url('/cohort/assign.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -366,7 +371,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertEquals($cohort->id, $event->objectid);
         $this->assertEquals($user->id, $event->relateduserid);
         $this->assertEquals($USER->id, $event->userid);
-        $url = new \moodle_url('/cohort/assign.php', array('id' => $event->objectid));
+        $url = new url('/cohort/assign.php', array('id' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -392,52 +397,52 @@ final class lib_test extends \advanced_testcase {
         $category1 = $this->getDataGenerator()->create_category();
         $category2 = $this->getDataGenerator()->create_category();
 
-        $cohort1 = $this->getDataGenerator()->create_cohort(array('contextid'=>\context_coursecat::instance($category1->id)->id, 'name'=>'aaagrrryyy', 'idnumber'=>'','description'=>''));
-        $cohort2 = $this->getDataGenerator()->create_cohort(array('contextid'=>\context_coursecat::instance($category1->id)->id, 'name'=>'bbb', 'idnumber'=>'', 'description'=>'yyybrrr'));
-        $cohort3 = $this->getDataGenerator()->create_cohort(array('contextid'=>\context_coursecat::instance($category1->id)->id, 'name'=>'ccc', 'idnumber'=>'xxarrrghyyy', 'description'=>'po_us'));
-        $cohort4 = $this->getDataGenerator()->create_cohort(array('contextid'=>\context_system::instance()->id));
+        $cohort1 = $this->getDataGenerator()->create_cohort(array('contextid'=>coursecat::instance($category1->id)->id, 'name'=>'aaagrrryyy', 'idnumber'=>'','description'=>''));
+        $cohort2 = $this->getDataGenerator()->create_cohort(array('contextid'=>coursecat::instance($category1->id)->id, 'name'=>'bbb', 'idnumber'=>'', 'description'=>'yyybrrr'));
+        $cohort3 = $this->getDataGenerator()->create_cohort(array('contextid'=>coursecat::instance($category1->id)->id, 'name'=>'ccc', 'idnumber'=>'xxarrrghyyy', 'description'=>'po_us'));
+        $cohort4 = $this->getDataGenerator()->create_cohort(array('contextid'=>system::instance()->id));
 
-        $result = cohort_get_cohorts(\context_coursecat::instance($category2->id)->id);
+        $result = cohort_get_cohorts(coursecat::instance($category2->id)->id);
         $this->assertEquals(0, $result['totalcohorts']);
         $this->assertEquals(0, count($result['cohorts']));
         $this->assertEquals(0, $result['allcohorts']);
 
-        $result = cohort_get_cohorts(\context_coursecat::instance($category1->id)->id);
+        $result = cohort_get_cohorts(coursecat::instance($category1->id)->id);
         $this->assertEquals(3, $result['totalcohorts']);
         $this->assertEquals(array($cohort1->id=>$cohort1, $cohort2->id=>$cohort2, $cohort3->id=>$cohort3), $result['cohorts']);
         $this->assertEquals(3, $result['allcohorts']);
 
-        $result = cohort_get_cohorts(\context_coursecat::instance($category1->id)->id, 0, 100, 'arrrgh');
+        $result = cohort_get_cohorts(coursecat::instance($category1->id)->id, 0, 100, 'arrrgh');
         $this->assertEquals(1, $result['totalcohorts']);
         $this->assertEquals(array($cohort3->id=>$cohort3), $result['cohorts']);
         $this->assertEquals(3, $result['allcohorts']);
 
-        $result = cohort_get_cohorts(\context_coursecat::instance($category1->id)->id, 0, 100, 'brrr');
+        $result = cohort_get_cohorts(coursecat::instance($category1->id)->id, 0, 100, 'brrr');
         $this->assertEquals(1, $result['totalcohorts']);
         $this->assertEquals(array($cohort2->id=>$cohort2), $result['cohorts']);
         $this->assertEquals(3, $result['allcohorts']);
 
-        $result = cohort_get_cohorts(\context_coursecat::instance($category1->id)->id, 0, 100, 'grrr');
+        $result = cohort_get_cohorts(coursecat::instance($category1->id)->id, 0, 100, 'grrr');
         $this->assertEquals(1, $result['totalcohorts']);
         $this->assertEquals(array($cohort1->id=>$cohort1), $result['cohorts']);
         $this->assertEquals(3, $result['allcohorts']);
 
-        $result = cohort_get_cohorts(\context_coursecat::instance($category1->id)->id, 1, 1, 'yyy');
+        $result = cohort_get_cohorts(coursecat::instance($category1->id)->id, 1, 1, 'yyy');
         $this->assertEquals(3, $result['totalcohorts']);
         $this->assertEquals(array($cohort2->id=>$cohort2), $result['cohorts']);
         $this->assertEquals(3, $result['allcohorts']);
 
-        $result = cohort_get_cohorts(\context_coursecat::instance($category1->id)->id, 0, 100, 'po_us');
+        $result = cohort_get_cohorts(coursecat::instance($category1->id)->id, 0, 100, 'po_us');
         $this->assertEquals(1, $result['totalcohorts']);
         $this->assertEquals(array($cohort3->id=>$cohort3), $result['cohorts']);
         $this->assertEquals(3, $result['allcohorts']);
 
-        $result = cohort_get_cohorts(\context_coursecat::instance($category1->id)->id, 0, 100, 'pokus');
+        $result = cohort_get_cohorts(coursecat::instance($category1->id)->id, 0, 100, 'pokus');
         $this->assertEquals(0, $result['totalcohorts']);
         $this->assertEquals(array(), $result['cohorts']);
         $this->assertEquals(3, $result['allcohorts']);
 
-        $result = cohort_get_cohorts(\context_system::instance()->id);
+        $result = cohort_get_cohorts(system::instance()->id);
         $this->assertEquals(1, $result['totalcohorts']);
         $this->assertEquals(array($cohort4->id=>$cohort4), $result['cohorts']);
         $this->assertEquals(1, $result['allcohorts']);
@@ -451,10 +456,10 @@ final class lib_test extends \advanced_testcase {
         $category1 = $this->getDataGenerator()->create_category();
         $category2 = $this->getDataGenerator()->create_category();
 
-        $cohort1 = $this->getDataGenerator()->create_cohort(array('contextid'=>\context_coursecat::instance($category1->id)->id, 'name'=>'aaagrrryyy', 'idnumber'=>'','description'=>''));
-        $cohort2 = $this->getDataGenerator()->create_cohort(array('contextid'=>\context_coursecat::instance($category1->id)->id, 'name'=>'bbb', 'idnumber'=>'', 'description'=>'yyybrrr'));
-        $cohort3 = $this->getDataGenerator()->create_cohort(array('contextid'=>\context_coursecat::instance($category2->id)->id, 'name'=>'ccc', 'idnumber'=>'xxarrrghyyy', 'description'=>'po_us'));
-        $cohort4 = $this->getDataGenerator()->create_cohort(array('contextid'=>\context_system::instance()->id));
+        $cohort1 = $this->getDataGenerator()->create_cohort(array('contextid'=>coursecat::instance($category1->id)->id, 'name'=>'aaagrrryyy', 'idnumber'=>'','description'=>''));
+        $cohort2 = $this->getDataGenerator()->create_cohort(array('contextid'=>coursecat::instance($category1->id)->id, 'name'=>'bbb', 'idnumber'=>'', 'description'=>'yyybrrr'));
+        $cohort3 = $this->getDataGenerator()->create_cohort(array('contextid'=>coursecat::instance($category2->id)->id, 'name'=>'ccc', 'idnumber'=>'xxarrrghyyy', 'description'=>'po_us'));
+        $cohort4 = $this->getDataGenerator()->create_cohort(array('contextid'=>system::instance()->id));
 
         // Get list of all cohorts as admin.
         $this->setAdminUser();
@@ -472,7 +477,7 @@ final class lib_test extends \advanced_testcase {
         // Get list of all cohorts as manager who has capability everywhere.
         $user = $this->getDataGenerator()->create_user();
         $managerrole = $DB->get_record('role', array('shortname' => 'manager'));
-        role_assign($managerrole->id, $user->id, \context_system::instance()->id);
+        role_assign($managerrole->id, $user->id, system::instance()->id);
         $this->setUser($user);
 
         $result = cohort_get_all_cohorts(0, 100, '');
@@ -486,7 +491,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertEquals(4, $result['allcohorts']);
 
         // Get list of all cohorts as manager who has capability everywhere except category2.
-        $context2 = \context_coursecat::instance($category2->id);
+        $context2 = coursecat::instance($category2->id);
         role_change_permission($managerrole->id, $context2, 'moodle/cohort:view', CAP_PROHIBIT);
         role_change_permission($managerrole->id, $context2, 'moodle/cohort:manage', CAP_PROHIBIT);
         $this->assertFalse(has_any_capability(array('moodle/cohort:view', 'moodle/cohort:manage'), $context2));
@@ -501,7 +506,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertEquals(array($cohort1->id=>$cohort1), $result['cohorts']);
         $this->assertEquals(3, $result['allcohorts']);
 
-        $result = cohort_get_cohorts(\context_coursecat::instance($category1->id)->id, 1, 1, 'yyy');
+        $result = cohort_get_cohorts(coursecat::instance($category1->id)->id, 1, 1, 'yyy');
         $this->assertEquals(2, $result['totalcohorts']);
         $this->assertEquals(array($cohort2->id=>$cohort2), $result['cohorts']);
         $this->assertEquals(2, $result['allcohorts']);
@@ -518,11 +523,11 @@ final class lib_test extends \advanced_testcase {
         $course1 = $this->getDataGenerator()->create_course(array('category' => $category1->id));
         $course2 = $this->getDataGenerator()->create_course(array('category' => $category2->id));
 
-        $category1ctx = \context_coursecat::instance($category1->id);
-        $category2ctx = \context_coursecat::instance($category2->id);
-        $course1ctx = \context_course::instance(($course1->id));
-        $course2ctx = \context_course::instance(($course2->id));
-        $systemctx = \context_system::instance();
+        $category1ctx = coursecat::instance($category1->id);
+        $category2ctx = coursecat::instance($category2->id);
+        $course1ctx = course::instance(($course1->id));
+        $course2ctx = course::instance(($course2->id));
+        $systemctx = system::instance();
 
         $cohort1 = $this->getDataGenerator()->create_cohort(array('contextid'=>$category1ctx->id, 'name'=>'aaagrrryyy', 'idnumber'=>'','description'=>''));
         $cohort2 = $this->getDataGenerator()->create_cohort(array('contextid'=>$category1ctx->id, 'name'=>'bbb', 'idnumber'=>'', 'description'=>'yyybrrr', 'visible'=>0));
@@ -684,7 +689,7 @@ final class lib_test extends \advanced_testcase {
         // Assign user1 additional 'manager' role in the category context. He can now see hidden cohort in category1
         // but still can not see hidden category in system.
         $managerrole = $DB->get_record('role', array('shortname' => 'manager'));
-        role_assign($managerrole->id, $user1->id, \context_coursecat::instance($category1->id));
+        role_assign($managerrole->id, $user1->id, coursecat::instance($category1->id));
         $this->setUser($user1);
         $result = cohort_get_available_cohorts($course1ctx, COHORT_ALL, 0, 0, '');
         $this->assertEquals(array($cohort1->id, $cohort2->id, $cohort4->id), array_keys($result));
@@ -705,7 +710,7 @@ final class lib_test extends \advanced_testcase {
 
         $user = self::getDataGenerator()->create_user();
         $course = self::getDataGenerator()->create_course();
-        $coursectx = \context_course::instance(($course->id));
+        $coursectx = course::instance(($course->id));
 
         $this->create_cohort_custom_field();
 
@@ -726,7 +731,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertObjectNotHasProperty('customfields', $result);
 
         // Test cohort_get_cohorts.
-        $result = cohort_get_cohorts(\context_system::instance()->id, 0, 25, '', true);
+        $result = cohort_get_cohorts(system::instance()->id, 0, 25, '', true);
         $this->assertEquals(2, $result['totalcohorts']);
         $this->assertEquals(2, $result['allcohorts']);
         foreach ($result['cohorts'] as $cohort) {
@@ -744,7 +749,7 @@ final class lib_test extends \advanced_testcase {
         }
 
         // Test custom fields are not returned if not needed.
-        $result = cohort_get_cohorts(\context_system::instance()->id, 0, 25, '');
+        $result = cohort_get_cohorts(system::instance()->id, 0, 25, '');
         $this->assertEquals(2, $result['totalcohorts']);
         $this->assertEquals(2, $result['allcohorts']);
         foreach ($result['cohorts'] as $cohort) {
@@ -841,7 +846,7 @@ final class lib_test extends \advanced_testcase {
         set_config('allowcohortthemes', 1);
         set_config('theme', 'boost');
 
-        $systemctx = \context_system::instance();
+        $systemctx = system::instance();
         $cohort1 = $this->getDataGenerator()->create_cohort(array('contextid' => $systemctx->id, 'name' => 'test cohort 1',
             'idnumber' => 'testid1', 'description' => 'test cohort desc', 'descriptionformat' => FORMAT_HTML, 'theme' => 'classic'));
 
@@ -883,7 +888,7 @@ final class lib_test extends \advanced_testcase {
         set_config('allowcohortthemes', 1);
         set_config('theme', 'boost');
 
-        $systemctx = \context_system::instance();
+        $systemctx = system::instance();
         $cohort1 = $this->getDataGenerator()->create_cohort(array('contextid' => $systemctx->id, 'name' => 'test cohort 1',
             'idnumber' => 'testid1', 'description' => 'test cohort desc', 'descriptionformat' => FORMAT_HTML, 'theme' => 'classic'));
         $id = cohort_add_cohort($cohort1);
@@ -952,7 +957,7 @@ final class lib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $cohort = $this->getDataGenerator()->create_cohort(['contextid' => $context->id]);
 
         $this->assertTrue(cohort_can_view_cohort($cohort, $context));
@@ -973,18 +978,18 @@ final class lib_test extends \advanced_testcase {
         $course1 = $this->getDataGenerator()->create_course(['category' => $cat1->id, 'shortname' => 'ANON1']);
         $course2 = $this->getDataGenerator()->create_course(['category' => $cat2->id, 'shortname' => 'ANON2']);
 
-        $cohort1 = $this->getDataGenerator()->create_cohort(['contextid' => \context_coursecat::instance($cat1->id)->id]);
+        $cohort1 = $this->getDataGenerator()->create_cohort(['contextid' => coursecat::instance($cat1->id)->id]);
 
-        $result = cohort_get_cohort($cohort1->id, \context_course::instance($course2->id));
+        $result = cohort_get_cohort($cohort1->id, course::instance($course2->id));
         $this->assertFalse($result);
 
-        $result = cohort_get_cohort($cohort1->id, \context_course::instance($course2->id), true);
+        $result = cohort_get_cohort($cohort1->id, course::instance($course2->id), true);
         $this->assertFalse($result);
 
-        $result = cohort_get_cohort($cohort1->id, \context_course::instance($course1->id));
+        $result = cohort_get_cohort($cohort1->id, course::instance($course1->id));
         $this->assertEquals($cohort1->id, $result->id);
 
-        $result = cohort_get_cohort($cohort1->id, \context_course::instance($course1->id), true);
+        $result = cohort_get_cohort($cohort1->id, course::instance($course1->id), true);
         $this->assertEquals($cohort1->id, $result->id);
     }
 

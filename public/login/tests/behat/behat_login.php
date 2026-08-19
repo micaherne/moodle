@@ -26,6 +26,8 @@
 
 // NOTE: no MOODLE_INTERNAL used, this file may be required by behat before including /config.php.
 
+use core\user;
+
 require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
 
 /**
@@ -46,7 +48,7 @@ class behat_login extends behat_base {
      * @param string $username The username of the user whose password will expire
      */
     public function i_force_a_password_change_for_user($username) {
-        $user = core_user::get_user_by_username($username, 'id', null, MUST_EXIST);
+        $user = user::get_user_by_username($username, 'id', null, MUST_EXIST);
         set_user_preference("auth_forcepasswordchange", true, $user);
     }
 }

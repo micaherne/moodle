@@ -16,6 +16,7 @@
 
 namespace core_comment;
 
+use core\context\course;
 use core_comment_external;
 
 /**
@@ -41,7 +42,7 @@ final class context_freeze_test extends \advanced_testcase {
     protected function create_student_comment_and_freeze_course($course): array {
         set_config('contextlocking', 1);
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
 
         $args = new \stdClass;

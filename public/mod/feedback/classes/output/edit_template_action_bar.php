@@ -16,10 +16,10 @@
 
 namespace mod_feedback\output;
 
-use confirm_action;
-use context_system;
-use moodle_url;
-use pix_icon;
+use core\output\actions\confirm_action;
+use core\context\system;
+use core\url;
+use core\output\pix_icon;
 use core\output\action_menu;
 use core\output\action_link;
 use core\output\action_menu\link as action_menu_link;
@@ -61,7 +61,7 @@ class edit_template_action_bar extends base_action_bar {
     public function get_items(): array {
         global $PAGE;
 
-        $templateurl = new moodle_url('/mod/feedback/manage_templates.php', $this->urlparams);
+        $templateurl = new url('/mod/feedback/manage_templates.php', $this->urlparams);
         $template = manager::get_template_record($this->templateid);
 
         // Back button.
@@ -75,7 +75,7 @@ class edit_template_action_bar extends base_action_bar {
 
             // Use template.
             $actionsselect->add(new action_menu_link(
-                new moodle_url('#'),
+                new url('#'),
                 new pix_icon('i/files', get_string('preview')),
                 get_string('use_this_template', 'mod_feedback'),
                 false,
@@ -88,7 +88,7 @@ class edit_template_action_bar extends base_action_bar {
         if ($template->ispublic) {
             $showdelete = has_all_capabilities(
                 ['mod/feedback:createpublictemplate', 'mod/feedback:deletetemplate'],
-                context_system::instance()
+                system::instance()
             );
         }
         if ($showdelete) {
@@ -96,7 +96,7 @@ class edit_template_action_bar extends base_action_bar {
                 'deletetemplate' => $this->templateid,
                 'sesskey' => sesskey()
             ];
-            $deleteurl = new moodle_url('/mod/feedback/manage_templates.php', $params);
+            $deleteurl = new url('/mod/feedback/manage_templates.php', $params);
             $deleteaction = new action_link(
                 $deleteurl,
                 get_string('delete'),

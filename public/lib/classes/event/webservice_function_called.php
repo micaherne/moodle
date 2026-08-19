@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\context\system;
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -72,7 +75,7 @@ class webservice_function_called extends base {
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 
     /**
@@ -84,7 +87,7 @@ class webservice_function_called extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['function'])) {
-           throw new \coding_exception('The \'function\' value must be set in other.');
+           throw new coding_exception('The \'function\' value must be set in other.');
         }
     }
 

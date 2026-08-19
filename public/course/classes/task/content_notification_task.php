@@ -16,7 +16,11 @@
 
 namespace core_course\task;
 
+use core\context\course;
+use core\output\html_writer;
 use core\task\adhoc_task;
+use core\url;
+use core\user;
 
 /**
  * Class handling course content updates notifications.
@@ -51,13 +55,13 @@ class content_notification_task extends adhoc_task {
         }
 
         // Get only active users.
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $users = get_enrolled_users($coursecontext, '', 0, 'u.*', null, 0, 0, true);
         if (empty($users)) {
             return;
         }
 
-        $userfrom = \core_user::get_user($data->userfrom);
+        $userfrom = user::get_user($data->userfrom);
 
         // Now send the messages
         $countusers = count($users);
@@ -79,12 +83,12 @@ class content_notification_task extends adhoc_task {
             $modnames = get_module_types_names();
             $a = [
                 'coursename' => format_string(get_course_display_name_for_list($course), true, ['context' => $coursecontext]),
-                'courselink' => (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
+                'courselink' => (new url('/course/view.php', ['id' => $course->id]))->out(false),
                 'modulename' => $cm->get_formatted_name(),
                 'moduletypename' => $modnames[$cm->modname],
-                'link' => (new \moodle_url('/mod/' . $cm->modname . '/view.php', ['id' => $cm->id]))->out(false),
+                'link' => (new url('/mod/' . $cm->modname . '/view.php', ['id' => $cm->id]))->out(false),
                 'notificationpreferenceslink' =>
-                    (new \moodle_url('/message/notificationpreferences.php', ['userid' => $user->id]))->out(false),
+                    (new url('/message/notificationpreferences.php', ['userid' => $user->id]))->out(false),
             ];
 
             if ($isupdate) {
@@ -106,7 +110,7 @@ class content_notification_task extends adhoc_task {
             $eventdata->fullmessageformat = FORMAT_HTML;
             $eventdata->fullmessagehtml = $messagebody;
             $eventdata->smallmessage = strip_tags($eventdata->fullmessagehtml);
-            $eventdata->contexturl = (new \moodle_url('/mod/' . $cm->modname . '/view.php', ['id' => $cm->id]))->out(false);
+            $eventdata->contexturl = (new url('/mod/' . $cm->modname . '/view.php', ['id' => $cm->id]))->out(false);
             $eventdata->contexturlname = $cm->get_formatted_name();
             $eventdata->notification = 1;
 
@@ -121,7 +125,7 @@ class content_notification_task extends adhoc_task {
             if (!empty($activitydates)) {
                 $data = (new \core_course\output\activity_dates($activitydates))->export_for_template($OUTPUT);
                 foreach ($data->activitydates as $date) {
-                    $eventdata->fullmessagehtml .= \html_writer::div($date['label'] . ' ' . $date['datestring']);
+                    $eventdata->fullmessagehtml .= html_writer::div($date['label'] . ' ' . $date['datestring']);
                 }
             }
             $eventdata->fullmessage = html_to_text($eventdata->fullmessagehtml);

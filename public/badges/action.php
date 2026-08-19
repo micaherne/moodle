@@ -24,6 +24,10 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use \core_badges\badge;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
@@ -35,13 +39,13 @@ require_login();
 
 $badge = new badge($badgeid);
 $context = $badge->get_context();
-$navurl = new moodle_url('/badges/index.php', array('type' => $badge->type));
+$navurl = new url('/badges/index.php', array('type' => $badge->type));
 
 if ($badge->type == BADGE_TYPE_COURSE) {
     require_login($badge->courseid);
     $course = get_course($badge->courseid);
     $heading = format_string($course->fullname, true, ['context' => $context]);
-    $navurl = new moodle_url('/badges/index.php', array('type' => $badge->type, 'id' => $badge->courseid));
+    $navurl = new url('/badges/index.php', array('type' => $badge->type, 'id' => $badge->courseid));
     $PAGE->set_pagelayout('standard');
     navigation_node::override_active_url($navurl);
 } else {
@@ -54,9 +58,9 @@ $PAGE->set_context($context);
 $PAGE->set_url('/badges/action.php', array('id' => $badge->id));
 
 if ($return !== 0) {
-    $returnurl = new moodle_url($return);
+    $returnurl = new url($return);
 } else {
-    $returnurl = new moodle_url('/badges/overview.php', array('id' => $badge->id));
+    $returnurl = new url('/badges/overview.php', array('id' => $badge->id));
 }
 $returnurl->remove_params('awards');
 
@@ -67,7 +71,7 @@ if ($copy) {
     $cloneid = $badge->make_clone();
     // If a user can edit badge details, they will be redirected to the edit page.
     if (has_capability('moodle/badges:configuredetails', $context)) {
-        redirect(new moodle_url('/badges/edit.php', array('id' => $cloneid, 'action' => 'badge')));
+        redirect(new url('/badges/edit.php', array('id' => $cloneid, 'action' => 'badge')));
     }
-    redirect(new moodle_url('/badges/overview.php', array('id' => $cloneid)));
+    redirect(new url('/badges/overview.php', array('id' => $cloneid)));
 }

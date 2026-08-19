@@ -16,12 +16,12 @@
 
 namespace core;
 
-use cache;
-use coding_exception;
+use core_cache\cache;
+use core\exception\coding_exception;
 use core_component;
-use moodle_exception;
-use moodle_url;
-use progress_trace;
+use core\exception\moodle_exception;
+use core\url;
+use core\output\progress_trace;
 use stdClass;
 
 /**

@@ -38,6 +38,10 @@
  * @copyright 2010 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\course;
+use core\context\module;
+use core\url;
+
 abstract class backup_ui_stage extends base_ui_stage {
 
     /**
@@ -624,13 +628,13 @@ class backup_ui_stage_complete extends backup_ui_stage_final {
             case 'activity':
                 $cmid = $this->get_ui()->get_controller()->get_id();
                 $cm = get_coursemodule_from_id(null, $cmid, $courseid);
-                $modcontext = context_module::instance($cm->id);
-                $restorerul = new moodle_url('/backup/restorefile.php', array('contextid' => $modcontext->id));
+                $modcontext = module::instance($cm->id);
+                $restorerul = new url('/backup/restorefile.php', array('contextid' => $modcontext->id));
                 break;
             case 'course':
             default:
-                $coursecontext = context_course::instance($courseid);
-                $restorerul = new moodle_url('/backup/restorefile.php', array('contextid' => $coursecontext->id));
+                $coursecontext = course::instance($courseid);
+                $restorerul = new url('/backup/restorefile.php', array('contextid' => $coursecontext->id));
         }
 
         $output = '';

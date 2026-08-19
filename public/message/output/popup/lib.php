@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\renderer_base;
+use core\url;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -30,11 +35,11 @@ defined('MOODLE_INTERNAL') || die();
  * @param renderer_base $renderer
  * @return string The HTML
  */
-function message_popup_render_navbar_output(\renderer_base $renderer) {
+function message_popup_render_navbar_output(renderer_base $renderer) {
     global $USER, $CFG;
 
     // Early bail out conditions.
-    if (!isloggedin() || isguestuser() || \core_user::awaiting_action()) {
+    if (!isloggedin() || isguestuser() || user::awaiting_action()) {
         return '';
     }
 
@@ -44,13 +49,13 @@ function message_popup_render_navbar_output(\renderer_base $renderer) {
     $enabled = \core_message\api::is_processor_enabled("popup");
     if ($enabled) {
         $unreadcount = \message_popup\api::count_unread_popup_notifications($USER->id);
-        $caneditownmessageprofile = has_capability('moodle/user:editownmessageprofile', context_system::instance());
-        $preferencesurl = $caneditownmessageprofile ? new moodle_url('/message/notificationpreferences.php') : null;
+        $caneditownmessageprofile = has_capability('moodle/user:editownmessageprofile', system::instance());
+        $preferencesurl = $caneditownmessageprofile ? new url('/message/notificationpreferences.php') : null;
         $context = [
             'userid' => $USER->id,
             'unreadcount' => $unreadcount,
             'urls' => [
-                'seeall' => (new moodle_url('/message/output/popup/notifications.php'))->out(),
+                'seeall' => (new url('/message/output/popup/notifications.php'))->out(),
                 'preferences' => $preferencesurl ? $preferencesurl->out() : null,
             ],
         ];

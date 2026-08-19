@@ -16,6 +16,8 @@
 
 namespace mod_scorm;
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -38,7 +40,7 @@ final class validatepackage_test extends \advanced_testcase {
      * @return stored_file
      */
     protected function create_stored_file_from_path($filepath) {
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
             'component' => 'mod_scorm',

@@ -32,6 +32,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once('lib.php');
@@ -64,7 +69,7 @@ $newfilename = optional_param('newfilename', '',   PARAM_FILE);
 $draftpath   = optional_param('draftpath', '/',    PARAM_PATH);
 
 // user context
-$user_context = context_user::instance($USER->id);
+$user_context = user::instance($USER->id);
 
 
 $PAGE->set_context($user_context);
@@ -73,10 +78,10 @@ $fs = get_file_storage();
 
 $params = array('ctx_id' => $contextid, 'itemid' => $itemid, 'env' => $env, 'course'=>$courseid, 'maxbytes'=>$maxbytes, 'areamaxbytes'=>$areamaxbytes, 'maxfiles'=>$maxfiles, 'subdirs'=>$subdirs, 'sesskey'=>sesskey());
 $PAGE->set_url('/repository/draftfiles_manager.php', $params);
-$filepicker_url = new moodle_url("/repository/filepicker.php", $params);
+$filepicker_url = new url("/repository/filepicker.php", $params);
 
 $params['action'] = 'browse';
-$home_url = new moodle_url('/repository/draftfiles_manager.php', $params);
+$home_url = new url('/repository/draftfiles_manager.php', $params);
 
 switch ($action) {
 
@@ -141,10 +146,10 @@ case 'downloaddir':
 
     $newdraftitemid = file_get_unused_draft_itemid();
     if ($newfile = $zipper->archive_to_storage(array('/' => $file), $user_context->id, 'user', 'draft', $newdraftitemid, '/', $filename, $USER->id)) {
-        $fileurl = moodle_url::make_draftfile_url($newdraftitemid, '/', $filename)->out();
+        $fileurl = url::make_draftfile_url($newdraftitemid, '/', $filename)->out();
         header('Location: ' . $fileurl);
     } else {
-        throw new \moodle_exception('cannotdownloaddir', 'repository');
+        throw new moodle_exception('cannotdownloaddir', 'repository');
     }
     break;
 

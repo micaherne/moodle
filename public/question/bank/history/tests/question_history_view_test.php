@@ -16,6 +16,9 @@
 
 namespace qbank_history;
 
+use core\context\module;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -47,7 +50,7 @@ final class question_history_view_test extends \advanced_testcase {
         $course = $generator->create_course();
         $qbank = $generator->create_module('qbank', ['course' => $course->id]);
         $cm = get_coursemodule_from_id('qbank', $qbank->cmid);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
 
         // Create a question in the default category.
         $contexts = new \core_question\local\bank\question_edit_contexts($context);
@@ -74,7 +77,7 @@ final class question_history_view_test extends \advanced_testcase {
             'entryid' => $entry->id,
             'returnurl' => "/",
         ];
-        $view = new $viewclass($contexts, new \moodle_url('/'), $course, $cm, $pagevars, $extraparams);
+        $view = new $viewclass($contexts, new url('/'), $course, $cm, $pagevars, $extraparams);
         ob_start();
         $view->display();
         $html = ob_get_clean();
@@ -101,7 +104,7 @@ final class question_history_view_test extends \advanced_testcase {
         $course = $generator->create_course();
         $qbank = $generator->create_module('qbank', ['course' => $course->id]);
         $cm = get_coursemodule_from_id('qbank', $qbank->cmid);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Create a question in the default category.
         $contexts = new \core_question\local\bank\question_edit_contexts($context);
@@ -123,7 +126,7 @@ final class question_history_view_test extends \advanced_testcase {
             'entryid' => $entry->id,
             'returnurl' => "/",
         ];
-        $view = new $viewclass($contexts, new \moodle_url('/'), $course, $cm, $pagevars, $extraparams);
+        $view = new $viewclass($contexts, new url('/'), $course, $cm, $pagevars, $extraparams);
         ob_start();
         $view->display_question_bank_header();
         $headerhtml = ob_get_clean();
@@ -132,7 +135,7 @@ final class question_history_view_test extends \advanced_testcase {
 
         $questiondata2 = $questiongenerator->update_question($questiondata1, null,
             ['name' => 'Second version']);
-        $view = new $viewclass($contexts, new \moodle_url('/'), $course, $cm, $pagevars, $extraparams);
+        $view = new $viewclass($contexts, new url('/'), $course, $cm, $pagevars, $extraparams);
         ob_start();
         $view->display_question_bank_header();
         $headerhtml = ob_get_clean();

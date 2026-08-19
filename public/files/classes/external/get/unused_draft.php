@@ -35,7 +35,7 @@ use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_user;
+use core\context\user;
 
 /**
  * Generate a new draft itemid for the current user.
@@ -64,7 +64,7 @@ class unused_draft extends external_api {
     public static function execute(): array {
         global $USER;
 
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         self::validate_context($usercontext);
 
         return [

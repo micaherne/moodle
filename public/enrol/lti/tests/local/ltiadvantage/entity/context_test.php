@@ -16,6 +16,8 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+
 /**
  * Tests for context.
  *
@@ -117,7 +119,7 @@ final class context_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Cannot set invalid context type 'http://example.com/invalid/context'."
                 ]
             ],
@@ -197,7 +199,7 @@ final class context_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "id must be a positive int"
                 ]
             ],

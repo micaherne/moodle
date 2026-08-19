@@ -16,6 +16,8 @@
 
 namespace core\aws;
 
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/lib/adminlib.php');
@@ -29,7 +31,7 @@ require_once($CFG->dirroot . '/lib/adminlib.php');
  * @deprecated Since Moodle 4.5
  * @todo       MDL-82459 Final deprecation in Moodle 6.0.
  */
-class admin_settings_aws_region extends \admin_setting_configtext {
+class admin_settings_aws_region extends configtext {
 
     /**
      * Return part of form with setting.

@@ -25,6 +25,12 @@
 /**
  * The default size of a user selector.
  */
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+
 define('USER_SELECTOR_DEFAULT_ROWS', 20);
 
 /**
@@ -113,7 +119,7 @@ abstract class user_selector_base {
         if (isset($options['accesscontext'])) {
             $this->accesscontext = $options['accesscontext'];
         } else {
-            $this->accesscontext = context_system::instance();
+            $this->accesscontext = system::instance();
         }
 
         $this->viewfullnames = has_capability('moodle/site:viewfullnames', $this->accesscontext);
@@ -767,7 +773,7 @@ abstract class groups_user_selector_base extends user_selector_base {
      */
     public function __construct($name, $options) {
         global $CFG;
-        $options['accesscontext'] = context_course::instance($options['courseid']);
+        $options['accesscontext'] = course::instance($options['courseid']);
         $options['includecustomfields'] = true;
         parent::__construct($name, $options);
         $this->groupid = $options['groupid'];
@@ -955,7 +961,7 @@ class group_non_members_selector extends groups_user_selector_base {
         global $DB;
 
         // Get list of allowed roles.
-        $context = context_course::instance($this->courseid);
+        $context = course::instance($this->courseid);
         if ($validroleids = groups_get_possible_roles($context)) {
             list($roleids, $roleparams) = $DB->get_in_or_equal($validroleids, SQL_PARAMS_NAMED, 'r');
         } else {

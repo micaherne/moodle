@@ -24,6 +24,10 @@
 
 namespace core\event;
 
+use core\context;
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Content bank content updated class.
  *
@@ -60,7 +64,7 @@ class contentbank_content_updated extends base {
         $event = self::create([
             'objectid' => $record->id,
             'relateduserid' => $record->usercreated,
-            'context' => \context::instance_by_id($record->contextid),
+            'context' => context::instance_by_id($record->contextid),
             'other' => [
                 'contenttype' => $record->contenttype,
                 'name' => $record->name
@@ -97,11 +101,11 @@ class contentbank_content_updated extends base {
         parent::validate_data();
 
         if (!isset($this->other['contenttype'])) {
-            throw new \coding_exception('The \'contenttype\' value must be set in other.');
+            throw new coding_exception('The \'contenttype\' value must be set in other.');
         }
 
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
     }
 
@@ -111,7 +115,7 @@ class contentbank_content_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        $url = new \moodle_url('/contentbank/view.php');
+        $url = new url('/contentbank/view.php');
         $url->param('id', $this->objectid);
         return $url;
     }

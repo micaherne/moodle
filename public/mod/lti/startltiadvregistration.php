@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
 use Firebase\JWT\JWT;
 
 use mod_lti\local\ltiopenid\jwks_helper;
@@ -33,7 +35,7 @@ require_once($CFG->libdir.'/weblib.php');
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
 
 require_login();
-$context = context_system::instance();
+$context = system::instance();
 require_capability('moodle/site:config', $context);
 
 $starturl = required_param('url', PARAM_URL);
@@ -43,7 +45,7 @@ $types = lti_get_tools_by_url($starturl, null);
 
 if (!empty($types) && $typeid == -1) {
     // There are matching types for the registration domain, let's prompt the user to upgrade.
-    $pageurl = new moodle_url('/mod/lti/startltiadvregistration.php');
+    $pageurl = new url('/mod/lti/startltiadvregistration.php');
     $PAGE->set_context($context);
     $PAGE->set_url($pageurl);
     $PAGE->set_pagelayout('maintenance');
@@ -72,8 +74,8 @@ if (!empty($types) && $typeid == -1) {
     ];
     $privatekey = jwks_helper::get_private_key();
     $regtoken = JWT::encode($token, $privatekey['key'], 'RS256', $privatekey['kid']);
-    $confurl = new moodle_url('/mod/lti/openid-configuration.php');
-    $url = new moodle_url($starturl);
+    $confurl = new url('/mod/lti/openid-configuration.php');
+    $url = new url($starturl);
     $url->param('openid_configuration', $confurl->out(false));
     $url->param('registration_token', $regtoken);
     header("Location: ".$url->out(false));

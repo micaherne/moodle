@@ -16,25 +16,25 @@
 
 namespace mod_quiz\output;
 
-use cm_info;
-use coding_exception;
-use context;
-use context_module;
-use html_table;
-use html_table_cell;
-use html_writer;
+use core_course\cm_info;
+use core\exception\coding_exception;
+use core\context;
+use core\context\module;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core\output\html_writer;
 use mod_quiz\access_manager;
 use mod_quiz\form\preflight_check_form;
 use mod_quiz\output\grades\grade_out_of;
 use mod_quiz\question\display_options;
 use mod_quiz\quiz_attempt;
-use moodle_url;
-use plugin_renderer_base;
-use popup_action;
+use core\url;
+use core\output\plugin_renderer_base;
+use core\output\actions\popup_action;
 use question_display_options;
 use mod_quiz\quiz_settings;
-use renderable;
-use single_button;
+use core\output\renderable;
+use core\output\single_button;
 use stdClass;
 
 /**
@@ -579,7 +579,7 @@ class renderer extends plugin_renderer_base {
 
         // Start the form.
         $output .= html_writer::start_tag('form',
-                ['action' => new moodle_url($attemptobj->processattempt_url(),
+                ['action' => new url($attemptobj->processattempt_url(),
                         ['cmid' => $attemptobj->get_cmid()]), 'method' => 'post',
                         'enctype' => 'multipart/form-data', 'accept-charset' => 'utf-8',
                         'id' => 'responseform']);
@@ -841,7 +841,7 @@ class renderer extends plugin_renderer_base {
         // Return to place button.
         if ($attemptobj->get_state() == quiz_attempt::IN_PROGRESS) {
             $button = new single_button(
-                    new moodle_url($attemptobj->attempt_url(null, $attemptobj->get_currentpage())),
+                    new url($attemptobj->attempt_url(null, $attemptobj->get_currentpage())),
                     get_string('returnattempt', 'quiz'));
             $output .= $this->container($this->container($this->render($button),
                     'controls'), 'submitbtns mdl-align');
@@ -858,7 +858,7 @@ class renderer extends plugin_renderer_base {
         ];
 
         $button = new single_button(
-                new moodle_url($attemptobj->processattempt_url(), $options),
+                new url($attemptobj->processattempt_url(), $options),
                 get_string('submitallandfinish', 'quiz'));
         $button->class = 'btn-finishattempt';
         $button->formid = 'frm-finishattempt';
@@ -870,7 +870,7 @@ class renderer extends plugin_renderer_base {
             }
             $this->page->requires->js_call_amd('mod_quiz/submission_confirmation', 'init', [$totalunanswered]);
         }
-        $button->type = \single_button::BUTTON_PRIMARY;
+        $button->type = single_button::BUTTON_PRIMARY;
 
         $duedate = $attemptobj->get_due_date();
         $message = '';
@@ -979,7 +979,7 @@ class renderer extends plugin_renderer_base {
      * @param array $popupoptions the options to use if we are opening a popup.
      * @return string HTML fragment.
      */
-    public function start_attempt_button($buttontext, moodle_url $url,
+    public function start_attempt_button($buttontext, url $url,
             ?preflight_check_form $preflightcheckform = null,
             $popuprequired = false, $popupoptions = null) {
 
@@ -1369,7 +1369,7 @@ class renderer extends plugin_renderer_base {
         }
 
         require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
-        $url = new moodle_url('/mod/quiz/report.php', [
+        $url = new url('/mod/quiz/report.php', [
                 'id' => $cm->id, 'mode' => quiz_report_default_report($context)]);
         return html_writer::link($url, $summary);
     }
@@ -1384,16 +1384,16 @@ class renderer extends plugin_renderer_base {
      */
     public function quiz_override_summary_links(stdClass $quiz, cm_info|stdClass $cm, $currentgroup = 0): string {
 
-        $baseurl = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
+        $baseurl = new url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
         $counts = quiz_override_summary($quiz, $cm, $currentgroup);
 
         $links = [];
         if ($counts['group']) {
-            $links[] = html_writer::link(new moodle_url($baseurl, ['mode' => 'group']),
+            $links[] = html_writer::link(new url($baseurl, ['mode' => 'group']),
                     get_string('overridessummarygroup', 'quiz', $counts['group']));
         }
         if ($counts['user']) {
-            $links[] = html_writer::link(new moodle_url($baseurl, ['mode' => 'user']),
+            $links[] = html_writer::link(new url($baseurl, ['mode' => 'user']),
                     get_string('overridessummaryuser', 'quiz', $counts['user']));
         }
 
@@ -1437,7 +1437,7 @@ class renderer extends plugin_renderer_base {
      * @param string $title the title to display above the graph.
      * @return string HTML of the graph.
      */
-    public function graph(moodle_url $url, $title) {
+    public function graph(url $url, $title) {
         $graph = html_writer::empty_tag('img', ['src' => $url, 'alt' => $title]);
 
         return $this->heading($title, 3) . html_writer::tag('div', $graph, ['class' => 'graph']);

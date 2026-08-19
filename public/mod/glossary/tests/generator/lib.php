@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -124,7 +126,7 @@ class mod_glossary_generator extends testing_module_generator {
             $tags = is_array($record['tags']) ? $record['tags'] : preg_split('/,/', $record['tags']);
 
             core_tag_tag::set_item_tags('mod_glossary', 'glossary_entries', $entry->id,
-                context_module::instance($glossary->cmid), $tags);
+                module::instance($glossary->cmid), $tags);
         }
 
         return $entry;
@@ -172,7 +174,7 @@ class mod_glossary_generator extends testing_module_generator {
             'fullmatch' => $CFG->glossary_fullmatch
         ];
         if (!isset($record['teacherentry']) || !isset($record['approved'])) {
-            $context = context_module::instance($glossary->cmid);
+            $context = module::instance($glossary->cmid);
             if (!isset($record['teacherentry'])) {
                 $record['teacherentry'] = has_capability('mod/glossary:manageentries', $context, $record['userid']);
             }
@@ -195,7 +197,7 @@ class mod_glossary_generator extends testing_module_generator {
             $tags = is_array($record['tags']) ? $record['tags'] : explode(',', $record['tags']);
 
             core_tag_tag::set_item_tags('mod_glossary', 'glossary_entries', $id,
-                context_module::instance($cm->id), $tags);
+                module::instance($cm->id), $tags);
         }
 
         return $entries;

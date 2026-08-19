@@ -16,6 +16,8 @@
 
 namespace core_user;
 
+use core\context\course;
+
 /**
  * Unit tests for user roles editable class.
  *
@@ -37,7 +39,7 @@ final class userroleseditable_test extends \advanced_testcase {
         $user2 = $this->getDataGenerator()->create_user();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         $this->getDataGenerator()->enrol_user($user1->id, $course1->id);

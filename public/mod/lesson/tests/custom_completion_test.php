@@ -19,10 +19,10 @@ declare(strict_types = 1);
 namespace mod_lesson;
 
 use advanced_testcase;
-use cm_info;
-use coding_exception;
+use core_course\cm_info;
+use core\exception\coding_exception;
 use mod_lesson\completion\custom_completion;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 

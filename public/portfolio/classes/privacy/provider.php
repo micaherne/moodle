@@ -25,6 +25,8 @@ namespace core_portfolio\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context as core_context;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\context;
 use core_privacy\local\request\contextlist;
@@ -109,7 +111,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof user) {
             return;
         }
 
@@ -211,7 +213,7 @@ class provider implements
      *
      * @param context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(core_context $context) {
         global $DB;
         // Context could be anything, BEWARE!
         if ($context->contextlevel == CONTEXT_USER) {
@@ -231,7 +233,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_user) {
+        if ($context instanceof user) {
             $DB->delete_records('portfolio_instance_user', ['userid' => $context->instanceid]);
             $DB->delete_records('portfolio_tempdata', ['userid' => $context->instanceid]);
             $DB->delete_records('portfolio_log', ['userid' => $context->instanceid]);
@@ -275,7 +277,7 @@ class provider implements
      * @param   array       $subcontext The subcontext within the context to export this information to.
      * @param   array       $linkarray The weird and wonderful link array used to display information for a specific item
      */
-    public static function export_portfolio_user_data(int $userid, \context $context, array $subcontext, array $linkarray) {
+    public static function export_portfolio_user_data(int $userid, core_context $context, array $subcontext, array $linkarray) {
         static::call_plugin_method('export_portfolio_user_data', [$userid, $context, $subcontext, $linkarray]);
     }
 
@@ -284,7 +286,7 @@ class provider implements
      *
      * @param  \context $context The context to delete user data for.
      */
-    public static function delete_portfolio_for_context(\context $context) {
+    public static function delete_portfolio_for_context(core_context $context) {
         static::call_plugin_method('delete_portfolio_for_context', [$context]);
     }
 
@@ -294,7 +296,7 @@ class provider implements
      * @param  int      $userid    The user to delete
      * @param  \context $context   The context to refine the deletion.
      */
-    public static function delete_portfolio_for_user(int $userid, \context $context) {
+    public static function delete_portfolio_for_user(int $userid, core_context $context) {
         static::call_plugin_method('delete_portfolio_for_user', [$userid, $context]);
     }
 

@@ -46,6 +46,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
@@ -358,7 +362,7 @@ class mod_lti_mod_form extends moodleform_mod {
         $supportscontentitemselection = !empty($config['contentitem']);
 
         if ($supportscontentitemselection) {
-            $contentitemurl = new moodle_url('/mod/lti/contentitem.php');
+            $contentitemurl = new url('/mod/lti/contentitem.php');
             $contentbuttonattributes = [
                 'data-contentitemurl' => $contentitemurl->out(false),
             ];

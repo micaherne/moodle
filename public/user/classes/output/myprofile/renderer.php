@@ -17,6 +17,7 @@
 namespace core_user\output\myprofile;
 
 use core\output\html_writer;
+use core\output\plugin_renderer_base;
 
 /**
  * Users' my profile renderer
@@ -26,7 +27,7 @@ use core\output\html_writer;
  * @copyright  2015 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
     /**
      * Render the whole tree.
      *

@@ -16,9 +16,10 @@
 
 namespace core_cache;
 
+use core\context;
 use core_component;
 use core\output\pix_icon;
-use lang_string;
+use core\lang_string;
 
 /**
  * Administration helper base class.
@@ -361,7 +362,7 @@ abstract class administration_helper extends helper {
      * @param array $definitionsummary the definition summary.
      * @return array array of actions.
      */
-    public function get_definition_actions(\context $context, array $definitionsummary): array {
+    public function get_definition_actions(context $context, array $definitionsummary): array {
         return [];
     }
 

@@ -16,6 +16,8 @@
 
 namespace core_badges;
 
+use core\exception\moodle_exception;
+
 /**
  * Badge award manager class.
  *
@@ -92,7 +94,7 @@ class award_manager {
         }
 
         if (!$DB->record_exists('badge_manual_award', $params)) {
-            throw new \moodle_exception('error:badgenotfound', 'badges');
+            throw new moodle_exception('error:badgenotfound', 'badges');
         }
 
         $success = $DB->delete_records('badge_manual_award', $params);
@@ -103,7 +105,7 @@ class award_manager {
         ]);
 
         if ($success) {
-            $badge = new \badge($badgeid);
+            $badge = new badge($badgeid);
             $eventparams = [
                 'objectid' => $badgeid,
                 'relateduserid' => $recipientid,

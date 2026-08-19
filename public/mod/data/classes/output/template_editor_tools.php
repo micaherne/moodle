@@ -16,8 +16,9 @@
 
 namespace mod_data\output;
 
-use templatable;
-use renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\renderable;
 use core_tag_tag;
 use mod_data\manager;
 
@@ -53,7 +54,7 @@ class template_editor_tools implements templatable, renderable {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $tools = [
             $this->get_field_tags($this->templatename),
             $this->get_field_info_tags($this->templatename),

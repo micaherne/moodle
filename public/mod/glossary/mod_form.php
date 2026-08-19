@@ -1,4 +1,6 @@
 <?php
+use core\context\system;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -26,7 +28,7 @@ class mod_glossary_mod_form extends moodleform_mod {
 
         $this->standard_intro_elements();
 
-        if (has_capability('mod/glossary:manageentries', context_system::instance())) {
+        if (has_capability('mod/glossary:manageentries', system::instance())) {
             $mform->addElement('checkbox', 'globalglossary', get_string('isglobal', 'glossary'));
             $mform->addHelpButton('globalglossary', 'isglobal', 'glossary');
 

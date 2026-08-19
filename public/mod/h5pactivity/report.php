@@ -22,6 +22,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\action_link;
+use core\output\html_writer;
+use core\url;
 use mod_h5pactivity\local\manager;
 use mod_h5pactivity\event\report_viewed;
 
@@ -49,7 +53,7 @@ $manager = manager::create_from_coursemodule($cm);
 
 $report = $manager->get_report($userid, $attemptid, $currentgroup);
 if (!$report) {
-    throw new \moodle_exception('permissiondenied');
+    throw new moodle_exception('permissiondenied');
 }
 
 $user = $report->get_user();
@@ -114,12 +118,12 @@ if ($manager->can_view_all_attempts()) {
     // - Individual attempt details.
     $nav = [get_string('attempts', 'mod_h5pactivity'), null];
     if ($user) {
-        $nav[1] = new moodle_url('/mod/h5pactivity/report.php', ['a' => $cm->instance]);
+        $nav[1] = new url('/mod/h5pactivity/report.php', ['a' => $cm->instance]);
         $navbar[] = $nav;
 
         $nav = [fullname($user), null];
         if ($attempt) {
-            $nav[1] = new moodle_url('/mod/h5pactivity/report.php', ['a' => $cm->instance, 'userid' => $user->id]);
+            $nav[1] = new url('/mod/h5pactivity/report.php', ['a' => $cm->instance, 'userid' => $user->id]);
         }
     }
     $navbar[] = $nav;
@@ -129,7 +133,7 @@ if ($manager->can_view_all_attempts()) {
     // - Individual attempt details.
     $nav = [get_string('myattempts', 'mod_h5pactivity'), null];
     if ($attempt) {
-        $nav[1] = new moodle_url('/mod/h5pactivity/report.php', ['a' => $cm->instance]);
+        $nav[1] = new url('/mod/h5pactivity/report.php', ['a' => $cm->instance]);
     }
     $navbar[] = $nav;
 

@@ -16,8 +16,8 @@
 
 namespace core;
 
-use coding_exception;
-use context_system;
+use core\exception\coding_exception;
+use core\context\system;
 use core_component;
 
 /**
@@ -105,7 +105,7 @@ final class dataformat_test extends \advanced_testcase {
 
         // Export to filearea. Assert that the the file exists in file storage and matches the original file record.
         $filerecord = [
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core_dataformat',
             'filearea' => 'test',
             'itemid' => 0,

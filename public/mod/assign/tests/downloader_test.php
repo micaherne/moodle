@@ -16,7 +16,7 @@
 
 namespace mod_assign;
 
-use context_module;
+use core\context\module;
 use assign;
 
 /**
@@ -102,7 +102,7 @@ final class downloader_test extends \advanced_testcase {
         }
         $activity = $this->getDataGenerator()->create_module('assign', $params);
         $cm = get_coursemodule_from_id('assign', $activity->cmid, 0, false, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Generate submissions.
         $datagenerator = $this->getDataGenerator()->get_plugin_generator('mod_assign');

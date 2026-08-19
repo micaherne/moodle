@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\service;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\url;
 use enrol_lti\helper;
 use enrol_lti\local\ltiadvantage\entity\application_registration;
 use enrol_lti\local\ltiadvantage\entity\deployment;
@@ -47,11 +50,11 @@ final class tool_deployment_service_test extends \lti_advantage_testcase {
         $reg = application_registration::create(
             'Example LMS application',
             'a2c94a2c94',
-            new \moodle_url('https://lms.example.org'),
+            new url('https://lms.example.org'),
             '123',
-            new \moodle_url('https://example.org/authrequesturl'),
-            new \moodle_url('https://example.org/jwksurl'),
-            new \moodle_url('https://example.org/accesstokenurl')
+            new url('https://example.org/authrequesturl'),
+            new url('https://example.org/jwksurl'),
+            new url('https://example.org/accesstokenurl')
         );
 
         $regrepo = new application_registration_repository();
@@ -105,7 +108,7 @@ final class tool_deployment_service_test extends \lti_advantage_testcase {
         $this->resetAfterTest();
         $service = $this->get_tool_deployment_service();
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessageMatches('/Cannot add deployment to non-existent application registration/');
         $service->add_tool_deployment(
             (object) [
@@ -157,7 +160,7 @@ final class tool_deployment_service_test extends \lti_advantage_testcase {
         $this->assertCount(1, $users);
         $user = array_pop($users);
 
-        $enrolledusers = get_enrolled_users(\context_course::instance($course->id));
+        $enrolledusers = get_enrolled_users(course::instance($course->id));
         $this->assertCount(1, $enrolledusers);
 
         // Now delete the deployment using the service.
@@ -173,7 +176,7 @@ final class tool_deployment_service_test extends \lti_advantage_testcase {
         $this->assertFalse($userrepo->exists($user->get_id()));
 
         // Verify that all users are unenrolled.
-        $enrolledusers = get_enrolled_users(\context_course::instance($course->id));
+        $enrolledusers = get_enrolled_users(course::instance($course->id));
         $this->assertCount(0, $enrolledusers);
 
         // Verify the tool record stays in place (I.e. the published resource is still available).

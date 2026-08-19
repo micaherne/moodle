@@ -22,6 +22,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once '../../../config.php';
 require_once $CFG->libdir.'/gradelib.php';
 require_once $CFG->dirroot.'/grade/lib.php';
@@ -30,16 +37,16 @@ require_once $CFG->dirroot.'/grade/report/overview/lib.php';
 $courseid = optional_param('id', SITEID, PARAM_INT);
 $userid   = optional_param('userid', $USER->id, PARAM_INT);
 
-$PAGE->set_url(new moodle_url('/grade/report/overview/index.php', array('id' => $courseid, 'userid' => $userid)));
+$PAGE->set_url(new url('/grade/report/overview/index.php', array('id' => $courseid, 'userid' => $userid)));
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 require_login(null, false);
 $PAGE->set_course($course);
 
-$context = context_course::instance($course->id);
-$systemcontext = context_system::instance();
+$context = course::instance($course->id);
+$systemcontext = system::instance();
 $personalcontext = null;
 
 // If we are accessing the page from a site context then ignore this check.
@@ -52,9 +59,9 @@ if (empty($userid)) {
 
 } else {
     if (!$DB->get_record('user', array('id'=>$userid, 'deleted'=>0)) or isguestuser($userid)) {
-        throw new \moodle_exception('invaliduserid');
+        throw new moodle_exception('invaliduserid');
     }
-    $personalcontext = context_user::instance($userid);
+    $personalcontext = user::instance($userid);
 }
 
 if (isset($personalcontext) && $courseid == SITEID) {
@@ -75,7 +82,7 @@ $access = grade_report_overview::check_access($systemcontext, $context, $persona
 
 if (!$access) {
     // no access to grades!
-    throw new \moodle_exception('nopermissiontoviewgrades', 'error',  $CFG->wwwroot.'/course/view.php?id='.$courseid);
+    throw new moodle_exception('nopermissiontoviewgrades', 'error',  $CFG->wwwroot.'/course/view.php?id='.$courseid);
 }
 
 /// return tracking object
@@ -88,7 +95,7 @@ if (!isset($USER->grade_last_report)) {
 $USER->grade_last_report[$course->id] = 'overview';
 
 $actionbar = new \core_grades\output\general_action_bar($context,
-    new moodle_url('/grade/report/overview/index.php', ['id' => $courseid]), 'report', 'overview');
+    new url('/grade/report/overview/index.php', ['id' => $courseid]), 'report', 'overview');
 
 $taskindicator = new \core\output\task_indicator(
     \core_course\task\regrade_final_grades::create($courseid),

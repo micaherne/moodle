@@ -23,6 +23,10 @@
  */
 
 namespace core\event;
+
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -65,7 +69,7 @@ class webservice_token_created extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/settings.php', array('section' => 'webservicetokens'));
+        return new url('/admin/settings.php', array('section' => 'webservicetokens'));
     }
 
     /**
@@ -74,7 +78,7 @@ class webservice_token_created extends base {
      * @return void
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = 'external_tokens';
@@ -89,11 +93,11 @@ class webservice_token_created extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->relateduserid)) {
-           throw new \coding_exception('The \'relateduserid\' must be set.');
+           throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['auto'])) {
-            throw new \coding_exception('The \'auto\' value must be set in other.');
+            throw new coding_exception('The \'auto\' value must be set in other.');
         }
     }
 

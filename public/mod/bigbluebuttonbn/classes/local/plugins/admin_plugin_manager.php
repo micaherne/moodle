@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_bigbluebuttonbn\local\plugins;
 
-use cache_helper;
-use context_system;
+use core_cache\helper;
+use core\context\system;
 use core_component;
-use core_plugin_manager;
-use flexible_table;
-use html_writer;
+use core\plugin_manager;
+use core_table\flexible_table;
+use core\output\html_writer;
 use mod_bigbluebuttonbn\extension;
-use moodle_url;
-use pix_icon;
+use core\url;
+use core\output\pix_icon;
 
 /**
  * Class that handles the display and configuration of the list of extension plugins.
@@ -44,7 +44,7 @@ class admin_plugin_manager {
      *
      */
     public function __construct() {
-        $this->pageurl = new moodle_url(admin_page_manage_extensions::ADMIN_PAGE_URL);
+        $this->pageurl = new url(admin_page_manage_extensions::ADMIN_PAGE_URL);
     }
 
     /**
@@ -76,7 +76,7 @@ class admin_plugin_manager {
      */
     private function check_permissions(): void {
         require_login();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         require_capability('moodle/site:config', $systemcontext);
     }
 
@@ -111,7 +111,7 @@ class admin_plugin_manager {
         $table->setup();
 
         $plugins = $this->get_sorted_plugins_list();
-        $instances = core_plugin_manager::instance()->get_plugins_of_type(extension::BBB_EXTENSION_PLUGIN_NAME);
+        $instances = plugin_manager::instance()->get_plugins_of_type(extension::BBB_EXTENSION_PLUGIN_NAME);
 
         foreach ($plugins as $idx => $plugin) {
             $componentname = extension::BBB_EXTENSION_PLUGIN_NAME . '_' . $plugin;
@@ -148,13 +148,13 @@ class admin_plugin_manager {
             // We do not display settings for plugin who have not yet been installed (so have no version yet).
             if (!empty($pluginversion) && $exists) {
                 $row[] = html_writer::link(
-                    new moodle_url('/admin/settings.php', ['section' => $componentname]),
+                    new url('/admin/settings.php', ['section' => $componentname]),
                     get_string('settings')
                 );
             } else {
                 $row[] = '&nbsp;';
             }
-            $url = core_plugin_manager::instance()->get_uninstall_url(
+            $url = plugin_manager::instance()->get_uninstall_url(
                 $componentname,
                 'manage'
             );
@@ -206,7 +206,7 @@ class admin_plugin_manager {
     private function format_icon_link(string $action, string $plugin, string $icon, string $alt): string {
         global $OUTPUT;
         return $OUTPUT->action_icon(
-                new moodle_url(
+                new url(
                     $this->pageurl,
                     ['action' => $action, 'plugin' => $plugin, 'sesskey' => sesskey()]
                 ),
@@ -233,9 +233,9 @@ class admin_plugin_manager {
      * @return string The next page to display
      */
     private function plugins_hide(string $plugin): string {
-        $class = \core_plugin_manager::resolve_plugininfo_class(extension::BBB_EXTENSION_PLUGIN_NAME);
+        $class = plugin_manager::resolve_plugininfo_class(extension::BBB_EXTENSION_PLUGIN_NAME);
         $class::enable_plugin($plugin, false);
-        cache_helper::purge_by_event('mod_bigbluebuttonbn/pluginenabledisabled');
+        helper::purge_by_event('mod_bigbluebuttonbn/pluginenabledisabled');
         // Also clear the cache for all BigBlueButtonModules.
         rebuild_course_cache(0, true);
         return 'view';
@@ -248,9 +248,9 @@ class admin_plugin_manager {
      * @return string The next page to display
      */
     private function plugins_show(string $plugin): string {
-        $class = \core_plugin_manager::resolve_plugininfo_class(extension::BBB_EXTENSION_PLUGIN_NAME);
+        $class = plugin_manager::resolve_plugininfo_class(extension::BBB_EXTENSION_PLUGIN_NAME);
         $class::enable_plugin($plugin, true);
-        cache_helper::purge_by_event('mod_bigbluebuttonbn/pluginenabledisabled');
+        helper::purge_by_event('mod_bigbluebuttonbn/pluginenabledisabled');
         return 'view';
     }
 

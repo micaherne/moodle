@@ -27,12 +27,12 @@ namespace core_badges\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
-use badge;
-use context;
-use context_course;
-use context_helper;
-use context_system;
-use context_user;
+use \core_badges\badge;
+use core\context;
+use core\context\course;
+use core\context_helper;
+use core\context\system;
+use core\context\user;
 use core_text;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
@@ -319,7 +319,7 @@ class provider implements
                 ];
                 return $carry;
             }, function($courseid, $data) use ($path) {
-                $context = $courseid ? context_course::instance($courseid) : context_system::instance();
+                $context = $courseid ? course::instance($courseid) : system::instance();
                 writer::with_context($context)->export_data($path, (object) ['badges' => $data]);
             });
         }
@@ -356,7 +356,7 @@ class provider implements
                 // The only reason we fetch the context and role is to format the name of the role, which could be
                 // different to the standard name if the badge was created in a course.
                 context_helper::preload_from_record($record);
-                $context = $record->courseid ? context_course::instance($record->courseid) : context_system::instance();
+                $context = $record->courseid ? course::instance($record->courseid) : system::instance();
                 $role = (object) [
                     'id' => $record->roleid,
                     'name' => $record->rolename,
@@ -375,7 +375,7 @@ class provider implements
                 ];
                 return $carry;
             }, function($userid, $data) use ($path) {
-                $context = context_user::instance($userid);
+                $context = user::instance($userid);
                 writer::with_context($context)->export_related_data($path, 'manual_awards', (object) ['badges' => $data]);
             });
         }
@@ -569,7 +569,7 @@ class provider implements
                 return $carry;
             }, function($badgeid, $data) use ($path, $userid) {
                 $path = array_merge($path, ["{$data['name']} ({$badgeid})"]);
-                $writer = writer::with_context(context_user::instance($userid));
+                $writer = writer::with_context(user::instance($userid));
                 $writer->export_data($path, (object) $data);
                 $writer->export_area_files($path, 'badges', 'userbadge', $badgeid);
             });
@@ -586,7 +586,7 @@ class provider implements
             }
             $recordset->close();
             if (!empty($data)) {
-                writer::with_context(context_user::instance($userid))->export_related_data($path, 'backpacks',
+                writer::with_context(user::instance($userid))->export_related_data($path, 'backpacks',
                     (object) ['backpacks' => $data]);
             }
         }

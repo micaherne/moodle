@@ -23,6 +23,10 @@
  */
 namespace report_questioninstances\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -49,7 +53,7 @@ class report_viewed extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 
     /**
@@ -76,7 +80,7 @@ class report_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/questioninstances/index.php', array('qtype' => $this->other['requestedqtype']));
+        return new url('/report/questioninstances/index.php', array('qtype' => $this->other['requestedqtype']));
     }
 
     /**
@@ -87,7 +91,7 @@ class report_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['requestedqtype'])) {
-            throw new \coding_exception('The \'requestedqtype\' value must be set in other.');
+            throw new coding_exception('The \'requestedqtype\' value must be set in other.');
         }
     }
 

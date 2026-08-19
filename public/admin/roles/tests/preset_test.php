@@ -16,6 +16,7 @@
 
 namespace core_role;
 
+use core\context\system;
 use core_role_preset;
 
 /**
@@ -61,7 +62,7 @@ final class preset_test extends \advanced_testcase {
                    FROM {role_capabilities}
                   WHERE contextid = :syscontext AND roleid = :roleid
                ORDER BY capability ASC",
-                array('syscontext' => \context_system::instance()->id, 'roleid' => $role->id));
+                array('syscontext' => system::instance()->id, 'roleid' => $role->id));
 
             foreach ($capabilities as $cap) {
                 $this->assertEquals($cap->permission, $info['permissions'][$cap->capability]);

@@ -4,21 +4,24 @@
 // as we will be executing under the OS security
 // context of the user we are trying to login, rather than
 // of the webserver.
+use core\context\system;
+use core\exception\moodle_exception;
+
 define('NO_MOODLE_COOKIES', true);
 
 require(__DIR__.'/../../config.php');
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 $authentication = \core\di::get(\core\authentication::class);
 $authsequence = $authentication->get_enabled_plugins(); // Auths, in sequence.
 if (!in_array('ldap', $authsequence, true)) {
-    throw new \moodle_exception('ldap_isdisabled', 'auth');
+    throw new moodle_exception('ldap_isdisabled', 'auth');
 }
 
 $authplugin = $authentication->get_plugin('ldap');
 if (empty($authplugin->config->ntlmsso_enabled)) {
-    throw new \moodle_exception('ntlmsso_isdisabled', 'auth_ldap');
+    throw new moodle_exception('ntlmsso_isdisabled', 'auth_ldap');
 }
 
 $sesskey = required_param('sesskey', PARAM_RAW);
@@ -42,5 +45,5 @@ if ($authplugin->ntlmsso_magic($sesskey) && file_exists($file)) {
     fclose($handle);
     exit;
 } else {
-    throw new \moodle_exception('ntlmsso_iwamagicnotenabled', 'auth_ldap');
+    throw new moodle_exception('ntlmsso_iwamagicnotenabled', 'auth_ldap');
 }

@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace mod_bigbluebuttonbn;
 
-use cm_info;
+use core_course\cm_info;
 use core\activity_dates;
 
 /**

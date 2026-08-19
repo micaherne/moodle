@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\aggregation;
 
-use lang_string;
+use core\lang_string;
 use core_reportbuilder\local\helpers\format;
 use core_reportbuilder\local\report\column;
 

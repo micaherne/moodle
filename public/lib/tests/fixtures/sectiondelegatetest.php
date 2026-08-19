@@ -20,9 +20,9 @@ use core_courseformat\base as course_format;
 use core_courseformat\output\local\content\section\controlmenu;
 use core_courseformat\sectiondelegate as sectiondelegatebase;
 use core_courseformat\stateupdates;
-use section_info;
-use renderer_base;
-use action_menu;
+use core_course\section_info;
+use core\output\renderer_base;
+use core\output\action_menu;
 
 /**
  * Test class for section delegate.

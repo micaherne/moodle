@@ -24,6 +24,10 @@
  * @since      Moodle 3.1
  */
 
+use core\context\module;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\user;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_files;
@@ -103,7 +107,7 @@ class mod_quiz_external extends external_api {
             // We can avoid then additional validate_context calls.
             $quizzes = get_all_instances_in_courses("quiz", $courses);
             foreach ($quizzes as $quiz) {
-                $context = context_module::instance($quiz->coursemodule);
+                $context = module::instance($quiz->coursemodule);
 
                 // Update quiz with override information.
                 $quiz = quiz_update_effective_access($quiz, $USER->id);
@@ -299,7 +303,7 @@ class mod_quiz_external extends external_api {
         $quiz = $DB->get_record('quiz', ['id' => $quizid], '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($quiz, 'quiz');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         return [$quiz, $course, $cm, $context];
@@ -430,8 +434,8 @@ class mod_quiz_external extends external_api {
             $params['userid'] = $USER->id;
         }
 
-        $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($params['userid'], '*', MUST_EXIST);
+        user::require_active_user($user);
 
         // Extra checks so only users with permissions can view other users attempts.
         if ($USER->id != $user->id) {
@@ -628,8 +632,8 @@ class mod_quiz_external extends external_api {
             $params['userid'] = $USER->id;
         }
 
-        $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($params['userid'], '*', MUST_EXIST);
+        user::require_active_user($user);
 
         // Extra checks so only users with permissions can view other users attempts.
         if ($USER->id != $user->id) {
@@ -750,8 +754,8 @@ class mod_quiz_external extends external_api {
             $params['userid'] = $USER->id;
         }
 
-        $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($params['userid'], '*', MUST_EXIST);
+        user::require_active_user($user);
 
         // Extra checks so only users with permissions can view other users attempts.
         if ($USER->id != $user->id) {
@@ -884,8 +888,8 @@ class mod_quiz_external extends external_api {
             $params['userid'] = $USER->id;
         }
 
-        $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($params['userid'], '*', MUST_EXIST);
+        user::require_active_user($user);
 
         // Extra checks so only users with permissions can view other users attempts.
         if ($USER->id != $user->id) {
@@ -1085,7 +1089,7 @@ class mod_quiz_external extends external_api {
 
         $attemptobj = quiz_attempt::create($params['attemptid']);
 
-        $context = context_module::instance($attemptobj->get_cm()->id);
+        $context = module::instance($attemptobj->get_cm()->id);
         self::validate_context($context);
 
         // Check that this attempt belongs to this user.

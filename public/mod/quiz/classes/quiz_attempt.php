@@ -16,24 +16,24 @@
 
 namespace mod_quiz;
 
-use action_link;
-use block_contents;
-use cm_info;
-use coding_exception;
-use context_module;
+use core\output\action_link;
+use core_block\output\block_contents;
+use core_course\cm_info;
+use core\exception\coding_exception;
+use core\context\module;
 use core\di;
 use core\hook;
 use Exception;
-use html_writer;
+use core\output\html_writer;
 use mod_quiz\hook\attempt_state_changed;
 use mod_quiz\output\grades\grade_out_of;
 use mod_quiz\output\links_to_other_attempts;
 use mod_quiz\output\renderer;
 use mod_quiz\question\bank\qbank_helper;
 use mod_quiz\question\display_options;
-use moodle_exception;
-use moodle_url;
-use popup_action;
+use core\exception\moodle_exception;
+use core\url;
+use core\output\actions\popup_action;
 use qtype_description_question;
 use question_attempt;
 use question_bank;
@@ -399,7 +399,7 @@ class quiz_attempt {
      *
      * @return context_module the context of the quiz this attempt belongs to.
      */
-    public function get_context(): context_module {
+    public function get_context(): module {
         return $this->quizobj->get_context();
     }
 
@@ -1222,7 +1222,7 @@ class quiz_attempt {
      * @return moodle_url the URL of this quiz's summary page.
      */
     public function summary_url() {
-        return new moodle_url('/mod/quiz/summary.php', ['attempt' => $this->attempt->id, 'cmid' => $this->get_cmid()]);
+        return new url('/mod/quiz/summary.php', ['attempt' => $this->attempt->id, 'cmid' => $this->get_cmid()]);
     }
 
     /**
@@ -1231,7 +1231,7 @@ class quiz_attempt {
      * @return moodle_url the URL of this quiz's summary page.
      */
     public function processattempt_url() {
-        return new moodle_url('/mod/quiz/processattempt.php');
+        return new url('/mod/quiz/processattempt.php');
     }
 
     /**
@@ -1334,7 +1334,7 @@ class quiz_attempt {
     public function restart_preview_button() {
         global $OUTPUT;
         if ($this->is_preview() && $this->is_preview_user()) {
-            return $OUTPUT->single_button(new moodle_url(
+            return $OUTPUT->single_button(new url(
                     $this->start_attempt_url(), ['forcenew' => true]),
                     get_string('startnewpreview', 'quiz'));
         } else {
@@ -1576,7 +1576,7 @@ class quiz_attempt {
      * @return links_to_other_attempts|bool containing array int => null|moodle_url.
      *      False if none.
      */
-    public function links_to_other_attempts(moodle_url $url) {
+    public function links_to_other_attempts(url $url) {
         $attempts = quiz_get_user_attempts($this->get_quiz()->id, $this->attempt->userid, 'all');
         if (count($attempts) <= 1) {
             return false;
@@ -1587,7 +1587,7 @@ class quiz_attempt {
             if ($at->id == $this->attempt->id) {
                 $links->links[$at->attempt] = null;
             } else {
-                $links->links[$at->attempt] = new moodle_url($url, ['attempt' => $at->id]);
+                $links->links[$at->attempt] = new url($url, ['attempt' => $at->id]);
             }
         }
         return $links;
@@ -1609,7 +1609,7 @@ class quiz_attempt {
      * @return links_to_other_attempts|null containing array int => null|moodle_url,
      *      or null if the question in this slot has not been redone.
      */
-    public function links_to_other_redos($slot, moodle_url $baseurl) {
+    public function links_to_other_redos($slot, url $baseurl) {
         $originalslot = $this->get_original_slot($slot);
 
         $qas = $this->all_question_attempts_originally_in_slot($originalslot);
@@ -1623,7 +1623,7 @@ class quiz_attempt {
             if ($qa->get_slot() == $slot) {
                 $links->links[$index] = null;
             } else {
-                $url = new moodle_url($baseurl, ['slot' => $qa->get_slot()]);
+                $url = new url($baseurl, ['slot' => $qa->get_slot()]);
                 $links->links[$index] = new action_link($url, $index,
                         new popup_action('click', $url, 'reviewquestion',
                                 ['width' => 450, 'height' => 650]),
@@ -2122,10 +2122,10 @@ class quiz_attempt {
 
         // Work out the correct start to the URL.
         if ($thispage == $page) {
-            return new moodle_url($fragment);
+            return new url($fragment);
 
         } else {
-            $url = new moodle_url('/mod/quiz/' . $script . '.php' . $fragment,
+            $url = new url('/mod/quiz/' . $script . '.php' . $fragment,
                     ['attempt' => $this->attempt->id, 'cmid' => $this->get_cmid()]);
             if ($page == 0 && $showall != $defaultshowall) {
                 $url->param('showall', (int) $showall);
@@ -2560,8 +2560,8 @@ class quiz_attempt {
      */
     private function handle_missing_question_attempt(): void {
         quiz_delete_attempt($this->attempt, $this->get_quiz());
-        $continuelink = new moodle_url('/mod/quiz/view.php', ['id' => $this->get_cmid()]);
-        if (has_capability('mod/quiz:preview', context_module::instance($this->get_cmid()))) {
+        $continuelink = new url('/mod/quiz/view.php', ['id' => $this->get_cmid()]);
+        if (has_capability('mod/quiz:preview', module::instance($this->get_cmid()))) {
             throw new moodle_exception('attempterrorcontentchange', 'quiz', $continuelink);
         } else {
             throw new moodle_exception('attempterrorcontentchangeforuser', 'quiz', $continuelink);

@@ -24,6 +24,10 @@
 
 namespace core_course\search;
 
+use core\context;
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
 use core_course\customfield\course_handler;
 use core_customfield\data_controller;
 use core_customfield\field_controller;
@@ -54,7 +58,7 @@ class customfield extends \core_search\base {
      * @param \context|null $context Restriction context
      * @return \moodle_recordset|null Recordset or null if no change possible
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
 
         list ($contextjoin, $contextparams) = $this->get_course_level_context_restriction_sql($context, 'c', SQL_PARAMS_NAMED);
@@ -93,8 +97,8 @@ class customfield extends \core_search\base {
         global $PAGE;
 
         try {
-            $context = \context_course::instance($record->instanceid);
-        } catch (\moodle_exception $ex) {
+            $context = course::instance($record->instanceid);
+        } catch (moodle_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving ' . $this->areaid . ' ' . $record->id . ' document, not all required data is available: ' .
                 $ex->getMessage(), DEBUG_DEVELOPER);
@@ -145,7 +149,7 @@ class customfield extends \core_search\base {
         }
 
         // Check whether user is enrolled and the course is visible, or user can view it while hidden.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $userenrolled = is_enrolled($context) &&
             ($course->visible || has_capability('moodle/course:viewhiddencourses', $context));
 
@@ -174,7 +178,7 @@ class customfield extends \core_search\base {
      * @return \moodle_url
      */
     public function get_context_url(\core_search\document $doc) {
-        return new \moodle_url('/course/view.php', array('id' => $doc->get('courseid')));
+        return new url('/course/view.php', array('id' => $doc->get('courseid')));
     }
 
     /**

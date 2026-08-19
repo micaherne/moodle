@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__.'/../../../../config.php');
 require_once(__DIR__.'/lib.php');
 require_once(__DIR__.'/edit_form.php');
@@ -39,7 +41,7 @@ require_capability('moodle/grade:managegradingforms', $context);
 $controller = $manager->get_controller('guide');
 
 $PAGE->set_show_navigation_footer(false);
-$PAGE->set_url(new moodle_url('/grade/grading/form/guide/edit.php', array('areaid' => $areaid)));
+$PAGE->set_url(new url('/grade/grading/form/guide/edit.php', array('areaid' => $areaid)));
 $PAGE->set_title(get_string('definemarkingguide', 'gradingform_guide'));
 $PAGE->set_heading(get_string('definemarkingguide', 'gradingform_guide'));
 

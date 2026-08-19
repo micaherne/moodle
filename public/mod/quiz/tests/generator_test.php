@@ -16,6 +16,8 @@
 
 namespace mod_quiz;
 
+use core\context\module;
+
 /**
  * PHPUnit data generator testcase
  *
@@ -49,7 +51,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals('quiz', $cm->modname);
         $this->assertEquals($SITE->id, $cm->course);
 
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertEquals($quiz->cmid, $context->instanceid);
 
         $this->assertEqualsWithDelta($createtime,

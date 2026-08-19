@@ -16,7 +16,8 @@
 
 namespace core_adminpresets;
 
-use moodle_exception;
+use core\exception\moodle_exception;
+use core\plugin_manager;
 use stdClass;
 
 /**
@@ -172,7 +173,7 @@ final class manager_test extends \advanced_testcase {
         $unexistingid = $presetid * 2;
 
         $manager = new manager();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $manager->apply_preset($unexistingid);
     }
 
@@ -339,7 +340,7 @@ final class manager_test extends \advanced_testcase {
         $this->assertEquals('1', $setting->value);
 
         // Check plugins have been created with the expected values.
-        $manager = \core_plugin_manager::instance();
+        $manager = plugin_manager::instance();
         $plugintype = 'enrol';
         $plugins = $manager->get_present_plugins($plugintype);
         $enabledplugins = $manager->get_enabled_plugins($plugintype);
@@ -405,7 +406,7 @@ final class manager_test extends \advanced_testcase {
         $unexistingid = $presetid * 2;
 
         $manager = new manager();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $manager->download_preset($unexistingid);
     }
 
@@ -722,7 +723,7 @@ final class manager_test extends \advanced_testcase {
         $unexistingid = $presetappid * 2;
 
         $manager = new manager();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $manager->revert_preset($unexistingid);
     }
 

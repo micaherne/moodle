@@ -16,6 +16,7 @@
 
 namespace core_rating;
 
+use core\context\system;
 use rating_manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -56,7 +57,7 @@ final class rating_test extends \advanced_testcase {
         global $DB;
 
         // We load 3 items. Each is rated twice. For simplicity itemid == user id of the item owner.
-        $ctxid = \context_system::instance()->id;
+        $ctxid = system::instance()->id;
         $ratings = array(
             // User 1's items. Average == 2.
             array('contextid' => $ctxid,
@@ -137,7 +138,7 @@ final class rating_test extends \advanced_testcase {
 
         // Prepare the default options.
         $defaultoptions = array (
-            'context'    => \context_system::instance(),
+            'context'    => system::instance(),
             'component'  => 'mod_forum',
             'ratingarea' => 'post',
             'scaleid'    => 10,

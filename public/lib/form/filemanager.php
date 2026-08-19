@@ -15,6 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 use core\context\user;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
 
 global $CFG;
 require_once('HTML/QuickForm/element.php');
@@ -235,7 +241,7 @@ class MoodleQuickForm_filemanager extends HTML_QuickForm_element implements temp
 
         // security - never ever allow guest/not logged in user to upload anything or use this element!
         if (isguestuser() or !isloggedin()) {
-            throw new \moodle_exception('noguest');
+            throw new moodle_exception('noguest');
         }
 
         if ($this->_flagFrozen) {
@@ -311,7 +317,7 @@ class MoodleQuickForm_filemanager extends HTML_QuickForm_element implements temp
         $files = get_file_storage()->get_area_files($usercontext->id, 'user', 'draft', $this->getValue(), 'id', false);
         foreach ($files as $file) {
             $filelist[] = html_writer::link(
-                moodle_url::make_draftfile_url($file->get_itemid(), $file->get_filepath(), $file->get_filename(), true),
+                url::make_draftfile_url($file->get_itemid(), $file->get_filepath(), $file->get_filename(), true),
                 $file->get_filename(),
             );
         }
@@ -477,7 +483,7 @@ class form_filemanager implements renderable {
 
     public function get_nonjsurl() {
         global $PAGE;
-        return new moodle_url('/repository/draftfiles_manager.php', array(
+        return new url('/repository/draftfiles_manager.php', array(
             'env'=>'filemanager',
             'action'=>'browse',
             'itemid'=>$this->options->itemid,

@@ -24,9 +24,11 @@
 
 namespace mod_book\output;
 
-use templatable;
-use renderable;
-use moodle_url;
+use core\context\module;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\renderable;
+use core\url;
 use stdClass;
 
 /**
@@ -107,7 +109,7 @@ class main_action_menu implements templatable, renderable {
      * @return ?stdClass The requested chapter.
      */
     protected function get_chapter(int $id): ?stdClass {
-        $context = \context_module::instance($this->cmid);
+        $context = module::instance($this->cmid);
         $viewhidden = has_capability('mod/book:viewhiddenchapters', $context);
 
         foreach ($this->chapters as $chapter) {
@@ -126,18 +128,18 @@ class main_action_menu implements templatable, renderable {
      * @param \renderer_base $output renderer base output.
      * @return array Data to render.
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $next = $this->get_next_chapter();
         $previous = $this->get_previous_chapter();
 
-        $context = \context_module::instance($this->cmid);
+        $context = module::instance($this->cmid);
         $data = [];
 
         if ($next) {
             $nextchaptertitle = format_string($next->title, options: ['context' => $context, 'escape' => false]);
             $nextdata = [
                 'title' => get_string('navnexttitle', 'book', $nextchaptertitle),
-                'url' => (new moodle_url('/mod/book/view.php', ['id' => $this->cmid, 'chapterid' => $next->id]))->out(false)
+                'url' => (new url('/mod/book/view.php', ['id' => $this->cmid, 'chapterid' => $next->id]))->out(false)
             ];
             $data['next'] = $nextdata;
         }
@@ -145,7 +147,7 @@ class main_action_menu implements templatable, renderable {
             $previouschaptertitle = format_string($previous->title, options: ['context' => $context, 'escape' => false]);
             $previousdata = [
                 'title' => get_string('navprevtitle', 'book', $previouschaptertitle),
-                'url' => (new moodle_url('/mod/book/view.php', ['id' => $this->cmid, 'chapterid' => $previous->id]))->out(false)
+                'url' => (new url('/mod/book/view.php', ['id' => $this->cmid, 'chapterid' => $previous->id]))->out(false)
             ];
             $data['previous'] = $previousdata;
         }

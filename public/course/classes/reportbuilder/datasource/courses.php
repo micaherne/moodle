@@ -24,7 +24,7 @@ use core_reportbuilder\datasource;
 use core_reportbuilder\local\entities\course;
 use core_reportbuilder\local\helpers\database;
 use core_tag\reportbuilder\local\entities\tag;
-use lang_string;
+use core\lang_string;
 
 /**
  * Courses datasource

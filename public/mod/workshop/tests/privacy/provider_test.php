@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\course;
+use core\context\module;
 use core_privacy\local\request\writer;
 use core_privacy\tests\provider_testcase;
 
@@ -185,9 +187,9 @@ final class provider_test extends provider_testcase {
         $cm12 = get_coursemodule_from_instance('workshop', $this->workshop12->id);
         $cm21 = get_coursemodule_from_instance('workshop', $this->workshop21->id);
 
-        $context11 = \context_module::instance($cm11->id);
-        $context12 = \context_module::instance($cm12->id);
-        $context21 = \context_module::instance($cm21->id);
+        $context11 = module::instance($cm11->id);
+        $context12 = module::instance($cm12->id);
+        $context21 = module::instance($cm21->id);
 
         // Student1 has data in workshop11 (author + self reviewer), workshop12 (author) and workshop21 (reviewer).
         $contextlist = \mod_workshop\privacy\provider::get_contexts_for_userid($this->student1->id);
@@ -216,9 +218,9 @@ final class provider_test extends provider_testcase {
         $cm12 = get_coursemodule_from_instance('workshop', $this->workshop12->id);
         $cm21 = get_coursemodule_from_instance('workshop', $this->workshop21->id);
 
-        $context11 = \context_module::instance($cm11->id);
-        $context12 = \context_module::instance($cm12->id);
-        $context21 = \context_module::instance($cm21->id);
+        $context11 = module::instance($cm11->id);
+        $context12 = module::instance($cm12->id);
+        $context21 = module::instance($cm21->id);
 
         // Users in the workshop11.
         $userlist11 = new \core_privacy\local\request\userlist($context11, 'mod_workshop');
@@ -260,13 +262,13 @@ final class provider_test extends provider_testcase {
     public function test_export_user_data_1(): void {
 
         $contextlist = new \core_privacy\local\request\approved_contextlist($this->student1, 'mod_workshop', [
-            \context_module::instance($this->workshop11->cmid)->id,
-            \context_module::instance($this->workshop12->cmid)->id,
+            module::instance($this->workshop11->cmid)->id,
+            module::instance($this->workshop12->cmid)->id,
         ]);
 
         \mod_workshop\privacy\provider::export_user_data($contextlist);
 
-        $writer = writer::with_context(\context_module::instance($this->workshop11->cmid));
+        $writer = writer::with_context(module::instance($this->workshop11->cmid));
 
         $workshop = $writer->get_data([]);
         $this->assertEquals('Workshop11', $workshop->name);
@@ -312,12 +314,12 @@ final class provider_test extends provider_testcase {
     public function test_export_user_data_2(): void {
 
         $contextlist = new \core_privacy\local\request\approved_contextlist($this->student2, 'mod_workshop', [
-            \context_module::instance($this->workshop11->cmid)->id,
+            module::instance($this->workshop11->cmid)->id,
         ]);
 
         \mod_workshop\privacy\provider::export_user_data($contextlist);
 
-        $writer = writer::with_context(\context_module::instance($this->workshop11->cmid));
+        $writer = writer::with_context(module::instance($this->workshop11->cmid));
 
         $assessedsubmission = $writer->get_related_data([
             get_string('myassessments', 'mod_workshop'),
@@ -335,11 +337,11 @@ final class provider_test extends provider_testcase {
         $this->assertTrue($DB->record_exists('workshop_submissions', ['workshopid' => $this->workshop11->id]));
 
         // Passing a non-module context does nothing.
-        \mod_workshop\privacy\provider::delete_data_for_all_users_in_context(\context_course::instance($this->course1->id));
+        \mod_workshop\privacy\provider::delete_data_for_all_users_in_context(course::instance($this->course1->id));
         $this->assertTrue($DB->record_exists('workshop_submissions', ['workshopid' => $this->workshop11->id]));
 
         // Passing a workshop context removes all data.
-        \mod_workshop\privacy\provider::delete_data_for_all_users_in_context(\context_module::instance($this->workshop11->cmid));
+        \mod_workshop\privacy\provider::delete_data_for_all_users_in_context(module::instance($this->workshop11->cmid));
         $this->assertFalse($DB->record_exists('workshop_submissions', ['workshopid' => $this->workshop11->id]));
     }
 
@@ -371,8 +373,8 @@ final class provider_test extends provider_testcase {
         }
 
         $contextlist = new \core_privacy\local\request\approved_contextlist($this->student1, 'mod_workshop', [
-            \context_module::instance($this->workshop12->cmid)->id,
-            \context_module::instance($this->workshop21->cmid)->id,
+            module::instance($this->workshop12->cmid)->id,
+            module::instance($this->workshop21->cmid)->id,
         ]);
 
         \mod_workshop\privacy\provider::delete_data_for_user($contextlist);
@@ -447,7 +449,7 @@ final class provider_test extends provider_testcase {
 
         // Delete data owned by student1 and student3 in the workshop11.
 
-        $context11 = \context_module::instance($this->workshop11->cmid);
+        $context11 = module::instance($this->workshop11->cmid);
 
         $approveduserlist = new \core_privacy\local\request\approved_userlist($context11, 'mod_workshop', [
             $this->student1->id,

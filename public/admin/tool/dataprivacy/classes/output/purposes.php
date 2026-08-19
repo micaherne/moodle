@@ -24,10 +24,11 @@
 namespace tool_dataprivacy\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
+use core\context\system;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 use tool_dataprivacy\external\purpose_exporter;
 
 /**
@@ -59,7 +60,7 @@ class purposes extends crud_element implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         global $PAGE;
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $PAGE->requires->js_call_amd('tool_dataprivacy/purposesactions', 'init');
         $PAGE->requires->js_call_amd('tool_dataprivacy/add_purpose', 'getInstance', [$context->id]);
@@ -75,7 +76,7 @@ class purposes extends crud_element implements renderable, templatable {
 
         $data->purposes = [];
         foreach ($this->purposes as $purpose) {
-            $exporter = new purpose_exporter($purpose, ['context' => \context_system::instance()]);
+            $exporter = new purpose_exporter($purpose, ['context' => system::instance()]);
             $exportedpurpose = $exporter->export($output);
 
             $actionmenu = $this->action_menu('purpose', $exportedpurpose, $purpose);

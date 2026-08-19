@@ -21,7 +21,7 @@ use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_value;
-use context_course;
+use core\context\course;
 use core_courseformat\base as course_format;
 
 /**
@@ -103,7 +103,7 @@ class update_course extends external_api {
         $targetsectionid = $params['targetsectionid'];
         $targetcmid = $params['targetcmid'];
 
-        self::validate_context(context_course::instance($courseid));
+        self::validate_context(course::instance($courseid));
 
         $format = course_get_format($courseid);
 

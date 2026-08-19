@@ -28,7 +28,7 @@ namespace core;
 use stdClass, ReflectionClass;
 use moodle_database, pgsql_native_moodle_database;
 use xmldb_table;
-use moodle_exception;
+use core\exception\moodle_exception;
 use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 
 /**

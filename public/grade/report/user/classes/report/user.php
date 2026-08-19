@@ -16,17 +16,21 @@
 
 namespace gradereport_user\report;
 
-use cache;
-use context_course;
+use core_cache\cache;
+use core\context\course;
+use core_cache\store;
 use core_grades\penalty_manager;
-use course_modinfo;
+use core_course\modinfo;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
 use grade_grade;
 use grade_helper;
 use grade_item;
 use grade_report;
 use grade_tree;
-use html_writer;
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -304,9 +308,9 @@ class user extends grade_report {
         $this->user = $DB->get_record('user', ['id' => $userid]);
 
         // What user are we viewing this as?
-        $coursecontext = context_course::instance($this->courseid);
+        $coursecontext = course::instance($this->courseid);
         if ($viewasuser) {
-            $this->modinfo = new course_modinfo($this->course, $this->user->id);
+            $this->modinfo = new modinfo($this->course, $this->user->id);
             $this->canviewhidden = has_capability('moodle/grade:viewhidden', $coursecontext, $this->user->id);
         } else {
             $this->modinfo = $this->gtree->modinfo;
@@ -324,7 +328,7 @@ class user extends grade_report {
         $this->tabledata = [];
 
         // The base url for sorting by first/last name.
-        $this->baseurl = new \moodle_url('/grade/report', ['id' => $courseid, 'userid' => $userid]);
+        $this->baseurl = new url('/grade/report', ['id' => $courseid, 'userid' => $userid]);
         $this->pbarurl = $this->baseurl;
 
         // There no groups on this report - rank is from all course users.
@@ -332,7 +336,7 @@ class user extends grade_report {
 
         // Optionally calculate grade item averages.
         if ($this->showaverage) {
-            $cache = \cache::make_from_params(\cache_store::MODE_REQUEST, 'gradereport_user', 'averages');
+            $cache = cache::make_from_params(store::MODE_REQUEST, 'gradereport_user', 'averages');
             $avg = $cache->get(get_class($this));
             if (!$avg) {
                 $showonlyactiveenrol = $this->show_only_active();
@@ -354,7 +358,7 @@ class user extends grade_report {
      * @param bool|null $shownumberofgrades Whether to show number of grades.
      * @return \html_table_cell Formatted average cell.
      */
-    protected function format_average_cell(grade_item $gradeitem, ?array $aggr = null, ?bool $shownumberofgrades = null): \html_table_cell {
+    protected function format_average_cell(grade_item $gradeitem, ?array $aggr = null, ?bool $shownumberofgrades = null): html_table_cell {
 
         if ($gradeitem->needsupdate) {
             $avg = '<td class="cell c' . $this->columncount++.'">' .
@@ -370,7 +374,7 @@ class user extends grade_report {
                 $avg = $aggr['average'] . $numberofgrades;
             }
         }
-        return new \html_table_cell($avg);
+        return new html_table_cell($avg);
     }
 
     /**
@@ -588,9 +592,9 @@ class user extends grade_report {
                     $class .= ($type == 'categoryitem' || $type == 'courseitem') ? " d$depth baggb" : " item b1b";
                 }
 
-                $itemicon = \html_writer::div(grade_helper::get_element_icon($element), 'me-1');
+                $itemicon = html_writer::div(grade_helper::get_element_icon($element), 'me-1');
                 $elementtype = grade_helper::get_element_type_string($element);
-                $itemtype = \html_writer::span($elementtype, 'd-block text-uppercase small ' . $hidden,
+                $itemtype = html_writer::span($elementtype, 'd-block text-uppercase small ' . $hidden,
                     ['title' => $elementtype]);
 
                 if ($type == 'categoryitem' || $type == 'courseitem') {
@@ -598,11 +602,11 @@ class user extends grade_report {
                 }
 
                 // Generate the content for a cell that represents a grade item.
-                $itemtitle = \html_writer::div($fullname, 'rowtitle');
-                $content = \html_writer::div($itemtype . $itemtitle);
+                $itemtitle = html_writer::div($fullname, 'rowtitle');
+                $content = html_writer::div($itemtype . $itemtitle);
 
                 // Name.
-                $data['itemname']['content'] = \html_writer::div($itemicon . $content, "{$type} d-flex align-items-center");
+                $data['itemname']['content'] = html_writer::div($itemicon . $content, "{$type} d-flex align-items-center");
                 $data['itemname']['class'] = $class;
                 $data['itemname']['colspan'] = ($this->maxdepth - $depth);
                 $data['itemname']['id'] = $headerrow;
@@ -867,7 +871,7 @@ class user extends grade_report {
                 // Average.
                 if ($this->showaverage) {
                     $data['average']['class'] = $class;
-                    $cache = \cache::make_from_params(\cache_store::MODE_REQUEST, 'gradereport_user', 'averages');
+                    $cache = cache::make_from_params(store::MODE_REQUEST, 'gradereport_user', 'averages');
                     $avg = $cache->get(get_class($this));
 
                     $data['average']['content'] = $avg[$eid]->text;;
@@ -1080,7 +1084,7 @@ class user extends grade_report {
     public function print_table(bool $return = false) {
         global $PAGE;
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->attributes = [
             'summary' => s(get_string('tablesummary', 'gradereport_user')),
             'class' => 'table generaltable user-grade',
@@ -1089,7 +1093,7 @@ class user extends grade_report {
         // Set the table headings.
         $userid = $this->user->id;
         foreach ($this->tableheaders as $index => $heading) {
-            $headingcell = new \html_table_cell($heading);
+            $headingcell = new html_table_cell($heading);
             $headingcell->attributes['id'] = $this->tablecolumns[$index] . $userid;
             $headingcell->attributes['class'] = "header column-{$this->tablecolumns[$index]}";
             if ($index == 0) {
@@ -1103,7 +1107,7 @@ class user extends grade_report {
             $rowcells = [];
             // Set a rowspan cell, if applicable.
             if (isset($rowdata['leader'])) {
-                $rowspancell = new \html_table_cell('');
+                $rowspancell = new html_table_cell('');
                 $rowspancell->attributes['class'] = $rowdata['leader']['class'];
                 $rowspancell->rowspan = $rowdata['leader']['rowspan'];
                 $rowcells[] = $rowspancell;
@@ -1114,7 +1118,7 @@ class user extends grade_report {
                 $content = $rowdata[$tablecolumn]['content'] ?? null;
 
                 if (!is_null($content)) {
-                    $rowcell = new \html_table_cell($content);
+                    $rowcell = new html_table_cell($content);
 
                     // Grade item names and cateogry names are referenced in the `headers` attribute of table cells.
                     // These table cells should be set to <th> tags.
@@ -1138,7 +1142,7 @@ class user extends grade_report {
                 }
             }
 
-            $tablerow = new \html_table_row($rowcells);
+            $tablerow = new html_table_row($rowcells);
             // Generate classes which will be attributed to the current row and will be used to identify all parent
             // categories of this grading item or a category (e.g. 'cat_2 cat_5'). These classes are utilized by the
             // category toggle (expand/collapse) functionality.
@@ -1152,14 +1156,14 @@ class user extends grade_report {
             $table->data[] = $tablerow;
         }
 
-        $userreporttable = \html_writer::table($table);
+        $userreporttable = html_writer::table($table);
         $PAGE->requires->js_call_amd('gradereport_user/gradecategorytoggle', 'init', ["user-report-{$this->user->id}"]);
 
         if ($return) {
-            return \html_writer::div($userreporttable, 'user-report-container', ['id' => "user-report-{$this->user->id}"]);
+            return html_writer::div($userreporttable, 'user-report-container', ['id' => "user-report-{$this->user->id}"]);
         }
 
-        echo \html_writer::div($userreporttable, 'user-report-container', ['id' => "user-report-{$this->user->id}"]);
+        echo html_writer::div($userreporttable, 'user-report-container', ['id' => "user-report-{$this->user->id}"]);
     }
 
     /**

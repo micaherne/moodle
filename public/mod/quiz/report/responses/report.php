@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
 use mod_quiz\local\reports\attempts_report;
 
 defined('MOODLE_INTERNAL') || die();
@@ -70,7 +71,7 @@ class quiz_responses_report extends attempts_report {
 
         // Prepare for downloading, if applicable.
         $courseshortname = format_string($course->shortname, true,
-                ['context' => context_course::instance($course->id)]);
+                ['context' => course::instance($course->id)]);
         if ($options->whichtries === question_attempt::LAST_TRY) {
             $tableclassname = 'quiz_last_responses_table';
         } else {

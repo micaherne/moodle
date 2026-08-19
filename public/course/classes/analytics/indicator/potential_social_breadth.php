@@ -26,7 +26,10 @@ namespace core_course\analytics\indicator;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\exception\coding_exception;
+use core\lang_string;
 use \core_analytics\local\indicator\community_of_inquiry_activity;
+use core_course\cm_info;
 
 /**
  * Potential social breadth indicator.
@@ -45,8 +48,8 @@ class potential_social_breadth extends \core_analytics\local\indicator\linear {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('indicator:potentialsocial', 'moodle');
+    public static function get_name(): lang_string {
+        return new lang_string('indicator:potentialsocial', 'moodle');
     }
 
     /**
@@ -73,7 +76,7 @@ class potential_social_breadth extends \core_analytics\local\indicator\linear {
 
         if ($sampleorigin === 'course_modules') {
             $cm = $this->retrieve('course_modules', $sampleid);
-            $cminfo = \cm_info::create($cm);
+            $cminfo = cm_info::create($cm);
 
             $socialbreadthindicator = $this->get_social_indicator($cminfo->modname);
             $potentiallevel = $socialbreadthindicator->get_social_breadth_level($cminfo);
@@ -144,7 +147,7 @@ class potential_social_breadth extends \core_analytics\local\indicator\linear {
      * @throws \coding_exception
      */
     protected function level_not_accepted($level) {
-        throw new \coding_exception('Activities\' potential social breadth go from 1 to ' .
+        throw new coding_exception('Activities\' potential social breadth go from 1 to ' .
             community_of_inquiry_activity::MAX_SOCIAL_LEVEL . '.');
     }
 }

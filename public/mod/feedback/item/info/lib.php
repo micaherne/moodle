@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\coursecat;
+
 defined('MOODLE_INTERNAL') OR die('not allowed');
 require_once($CFG->dirroot.'/mod/feedback/item/feedback_item_class.php');
 
@@ -216,14 +219,14 @@ class feedback_item_info extends feedback_item_base {
             case self::MODE_COURSE:
                 $course = get_course($courseid);
                 return format_string($course->shortname, true,
-                        array('context' => context_course::instance($course->id)));
+                        array('context' => course::instance($course->id)));
                 break;
             case self::MODE_CATEGORY:
                 if ($courseid !== SITEID) {
                     $coursecategory = $DB->get_record_sql('SELECT cc.id, cc.name FROM {course_categories} cc, {course} c '
                             . 'WHERE c.category = cc.id AND c.id = ?', array($courseid));
                     return format_string($coursecategory->name, true,
-                            array('context' => context_coursecat::instance($coursecategory->id)));
+                            array('context' => coursecat::instance($coursecategory->id)));
                 }
                 break;
         }

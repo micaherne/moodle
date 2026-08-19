@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/../licenselib.php');
@@ -42,7 +46,7 @@ final class licenselib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         // Reset the cache, to make sure we are not getting cached licenses.
-        $cache = \cache::make('core', 'license');
+        $cache = cache::make('core', 'license');
         $cache->delete('licenses');
 
         $licenses = license_manager::get_licenses();
@@ -206,7 +210,7 @@ final class licenselib_test extends advanced_testcase {
 
         // Create a test file with custom license selected.
         $fs = get_file_storage();
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
             'component' => 'tool_metadata',
@@ -305,7 +309,7 @@ final class licenselib_test extends advanced_testcase {
 
         $licenses = license_manager::get_licenses();
 
-        $cache = \cache::make('core', 'license');
+        $cache = cache::make('core', 'license');
         $cachedlicenses = $cache->get('licenses');
 
         $this->assertNotFalse($cachedlicenses);

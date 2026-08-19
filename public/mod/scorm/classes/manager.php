@@ -16,8 +16,9 @@
 
 namespace mod_scorm;
 
-use cm_info;
-use context_module;
+use core\exception\moodle_exception;
+use core_course\cm_info;
+use core\context\module;
 use stdClass;
 
 /**
@@ -35,7 +36,7 @@ class manager {
     public const PLUGINNAME = 'mod_scorm';
 
     /** @var context_module the current context. */
-    private context_module $context;
+    private module $context;
 
     /** @var stdClass $course record. */
     private stdClass $course;
@@ -58,7 +59,7 @@ class manager {
         /** @var stdClass course_module record. */
         private readonly stdClass $instance,
     ) {
-        $this->context = context_module::instance($cm->id);
+        $this->context = module::instance($cm->id);
         $this->db = \core\di::get(\moodle_database::class);
         $this->course = $cm->get_course();
     }
@@ -72,7 +73,7 @@ class manager {
     public static function create_from_instance(stdClass $instance): self {
         $cm = get_coursemodule_from_instance(self::MODULE, $instance->id);
         if (!$cm) {
-            throw new \moodle_exception('invalidcoursemodule', self::PLUGINNAME, '', null, 'Invalid course module');
+            throw new moodle_exception('invalidcoursemodule', self::PLUGINNAME, '', null, 'Invalid course module');
         }
         $cm = cm_info::create($cm);
         return new self($cm, $instance);
@@ -97,7 +98,7 @@ class manager {
      *
      * @return context_module
      */
-    public function get_context(): context_module {
+    public function get_context(): module {
         return $this->context;
     }
 

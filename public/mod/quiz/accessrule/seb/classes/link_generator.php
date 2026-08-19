@@ -25,7 +25,7 @@
 
 namespace quizaccess_seb;
 
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -49,7 +49,7 @@ class link_generator {
         // Check if course module exists.
         get_coursemodule_from_id('quiz', $cmid, 0, false, MUST_EXIST);
 
-        $url = new moodle_url('/mod/quiz/accessrule/seb/config.php?cmid=' . $cmid);
+        $url = new url('/mod/quiz/accessrule/seb/config.php?cmid=' . $cmid);
         if ($seb) {
             $secure ? $url->set_scheme('sebs') : $url->set_scheme('seb');
         } else {

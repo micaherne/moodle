@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\progress_trace\null_progress_trace;
+use core\output\progress_trace\text_progress_trace;
+use core\output\theme_config;
+
 define('CLI_SCRIPT', true);
 
 require(__DIR__.'/../../config.php');

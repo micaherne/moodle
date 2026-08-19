@@ -24,8 +24,8 @@
 namespace tool_lp\external;
 defined('MOODLE_INTERNAL') || die();
 
-use context_user;
-use renderer_base;
+use core\context\user;
+use core\output\renderer_base;
 use stdClass;
 use core_comment\external\comment_area_exporter;
 use core_competency\external\evidence_exporter;

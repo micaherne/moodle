@@ -24,6 +24,8 @@
 
 namespace core_analytics\local\target;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -42,7 +44,7 @@ abstract class linear extends base {
      */
     public function is_linear() {
         // Not supported yet.
-        throw new \coding_exception('Sorry, this version\'s prediction processors only support targets with binary values.' .
+        throw new coding_exception('Sorry, this version\'s prediction processors only support targets with binary values.' .
             ' You can write your own and overwrite this method though.');
     }
 
@@ -70,7 +72,7 @@ abstract class linear extends base {
      */
     public static function get_max_value() {
         // Coding exception as this will only be called if this target have linear values.
-        throw new \coding_exception('Overwrite get_max_value() and return the target max value');
+        throw new coding_exception('Overwrite get_max_value() and return the target max value');
     }
 
     /**
@@ -80,7 +82,7 @@ abstract class linear extends base {
      */
     public static function get_min_value() {
         // Coding exception as this will only be called if this target have linear values.
-        throw new \coding_exception('Overwrite get_min_value() and return the target min value');
+        throw new coding_exception('Overwrite get_min_value() and return the target min value');
     }
 
     /**
@@ -112,7 +114,7 @@ abstract class linear extends base {
      */
     protected function get_callback_boundary() {
         // Coding exception as this will only be called if this target have linear values.
-        throw new \coding_exception('Overwrite get_callback_boundary() and return the min value that ' .
+        throw new coding_exception('Overwrite get_callback_boundary() and return the min value that ' .
             'should trigger the callback');
     }
 }

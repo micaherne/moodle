@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\output\pix_icon;
+use core\output\progress_trace;
+use core\output\single_button;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 class enrol_manual_plugin extends enrol_plugin {
@@ -66,7 +73,7 @@ class enrol_manual_plugin extends enrol_plugin {
             return NULL;
         }
 
-        $context = context_course::instance($instance->courseid, MUST_EXIST);
+        $context = course::instance($instance->courseid, MUST_EXIST);
 
         if (!has_capability('enrol/manual:enrol', $context)) {
             // Note: manage capability not used here because it is used for editing
@@ -74,7 +81,7 @@ class enrol_manual_plugin extends enrol_plugin {
             return NULL;
         }
 
-        return new moodle_url('/enrol/manual/manage.php', array('enrolid'=>$instance->id, 'id'=>$instance->courseid));
+        return new url('/enrol/manual/manage.php', array('enrolid'=>$instance->id, 'id'=>$instance->courseid));
     }
 
     /**
@@ -86,7 +93,7 @@ class enrol_manual_plugin extends enrol_plugin {
     public function can_add_instance($courseid) {
         global $DB;
 
-        $context = context_course::instance($courseid, MUST_EXIST);
+        $context = course::instance($courseid, MUST_EXIST);
         if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/manual:config', $context)) {
             return false;
         }
@@ -107,11 +114,11 @@ class enrol_manual_plugin extends enrol_plugin {
     public function get_action_icons(stdClass $instance) {
         global $OUTPUT;
 
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
 
         $icons = array();
         if (has_capability('enrol/manual:enrol', $context) or has_capability('enrol/manual:unenrol', $context)) {
-            $managelink = new moodle_url("/enrol/manual/manage.php", array('enrolid'=>$instance->id));
+            $managelink = new url("/enrol/manual/manage.php", array('enrolid'=>$instance->id));
             $icons[] = $OUTPUT->action_icon($managelink, new pix_icon('t/enrolusers', get_string('enrolusers', 'enrol_manual'), 'core', array('class'=>'iconsmall')));
         }
 
@@ -121,7 +128,7 @@ class enrol_manual_plugin extends enrol_plugin {
                 'id' => $instance->id,
                 'type' => $instance->enrol,
             ];
-            $editlink = new moodle_url('/enrol/editinstance.php', $linkparams);
+            $editlink = new url('/enrol/editinstance.php', $linkparams);
             $icon = new pix_icon('t/edit', get_string('edit'), 'core', ['class' => 'iconsmall']);
             $icons[] = $OUTPUT->action_icon($editlink, $icon);
         }
@@ -232,7 +239,7 @@ class enrol_manual_plugin extends enrol_plugin {
         $button->class .= ' enrol_manual_plugin';
         $button->type = single_button::BUTTON_PRIMARY;
 
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         $arguments = array('contextid' => $context->id);
 
         if (!$called) {
@@ -353,7 +360,7 @@ class enrol_manual_plugin extends enrol_plugin {
         }
 
         $instance = $DB->get_record('enrol', array('id'=>$instanceid, 'enrol'=>$this->get_name()), '*', MUST_EXIST);
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
 
         if ($users = get_enrolled_users($context, 'enrol/manual:manage')) {
             $users = sort_by_roleassignment_authority($users, $context);
@@ -494,7 +501,7 @@ class enrol_manual_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/manual:config', $context);
     }
 
@@ -505,7 +512,7 @@ class enrol_manual_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/manual:config', $context);
     }
 
@@ -523,7 +530,7 @@ class enrol_manual_plugin extends enrol_plugin {
      */
     public function enrol_cohort(stdClass $instance, $cohortid, $roleid = null, $timestart = 0, $timeend = 0, $status = null, $recovergrades = null) {
         global $DB;
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         list($esql, $params) = get_enrolled_sql($context);
         $sql = "SELECT cm.userid FROM {cohort_members} cm LEFT JOIN ($esql) u ON u.id = cm.userid ".
             "WHERE cm.cohortid = :cohortid AND u.id IS NULL";

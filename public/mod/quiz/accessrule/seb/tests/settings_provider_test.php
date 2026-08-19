@@ -16,6 +16,10 @@
 
 namespace quizaccess_seb;
 
+use core\context\module;
+use core\exception\coding_exception;
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/test_helper_trait.php');
@@ -66,7 +70,7 @@ final class settings_provider_test extends \advanced_testcase {
      */
     protected function set_up_form_mocks() {
         if (empty($this->context)) {
-            $this->context = \context_module::instance($this->quiz->cmid);
+            $this->context = module::instance($this->quiz->cmid);
         }
 
         $this->mockedquizform = $this->createMock('mod_quiz_mod_form');
@@ -580,7 +584,7 @@ final class settings_provider_test extends \advanced_testcase {
      * Test that exception thrown if we try to build capability name from the incorrect setting name.
      */
     public function test_build_setting_capability_name_incorrect_setting(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Incorrect SEB quiz setting broken');
 
         $broken = settings_provider::build_setting_capability_name('broken');
@@ -608,7 +612,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         $this->set_up_user_and_role();
 
@@ -652,7 +656,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         $options = settings_provider::get_requiresafeexambrowser_options($this->context);
 
@@ -738,7 +742,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         $template = $this->create_template();
 
@@ -765,7 +769,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         // Setup conflicting permissions.
         $template = $this->create_template();
@@ -798,7 +802,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         $user = $this->getDataGenerator()->create_user();
         $this->attempt_quiz($this->quiz, $user);
@@ -828,7 +832,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         $template = $this->create_template();
 
@@ -865,7 +869,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         $this->set_up_user_and_role();
 
@@ -892,7 +896,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         $this->set_up_user_and_role();
 
@@ -937,7 +941,7 @@ final class settings_provider_test extends \advanced_testcase {
         $xml = "This is not a config file.";
         $itemid = $this->create_test_draftarea_file($xml);
         $errors = settings_provider::validate_draftarea_configfile($itemid);
-        $this->assertEquals($errors, new \lang_string('fileparsefailed', 'quizaccess_seb'));
+        $this->assertEquals($errors, new lang_string('fileparsefailed', 'quizaccess_seb'));
     }
 
     /**
@@ -964,7 +968,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
         $this->set_up_user_and_role();
 
         $xml = file_get_contents(self::get_fixture_path(__NAMESPACE__, 'unencrypted.seb'));
@@ -986,7 +990,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
         $this->set_up_user_and_role();
 
         $xml = file_get_contents(self::get_fixture_path(__NAMESPACE__, 'unencrypted.seb'));
@@ -1014,7 +1018,7 @@ final class settings_provider_test extends \advanced_testcase {
 
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         $this->set_up_user_and_role();
 
@@ -1056,7 +1060,7 @@ final class settings_provider_test extends \advanced_testcase {
 
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
         $this->setAdminUser();
 
         $this->assertTrue(settings_provider::can_configure_seb($this->context));
@@ -1077,7 +1081,7 @@ final class settings_provider_test extends \advanced_testcase {
 
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
         $this->setAdminUser();
 
         $this->assertTrue(settings_provider::can_use_seb_template($this->context));
@@ -1098,7 +1102,7 @@ final class settings_provider_test extends \advanced_testcase {
 
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
         $this->setAdminUser();
 
         $this->assertTrue(settings_provider::can_upload_seb_file($this->context));
@@ -1119,7 +1123,7 @@ final class settings_provider_test extends \advanced_testcase {
 
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
         $this->setAdminUser();
         $this->assertTrue(settings_provider::can_change_seb_showsebdownloadlink($this->context));
 
@@ -1139,7 +1143,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
         $this->setAdminUser();
         $this->assertTrue(settings_provider::can_change_seb_allowedbrowserexamkeys($this->context));
 
@@ -1163,7 +1167,7 @@ final class settings_provider_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
         $this->setAdminUser();
 
         $this->assertTrue(settings_provider::can_configure_manually($this->context));
@@ -1204,7 +1208,7 @@ final class settings_provider_test extends \advanced_testcase {
 
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         // Create a template.
         $template = $this->create_template();
@@ -1232,7 +1236,7 @@ final class settings_provider_test extends \advanced_testcase {
 
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         // Save file.
         $xml = file_get_contents(self::get_fixture_path(__NAMESPACE__, 'unencrypted.seb'));
@@ -1263,7 +1267,7 @@ final class settings_provider_test extends \advanced_testcase {
 
         $this->course = $this->getDataGenerator()->create_course();
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $this->context = \context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
 
         $this->assertFalse(settings_provider::is_conflicting_permissions($this->context));
 

@@ -23,7 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
 use core\report_helper;
+use core\url;
 
 require_once('../../config.php');
 require_once($CFG->dirroot.'/report/stats/locallib.php');
@@ -50,7 +55,7 @@ if ($mode == STATS_MODE_RANKED) {
 }
 
 if (!$course = $DB->get_record("course", array("id"=>$courseid))) {
-    throw new \moodle_exception("invalidcourseid");
+    throw new moodle_exception("invalidcourseid");
 }
 
 if (!empty($userid)) {
@@ -60,15 +65,15 @@ if (!empty($userid)) {
 }
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('report/stats:view', $context);
 
-$PAGE->set_url(new moodle_url('/report/stats/index.php', array('course' => $course->id,
+$PAGE->set_url(new url('/report/stats/index.php', array('course' => $course->id,
                                                                'report' => $report,
                                                                'time'   => $time,
                                                                'mode'   => $mode,
                                                                'userid' => $userid)));
-navigation_node::override_active_url(new moodle_url('/report/stats/index.php', array('course' => $course->id)));
+navigation_node::override_active_url(new url('/report/stats/index.php', array('course' => $course->id)));
 
 // Trigger a content view event.
 $event = \report_stats\event\report_viewed::create(array('context' => $context, 'relateduserid' => $userid,
@@ -100,10 +105,10 @@ if ($course->id == SITEID) {
 report_stats_report($course, $report, $mode, $user, $roleid, $time);
 
 if (empty($CFG->enablestats)) {
-    if (has_capability('moodle/site:config', context_system::instance())) {
+    if (has_capability('moodle/site:config', system::instance())) {
         redirect("$CFG->wwwroot/$CFG->admin/settings.php?section=stats", get_string('mustenablestats', 'admin'), 3);
     } else {
-        throw new \moodle_exception('statsdisable');
+        throw new moodle_exception('statsdisable');
     }
 }
 

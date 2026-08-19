@@ -1985,7 +1985,7 @@ final class component_test extends \advanced_testcase {
         // checks it contains $CFG->dirroot.
         $exception = false;
         try {
-            $manager = new \page_requirements_manager();
+            $manager = new page_requirements_manager();
             $manager->js_module('mod_assign');
         } catch (coding_exception $e) {
             if ($e->getMessage() === 'Missing YUI3 module details.') {

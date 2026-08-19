@@ -17,6 +17,7 @@
 
 namespace tool_installaddon;
 
+use core\url;
 use testable_tool_installaddon_installer;
 use testable_tool_installaddon_installer_without_site_info;
 use tool_installaddon_installer;
@@ -189,7 +190,7 @@ $plugin->version  = 2014121300;
      * @param moodle_url $url
      * @return array
      */
-    private function decode_site_info_from_url(\moodle_url $url): array {
+    private function decode_site_info_from_url(url $url): array {
         $query = parse_url($url, PHP_URL_QUERY);
         $this->assertEquals(1, preg_match('~^site=(.+)$~', $query, $matches));
         $site = rawurldecode($matches[1]);

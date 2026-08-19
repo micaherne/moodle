@@ -22,9 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-    $row = $tabs = array();
+    use core\context\course;
+use core\output\tabobject;
 
-    $context = context_course::instance($courseid);
+$row = $tabs = array();
+
+    $context = course::instance($courseid);
 
     $row[] = new tabobject('courseoutcomes',
                            $CFG->wwwroot.'/grade/edit/outcome/course.php?id='.$courseid,

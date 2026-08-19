@@ -46,6 +46,10 @@
  * @package calendar
  */
 
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->dirroot.'/calendar/lib.php');
@@ -77,8 +81,8 @@ if (!empty($day) && !empty($mon) && !empty($year)) {
     $time = time();
 }
 
-$url = new moodle_url('/calendar/export.php', array('time' => $time));
-$managesubscriptionsurl = new moodle_url('/calendar/managesubscriptions.php');
+$url = new url('/calendar/export.php', array('time' => $time));
+$managesubscriptionsurl = new url('/calendar/managesubscriptions.php');
 
 if ($courseid != SITEID && !empty($courseid)) {
     // Course ID must be valid and existing.
@@ -87,10 +91,10 @@ if ($courseid != SITEID && !empty($courseid)) {
     $url->param('course', $course->id);
     $managesubscriptionsurl->param('course', $course->id);
 
-    navigation_node::override_active_url(new moodle_url('/course/view.php', ['id' => $course->id]));
+    navigation_node::override_active_url(new url('/course/view.php', ['id' => $course->id]));
     $PAGE->navbar->add(
         get_string('calendar', 'calendar'),
-        new moodle_url('/calendar/view.php', ['view' => 'month', 'course' => $course->id])
+        new url('/calendar/view.php', ['view' => 'month', 'course' => $course->id])
     );
 } else {
     $course = get_site();
@@ -99,14 +103,14 @@ if ($courseid != SITEID && !empty($courseid)) {
     if (!empty($categoryid)) {
         $managesubscriptionsurl->param('category', $categoryid);
 
-        navigation_node::override_active_url(new moodle_url('/course/index.php', ['categoryid' => $categoryid]));
+        navigation_node::override_active_url(new url('/course/index.php', ['categoryid' => $categoryid]));
         $PAGE->set_category_by_id($categoryid);
         $PAGE->navbar->add(
             get_string('calendar', 'calendar'),
-            new moodle_url('/calendar/view.php', ['view' => 'month', 'category' => $categoryid])
+            new url('/calendar/view.php', ['view' => 'month', 'category' => $categoryid])
         );
     } else {
-        $PAGE->navbar->add(get_string('calendar', 'calendar'), new moodle_url('/calendar/view.php', ['view' => 'month']));
+        $PAGE->navbar->add(get_string('calendar', 'calendar'), new url('/calendar/view.php', ['view' => 'month']));
     }
 }
 require_login($course, false);
@@ -166,7 +170,7 @@ if ($data = $exportform->get_data()) {
     $params['preset_what'] = $data->events['exportevents'];
     $params['preset_time'] = $data->period['timeperiod'];
 
-    $link = new moodle_url('/calendar/export_execute.php', $params);
+    $link = new url('/calendar/export_execute.php', $params);
     if (!empty($data->generateurl)) {
         $exporturlcontext = ['calendarexporturl' => $link->out(false)];
         $exporturl = $OUTPUT->render_from_template('core_calendar/export_calendar_url', $exporturlcontext);

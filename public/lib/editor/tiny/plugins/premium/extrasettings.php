@@ -22,12 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
 // This is an admin page.
 admin_externalpage_setup('tiny_premium_plugin_settings');
-$return = new moodle_url('/admin/settings.php', ['section' => 'tiny_premium_settings']);
+$return = new url('/admin/settings.php', ['section' => 'tiny_premium_settings']);
 $plugin = optional_param('plugin', '', PARAM_ALPHA);
 
 // Get form class.

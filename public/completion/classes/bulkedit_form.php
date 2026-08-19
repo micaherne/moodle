@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 use core_completion\manager;
+use core_course\cm_info;
 
 /**
  * Bulk edit activity completion form

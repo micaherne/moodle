@@ -22,11 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 require_login(null, false);
 
-$url = new moodle_url("/admin/tool/dataprivacy/purposes.php");
+$url = new url("/admin/tool/dataprivacy/purposes.php");
 $title = get_string('editpurposes', 'tool_dataprivacy');
 
 \tool_dataprivacy\page_helper::setup($url, $title, 'dataregistry');

@@ -25,6 +25,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+
 require('../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/gdlib.php');
@@ -36,12 +40,12 @@ define ('PIX_FILE_SKIPPED', 2);
 
 admin_externalpage_setup('tooluploaduserpictures');
 
-require_capability('tool/uploaduser:uploaduserpictures', context_system::instance());
+require_capability('tool/uploaduser:uploaduserpictures', system::instance());
 
 $site = get_site();
 
 if (!$adminuser = get_admin()) {
-    throw new \moodle_exception('noadmins', 'error');
+    throw new moodle_exception('noadmins', 'error');
 }
 
 $strfile = get_string('file');
@@ -245,7 +249,7 @@ function process_file ($file, $userfield, $overwrite) {
  * @return mixed new unique revision number or false if not saved
  */
 function my_save_profile_image($id, $originalfile) {
-    $context = context_user::instance($id);
+    $context = user::instance($id);
     return process_new_icon($context, 'user', 'icon', 0, $originalfile);
 }
 

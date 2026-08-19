@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
 use \mod_assign\output\assign_header;
 
 require_once($CFG->dirroot.'/grade/grading/lib.php');
@@ -98,10 +101,10 @@ class assign_feedback_offline extends assign_feedback_plugin {
 
         $gradeimporter = new assignfeedback_offline_grade_importer($importid, $this->assignment, $encoding, $separator);
 
-        $context = context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         $fs = get_file_storage();
         if (!$files = $fs->get_area_files($context->id, 'user', 'draft', $draftid, 'id DESC', false)) {
-            redirect(new moodle_url('view.php',
+            redirect(new url('view.php',
                                 array('id'=>$this->assignment->get_course_module()->id,
                                       'action'=>'grading')));
             return;
@@ -114,12 +117,12 @@ class assign_feedback_offline extends assign_feedback_plugin {
             $gradeimporter->parsecsv($csvdata);
         }
         if (!$gradeimporter->init()) {
-            $thisurl = new moodle_url('/mod/assign/view.php', array('action'=>'viewpluginpage',
+            $thisurl = new url('/mod/assign/view.php', array('action'=>'viewpluginpage',
                                                                      'pluginsubtype'=>'assignfeedback',
                                                                      'plugin'=>'offline',
                                                                      'pluginaction'=>'uploadgrades',
                                                                      'id' => $this->assignment->get_course_module()->id));
-            throw new \moodle_exception('invalidgradeimport', 'assignfeedback_offline', $thisurl);
+            throw new moodle_exception('invalidgradeimport', 'assignfeedback_offline', $thisurl);
             return;
         }
         // Does this assignment use a scale?
@@ -294,7 +297,7 @@ class assign_feedback_offline extends assign_feedback_plugin {
             'feedbackupdatescount' => $updatefeedbackcount,
         ];
         $o .= $renderer->box(get_string('updatedgrades', 'assignfeedback_offline', $strparams));
-        $url = new moodle_url('view.php',
+        $url = new url('view.php',
                               array('id'=>$this->assignment->get_course_module()->id,
                                     'action'=>'grading'));
         $o .= $renderer->continue_button($url);
@@ -326,7 +329,7 @@ class assign_feedback_offline extends assign_feedback_plugin {
         $renderer = $this->assignment->get_renderer();
 
         if ($mform->is_cancelled()) {
-            redirect(new moodle_url('view.php',
+            redirect(new url('view.php',
                                     array('id'=>$this->assignment->get_course_module()->id,
                                           'action'=>'grading')));
             return;
@@ -369,7 +372,7 @@ class assign_feedback_offline extends assign_feedback_plugin {
                                                                        'gradeimporter'=>$gradeimporter,
                                                                        'draftid'=>$draftid));
             if ($mform->is_cancelled()) {
-                redirect(new moodle_url('view.php',
+                redirect(new url('view.php',
                                         array('id'=>$this->assignment->get_course_module()->id,
                                               'action'=>'grading')));
                 return;

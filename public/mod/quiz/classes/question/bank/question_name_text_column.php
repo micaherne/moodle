@@ -16,6 +16,8 @@
 
 namespace mod_quiz\question\bank;
 
+use core\output\html_writer;
+
 /**
  * A column type for the name followed by the start of the question text.
  *
@@ -40,17 +42,17 @@ class question_name_text_column extends question_name_column {
 
     #[\Override]
     protected function display_content($question, $rowclasses): void {
-        echo \html_writer::start_tag('div');
+        echo html_writer::start_tag('div');
         $labelfor = $this->label_for($question);
         if ($labelfor) {
-            echo \html_writer::start_tag('label', ['for' => $labelfor]);
+            echo html_writer::start_tag('label', ['for' => $labelfor]);
         }
         echo quiz_question_tostring($question, false, true, true,
             $question->tags, false);
         if ($labelfor) {
-            echo \html_writer::end_tag('label');
+            echo html_writer::end_tag('label');
         }
-        echo \html_writer::end_tag('div');
+        echo html_writer::end_tag('div');
     }
 
     #[\Override]

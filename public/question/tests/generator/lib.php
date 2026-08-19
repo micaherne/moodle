@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\module;
 use core_question\local\bank\question_version_status;
 use core\exception\coding_exception;
 
@@ -73,7 +75,7 @@ class core_question_generator extends component_generator_base {
                 $record['contextid'] = $DB->get_field('question_categories', 'contextid', ['id' => $record['parent']]);
             } else {
                 $qbank = $this->datagenerator->create_module('qbank', ['course' => SITEID]);
-                $record['contextid'] = context_module::instance($qbank->cmid)->id;
+                $record['contextid'] = module::instance($qbank->cmid)->id;
             }
         } else {
             // Any requests for a question category in a contextlevel that is no longer supported
@@ -88,7 +90,7 @@ class core_question_generator extends component_generator_base {
                     default => throw new \Exception('Invalid context to infer a question bank from.'),
                 };
                 $qbank = \core_question\local\bank\question_bank_helper::get_default_open_instance_system_type($course, true);
-                $bankcontext = context_module::instance($qbank->id);
+                $bankcontext = module::instance($qbank->id);
             } else {
                 $bankcontext = $context;
             }
@@ -210,7 +212,7 @@ class core_question_generator extends component_generator_base {
             'category' => $category->id
         ]);
         $qbank = $datagenerator->create_module('qbank', ['course' => $course->id]);
-        $context = context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
 
         $qcat = $this->create_question_category(['contextid' => $context->id]);
 

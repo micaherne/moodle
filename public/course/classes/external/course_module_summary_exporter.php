@@ -24,7 +24,7 @@
 namespace core_course\external;
 defined('MOODLE_INTERNAL') || die();
 
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Class for exporting a course module summary from a cm_info class.

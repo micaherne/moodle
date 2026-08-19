@@ -22,11 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\url;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $url = new moodle_url('/admin/settings.php', ['section' => 'managemediaplayers']);
-    $item = new admin_setting_heading('filter_mediaplugin/about',
+    $url = new url('/admin/settings.php', ['section' => 'managemediaplayers']);
+    $item = new heading('filter_mediaplugin/about',
         '',
         new lang_string('linktomedia', 'filter_mediaplugin', $url->out()));
     $settings->add($item);

@@ -25,6 +25,9 @@
 
 namespace core;
 
+use core\context\course;
+use core\context\system;
+
 /**
  * Unit tests for core\content class.
  *
@@ -45,8 +48,8 @@ final class content_test extends \advanced_testcase {
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $course1context = \context_course::instance($course1->id);
-        $course2context = \context_course::instance($course2->id);
+        $course1context = course::instance($course1->id);
+        $course2context = course::instance($course2->id);
 
         // Enrol user as student in course1 only.
         $user = $this->getDataGenerator()->create_and_enrol($course1, 'student');
@@ -105,7 +108,7 @@ final class content_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         // Enrol user as student in course1 only.
         $user = $this->getDataGenerator()->create_and_enrol($course1, 'student');

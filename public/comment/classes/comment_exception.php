@@ -16,6 +16,8 @@
 
 namespace core_comment;
 
+use core\exception\moodle_exception;
+
 /**
  * Comment exception class
  *
@@ -23,7 +25,7 @@ namespace core_comment;
  * @copyright 2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class comment_exception extends \moodle_exception {
+class comment_exception extends moodle_exception {
 }
 
 

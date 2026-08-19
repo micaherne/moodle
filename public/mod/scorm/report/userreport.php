@@ -22,6 +22,12 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require_once("../../../config.php");
 require_once($CFG->dirroot.'/mod/scorm/locallib.php');
 
@@ -31,10 +37,10 @@ $attempt = optional_param('attempt', 1, PARAM_INT); // attempt number.
 $mode = optional_param('mode', '', PARAM_ALPHA); // Scorm mode from which reached here.
 
 // Building the url to use for links.+ data details buildup.
-$url = new moodle_url('/mod/scorm/report/userreport.php', array('id' => $id,
+$url = new url('/mod/scorm/report/userreport.php', array('id' => $id,
     'user' => $userid,
     'attempt' => $attempt));
-$tracksurl = new moodle_url('/mod/scorm/report/userreporttracks.php', array('id' => $id,
+$tracksurl = new url('/mod/scorm/report/userreporttracks.php', array('id' => $id,
     'user' => $userid,
     'attempt' => $attempt,
      'mode' => $mode));
@@ -52,7 +58,7 @@ $PAGE->set_show_navigation_footer(false);
 
 // Checking login +logging +getting context.
 require_login($course, false, $cm);
-$contextmodule = context_module::instance($cm->id);
+$contextmodule = module::instance($cm->id);
 require_capability('mod/scorm:viewreport', $contextmodule);
 
 // Check user has group access.
@@ -76,7 +82,7 @@ $strattempt = get_string('attempt', 'scorm');
 
 $PAGE->set_title("$course->shortname: ".format_string($scorm->name));
 $PAGE->set_heading($course->fullname);
-$PAGE->navbar->add($strreport, new moodle_url('/mod/scorm/report.php', array('id' => $cm->id)));
+$PAGE->navbar->add($strreport, new url('/mod/scorm/report.php', array('id' => $cm->id)));
 $PAGE->navbar->add(fullname($user). " - $strattempt $attempt");
 $PAGE->activityheader->set_attrs([
     'hidecompletion' => true,

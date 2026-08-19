@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+
 require_once '../../config.php';
 
 $courseid = required_param('id', PARAM_INT);
@@ -30,10 +33,10 @@ $PAGE->set_url('/grade/report/index.php', array('id'=>$courseid));
 
 /// basic access checks
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 /// find all accessible reports
 $reports = core_component::get_plugin_list('gradereport');     // Get all installed reports
@@ -45,7 +48,7 @@ foreach ($reports as $plugin => $plugindir) {                      // Remove one
 }
 
 if (empty($reports)) {
-    throw new \moodle_exception('noreports', 'debug', $CFG->wwwroot.'/course/view.php?id='.$course->id);
+    throw new moodle_exception('noreports', 'debug', $CFG->wwwroot.'/course/view.php?id='.$course->id);
 }
 
 if (!isset($USER->grade_last_report)) {

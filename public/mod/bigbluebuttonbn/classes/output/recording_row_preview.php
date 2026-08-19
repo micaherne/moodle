@@ -20,10 +20,10 @@ use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\bigbluebutton\recordings\recording_data;
 use mod_bigbluebuttonbn\local\proxy\bigbluebutton_proxy;
 use mod_bigbluebuttonbn\recording;
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Renderer for recording_row_preview column

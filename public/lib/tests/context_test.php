@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\context\system;
+
 /**
  * Unit tests for base context class.
  *
@@ -34,7 +36,7 @@ final class context_test extends \advanced_testcase {
     public function test_legacy_classname(): void {
         $this->assertSame('core\context', context::class);
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $this->assertInstanceOf(context::class, $context);
         $this->assertInstanceOf('context', $context);
     }

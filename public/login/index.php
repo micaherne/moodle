@@ -24,6 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\single_button;
+use core\url;
+use core\user;
+
 require('../config.php');
 require_once('lib.php');
 
@@ -42,11 +47,11 @@ $resendconfirmemail = optional_param('resendconfirmemail', false, PARAM_BOOL);
 if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING) {
     $wantsurl    = optional_param('wantsurl', '', PARAM_LOCALURL);   // Overrides $SESSION->wantsurl if given.
     if ($wantsurl !== '') {
-        $SESSION->wantsurl = (new moodle_url($wantsurl))->out(false);
+        $SESSION->wantsurl = (new url($wantsurl))->out(false);
     }
 }
 
-$context = context_system::instance();
+$context = system::instance();
 $PAGE->set_url("$CFG->wwwroot/login/index.php");
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('login');
@@ -128,7 +133,7 @@ if ($user !== false or $frm !== false or $errormsg !== '') {
 // will only work for internal auth plugins, SSO plugins such as
 // SAML / CAS / OIDC will have to handle this correctly directly.
 if ($anchor && isset($SESSION->wantsurl) && strpos($SESSION->wantsurl, '#') === false) {
-    $wantsurl = new moodle_url($SESSION->wantsurl);
+    $wantsurl = new url($SESSION->wantsurl);
     $wantsurl->set_anchor(substr($anchor, 1));
     $SESSION->wantsurl = $wantsurl->out();
 }
@@ -140,7 +145,7 @@ if ($frm && isset($frm->username)) {
     $frm->username = trim(core_text::strtolower($frm->username));
 
     if ($authentication->is_enabled('none')) {
-        if ($frm->username !== core_user::clean_field($frm->username, 'username')) {
+        if ($frm->username !== user::clean_field($frm->username, 'username')) {
             $errormsg = get_string('username').': '.get_string("invalidusername");
             $errorcode = 2;
             $user = null;
@@ -200,7 +205,7 @@ if ($frm && isset($frm->username)) {
                 }
             }
             echo $OUTPUT->box(get_string("emailconfirmsent", "", s($user->email)), "generalbox boxaligncenter");
-            $resendconfirmurl = new moodle_url('/login/index.php',
+            $resendconfirmurl = new url('/login/index.php',
                 [
                     'username' => $frm->username,
                     'password' => $frm->password,
@@ -283,7 +288,7 @@ if ($frm && isset($frm->username)) {
 
         // test the session actually works by redirecting to self
         $SESSION->wantsurl = $urltogo;
-        redirect(new moodle_url(get_login_url(), array('testsession'=>$USER->id)));
+        redirect(new url(get_login_url(), array('testsession'=>$USER->id)));
 
     } else {
         if (empty($errormsg)) {
@@ -328,7 +333,7 @@ $SESSION->loginredirect = $loginredirect;
 
 /// Redirect to alternative login URL if needed
 if (!empty($CFG->alternateloginurl) && $loginredirect) {
-    $loginurl = new moodle_url($CFG->alternateloginurl);
+    $loginurl = new url($CFG->alternateloginurl);
 
     $loginurlstr = $loginurl->out(false);
 
@@ -384,7 +389,7 @@ if (!empty($SESSION->loginerrormsg) || !empty($SESSION->logininfomsg)) {
     }
 
     // Add redirect param to url.
-    $loginurl = new moodle_url('/login/index.php');
+    $loginurl = new url('/login/index.php');
     $loginurl->param('loginredirect', $SESSION->loginredirect);
 
     redirect($loginurl->out(false));
@@ -398,8 +403,8 @@ echo $OUTPUT->header();
 if (isloggedin() and !isguestuser()) {
     // prevent logging when already logged in, we do not want them to relogin by accident because sesskey would be changed
     echo $OUTPUT->box_start();
-    $logout = new single_button(new moodle_url('/login/logout.php', array('sesskey'=>sesskey(),'loginpage'=>1)), get_string('logout'), 'post');
-    $continue = new single_button(new moodle_url('/'), get_string('gobacktosite'), 'get');
+    $logout = new single_button(new url('/login/logout.php', array('sesskey'=>sesskey(),'loginpage'=>1)), get_string('logout'), 'post');
+    $continue = new single_button(new url('/'), get_string('gobacktosite'), 'get');
     echo $OUTPUT->confirm(
         message: get_string('alreadyloggedin', 'error', fullname($USER)),
         continue: $logout,

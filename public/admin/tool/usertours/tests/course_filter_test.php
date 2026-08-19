@@ -16,6 +16,7 @@
 
 namespace tool_usertours;
 
+use core\context\course as context_course;
 use tool_usertours\local\filter\course;
 
 /**
@@ -92,7 +93,7 @@ final class course_filter_test extends \advanced_testcase {
 
         $tour->set_filter_values('course_operator', [$operator]);
 
-        $context = \context_course::instance($COURSE->id);
+        $context = context_course::instance($COURSE->id);
 
         $this->assertEquals($expected, course::filter_matches($tour, $context));
     }

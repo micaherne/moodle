@@ -24,6 +24,10 @@
 
 namespace core_search;
 
+use core\context;
+use core\context\module;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -64,7 +68,7 @@ abstract class base_activity extends base_mod {
      * @param int $modifiedfrom Return only records modified after this date
      * @return \moodle_recordset|null Recordset, or null if no possible activities in given context
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
         list ($contextjoin, $contextparams) = $this->get_context_restriction_sql(
                 $context, $this->get_module_name(), 'modtable');
@@ -92,7 +96,7 @@ abstract class base_activity extends base_mod {
 
         try {
             $cm = $this->get_cm($this->get_module_name(), $record->id, $record->course);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
         } catch (\dml_missing_record_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving ' . $this->areaid . ' ' . $record->id . ' document, not all required data is available: ' .
@@ -172,7 +176,7 @@ abstract class base_activity extends base_mod {
      */
     public function get_context_url(\core_search\document $doc) {
         $cminfo = $this->get_cm($this->get_module_name(), strval($doc->get('itemid')), $doc->get('courseid'));
-        return new \moodle_url('/mod/' . $this->get_module_name() . '/view.php', array('id' => $cminfo->id));
+        return new url('/mod/' . $this->get_module_name() . '/view.php', array('id' => $cminfo->id));
     }
 
     /**
@@ -228,7 +232,7 @@ abstract class base_activity extends base_mod {
         if (!empty($fileareas)) {
             $cm = $this->get_cm($this->get_module_name(), $document->get('itemid'), $document->get('courseid'));
 
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
             $contextid = $context->id;
 
             $fs = get_file_storage();

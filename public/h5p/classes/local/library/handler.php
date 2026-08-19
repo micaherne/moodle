@@ -24,6 +24,9 @@
 
 namespace core_h5p\local\library;
 
+use core\lang_string;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -110,8 +113,8 @@ abstract class handler {
      * @param array $params these params override current params or add new
      * @return null|\moodle_url
      */
-    public static function get_h5p_core_library_url(?string $filepath = null, ?array $params = null): ?\moodle_url {
-        return new \moodle_url(static::get_h5p_core_library_base($filepath), $params);
+    public static function get_h5p_core_library_url(?string $filepath = null, ?array $params = null): ?url {
+        return new url(static::get_h5p_core_library_base($filepath), $params);
     }
 
     /**
@@ -121,8 +124,8 @@ abstract class handler {
      * @param array $params These params override current params or add new.
      * @return null|\moodle_url The moodle_url to a file in the H5P Editor library.
      */
-    public static function get_h5p_editor_library_url(?string $filepath = null, ?array $params = null): ?\moodle_url {
-        return new \moodle_url(static::get_h5p_editor_library_base($filepath), $params);
+    public static function get_h5p_editor_library_url(?string $filepath = null, ?array $params = null): ?url {
+        return new url(static::get_h5p_editor_library_base($filepath), $params);
     }
 
     /**
@@ -145,7 +148,7 @@ abstract class handler {
             // In Moodle, all the English strings always will exist because they have to be declared in order to let users
             // to translate them. That's why, this method will only replace existing key if the value is different from
             // the English version and the current language is not English.
-            $string = new \lang_string($identifier, $component);
+            $string = new lang_string($identifier, $component);
             if ($language === $defaultmoodlelang || $string->out($language) !== $string->out($defaultmoodlelang)) {
                 $value = $string->out($language);
             }

@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace tiny_media;
 
 use advanced_testcase;
+use core\context\system;
 
 /**
  * Unit tests for the \tiny_media\plugininfo class.
@@ -56,7 +57,7 @@ final class plugininfo_test extends advanced_testcase {
             $user = $generator->create_user();
             $this->setUser($user);
         }
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $this->assertEquals($expectedenabled, plugininfo::is_enabled_for_external($context, ['pluginname' => 'media']));
     }

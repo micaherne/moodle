@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -65,7 +67,7 @@ class block_globalsearch extends block_base {
         }
 
         $data = [
-            'action' => new moodle_url('/search/index.php'),
+            'action' => new url('/search/index.php'),
             'inputname' => 'q',
             'searchstring' => get_string('search'),
         ];

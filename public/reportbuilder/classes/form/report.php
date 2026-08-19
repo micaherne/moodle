@@ -18,10 +18,10 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\form;
 
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 use core_reportbuilder\permission;
-use moodle_url;
+use core\url;
 use core_form\dynamic_form;
 use core_reportbuilder\datasource;
 use core_reportbuilder\manager;
@@ -68,7 +68,7 @@ class report extends dynamic_form {
         if ($report = $this->get_custom_report()) {
             return $report->get_context();
         } else {
-            return context_system::instance();
+            return system::instance();
         }
     }
 
@@ -142,7 +142,7 @@ class report extends dynamic_form {
             $reportpersistent = reporthelper::create_report($data, (bool)$data->includedefaultsetup);
         }
 
-        return (new moodle_url('/reportbuilder/edit.php', ['id' => $reportpersistent->get('id')]))->out(false);
+        return (new url('/reportbuilder/edit.php', ['id' => $reportpersistent->get('id')]))->out(false);
     }
 
     /**
@@ -162,8 +162,8 @@ class report extends dynamic_form {
      *
      * @return moodle_url
      */
-    public function get_page_url_for_dynamic_submission(): moodle_url {
-        return new moodle_url('/reportbuilder/index.php');
+    public function get_page_url_for_dynamic_submission(): url {
+        return new url('/reportbuilder/index.php');
     }
 
     /**

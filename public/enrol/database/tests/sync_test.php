@@ -16,6 +16,9 @@
 
 namespace enrol_database;
 
+use core\context\course;
+use core\output\progress_trace\null_progress_trace;
+
 /**
  * External database enrolment sync tests
  *
@@ -219,7 +222,7 @@ final class sync_test extends \advanced_testcase {
         global $DB;
         $dbinstance = $DB->get_record('enrol', array('courseid' => self::$courses[$courseindex]->id, 'enrol' => 'database'), '*', MUST_EXIST);
 
-        $coursecontext = \context_course::instance(self::$courses[$courseindex]->id);
+        $coursecontext = course::instance(self::$courses[$courseindex]->id);
         if ($rolename === false) {
             $this->assertFalse($DB->record_exists('role_assignments', array('component' => 'enrol_database', 'itemid' => $dbinstance->id, 'userid' => self::$users[$userindex]->id, 'contextid' => $coursecontext->id)));
         } else if ($rolename !== null) {
@@ -434,7 +437,7 @@ final class sync_test extends \advanced_testcase {
 
         $plugin = enrol_get_plugin('database');
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         // Test basic enrol sync for one user after login.
 
@@ -705,7 +708,7 @@ final class sync_test extends \advanced_testcase {
 
         $plugin = enrol_get_plugin('database');
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         $plugin->set_config('localcategoryfield', 'id');
         $coursecat = $this->getDataGenerator()->create_category(array('name' => 'Test category 1', 'idnumber' => 'tcid1'));
@@ -820,7 +823,7 @@ final class sync_test extends \advanced_testcase {
 
         $plugin = enrol_get_plugin('database');
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         $course1 = ['fullname' => 'C1', 'shortname' => 'c1', 'idnumber' => 'c1', 'startdate' => 0,
             'enddate' => 0];

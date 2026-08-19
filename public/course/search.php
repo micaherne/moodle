@@ -21,6 +21,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\lang_string;
+use core\url;
+
 require_once("../config.php");
 require_once($CFG->dirroot.'/course/lib.php');
 
@@ -64,7 +68,7 @@ if (!empty($page)) {
     $urlparams['page'] = $page;
 }
 $PAGE->set_url('/course/search.php', $searchcriteria + $urlparams);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('standard');
 $courserenderer = $PAGE->get_renderer('core', 'course');
 
@@ -77,9 +81,9 @@ $strsearch = new lang_string("search");
 $strsearchresults = new lang_string("searchresults");
 $strnovalidcourses = new lang_string('novalidcourses');
 
-$courseurl = core_course_category::user_top() ? new moodle_url('/course/index.php') : null;
+$courseurl = core_course_category::user_top() ? new url('/course/index.php') : null;
 $PAGE->navbar->add($strcourses, $courseurl);
-$PAGE->navbar->add($strsearch, new moodle_url('/course/search.php'));
+$PAGE->navbar->add($strsearch, new url('/course/search.php'));
 if (!empty($search)) {
     $PAGE->navbar->add(s($search));
 }
@@ -92,7 +96,7 @@ if (empty($searchcriteria)) {
     $PAGE->set_title($strsearchresults);
     // Link to manage search results should be visible if user have system or category level capability
     if ((can_edit_in_category() || !empty($usercatlist))) {
-        $aurl = new moodle_url('/course/management.php', $searchcriteria);
+        $aurl = new url('/course/management.php', $searchcriteria);
         $searchform = $OUTPUT->single_button($aurl, get_string('managecourses'), 'get');
         $PAGE->set_button($searchform);
     }

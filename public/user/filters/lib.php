@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 require_once($CFG->dirroot.'/user/filters/text.php');
 require_once($CFG->dirroot.'/user/filters/date.php');
 require_once($CFG->dirroot.'/user/filters/select.php');
@@ -320,7 +322,7 @@ class user_filter_type {
      * @return string the filtering condition or null if the filter is disabled
      */
     public function get_sql_filter($data) {
-        throw new \moodle_exception('mustbeoveride', 'debug', '', 'get_sql_filter');
+        throw new moodle_exception('mustbeoveride', 'debug', '', 'get_sql_filter');
     }
 
     /**
@@ -329,7 +331,7 @@ class user_filter_type {
      * @return mixed array filter data or false when filter not set
      */
     public function check_data($formdata) {
-        throw new \moodle_exception('mustbeoveride', 'debug', '', 'check_data');
+        throw new moodle_exception('mustbeoveride', 'debug', '', 'check_data');
     }
 
     /**
@@ -337,7 +339,7 @@ class user_filter_type {
      * @param moodleform $mform a MoodleForm object to setup
      */
     public function setupForm(&$mform) {
-        throw new \moodle_exception('mustbeoveride', 'debug', '', 'setupForm');
+        throw new moodle_exception('mustbeoveride', 'debug', '', 'setupForm');
     }
 
     /**
@@ -346,6 +348,6 @@ class user_filter_type {
      * @return string active filter label
      */
     public function get_label($data) {
-        throw new \moodle_exception('mustbeoveride', 'debug', '', 'get_label');
+        throw new moodle_exception('mustbeoveride', 'debug', '', 'get_label');
     }
 }

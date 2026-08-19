@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\context\system;
 use file_progress;
 use tgz_packer;
 
@@ -72,7 +73,7 @@ final class tgz_packer_test extends \advanced_testcase implements file_progress 
         $filelist['out2'] = $CFG->tempdir . '/dir1';
 
         // Moodle stored_file.
-        $context = \context_system::instance();
+        $context = system::instance();
         $filerecord = array('contextid' => $context->id, 'component' => 'phpunit',
                 'filearea' => 'data', 'itemid' => 0, 'filepath' => '/',
                 'filename' => 'file4.txt', 'timemodified' => 1377993604);
@@ -163,7 +164,7 @@ final class tgz_packer_test extends \advanced_testcase implements file_progress 
         // Archive files.
         $files = $this->prepare_file_list();
         $archivefile = $CFG->tempdir . '/test.tar.gz';
-        $context = \context_system::instance();
+        $context = system::instance();
         $sf = $packer->archive_to_storage($files,
                 $context->id, 'phpunit', 'archive', 1, '/', 'archive.tar.gz');
         $this->assertInstanceOf('stored_file', $sf);
@@ -297,7 +298,7 @@ final class tgz_packer_test extends \advanced_testcase implements file_progress 
         $filelist = $this->prepare_file_list();
         $packer = get_file_packer('application/x-gzip');
         $archive = "$CFG->tempdir/archive.tgz";
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Archive to pathname.
         $this->progress = array();
@@ -424,7 +425,7 @@ final class tgz_packer_test extends \advanced_testcase implements file_progress 
         $archive2 = "$CFG->tempdir/archive.zip";
 
         // Archive in tgz and zip format.
-        $context = \context_system::instance();
+        $context = system::instance();
         $archive1 = $packer1->archive_to_storage($filelist, $context->id,
                 'phpunit', 'test', 0, '/', 'archive.tgz', null, true, $this);
         $this->assertInstanceOf('stored_file', $archive1);

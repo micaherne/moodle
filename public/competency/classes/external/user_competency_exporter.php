@@ -24,9 +24,9 @@
 namespace core_competency\external;
 defined('MOODLE_INTERNAL') || die();
 
-use context_system;
-use core_user;
-use renderer_base;
+use core\context\system;
+use core\user;
+use core\output\renderer_base;
 use stdClass;
 use core_competency\url;
 use core_competency\user_competency;
@@ -86,7 +86,7 @@ class user_competency_exporter extends \core\external\persistent_exporter {
 
         if (!empty($result->isstatusinreview)) {
             // TODO Make this more efficient.
-            $userexporter = new user_summary_exporter(core_user::get_user($this->persistent->get('reviewerid'), '*', MUST_EXIST));
+            $userexporter = new user_summary_exporter(user::get_user($this->persistent->get('reviewerid'), '*', MUST_EXIST));
             $result->reviewer = $userexporter->export($output);
         }
 
@@ -102,7 +102,7 @@ class user_competency_exporter extends \core\external\persistent_exporter {
      */
     protected function get_format_parameters_for_gradename() {
         return [
-            'context' => context_system::instance(), // The system context is cached, so we can get it right away.
+            'context' => system::instance(), // The system context is cached, so we can get it right away.
         ];
     }
 

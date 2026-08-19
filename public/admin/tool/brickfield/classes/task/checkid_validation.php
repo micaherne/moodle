@@ -16,6 +16,7 @@
 
 namespace tool_brickfield\task;
 
+use core\user;
 use tool_brickfield\accessibility;
 use tool_brickfield\manager;
 
@@ -53,9 +54,9 @@ class checkid_validation extends \core\task\scheduled_task {
                 $messagebody = get_string('warningcheckidbody', manager::PLUGINNAME);
                 $messagesubject = get_string('warningcheckidsubject', manager::PLUGINNAME);
 
-                $receiver = \core_user::get_support_user();
+                $receiver = user::get_support_user();
                 $receiver->email = !empty($config->warningscontact) ? $config->warningscontact : $receiver->email;
-                $noreplyuser = \core_user::get_noreply_user();
+                $noreplyuser = user::get_noreply_user();
                 email_to_user($receiver, $noreplyuser, $messagesubject, html_to_text($messagebody), $messagebody);
             }
         }

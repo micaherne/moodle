@@ -17,7 +17,10 @@
 namespace mod_subsection;
 
 use availability_date\condition;
+use core\context\course;
+use core\plugin_manager;
 use core_availability\tree;
+use core_course\section_info;
 use core_courseformat\formatactions;
 
 /**
@@ -70,7 +73,7 @@ final class manager_test extends \advanced_testcase {
         $cm = get_coursemodule_from_id('subsection', $module->cmid, 0, false, MUST_EXIST);
         $manager = manager::create_from_coursemodule($cm);
         $sectioninfo = $manager->get_delegated_section_info();
-        $this->assertInstanceOf(\section_info::class, $sectioninfo);
+        $this->assertInstanceOf(section_info::class, $sectioninfo);
         $this->assertEquals($cm->instance, $sectioninfo->itemid);
         $this->assertEquals($cm->name, $sectioninfo->name);
         $this->assertEquals($cm->visible, $sectioninfo->visible);
@@ -80,7 +83,7 @@ final class manager_test extends \advanced_testcase {
         // When subsections are disabled, all subsections are considered orphaned
         // and can be removed without affecting the course_module. This should regenerate
         // the delegated section once the module is re-enabled.
-        $pluginmanager = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $pluginmanager = plugin_manager::resolve_plugininfo_class('mod');
         $pluginmanager::enable_plugin('subsection', 0);
         formatactions::section($course)->delete($sectioninfo);
         rebuild_course_cache($course->id, true);
@@ -90,7 +93,7 @@ final class manager_test extends \advanced_testcase {
         $cm = get_coursemodule_from_id('subsection', $module->cmid, 0, false, MUST_EXIST);
         $manager = manager::create_from_coursemodule($cm);
         $sectioninfo = $manager->get_delegated_section_info();
-        $this->assertInstanceOf(\section_info::class, $sectioninfo);
+        $this->assertInstanceOf(section_info::class, $sectioninfo);
         $this->assertEquals($cm->instance, $sectioninfo->itemid);
         $this->assertEquals($cm->name, $sectioninfo->name);
         $this->assertEquals($cm->visible, $sectioninfo->visible);
@@ -150,7 +153,7 @@ final class manager_test extends \advanced_testcase {
         $filerecord = [
             'component' => 'course',
             'filearea' => 'section',
-            'contextid' => \context_course::instance($course->id)->id,
+            'contextid' => course::instance($course->id)->id,
             'itemid' => $subsection1->id,
             'filename' => 'intro1.txt',
             'filepath' => '/',
@@ -170,7 +173,7 @@ final class manager_test extends \advanced_testcase {
         $filerecord = [
             'component' => 'course',
             'filearea' => 'section',
-            'contextid' => \context_course::instance($course->id)->id,
+            'contextid' => course::instance($course->id)->id,
             'itemid' => $subsection2->id,
             'filename' => 'intro2.txt',
             'filepath' => '/',

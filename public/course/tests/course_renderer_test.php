@@ -16,8 +16,8 @@
 
 namespace core_course;
 
-use context_course;
-use moodle_url;
+use core\context\course;
+use core\url;
 
 /**
  * Tests for the \core_course_renderer class.
@@ -72,13 +72,13 @@ final class course_renderer_test extends \advanced_testcase {
         $isguestuser ? $this->setGuestUser() : $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $PAGE->set_context($context);
         $PAGE->set_course($course);
 
         /** @var \core_course_renderer $renderer */
         $renderer = $PAGE->get_renderer('core', 'course');
-        $returnurl = new moodle_url('/course/view.php', ['id' => $course->id]);
+        $returnurl = new url('/course/view.php', ['id' => $course->id]);
 
         $output = $renderer->enrolment_options($course, $forms, $returnurl);
 

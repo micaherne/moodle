@@ -21,7 +21,7 @@ use core_reportbuilder\local\filters\date;
 use core_reportbuilder\local\helpers\format;
 use core_reportbuilder\local\report\column;
 use core_reportbuilder\local\report\filter;
-use lang_string;
+use core\lang_string;
 
 /**
  * AI policy register entity.

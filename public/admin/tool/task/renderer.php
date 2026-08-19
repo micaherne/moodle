@@ -25,7 +25,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\plugin_renderer_base;
+use core\plugin_manager;
 use core\task\scheduled_task;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
 
 
 /**
@@ -77,7 +85,7 @@ class tool_task_renderer extends plugin_renderer_base {
                 // Task class cell.
                 $classbits = explode('\\',  $classname);
                 $classcontent = html_writer::link(
-                    new moodle_url($adhocurl, ['classname' => $classname]),
+                    new url($adhocurl, ['classname' => $classname]),
                     end($classbits)
                 );
                 $classcell = new html_table_cell($classcontent);
@@ -88,7 +96,7 @@ class tool_task_renderer extends plugin_renderer_base {
                 if ($canruntasks && ($stats['due'] > 0 || $stats['failed'] > 0)) {
                     $duecontent .= html_writer::div(
                         html_writer::link(
-                            new moodle_url(
+                            new url(
                                 $adhocrunurl,
                                 ['classname' => $classname]
                             ),
@@ -98,7 +106,7 @@ class tool_task_renderer extends plugin_renderer_base {
                     );
                     $duecontent .= html_writer::div(
                         html_writer::link(
-                            new moodle_url(
+                            new url(
                                 $adhocrunurl,
                                 ['classname' => $classname, 'dueonly' => 1]
                             ),
@@ -113,7 +121,7 @@ class tool_task_renderer extends plugin_renderer_base {
                 if ($canruntasks && $failed > 0) {
                     $failed .= html_writer::div(
                         html_writer::link(
-                            new moodle_url(
+                            new url(
                                 $adhocrunurl,
                                 ['classname' => $classname, 'failedonly' => 1]
                             ),
@@ -168,7 +176,7 @@ class tool_task_renderer extends plugin_renderer_base {
 
         // Depending on the currently set parameters, set up toggle buttons.
         $failedorall = html_writer::link(
-            new moodle_url(
+            new url(
                 $adhocurl,
                 array_merge($params, ['classname' => $classname, 'failedonly' => !$failedonly])
             ),
@@ -204,7 +212,7 @@ class tool_task_renderer extends plugin_renderer_base {
         if ($canruntasks) {
             $output .= html_writer::div(
                 html_writer::link(
-                    new moodle_url(
+                    new url(
                         $adhocrunurl,
                         array_merge($params, ['classname' => $classname])
                     ),
@@ -217,7 +225,7 @@ class tool_task_renderer extends plugin_renderer_base {
         return $output
             . html_writer::div(
                 html_writer::link(
-                    new moodle_url(
+                    new url(
                         $adhocurl
                     ),
                     get_string('showsummary', 'tool_task')
@@ -299,7 +307,7 @@ class tool_task_renderer extends plugin_renderer_base {
                 if ($wantruntasks && ($faildelay || $due)) {
                     $nextrun .= ' '.html_writer::div(
                         html_writer::link(
-                            new moodle_url(
+                            new url(
                                 $adhocrunurl,
                                 ['id' => $taskid]
                             ),
@@ -320,7 +328,7 @@ class tool_task_renderer extends plugin_renderer_base {
 
             // Add delete link with modal trigger.
             $deletelink = html_writer::link(
-                new moodle_url($adhocdeleteurl, ['taskid' => $taskid, 'sesskey' => sesskey()]),
+                new url($adhocdeleteurl, ['taskid' => $taskid, 'sesskey' => sesskey()]),
                 get_string('delete'),
                 [
                     'class' => 'btn btn-danger',
@@ -406,7 +414,7 @@ class tool_task_renderer extends plugin_renderer_base {
 
             $customised = $task->is_customised() ? $no : $yes;
             if (empty($CFG->preventscheduledtaskchanges) && !$task->is_overridden()) {
-                $configureurl = new moodle_url('/admin/tool/task/scheduledtasks.php',
+                $configureurl = new url('/admin/tool/task/scheduledtasks.php',
                         ['action' => 'edit', 'task' => $classname]);
                 $editlink = $this->output->action_icon($configureurl, new pix_icon('t/edit',
                         get_string('edittaskschedule', 'tool_task', $task->get_name())));
@@ -438,7 +446,7 @@ class tool_task_renderer extends plugin_renderer_base {
             if ($canrunthistask) {
                 $runnow .= html_writer::div(
                     html_writer::link(
-                        new moodle_url('/admin/tool/task/schedule_task.php', [
+                        new url('/admin/tool/task/schedule_task.php', [
                             'task' => $classname,
                             'confirm' => 1,
                             'sesskey' => sesskey(),
@@ -460,7 +468,7 @@ class tool_task_renderer extends plugin_renderer_base {
                 if ($nextruntime > time() && $task->is_enabled()) {
                     $runnow .= html_writer::div(
                         html_writer::link(
-                            new moodle_url('/admin/tool/task/schedule_task.php', [
+                            new url('/admin/tool/task/schedule_task.php', [
                                 'task' => $classname,
                                 'action' => 'asap',
                                 'confirm' => 1,
@@ -485,7 +493,7 @@ class tool_task_renderer extends plugin_renderer_base {
                 $faildelaycell = new html_table_cell(format_time($faildelay));
                 $faildelaycell->text .= html_writer::div(
                     $this->output->single_button(
-                        new moodle_url('/admin/tool/task/clear_fail_delay.php',
+                        new url('/admin/tool/task/clear_fail_delay.php',
                                 ['task' => $classname]),
                         get_string('clear')
                     ),
@@ -543,7 +551,7 @@ class tool_task_renderer extends plugin_renderer_base {
             return get_string('corecomponent', 'tool_task');
         }
 
-        $plugininfo = core_plugin_manager::instance()->get_plugin_info($component);
+        $plugininfo = plugin_manager::instance()->get_plugin_info($component);
         if (!$plugininfo) {
             return $component;
         }
@@ -647,7 +655,7 @@ class tool_task_renderer extends plugin_renderer_base {
      * @return string HTML code
      */
     public function link_back($taskclassname = '') {
-        $url = new moodle_url('/admin/tool/task/scheduledtasks.php');
+        $url = new url('/admin/tool/task/scheduledtasks.php');
         if ($taskclassname) {
             $url->param('lastchanged', $taskclassname);
         }

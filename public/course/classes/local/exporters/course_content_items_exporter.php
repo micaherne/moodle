@@ -27,6 +27,7 @@ namespace core_course\local\exporters;
 defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
+use core\output\renderer_base;
 use core_course\local\entity\content_item;
 
 /**
@@ -72,7 +73,7 @@ class course_content_items_exporter extends exporter {
      * @param \renderer_base $output
      * @return array the array of course content_items
      */
-    protected function get_other_values(\renderer_base $output) {
+    protected function get_other_values(renderer_base $output) {
 
         $contentitemexport = function(content_item $contentitem) use ($output) {
             $exporter = new course_content_item_exporter(

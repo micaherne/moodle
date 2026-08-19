@@ -32,6 +32,9 @@
  * @copyright 2010 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\coding_exception;
+use core\url;
+
 abstract class base_ui {
     /**
      * The progress of this instance of the backup ui class
@@ -274,9 +277,9 @@ abstract class base_ui {
         global $PAGE;
         // Determine the appropriate URL to redirect the user to.
         if ($PAGE->context->contextlevel == CONTEXT_MODULE && $PAGE->cm !== null) {
-            $relevanturl = new moodle_url('/mod/'.$PAGE->cm->modname.'/view.php', array('id' => $PAGE->cm->id));
+            $relevanturl = new url('/mod/'.$PAGE->cm->modname.'/view.php', array('id' => $PAGE->cm->id));
         } else {
-            $relevanturl = new moodle_url('/course/view.php', array('id' => $PAGE->course->id));
+            $relevanturl = new url('/course/view.php', array('id' => $PAGE->course->id));
         }
         redirect($relevanturl);
     }

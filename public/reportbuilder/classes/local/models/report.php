@@ -18,8 +18,8 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\models;
 
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 use core\persistent;
 use core_reportbuilder\event\report_created;
 use core_reportbuilder\event\report_deleted;
@@ -77,7 +77,7 @@ class report extends persistent {
             'contextid' => [
                 'type' => PARAM_INT,
                 'default' => static function(): int {
-                    return context_system::instance()->id;
+                    return system::instance()->id;
                 }
             ],
             'component' => [

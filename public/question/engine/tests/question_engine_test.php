@@ -26,7 +26,7 @@
 namespace core_question;
 
 use advanced_testcase;
-use moodle_exception;
+use core\exception\moodle_exception;
 use question_engine;
 
 /**

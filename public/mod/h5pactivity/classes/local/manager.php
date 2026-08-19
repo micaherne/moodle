@@ -28,10 +28,10 @@ namespace mod_h5pactivity\local;
 use mod_h5pactivity\local\report\participants;
 use mod_h5pactivity\local\report\attempts;
 use mod_h5pactivity\local\report\results;
-use context_module;
-use cm_info;
+use core\context\module;
+use core_course\cm_info;
 use moodle_recordset;
-use core_user;
+use core\user;
 use stdClass;
 use core\dml\sql_join;
 use mod_h5pactivity\event\course_module_viewed;
@@ -85,7 +85,7 @@ class manager {
     public function __construct(cm_info $coursemodule, stdClass $instance) {
         $this->coursemodule = $coursemodule;
         $this->instance = $instance;
-        $this->context = context_module::instance($coursemodule->id);
+        $this->context = module::instance($coursemodule->id);
         $this->instance->cmidnumber = $coursemodule->idnumber;
     }
 
@@ -438,7 +438,7 @@ class manager {
      *
      * @return context_module
      */
-    public function get_context(): context_module {
+    public function get_context(): module {
         return $this->context;
     }
 
@@ -502,7 +502,7 @@ class manager {
         }
 
         if ($this->can_view_all_attempts()) {
-            $user = core_user::get_user($userid);
+            $user = user::get_user($userid);
 
             // Ensure user can view the attempt of specific userid, respecting access checks.
             if ($user && $user->id != $USER->id) {
@@ -512,7 +512,7 @@ class manager {
                 }
             }
         } else if ($this->can_view_own_attempts()) {
-            $user = core_user::get_user($USER->id);
+            $user = user::get_user($USER->id);
             if ($userid && $user->id != $userid) {
                 return null;
             }

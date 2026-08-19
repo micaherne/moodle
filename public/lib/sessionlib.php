@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -82,7 +84,7 @@ function confirm_sesskey($sesskey=NULL) {
  */
 function require_sesskey() {
     if (!confirm_sesskey()) {
-        throw new \moodle_exception('invalidsesskey');
+        throw new moodle_exception('invalidsesskey');
     }
 }
 
@@ -171,7 +173,7 @@ function get_moodle_cookie() {
             $username = '';
         }
         return $username;
-    } catch (\moodle_exception $ex) {
+    } catch (moodle_exception $ex) {
         return '';
     }
 }

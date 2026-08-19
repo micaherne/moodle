@@ -24,7 +24,7 @@ namespace block_recentlyaccesseditems\output;
 
 defined('MOODLE_INTERNAL') || die;
 
-use plugin_renderer_base;
+use core\output\plugin_renderer_base;
 
 /**
  * Recently accessed items block renderer

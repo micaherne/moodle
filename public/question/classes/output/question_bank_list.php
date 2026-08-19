@@ -16,10 +16,14 @@
 
 namespace core_question\output;
 
-use action_link;
+use core\output\action_link;
+use core\output\action_menu;
 use core\output\pix_icon;
+use core\output\renderable;
+use core\output\templatable;
+use core\url;
 use core_question\local\bank\formatted_bank;
-use renderer_base;
+use core\output\renderer_base;
 use core_courseformat\output\local\content\cm\controlmenu;
 use core_question\local\bank\question_bank_helper;
 
@@ -31,7 +35,7 @@ use core_question\local\bank\question_bank_helper;
  * @author     Simon Adams <simon.adams@catalyst-eu.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class question_bank_list implements \renderable, \templatable {
+class question_bank_list implements renderable, templatable {
     /**
      * Instantiate the output class.
      *
@@ -59,7 +63,7 @@ class question_bank_list implements \renderable, \templatable {
                 $controlmenu = new controlmenu($format, $instance->cminfo->get_section_info(), $instance->cminfo);
                 $controlmenu->set_baseurl($returnurl);
                 $actions = $controlmenu->get_cm_control_items();
-                $actionmenu = new \action_menu();
+                $actionmenu = new action_menu();
                 $actionmenu->set_kebab_trigger(get_string('edit'));
                 $actionmenu->add_secondary_action($actions['update']);
                 $actionmenu->add_secondary_action($actions['assign']);
@@ -70,7 +74,7 @@ class question_bank_list implements \renderable, \templatable {
             }
 
             $managequestions = new action_link(
-                new \moodle_url("/mod/{$instance->cminfo->modname}/view.php", [
+                new url("/mod/{$instance->cminfo->modname}/view.php", [
                     'id' => $instance->cminfo->id,
                 ]),
                 $instance->name,

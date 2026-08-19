@@ -29,6 +29,7 @@ require_once($CFG->dirroot.'/mod/lti/OAuthBody.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
+use core\exception\coding_exception;
 use moodle\mod\lti as lti;
 
 define('LTI_ITEM_TYPE', 'mod');

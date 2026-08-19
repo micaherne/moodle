@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require_once($CFG->dirroot .'/user/filters/lib.php');
 
 /**
@@ -46,7 +48,7 @@ class user_filter_courserole extends user_filter_type {
      * @return array of availble roles
      */
     public function get_roles() {
-        $context = context_system::instance();
+        $context = system::instance();
         $roles = array(0 => get_string('anyrole', 'filters')) + get_default_enrol_roles($context);
         return $roles;
     }

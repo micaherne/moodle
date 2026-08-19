@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context;
+use core\context\coursecat;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
 use core_external\external_api;
 use core_external\external_format_value;
 use core_external\external_function_parameters;
@@ -91,7 +98,7 @@ class core_cohort_external extends external_api {
 
         $transaction = $DB->start_delegated_transaction();
 
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $cohortids = array();
 
         foreach ($params['cohorts'] as $cohort) {
@@ -105,7 +112,7 @@ class core_cohort_external extends external_api {
             if ($categorytype['type'] === 'system') {
                 $cohort->contextid = $syscontext->id;
             } else if ($catid = $DB->get_field('course_categories', 'id', array($categorytype['type'] => $categorytype['value']))) {
-                $catcontext = context_coursecat::instance($catid);
+                $catcontext = coursecat::instance($catid);
                 $cohort->contextid = $catcontext->id;
             } else {
                 throw new invalid_parameter_exception('category not exists: category '
@@ -405,12 +412,12 @@ class core_cohort_external extends external_api {
         } else if ($includes == 'parents') {
             $results = cohort_get_cohorts($context->id, $limitfrom, $limitnum, $query);
             $results = $results['cohorts'];
-            if (!$context instanceof context_system) {
+            if (!$context instanceof system) {
                 $results = $results + cohort_get_available_cohorts($context, COHORT_ALL, $limitfrom, $limitnum, $query);
             }
         } else if ($includes == 'all') {
-            $contextsystem = context_system::instance();
-            if (!$context instanceof context_system &&
+            $contextsystem = system::instance();
+            if (!$context instanceof system &&
                     !has_any_capability(['moodle/cohort:view', 'moodle/cohort:manage'], $contextsystem)) {
 
                 throw new required_capability_exception($contextsystem, 'moodle/cohort:view', 'nopermissions', '');
@@ -535,7 +542,7 @@ class core_cohort_external extends external_api {
         $availablethemes = cohort_get_list_of_themes();
 
         $transaction = $DB->start_delegated_transaction();
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
 
         foreach ($params['cohorts'] as $cohort) {
             $cohort = (object) $cohort;

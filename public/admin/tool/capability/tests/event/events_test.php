@@ -24,6 +24,9 @@
 
 namespace tool_capability\event;
 
+use core\context\system;
+use core\url;
+
 /**
  * Class for capability overview events.
  *
@@ -55,9 +58,9 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         $this->assertInstanceOf('\tool_capability\event\report_viewed', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $url = new \moodle_url('/admin/tool/capability/index.php');
+        $url = new url('/admin/tool/capability/index.php');
         $this->assertEquals($url, $event->get_url());
         $event->get_name();
     }

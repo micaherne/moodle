@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -36,7 +38,7 @@ function xmldb_assignfeedback_editpdf_install() {
     // Stamp file object.
     $filerecord = new stdClass;
     $filerecord->component = 'assignfeedback_editpdf';
-    $filerecord->contextid = context_system::instance()->id;
+    $filerecord->contextid = system::instance()->id;
     $filerecord->userid    = get_admin()->id;
     $filerecord->filearea  = 'stamps';
     $filerecord->filepath  = '/';

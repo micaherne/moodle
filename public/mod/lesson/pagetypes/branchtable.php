@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
+
 defined('MOODLE_INTERNAL') || die();
 
  /** Branch Table page */
@@ -84,7 +90,7 @@ class lesson_page_type_branchtable extends lesson_page {
 
         if (!$firstpage) {
             if (!$apageid = $DB->get_field("lesson_pages", "id", array("lessonid" => $lesson->id, "prevpageid" => 0))) {
-                throw new \moodle_exception('cannotfindfirstpage', 'lesson');
+                throw new moodle_exception('cannotfindfirstpage', 'lesson');
             }
             while (true) {
                 if ($apageid) {
@@ -131,7 +137,7 @@ class lesson_page_type_branchtable extends lesson_page {
             $params['pageid'] = $this->properties->id;
             $params['sesskey'] = sesskey();
             $params['jumpto'] = $answer->jumpto;
-            $url = new moodle_url('/mod/lesson/continue.php', $params);
+            $url = new url('/mod/lesson/continue.php', $params);
             $buttons[] = $renderer->single_button($url, strip_tags(format_text($answer->answer, FORMAT_MOODLE, $options)));
             $i++;
         }
@@ -149,7 +155,7 @@ class lesson_page_type_branchtable extends lesson_page {
 
         // Trigger an event: content page viewed.
         $eventparams = array(
-            'context' => context_module::instance($PAGE->cm->id),
+            'context' => module::instance($PAGE->cm->id),
             'objectid' => $this->properties->id
             );
 
@@ -190,7 +196,7 @@ class lesson_page_type_branchtable extends lesson_page {
         $branch->id = $DB->insert_record("lesson_branch", $branch);
 
         //  this is called when jumping to random from a branch table
-        $context = context_module::instance($PAGE->cm->id);
+        $context = module::instance($PAGE->cm->id);
         if($newpageid == LESSON_UNSEENBRANCHPAGE) {
             if (has_capability('mod/lesson:manage', $context)) {
                  $newpageid = LESSON_NEXTPAGE;
@@ -283,7 +289,7 @@ class lesson_page_type_branchtable extends lesson_page {
     }
     public function add_page_link($previd) {
         global $PAGE, $CFG;
-        $addurl = new moodle_url('/mod/lesson/editpage.php', array('id'=>$PAGE->cm->id, 'pageid'=>$previd, 'qtype'=>LESSON_PAGE_BRANCHTABLE));
+        $addurl = new url('/mod/lesson/editpage.php', array('id'=>$PAGE->cm->id, 'pageid'=>$previd, 'qtype'=>LESSON_PAGE_BRANCHTABLE));
         return array('addurl'=>$addurl, 'type'=>LESSON_PAGE_BRANCHTABLE, 'name'=>get_string('addabranchtable', 'lesson'));
     }
     protected function get_displayinmenublock() {

@@ -25,12 +25,14 @@
 
 namespace core_question\output;
 
-use cm_info;
+use core\output\renderable;
+use core\output\templatable;
+use core_course\cm_info;
 use core\attribute\deprecated;
 use core\deprecation;
 use core_question\local\bank\formatted_bank;
 use core_question\local\bank\question_bank_helper;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Get the switch question bank rendered content. Displays lists of shared banks the viewing user has access to.
@@ -41,7 +43,7 @@ use renderer_base;
     reason: 'Bank switching interface is now rendered client-side.',
     mdl: 'MDL-87264',
 )]
-class switch_question_bank implements \renderable, \templatable {
+class switch_question_bank implements renderable, templatable {
 
     /**
      * Instantiate the output class.

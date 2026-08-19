@@ -27,6 +27,8 @@
  * @copyright  2003 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+
 class edit_table_save extends XMLDBAction {
 
     /**
@@ -67,7 +69,7 @@ class edit_table_save extends XMLDBAction {
         // Do the job, setting result as needed
 
         if (!data_submitted()) { // Basic prevention
-            throw new \moodle_exception('wrongcall', 'error');
+            throw new moodle_exception('wrongcall', 'error');
         }
 
         // Get parameters

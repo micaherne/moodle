@@ -16,6 +16,8 @@
 
 namespace core_analytics;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/fixtures/test_indicator_max.php');
@@ -72,7 +74,7 @@ final class indicator_test extends \advanced_testcase {
             ->onlyMethods(['calculate_sample'])
             ->getMock();
         $indicatormock->method('calculate_sample')->willReturn($willreturn);
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         list($values, $unused) = $indicatormock->calculate([1], 'notrelevanthere');
 
     }

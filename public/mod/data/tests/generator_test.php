@@ -16,6 +16,7 @@
 
 namespace mod_data;
 
+use core\context\module;
 use stdClass;
 
 /**
@@ -55,7 +56,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals('data', $cm->modname);
         $this->assertEquals($course->id, $cm->course);
 
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertEquals($data->cmid, $context->instanceid);
 
         // Test gradebook integration using low level DB access - DO NOT USE IN PLUGIN CODE!
@@ -98,7 +99,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals('data', $cm->modname);
         $this->assertEquals($course->id, $cm->course);
 
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertEquals($data->cmid, $context->instanceid);
 
         $fieldtypes = ['checkbox', 'date', 'menu', 'multimenu', 'number', 'radiobutton', 'text', 'textarea', 'url'];
@@ -153,7 +154,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals('data', $cm->modname);
         $this->assertEquals($course->id, $cm->course);
 
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertEquals($data->cmid, $context->instanceid);
 
         $fieldtypes = ['checkbox', 'date', 'menu', 'multimenu', 'number', 'radiobutton', 'text', 'textarea', 'url',

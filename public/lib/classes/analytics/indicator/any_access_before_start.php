@@ -24,6 +24,9 @@
 
 namespace core\analytics\indicator;
 
+use core\exception\coding_exception;
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -42,8 +45,8 @@ class any_access_before_start extends \core_analytics\local\indicator\binary {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('indicator:accessesbeforestart');
+    public static function get_name(): lang_string {
+        return new lang_string('indicator:accessesbeforestart');
     }
 
     /**
@@ -71,7 +74,7 @@ class any_access_before_start extends \core_analytics\local\indicator\binary {
         $course = \core_analytics\course::instance($this->retrieve('course', $sampleid));
 
         if (!$logstore = \core_analytics\manager::get_analytics_logstore()) {
-            throw new \coding_exception('No available log stores');
+            throw new coding_exception('No available log stores');
         }
 
         // Filter by context to use the logstore_standard_log db table index.

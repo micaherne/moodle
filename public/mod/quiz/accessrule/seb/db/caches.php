@@ -23,23 +23,25 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 $definitions = [
     'quizsettings' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
     ],
     'config' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
     ],
     'configkey' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,

@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__.'/lib.php');
@@ -47,7 +49,7 @@ function booktool_exportimscp_build_package($book, $context) {
 
     // fix structure and test if chapters present
     if (!book_preload_chapters($book)) {
-        throw new \moodle_exception('nochapters', 'booktool_exportimscp');
+        throw new moodle_exception('nochapters', 'booktool_exportimscp');
     }
 
     // prepare temp area with package contents

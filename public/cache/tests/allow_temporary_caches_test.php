@@ -72,7 +72,7 @@ final class allow_temporary_caches_test extends \advanced_testcase {
         \cache_phpunit_factory::phpunit_disable();
         try {
             // Try using the cache now - it returns false/null for everything.
-            $cache = \cache::make('core', 'coursemodinfo');
+            $cache = cache::make('core', 'coursemodinfo');
             $cache->set('frog', 'ribbit');
             $this->assertFalse($cache->get('frog'));
             $cache->set_versioned('toad', 2, 'croak');
@@ -80,7 +80,7 @@ final class allow_temporary_caches_test extends \advanced_testcase {
 
             // But when we allow temporary caches, it should work as normal.
             $allow = new allow_temporary_caches();
-            $cache = \cache::make('core', 'coursemodinfo');
+            $cache = cache::make('core', 'coursemodinfo');
             $cache->set('frog', 'ribbit');
             $this->assertEquals('ribbit', $cache->get('frog'));
             $cache->set_versioned('toad', 2, 'croak');

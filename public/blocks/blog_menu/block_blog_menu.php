@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -97,10 +101,10 @@ class block_blog_menu extends block_base {
         $this->content->text = html_writer::alist($menulist, array('class'=>'list'));
 
         // Prepare the footer for this block
-        if (has_capability('moodle/blog:search', context_system::instance())) {
+        if (has_capability('moodle/blog:search', system::instance())) {
 
             $data = [
-                'action' => new moodle_url('/blog/index.php'),
+                'action' => new url('/blog/index.php'),
                 'inputname' => 'search',
                 'searchstring' => get_string('search', 'admin'),
                 'extraclasses' => 'mt-3'

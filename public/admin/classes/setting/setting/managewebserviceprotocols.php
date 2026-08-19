@@ -16,7 +16,9 @@
 
 namespace core_admin\setting\setting;
 
+use core\output\html_writer;
 use core_admin\admin_search;
+use core_table\output\html_table;
 
 /**
  * Web service protocol administration.
@@ -109,7 +111,7 @@ class managewebserviceprotocols extends \core_admin\setting {
         }
         $return .= $OUTPUT->box_start('generalbox webservicesui');
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [$strprotocol, $strversion, $strenable, $strsettings];
         $table->colclasses = ['leftalign', 'centeralign', 'centeralign', 'centeralign', 'centeralign'];
         $table->id = 'webserviceprotocols';
@@ -148,7 +150,7 @@ class managewebserviceprotocols extends \core_admin\setting {
             // Add a row to the table.
             $table->data[] = [$displayname, $version, $hideshow, $settings];
         }
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
         $return .= get_string('configwebserviceplugins', 'webservice');
         $return .= $OUTPUT->box_end();
 

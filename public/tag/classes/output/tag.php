@@ -16,9 +16,10 @@
 
 namespace core_tag\output;
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\context\system;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
 use core_tag_tag;
 
@@ -73,7 +74,7 @@ class tag implements renderable, templatable {
         [$r->description, $r->descriptionformat] = \core_external\util::format_text(
             $this->record->description,
             $this->record->descriptionformat,
-            \context_system::instance(),
+            system::instance(),
             'tag',
             'description',
             $r->id,

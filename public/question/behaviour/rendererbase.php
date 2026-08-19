@@ -24,6 +24,11 @@
  */
 
 
+use core\output\actions\popup_action;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -192,7 +197,7 @@ abstract class qbehaviour_renderer extends plugin_renderer_base {
                     $qa->get_behaviour(false)->format_comment(null, null, $options->context));
         }
         if ($options->manualcommentlink) {
-            $url = new moodle_url($options->manualcommentlink, array('slot' => $qa->get_slot()));
+            $url = new url($options->manualcommentlink, array('slot' => $qa->get_slot()));
             $link = $this->output->action_link($url, get_string('commentormark', 'question'),
                     new popup_action('click', $url, 'commentquestion',
                     array('width' => 600, 'height' => 800)));

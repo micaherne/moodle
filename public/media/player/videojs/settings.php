@@ -22,35 +22,40 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\filetypes;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
 
-    $settings->add(new admin_setting_filetypes('media_videojs/videoextensions',
+    $settings->add(new filetypes('media_videojs/videoextensions',
         new lang_string('videoextensions', 'media_videojs'),
         new lang_string('configvideoextensions', 'media_videojs'),
         'html_video,media_source,.f4v,.flv',
         array('onlytypes' => array('video', 'web_video', 'html_video', 'media_source'))));
 
-    $settings->add(new admin_setting_filetypes('media_videojs/audioextensions',
+    $settings->add(new filetypes('media_videojs/audioextensions',
         new lang_string('audioextensions', 'media_videojs'),
         new lang_string('configaudioextensions', 'media_videojs'),
         'html_audio',
         array('onlytypes' => array('audio', 'web_audio', 'html_audio'))));
 
-    $settings->add(new admin_setting_configcheckbox('media_videojs/youtube',
+    $settings->add(new configcheckbox('media_videojs/youtube',
         new lang_string('youtube', 'media_videojs'),
         new lang_string('configyoutube', 'media_videojs'), 1));
 
-    $settings->add(new admin_setting_configtext('media_videojs/videocssclass',
+    $settings->add(new configtext('media_videojs/videocssclass',
         new lang_string('videocssclass', 'media_videojs'),
         new lang_string('configvideocssclass', 'media_videojs'), 'video-js'));
 
-    $settings->add(new admin_setting_configtext('media_videojs/audiocssclass',
+    $settings->add(new configtext('media_videojs/audiocssclass',
         new lang_string('audiocssclass', 'media_videojs'),
         new lang_string('configaudiocssclass', 'media_videojs'), 'video-js'));
 
-    $settings->add(new admin_setting_configcheckbox('media_videojs/limitsize',
+    $settings->add(new configcheckbox('media_videojs/limitsize',
         new lang_string('limitsize', 'media_videojs'),
         new lang_string('configlimitsize', 'media_videojs'), 1));
 }

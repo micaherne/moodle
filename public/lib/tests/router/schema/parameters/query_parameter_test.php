@@ -16,6 +16,7 @@
 
 namespace core\router\schema\parameters;
 
+use core\exception\coding_exception;
 use core\param;
 use core\router\route;
 use core\router\schema\referenced_object;
@@ -310,7 +311,7 @@ final class query_parameter_test extends route_testcase {
 
         $request = new ServerRequest('GET', '/example');
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $param->validate($request, $request->getQueryParams());
     }
 }

@@ -22,6 +22,11 @@
  * @package mod_feedback
  */
 
+use core\context\module;
+use core\navigation\navigation_node;
+use core\output\action_link;
+use core\output\html_writer;
+use core\url;
 use mod_feedback\manager;
 
 require_once("../../config.php");
@@ -42,10 +47,10 @@ $courseid = optional_param('courseid', null, PARAM_INT);
 
 list($course, $cm) = get_course_and_cm_from_cmid($id, 'feedback');
 
-$baseurl = new moodle_url('/mod/feedback/show_entries.php', array('id' => $cm->id));
-$PAGE->set_url(new moodle_url($baseurl, array('userid' => $userid, 'showcompleted' => $showcompleted,
+$baseurl = new url('/mod/feedback/show_entries.php', array('id' => $cm->id));
+$PAGE->set_url(new url($baseurl, array('userid' => $userid, 'showcompleted' => $showcompleted,
         'delete' => $deleteid)));
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 require_login($course, true, $cm);
 $feedback = $PAGE->activityrecord;
@@ -82,7 +87,7 @@ if ($anonresponsestable->is_downloading()) {
 // Process course select form.
 $courseselectform = new mod_feedback_course_select_form($baseurl, $feedbackstructure, $feedback->course == SITEID);
 if ($data = $courseselectform->get_data()) {
-    redirect(new moodle_url($baseurl, ['courseid' => $data->courseid]));
+    redirect(new url($baseurl, ['courseid' => $data->courseid]));
 }
 // Print the page header.
 navigation_node::override_active_url($baseurl);

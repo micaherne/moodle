@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\context;
+use core\exception\coding_exception;
+
 /**
  * Content bank content deleted class.
  *
@@ -60,7 +63,7 @@ class contentbank_content_deleted extends base {
         $event = self::create([
             'objectid' => $record->id,
             'relateduserid' => $record->usercreated,
-            'context' => \context::instance_by_id($record->contextid),
+            'context' => context::instance_by_id($record->contextid),
             'other' => [
                 'contenttype' => $record->contenttype,
                 'name' => $record->name
@@ -97,11 +100,11 @@ class contentbank_content_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->other['contenttype'])) {
-            throw new \coding_exception('The \'contenttype\' value must be set in other.');
+            throw new coding_exception('The \'contenttype\' value must be set in other.');
         }
 
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
     }
 

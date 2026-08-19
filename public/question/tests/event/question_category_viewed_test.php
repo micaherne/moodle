@@ -16,7 +16,7 @@
 
 namespace core_question\event;
 
-use context_module;
+use core\context\module;
 
 /**
  * Unit tests for question_category_viewed
@@ -39,7 +39,7 @@ final class question_category_viewed_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $quiz = $generator->get_plugin_generator('mod_quiz')->create_instance(['course' => $course->id]);
-        $context = context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         // Create the category.
         $category = $questiongenerator->create_question_category([

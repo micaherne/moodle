@@ -16,6 +16,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\plugin_manager;
 use core_adminpresets\local\setting\adminpresets_setting;
 use core_adminpresets\manager;
 use core_adminpresets\helper;
@@ -177,7 +178,7 @@ class core_adminpresets_generator extends \component_generator_base {
         global $DB;
 
         // Change plugin visibility.
-        $pluginclass = \core_plugin_manager::resolve_plugininfo_class($plugin);
+        $pluginclass = plugin_manager::resolve_plugininfo_class($plugin);
         $pluginclass::enable_plugin($name, $newvalue);
 
         // Create entry in applied plugins table.

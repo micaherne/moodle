@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Tests for ags_info.
  *
@@ -62,8 +65,8 @@ final class ags_info_test extends \advanced_testcase {
         return [
             'Both lineitems and lineitem URL provided with full list of valid scopes' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly',
@@ -83,8 +86,8 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Both lineitems and lineitem URL provided with lineitem scopes only' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly',
@@ -102,8 +105,8 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Both lineitems and lineitem URL provided with score scope only' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/score'
                     ]
@@ -117,8 +120,8 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Both lineitems and lineitem URL provided with result scope only' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly'
                     ]
@@ -132,8 +135,8 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Both lineitems and lineitem URL provided with no scopes' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scopes' => []
                 ],
                 'expectations' => [
@@ -145,7 +148,7 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Just lineitems URL, no lineitem URL, with full list of valid scopes' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
                     'lineitemurl' => null,
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
@@ -166,7 +169,7 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Just lineitems URL, no lineitem URL, with lineitems scopes only' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
                     'lineitemurl' => null,
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
@@ -185,7 +188,7 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Just lineitems URL, no lineitem URL, with score scope only' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
                     'lineitemurl' => null,
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/score'
@@ -200,7 +203,7 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Just lineitems URL, no lineitem URL, with result scope only' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
                     'lineitemurl' => null,
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly'
@@ -215,7 +218,7 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Just lineitems URL, no lineitem URL, with no scopes' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
                     'lineitemurl' => null,
                     'scopes' => []
                 ],
@@ -228,8 +231,8 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Both lineitems and lineitem URL provided with non-string scope' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly',
@@ -240,14 +243,14 @@ final class ags_info_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => 'Scope must be a string value'
                 ]
             ],
             'Both lineitems and lineitem URL provided with unsupported scopes' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly',
@@ -274,22 +277,22 @@ final class ags_info_test extends \advanced_testcase {
             ],
             'Both lineitems and lineitem URL provided with invalid scope types' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scopes' => [
                         12
                     ]
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Scope must be a string value"
                 ]
             ],
             'Claim contains a single lineitem URL only with valid scopes' => [
                 'args' => [
                     'lineitemsurl' => null,
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scopes' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/score'
                     ]
@@ -311,7 +314,7 @@ final class ags_info_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Missing lineitem or lineitems URL"
                 ]
             ],

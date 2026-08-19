@@ -20,8 +20,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-use context_course;
-use context_system;
+use core\context;
+use core\context\course;
+use core\context\system;
 
 require_once($CFG->dirroot . '/user/selector/lib.php');
 
@@ -42,7 +43,7 @@ abstract class award_selector_base extends \user_selector_base {
     /**
      * @var \context|null The context of the badge this selector is being used for.
      */
-    protected ?\context $context = null;
+    protected ?context $context = null;
 
     /**
      * @var int|null The id of the role of badge issuer in current context.
@@ -76,9 +77,9 @@ abstract class award_selector_base extends \user_selector_base {
         parent::__construct($name, $options);
 
         if (isset($options['context'])) {
-            if ($options['context'] instanceof context_system) {
+            if ($options['context'] instanceof system) {
                 // If it is a site badge, we need to get context of frontpage.
-                $this->context = context_course::instance(SITEID);
+                $this->context = course::instance(SITEID);
             } else {
                 $this->context = $options['context'];
             }

@@ -23,6 +23,8 @@
  */
 namespace core\task;
 
+use core_cache\helper;
+
 /**
  * Simple task to run the cache cron.
  */
@@ -42,7 +44,7 @@ class cache_cron_task extends scheduled_task {
      * Throw exceptions on errors (the job will be retried).
      */
     public function execute() {
-        \cache_helper::cron();
+        helper::cron();
     }
 
 }

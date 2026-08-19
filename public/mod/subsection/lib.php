@@ -22,6 +22,8 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_course\cached_cm_info;
+use core_course\cm_info;
 use core_courseformat\formatactions;
 use mod_subsection\manager;
 

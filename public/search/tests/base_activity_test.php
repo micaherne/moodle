@@ -16,6 +16,14 @@
 
 namespace core_search;
 
+use core\context\block;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -68,28 +76,28 @@ final class base_activity_test extends \advanced_testcase {
         // Create course and 2 forums.
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        $this->contexts['c1'] = \context_course::instance($course->id);
+        $this->contexts['c1'] = course::instance($course->id);
         $this->forums[1] = $generator->create_module('forum', ['course' => $course->id, 'name' => 'Forum 1',
                 'intro' => '<p>Intro 1</p>', 'introformat' => FORMAT_HTML]);
-        $this->contexts['f1'] = \context_module::instance($this->forums[1]->cmid);
+        $this->contexts['f1'] = module::instance($this->forums[1]->cmid);
         $this->forums[2] = $generator->create_module('forum', ['course' => $course->id, 'name' => 'Forum 2',
                 'intro' => '<p>Intro 2</p>', 'introformat' => FORMAT_HTML]);
-        $this->contexts['f2'] = \context_module::instance($this->forums[2]->cmid);
+        $this->contexts['f2'] = module::instance($this->forums[2]->cmid);
 
         // Create another 2 courses (in same category and in a new category) with one forum each.
-        $this->contexts['cc1']  = \context_coursecat::instance($course->category);
+        $this->contexts['cc1']  = coursecat::instance($course->category);
         $course2 = $generator->create_course();
-        $this->contexts['c2'] = \context_course::instance($course2->id);
+        $this->contexts['c2'] = course::instance($course2->id);
         $this->forums[3] = $generator->create_module('forum', ['course' => $course2->id, 'name' => 'Forum 3',
                 'intro' => '<p>Intro 3</p>', 'introformat' => FORMAT_HTML]);
-        $this->contexts['f3'] = \context_module::instance($this->forums[3]->cmid);
+        $this->contexts['f3'] = module::instance($this->forums[3]->cmid);
         $cat2 = $generator->create_category();
-        $this->contexts['cc2'] = \context_coursecat::instance($cat2->id);
+        $this->contexts['cc2'] = coursecat::instance($cat2->id);
         $course3 = $generator->create_course(['category' => $cat2->id]);
-        $this->contexts['c3'] = \context_course::instance($course3->id);
+        $this->contexts['c3'] = course::instance($course3->id);
         $this->forums[4] = $generator->create_module('forum', ['course' => $course3->id, 'name' => 'Forum 4',
                 'intro' => '<p>Intro 4</p>', 'introformat' => FORMAT_HTML]);
-        $this->contexts['f4'] = \context_module::instance($this->forums[4]->cmid);
+        $this->contexts['f4'] = module::instance($this->forums[4]->cmid);
 
         // Hack about with the time modified values.
         foreach ($this->forums as $index => $forum) {
@@ -131,7 +139,7 @@ final class base_activity_test extends \advanced_testcase {
 
         $course = self::getDataGenerator()->create_course();
         $activity = self::getDataGenerator()->create_module('forum', array('course' => $course->id));
-        $context = \context_module::instance($activity->cmid);
+        $context = module::instance($activity->cmid);
         $contextid = $context->id;
 
         // Create file to add.
@@ -207,7 +215,7 @@ final class base_activity_test extends \advanced_testcase {
 
         // Now use context restrictions. First, the whole site (no change).
         $results = self::recordset_to_indexed_array($area->get_document_recordset(
-                0, \context_system::instance()));
+                0, system::instance()));
         $this->assertEquals($allids, self::records_to_ids($results));
 
         // Course 1 only.
@@ -245,13 +253,13 @@ final class base_activity_test extends \advanced_testcase {
 
         // Find an arbitrary block on the system to get a block context.
         $blockid = array_values($DB->get_records('block_instances', null, 'id', 'id', 0, 1))[0]->id;
-        $blockcontext = \context_block::instance($blockid);
+        $blockcontext = block::instance($blockid);
 
         // Block context (cannot return anything, so always null).
         $this->assertNull($area->get_document_recordset(0, $blockcontext));
 
         // User context (cannot return anything, so always null).
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $this->assertNull($area->get_document_recordset(0, $usercontext));
     }
 
@@ -292,7 +300,7 @@ final class base_activity_test extends \advanced_testcase {
         $results = self::recordset_to_indexed_array($area->get_document_recordset());
 
         for ($i = 0; $i < 4; $i++) {
-            $this->assertEquals(new \moodle_url('/mod/forum/view.php',
+            $this->assertEquals(new url('/mod/forum/view.php',
                     ['id' => $this->forums[$i + 1]->cmid]),
                     $area->get_doc_url($area->get_document($results[$i])));
         }
@@ -356,13 +364,13 @@ final class base_activity_test extends \advanced_testcase {
         // Check the URL contexts are in date order.
         $urlarea = new \mod_url\search\activity();
         $contexts = iterator_to_array($urlarea->get_contexts_to_reindex(), false);
-        $this->assertEquals([\context_module::instance($url1->cmid),
-                \context_module::instance($url2->cmid)], $contexts);
+        $this->assertEquals([module::instance($url1->cmid),
+                module::instance($url2->cmid)], $contexts);
 
         // Check the Page contexts.
         $pagearea = new \mod_page\search\activity();
         $contexts = iterator_to_array($pagearea->get_contexts_to_reindex(), false);
-        $this->assertEquals([\context_module::instance($page->cmid)], $contexts);
+        $this->assertEquals([module::instance($page->cmid)], $contexts);
 
         // Check another module area that has no instances.
         $glossaryarea = new \mod_glossary\search\activity();

@@ -16,10 +16,12 @@
 
 namespace gradereport_singleview\report;
 
-use context_course;
+use core\context\course;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
 use grade_report;
-use moodle_url;
-use renderer_base;
+use core\url;
+use core\output\renderer_base;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die;
@@ -85,7 +87,7 @@ class singleview extends grade_report {
     public function __construct(
         int $courseid,
         object $gpr,
-        context_course $context,
+        course $context,
         string $itemtype,
         ?int $itemid,
         ?string $unused = null
@@ -96,9 +98,9 @@ class singleview extends grade_report {
 
         $idparams = ['id' => $courseid];
 
-        $this->baseurl = new moodle_url($base, $idparams);
+        $this->baseurl = new url($base, $idparams);
 
-        $this->pbarurl = new moodle_url($base, $idparams + [
+        $this->pbarurl = new url($base, $idparams + [
                 'item' => $itemtype,
                 'itemid' => $itemid
             ]);
@@ -182,11 +184,11 @@ class singleview extends grade_report {
             'bulklegend' => get_string('bulklegend', 'gradereport_singleview')
         ];
 
-        $menu = new \action_menu();
+        $menu = new action_menu();
         $menu->set_menu_trigger(get_string('actions'), 'text-dark');
 
         foreach ($options as $type => $option) {
-            $action = new \action_menu_link_secondary(new \moodle_url('#'), null, $option,
+            $action = new link_secondary(new url('#'), null, $option,
                 ['data-action' => $type, 'data-role' => 'bulkaction']);
             $menu->add($action);
         }

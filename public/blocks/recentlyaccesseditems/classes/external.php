@@ -21,8 +21,8 @@ use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_value;
-use context_user;
-use context_module;
+use core\context\user;
+use core\context\module;
 
 /**
  * External API class.
@@ -65,13 +65,13 @@ class external extends external_api {
 
         $limit = $params['limit'];
 
-        self::validate_context(context_user::instance($userid));
+        self::validate_context(user::instance($userid));
 
         $items = helper::get_recent_items($limit);
 
         $renderer = $PAGE->get_renderer('core');
         $recentitems = array_map(function($item) use ($renderer) {
-            $context = context_module::instance($item->cmid);
+            $context = module::instance($item->cmid);
             $exporter = new recentlyaccesseditems_item_exporter($item, ['context' => $context]);
             return $exporter->export($renderer);
         }, $items);

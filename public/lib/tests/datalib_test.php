@@ -16,6 +16,9 @@
 
 namespace core;
 
+use core\context\system;
+use core\exception\moodle_exception;
+
 /**
  * Test for various bits of datalib.php.
  *
@@ -172,7 +175,7 @@ final class datalib_test extends \advanced_testcase {
 
         $CFG->showuseridentity = '';
 
-        list($sort, $params) = users_order_by_sql('', 'search', \context_system::instance());
+        list($sort, $params) = users_order_by_sql('', 'search', system::instance());
         $this->assert_same_sql('CASE WHEN
                     ' . $DB->sql_fullname() . ' = :usersortexact OR
                     LOWER(firstname) = LOWER(:usersortfield0) OR
@@ -188,7 +191,7 @@ final class datalib_test extends \advanced_testcase {
         $CFG->showuseridentity = 'email,idnumber';
         $this->setAdminUser();
 
-        list($sort, $params) = users_order_by_sql('u', 'search', \context_system::instance());
+        list($sort, $params) = users_order_by_sql('u', 'search', system::instance());
         $this->assert_same_sql('CASE WHEN
                     ' . $DB->sql_fullname('u.firstname', 'u.lastname') . ' = :usersortexact OR
                     LOWER(u.firstname) = LOWER(:usersortfield0) OR
@@ -208,7 +211,7 @@ final class datalib_test extends \advanced_testcase {
         $this->setAdminUser();
 
         list($sort, $params) =
-                users_order_by_sql('u', 'search', \context_system::instance(), ['profile_field_customfield' => 'x.customfield']);
+                users_order_by_sql('u', 'search', system::instance(), ['profile_field_customfield' => 'x.customfield']);
         $this->assert_same_sql('CASE WHEN
                     ' . $DB->sql_fullname('u.firstname', 'u.lastname') . ' = :usersortexact OR
                     LOWER(u.firstname) = LOWER(:usersortfield0) OR
@@ -435,28 +438,28 @@ final class datalib_test extends \advanced_testcase {
         try {
             get_coursemodule_from_id('folder', -11, 0, false, MUST_EXIST);
             $this->fail('dml_missing_record_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('dml_missing_record_exception', $e);
         }
 
         try {
             get_coursemodule_from_id('', -11, 0, false, MUST_EXIST);
             $this->fail('dml_missing_record_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('dml_missing_record_exception', $e);
         }
 
         try {
             get_coursemodule_from_id('a b', $folder1a->cmid, 0, false, MUST_EXIST);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
         try {
             get_coursemodule_from_id('abc', $folder1a->cmid, 0, false, MUST_EXIST);
             $this->fail('dml_read_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('dml_read_exception', $e);
         }
     }
@@ -499,28 +502,28 @@ final class datalib_test extends \advanced_testcase {
         try {
             get_coursemodule_from_instance('folder', -11, 0, false, MUST_EXIST);
             $this->fail('dml_missing_record_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('dml_missing_record_exception', $e);
         }
 
         try {
             get_coursemodule_from_instance('a b', $folder1a->cmid, 0, false, MUST_EXIST);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
         try {
             get_coursemodule_from_instance('', $folder1a->cmid, 0, false, MUST_EXIST);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
         try {
             get_coursemodule_from_instance('abc', $folder1a->cmid, 0, false, MUST_EXIST);
             $this->fail('dml_read_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('dml_read_exception', $e);
         }
     }
@@ -582,14 +585,14 @@ final class datalib_test extends \advanced_testcase {
         try {
             get_coursemodules_in_course('a b', $course1->id);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
         try {
             get_coursemodules_in_course('abc', $course1->id);
             $this->fail('dml_read_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('dml_read_exception', $e);
         }
     }
@@ -637,14 +640,14 @@ final class datalib_test extends \advanced_testcase {
         try {
             get_all_instances_in_courses('a b', array($course1->id => $course1, $course2->id => $course2));
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
         try {
             get_all_instances_in_courses('', array($course1->id => $course1, $course2->id => $course2));
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
     }
@@ -690,14 +693,14 @@ final class datalib_test extends \advanced_testcase {
         try {
             get_all_instances_in_course('a b', $course1);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
 
         try {
             get_all_instances_in_course('', $course1);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('coding_exception', $e);
         }
     }
@@ -867,12 +870,12 @@ final class datalib_test extends \advanced_testcase {
         // Add the options to showuseridentity and check it returns those fields but only if you
         // specify a context AND have permissions.
         $results = get_users_listing('lastaccess', 'asc', 0, 0, '', '', '', '', null,
-                \context_system::instance());
+                system::instance());
         $this->assertObjectNotHasProperty('department', $results[$userids[0]]);
         $this->assertObjectNotHasProperty('profile_field_specialid', $results[$userids[0]]);
         $this->setAdminUser();
         $results = get_users_listing('lastaccess', 'asc', 0, 0, '', '', '', '', null,
-                \context_system::instance());
+                system::instance());
         $this->assertEquals('department_a', $results[$userids[0]]->department);
         $this->assertEquals('special_a', $results[$userids[0]]->profile_field_specialid);
 

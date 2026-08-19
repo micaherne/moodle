@@ -17,6 +17,13 @@
 // Note: Technically this namespace is incorrect, but we should be moving to namespace things and core anyway.
 namespace core;
 
+use core\context\block;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+
 /**
  * Unit tests specifically for context_block.
  *
@@ -55,11 +62,11 @@ final class context_block_test extends \advanced_testcase {
         $activity = $generator->create_module('forum', ['course' => $course->id]);
 
         $contextlist = [
-            \context_system::instance(),
-            \context_user::instance($user->id),
-            \context_coursecat::instance($coursecat->id),
-            \context_course::instance($course->id),
-            \context_module::instance($activity->cmid),
+            system::instance(),
+            user::instance($user->id),
+            coursecat::instance($coursecat->id),
+            course::instance($course->id),
+            module::instance($activity->cmid),
         ];
 
         // Create a number of blocks of different types in the DB only.
@@ -83,12 +90,12 @@ final class context_block_test extends \advanced_testcase {
         }
 
         // Test data created. Call \context_helper::create_instances() which will create the records, and fix the paths.
-        \context_helper::create_instances(CONTEXT_BLOCK);
+        context_helper::create_instances(CONTEXT_BLOCK);
 
         foreach ($blocks as $blockid) {
             $block = $DB->get_record('block_instances', ['id' => $blockid]);
-            $context = \context_block::instance($block->id);
-            $this->assertInstanceOf(\context_block::class, $context);
+            $context = block::instance($block->id);
+            $this->assertInstanceOf(block::class, $context);
 
             // Note. There is no point checking the instanceid because the context was fetched using this.
 

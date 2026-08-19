@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
 
+use core\context\system;
 use stored_file;
 use \core_files\conversion;
 
@@ -213,7 +214,7 @@ class converter implements \core_files\converter_interface {
         $format = 'pdf';
 
         $filerecord = [
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'test',
             'filearea' => 'fileconverter_unoconv',
             'itemid' => 0,

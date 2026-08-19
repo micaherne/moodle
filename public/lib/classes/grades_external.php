@@ -23,6 +23,8 @@
  * @since Moodle 2.7
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -129,7 +131,7 @@ class core_grades_external extends external_api {
         }
         $iteminstance = $cm->instance;
 
-        $coursecontext = context_course::instance($params['courseid']);
+        $coursecontext = course::instance($params['courseid']);
 
         try {
             self::validate_context($coursecontext);

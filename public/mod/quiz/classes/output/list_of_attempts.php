@@ -18,8 +18,8 @@ namespace mod_quiz\output;
 
 use core\output\named_templatable;
 use mod_quiz\quiz_attempt;
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 
 /**
  * Display summary information about a list of attempts.
@@ -77,7 +77,7 @@ class list_of_attempts implements renderable, named_templatable {
         return $templatecontext;
     }
 
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         // Only reason we are forced to implement this is that we want the quiz renderer
         // passed to export_for_template, not a core_renderer.
         return 'mod_quiz/list_of_attempts';

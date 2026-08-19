@@ -16,7 +16,13 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 
 /**
  * Course format plugin management.
@@ -33,7 +39,7 @@ class manageformats extends \core_admin\setting {
         $this->nosave = true;
         parent::__construct(
             'formatsui',
-            new \lang_string('manageformats', 'core_admin'),
+            new lang_string('manageformats', 'core_admin'),
             '',
             '',
         );
@@ -78,7 +84,7 @@ class manageformats extends \core_admin\setting {
         if (parent::is_related($query)) {
             return true;
         }
-        $formats = \core_plugin_manager::instance()->get_plugins_of_type('format');
+        $formats = plugin_manager::instance()->get_plugins_of_type('format');
         foreach ($formats as $format) {
             if (strpos($format->component, $query) !== false) {
                 $this->searchmatchtype = admin_search::SEARCH_MATCH_SETTING_SHORT_NAME;
@@ -102,17 +108,17 @@ class manageformats extends \core_admin\setting {
     public function output_html($data, $query = '') {
         global $CFG, $OUTPUT;
         $return = '';
-        $return = $OUTPUT->heading(new \lang_string('courseformats'), 3, 'main');
+        $return = $OUTPUT->heading(new lang_string('courseformats'), 3, 'main');
         $return .= $OUTPUT->box_start('generalbox formatsui');
 
-        $formats = \core_plugin_manager::instance()->get_plugins_of_type('format');
+        $formats = plugin_manager::instance()->get_plugins_of_type('format');
 
         // Display strings.
         $txt = get_strings(['settings', 'name', 'enable', 'disable', 'up', 'down', 'default']);
         $txt->uninstall = get_string('uninstallplugin', 'core_admin');
         $txt->updown = "$txt->up/$txt->down";
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [$txt->name, $txt->enable, $txt->updown, $txt->uninstall, $txt->settings];
         $table->align = ['left', 'center', 'center', 'center', 'center'];
         $table->attributes['class'] = 'manageformattable table generaltable admintable table-striped table-hover';
@@ -122,7 +128,7 @@ class manageformats extends \core_admin\setting {
         $defaultformat = get_config('moodlecourse', 'format');
         $spacer = $OUTPUT->pix_icon('spacer', '', 'moodle', ['class' => 'iconsmall']);
         foreach ($formats as $format) {
-            $url = new \moodle_url(
+            $url = new url(
                 '/admin/courseformats.php',
                 ['sesskey' => sesskey(), 'format' => $format->name]
             );
@@ -133,7 +139,7 @@ class manageformats extends \core_admin\setting {
                 if ($defaultformat === $format->name) {
                     $hideshow = $txt->default;
                 } else {
-                    $hideshow = \html_writer::link(
+                    $hideshow = html_writer::link(
                         $url->out(false, ['action' => 'disable']),
                         $OUTPUT->pix_icon('t/hide', $txt->disable, 'moodle', ['class' => 'iconsmall'])
                     );
@@ -141,14 +147,14 @@ class manageformats extends \core_admin\setting {
             } else {
                 $strformatname = $format->displayname;
                 $class = 'dimmed_text';
-                $hideshow = \html_writer::link(
+                $hideshow = html_writer::link(
                     $url->out(false, ['action' => 'enable']),
                     $OUTPUT->pix_icon('t/show', $txt->enable, 'moodle', ['class' => 'iconsmall'])
                 );
             }
             $updown = '';
             if ($cnt) {
-                $updown .= \html_writer::link(
+                $updown .= html_writer::link(
                     $url->out(false, ['action' => 'up']),
                     $OUTPUT->pix_icon('t/up', $txt->up, 'moodle', ['class' => 'iconsmall'])
                 ) . '';
@@ -156,7 +162,7 @@ class manageformats extends \core_admin\setting {
                 $updown .= $spacer;
             }
             if ($cnt < count($formats) - 1) {
-                $updown .= '&nbsp;' . \html_writer::link(
+                $updown .= '&nbsp;' . html_writer::link(
                     $url->out(false, ['action' => 'down']),
                     $OUTPUT->pix_icon('t/down', $txt->down, 'moodle', ['class' => 'iconsmall'])
                 );
@@ -166,33 +172,33 @@ class manageformats extends \core_admin\setting {
             $cnt++;
             $settings = '';
             if ($format->get_settings_url()) {
-                $settings = \html_writer::link($format->get_settings_url(), $txt->settings);
+                $settings = html_writer::link($format->get_settings_url(), $txt->settings);
             }
             $uninstall = '';
-            $uninstallurl = \core_plugin_manager::instance()->get_uninstall_url(
+            $uninstallurl = plugin_manager::instance()->get_uninstall_url(
                 'format_' . $format->name,
                 'manage',
             );
             if ($uninstallurl) {
-                $uninstall = \html_writer::link($uninstallurl, $txt->uninstall);
+                $uninstall = html_writer::link($uninstallurl, $txt->uninstall);
             }
-            $row = new \html_table_row([$strformatname, $hideshow, $updown, $uninstall, $settings]);
+            $row = new html_table_row([$strformatname, $hideshow, $updown, $uninstall, $settings]);
             if ($class) {
                 $row->attributes['class'] = $class;
             }
             $table->data[] = $row;
         }
-        $return .= \html_writer::table($table);
-        $link = \html_writer::link(
-            new \moodle_url(
+        $return .= html_writer::table($table);
+        $link = html_writer::link(
+            new url(
                 '/admin/settings.php',
                 [
                     'section' => 'coursesettings',
                 ]
             ),
-            new \lang_string('coursesettings'),
+            new lang_string('coursesettings'),
         );
-        $return .= \html_writer::tag('p', get_string('manageformatsgotosettings', 'admin', $link));
+        $return .= html_writer::tag('p', get_string('manageformatsgotosettings', 'admin', $link));
         $return .= $OUTPUT->box_end();
         return highlight($query, $return);
     }

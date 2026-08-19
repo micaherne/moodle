@@ -24,6 +24,10 @@
 
 require_once(__DIR__ . '/../../../config.php');
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\exception\require_login_exception;
+use core\url;
 use tool_mfa\local\form\setup_factor_form;
 
 require_login(null, false);
@@ -36,9 +40,9 @@ $factor = optional_param('factor', '', PARAM_ALPHANUMEXT);
 $factorid = optional_param('factorid', '', PARAM_INT);
 
 $params = ['action' => $action, 'factor' => $factor, 'factorid' => $factorid];
-$currenturl = new moodle_url('/admin/tool/mfa/action.php', $params);
+$currenturl = new url('/admin/tool/mfa/action.php', $params);
 
-$returnurl = new moodle_url('/admin/tool/mfa/user_preferences.php');
+$returnurl = new url('/admin/tool/mfa/user_preferences.php');
 
 if (empty($factor) || empty($action)) {
     throw new moodle_exception('error:directaccess', 'tool_mfa', $returnurl);
@@ -58,7 +62,7 @@ if (!empty($factorid) && !\tool_mfa\manager::is_factorid_valid($factorid, $USER)
 
 $factorobject = \tool_mfa\plugininfo\factor::get_factor($factor);
 
-$context = context_user::instance($USER->id);
+$context = user::instance($USER->id);
 $PAGE->set_context($context);
 $PAGE->set_url('/admin/tool/mfa/action.php');
 $PAGE->set_pagelayout('standard');
@@ -67,7 +71,7 @@ $PAGE->set_cacheable(false);
 if ($node = $PAGE->settingsnav->find('usercurrentsettings', null)) {
     $PAGE->navbar->add($node->get_content(), $node->action());
 }
-$PAGE->navbar->add(get_string('preferences:header', 'tool_mfa'), new \moodle_url('/admin/tool/mfa/user_preferences.php'));
+$PAGE->navbar->add(get_string('preferences:header', 'tool_mfa'), new url('/admin/tool/mfa/user_preferences.php'));
 
 switch ($action) {
     case 'setup':
@@ -92,7 +96,7 @@ switch ($action) {
                 $record = $factorobject->setup_user_factor($data);
                 if (!empty($record)) {
                     $factorobject->set_state(\tool_mfa\plugininfo\factor::STATE_PASS);
-                    $finalurl = new moodle_url($returnurl, ['action' => 'setup', 'factorid' => $record->id]);
+                    $finalurl = new url($returnurl, ['action' => 'setup', 'factorid' => $record->id]);
                     redirect($finalurl);
                 }
 
@@ -129,7 +133,7 @@ switch ($action) {
                 $record = $factorobject->replace_user_factor($data, $factorid);
                 if (!empty($record)) {
                     $factorobject->set_state(\tool_mfa\plugininfo\factor::STATE_PASS);
-                    $finalurl = new moodle_url($returnurl, ['action' => 'setup', 'factorid' => $record->id]);
+                    $finalurl = new url($returnurl, ['action' => 'setup', 'factorid' => $record->id]);
                     redirect($finalurl);
                 }
 
@@ -152,7 +156,7 @@ switch ($action) {
         }
 
         if ($factorobject->revoke_user_factor($factorid)) {
-            $finalurl = new moodle_url($returnurl, ['action' => 'revoked', 'factorid' => $factorid]);
+            $finalurl = new url($returnurl, ['action' => 'revoked', 'factorid' => $factorid]);
             redirect($finalurl);
         }
 
@@ -173,7 +177,7 @@ switch ($action) {
         // Displays a setup additional button in case it is needed.
         if ($factorobject->show_additional_setup_button()) {
             echo $OUTPUT->single_button(
-                url: new \moodle_url('action.php', ['action' => 'setup', 'factor' => $factor]),
+                url: new url('action.php', ['action' => 'setup', 'factor' => $factor]),
                 label:  $factorobject->get_additional_setup_string(),
                 method: 'post',
                 options: ['type' => 'primary'],

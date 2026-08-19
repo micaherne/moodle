@@ -23,9 +23,10 @@
  */
 namespace tool_lp\output;
 
-use moodle_url;
-use renderable;
-use templatable;
+use core\output\renderer_base;
+use core\url;
+use core\output\renderable;
+use core\output\templatable;
 use stdClass;
 use core_competency\api;
 use tool_lp\external\user_evidence_summary_exporter;
@@ -61,13 +62,13 @@ class user_evidence_page implements renderable, templatable {
      * @param renderer_base $output
      * @return stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $data = new stdClass();
 
         $userevidencesummaryexporter = new user_evidence_summary_exporter($this->userevidence, array(
             'context' => $this->context));
         $data->userevidence = $userevidencesummaryexporter->export($output);
-        $data->pluginbaseurl = (new moodle_url('/admin/tool/lp'))->out(true);
+        $data->pluginbaseurl = (new url('/admin/tool/lp'))->out(true);
 
         return $data;
     }

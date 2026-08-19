@@ -23,6 +23,8 @@
  */
 
 namespace mod_book\event;
+
+use core\context\module;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -43,7 +45,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
      * @param \context_module $context
      * @return course_module_viewed
      */
-    public static function create_from_book(\stdClass $book, \context_module $context) {
+    public static function create_from_book(\stdClass $book, module $context) {
         $data = array(
             'context' => $context,
             'objectid' => $book->id

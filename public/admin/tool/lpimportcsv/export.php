@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -29,9 +32,9 @@ admin_externalpage_setup('toollpexportcsv');
 
 $pagetitle = get_string('exportnavlink', 'tool_lpimportcsv');
 
-$context = context_system::instance();
+$context = system::instance();
 
-$url = new moodle_url("/admin/tool/lpimportcsv/export.php");
+$url = new url("/admin/tool/lpimportcsv/export.php");
 $PAGE->set_context($context);
 $PAGE->set_url($url);
 $PAGE->set_title($pagetitle);
@@ -41,7 +44,7 @@ $PAGE->set_heading($pagetitle);
 $form = new \tool_lpimportcsv\form\export($url->out(false), array('persistent' => null, 'context' => $context));
 
 if ($form->is_cancelled()) {
-    redirect(new moodle_url('/admin/tool/lp/competencyframeworks.php', array('pagecontextid' => $context->id)));
+    redirect(new url('/admin/tool/lp/competencyframeworks.php', array('pagecontextid' => $context->id)));
 } else if ($data = $form->get_data()) {
     require_sesskey();
 

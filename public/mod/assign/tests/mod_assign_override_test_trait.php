@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
 use core\plugininfo\gradepenalty;
 use core_grades\penalty_manager;
 
@@ -168,7 +169,7 @@ trait mod_assign_override_test_trait {
         ]);
 
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Create and enrol users.
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');

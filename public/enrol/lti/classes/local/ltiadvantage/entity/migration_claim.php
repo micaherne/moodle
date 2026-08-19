@@ -16,6 +16,7 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
 use enrol_lti\local\ltiadvantage\repository\legacy_consumer_repository;
 
 /**
@@ -79,20 +80,20 @@ class migration_claim {
         // The oauth_consumer_key property MUST be sent.
         // See: https://www.imsglobal.org/spec/lti/v1p3/migr#oauth_consumer_key.
         if (empty($claim['oauth_consumer_key'])) {
-            throw new \coding_exception("Missing 'oauth_consumer_key' property in lti1p1 migration claim.");
+            throw new coding_exception("Missing 'oauth_consumer_key' property in lti1p1 migration claim.");
         }
 
         // The oauth_consumer_key_sign property MAY be sent.
         // For user migration to take place, however, this is deemed a required property.
         // See: https://www.imsglobal.org/spec/lti/v1p3/migr#oauth_consumer_key_sign.
         if (empty($claim['oauth_consumer_key_sign'])) {
-            throw new \coding_exception("Missing 'oauth_consumer_key_sign' property in lti1p1 migration claim.");
+            throw new coding_exception("Missing 'oauth_consumer_key_sign' property in lti1p1 migration claim.");
         }
         $this->legacyconsumerrepo = $legacyconsumerrepo;
 
         if (!$this->verify_signature($claim['oauth_consumer_key'], $claim['oauth_consumer_key_sign'], $deploymentid,
                 $platform, $clientid, $exp, $nonce, $legacyconsumerrepo)) {
-            throw new \coding_exception("Invalid 'oauth_consumer_key_sign' signature in lti1p1 claim.");
+            throw new coding_exception("Invalid 'oauth_consumer_key_sign' signature in lti1p1 claim.");
         }
 
         $this->consumerkey = $claim['oauth_consumer_key'];

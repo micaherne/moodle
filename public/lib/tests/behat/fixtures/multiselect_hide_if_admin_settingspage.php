@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configmultiselect;
+use core_admin\setting\settingpage\settingpage;
+
 require_once(__DIR__ . '/../../../../config.php');
 
 defined('BEHAT_SITE_RUNNING') || die();
@@ -33,22 +37,22 @@ require_login();
 $PAGE->set_context(core\context\system::instance());
 
 // Set up dummy admin settings page.
-$settings = new \admin_settingpage('hide_if_admin_settingspage', 'hide_if Test');
+$settings = new settingpage('hide_if_admin_settingspage', 'hide_if Test');
 
-$settings->add(new admin_setting_configmultiselect('multiselect1', 'multiselect1', '', [], [
+$settings->add(new configmultiselect('multiselect1', 'multiselect1', '', [], [
     1 => 'Option 1',
     2 => 'Option 2',
 ]));
 
-$settings->add(new admin_setting_configcheckbox('hideIfEq_', "Hide if selection 'eq' []", '', false));
-$settings->add(new admin_setting_configcheckbox('hideIfIn_', "Hide if selection 'in' []", '', false));
-$settings->add(new admin_setting_configcheckbox('hideIfNeq_', "Hide if selection 'neq' []", '', false));
-$settings->add(new admin_setting_configcheckbox('hideIfEq1', "Hide if selection 'eq' ['1']", '', false));
-$settings->add(new admin_setting_configcheckbox('hideIfIn1', "Hide if selection 'in' ['1']", '', false));
-$settings->add(new admin_setting_configcheckbox('hideIfNeq1', "Hide if selection 'neq' ['1']", '', false));
-$settings->add(new admin_setting_configcheckbox('hideIfEq12', "Hide if selection 'eq' ['1', '2']", '', false));
-$settings->add(new admin_setting_configcheckbox('hideIfIn12', "Hide if selection 'in' ['1', '2']", '', false));
-$settings->add(new admin_setting_configcheckbox('hideIfNeq12', "Hide if selection 'neq' ['1', '2']", '', false));
+$settings->add(new configcheckbox('hideIfEq_', "Hide if selection 'eq' []", '', false));
+$settings->add(new configcheckbox('hideIfIn_', "Hide if selection 'in' []", '', false));
+$settings->add(new configcheckbox('hideIfNeq_', "Hide if selection 'neq' []", '', false));
+$settings->add(new configcheckbox('hideIfEq1', "Hide if selection 'eq' ['1']", '', false));
+$settings->add(new configcheckbox('hideIfIn1', "Hide if selection 'in' ['1']", '', false));
+$settings->add(new configcheckbox('hideIfNeq1', "Hide if selection 'neq' ['1']", '', false));
+$settings->add(new configcheckbox('hideIfEq12', "Hide if selection 'eq' ['1', '2']", '', false));
+$settings->add(new configcheckbox('hideIfIn12', "Hide if selection 'in' ['1', '2']", '', false));
+$settings->add(new configcheckbox('hideIfNeq12', "Hide if selection 'neq' ['1', '2']", '', false));
 
 $settings->hide_if('hideIfEq_', 'multiselect1[]', 'eq', '');
 $settings->hide_if('hideIfIn_', 'multiselect1[]', 'in', '');

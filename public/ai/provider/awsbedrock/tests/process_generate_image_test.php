@@ -20,6 +20,7 @@ use Aws\BedrockRuntime\BedrockRuntimeClient;
 use Aws\Command;
 use Aws\Exception\AwsException;
 use Aws\Result;
+use core\exception\coding_exception;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -397,7 +398,7 @@ final class process_generate_image_test extends \advanced_testcase {
         $processor = new process_generate_image($this->provider, $this->action);
         $method = new \ReflectionMethod($processor, 'base64_to_file');
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $method->invoke($processor, '#invalid-base64#');
     }
 

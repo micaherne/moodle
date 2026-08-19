@@ -16,10 +16,10 @@
 
 namespace core_admin\table;
 
-use core_plugin_manager;
+use core\plugin_manager;
 use dml_exception;
-use html_writer;
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 use stdClass;
 
 /**
@@ -46,12 +46,12 @@ class activity_management_table extends plugin_management_table {
 
     public function guess_base_url(): void {
         $this->define_baseurl(
-            new moodle_url('/admin/modules.php')
+            new url('/admin/modules.php')
         );
     }
 
-    protected function get_action_url(array $params = []): moodle_url {
-        return new moodle_url('/admin/modules.php', $params);
+    protected function get_action_url(array $params = []): url {
+        return new url('/admin/modules.php', $params);
     }
 
     protected function get_column_list(): array {
@@ -67,7 +67,7 @@ class activity_management_table extends plugin_management_table {
         global $OUTPUT;
 
         $status = $row->plugininfo->get_status();
-        if ($status === core_plugin_manager::PLUGIN_STATUS_MISSING) {
+        if ($status === plugin_manager::PLUGIN_STATUS_MISSING) {
             return html_writer::span(
                 get_string('pluginmissingfromdisk', 'core', $row->plugininfo),
                 'notifyproblem'
@@ -101,7 +101,7 @@ class activity_management_table extends plugin_management_table {
 
         if ($count > 0) {
             return $OUTPUT->action_link(
-                new moodle_url('/course/search.php', [
+                new url('/course/search.php', [
                     'modulelist' => $row->plugininfo->name,
                 ]),
                 $count,

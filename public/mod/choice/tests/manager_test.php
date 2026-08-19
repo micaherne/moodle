@@ -16,7 +16,7 @@
 
 namespace mod_choice;
 
-use context_module;
+use core\context\module;
 
 /**
  * Generator tests class.
@@ -48,7 +48,7 @@ final class manager_test extends \advanced_testcase {
         $manageractivity = $manager->get_instance();
         $this->assertEquals($instance->id, $manageractivity->id);
         $managercontext = $manager->get_context();
-        $context = context_module::instance($instance->cmid);
+        $context = module::instance($instance->cmid);
         $this->assertEquals($context->id, $managercontext->id);
         $cm = get_coursemodule_from_id(manager::MODULE, $manageractivity->cmid, 0, false, MUST_EXIST);
         $this->assertEquals($cm->id, $manager->get_coursemodule()->id);
@@ -67,7 +67,7 @@ final class manager_test extends \advanced_testcase {
         $managercm = $manager->get_coursemodule();
         $this->assertEquals($cm->id, $managercm->id);
         $managercontext = $manager->get_context();
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertEquals($context->id, $managercontext->id);
     }
 

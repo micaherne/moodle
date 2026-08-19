@@ -16,6 +16,9 @@
 
 namespace qbank_exporttoxml;
 
+use core\context;
+use core\url;
+
 /**
  * Class helper for export plugin.
  *
@@ -34,9 +37,9 @@ class helper {
      *      (Only ->id and ->contextid are used.)
      * @return \moodle_url the requested URL.
      */
-    public static function question_get_export_single_question_url($question): \moodle_url {
-        $context = \context::instance_by_id($question->contextid);
-        return new \moodle_url('/question/bank/exporttoxml/exportone.php',
+    public static function question_get_export_single_question_url($question): url {
+        $context = context::instance_by_id($question->contextid);
+        return new url('/question/bank/exporttoxml/exportone.php',
             ['id' => $question->id, 'sesskey' => sesskey(), 'cmid' => $context->instanceid]
         );
     }

@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -75,7 +77,7 @@ abstract class grade_report_viewed extends base {
      */
     public function get_url() {
         $url = '/grade/report/' . $this->reporttype . '/index.php';
-        return new \moodle_url($url, array('id' => $this->courseid));
+        return new url($url, array('id' => $this->courseid));
     }
 
     /**

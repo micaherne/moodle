@@ -24,6 +24,9 @@
 
 namespace core_privacy\local\request;
 
+use core\context;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -66,7 +69,7 @@ abstract class userlist_base implements
      * @param   \context    $context
      * @param   string      $component
      */
-    public function __construct(\context $context, string $component) {
+    public function __construct(context $context, string $component) {
         $this->context = $context;
         $this->set_component($component);
     }
@@ -112,7 +115,7 @@ abstract class userlist_base implements
     public function get_users(): array {
         $users = [];
         foreach ($this->userids as $userid) {
-            if ($user = \core_user::get_user($userid)) {
+            if ($user = user::get_user($userid)) {
                 $users[] = $user;
             }
         }
@@ -148,7 +151,7 @@ abstract class userlist_base implements
      */
     #[\ReturnTypeWillChange]
     public function current() {
-        $user = \core_user::get_user($this->userids[$this->iteratorposition]);
+        $user = user::get_user($this->userids[$this->iteratorposition]);
 
         if (false === $user) {
             // This user was not found.
@@ -216,7 +219,7 @@ abstract class userlist_base implements
      *
      * @return  \context
      */
-    public function get_context(): \context {
+    public function get_context(): context {
         return $this->context;
     }
 }

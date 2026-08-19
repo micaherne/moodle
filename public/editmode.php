@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context_helper;
+
 require_once('config.php');
 
 $setmode = optional_param('setmode', false, PARAM_BOOL);
@@ -36,7 +38,7 @@ if (!defined('BEHAT_SITE_RUNNING')) {
 
 require_login();
 
-$context = \context_helper::instance_by_id($contextid);
+$context = context_helper::instance_by_id($contextid);
 $PAGE->set_context($context);
 
 $USER->editing = $setmode;

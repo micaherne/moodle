@@ -25,6 +25,11 @@
 
 namespace gradereport_history\output;
 
+use core\output\html_writer;
+use core\output\renderable;
+use core\output\single_button;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -36,7 +41,7 @@ defined('MOODLE_INTERNAL') || die;
  * @author     Adam Olley <adam.olley@netspot.com.au>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class user_button extends \single_button implements \renderable {
+class user_button extends single_button implements renderable {
     /**
      * Initialises the new select_user_button.
      *
@@ -44,9 +49,9 @@ class user_button extends \single_button implements \renderable {
      * @param string $label The text to display in the button
      * @param string $method Either post or get
      */
-    public function __construct(\moodle_url $url, $label, $method = 'post') {
+    public function __construct(url $url, $label, $method = 'post') {
         parent::__construct($url, $label, $method);
         $this->class = 'singlebutton selectusersbutton gradereport_history_plugin';
-        $this->formid = \html_writer::random_id('selectusersbutton');
+        $this->formid = html_writer::random_id('selectusersbutton');
     }
 }

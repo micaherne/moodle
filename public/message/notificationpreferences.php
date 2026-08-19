@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/message/lib.php');
 require_once($CFG->dirroot . '/user/lib.php');
@@ -29,19 +34,19 @@ require_once($CFG->dirroot . '/user/lib.php');
 require_login();
 
 $userid = optional_param('userid', $USER->id, PARAM_INT);    // User id.
-$url = new moodle_url('/message/notificationpreferences.php');
+$url = new url('/message/notificationpreferences.php');
 $url->param('userid', $userid);
 
 $PAGE->set_url($url);
 
 if (isguestuser()) {
-    throw new \moodle_exception('guestnoeditmessage', 'message');
+    throw new moodle_exception('guestnoeditmessage', 'message');
 }
 
 $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
 
-$systemcontext   = context_system::instance();
-$personalcontext = context_user::instance($user->id);
+$systemcontext   = system::instance();
+$personalcontext = user::instance($user->id);
 
 $PAGE->set_context($personalcontext);
 $PAGE->set_pagelayout('admin');
@@ -55,11 +60,11 @@ if ($user->id == $USER->id) {
     require_capability('moodle/user:editmessageprofile', $personalcontext);
     // No editing of guest user account.
     if (isguestuser($user->id)) {
-        throw new \moodle_exception('guestnoeditmessageother', 'message');
+        throw new moodle_exception('guestnoeditmessageother', 'message');
     }
     // No editing of admins by non admins!
     if (is_siteadmin($user) and !is_siteadmin($USER)) {
-        throw new \moodle_exception('useradmineditadmin');
+        throw new moodle_exception('useradmineditadmin');
     }
     $PAGE->navbar->includesettingsbase = true;
     $PAGE->navigation->extend_for_user($user);

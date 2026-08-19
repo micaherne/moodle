@@ -26,7 +26,7 @@ namespace core\external;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Paged Content exporter.

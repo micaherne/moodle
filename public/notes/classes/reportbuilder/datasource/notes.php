@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_notes\reportbuilder\datasource;
 
-use lang_string;
+use core\lang_string;
 use core_reportbuilder\datasource;
 use core_reportbuilder\local\entities\{course, user};
 use core_notes\reportbuilder\local\entities\note;

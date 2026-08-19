@@ -24,6 +24,8 @@
 
 namespace mod_book\output;
 
+use core\output\plugin_renderer_base;
+
 /**
  * Moodle renderer used to display special elements of the book module
  *
@@ -31,7 +33,7 @@ namespace mod_book\output;
  * @copyright  2021 Adrian Greeve <adrian@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Renderers the main action menu.

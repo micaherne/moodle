@@ -24,6 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\output\html_writer;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die;
 
 if (!defined('REPORT_LOG_MAX_DISPLAY')) {
@@ -48,7 +53,7 @@ function report_log_print_graph($course, $user, $typeormode, $date=0, $logreader
     global $CFG, $OUTPUT;
 
     if (!is_object($user)) {
-        $user = core_user::get_user($user);
+        $user = user::get_user($user);
     }
 
     $logmanager = get_log_manager();
@@ -63,7 +68,7 @@ function report_log_print_graph($course, $user, $typeormode, $date=0, $logreader
     if (!($reader instanceof \core\log\sql_internal_table_reader)) {
         return array();
     }
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
 
     $a = new stdClass();
     $a->coursename = format_string($course->shortname, true, array('context' => $coursecontext));
@@ -228,12 +233,12 @@ function report_log_print_mnet_selector_form($hostid, $course, $selecteduser=0, 
         $showcourses = 1;
     }
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
 
     // Context for remote data is always SITE
     // Groups for remote data are always OFF
     if ($hostid == $CFG->mnet_localhost_id) {
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         /// Setup for group handling.
         if ($course->groupmode == SEPARATEGROUPS and !has_capability('moodle/site:accessallgroups', $context)) {

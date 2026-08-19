@@ -16,6 +16,7 @@
 
 namespace format_theunittest\output\courseformat\state;
 
+use core\output\renderer_base;
 use core_courseformat\output\local\state\course as course_state;
 
 /**
@@ -33,7 +34,7 @@ class course extends course_state {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return \stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): \stdClass {
+    public function export_for_template(renderer_base $output): \stdClass {
         $data = parent::export_for_template($output);
         $data->newfancyelement = 'thatsme';
 

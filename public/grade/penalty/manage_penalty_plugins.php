@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\plugin_manager;
 use core_grades\table\gradepenalty_management_table;
 use core\notification;
 use core\url;
@@ -38,7 +39,7 @@ $action = optional_param('action', '', PARAM_ALPHA);
 
 // If Javascript is disabled, we need to handle the form submission.
 if (!empty($action) && !empty($plugin) && confirm_sesskey()) {
-    $manager = core_plugin_manager::resolve_plugininfo_class('gradepenalty');
+    $manager = plugin_manager::resolve_plugininfo_class('gradepenalty');
     $pluginname = get_string('pluginname', 'gradepenalty_' . $plugin);
 
     if ($action === 'disable' && $manager::enable_plugin($plugin, 0)) {

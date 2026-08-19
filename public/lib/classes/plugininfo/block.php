@@ -16,6 +16,9 @@
 
 namespace core\plugininfo;
 
+use core\exception\moodle_exception;
+use core\plugin_manager;
+
 /**
  * Defines classes used for plugin info.
  *
@@ -41,7 +44,7 @@ class block extends base {
         global $DB;
 
         if (!$block = $DB->get_record('block', ['name' => $pluginname])) {
-            throw new \moodle_exception('blockdoesnotexist', 'error');
+            throw new moodle_exception('blockdoesnotexist', 'error');
         }
 
         $haschanged = false;
@@ -54,7 +57,7 @@ class block extends base {
 
             // Include this information into config changes table.
             add_to_config_log('block_visibility', $block->visible, $enabled, $pluginname);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;

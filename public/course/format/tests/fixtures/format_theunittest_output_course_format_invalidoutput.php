@@ -16,8 +16,9 @@
 
 namespace format_theunittest\output\courseformat\state;
 
-use renderable;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use stdClass;
 
 /**
@@ -35,7 +36,7 @@ class invalidoutput implements renderable, templatable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
         return (object)[
             'something' => 'invalid',
         ];

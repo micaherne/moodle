@@ -16,6 +16,11 @@
 
 namespace core_course;
 
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
 use core_course_category;
 use core_course_list_element;
 use course_capability_assignment;
@@ -145,7 +150,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_hide($category);
             $this->fail('Expected exception did not occur when trying to hide a category without permission.');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             // The category must still be visible.
             $cat = core_course_category::get($category->id);
             $subcat = core_course_category::get($subcategory->id);
@@ -176,7 +181,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_show($category);
             $this->fail('Expected exception did not occur when trying to show a category without permission.');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             // The category must still be hidden.
             $cat = core_course_category::get($category->id);
             $subcat = core_course_category::get($subcategory->id);
@@ -223,7 +228,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_hide($category);
             $this->fail('Expected exception did not occur when trying to hide a category without permission.');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             // The category must still be visible.
             $this->assertEquals(1, core_course_category::get($category->id)->visible);
         }
@@ -303,7 +308,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_hide_by_id($category->id);
             $this->fail('Expected exception did not occur when trying to hide a category without permission.');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             // The category must still be visible.
             $cat = core_course_category::get($category->id);
             $subcat = core_course_category::get($subcategory->id);
@@ -333,7 +338,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_show_by_id($category->id);
             $this->fail('Expected exception did not occur when trying to show a category without permission.');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             // The category must still be hidden.
             $cat = core_course_category::get($category->id);
             $subcat = core_course_category::get($subcategory->id);
@@ -380,7 +385,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_hide_by_id($category->id);
             $this->fail('Expected exception did not occur when trying to hide a category without permission.');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             // The category must still be visible.
             $this->assertEquals(1, core_course_category::get($category->id)->visible);
         }
@@ -403,7 +408,7 @@ final class management_helper_test extends \advanced_testcase {
         $course3 = $generator->create_course(array('category' => $sub1->id));
         $course4 = $generator->create_course(array('category' => $cat2->id));
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         list($user, $roleid) = $this->get_user_objects($generator, $syscontext->id);
 
@@ -456,7 +461,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_move_courses_into($cat2, $sub2, array($course4->id));
             $this->fail('Moved a course from a category it wasn\'t within');
-        } catch (\moodle_exception $exception) {
+        } catch (moodle_exception $exception) {
             // Check that everything is as it was.
             $this->assertEquals(1, $cat1->get_courses_count());
             $this->assertEquals(0, $cat2->get_courses_count());
@@ -468,7 +473,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_move_courses_into($cat2, $sub2, array($course4->id, $course1->id));
             $this->fail('Moved a course from a category it wasn\'t within');
-        } catch (\moodle_exception $exception) {
+        } catch (moodle_exception $exception) {
             // Check that everything is as it was. Nothing should have been moved.
             $this->assertEquals(1, $cat1->get_courses_count());
             $this->assertEquals(0, $cat2->get_courses_count());
@@ -494,7 +499,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_move_courses_into($sub1, $sub2, array($course2->id));
             $this->fail('Invalid move of course between categories, action can\'t be undone.');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertEquals(get_string('cannotmovecourses', 'error'), $ex->getMessage());
         }
         // Nothing should have changed.
@@ -509,7 +514,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_move_courses_into($sub2, $cat2, array($course4->id));
             $this->fail('Invalid move of course between categories, action can\'t be undone.');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertEquals(get_string('cannotmovecourses', 'error'), $ex->getMessage());
         }
         // Nothing should have changed.
@@ -534,7 +539,7 @@ final class management_helper_test extends \advanced_testcase {
         $cat2 = $generator->create_category(array('parent' => $parent->id, 'name' => 'Two'));
         $cat3 = $generator->create_category(array('parent' => $parent->id, 'name' => 'Three'));
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         list($user, $roleid) = $this->get_user_objects($generator, $syscontext->id);
         course_capability_assignment::allow(self::CATEGORY_MANAGE, $roleid, $syscontext->id);
 
@@ -636,7 +641,7 @@ final class management_helper_test extends \advanced_testcase {
         course_capability_assignment::prevent(self::CATEGORY_MANAGE, $roleid, $parent->get_context()->id);
         try {
             \core_course\management\helper::action_category_change_sortorder_up_one($cat1);
-        } catch (\moodle_exception $exception) {
+        } catch (moodle_exception $exception) {
             // Check everything is still where it should be.
             $this->assertEquals(
                 array('Three', 'One', 'Two'),
@@ -645,7 +650,7 @@ final class management_helper_test extends \advanced_testcase {
         }
         try {
             \core_course\management\helper::action_category_change_sortorder_down_one($cat3);
-        } catch (\moodle_exception $exception) {
+        } catch (moodle_exception $exception) {
             // Check everything is still where it should be.
             $this->assertEquals(
                 array('Three', 'One', 'Two'),
@@ -671,7 +676,7 @@ final class management_helper_test extends \advanced_testcase {
             'shortname' => 'Beginning Jade', 'idnumber' => '10003'));
         $course3 = $generator->create_course(array('category' => $category->id, 'fullname' => 'Advanced algebra',
             'shortname' => 'Advanced algebra', 'idnumber' => '10002'));
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         list($user, $roleid) = $this->get_user_objects($generator, $syscontext->id);
         $caps = course_capability_assignment::allow(self::CATEGORY_MANAGE, $roleid, $syscontext->id);
@@ -713,7 +718,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_resort_courses($category, 'category');
             $this->fail('Category courses resorted by invalid sort field.');
-        } catch (\coding_exception $exception) {
+        } catch (coding_exception $exception) {
             // Test things are as they were before.
             $courses = $category->get_courses();
             $this->assertIsArray($courses);
@@ -726,7 +731,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_resort_courses($category, 'monkeys');
             $this->fail('Category courses resorted by completely ridiculous field.');
-        } catch (\coding_exception $exception) {
+        } catch (coding_exception $exception) {
             // Test things are as they were before.
             $courses = $category->get_courses();
             $this->assertIsArray($courses);
@@ -744,7 +749,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_resort_courses($category, 'shortname');
             $this->fail('Courses sorted without having the required permission.');
-        } catch (\moodle_exception $exception) {
+        } catch (moodle_exception $exception) {
             // Check its the right exception.
             $this->assertEquals('core_course_category::can_resort', $exception->debuginfo);
             // Test things are as they were before.
@@ -771,7 +776,7 @@ final class management_helper_test extends \advanced_testcase {
         $cat2 = $generator->create_category(array('parent' => $parent->id, 'name' => 'School of Commerce', 'idnumber' => '10003'));
         $cat3 = $generator->create_category(array('parent' => $parent->id, 'name' => 'School of Arts', 'idnumber' => '10002'));
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         list($user, $roleid) = $this->get_user_objects($generator, $syscontext->id);
         $caps = course_capability_assignment::allow(self::CATEGORY_MANAGE, $roleid, $syscontext->id);
 
@@ -800,7 +805,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_resort_subcategories($parent, 'summary');
             $this->fail('Categories resorted by invalid field.');
-        } catch (\coding_exception $exception) {
+        } catch (coding_exception $exception) {
             // Check that nothing was changed.
             $categories = $parent->get_children();
             $this->assertIsArray($categories);
@@ -813,7 +818,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_resort_subcategories($parent, 'monkeys');
             $this->fail('Categories resorted by completely bogus field.');
-        } catch (\coding_exception $exception) {
+        } catch (coding_exception $exception) {
             // Check that nothing was changed.
             $categories = $parent->get_children();
             $this->assertIsArray($categories);
@@ -839,7 +844,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::action_category_resort_subcategories($parent, 'idnumber');
             $this->fail('Categories sorted without having the required permission.');
-        } catch (\moodle_exception $exception) {
+        } catch (moodle_exception $exception) {
             // Check its the right exception.
             $this->assertEquals('core_course_category::can_resort', $exception->debuginfo);
             // Test things are as they were before.
@@ -864,7 +869,7 @@ final class management_helper_test extends \advanced_testcase {
         $category = $generator->create_category();
         $course = $generator->create_course();
 
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         list($user, $roleid) = $this->get_user_objects($generator, $coursecontext->id);
         $caps = array(self::COURSE_VIEW, self::COURSE_VIEWHIDDEN);
@@ -910,7 +915,7 @@ final class management_helper_test extends \advanced_testcase {
 
         try {
             \core_course\management\helper::action_course_show($course);
-        } catch (\moodle_exception $exception) {
+        } catch (moodle_exception $exception) {
             $this->assertEquals('core_course_list_element::can_change_visbility', $exception->debuginfo);
         }
     }
@@ -928,7 +933,7 @@ final class management_helper_test extends \advanced_testcase {
         $category = $generator->create_category();
         $course = $generator->create_course();
 
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         list($user, $roleid) = $this->get_user_objects($generator, $coursecontext->id);
         $caps = array(self::COURSE_VIEW, self::COURSE_VIEWHIDDEN);
@@ -974,7 +979,7 @@ final class management_helper_test extends \advanced_testcase {
 
         try {
             \core_course\management\helper::action_course_show_by_record($course);
-        } catch (\moodle_exception $exception) {
+        } catch (moodle_exception $exception) {
             $this->assertEquals('core_course_list_element::can_change_visbility', $exception->debuginfo);
         }
     }
@@ -1079,7 +1084,7 @@ final class management_helper_test extends \advanced_testcase {
             \core_course\management\helper::action_course_change_sortorder_down_one(
                 new core_course_list_element(get_course($course2->id)), $category);
             $this->fail('Course moved without having the required permissions.');
-        } catch (\moodle_exception $exception) {
+        } catch (moodle_exception $exception) {
             // Check nothing has changed.
             $courses = $category->get_courses();
             $this->assertIsArray($courses);
@@ -1096,11 +1101,11 @@ final class management_helper_test extends \advanced_testcase {
         global $PAGE;
         $this->resetAfterTest(true);
 
-        $PAGE->set_url(new \moodle_url('/course/management.php'));
+        $PAGE->set_url(new url('/course/management.php'));
 
         $generator = $this->getDataGenerator();
         $category = $generator->create_category();
-        $context = \context_system::instance();
+        $context = system::instance();
         list($user, $roleid) = $this->get_user_objects($generator, $context->id);
         course_capability_assignment::allow(array(
             self::CATEGORY_MANAGE,
@@ -1132,7 +1137,7 @@ final class management_helper_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $category = $generator->create_category();
         $course = $generator->create_course();
-        $context = \context_system::instance();
+        $context = system::instance();
         list($user, $roleid) = $this->get_user_objects($generator, $context->id);
         $generator->enrol_user($user->id, $course->id, $roleid);
         course_capability_assignment::allow(array(
@@ -1165,7 +1170,7 @@ final class management_helper_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $category = $generator->create_category();
         $course = $generator->create_course();
-        $context = \context_system::instance();
+        $context = system::instance();
         list($user, $roleid) = $this->get_user_objects($generator, $context->id);
         $generator->enrol_user($user->id, $course->id, $roleid);
         course_capability_assignment::allow(array(
@@ -1208,7 +1213,7 @@ final class management_helper_test extends \advanced_testcase {
         $course3 = $generator->create_course(array('category' => $sub1->id));
         $course4 = $generator->create_course(array('category' => $cat2->id));
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         list($user, $roleid) = $this->get_user_objects($generator, $syscontext->id);
 
@@ -1275,7 +1280,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::move_courses_into_category($sub2->id, array($course2->id));
             $this->fail('Invalid move of course between categories, action can\'t be undone.');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertEquals(get_string('cannotmovecourses', 'error'), $ex->getMessage());
         }
         // Nothing should have changed.
@@ -1290,7 +1295,7 @@ final class management_helper_test extends \advanced_testcase {
         try {
             \core_course\management\helper::move_courses_into_category($cat2->id, array($course4->id));
             $this->fail('Invalid move of course between categories, action can\'t be undone.');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertEquals(get_string('cannotmovecourses', 'error'), $ex->getMessage());
         }
         // Nothing should have changed.

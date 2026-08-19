@@ -23,6 +23,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\plugin_manager;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -46,6 +48,6 @@ class testable_plugininfo_base extends \core\plugininfo\base {
     }
 
     public function init_is_standard() {
-        $this->source = core_plugin_manager::PLUGIN_SOURCE_EXTENSION;
+        $this->source = plugin_manager::PLUGIN_SOURCE_EXTENSION;
     }
 }

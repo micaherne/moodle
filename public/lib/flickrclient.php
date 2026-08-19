@@ -22,6 +22,11 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core_cache\cache;
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/oauthlib.php');
@@ -108,7 +113,7 @@ class flickr_client extends oauth_helper {
             throw new coding_exception('Invalid call identification');
         }
 
-        $cache = cache::make_from_params(cache_store::MODE_SESSION, 'core', 'flickrclient', $identifiers);
+        $cache = cache::make_from_params(store::MODE_SESSION, 'core', 'flickrclient', $identifiers);
         $cache->set('request_token_secret', $secret);
     }
 
@@ -127,7 +132,7 @@ class flickr_client extends oauth_helper {
             throw new coding_exception('Invalid call identification');
         }
 
-        $cache = cache::make_from_params(cache_store::MODE_SESSION, 'core', 'flickrclient', $identifiers);
+        $cache = cache::make_from_params(store::MODE_SESSION, 'core', 'flickrclient', $identifiers);
 
         return $cache->get('request_token_secret');
     }
@@ -184,7 +189,7 @@ class flickr_client extends oauth_helper {
      */
     public function get_photo_url($photoid) {
 
-        $cache = cache::make_from_params(cache_store::MODE_APPLICATION, 'core', 'flickrclient');
+        $cache = cache::make_from_params(store::MODE_APPLICATION, 'core', 'flickrclient');
 
         $url = $cache->get('photourl_'.$photoid);
 

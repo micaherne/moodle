@@ -16,6 +16,8 @@
 
 namespace auth_db\task;
 
+use core\output\progress_trace\text_progress_trace;
+
 /**
  * Sync users task class
  * @package   auth_db
@@ -45,7 +47,7 @@ class sync_users extends \core\task\scheduled_task {
 
         $dbauth = \core\di::get(\core\authentication::class)->get_plugin('db');
         $config = get_config('auth_db');
-        $trace = new \text_progress_trace();
+        $trace = new text_progress_trace();
         $update = !empty($config->updateusers);
         $dbauth->sync_users($trace, $update);
     }

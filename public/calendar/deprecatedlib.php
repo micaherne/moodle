@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\output\html_writer;
 use core\url;
 use core_calendar\output\humandate;
 use core_calendar\output\humantimeperiod;
@@ -165,10 +167,10 @@ function calendar_get_courselink($course) {
     if (!is_object($course)) {
         $course = calendar_get_course_cached($coursecache, $course);
     }
-    $context = \context_course::instance($course->id);
+    $context = course::instance($course->id);
     $fullname = format_string($course->fullname, true, ['context' => $context]);
-    $url = new \moodle_url('/course/view.php', ['id' => $course->id]);
-    $link = \html_writer::link($url, $fullname);
+    $url = new url('/course/view.php', ['id' => $course->id]);
+    $link = html_writer::link($url, $fullname);
 
     return $link;
 }

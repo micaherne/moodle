@@ -16,6 +16,7 @@
 
 namespace qbehaviour_missing;
 
+use core\exception\moodle_exception;
 use qbehaviour_missing;
 use question_attempt;
 use question_attempt_pending_step;
@@ -45,28 +46,28 @@ final class missingbehaviour_test extends \advanced_testcase {
     public function test_missing_cannot_start(): void {
         $qa = new question_attempt(\test_question_maker::make_question('truefalse', 'true'), 0);
         $behaviour = new qbehaviour_missing($qa, 'deferredfeedback');
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $behaviour->init_first_step(new question_attempt_step(array()), 1);
     }
 
     public function test_missing_cannot_process(): void {
         $qa = new question_attempt(\test_question_maker::make_question('truefalse', 'true'), 0);
         $behaviour = new qbehaviour_missing($qa, 'deferredfeedback');
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $behaviour->process_action(new question_attempt_pending_step(array()));
     }
 
     public function test_missing_cannot_get_min_fraction(): void {
         $qa = new question_attempt(\test_question_maker::make_question('truefalse', 'true'), 0);
         $behaviour = new qbehaviour_missing($qa, 'deferredfeedback');
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $behaviour->get_min_fraction();
     }
 
     public function test_missing_cannot_get_max_fraction(): void {
         $qa = new question_attempt(\test_question_maker::make_question('truefalse', 'true'), 0);
         $behaviour = new qbehaviour_missing($qa, 'deferredfeedback');
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $behaviour->get_max_fraction();
     }
 

@@ -16,6 +16,8 @@
 
 namespace qbank_history;
 
+use core\context\module;
+use core\url;
 use question_bank;
 
 /**
@@ -62,14 +64,14 @@ final class helper_test extends \advanced_testcase {
         $course = $generator->create_course();
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
         $this->courseid = $course->id;
-        $this->context = \context_module::instance($qbank->cmid);
+        $this->context = module::instance($qbank->cmid);
         // Create a question in the default category.
         $contexts = new \core_question\local\bank\question_edit_contexts($this->context);
         $cat = question_get_default_category($contexts->lowest()->id, true);
         $question = $questiongenerator->create_question('numerical', null,
             ['name' => 'Example question', 'category' => $cat->id]);
         $this->questiondata = question_bank::load_question($question->id);
-        $this->returnurl = new \moodle_url('/question/edit.php');
+        $this->returnurl = new url('/question/edit.php');
     }
 
     /**
@@ -92,7 +94,7 @@ final class helper_test extends \advanced_testcase {
             'cmid' => $this->context->instanceid,
             'filter' => $filter,
         ];
-        $expectedurl = new \moodle_url('/question/bank/history/history.php', $params);
+        $expectedurl = new url('/question/bank/history/history.php', $params);
         $this->assertEquals($expectedurl, $actionurl);
     }
 
@@ -114,7 +116,7 @@ final class helper_test extends \advanced_testcase {
             'returnurl' => $this->returnurl,
             'cmid' => $this->context->instanceid,
         ];
-        $expectedurl = new \moodle_url('/question/bank/history/history.php', $params);
+        $expectedurl = new url('/question/bank/history/history.php', $params);
         $this->assertEquals($expectedurl, $actionurl);
     }
 }

@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace enrol_lti\local\ltiadvantage\repository;
+use core\url;
 use enrol_lti\local\ltiadvantage\entity\context;
 use enrol_lti\local\ltiadvantage\entity\application_registration;
 
@@ -36,11 +37,11 @@ final class context_repository_test extends \advanced_testcase {
         $registration = application_registration::create(
             'Test',
             'a2c94a2c94',
-            new \moodle_url('http://lms.example.org'),
+            new url('http://lms.example.org'),
             'clientid_123',
-            new \moodle_url('https://example.org/authrequesturl'),
-            new \moodle_url('https://example.org/jwksurl'),
-            new \moodle_url('https://example.org/accesstokenurl')
+            new url('https://example.org/authrequesturl'),
+            new url('https://example.org/jwksurl'),
+            new url('https://example.org/accesstokenurl')
         );
         $registrationrepo = new application_registration_repository();
         $createdregistration = $registrationrepo->save($registration);

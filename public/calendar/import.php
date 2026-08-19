@@ -21,6 +21,10 @@
  * @copyright  Moodle Pty Ltd
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir . '/bennu/bennu.inc.php');
 require_once($CFG->dirroot . '/course/lib.php');
@@ -30,8 +34,8 @@ $courseid = optional_param('course', SITEID, PARAM_INT);
 $groupcourseid  = optional_param('groupcourseid', 0, PARAM_INT);
 $category  = optional_param('category', 0, PARAM_INT);
 $data = [];
-$pageurl = new moodle_url('/calendar/import.php');
-$managesubscriptionsurl = new moodle_url('/calendar/managesubscriptions.php');
+$pageurl = new url('/calendar/import.php');
+$managesubscriptionsurl = new url('/calendar/managesubscriptions.php');
 
 $headingstr = $calendarstr = get_string('calendar', 'calendar');
 
@@ -42,10 +46,10 @@ if (!empty($courseid) && $courseid != SITEID) {
     $pageurl->param('course', $course->id);
     $managesubscriptionsurl->param('course', $course->id);
     $headingstr .= ": {$course->shortname}";
-    navigation_node::override_active_url(new moodle_url('/course/view.php', ['id' => $course->id]));
+    navigation_node::override_active_url(new url('/course/view.php', ['id' => $course->id]));
     $PAGE->navbar->add(
         $calendarstr,
-        new moodle_url('/calendar/view.php', ['view' => 'month', 'course' => $course->id])
+        new url('/calendar/view.php', ['view' => 'month', 'course' => $course->id])
     );
 } else if (!empty($category)) {
     $course = get_site();
@@ -53,15 +57,15 @@ if (!empty($courseid) && $courseid != SITEID) {
     $managesubscriptionsurl->param('category', $category);
     $data['category'] = $category;
     $data['eventtype'] = 'category';
-    navigation_node::override_active_url(new moodle_url('/course/index.php', ['categoryid' => $category]));
+    navigation_node::override_active_url(new url('/course/index.php', ['categoryid' => $category]));
     $PAGE->set_category_by_id($category);
     $PAGE->navbar->add(
         $calendarstr,
-        new moodle_url('/calendar/view.php', ['view' => 'month', 'category' => $category])
+        new url('/calendar/view.php', ['view' => 'month', 'category' => $category])
     );
 } else {
     $course = get_site();
-    $PAGE->navbar->add($calendarstr, new moodle_url('/calendar/view.php', ['view' => 'month']));
+    $PAGE->navbar->add($calendarstr, new url('/calendar/view.php', ['view' => 'month']));
 }
 
 if (!empty($groupcourseid)) {
@@ -70,7 +74,7 @@ if (!empty($groupcourseid)) {
 
 require_login($course, false);
 if (!calendar_user_can_add_event($course)) {
-    throw new \moodle_exception('errorcannotimport', 'calendar');
+    throw new moodle_exception('errorcannotimport', 'calendar');
 }
 
 $heading = get_string('importcalendar', 'calendar');
@@ -127,10 +131,10 @@ if (!empty($formdata)) {
     } else {
         try {
             $importresults = calendar_update_subscription_events($subscriptionid);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             // Delete newly added subscription and show invalid url error.
             calendar_delete_subscription($subscriptionid);
-            throw new \moodle_exception($e->errorcode, $e->module, $PAGE->url);
+            throw new moodle_exception($e->errorcode, $e->module, $PAGE->url);
         }
     }
     if (!empty($formdata->courseid)) {

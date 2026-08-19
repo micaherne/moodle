@@ -19,6 +19,7 @@ declare(strict_types=1);
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
 
+use core\url;
 use core_reportbuilder\local\aggregation\groupconcatdistinct;
 use core_reportbuilder\local\models\report;
 use core_reportbuilder\local\report\column;
@@ -45,17 +46,17 @@ class behat_reportbuilder extends behat_base {
      * @return moodle_url
      * @throws Exception for unrecognised report or page type
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
         if (!$report = report::get_record(['name' => $identifier])) {
             throw new Exception("Unknown report '{$identifier}'");
         }
 
         switch ($type) {
             case 'Editor':
-                return new moodle_url('/reportbuilder/edit.php', ['id' => $report->get('id')]);
+                return new url('/reportbuilder/edit.php', ['id' => $report->get('id')]);
 
             case 'View':
-                return new moodle_url('/reportbuilder/view.php', ['id' => $report->get('id')]);
+                return new url('/reportbuilder/view.php', ['id' => $report->get('id')]);
 
             default:
                 throw new Exception("Unrecognised reportbuilder page type '{$type}'");

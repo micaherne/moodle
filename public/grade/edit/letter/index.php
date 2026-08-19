@@ -22,6 +22,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+use core_cache\cache;
+use core_table\output\html_table;
+
 require_once '../../../config.php';
 require_once $CFG->dirroot.'/grade/lib.php';
 require_once $CFG->libdir.'/gradelib.php';
@@ -30,7 +37,7 @@ $contextid = optional_param('id', SYSCONTEXTID, PARAM_INT);
 $action   = optional_param('action', '', PARAM_ALPHA);
 $edit     = optional_param('edit', false, PARAM_BOOL); //are we editing?
 
-$url = new moodle_url('/grade/edit/letter/index.php', array('id' => $contextid));
+$url = new url('/grade/edit/letter/index.php', array('id' => $contextid));
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 $contextid = null;//now we have a context object throw away the $contextid from the params
@@ -38,7 +45,7 @@ $contextid = null;//now we have a context object throw away the $contextid from 
 //if viewing
 if (!$edit) {
     if (!has_capability('moodle/grade:manage', $context) and !has_capability('moodle/grade:manageletters', $context)) {
-        throw new \moodle_exception('nopermissiontoviewletergrade');
+        throw new moodle_exception('nopermissiontoviewletergrade');
     }
 } else {//else we're editing
     require_capability('moodle/grade:manageletters', $context);
@@ -71,7 +78,7 @@ if ($context->contextlevel == CONTEXT_SYSTEM or $context->contextlevel == CONTEX
 
     $gpr = new grade_plugin_return(array('type'=>'edit', 'plugin'=>'letter', 'courseid'=>$course->id));
 } else {
-    throw new \moodle_exception('invalidcourselevel');
+    throw new moodle_exception('invalidcourselevel');
 }
 
 $strgrades = get_string('grades');

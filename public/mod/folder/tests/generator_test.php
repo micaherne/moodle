@@ -16,6 +16,8 @@
 
 namespace mod_folder;
 
+use core\context\user;
+
 /**
  * Generator tests class for mod_folder.
  *
@@ -50,7 +52,7 @@ final class generator_test extends \advanced_testcase {
             'course' => $course->id,
             'files' => file_get_unused_draft_itemid()
         );
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $filerecord = array('component' => 'user', 'filearea' => 'draft',
                 'contextid' => $usercontext->id, 'itemid' => $params['files'],
                 'filename' => 'file1.txt', 'filepath' => '/');

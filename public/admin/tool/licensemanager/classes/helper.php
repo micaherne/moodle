@@ -17,7 +17,7 @@
 
 namespace tool_licensemanager;
 
-use moodle_url;
+use core\url;
 
 
 /**
@@ -39,8 +39,8 @@ class helper {
      *
      * @return \moodle_url
      */
-    public static function get_licensemanager_url(): moodle_url {
-        return new moodle_url(self::MANAGER_PATH);
+    public static function get_licensemanager_url(): url {
+        return new url(self::MANAGER_PATH);
     }
 
     /**
@@ -50,8 +50,8 @@ class helper {
      *
      * @return \moodle_url
      */
-    public static function get_enable_license_url(string $licenseshortname): moodle_url {
-        $url = new moodle_url(self::MANAGER_PATH,
+    public static function get_enable_license_url(string $licenseshortname): url {
+        $url = new url(self::MANAGER_PATH,
             ['action' => manager::ACTION_ENABLE, 'license' => $licenseshortname, 'sesskey' => sesskey()]);
 
         return $url;
@@ -64,8 +64,8 @@ class helper {
      *
      * @return \moodle_url
      */
-    public static function get_disable_license_url(string $licenseshortname): moodle_url {
-        $url = new moodle_url(self::MANAGER_PATH,
+    public static function get_disable_license_url(string $licenseshortname): url {
+        $url = new url(self::MANAGER_PATH,
             ['action' => manager::ACTION_DISABLE, 'license' => $licenseshortname, 'sesskey' => sesskey()]);
 
         return $url;
@@ -76,7 +76,7 @@ class helper {
      *
      * @return \moodle_url
      */
-    public static function get_create_license_url(): moodle_url {
+    public static function get_create_license_url(): url {
         $url = self::get_licensemanager_url();
         $url->params(['action' => manager::ACTION_CREATE]);
         return $url;
@@ -89,7 +89,7 @@ class helper {
      *
      * @return \moodle_url
      */
-    public static function get_update_license_url(string $licenseshortname): moodle_url {
+    public static function get_update_license_url(string $licenseshortname): url {
         $url = self::get_licensemanager_url();
         $url->params(['action' => manager::ACTION_UPDATE, 'license' => $licenseshortname]);
         return $url;
@@ -102,8 +102,8 @@ class helper {
      *
      * @return \moodle_url
      */
-    public static function get_moveup_license_url(string $licenseshortname): moodle_url {
-        $url = new moodle_url(self::MANAGER_PATH,
+    public static function get_moveup_license_url(string $licenseshortname): url {
+        $url = new url(self::MANAGER_PATH,
             ['action' => manager::ACTION_MOVE_UP, 'license' => $licenseshortname, 'sesskey' => sesskey()]);
 
         return $url;
@@ -116,8 +116,8 @@ class helper {
      *
      * @return \moodle_url
      */
-    public static function get_movedown_license_url(string $licenseshortname): moodle_url {
-        $url = new moodle_url(self::MANAGER_PATH,
+    public static function get_movedown_license_url(string $licenseshortname): url {
+        $url = new url(self::MANAGER_PATH,
             ['action' => manager::ACTION_MOVE_DOWN, 'license' => $licenseshortname, 'sesskey' => sesskey()]);
 
         return $url;

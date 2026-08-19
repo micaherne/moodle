@@ -25,6 +25,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+
 global $CFG;
 
 require_once('HTML/QuickForm/element.php');
@@ -92,7 +98,7 @@ class MoodleQuickForm_editor extends HTML_QuickForm_element implements templatab
             if (!empty($PAGE->context->id)) {
                 $this->_options['context'] = $PAGE->context;
             } else {
-                $this->_options['context'] = context_system::instance();
+                $this->_options['context'] = system::instance();
             }
         }
         $this->_options['trusted'] = trusttext_trusted($this->_options['context']);
@@ -454,7 +460,7 @@ class MoodleQuickForm_editor extends HTML_QuickForm_element implements templatab
                         'value' => $draftitemid));
 
                 // used by non js editor only
-                $editorurl = new moodle_url("$CFG->wwwroot/repository/draftfiles_manager.php", array(
+                $editorurl = new url("$CFG->wwwroot/repository/draftfiles_manager.php", array(
                     'action'=>'browse',
                     'env'=>'editor',
                     'itemid'=>$draftitemid,

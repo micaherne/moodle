@@ -183,7 +183,7 @@ final class grade_item_test extends \grade_base_testcase {
         $this->assertCount(4, $files);
 
         // Now disable the mod plugin.
-        $class = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $class = plugin_manager::resolve_plugininfo_class('mod');
         $class::enable_plugin($this->course_module[8]->modname, false);
         $this->assertFalse(in_array($this->course_module[8]->modname, \core\plugininfo\mod::get_enabled_plugins()));
         rebuild_course_cache($this->course->id);

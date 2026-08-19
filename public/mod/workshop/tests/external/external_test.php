@@ -26,6 +26,10 @@
 
 namespace mod_workshop\external;
 
+use core\context\module;
+use core\context\user;
+use core\url;
+use core_course\modinfo;
 use core_external\external_api;
 use mod_workshop_external;
 use workshop;
@@ -91,7 +95,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
                 'overallfeedbackfiles' => 1,
             )
         );
-        $this->context = \context_module::instance($this->workshop->cmid);
+        $this->context = module::instance($this->workshop->cmid);
         $this->cm = get_coursemodule_from_instance('workshop', $this->workshop->id);
 
         // Add grading strategy data (accumulative is the default).
@@ -444,7 +448,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_workshop\event\course_module_viewed', $event);
         $this->assertEquals($this->context, $event->get_context());
-        $moodleworkshop = new \moodle_url('/mod/workshop/view.php', array('id' => $this->cm->id));
+        $moodleworkshop = new url('/mod/workshop/view.php', array('id' => $this->cm->id));
         $this->assertEquals($moodleworkshop, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -459,7 +463,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         assign_capability('mod/workshop:view', CAP_PROHIBIT, $this->studentrole->id, $this->context->id);
         // Empty all the caches that may be affected  by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
         $this->setUser($this->student);
         $this->expectException('moodle_exception');
@@ -480,7 +484,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Create a file in a draft area for inline attachments.
         $draftidinlineattach = file_get_unused_draft_itemid();
-        $usercontext = \context_user::instance($this->student->id);
+        $usercontext = user::instance($this->student->id);
         $filenameimg = 'shouldbeanimage.txt';
         $filerecordinline = array(
             'contextid' => $usercontext->id,
@@ -567,7 +571,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_add_submission_already_added(): void {
         $this->setUser($this->student);
 
-        $usercontext = \context_user::instance($this->student->id);
+        $usercontext = user::instance($this->student->id);
         $fs = get_file_storage();
         $draftidattach = file_get_unused_draft_itemid();
         $filerecordattach = [
@@ -614,7 +618,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Create a file in a draft area for inline attachments.
         $fs = get_file_storage();
         $draftidinlineattach = file_get_unused_draft_itemid();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $filenameimg = 'shouldbeanimage.txt';
         $filerecordinline = array(
             'contextid' => $usercontext->id,
@@ -660,7 +664,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Create a different file in a draft area for inline attachments.
         $fs = get_file_storage();
         $draftidinlineattach = file_get_unused_draft_itemid();
-        $usercontext = \context_user::instance($this->student->id);
+        $usercontext = user::instance($this->student->id);
         $filenameimg = 'shouldbeanimage_new.txt';
         $filerecordinline = array(
             'contextid' => $usercontext->id,
@@ -933,7 +937,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         assign_capability('mod/workshop:viewallsubmissions', CAP_PROHIBIT, $this->teacher->id, $this->context->id);
         // Empty all the caches that may be affected  by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
         $this->setUser($this->teacher);
         $result = mod_workshop_external::get_submissions($this->workshop->id, $this->student->id);
@@ -1540,7 +1544,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Create a file in a draft area for inline attachments.
         $fs = get_file_storage();
         $draftidinlineattach = file_get_unused_draft_itemid();
-        $usercontext = \context_user::instance($this->student->id);
+        $usercontext = user::instance($this->student->id);
         $filenameimg = 'shouldbeanimage.txt';
         $filerecordinline = array(
             'contextid' => $usercontext->id,
@@ -1846,7 +1850,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_workshop\event\submission_viewed', $event);
         $this->assertEquals($this->context, $event->get_context());
-        $moodleworkshop = new \moodle_url('/mod/workshop/submission.php', array('id' => $firstsubmissionid,
+        $moodleworkshop = new url('/mod/workshop/submission.php', array('id' => $firstsubmissionid,
             'cmid' => $this->cm->id));
         $this->assertEquals($moodleworkshop, $event->get_url());
         $this->assertEventContextNotUsed($event);

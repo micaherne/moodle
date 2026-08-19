@@ -25,6 +25,8 @@
 
 require_once(__DIR__ . '/../../config.php');
 
+use core\context;
+use core\navigation\navigation_node;
 use core\output\notification;
 use core\url;
 
@@ -34,7 +36,7 @@ $cmid = optional_param('cm', null, PARAM_INT);
 $recalculate = optional_param('recalculate', 0, PARAM_INT);
 
 // Page URL.
-$url = new moodle_url('/grade/penalty/view.php', ['contextid' => $contextid]);
+$url = new url('/grade/penalty/view.php', ['contextid' => $contextid]);
 if ($cmid !== null) {
     $url->param('cm', $cmid);
 }
@@ -91,7 +93,7 @@ if ($context->contextlevel == CONTEXT_COURSE || $context->contextlevel == CONTEX
 
 // Penalty plugins.
 $haspenaltypluginnode = false;
-if ($penaltynode = $PAGE->settingsnav->find('gradepenalty', \navigation_node::TYPE_CONTAINER)) {
+if ($penaltynode = $PAGE->settingsnav->find('gradepenalty', navigation_node::TYPE_CONTAINER)) {
     foreach ($penaltynode->children as $child) {
         if ($child->display) {
             $haspenaltypluginnode = true;

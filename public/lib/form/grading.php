@@ -25,6 +25,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\renderer_base;
+use core\output\templatable;
+
 global $CFG;
 require_once("HTML/QuickForm/element.php");
 require_once($CFG->dirroot.'/grade/grading/form/lib.php');

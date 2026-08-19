@@ -16,6 +16,7 @@
 
 namespace core_grading;
 
+use core\exception\moodle_exception;
 use grading_manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -85,7 +86,7 @@ final class grading_manager_test extends \advanced_testcase {
         $this->assertEquals('rubric', $gradingman->get_active_method());
 
         // attempting to set an invalid method
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $gradingman->set_active_method('no_one_should_ever_try_to_implement_a_method_with_this_silly_name');
     }
 

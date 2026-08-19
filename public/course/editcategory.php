@@ -26,6 +26,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\coursecat;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\lang_string;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 
@@ -33,12 +40,12 @@ require_login();
 
 $id = optional_param('id', 0, PARAM_INT);
 
-$url = new moodle_url('/course/editcategory.php');
+$url = new url('/course/editcategory.php');
 if ($id) {
     $coursecat = core_course_category::get($id, MUST_EXIST, true);
     $category = $coursecat->get_db_record();
-    $context = context_coursecat::instance($id);
-    navigation_node::override_active_url(new moodle_url('/course/index.php', ['categoryid' => $category->id]));
+    $context = coursecat::instance($id);
+    navigation_node::override_active_url(new url('/course/index.php', ['categoryid' => $category->id]));
     $PAGE->navbar->add(get_string('settings'));
     $PAGE->set_primary_active_tab('home');
     $PAGE->set_secondary_active_tab('edit');
@@ -55,14 +62,14 @@ if ($id) {
     $strtitle = get_string('addnewcategory');
     if ($parent) {
         $parentcategory = $DB->get_record('course_categories', array('id' => $parent), '*', MUST_EXIST);
-        $context = context_coursecat::instance($parent);
-        navigation_node::override_active_url(new moodle_url('/course/index.php', ['categoryid' => $parent]));
+        $context = coursecat::instance($parent);
+        navigation_node::override_active_url(new url('/course/index.php', ['categoryid' => $parent]));
         $fullname = format_string($parentcategory->name, true, ['context' => $context->id]);
         $title = "$fullname: $strtitle";
-        $managementurl = new moodle_url('/course/management.php');
+        $managementurl = new url('/course/management.php');
         // These are the caps required in order to see the management interface.
         $managementcaps = array('moodle/category:manage', 'moodle/course:create');
-        if (!has_any_capability($managementcaps, context_system::instance())) {
+        if (!has_any_capability($managementcaps, system::instance())) {
             // If the user doesn't have either manage caps then they can only manage within the given category.
             $managementurl->param('categoryid', $parent);
         }
@@ -70,7 +77,7 @@ if ($id) {
         $PAGE->navbar->add(get_string('coursemgmt', 'admin'), $managementurl);
         $PAGE->navbar->add(get_string('addcategory', 'admin'));
     } else {
-        $context = context_system::instance();
+        $context = system::instance();
         $fullname = $SITE->fullname;
         $title = $strtitle;
         $PAGE->set_secondary_active_tab('courses');
@@ -106,7 +113,7 @@ $mform->set_data(file_prepare_standard_editor(
     $itemid
 ));
 
-$manageurl = new moodle_url('/course/management.php');
+$manageurl = new url('/course/management.php');
 if ($mform->is_cancelled()) {
     if ($id) {
         $manageurl->param('categoryid', $id);
@@ -117,7 +124,7 @@ if ($mform->is_cancelled()) {
 } else if ($data = $mform->get_data()) {
     if (isset($coursecat)) {
         if ((int)$data->parent !== (int)$coursecat->parent && !$coursecat->can_change_parent($data->parent)) {
-            throw new \moodle_exception('cannotmovecategory');
+            throw new moodle_exception('cannotmovecategory');
         }
         $coursecat->update($data, $mform->get_description_editor_options());
     } else {

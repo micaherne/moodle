@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_multiple_structure;
 use core_external\external_settings;
@@ -130,7 +135,7 @@ class webservice {
         }
 
         // Cannot authenticate unless maintenance access is granted.
-        $hasmaintenanceaccess = has_capability('moodle/site:maintenanceaccess', context_system::instance(), $user);
+        $hasmaintenanceaccess = has_capability('moodle/site:maintenanceaccess', system::instance(), $user);
         if (!empty($CFG->maintenance_enabled) and !$hasmaintenanceaccess) {
             //this is usually temporary, client want to implement code logic  => moodle_exception
             throw new moodle_exception('sitemaintenance', 'admin');
@@ -144,7 +149,7 @@ class webservice {
         }
 
         //check if there is any required system capability
-        if ($service->requiredcapability and !has_capability($service->requiredcapability, context_system::instance(), $user)) {
+        if ($service->requiredcapability and !has_capability($service->requiredcapability, system::instance(), $user)) {
             throw new webservice_access_exception('The capability ' . $service->requiredcapability . ' is required.');
         }
 
@@ -284,7 +289,7 @@ class webservice {
 
         $params = array($CFG->siteguest, $serviceid);
 
-        $userfields = \core_user\fields::for_identity(context_system::instance())->with_name()->excluding('id');
+        $userfields = \core_user\fields::for_identity(system::instance())->with_name()->excluding('id');
         $fieldsql = $userfields->get_sql('u');
 
         $sql = " SELECT u.id as id, esu.id as serviceuserid {$fieldsql->selects},
@@ -333,7 +338,7 @@ class webservice {
         global $CFG, $DB;
 
         // generate a token for non admin if web service are enable and the user has the capability to create a token
-        if (!is_siteadmin() && has_capability('moodle/webservice:createtoken', context_system::instance(), $userid) && !empty($CFG->enablewebservices)) {
+        if (!is_siteadmin() && has_capability('moodle/webservice:createtoken', system::instance(), $userid) && !empty($CFG->enablewebservices)) {
             // for every service than the user is authorised on, create a token (if it doesn't already exist)
 
             // get all services which are set to all user (no restricted to specific users)
@@ -369,7 +374,7 @@ class webservice {
                     $newtoken->userid = $userid;
                     $newtoken->externalserviceid = $serviceid;
                     // TODO MDL-31190 find a way to get the context - UPDATE FOLLOWING LINE
-                    $newtoken->contextid = context_system::instance()->id;
+                    $newtoken->contextid = system::instance()->id;
                     $newtoken->creatorid = $userid;
                     $newtoken->timecreated = time();
                     $newtoken->name = \core_external\util::generate_token_name();
@@ -1029,7 +1034,7 @@ abstract class webservice_server implements webservice_server_interface {
                 throw new webservice_access_exception('The web service authentication plugin is missing.');
             }
 
-            $this->restricted_context = context_system::instance();
+            $this->restricted_context = system::instance();
 
             if (!$this->username) {
                 throw new moodle_exception('missingusername', 'webservice');

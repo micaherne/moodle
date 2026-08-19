@@ -24,6 +24,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** Try the best way */
@@ -67,10 +71,10 @@ function resourcelib_try_file_migration($filepath, $cmid, $courseid, $component,
         return false;
     }
 
-    if (!$context = context_module::instance($cmid)) {
+    if (!$context = module::instance($cmid)) {
         return false;
     }
-    if (!$coursecontext = context_course::instance($courseid)) {
+    if (!$coursecontext = course::instance($courseid)) {
         return false;
     }
 
@@ -146,7 +150,7 @@ function resourcelib_guess_url_mimetype($fullurl) {
     global $CFG;
     require_once("$CFG->libdir/filelib.php");
 
-    if ($fullurl instanceof moodle_url) {
+    if ($fullurl instanceof url) {
         $fullurl = $fullurl->out(false);
     }
 
@@ -189,7 +193,7 @@ function resourcelib_guess_url_mimetype($fullurl) {
  */
 function resourcelib_get_extension($fullurl) {
 
-    if ($fullurl instanceof moodle_url) {
+    if ($fullurl instanceof url) {
         $fullurl = $fullurl->out(false);
     }
 
@@ -257,7 +261,7 @@ function resourcelib_embed_pdf($fullurl, $title, $clicktoopen) {
 function resourcelib_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
     global $CFG, $PAGE;
 
-    if ($fullurl instanceof moodle_url) {
+    if ($fullurl instanceof url) {
         $fullurl = $fullurl->out();
     }
 

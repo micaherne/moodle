@@ -16,7 +16,7 @@
 
 namespace core_courseformat\output\local\content\cm;
 
-use cm_info;
+use core_course\cm_info;
 use core\context\course as context_course;
 use core\context\module as context_module;
 use core\output\action_menu;
@@ -27,7 +27,7 @@ use core_courseformat\base as course_format;
 use core_courseformat\output\local\content\basecontrolmenu;
 use core\output\pix_icon;
 use core\url;
-use section_info;
+use core_course\section_info;
 
 /**
  * Base class to render delegated section controls.

@@ -16,6 +16,8 @@
 
 namespace core_admin\external;
 
+use core\context\system;
+use core\plugin_manager;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -61,13 +63,13 @@ class set_plugin_state extends external_api {
             'state' => $state,
         ]);
 
-        $context = \context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 
         [$plugintype, $pluginname] = explode('_', \core_component::normalize_componentname($plugin), 2);
 
-        $manager = \core_plugin_manager::resolve_plugininfo_class($plugintype);
+        $manager = plugin_manager::resolve_plugininfo_class($plugintype);
         $displayname = get_string('pluginname', $plugin);
 
         if ($manager::enable_plugin($pluginname, $state)) {

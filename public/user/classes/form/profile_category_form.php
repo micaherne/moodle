@@ -16,9 +16,10 @@
 
 namespace core_user\form;
 
-use context;
+use core\context;
+use core\context\system;
 use core_form\dynamic_form;
-use moodle_url;
+use core\url;
 
 /**
  * Modal form to edit profile category
@@ -83,7 +84,7 @@ class profile_category_form extends dynamic_form {
      * @return context
      */
     protected function get_context_for_dynamic_submission(): context {
-        return \context_system::instance();
+        return system::instance();
     }
 
     /**
@@ -117,9 +118,9 @@ class profile_category_form extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $id = $this->optional_param('id', 0, PARAM_INT);
-        return new moodle_url('/user/profile/index.php',
+        return new url('/user/profile/index.php',
             ['action' => 'editcategory', 'id' => $id]);
     }
 }

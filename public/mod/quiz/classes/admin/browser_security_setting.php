@@ -16,6 +16,7 @@
 
 namespace mod_quiz\admin;
 
+use core_admin\setting\setting\configselect_with_advanced;
 use mod_quiz\access_manager;
 
 /**
@@ -28,7 +29,7 @@ use mod_quiz\access_manager;
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class browser_security_setting extends \admin_setting_configselect_with_advanced {
+class browser_security_setting extends configselect_with_advanced {
     public function load_choices() {
         global $CFG;
 

@@ -25,6 +25,13 @@
 namespace mod_assign;
 
 use assign;
+use core\context\course;
+use core\context\module;
+use core\context\user;
+use core\output\user_picture;
+use core\plugin_manager;
+use core\test\phpunit\phpunit_util;
+use core\url;
 use mod_assign\event\assessable_submitted;
 use mod_assign_grade_form;
 use mod_assign_test_generator;
@@ -60,7 +67,7 @@ final class locallib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
 
         $assign = $this->create_instance($course);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         $assign->register_return_link('RETURNACTION', ['param' => 1]);
         $this->assertEquals('RETURNACTION', $assign->get_return_action());
@@ -220,7 +227,7 @@ final class locallib_test extends \advanced_testcase {
                 'grade' => GRADE_TYPE_NONE,
             ]);
 
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', [
+        $PAGE->set_url(new url('/mod/assign/view.php', [
             'id' => $assign->get_course_module()->id,
             'action' => 'grading',
         ]));
@@ -252,7 +259,7 @@ final class locallib_test extends \advanced_testcase {
                 'assignsubmission_onlinetext_enabled' => 1,
                 'duedate' => time() - (4 * DAYSECS),
             ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', [
+        $PAGE->set_url(new url('/mod/assign/view.php', [
             'id' => $assign->get_course_module()->id,
             'action' => 'grading',
         ]));
@@ -311,7 +318,7 @@ final class locallib_test extends \advanced_testcase {
                 'assignsubmission_onlinetext_enabled' => 1,
                 'duedate' => time() - (4 * DAYSECS),
             ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', [
+        $PAGE->set_url(new url('/mod/assign/view.php', [
             'id' => $assign->get_course_module()->id,
             'action' => 'grading',
         ]));
@@ -376,7 +383,7 @@ final class locallib_test extends \advanced_testcase {
             'assignsubmission_onlinetext_enabled' => 1,
             'duedate' => $time - (4 * DAYSECS),
          ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', [
+        $PAGE->set_url(new url('/mod/assign/view.php', [
             'id' => $assign->get_course_module()->id,
             'action' => 'grading',
         ]));
@@ -448,7 +455,7 @@ final class locallib_test extends \advanced_testcase {
             'submissiondrafts' => 1,
             'requireallteammemberssubmit' => 0,
         ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', [
+        $PAGE->set_url(new url('/mod/assign/view.php', [
             'id' => $assign->get_course_module()->id,
             'action' => 'grading',
         ]));
@@ -733,7 +740,7 @@ final class locallib_test extends \advanced_testcase {
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
 
         $this->setUser($teacher);
-        $userctx = \context_user::instance($teacher->id)->id;
+        $userctx = user::instance($teacher->id)->id;
 
         // Hack to pretend that there was an editor involved. We need both $_POST and $_REQUEST, and a sesskey.
         $draftid = file_get_unused_draft_itemid();
@@ -845,7 +852,7 @@ final class locallib_test extends \advanced_testcase {
 
         $assign = $this->create_instance($course, ['submissiondrafts' => 1]);
 
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Test you cannot see the submit button for an offline assignment regardless.
         $this->setUser($student);
@@ -870,7 +877,7 @@ final class locallib_test extends \advanced_testcase {
             'assignsubmission_onlinetext_enabled' => 1,
         ]);
 
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Test you cannot see the submit button for an online text assignment with no submission.
         $this->setUser($student);
@@ -895,7 +902,7 @@ final class locallib_test extends \advanced_testcase {
             'assignsubmission_onlinetext_enabled' => 1,
         ]);
 
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Add a draft.
         $this->add_submission($student, $assign);
@@ -938,7 +945,7 @@ final class locallib_test extends \advanced_testcase {
         if ($data['file'] && isset($data['file']['filename'])) {
             $itemid = file_get_unused_draft_itemid();
             $submission->files_filemanager = $itemid;
-            $data['file'] += ['contextid' => \context_user::instance($student->id)->id, 'itemid' => $itemid];
+            $data['file'] += ['contextid' => user::instance($student->id)->id, 'itemid' => $itemid];
             $fs = get_file_storage();
             $fs->create_file_from_string((object)$data['file'], 'Content of ' . $data['file']['filename']);
         }
@@ -1084,7 +1091,7 @@ final class locallib_test extends \advanced_testcase {
         // When students cannot submit, they are not counted as participants.
         $studentroleid = $DB->get_field('role', 'id', ['shortname' => 'student']);
         $cm = get_coursemodule_from_instance('assign', $assign->get_instance()->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         assign_capability('mod/assign:submit', CAP_PROHIBIT, $studentroleid, $context->id);
 
         $this->assertEquals(0, $assign->count_participants_by_groups([$allgroups['groupa']->id]));
@@ -1165,7 +1172,7 @@ final class locallib_test extends \advanced_testcase {
         global $DB;
         $this->resetAfterTest();
         $course = self::getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $assign = $this->create_instance($course);
         $teacher = self::getDataGenerator()->create_and_enrol($course, 'teacher');
         $student = self::getDataGenerator()->create_and_enrol($course, 'student');
@@ -1186,7 +1193,7 @@ final class locallib_test extends \advanced_testcase {
         global $DB;
         $this->resetAfterTest();
         $course = self::getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $assign = $this->create_instance($course);
         $teacher = self::getDataGenerator()->create_and_enrol($course, 'teacher');
         $student = self::getDataGenerator()->create_and_enrol($course, 'student');
@@ -2003,7 +2010,7 @@ final class locallib_test extends \advanced_testcase {
         $this->assertEquals($assign->get_course_module()->id, $customdata->cmid);
         $this->assertEquals($assign->get_instance()->id, $customdata->instance);
         $this->assertEquals('feedbackavailable', $customdata->messagetype);
-        $userpicture = new \user_picture($teacher);
+        $userpicture = new user_picture($teacher);
         $userpicture->size = 1; // Use f1 size.
         $this->assertEquals($userpicture->get_url($PAGE)->out(false), $customdata->notificationiconurl);
         $this->assertEquals(0, $customdata->uniqueidforuser);   // Not used in this case.
@@ -2135,10 +2142,10 @@ final class locallib_test extends \advanced_testcase {
 
         // Get some bits we will need to verify the content of the message.
         $assignname = $assign->get_instance()->name;
-        $assignurl = (new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]))->out();
+        $assignurl = (new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]))->out();
         $teachername = fullname($teacher);
-        $assignsurl = (new \moodle_url('/mod/assign/index.php', ['id' => $course->id]))->out();
-        $courseurl = (new \moodle_url('/course/view.php', ['id' => $course->id]))->out();
+        $assignsurl = (new url('/mod/assign/index.php', ['id' => $course->id]))->out();
+        $courseurl = (new url('/course/view.php', ['id' => $course->id]))->out();
 
         $message = $messages[0];
         $this->assertEquals(1, $message->notification);
@@ -2195,7 +2202,7 @@ You can see it appended to your <a href="' . $assignurl .
         $this->add_submission($student, $assign);
         $this->submit_for_grading($student, $assign);
         $this->grade_submission($teacher, $assign, $student);
-        \phpunit_util::stop_message_redirection();
+        phpunit_util::stop_message_redirection();
 
         // Now run cron and see that one message was sent.
         \core\cron::setup_user();
@@ -2442,7 +2449,7 @@ You can see it appended to your <a href="' . $assignurl .
 
         // Now verify group assignments.
         $this->setUser($teacher);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Add a submission.
         $this->add_submission($student, $assign);
@@ -2497,7 +2504,7 @@ You can see it appended to your <a href="' . $assignurl .
             'requireallteammemberssubmit' => 0,
             'duedate' => $time - (2 * DAYSECS),
         ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Add a submission.
         $this->add_submission($student, $assign);
@@ -2731,7 +2738,7 @@ You can see it appended to your <a href="' . $assignurl .
         $this->getDataGenerator()->create_and_enrol($course, 'teacher');
 
         $capability = 'mod/assign:receivegradernotifications';
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $role = $DB->get_record('role', ['shortname' => 'teacher']);
 
         $this->setUser($teacher);
@@ -2790,7 +2797,7 @@ You can see it appended to your <a href="' . $assignurl .
 
         // Change nonediting teachers role to not receive grader notifications.
         $capability = 'mod/assign:receivegradernotifications';
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $role = $DB->get_record('role', ['shortname' => 'teacher']);
         assign_capability($capability, CAP_PROHIBIT, $role->id, $coursecontext);
 
@@ -2893,7 +2900,7 @@ You can see it appended to your <a href="' . $assignurl .
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $this->setUser($teacher);
         $assign = $this->create_instance($course);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // No feedback should be available because this student has not been graded.
         $this->setUser($student);
@@ -2966,7 +2973,7 @@ You can see it appended to your <a href="' . $assignurl .
         $assign = $this->create_instance($course, [
             'assignfeedback_comments_enabled' => 1,
         ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // No feedback should be available because this student has not been graded.
         $this->setUser($student);
@@ -3044,7 +3051,7 @@ You can see it appended to your <a href="' . $assignurl .
             'submissiondrafts' => 1,
             'assignsubmission_onlinetext_enabled' => 1,
         ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Student should be able to see an add submission button.
         $this->setUser($student);
@@ -3142,7 +3149,7 @@ You can see it appended to your <a href="' . $assignurl .
             'submissiondrafts' => 1,
             'assignsubmission_onlinetext_enabled' => 1,
         ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Set grade to pass to 80.
         $gradeitem = $assign->get_grade_item();
@@ -3216,7 +3223,7 @@ You can see it appended to your <a href="' . $assignurl .
             'submissiondrafts' => 1,
             'assignsubmission_onlinetext_enabled' => 1,
         ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Set grade to pass to 80.
         $gradeitem = $assign->get_grade_item();
@@ -3259,7 +3266,7 @@ You can see it appended to your <a href="' . $assignurl .
             'submissiondrafts' => 1,
             'assignsubmission_onlinetext_enabled' => 1,
         ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Set grade to pass to 0, so that no attempts should reopen.
         $gradeitem = $assign->get_grade_item();
@@ -3307,7 +3314,7 @@ You can see it appended to your <a href="' . $assignurl .
             'submissiondrafts' => 1,
             'assignsubmission_onlinetext_enabled' => 1,
         ]);
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Set grade to pass to 80.
         $gradeitem = $assign->get_grade_item();
@@ -3363,7 +3370,7 @@ You can see it appended to your <a href="' . $assignurl .
             'markingworkflow' => 1,
         ]);
 
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Mark the submission and set to notmarked.
         $this->grade_submission($teacher, $assign, $student, 50.0, [
@@ -3466,7 +3473,7 @@ You can see it appended to your <a href="' . $assignurl .
             'submissiondrafts' => 1,
         ]);
 
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Add a submission but do not submit.
         $this->add_submission($student, $assign, 'Student submission text');
@@ -3505,7 +3512,7 @@ You can see it appended to your <a href="' . $assignurl .
         role_assign($roleid, $teacher->id, $assign->get_context()->id);
         accesslib_clear_all_caches_for_unit_testing();
 
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Add a submission but do not submit.
         $this->add_submission($student, $assign, 'Student submission text');
@@ -3571,7 +3578,7 @@ You can see it appended to your <a href="' . $assignurl .
             'assignsubmission_onlinetext_enabled' => 1,
         ]);
 
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Student should be able to see an add submission button.
         $this->setUser($student);
@@ -3761,7 +3768,7 @@ Anchor link 2:<a title=\"bananas\" href=\"../logo-240x60.gif\">Link text</a>
         $mform = new mod_assign_grade_form(null, [$assign, $data, $pagination]);
 
         // We need to get the URL these will be transformed to.
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         $itemid = $data->assignfeedbackcomments_editor['itemid'];
         $url = $CFG->wwwroot . '/draftfile.php/' . $context->id . '/user/draft/' . $itemid;
 
@@ -4196,7 +4203,7 @@ Anchor link 2:<a title=\"bananas\" href=\"../logo-240x60.gif\">Link text</a>
 
         // Test that all the submission and feedback plugins are returning the expected file aras.
         $usingfilearea = 0;
-        $coreplugins = \core_plugin_manager::standard_plugins_list('assignsubmission');
+        $coreplugins = plugin_manager::standard_plugins_list('assignsubmission');
         foreach ($assign->get_submission_plugins() as $plugin) {
             $type = $plugin->get_type();
             if (!in_array($type, $coreplugins)) {
@@ -4217,7 +4224,7 @@ Anchor link 2:<a title=\"bananas\" href=\"../logo-240x60.gif\">Link text</a>
         $this->assertEquals(2, $usingfilearea);
 
         $usingfilearea = 0;
-        $coreplugins = \core_plugin_manager::standard_plugins_list('assignfeedback');
+        $coreplugins = plugin_manager::standard_plugins_list('assignfeedback');
         foreach ($assign->get_feedback_plugins() as $plugin) {
             $type = $plugin->get_type();
             if (!in_array($type, $coreplugins)) {
@@ -4704,7 +4711,7 @@ Anchor link 2:<a title=\"bananas\" href=\"../logo-240x60.gif\">Link text</a>
         $this->setUser($student);
         $submission = $assign->get_user_submission($student->id, true);
 
-        $PAGE->set_url(new \moodle_url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
+        $PAGE->set_url(new url('/mod/assign/view.php', ['id' => $assign->get_course_module()->id]));
 
         // Set override grade grade, and check that grade submission has been overridden.
         $gradegrade->set_overridden(true);
@@ -5102,7 +5109,7 @@ Anchor link 2:<a title=\"bananas\" href=\"../logo-240x60.gif\">Link text</a>
 
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $assign = new \mod_assign_testable_assign($context, $cm, $course);
 
@@ -5123,7 +5130,7 @@ Anchor link 2:<a title=\"bananas\" href=\"../logo-240x60.gif\">Link text</a>
             'format' => FORMAT_MOODLE];
 
         $draftidfile = file_get_unused_draft_itemid();
-        $usercontext = \context_user::instance($student->id);
+        $usercontext = user::instance($student->id);
         $filerecord = [
             'contextid' => $usercontext->id,
             'component' => 'user',

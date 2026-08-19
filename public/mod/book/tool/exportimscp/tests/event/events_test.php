@@ -25,6 +25,8 @@
 
 namespace booktool_exportimscp\event;
 
+use core\context\module;
+
 /**
  * Events tests class.
  *
@@ -46,7 +48,7 @@ final class events_test extends \advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $book = $this->getDataGenerator()->create_module('book', array('course' => $course->id));
-        $context = \context_module::instance($book->cmid);
+        $context = module::instance($book->cmid);
 
         $event = \booktool_exportimscp\event\book_exported::create_from_book($book, $context);
 
@@ -59,7 +61,7 @@ final class events_test extends \advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\booktool_exportimscp\event\book_exported', $event);
-        $this->assertEquals(\context_module::instance($book->cmid), $event->get_context());
+        $this->assertEquals(module::instance($book->cmid), $event->get_context());
         $this->assertEquals($book->id, $event->objectid);
     }
 

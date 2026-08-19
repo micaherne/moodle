@@ -18,7 +18,7 @@ namespace core\context;
 
 use core\context;
 use stdClass;
-use coding_exception, moodle_url;
+use core\exception\coding_exception, core\url;
 
 /**
  * User context class
@@ -96,9 +96,9 @@ class user extends context {
         global $COURSE;
 
         if ($COURSE->id == SITEID) {
-            $url = new moodle_url('/user/profile.php', array('id' => $this->_instanceid));
+            $url = new url('/user/profile.php', array('id' => $this->_instanceid));
         } else {
-            $url = new moodle_url('/user/view.php', array('id' => $this->_instanceid, 'courseid' => $COURSE->id));
+            $url = new url('/user/view.php', array('id' => $this->_instanceid, 'courseid' => $COURSE->id));
         }
         return $url;
     }

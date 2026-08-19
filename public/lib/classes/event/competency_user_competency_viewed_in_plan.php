@@ -25,8 +25,9 @@
 namespace core\event;
 
 use core\event\base;
+use core\exception\coding_exception;
 use core_competency\user_competency;
-use context_course;
+use core\context\course;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -55,7 +56,7 @@ class competency_user_competency_viewed_in_plan extends base {
      */
     public static function create_from_user_competency_viewed_in_plan(user_competency $usercompetency, $planid) {
         if (!$usercompetency->get('id')) {
-            throw new \coding_exception('The user competency ID must be set.');
+            throw new coding_exception('The user competency ID must be set.');
         }
         $params = array(
             'contextid' => $usercompetency->get_context()->id,
@@ -128,15 +129,15 @@ class competency_user_competency_viewed_in_plan extends base {
      */
     protected function validate_data() {
         if ($this->other === null) {
-            throw new \coding_exception('The \'competencyid\' and \'planid\' values must be set.');
+            throw new coding_exception('The \'competencyid\' and \'planid\' values must be set.');
         }
 
         if (!isset($this->other['competencyid'])) {
-            throw new \coding_exception('The \'competencyid\' value must be set.');
+            throw new coding_exception('The \'competencyid\' value must be set.');
         }
 
         if (!isset($this->other['planid'])) {
-            throw new \coding_exception('The \'planid\' value must be set.');
+            throw new coding_exception('The \'planid\' value must be set.');
         }
     }
 

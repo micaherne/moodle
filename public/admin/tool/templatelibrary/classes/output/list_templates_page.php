@@ -23,13 +23,13 @@
  */
 namespace tool_templatelibrary\output;
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
 use core_collator;
 use core_component;
-use core_plugin_manager;
+use core\plugin_manager;
 use tool_templatelibrary\api;
 
 /**
@@ -63,7 +63,7 @@ class list_templates_page implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         $fulltemplatenames = api::list_templates();
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $components = [];
 
         foreach ($fulltemplatenames as $templatename) {

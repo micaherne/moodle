@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
@@ -31,9 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $courseid = required_param('id', PARAM_INT);
 
-$url = new moodle_url('/backup/copyprogress.php', array('id' => $courseid));
+$url = new url('/backup/copyprogress.php', array('id' => $courseid));
 $course = get_course($courseid);
-$coursecontext = context_course::instance($course->id);
+$coursecontext = course::instance($course->id);
 
 // Security and access checks.
 require_login($course, false);

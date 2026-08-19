@@ -23,6 +23,8 @@
  */
 namespace mod_forum\task;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');
@@ -296,7 +298,7 @@ class cron_task extends \core\task\scheduled_task {
     protected function fill_user_subscription_cache() {
         foreach ($this->forums as $forum) {
             $cm = get_fast_modinfo($this->courses[$forum->course])->instances['forum'][$forum->id];
-            $modcontext = \context_module::instance($cm->id);
+            $modcontext = module::instance($cm->id);
 
             $this->subscribedusers[$forum->id] = [];
             if ($users = \mod_forum\subscriptions::fetch_subscribed_users($forum, 0, $modcontext, 'u.id, u.maildigest', true)) {
@@ -448,7 +450,7 @@ class cron_task extends \core\task\scheduled_task {
                         if (!isset($usergroups[$forum->id][$discussion->groupid])) {
                             // This user is not a member of this group, or the group no longer exists.
 
-                            $modcontext = \context_module::instance($cm->id);
+                            $modcontext = module::instance($cm->id);
                             if (!has_capability('moodle/site:accessallgroups', $modcontext, $user)) {
                                 // This user does not have the accessallgroups and is not a member of the group.
                                 // Do not send posts from other groups when in SEPARATEGROUPS or VISIBLEGROUPS.

@@ -22,6 +22,13 @@
  * @package core_user
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+
 require_once("../config.php");
 require_once($CFG->dirroot . '/course/lib.php');
 
@@ -35,11 +42,11 @@ list($formaction) = explode('?', $formaction, 2);
 $actions = array('bulkchange.php');
 
 if (array_search($formaction, $actions) === false) {
-    throw new \moodle_exception('unknownuseraction');
+    throw new moodle_exception('unknownuseraction');
 }
 
 if (!confirm_sesskey()) {
-    throw new \moodle_exception('confirmsesskeybad');
+    throw new moodle_exception('confirmsesskeybad');
 }
 
 if ($formaction == 'bulkchange.php') {
@@ -49,19 +56,19 @@ if ($formaction == 'bulkchange.php') {
     $formaction = required_param('formaction', PARAM_URL);
     require_once($CFG->dirroot . '/enrol/locallib.php');
 
-    $url = new moodle_url($formaction);
+    $url = new url($formaction);
     // Get the enrolment plugin type and bulk action from the url.
     $plugin = $url->param('plugin');
     $operationname = $url->param('operation');
     $dataformat = $url->param('dataformat');
 
     $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
-    $context = context_course::instance($id);
+    $context = course::instance($id);
     $PAGE->set_context($context);
 
     $userids = optional_param_array('userid', array(), PARAM_INT);
-    $default = new moodle_url('/user/index.php', ['id' => $course->id]);
-    $returnurl = new moodle_url(optional_param('returnto', $default, PARAM_LOCALURL));
+    $default = new url('/user/index.php', ['id' => $course->id]);
+    $returnurl = new url(optional_param('returnto', $default, PARAM_LOCALURL));
 
     if (empty($userids)) {
         $userids = optional_param_array('bulkuser', array(), PARAM_INT);
@@ -79,9 +86,9 @@ if ($formaction == 'bulkchange.php') {
 
     if (empty($plugin) AND $operationname == 'download_participants') {
         // Check permissions.
-        $pagecontext = ($course->id == SITEID) ? context_system::instance() : $context;
+        $pagecontext = ($course->id == SITEID) ? system::instance() : $context;
         if (course_can_view_participants($pagecontext)) {
-            $plugins = core_plugin_manager::instance()->get_plugins_of_type('dataformat');
+            $plugins = plugin_manager::instance()->get_plugins_of_type('dataformat');
             if (isset($plugins[$dataformat])) {
                 if ($plugins[$dataformat]->is_enabled()) {
                     if (empty($userids)) {
@@ -182,14 +189,14 @@ if ($formaction == 'bulkchange.php') {
             }
         }
         if (!$instance) {
-            throw new \moodle_exception('errorwithbulkoperation', 'enrol');
+            throw new moodle_exception('errorwithbulkoperation', 'enrol');
         }
 
         $manager = new course_enrolment_manager($PAGE, $course, $instance->id);
         $plugins = $manager->get_enrolment_plugins();
 
         if (!isset($plugins[$plugin])) {
-            throw new \moodle_exception('errorwithbulkoperation', 'enrol');
+            throw new moodle_exception('errorwithbulkoperation', 'enrol');
         }
 
         $plugin = $plugins[$plugin];
@@ -197,7 +204,7 @@ if ($formaction == 'bulkchange.php') {
         $operations = $plugin->get_bulk_operations($manager);
 
         if (!isset($operations[$operationname])) {
-            throw new \moodle_exception('errorwithbulkoperation', 'enrol');
+            throw new moodle_exception('errorwithbulkoperation', 'enrol');
         }
         $operation = $operations[$operationname];
 
@@ -250,7 +257,7 @@ if ($formaction == 'bulkchange.php') {
             if ($operation->process($manager, $users, new stdClass)) {
                 redirect($returnurl);
             } else {
-                throw new \moodle_exception('errorwithbulkoperation', 'enrol');
+                throw new moodle_exception('errorwithbulkoperation', 'enrol');
             }
         }
         // Check if the bulk operation has been cancelled.

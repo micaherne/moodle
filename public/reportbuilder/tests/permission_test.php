@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_reportbuilder;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
 use core_reportbuilder\exception\report_access_exception;
 use core_reportbuilder_generator;
 use Throwable;
@@ -56,7 +56,7 @@ final class permission_test extends advanced_testcase {
 
         // User without permission.
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user']);
-        unassign_capability('moodle/reportbuilder:view', $userrole, context_system::instance());
+        unassign_capability('moodle/reportbuilder:view', $userrole, system::instance());
 
         $this->expectException(report_access_exception::class);
         $this->expectExceptionMessage('You cannot view this report');
@@ -94,8 +94,8 @@ final class permission_test extends advanced_testcase {
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user']);
 
         // Remove default capability, allow additional.
-        unassign_capability('moodle/reportbuilder:view', $userrole, context_system::instance());
-        assign_capability($capability, CAP_ALLOW, $userrole, context_system::instance());
+        unassign_capability('moodle/reportbuilder:view', $userrole, system::instance());
+        assign_capability($capability, CAP_ALLOW, $userrole, system::instance());
 
         try {
             permission::require_can_view_reports_list();
@@ -181,7 +181,7 @@ final class permission_test extends advanced_testcase {
         $this->setUser($user);
 
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user']);
-        assign_capability($capability, CAP_ALLOW, $userrole, context_system::instance());
+        assign_capability($capability, CAP_ALLOW, $userrole, system::instance());
 
         try {
             permission::require_can_view_report($report);
@@ -216,7 +216,7 @@ final class permission_test extends advanced_testcase {
         permission::require_can_view_report($report);
 
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user']);
-        unassign_capability('moodle/reportbuilder:view', $userrole, context_system::instance());
+        unassign_capability('moodle/reportbuilder:view', $userrole, system::instance());
 
         // User does not have view capability and belongs to an audience.
         $this->expectException(report_access_exception::class);
@@ -252,7 +252,7 @@ final class permission_test extends advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $systemreport = system_report_factory::create(system_report_available::class, context_system::instance());
+        $systemreport = system_report_factory::create(system_report_available::class, system::instance());
 
         $this->expectException(report_access_exception::class);
         $this->expectExceptionMessage('You cannot edit this report');
@@ -289,7 +289,7 @@ final class permission_test extends advanced_testcase {
         $this->setUser($user);
 
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user']);
-        assign_capability('moodle/reportbuilder:edit', CAP_ALLOW, $userrole, context_system::instance());
+        assign_capability('moodle/reportbuilder:edit', CAP_ALLOW, $userrole, system::instance());
 
         /** @var core_reportbuilder_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('core_reportbuilder');
@@ -318,7 +318,7 @@ final class permission_test extends advanced_testcase {
         $this->setUser($user);
 
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user']);
-        assign_capability('moodle/reportbuilder:editall', CAP_ALLOW, $userrole, context_system::instance());
+        assign_capability('moodle/reportbuilder:editall', CAP_ALLOW, $userrole, system::instance());
 
         /** @var core_reportbuilder_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('core_reportbuilder');
@@ -361,8 +361,8 @@ final class permission_test extends advanced_testcase {
         $this->setUser($user);
 
         $roleid = create_role('Dummy role', 'dummyrole', 'dummy role description');
-        assign_capability('moodle/reportbuilder:edit', CAP_ALLOW, $roleid, context_system::instance());
-        role_assign($roleid, $user->id, context_system::instance()->id);
+        assign_capability('moodle/reportbuilder:edit', CAP_ALLOW, $roleid, system::instance());
+        role_assign($roleid, $user->id, system::instance()->id);
 
         try {
             permission::require_can_create_report((int)$user->id);
@@ -375,8 +375,8 @@ final class permission_test extends advanced_testcase {
         $this->setUser($user2);
 
         $roleid2 = create_role('Dummy role 2', 'dummyrole2', 'dummy role 2 description');
-        assign_capability('moodle/reportbuilder:editall', CAP_ALLOW, $roleid2, context_system::instance());
-        role_assign($roleid2, $user2->id, context_system::instance()->id);
+        assign_capability('moodle/reportbuilder:editall', CAP_ALLOW, $roleid2, system::instance());
+        role_assign($roleid2, $user2->id, system::instance()->id);
 
         try {
             permission::require_can_create_report((int)$user2->id);
@@ -461,7 +461,7 @@ final class permission_test extends advanced_testcase {
         $this->setUser($user);
 
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user']);
-        assign_capability('moodle/reportbuilder:edit', CAP_ALLOW, $userrole, context_system::instance());
+        assign_capability('moodle/reportbuilder:edit', CAP_ALLOW, $userrole, system::instance());
 
         /** @var core_reportbuilder_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('core_reportbuilder');
@@ -479,7 +479,7 @@ final class permission_test extends advanced_testcase {
             $this->assertStringContainsString('You cannot duplicate this report', $e->getMessage());
         }
 
-        assign_capability('moodle/reportbuilder:editall', CAP_ALLOW, $userrole, context_system::instance());
+        assign_capability('moodle/reportbuilder:editall', CAP_ALLOW, $userrole, system::instance());
         permission::require_can_duplicate_report($reportadmin);
 
         // Set current custom report limit, and check whether user can duplicate the report.

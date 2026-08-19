@@ -22,6 +22,10 @@
  * @package core_user
  */
 
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\user as core_user;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    //  It must be included from a Moodle page.
 }

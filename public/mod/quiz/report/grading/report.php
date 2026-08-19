@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
 use mod_quiz\local\reports\report_base;
 use mod_quiz\quiz_attempt;
 
@@ -110,7 +113,7 @@ class quiz_grading_report extends report_base {
         }
 
         // Check permissions.
-        $this->context = context_module::instance($this->cm->id);
+        $this->context = module::instance($this->cm->id);
         require_capability('mod/quiz:grade', $this->context);
         $shownames = has_capability('quiz/grading:viewstudentnames', $this->context);
         // Whether the current user can see custom user fields.
@@ -268,7 +271,7 @@ class quiz_grading_report extends report_base {
      * @return moodle_url the URL.
      */
     protected function base_url() {
-        return new moodle_url('/mod/quiz/report.php',
+        return new url('/mod/quiz/report.php',
                 ['id' => $this->cm->id, 'mode' => 'grading']);
     }
 
@@ -593,7 +596,7 @@ class quiz_grading_report extends report_base {
             $params = [
                 'objectid' => $attemptobj->get_question_attempt($assumedslotforevents)->get_question_id(),
                 'courseid' => $attemptobj->get_courseid(),
-                'context' => context_module::instance($attemptobj->get_cmid()),
+                'context' => module::instance($attemptobj->get_cmid()),
                 'other' => [
                     'quizid' => $attemptobj->get_quizid(),
                     'attemptid' => $attemptobj->get_attemptid(),

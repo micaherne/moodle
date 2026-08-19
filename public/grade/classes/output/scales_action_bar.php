@@ -16,7 +16,9 @@
 
 namespace core_grades\output;
 
-use moodle_url;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\url;
 
 /**
  * Renderable class for the action bar elements in the gradebook scales page.
@@ -42,7 +44,7 @@ class scales_action_bar extends action_bar {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $data = [];
         $courseid = 0;
         // If in the course context, we should display the general navigation selector in gradebook.
@@ -50,13 +52,13 @@ class scales_action_bar extends action_bar {
             $courseid = $this->context->instanceid;
             // Get the data used to output the general navigation selector.
             $generalnavselector = new general_action_bar($this->context,
-                new moodle_url('/grade/edit/scale/index.php', ['id' => $courseid]), 'scale', 'scale');
+                new url('/grade/edit/scale/index.php', ['id' => $courseid]), 'scale', 'scale');
             $data = $generalnavselector->export_for_template($output);
         }
         // Add a button to the action bar with a link to the 'add new scale' page.
-        $addnewscalelink = new moodle_url('/grade/edit/scale/edit.php', ['courseid' => $courseid]);
-        $addnewscalebutton = new \single_button($addnewscalelink, get_string('scalescustomcreate'),
-            'get', \single_button::BUTTON_PRIMARY);
+        $addnewscalelink = new url('/grade/edit/scale/edit.php', ['courseid' => $courseid]);
+        $addnewscalebutton = new single_button($addnewscalelink, get_string('scalescustomcreate'),
+            'get', single_button::BUTTON_PRIMARY);
         $data['addnewscalebutton'] = $addnewscalebutton->export_for_template($output);
 
         return $data;

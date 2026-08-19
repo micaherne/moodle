@@ -16,6 +16,9 @@
 
 namespace enrol_ldap;
 
+use core\context\course;
+use core\output\progress_trace\null_progress_trace;
+
 /**
  * LDAP enrolment plugin tests.
  *
@@ -206,7 +209,7 @@ final class ldap_test extends \advanced_testcase {
         $this->assertEquals(0, $DB->count_records('role_assignments'));
         $this->assertEquals(4, $DB->count_records('course'));
 
-        $enrol->sync_enrolments(new \null_progress_trace());
+        $enrol->sync_enrolments(new null_progress_trace());
 
         $this->assertEquals(8, $DB->count_records('user_enrolments'));
         $this->assertEquals(8, $DB->count_records('role_assignments'));
@@ -226,7 +229,7 @@ final class ldap_test extends \advanced_testcase {
         // Test course creation.
         $enrol->set_config('autocreate', 1);
 
-        $enrol->sync_enrolments(new \null_progress_trace());
+        $enrol->sync_enrolments(new null_progress_trace());
 
         $this->assertEquals(12, $DB->count_records('user_enrolments'));
         $this->assertEquals(12, $DB->count_records('role_assignments'));
@@ -249,13 +252,13 @@ final class ldap_test extends \advanced_testcase {
         ldap_add($connection, 'cn='.$o['cn'].',ou=students,'.$topdn, $o);
 
         $enrol->set_config('unenrolaction', ENROL_EXT_REMOVED_KEEP);
-        $enrol->sync_enrolments(new \null_progress_trace());
+        $enrol->sync_enrolments(new null_progress_trace());
         $this->assertEquals(12, $DB->count_records('user_enrolments'));
         $this->assertEquals(12, $DB->count_records('role_assignments'));
         $this->assertEquals(5, $DB->count_records('course'));
 
         $enrol->set_config('unenrolaction', ENROL_EXT_REMOVED_SUSPEND);
-        $enrol->sync_enrolments(new \null_progress_trace());
+        $enrol->sync_enrolments(new null_progress_trace());
         $this->assertEquals(12, $DB->count_records('user_enrolments'));
         $this->assertEquals(12, $DB->count_records('role_assignments'));
         $this->assertEquals(5, $DB->count_records('course'));
@@ -271,7 +274,7 @@ final class ldap_test extends \advanced_testcase {
         $o['memberUid']   = array('user1', 'user2', 'user3');
         ldap_add($connection, 'cn='.$o['cn'].',ou=students,'.$topdn, $o);
 
-        $enrol->sync_enrolments(new \null_progress_trace());
+        $enrol->sync_enrolments(new null_progress_trace());
         $this->assertEquals(12, $DB->count_records('user_enrolments'));
         $this->assertEquals(12, $DB->count_records('role_assignments'));
         $this->assertEquals(5, $DB->count_records('course'));
@@ -287,7 +290,7 @@ final class ldap_test extends \advanced_testcase {
         ldap_add($connection, 'cn='.$o['cn'].',ou=students,'.$topdn, $o);
 
         $enrol->set_config('unenrolaction', ENROL_EXT_REMOVED_SUSPENDNOROLES);
-        $enrol->sync_enrolments(new \null_progress_trace());
+        $enrol->sync_enrolments(new null_progress_trace());
         $this->assertEquals(12, $DB->count_records('user_enrolments'));
         $this->assertEquals(9, $DB->count_records('role_assignments'));
         $this->assertEquals(5, $DB->count_records('course'));
@@ -303,7 +306,7 @@ final class ldap_test extends \advanced_testcase {
         $o['memberUid']   = array('user1', 'user2', 'user3');
         ldap_add($connection, 'cn='.$o['cn'].',ou=students,'.$topdn, $o);
 
-        $enrol->sync_enrolments(new \null_progress_trace());
+        $enrol->sync_enrolments(new null_progress_trace());
         $this->assertEquals(12, $DB->count_records('user_enrolments'));
         $this->assertEquals(12, $DB->count_records('role_assignments'));
         $this->assertEquals(5, $DB->count_records('course'));
@@ -319,7 +322,7 @@ final class ldap_test extends \advanced_testcase {
         ldap_add($connection, 'cn='.$o['cn'].',ou=students,'.$topdn, $o);
 
         $enrol->set_config('unenrolaction', ENROL_EXT_REMOVED_UNENROL);
-        $enrol->sync_enrolments(new \null_progress_trace());
+        $enrol->sync_enrolments(new null_progress_trace());
         $this->assertEquals(9, $DB->count_records('user_enrolments'));
         $this->assertEquals(9, $DB->count_records('role_assignments'));
         $this->assertEquals(5, $DB->count_records('course'));
@@ -433,7 +436,7 @@ final class ldap_test extends \advanced_testcase {
     public function assertIsEnrolled($courseid, $userid, $roleid, $status=null) {
         global $DB;
 
-        $context = \context_course::instance($courseid);
+        $context = course::instance($courseid);
         $instance = $DB->get_record('enrol', array('courseid'=>$courseid, 'enrol'=>'ldap'));
         $this->assertNotEmpty($instance);
         $ue = $DB->get_record('user_enrolments', array('enrolid'=>$instance->id, 'userid'=>$userid));
@@ -449,7 +452,7 @@ final class ldap_test extends \advanced_testcase {
     }
 
     public function assertIsNotEnrolled($courseid, $userid) {
-        $context = \context_course::instance($courseid);
+        $context = course::instance($courseid);
         $this->assertFalse(is_enrolled($context, $userid));
     }
 

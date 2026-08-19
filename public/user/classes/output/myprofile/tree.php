@@ -23,6 +23,9 @@
  */
 
 namespace core_user\output\myprofile;
+
+use core\exception\coding_exception;
+use core\output\renderable;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2015 onwards Ankit Agarwal
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tree implements \renderable {
+class tree implements renderable {
     /**
      * @var category[] Array of categories in the tree.
      */
@@ -59,7 +62,7 @@ class tree implements \renderable {
     public function add_node(node $node) {
         $name = $node->name;
         if (isset($this->nodes[$name])) {
-            throw new \coding_exception("Node name $name already used");
+            throw new coding_exception("Node name $name already used");
         }
         $this->nodes[$node->name] = $node;
     }
@@ -74,7 +77,7 @@ class tree implements \renderable {
     public function add_category(category $cat) {
         $name = $cat->name;
         if (isset($this->categories[$name])) {
-            throw new \coding_exception("Category name $name already used");
+            throw new coding_exception("Category name $name already used");
         }
         $this->categories[$cat->name] = $cat;
     }
@@ -98,7 +101,7 @@ class tree implements \renderable {
         }
         if (count($tempcategories) !== count($this->categories)) {
             // Orphan categories found.
-            throw new \coding_exception('Some of the categories specified contains invalid \'after\' property');
+            throw new coding_exception('Some of the categories specified contains invalid \'after\' property');
         }
         $this->categories = $tempcategories;
     }
@@ -112,7 +115,7 @@ class tree implements \renderable {
         foreach ($this->nodes as $node) {
             $parentcat = $node->parentcat;
             if (!isset($this->categories[$parentcat])) {
-                throw new \coding_exception("Category $parentcat doesn't exist");
+                throw new coding_exception("Category $parentcat doesn't exist");
             } else {
                 $this->categories[$parentcat]->add_node($node);
             }
@@ -153,6 +156,6 @@ class tree implements \renderable {
         if (in_array($prop, $this->properties)) {
             return $this->$prop;
         }
-        throw new \coding_exception('Property "' . $prop . '" doesn\'t exist');
+        throw new coding_exception('Property "' . $prop . '" doesn\'t exist');
     }
 }

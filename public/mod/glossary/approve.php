@@ -1,5 +1,8 @@
 <?php
 
+use core\context\module;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -9,7 +12,7 @@ $newstate = optional_param('newstate', 1, PARAM_BOOL);
 $mode = optional_param('mode', 'approval', PARAM_ALPHA);
 $hook = optional_param('hook', 'ALL', PARAM_CLEAN);
 
-$url = new moodle_url('/mod/glossary/approve.php', array('eid' => $eid, 'mode' => $mode, 'hook' => $hook, 'newstate' => $newstate));
+$url = new url('/mod/glossary/approve.php', array('eid' => $eid, 'mode' => $mode, 'hook' => $hook, 'newstate' => $newstate));
 $PAGE->set_url($url);
 
 $entry = $DB->get_record('glossary_entries', array('id'=> $eid), '*', MUST_EXIST);
@@ -19,7 +22,7 @@ $course = $DB->get_record('course', array('id'=> $cm->course), '*', MUST_EXIST);
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/glossary:approve', $context);
 
 if (($newstate != $entry->approved) && confirm_sesskey()) {

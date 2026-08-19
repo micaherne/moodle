@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once('grade_object.php');
@@ -137,12 +140,12 @@ class grade_scale extends grade_object {
         if ($result) {
             // Trigger the scale created event.
             if (!empty($this->standard)) {
-                $eventcontext = context_system::instance();
+                $eventcontext = system::instance();
             } else {
                 if (!empty($this->courseid)) {
-                    $eventcontext = context_course::instance($this->courseid);
+                    $eventcontext = course::instance($this->courseid);
                 } else {
-                    $eventcontext = context_system::instance();
+                    $eventcontext = system::instance();
                 }
             }
             $event = \core\event\scale_created::create(array(
@@ -168,12 +171,12 @@ class grade_scale extends grade_object {
         if ($result) {
             // Trigger the scale updated event.
             if (!empty($this->standard)) {
-                $eventcontext = context_system::instance();
+                $eventcontext = system::instance();
             } else {
                 if (!empty($this->courseid)) {
-                    $eventcontext = context_course::instance($this->courseid);
+                    $eventcontext = course::instance($this->courseid);
                 } else {
-                    $eventcontext = context_system::instance();
+                    $eventcontext = system::instance();
                 }
             }
             $event = \core\event\scale_updated::create(array(
@@ -196,12 +199,12 @@ class grade_scale extends grade_object {
 
         // Trigger the scale deleted event.
         if (!empty($this->standard)) {
-            $eventcontext = context_system::instance();
+            $eventcontext = system::instance();
         } else {
             if (!empty($this->courseid)) {
-                $eventcontext = context_course::instance($this->courseid);
+                $eventcontext = course::instance($this->courseid);
             } else {
-                $eventcontext = context_system::instance();
+                $eventcontext = system::instance();
             }
         }
         $event = \core\event\scale_deleted::create(array(
@@ -210,7 +213,7 @@ class grade_scale extends grade_object {
         ));
         $event->trigger();
         if (parent::delete($source)) {
-            $context = context_system::instance();
+            $context = system::instance();
             $fs = get_file_storage();
             $files = $fs->get_area_files($context->id, 'grade', 'scale', $this->id);
             foreach ($files as $file) {
@@ -229,7 +232,7 @@ class grade_scale extends grade_object {
      */
     public function get_name() {
         // Grade scales can be created at site or course context, so set the filter context appropriately.
-        $context = empty($this->courseid) ? context_system::instance() : context_course::instance($this->courseid);
+        $context = empty($this->courseid) ? system::instance() : course::instance($this->courseid);
         return format_string($this->name, false, ['context' => $context]);
     }
 
@@ -395,7 +398,7 @@ class grade_scale extends grade_object {
         global $CFG;
         require_once($CFG->libdir . '/filelib.php');
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $options = new stdClass;
         $options->noclean = true;
         $description = file_rewrite_pluginfile_urls($this->description, 'pluginfile.php', $systemcontext->id, 'grade', 'scale', $this->id);

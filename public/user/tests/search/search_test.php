@@ -24,6 +24,9 @@
 
 namespace core_user\search;
 
+use core\context\course;
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -93,11 +96,11 @@ final class search_test extends \advanced_testcase {
         $recordset->close();
 
         // Context support; first, try an unsupported context type.
-        $coursecontext = \context_course::instance($SITE->id);
+        $coursecontext = course::instance($SITE->id);
         $this->assertNull($searcharea->get_document_recordset(0, $coursecontext));
 
         // Try a specific user, will only return 1 record (that user).
-        $rs = $searcharea->get_document_recordset(0, \context_user::instance($user1->id));
+        $rs = $searcharea->get_document_recordset(0, user::instance($user1->id));
         $this->assertEquals(1, iterator_count($rs));
         $rs->close();
     }

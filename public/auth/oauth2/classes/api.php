@@ -23,12 +23,13 @@
  */
 namespace auth_oauth2;
 
-use context_user;
+use core\context\user;
 use core\clock;
 use core\di;
+use core\user as core_user;
 use stdClass;
-use moodle_exception;
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -75,7 +76,7 @@ class api {
             throw new moodle_exception('notwhileloggedinas', 'auth_oauth2');
         }
 
-        $context = context_user::instance($userid);
+        $context = user::instance($userid);
         require_capability('auth/oauth2:managelinkedlogins', $context);
 
         $logins = linked_login::get_records(['userid' => $userid, 'confirmtoken' => '']);
@@ -104,7 +105,7 @@ class api {
 
         if ($record) {
             $result = new linked_login(0, $record);
-            $user = \core_user::get_user($result->get('userid'));
+            $user = core_user::get_user($result->get('userid'));
             if (!empty($user) && !$user->deleted) {
                 return $result;
             }
@@ -138,7 +139,7 @@ class api {
             throw new moodle_exception('notwhileloggedinas', 'auth_oauth2');
         }
 
-        $context = context_user::instance($userid);
+        $context = user::instance($userid);
         if (!$skippermissions) {
             require_capability('auth/oauth2:managelinkedlogins', $context);
         }
@@ -189,11 +190,11 @@ class api {
 
         // Construct the email.
         $site = get_site();
-        $supportuser = \core_user::get_support_user();
+        $supportuser = core_user::get_support_user();
         $user = get_complete_user_data('id', $userid);
 
         $data = new stdClass();
-        $placeholders = \core_user::get_name_placeholders($user);
+        $placeholders = core_user::get_name_placeholders($user);
         foreach ($placeholders as $field => $value) {
             $data->{$field} = $value;
         }
@@ -210,7 +211,7 @@ class api {
             'username' => $userinfo['username'],
             'issuerid' => $issuer->get('id'),
         ];
-        $confirmationurl = new moodle_url('/auth/oauth2/confirm-linkedlogin.php', $params);
+        $confirmationurl = new url('/auth/oauth2/confirm-linkedlogin.php', $params);
 
         $data->link = $confirmationurl->out(false);
         $message = get_string('confirmlinkedloginemail', 'auth_oauth2', $data);
@@ -333,11 +334,11 @@ class api {
 
         // Construct the email.
         $site = get_site();
-        $supportuser = \core_user::get_support_user();
+        $supportuser = core_user::get_support_user();
         $user = get_complete_user_data('id', $user->id);
 
         $data = new stdClass();
-        $placeholders = \core_user::get_name_placeholders($user);
+        $placeholders = core_user::get_name_placeholders($user);
         foreach ($placeholders as $field => $value) {
             $data->{$field} = $value;
         }
@@ -350,7 +351,7 @@ class api {
             'token' => $user->secret,
             'username' => $userinfo['username']
         ];
-        $confirmationurl = new moodle_url('/auth/oauth2/confirm-account.php', $params);
+        $confirmationurl = new url('/auth/oauth2/confirm-account.php', $params);
 
         $data->link = $confirmationurl->out(false);
         $message = get_string('confirmaccountemail', 'auth_oauth2', $data);
@@ -383,7 +384,7 @@ class api {
             'confirmtoken' => '',
         ], MUST_EXIST);
 
-        $context = context_user::instance($login->get('userid'));
+        $context = user::instance($login->get('userid'));
         require_capability('auth/oauth2:managelinkedlogins', $context);
 
         $login->delete();

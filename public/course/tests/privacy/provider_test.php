@@ -28,6 +28,10 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/completion/tests/fixtures/completion_creation.php');
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context\user;
 use core_privacy\local\request\transform;
 
 /**
@@ -74,7 +78,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(0, $contextlist->get_contextids());
 
         // User2 has a favourite course.
-        $user2context = \context_user::instance($user2->id);
+        $user2context = user::instance($user2->id);
         $ufservice = \core_favourites\service_factory::get_service_for_user_context($user2context);
         $ufservice->create_favourite('core_course', 'courses', $this->coursecontext->instanceid,
             $this->coursecontext);
@@ -108,8 +112,8 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->getDataGenerator()->enrol_user($user3->id, $this->course->id, 'student');
 
         // User4 has a favourited course.
-        $systemcontext = \context_system::instance();
-        $user4ctx = \context_user::instance($user4->id);
+        $systemcontext = system::instance();
+        $user4ctx = user::instance($user4->id);
         $ufservice = \core_favourites\service_factory::get_service_for_user_context($user4ctx);
         $ufservice->create_favourite('core_course', 'courses', $this->coursecontext->instanceid,
                 $this->coursecontext);
@@ -153,7 +157,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(2, $completiondata->criteria);
 
         // User has a favourite course.
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $ufservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
         $favourite = $ufservice->create_favourite('core_course', 'courses',
                 $this->coursecontext->instanceid, $this->coursecontext);
@@ -178,9 +182,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Create a course and a single module.
         $course1 = $this->getDataGenerator()->create_course(['fullname' => 'Course 1', 'shortname' => 'C1']);
-        $context1 = \context_course::instance($course1->id);
+        $context1 = course::instance($course1->id);
         $modassign = $this->getDataGenerator()->create_module('assign', ['course' => $course1->id, 'name' => 'assign test 1']);
-        $assigncontext = \context_module::instance($modassign->cmid);
+        $assigncontext = module::instance($modassign->cmid);
 
         // Now, let's assume during user info export, only the coursemodule context is returned in the contextlist_collection.
         $user = $this->getDataGenerator()->create_user();
@@ -208,9 +212,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Create a course and a single module.
         $course1 = $this->getDataGenerator()->create_course(['fullname' => 'Course 1', 'shortname' => 'C1', 'format' => 'site']);
-        $context1 = \context_course::instance($course1->id);
+        $context1 = course::instance($course1->id);
         $modassign = $this->getDataGenerator()->create_module('assign', ['course' => $course1->id, 'name' => 'assign test 1']);
-        $assigncontext = \context_module::instance($modassign->cmid);
+        $assigncontext = module::instance($modassign->cmid);
 
         // Now, assume during user info export, that both module and course contexts are returned in the contextlist_collection.
         $user = $this->getDataGenerator()->create_user();
@@ -244,9 +248,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $user2 = $this->getDataGenerator()->create_user();
         $this->create_course_completion();
 
-        $systemcontext = \context_system::instance();
-        $user1ctx = \context_user::instance($user1->id);
-        $user2ctx = \context_user::instance($user2->id);
+        $systemcontext = system::instance();
+        $user1ctx = user::instance($user1->id);
+        $user2ctx = user::instance($user2->id);
         // User1 and user2 have a favourite course.
         $ufservice1 = \core_favourites\service_factory::get_service_for_user_context($user1ctx);
         $ufservice1->create_favourite('core_course', 'courses', $this->coursecontext->instanceid,
@@ -323,9 +327,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // User2 and user3 have a favourite course.
-        $systemcontext = \context_system::instance();
-        $user2ctx = \context_user::instance($user2->id);
-        $user3ctx = \context_user::instance($user3->id);
+        $systemcontext = system::instance();
+        $user2ctx = user::instance($user2->id);
+        $user3ctx = user::instance($user3->id);
         $ufservice2 = \core_favourites\service_factory::get_service_for_user_context($user2ctx);
         $ufservice2->create_favourite('core_course', 'courses', $this->coursecontext->instanceid,
                 $this->coursecontext);
@@ -424,9 +428,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(2, $actual);
         $this->assertEquals($expected, $actual);
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // User3 has a favourite course.
-        $user3ctx = \context_user::instance($user3->id);
+        $user3ctx = user::instance($user3->id);
         $ufservice = \core_favourites\service_factory::get_service_for_user_context($user3ctx);
         $ufservice->create_favourite('core_course', 'courses', $this->coursecontext->instanceid,
                 $this->coursecontext);

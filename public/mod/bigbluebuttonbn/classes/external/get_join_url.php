@@ -16,6 +16,7 @@
 
 namespace mod_bigbluebuttonbn\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -74,7 +75,7 @@ class get_join_url extends external_api {
 
         $instance = instance::get_from_cmid($cmid);
         if (empty($instance)) {
-            throw new \moodle_exception('nosuchinstance', 'mod_bigbluebuttonbn', null,
+            throw new moodle_exception('nosuchinstance', 'mod_bigbluebuttonbn', null,
                 ['entity' => get_string('module', 'course'), 'id' => $cmid]);
         }
         // Validate the groupid.

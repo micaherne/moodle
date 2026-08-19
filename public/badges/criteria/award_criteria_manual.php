@@ -24,6 +24,8 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**

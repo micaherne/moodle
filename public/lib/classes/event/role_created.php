@@ -16,6 +16,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Role create event class.
  *
@@ -44,7 +47,7 @@ class role_created extends base {
     }
 
     public function get_url() {
-        return new \moodle_url('/admin/roles/define.php', ['action' => 'view', 'roleid' => $this->objectid]);
+        return new url('/admin/roles/define.php', ['action' => 'view', 'roleid' => $this->objectid]);
     }
 
     public function get_description() {
@@ -55,15 +58,15 @@ class role_created extends base {
         parent::validate_data();
 
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
 
         if (!isset($this->other['shortname'])) {
-            throw new \coding_exception('The \'shortname\' value must be set in other.');
+            throw new coding_exception('The \'shortname\' value must be set in other.');
         }
 
         if (!isset($this->other['archetype'])) {
-            throw new \coding_exception('The \'archetype\' value must be set in other.');
+            throw new coding_exception('The \'archetype\' value must be set in other.');
         }
     }
 }

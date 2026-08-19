@@ -22,6 +22,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -30,8 +33,8 @@ admin_externalpage_setup('tool_filetypes');
 // Page settings.
 $title = get_string('pluginname', 'tool_filetypes');
 
-$context = context_system::instance();
-$PAGE->set_url(new \moodle_url('/admin/tool/filetypes/index.php'));
+$context = system::instance();
+$PAGE->set_url(new url('/admin/tool/filetypes/index.php'));
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title($title);

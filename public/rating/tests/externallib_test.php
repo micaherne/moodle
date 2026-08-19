@@ -25,6 +25,9 @@
 
 namespace core_rating;
 
+use core\context\module;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
 use core_courseformat\formatactions;
 use core_external\external_api;
 use core_rating_external;
@@ -116,7 +119,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $record->scale = 100;
         $this->forum = self::getDataGenerator()->create_module('forum', $record);
 
-        $this->contextid = \context_module::instance($this->forum->cmid)->id;
+        $this->contextid = module::instance($this->forum->cmid)->id;
 
         // Add discussion to the forums.
         $record = new \stdClass();
@@ -193,7 +196,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $ratings = core_rating_external::get_item_ratings('module', $this->forum->cmid, 'mod_forum', 'post', 0, 100, '');
             $this->fail('Exception expected due invalid itemid.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidrecord', $e->errorcode);
         }
 
@@ -201,7 +204,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $ratings = core_rating_external::get_item_ratings('module', $this->forum->cmid, 'mod_forum', 'xyz', $this->post->id, 100, '');
             $this->fail('Exception expected due invalid rating area.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidratingarea', $e->errorcode);
         }
 
@@ -209,7 +212,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $ratings = core_rating_external::get_item_ratings('module', 0, 'mod_forum', 'post', $this->post->id, 100, '');
             $this->fail('Exception expected due invalid context.');
-        } catch (\invalid_parameter_exception $e) {
+        } catch (invalid_parameter_exception $e) {
             $this->assertEquals('invalidparameter', $e->errorcode);
         }
 
@@ -232,7 +235,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $ratings = core_rating_external::get_item_ratings('module', $this->forum->cmid, 'mod_forum', 'post', $this->post->id, 100, '');
             $this->fail('Exception expected due invalid group permissions.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('noviewrate', $e->errorcode);
         }
 

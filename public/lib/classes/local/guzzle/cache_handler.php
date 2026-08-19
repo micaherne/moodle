@@ -16,6 +16,8 @@
 
 namespace core\local\guzzle;
 
+use core\exception\moodle_exception;
+
 /**
  * Class to handle and generates CacheItemPoolInterface objects.
  *
@@ -64,7 +66,7 @@ class cache_handler {
         $this->dir = $CFG->cachedir . '/' . $module . '/';
         if (!file_exists($this->dir) && !mkdir($concurrentdirectory = $this->dir, $CFG->directorypermissions, true) &&
             !is_dir($concurrentdirectory)) {
-            throw new \moodle_exception(sprintf('Directory "%s" was not created', $concurrentdirectory));
+            throw new moodle_exception(sprintf('Directory "%s" was not created', $concurrentdirectory));
         }
 
     }
@@ -265,7 +267,7 @@ class cache_handler {
         $invalidcharacters = '{}()/\\\\@:';
 
         if (!is_string($key) || preg_match("#[$invalidcharacters]#", $key)) {
-            throw new \moodle_exception('Invalid cache key');
+            throw new moodle_exception('Invalid cache key');
         }
     }
 

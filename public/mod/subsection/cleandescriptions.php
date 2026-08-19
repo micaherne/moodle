@@ -22,15 +22,19 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../config.php');
 
 require_admin();
 
 $action = required_param('action', PARAM_ALPHA);
-$return = new moodle_url('/admin/settings.php', ['section' => 'mod_subsection_settings']);
+$return = new url('/admin/settings.php', ['section' => 'mod_subsection_settings']);
 
 $PAGE->set_url('/mod/subsection/cleandescriptions.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 require_sesskey();
 if ($action === 'delete') {

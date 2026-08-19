@@ -24,9 +24,11 @@
 
 namespace mod_lesson\output;
 
-use moodle_url;
-use templatable;
-use renderable;
+use core\output\renderer_base;
+use core\output\url_select;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Output the override action menu for this activity.
@@ -51,7 +53,7 @@ class override_action_menu implements templatable, renderable {
      * @param moodle_url $currenturl The current url for the page.
      * @param bool $canoverride Whether can add user or group override (depending on the override type).
      */
-    public function __construct(int $cmid, moodle_url $currenturl, bool $canoverride = false) {
+    public function __construct(int $cmid, url $currenturl, bool $canoverride = false) {
         $this->cmid = $cmid;
         $this->currenturl = $currenturl;
         $this->canoverride = $canoverride;
@@ -62,14 +64,14 @@ class override_action_menu implements templatable, renderable {
      *
      * @return \url_select The override select.
      */
-    protected function create_override_select_menu(): \url_select {
-        $userlink = new moodle_url('/mod/lesson/overrides.php', ['cmid' => $this->cmid, 'mode' => 'user']);
-        $grouplink = new moodle_url('/mod/lesson/overrides.php', ['cmid' => $this->cmid, 'mode' => 'group']);
+    protected function create_override_select_menu(): url_select {
+        $userlink = new url('/mod/lesson/overrides.php', ['cmid' => $this->cmid, 'mode' => 'user']);
+        $grouplink = new url('/mod/lesson/overrides.php', ['cmid' => $this->cmid, 'mode' => 'group']);
         $menu = [
             $userlink->out(false) => get_string('useroverrides', 'mod_lesson'),
             $grouplink->out(false) => get_string('groupoverrides', 'mod_lesson'),
         ];
-        $selectmenu = new \url_select($menu, $this->currenturl->out(false), null, 'mod_lesson_override_select');
+        $selectmenu = new url_select($menu, $this->currenturl->out(false), null, 'mod_lesson_override_select');
         $selectmenu->label = get_string('manageoverrides', 'mod_lesson');
         $selectmenu->labelattributes = ['class' => 'visually-hidden'];
         return $selectmenu;
@@ -81,7 +83,7 @@ class override_action_menu implements templatable, renderable {
      * @param \renderer_base $output renderer base output.
      * @return array Said data.
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $PAGE;
 
         $type = $this->currenturl->get_param('mode');
@@ -98,7 +100,7 @@ class override_action_menu implements templatable, renderable {
         if ($this->canoverride) {
             $data['addoverride'] = [
                 'text' => $text,
-                'link' => (new moodle_url('/mod/lesson/overrideedit.php', [
+                'link' => (new url('/mod/lesson/overrideedit.php', [
                     'cmid' => $this->currenturl->get_param('cmid'),
                     'action' => $action
                 ]))->out(false)

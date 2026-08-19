@@ -453,7 +453,7 @@ class cache implements loader_interface {
     protected static function check_version($result, int $requiredversion): bool {
         if ($requiredversion === self::VERSION_NONE) {
             if ($result instanceof \core_cache\version_wrapper) {
-                throw new \coding_exception('Unexpectedly found versioned cache entry');
+                throw new coding_exception('Unexpectedly found versioned cache entry');
             } else {
                 // No version checks, so version is always correct.
                 return true;
@@ -464,7 +464,7 @@ class cache implements loader_interface {
                 return false;
             }
             if (!($result instanceof \core_cache\version_wrapper)) {
-                throw new \coding_exception('Unexpectedly found non-versioned cache entry');
+                throw new coding_exception('Unexpectedly found non-versioned cache entry');
             }
             // If the result doesn't match the required version tag, return false.
             if ($result->version < $requiredversion) {
@@ -512,7 +512,7 @@ class cache implements loader_interface {
             // Check the result has at least the required version.
             try {
                 $validversion = self::check_version($result, $requiredversion);
-            } catch (\coding_exception $e) {
+            } catch (coding_exception $e) {
                 // In certain circumstances this could happen before users are taken to the upgrade
                 // screen when upgrading from an earlier Moodle version that didn't use a versioned
                 // cache for this item, so redirect instead of showing error if that's the case.
@@ -590,11 +590,11 @@ class cache implements loader_interface {
                     $result = $this->datasource->load_for_cache($key);
                 } else {
                     if (!$this->datasource instanceof versionable_data_source_interface) {
-                        throw new \coding_exception('Data source is not versionable');
+                        throw new coding_exception('Data source is not versionable');
                     }
                     $result = $this->datasource->load_for_cache_versioned($key, $requiredversion, $actualversion);
                     if ($result && $actualversion < $requiredversion) {
-                        throw new \coding_exception('Data source returned outdated version');
+                        throw new coding_exception('Data source returned outdated version');
                     }
                 }
             }

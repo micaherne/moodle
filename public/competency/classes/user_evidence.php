@@ -25,8 +25,8 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use context_user;
-use lang_string;
+use core\context\user;
+use core\lang_string;
 
 /**
  * User evidence persistent class.
@@ -93,7 +93,7 @@ class user_evidence extends persistent {
      * @return context
      */
     public function get_context() {
-        return context_user::instance($this->get('userid'));
+        return user::instance($this->get('userid'));
     }
 
     /**
@@ -178,7 +178,7 @@ class user_evidence extends persistent {
      */
     public static function can_manage_user($evidenceuserid) {
         global $USER;
-        $context = context_user::instance($evidenceuserid);
+        $context = user::instance($evidenceuserid);
 
         $capabilities = array('moodle/competency:userevidencemanage');
         if ($context->instanceid == $USER->id) {
@@ -195,7 +195,7 @@ class user_evidence extends persistent {
      * @return bool
      */
     public static function can_read_user($evidenceuserid) {
-        $context = context_user::instance($evidenceuserid);
+        $context = user::instance($evidenceuserid);
 
         $capabilities = array('moodle/competency:userevidenceview');
 

@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_value;
 use core_external\external_format_value;
@@ -69,7 +72,7 @@ class core_tag_external extends external_api {
         // Validate and normalize parameters.
         $tags = self::validate_parameters(self::update_tags_parameters(), array('tags' => $tags));
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $canmanage = has_capability('moodle/tag:manage', $systemcontext);
         $canedit = has_capability('moodle/tag:edit', $systemcontext);
         $warnings = array();
@@ -188,7 +191,7 @@ class core_tag_external extends external_api {
         // Validate and normalize parameters.
         $tags = self::validate_parameters(self::get_tags_parameters(), array('tags' => $tags));
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         $canmanage = has_capability('moodle/tag:manage', $systemcontext);
@@ -296,7 +299,7 @@ class core_tag_external extends external_api {
         );
 
         // Login to the course / module if applicable.
-        $context = $params['ctx'] ? context::instance_by_id($params['ctx']) : context_system::instance();
+        $context = $params['ctx'] ? context::instance_by_id($params['ctx']) : system::instance();
         self::validate_context($context);
 
         $tag = core_tag_tag::get_by_name($params['tc'], $params['tag'], '*', MUST_EXIST);
@@ -409,7 +412,7 @@ class core_tag_external extends external_api {
         }
 
         // Login to the course / module if applicable.
-        $context = !empty($params['ctx']) ? context::instance_by_id($params['ctx']) : context_system::instance();
+        $context = !empty($params['ctx']) ? context::instance_by_id($params['ctx']) : system::instance();
         self::validate_context($context);
 
         $tag = core_tag_tag::get_by_name($params['tc'], $tag->name, '*', MUST_EXIST);
@@ -473,7 +476,7 @@ class core_tag_external extends external_api {
             throw new moodle_exception('tagsaredisabled', 'tag');
         }
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         $PAGE->set_context($context); // Needed by internal APIs.
         $output = $PAGE->get_renderer('core');
@@ -540,7 +543,7 @@ class core_tag_external extends external_api {
             throw new moodle_exception('tagsaredisabled', 'tag');
         }
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         $PAGE->set_context($context); // Needed by internal APIs.
         $output = $PAGE->get_renderer('core');
@@ -635,7 +638,7 @@ class core_tag_external extends external_api {
             throw new moodle_exception('tagsaredisabled', 'tag');
         }
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         $PAGE->set_context($context); // Needed by internal APIs.
         $output = $PAGE->get_renderer('core');

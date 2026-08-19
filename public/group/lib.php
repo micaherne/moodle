@@ -38,6 +38,11 @@
  * @return bool True if user added successfully or the user is already a
  * member of the group, false otherwise.
  */
+use core\context\course;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core_cache\helper;
+
 function groups_add_member($grouporid, $userorid, $component=null, $itemid=0) {
     global $DB;
 
@@ -65,7 +70,7 @@ function groups_add_member($grouporid, $userorid, $component=null, $itemid=0) {
     }
 
     // Check if the user a participant of the group course.
-    $context = context_course::instance($group->courseid);
+    $context = course::instance($group->courseid);
     if (!is_enrolled($context, $userid)) {
         return false;
     }
@@ -105,7 +110,7 @@ function groups_add_member($grouporid, $userorid, $component=null, $itemid=0) {
     $group->timemodified = $member->timeadded;
 
     // Invalidate the group and grouping cache for users.
-    cache_helper::invalidate_by_definition('core', 'user_group_groupings', array(), array($userid));
+    helper::invalidate_by_definition('core', 'user_group_groupings', array(), array($userid));
 
     // Group conversation messaging.
     if ($conversation = \core_message\api::get_conversation_by_area('core_group', 'groups', $groupid, $context->id)) {
@@ -221,17 +226,17 @@ function groups_remove_member($grouporid, $userorid) {
     $group->timemodified = $time;
 
     // Invalidate the group and grouping cache for users.
-    cache_helper::invalidate_by_definition('core', 'user_group_groupings', array(), array($userid));
+    helper::invalidate_by_definition('core', 'user_group_groupings', array(), array($userid));
 
     // Group conversation messaging.
-    $context = context_course::instance($group->courseid);
+    $context = course::instance($group->courseid);
     if ($conversation = \core_message\api::get_conversation_by_area('core_group', 'groups', $groupid, $context->id)) {
         \core_message\api::remove_members_from_conversation([$userid], $conversation->id);
     }
 
     // Trigger group event.
     $params = array(
-        'context' => context_course::instance($group->courseid),
+        'context' => course::instance($group->courseid),
         'objectid' => $groupid,
         'relateduserid' => $userid
     );
@@ -263,7 +268,7 @@ function groups_create_group($data, $editform = false, $editoroptions = false) {
 
     //check that courseid exists
     $course = $DB->get_record('course', array('id' => $data->courseid), '*', MUST_EXIST);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
 
     $data->timecreated  = time();
     $data->timemodified = $data->timecreated;
@@ -309,7 +314,7 @@ function groups_create_group($data, $editform = false, $editoroptions = false) {
     }
 
     // Invalidate the grouping cache for the course
-    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($course->id));
+    helper::invalidate_by_definition('core', 'groupdata', array(), array($course->id));
     // Rebuild the coursehiddengroups cache for the course.
     \core_group\visibility::update_hiddengroups_cache($course->id);
 
@@ -387,11 +392,11 @@ function groups_create_grouping($data, $editoroptions=null) {
     }
 
     // Invalidate the grouping cache for the course
-    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($data->courseid));
+    helper::invalidate_by_definition('core', 'groupdata', array(), array($data->courseid));
 
     // Trigger group event.
     $params = array(
-        'context' => context_course::instance($data->courseid),
+        'context' => course::instance($data->courseid),
         'objectid' => $id
     );
     $event = \core\event\grouping_created::create($params);
@@ -412,7 +417,7 @@ function groups_update_group_icon($group, $data, $editform) {
     require_once("$CFG->libdir/gdlib.php");
 
     $fs = get_file_storage();
-    $context = context_course::instance($group->courseid, MUST_EXIST);
+    $context = course::instance($group->courseid, MUST_EXIST);
     $newpicture = $group->picture;
 
     if (!empty($data->deletepicture)) {
@@ -433,7 +438,7 @@ function groups_update_group_icon($group, $data, $editform) {
         $group->picture = $newpicture;
 
         // Invalidate the group data as we've updated the group record.
-        cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($group->courseid));
+        helper::invalidate_by_definition('core', 'groupdata', array(), array($group->courseid));
     }
 }
 
@@ -448,7 +453,7 @@ function groups_update_group_icon($group, $data, $editform) {
 function groups_update_group($data, $editform = false, $editoroptions = false) {
     global $CFG, $DB, $USER;
 
-    $context = context_course::instance($data->courseid);
+    $context = course::instance($data->courseid);
 
     $data->timemodified = time();
     if (isset($data->name)) {
@@ -475,7 +480,7 @@ function groups_update_group($data, $editform = false, $editoroptions = false) {
     $handler->instance_form_save($data);
 
     // Invalidate the group data.
-    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($data->courseid));
+    helper::invalidate_by_definition('core', 'groupdata', array(), array($data->courseid));
     // Rebuild the coursehiddengroups cache for the course.
     \core_group\visibility::update_hiddengroups_cache($data->courseid);
 
@@ -568,11 +573,11 @@ function groups_update_grouping($data, $editoroptions=null) {
     $handler->instance_form_save($data);
 
     // Invalidate the group data.
-    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($data->courseid));
+    helper::invalidate_by_definition('core', 'groupdata', array(), array($data->courseid));
 
     // Trigger group event.
     $params = array(
-        'context' => context_course::instance($data->courseid),
+        'context' => course::instance($data->courseid),
         'objectid' => $data->id
     );
     $event = \core\event\grouping_updated::create($params);
@@ -603,7 +608,7 @@ function groups_delete_group($grouporid) {
         }
     }
 
-    $context = context_course::instance($group->courseid);
+    $context = course::instance($group->courseid);
 
     // delete group calendar events
     $DB->delete_records('event', array('groupid'=>$groupid));
@@ -621,15 +626,15 @@ function groups_delete_group($grouporid) {
     $DB->delete_records('groups', array('id'=>$groupid));
 
     // Delete all files associated with this group
-    $context = context_course::instance($group->courseid);
+    $context = course::instance($group->courseid);
     $fs = get_file_storage();
     $fs->delete_area_files($context->id, 'group', 'description', $groupid);
     $fs->delete_area_files($context->id, 'group', 'icon', $groupid);
 
     // Invalidate the grouping cache for the course
-    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($group->courseid));
+    helper::invalidate_by_definition('core', 'groupdata', array(), array($group->courseid));
     // Purge the group and grouping cache for users.
-    cache_helper::purge_by_definition('core', 'user_group_groupings');
+    helper::purge_by_definition('core', 'user_group_groupings');
     // Rebuild the coursehiddengroups cache for the course.
     \core_group\visibility::update_hiddengroups_cache($group->courseid);
 
@@ -680,7 +685,7 @@ function groups_delete_grouping($groupingorid) {
     //group itself last
     $DB->delete_records('groupings', array('id'=>$groupingid));
 
-    $context = context_course::instance($grouping->courseid);
+    $context = course::instance($grouping->courseid);
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'grouping', 'description', $groupingid);
     foreach ($files as $file) {
@@ -688,9 +693,9 @@ function groups_delete_grouping($groupingorid) {
     }
 
     // Invalidate the grouping cache for the course
-    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($grouping->courseid));
+    helper::invalidate_by_definition('core', 'groupdata', array(), array($grouping->courseid));
     // Purge the group and grouping cache for users.
-    cache_helper::purge_by_definition('core', 'user_group_groupings');
+    helper::purge_by_definition('core', 'user_group_groupings');
 
     // Trigger group event.
     $params = array(
@@ -757,9 +762,9 @@ function groups_delete_groupings_groups($courseid, $showfeedback=false) {
     $results->close();
 
     // Invalidate the grouping cache for the course
-    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
+    helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
     // Purge the group and grouping cache for users.
-    cache_helper::purge_by_definition('core', 'user_group_groupings');
+    helper::purge_by_definition('core', 'user_group_groupings');
 
     // no need to show any feedback here - we delete usually first groupings and then groups
 
@@ -783,9 +788,9 @@ function groups_delete_groups($courseid, $showfeedback=false) {
     $groups->close();
 
     // Invalidate the grouping cache for the course
-    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
+    helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
     // Purge the group and grouping cache for users.
-    cache_helper::purge_by_definition('core', 'user_group_groupings');
+    helper::purge_by_definition('core', 'user_group_groupings');
     // Rebuild the coursehiddengroups cache for the course.
     \core_group\visibility::update_hiddengroups_cache($courseid);
 
@@ -813,9 +818,9 @@ function groups_delete_groupings($courseid, $showfeedback=false) {
     $groupings->close();
 
     // Invalidate the grouping cache for the course.
-    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
+    helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
     // Purge the group and grouping cache for users.
-    cache_helper::purge_by_definition('core', 'user_group_groupings');
+    helper::purge_by_definition('core', 'user_group_groupings');
 
     if ($showfeedback) {
         echo $OUTPUT->notification(get_string('deleted').' - '.get_string('groupings', 'group'), 'notifysuccess');
@@ -858,7 +863,7 @@ function groups_get_potential_members($courseid, $roleid = null, $source = null,
                                       $notingroup = null, $onlyactiveenrolments = false, $extrafields = []) {
     global $DB;
 
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
 
     list($esql, $params) = get_enrolled_sql($context, '', 0, $onlyactiveenrolments);
 
@@ -974,14 +979,14 @@ function groups_assign_grouping($groupingid, $groupid, $timeadded = null, $inval
     $courseid = $DB->get_field('groupings', 'courseid', array('id' => $groupingid));
     if ($invalidatecache) {
         // Invalidate the grouping cache for the course
-        cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
+        helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
         // Purge the group and grouping cache for users.
-        cache_helper::purge_by_definition('core', 'user_group_groupings');
+        helper::purge_by_definition('core', 'user_group_groupings');
     }
 
     // Trigger event.
     $params = array(
-        'context' => context_course::instance($courseid),
+        'context' => course::instance($courseid),
         'objectid' => $groupingid,
         'other' => array('groupid' => $groupid)
     );
@@ -1006,14 +1011,14 @@ function groups_unassign_grouping($groupingid, $groupid, $invalidatecache = true
     $courseid = $DB->get_field('groupings', 'courseid', array('id' => $groupingid));
     if ($invalidatecache) {
         // Invalidate the grouping cache for the course
-        cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
+        helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
         // Purge the group and grouping cache for users.
-        cache_helper::purge_by_definition('core', 'user_group_groupings');
+        helper::purge_by_definition('core', 'user_group_groupings');
     }
 
     // Trigger event.
     $params = array(
-        'context' => context_course::instance($courseid),
+        'context' => course::instance($courseid),
         'objectid' => $groupingid,
         'other' => array('groupid' => $groupid)
     );
@@ -1049,7 +1054,7 @@ function groups_get_members_by_role(int $groupid, int $courseid, string $fields 
 
     // Retrieve information about all users and their roles on the course or
     // parent ('related') contexts
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
 
     // We are looking for all users with this role assigned in this context or higher.
     list($relatedctxsql, $relatedctxparams) = $DB->get_in_or_equal($context->get_parent_context_ids(true), SQL_PARAMS_NAMED, 'relatedctx');

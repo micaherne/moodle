@@ -24,6 +24,10 @@
 
 namespace core_analytics;
 
+use core\output\pix_icon;
+use core\output\single_button;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -47,7 +51,7 @@ class bulk_action extends action {
      * @param string|false $type
      * @return void
      */
-    public function __construct($actionname, \moodle_url $actionurl, \pix_icon $icon,
+    public function __construct($actionname, url $actionurl, pix_icon $icon,
                                 $text, $primary = false, $attributes = array(), $type = false) {
         global $OUTPUT;
 
@@ -57,12 +61,12 @@ class bulk_action extends action {
 
         // We want to track how effective are our suggested actions, we pass users through a script that will log these actions.
         $params = array('action' => $this->actionname, 'forwardurl' => $actionurl->out(false));
-        $this->url = new \moodle_url('/report/insights/action.php', $params);
+        $this->url = new url('/report/insights/action.php', $params);
 
         $label = $OUTPUT->render($icon) . $this->text;
-        $this->actionlink = new \single_button($this->url, $label,
+        $this->actionlink = new single_button($this->url, $label,
             'get',
-            $primary ? \single_button::BUTTON_PRIMARY : \single_button::BUTTON_SECONDARY,
+            $primary ? single_button::BUTTON_PRIMARY : single_button::BUTTON_SECONDARY,
             $attributes);
     }
 }

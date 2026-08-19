@@ -23,12 +23,14 @@
  * @author    Shamiso Jaravaza  (shamiso [dt] jaravaza [at] blindsidenetworks [dt] com)
  */
 
+use core\context\system;
+
 require_once(__DIR__ . '/../../../../../config.php');
 
 defined('BEHAT_SITE_RUNNING') || die();
 global $PAGE, $OUTPUT;
 require_login();
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url('/mod/bigbluebuttonbn/tests/behat/fixtures/show_simpleplugin_values.php');
 
 echo $OUTPUT->header();

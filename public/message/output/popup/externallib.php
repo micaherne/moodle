@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\user;
 use core_external\external_api;
 use core_external\external_format_value;
 use core_external\external_function_parameters;
@@ -88,7 +91,7 @@ class message_popup_external extends external_api {
             )
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $useridto = $params['useridto'];
@@ -108,7 +111,7 @@ class message_popup_external extends external_api {
         }
 
         if (!empty($useridto)) {
-            if (!core_user::is_real_user($useridto)) {
+            if (!user::is_real_user($useridto)) {
                 throw new moodle_exception('invaliduser');
             }
         }
@@ -212,14 +215,14 @@ class message_popup_external extends external_api {
             array('useridto' => $useridto)
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         $useridto = $params['useridto'];
 
         if (!empty($useridto)) {
-            if (core_user::is_real_user($useridto)) {
-                $userto = core_user::get_user($useridto, '*', MUST_EXIST);
+            if (user::is_real_user($useridto)) {
+                $userto = user::get_user($useridto, '*', MUST_EXIST);
             } else {
                 throw new moodle_exception('invaliduser');
             }

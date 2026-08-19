@@ -25,6 +25,9 @@
  */
 namespace core_privacy\local\request;
 
+use core\context;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -55,7 +58,7 @@ class userlist_collection implements \Iterator, \Countable {
      *
      * @param   \context    $context The context to which this collection belongs.
      */
-    public function __construct(\context $context) {
+    public function __construct(context $context) {
         $this->context = $context;
     }
 
@@ -64,7 +67,7 @@ class userlist_collection implements \Iterator, \Countable {
      *
      * @return  int
      */
-    public function get_context(): \context {
+    public function get_context(): context {
         return $this->context;
     }
 
@@ -77,7 +80,7 @@ class userlist_collection implements \Iterator, \Countable {
     public function add_userlist(userlist_base $userlist): userlist_collection {
         $component = $userlist->get_component();
         if (isset($this->userlists[$component])) {
-            throw new \moodle_exception("A userlist has already been added for the '{$component}' component");
+            throw new moodle_exception("A userlist has already been added for the '{$component}' component");
         }
 
         $this->userlists[$component] = $userlist;

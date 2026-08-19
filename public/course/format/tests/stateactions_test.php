@@ -16,8 +16,9 @@
 
 namespace core_courseformat;
 
-use course_modinfo;
-use moodle_exception;
+use core\plugin_manager;
+use core_course\modinfo;
+use core\exception\moodle_exception;
 use ReflectionMethod;
 use stdClass;
 
@@ -222,7 +223,7 @@ final class stateactions_test extends \advanced_testcase {
         $this->set_test_user_by_role($course, $role);
 
         // Some formats, like social, can create some initial activity.
-        $modninfo = course_modinfo::instance($course);
+        $modninfo = modinfo::instance($course);
         $cms = $modninfo->get_cms();
         $count = 0;
         foreach ($cms as $cm) {
@@ -987,7 +988,7 @@ final class stateactions_test extends \advanced_testcase {
             'assign' => $references['section1'],
             'page' => $references['section2'],
         ];
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
         $cms = $modinfo->get_cms();
         $i = 0;
         foreach ($cms as $cmid => $cminfo) {
@@ -1814,7 +1815,7 @@ final class stateactions_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $modname = 'subsection';
-        $manager = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $manager = plugin_manager::resolve_plugininfo_class('mod');
         $manager::enable_plugin($modname, 1);
 
         // Create a course with 1 section and 1 student.
@@ -1887,7 +1888,7 @@ final class stateactions_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $modname = 'subsection';
-        $manager = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $manager = plugin_manager::resolve_plugininfo_class('mod');
         $manager::enable_plugin($modname, 1);
 
         // Create a course with 1 section, 2 modules (forum and page) and 1 student.
@@ -2051,7 +2052,7 @@ final class stateactions_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $courseformat = course_get_format($course->id);
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
         $sectiontoduplicate = $modinfo->get_section_info(1);
         $nextsection = $modinfo->get_section_info(2);
 
@@ -2069,7 +2070,7 @@ final class stateactions_test extends \advanced_testcase {
         $this->assertCount(4, $results['put']['cm']);
 
         // Validate structure.
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
 
         $sections = $modinfo->get_section_info_all();
         $this->assertCount(4, $sections);
@@ -2106,7 +2107,7 @@ final class stateactions_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $courseformat = course_get_format($course->id);
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
         $sectiontoduplicate1 = $modinfo->get_section_info(1);
         $sectiontoduplicate2 = $modinfo->get_section_info(2);
         $nextsection = $modinfo->get_section_info(3);
@@ -2125,7 +2126,7 @@ final class stateactions_test extends \advanced_testcase {
         $this->assertCount(8, $results['put']['cm']);
 
         // Validate structure.
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
 
         $sections = $modinfo->get_section_info_all();
         $this->assertCount(6, $sections);
@@ -2173,7 +2174,7 @@ final class stateactions_test extends \advanced_testcase {
         $this->setUser($user);
 
         $courseformat = course_get_format($course->id);
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
         $sectiontoduplicate = $modinfo->get_section_info(1);
 
         $actions = new stateactions();
@@ -2198,7 +2199,7 @@ final class stateactions_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $courseformat = course_get_format($course->id);
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
         $sectiontoduplicate = $modinfo->get_section_info(3);
 
         $sections = $modinfo->get_section_info_all();
@@ -2215,7 +2216,7 @@ final class stateactions_test extends \advanced_testcase {
         $this->assertCount(3, $results['put']['cm']);
 
         // Validate structure.
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
 
         $sections = $modinfo->get_section_info_all();
         $this->assertCount(5, $sections);

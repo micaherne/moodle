@@ -22,6 +22,9 @@
  * @copyright 2009 Moodle Pty Ltd (http://moodle.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/webservice/lib.php');
@@ -42,14 +45,14 @@ if ($node) {
 }
 $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->navbar->add(get_string('externalservices', 'webservice'),
-   new moodle_url('/admin/settings.php', ['section' => 'externalservices']));
+   new url('/admin/settings.php', ['section' => 'externalservices']));
 $PAGE->navbar->add(get_string('functions', 'webservice'),
-        new moodle_url('/' . $CFG->admin . '/webservice/service_functions.php', array('id' => $serviceid)));
+        new url('/' . $CFG->admin . '/webservice/service_functions.php', array('id' => $serviceid)));
 
 $service = $DB->get_record('external_services', array('id' => $serviceid), '*', MUST_EXIST);
 $webservicemanager = new webservice();
 $renderer = $PAGE->get_renderer('core', 'webservice');
-$functionlisturl = new moodle_url('/' . $CFG->admin . '/webservice/service_functions.php',
+$functionlisturl = new url('/' . $CFG->admin . '/webservice/service_functions.php',
         array('id' => $serviceid));
 
 // Add or Delete operations

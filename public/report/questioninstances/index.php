@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context_helper;
+use core\output\html_writer;
+use core_table\output\html_table;
+
 require(__DIR__.'/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/questionlib.php');

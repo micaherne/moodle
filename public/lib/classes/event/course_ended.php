@@ -16,6 +16,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Course ended event class.
  *
@@ -65,7 +68,7 @@ class course_ended extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/course/view.php', ['id' => $this->objectid]);
+        return new url('/course/view.php', ['id' => $this->objectid]);
     }
 
     /**
@@ -78,7 +81,7 @@ class course_ended extends base {
         parent::validate_data();
 
         if (!isset($this->other['fullname'])) {
-            throw new \coding_exception('The \'fullname\' value must be set in other.');
+            throw new coding_exception('The \'fullname\' value must be set in other.');
         }
     }
 

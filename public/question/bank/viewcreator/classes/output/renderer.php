@@ -16,6 +16,8 @@
 
 namespace qbank_viewcreator\output;
 
+use core\output\plugin_renderer_base;
+
 /**
  * Class renderer.
  * @package    qbank_viewcreator
@@ -23,7 +25,7 @@ namespace qbank_viewcreator\output;
  * @author     Ghaly Marc-Alexandre <marc-alexandreghaly@catalyst-ca.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Render question creator.

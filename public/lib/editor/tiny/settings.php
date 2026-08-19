@@ -22,14 +22,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\plugin_manager;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
 use editor_tiny\editor_tiny_admin_setting_package_source;
 use editor_tiny\manager;
 
 defined('MOODLE_INTERNAL') || die;
 
-$ADMIN->add('editorsettings', new admin_category('editortiny', $editor->displayname, $editor->is_enabled() === false));
+$ADMIN->add('editorsettings', new category('editortiny', $editor->displayname, $editor->is_enabled() === false));
 
-$settings = new admin_settingpage('editorsettingstiny', new lang_string('settings', 'editor_tiny'));
+$settings = new settingpage('editorsettingstiny', new lang_string('settings', 'editor_tiny'));
 $settings->add(new \core_admin\admin\admin_setting_plugin_manager(
     'tiny',
     \editor_tiny\table\plugin_management_table::class,
@@ -38,7 +45,7 @@ $settings->add(new \core_admin\admin\admin_setting_plugin_manager(
 ));
 
 if ($ADMIN->fulltree) {
-    $setting = new admin_setting_configcheckbox(
+    $setting = new configcheckbox(
         'editor_tiny/branding',
         new lang_string('branding', 'editor_tiny'),
         new lang_string('branding_desc', 'editor_tiny'),
@@ -47,7 +54,7 @@ if ($ADMIN->fulltree) {
 
     $settings->add($setting);
 
-    $setting = new admin_setting_configtext(
+    $setting = new configtext(
         'editor_tiny/extended_valid_elements',
         new lang_string('extended_valid_elements', 'editor_tiny'),
         new lang_string('extended_valid_elements_desc', 'editor_tiny'),
@@ -56,7 +63,7 @@ if ($ADMIN->fulltree) {
 
     $settings->add($setting);
 
-    $setting = new admin_setting_configselect(
+    $setting = new configselect(
         'editor_tiny/package_source',
         new lang_string('package_source', 'editor_tiny'),
         new lang_string('package_source_desc', 'editor_tiny'),
@@ -87,7 +94,7 @@ if ($ADMIN->fulltree) {
 // This ensures that it shows in the category list too.
 $ADMIN->add('editortiny', $settings);
 
-foreach (core_plugin_manager::instance()->get_plugins_of_type('tiny') as $plugin) {
+foreach (plugin_manager::instance()->get_plugins_of_type('tiny') as $plugin) {
     /** @var \editor_tiny\plugininfo\tiny $plugin */
     $plugin->load_settings($ADMIN, 'editortiny', $hassiteconfig);
 }

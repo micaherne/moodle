@@ -23,6 +23,9 @@
  */
 
 namespace mod_wiki\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,7 +79,7 @@ class page_version_restored extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/wiki/viewversion.php', array('pageid' => $this->other['pageid'],
+        return new url('/mod/wiki/viewversion.php', array('pageid' => $this->other['pageid'],
             'versionid' => $this->objectid));
     }
 
@@ -89,7 +92,7 @@ class page_version_restored extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['pageid'])) {
-            throw new \coding_exception('The pageid needs to be set in $other');
+            throw new coding_exception('The pageid needs to be set in $other');
         }
     }
 

@@ -16,8 +16,9 @@
 
 namespace tool_usertours\local\filter;
 
+use core\exception\coding_exception;
 use tool_usertours\tour;
-use context;
+use core\context;
 
 /**
  * Filter base.
@@ -38,7 +39,7 @@ abstract class base {
      * @return  string
      */
     public static function get_filter_name() {
-        throw new \coding_exception('get_filter_name() must be defined');
+        throw new coding_exception('get_filter_name() must be defined');
     }
 
     /**

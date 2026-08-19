@@ -16,8 +16,9 @@
 
 namespace mod_subsection;
 
-use context_course;
-use section_info;
+use core\context\course;
+use core\plugin_manager;
+use core_course\section_info;
 
 /**
  * Class to check permissions for subsection module.
@@ -39,10 +40,10 @@ class permission {
         if ($section->modinfo->get_course()->format == 'site') {
             return false;
         }
-        if (!array_key_exists('subsection', \core_plugin_manager::instance()->get_enabled_plugins('mod'))) {
+        if (!array_key_exists('subsection', plugin_manager::instance()->get_enabled_plugins('mod'))) {
             return false;
         }
-        if (!has_capability('mod/subsection:addinstance', context_course::instance($section->course), $userid)) {
+        if (!has_capability('mod/subsection:addinstance', course::instance($section->course), $userid)) {
             return false;
         }
         if ($section->is_delegated()) {

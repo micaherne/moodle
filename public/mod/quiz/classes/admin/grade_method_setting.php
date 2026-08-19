@@ -16,6 +16,8 @@
 
 namespace mod_quiz\admin;
 
+use core_admin\setting\setting\configselect_with_advanced;
+
 /**
  * Admin settings class for the quiz grading method.
  *
@@ -26,7 +28,7 @@ namespace mod_quiz\admin;
  * @copyright 2011 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class grade_method_setting extends \admin_setting_configselect_with_advanced {
+class grade_method_setting extends configselect_with_advanced {
     public function load_choices() {
         global $CFG;
 

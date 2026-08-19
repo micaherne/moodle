@@ -25,6 +25,11 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../../editlib.php');
 
+use core\context;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
 use qbank_editquestion\editquestion_helper;
 
 // Read URL parameters.
@@ -46,7 +51,7 @@ if (!$category = $DB->get_record('question_categories', array('id' => $categoryi
 
 list($module, $cm) = get_module_from_cmid($cmid);
 require_login($cm->course, false, $cm);
-$thiscontext = context_module::instance($cmid);
+$thiscontext = module::instance($cmid);
 $hiddenparams['cmid'] = $cmid;
 
 // Check permissions.
@@ -63,7 +68,7 @@ if (!empty($appendqnumstring)) {
 
 $PAGE->set_url('/question/bank/editquestion/addquestion.php', $hiddenparams);
 
-$questionbankurl = new moodle_url('/question/edit.php', ['cmid' => $cmid]);
+$questionbankurl = new url('/question/edit.php', ['cmid' => $cmid]);
 
 navigation_node::override_active_url($questionbankurl);
 

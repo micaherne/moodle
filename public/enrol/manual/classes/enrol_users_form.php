@@ -24,6 +24,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
@@ -108,7 +110,7 @@ class enrol_manual_enrol_users_form extends moodleform {
             require_once($CFG->dirroot . '/cohort/lib.php');
             $availablecohorts = cohort_get_cohorts($context->id, 0, 1, '');
             $availablecohorts = $availablecohorts['cohorts'];
-            if (!($context instanceof context_system)) {
+            if (!($context instanceof system)) {
                 $availablecohorts = array_merge($availablecohorts,
                     cohort_get_available_cohorts($context, COHORT_ALL, 0, 1, ''));
             }

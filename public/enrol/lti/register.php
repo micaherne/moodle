@@ -35,6 +35,9 @@
  */
 
 use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
 use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
 use enrol_lti\local\ltiadvantage\repository\context_repository;
 use enrol_lti\local\ltiadvantage\repository\deployment_repository;
@@ -46,7 +49,7 @@ require_once(__DIR__."/../../config.php");
 global $OUTPUT, $PAGE, $CFG, $SITE;
 require_once($CFG->libdir . '/filelib.php');
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('popup');
 
 // URL to the platform's OpenID configuration.
@@ -175,11 +178,11 @@ if ($regresponse) {
 
         // Registration of the tool on the platform was successful.
         // Now update the platform details in the registration and mark it complete.
-        $draftreg->set_accesstokenurl(new moodle_url($openidconfig->token_endpoint));
-        $draftreg->set_authenticationrequesturl(new moodle_url($openidconfig->authorization_endpoint));
+        $draftreg->set_accesstokenurl(new url($openidconfig->token_endpoint));
+        $draftreg->set_authenticationrequesturl(new url($openidconfig->authorization_endpoint));
         $draftreg->set_clientid($regresponse->client_id);
-        $draftreg->set_jwksurl(new moodle_url($openidconfig->jwks_uri));
-        $draftreg->set_platformid(new moodle_url($openidconfig->issuer));
+        $draftreg->set_jwksurl(new url($openidconfig->jwks_uri));
+        $draftreg->set_platformid(new url($openidconfig->issuer));
         $draftreg->complete_registration();
         $appreg = $appregrepo->save($draftreg);
 

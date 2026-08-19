@@ -16,6 +16,7 @@
 
 namespace core_question;
 
+use core\exception\moodle_exception;
 use question_attempt_step;
 use testable_question_attempt;
 
@@ -103,7 +104,7 @@ final class questionattemptstepiterator_test extends \advanced_testcase {
     }
 
     public function test_offsetGet_before_start(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $step = $this->iterator[-1];
     }
 
@@ -118,17 +119,17 @@ final class questionattemptstepiterator_test extends \advanced_testcase {
     }
 
     public function test_offsetGet_past_end(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $step = $this->iterator[3];
     }
 
     public function test_cannot_set(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->iterator[0] = null;
     }
 
     public function test_cannot_unset(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         unset($this->iterator[2]);
     }
 }

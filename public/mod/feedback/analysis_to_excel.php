@@ -22,6 +22,10 @@
  * @package mod_feedback
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 require_once("$CFG->libdir/excellib.class.php");
@@ -29,7 +33,7 @@ require_once("$CFG->libdir/excellib.class.php");
 $id = required_param('id', PARAM_INT); // Course module id.
 $courseid = optional_param('courseid', '0', PARAM_INT);
 
-$url = new moodle_url('/mod/feedback/analysis_to_excel.php', array('id' => $id));
+$url = new url('/mod/feedback/analysis_to_excel.php', array('id' => $id));
 if ($courseid) {
     $url->param('courseid', $courseid);
 }
@@ -37,7 +41,7 @@ $PAGE->set_url($url);
 
 list($course, $cm) = get_course_and_cm_from_cmid($id, 'feedback');
 require_login($course, false, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/feedback:viewreports', $context);
 
 $feedback = $PAGE->activityrecord;
@@ -49,7 +53,7 @@ ob_end_clean();
 // Get the questions (item-names).
 $feedbackstructure = new mod_feedback_structure($feedback, $cm, $course->id);
 if (!$items = $feedbackstructure->get_items(true)) {
-    throw new \moodle_exception('no_items_available_yet', 'feedback', $cm->url);
+    throw new moodle_exception('no_items_available_yet', 'feedback', $cm->url);
 }
 
 $mygroupid = groups_get_activity_group($cm);

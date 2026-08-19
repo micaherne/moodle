@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\renderable;
+
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 
 require_once($CFG->libdir.'/formslib.php');
@@ -54,7 +57,7 @@ class assignfeedback_file_import_zip_form extends moodleform implements renderab
         $update = false;
 
         if (!$importer) {
-            throw new \moodle_exception('invalidarguments');
+            throw new moodle_exception('invalidarguments');
             return;
         }
 

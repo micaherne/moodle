@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') OR die('not allowed');
 require_once($CFG->dirroot.'/mod/feedback/item/feedback_item_class.php');
 
@@ -23,7 +26,7 @@ class feedback_item_captcha extends feedback_item_base {
     public function build_editform($item, $feedback, $cm) {
         global $DB;
 
-        $editurl = new moodle_url('/mod/feedback/edit.php', array('id'=>$cm->id));
+        $editurl = new url('/mod/feedback/edit.php', array('id'=>$cm->id));
 
         // There are no settings for recaptcha.
         if (isset($item->id) AND $item->id > 0) {

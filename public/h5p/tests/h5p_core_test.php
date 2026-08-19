@@ -16,9 +16,10 @@
 
 namespace core_h5p;
 
+use core\test\testing_util;
 use core_h5p\local\library\autoloader;
 
-use invalid_response_exception;
+use core\exception\invalid_response_exception;
 
 /**
  * Testing the H5P core methods.
@@ -132,7 +133,7 @@ final class h5p_core_test extends \advanced_testcase {
         $contenttypespending = ['H5P.Accordion'];
 
         // Fetch generator.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $h5pgenerator = $generator->get_plugin_generator('core_h5p');
 
         // Get info of latest content types versions.

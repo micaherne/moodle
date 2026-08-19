@@ -16,7 +16,9 @@
 
 namespace qbank_viewquestiontext\external;
 
-use context_system;
+use core\context\system;
+use core\exception\invalid_parameter_exception;
+use core\url;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -68,12 +70,12 @@ class set_question_text_format extends external_api {
         );
 
         if (!in_array($format, [question_text_format::OFF, question_text_format::PLAIN, question_text_format::FULL])) {
-            throw new \invalid_parameter_exception('$format must be one of question_text_format::OFF, ::PLAIN or ::FULL.');
+            throw new invalid_parameter_exception('$format must be one of question_text_format::OFF, ::PLAIN or ::FULL.');
         }
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
-        \question_set_or_get_user_preference('qbshowtext', $format, 0, new \moodle_url('/'));
+        \question_set_or_get_user_preference('qbshowtext', $format, 0, new url('/'));
     }
 }

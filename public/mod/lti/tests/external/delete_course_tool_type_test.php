@@ -16,6 +16,7 @@
 
 namespace mod_lti\external;
 
+use core\exception\invalid_parameter_exception;
 use core_external\external_api;
 
 defined('MOODLE_INTERNAL') || die();
@@ -76,7 +77,7 @@ final class delete_course_tool_type_test extends \mod_lti_testcase {
 
         $type = $this->generate_tool_type(123); // Creates a site tool.
 
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         delete_course_tool_type::execute($type->id);
     }
 }

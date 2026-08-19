@@ -16,8 +16,8 @@
 
 namespace core_group\external;
 
-use context_course;
-use context_module;
+use core\context\course;
+use core\context\module;
 use core_external\external_api;
 use core_external\external_description;
 use core_external\external_function_parameters;
@@ -29,7 +29,7 @@ use core_grades\external\coding_exception;
 use core_grades\external\invalid_parameter_exception;
 use core_grades\external\moodle_exception;
 use core_grades\external\restricted_context_exception;
-use moodle_url;
+use core\url;
 
 /**
  * External group name and image API implementation
@@ -81,13 +81,13 @@ class get_groups_for_selector extends external_api {
         $course = $DB->get_record('course', ['id' => $params['courseid']]);
 
         if ($params['cmid']) {
-            $context = context_module::instance($params['cmid']);
+            $context = module::instance($params['cmid']);
             $cm = get_coursemodule_from_id('', $params['cmid']);
             $groupmode = groups_get_activity_groupmode($cm, $course);
             $groupingid = $cm->groupingid;
             $participationonly = false;
         } else {
-            $context = context_course::instance($params['courseid']);
+            $context = course::instance($params['courseid']);
             $groupmode = $course->groupmode;
             $groupingid = $course->defaultgroupingid;
             $participationonly = false;
@@ -133,7 +133,7 @@ class get_groups_for_selector extends external_api {
             $mappedgroups = array_map(function ($group) use ($context, $OUTPUT) {
                 if ($group->id) { // Particular group. Get the group picture if it exists, otherwise return a generic image.
                     $picture = get_group_picture_url($group, $group->courseid, true) ??
-                        moodle_url::make_pluginfile_url($context->get_course_context()->id, 'group', 'generated', $group->id,
+                        url::make_pluginfile_url($context->get_course_context()->id, 'group', 'generated', $group->id,
                             '/', 'group.svg');
                     $participation = $group->participation;
                 } else { // All participants.

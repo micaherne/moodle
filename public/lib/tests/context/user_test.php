@@ -17,6 +17,7 @@
 namespace core\context;
 
 use core\context, core\context_helper;
+use core\url;
 
 /**
  * Unit tests for user context class.
@@ -35,9 +36,9 @@ final class user_test extends \advanced_testcase {
      */
     public function test_legacy_classname(): void {
         $admin = get_admin();
-        $context = \context_user::instance($admin->id);
+        $context = user::instance($admin->id);
         $this->assertInstanceOf(user::class, $context);
-        $this->assertInstanceOf(\context_user::class, $context);
+        $this->assertInstanceOf(user::class, $context);
     }
 
     /**
@@ -102,9 +103,9 @@ final class user_test extends \advanced_testcase {
     public function test_get_url(): void {
         $admin = get_admin();
         $context = user::instance($admin->id);
-        $expected = new \moodle_url('/user/profile.php', ['id' => $admin->id]);
+        $expected = new url('/user/profile.php', ['id' => $admin->id]);
         $url = $context->get_url();
-        $this->assertInstanceOf(\moodle_url::class, $url);
+        $this->assertInstanceOf(url::class, $url);
         $this->assertSame($expected->out(), $url->out());
     }
 

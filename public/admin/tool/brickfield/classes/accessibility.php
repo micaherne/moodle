@@ -16,9 +16,9 @@
 
 namespace tool_brickfield;
 
-use context_system;
-use moodle_exception;
-use moodle_url;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
 use stdClass;
 use tool_brickfield\local\tool\filter;
 
@@ -71,10 +71,10 @@ class accessibility {
      * @param   string $url The URL within the plugin
      * @return  moodle_url
      */
-    public static function get_plugin_url(string $url = ''): moodle_url {
+    public static function get_plugin_url(string $url = ''): url {
         $url = ($url == '') ? 'index.php' : $url;
         $pluginpath = self::$pluginpath;
-        return new moodle_url("/admin/{$pluginpath}/{$url}");
+        return new url("/admin/{$pluginpath}/{$url}");
     }
 
     /**
@@ -147,7 +147,7 @@ class accessibility {
         }
 
         if (analysis::is_enabled()) {
-            $PAGE->set_context(context_system::instance());
+            $PAGE->set_context(system::instance());
             mtrace("Starting cron for bulk_process_courses");
             // Do regular processing. True if full deployment type isn't selected as well.
             static::bulk_processing($batch);

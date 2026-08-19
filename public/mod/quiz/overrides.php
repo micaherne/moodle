@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
 use mod_quiz\quiz_settings;
 
 require_once(__DIR__ . '/../../config.php');
@@ -61,7 +66,7 @@ if ($mode != "user" and $mode != "group") {
 }
 $groupmode = ($mode == "group");
 
-$url = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $cm->id, 'mode' => $mode]);
+$url = new url('/mod/quiz/overrides.php', ['cmid' => $cm->id, 'mode' => $mode]);
 
 $title = get_string('overridesforquiz', 'quiz',
         format_string($quiz->name, true, ['context' => $context]));
@@ -170,11 +175,11 @@ if ($canedit) {
     $table->colclasses[] = 'colaction';
     $table->headspan[] = 1;
 }
-$userurl = new moodle_url('/user/view.php', []);
-$groupurl = new moodle_url('/group/overview.php', ['id' => $cm->course]);
+$userurl = new url('/user/view.php', []);
+$groupurl = new url('/group/overview.php', ['id' => $cm->course]);
 
-$overridedeleteurl = new moodle_url('/mod/quiz/overridedelete.php');
-$overrideediturl = new moodle_url('/mod/quiz/overrideedit.php');
+$overridedeleteurl = new url('/mod/quiz/overridedelete.php');
+$overrideediturl = new url('/mod/quiz/overrideedit.php');
 
 $hasinactive = false; // Whether there are any inactive overrides.
 
@@ -250,13 +255,13 @@ foreach ($overrides as $override) {
     if ($groupmode) {
         $groupcell = new html_table_cell();
         $groupcell->rowspan = count($fields);
-        $groupcell->text = html_writer::link(new moodle_url($groupurl, ['group' => $override->groupid]),
+        $groupcell->text = html_writer::link(new url($groupurl, ['group' => $override->groupid]),
             format_string($override->name, true, ['context' => $context]) . $extranamebit);
         $usercells[] = $groupcell;
     } else {
         $usercell = new html_table_cell();
         $usercell->rowspan = count($fields);
-        $usercell->text = html_writer::link(new moodle_url($userurl, ['id' => $override->userid]),
+        $usercell->text = html_writer::link(new url($userurl, ['id' => $override->userid]),
                 fullname($override) . $extranamebit);
         $usercells[] = $usercell;
 

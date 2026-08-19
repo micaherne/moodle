@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\exception\moodle_exception;
+
 require_once($CFG->dirroot.'/grade/export/lib.php');
 require_once($CFG->libdir.'/filelib.php');
 
@@ -62,13 +65,13 @@ class grade_export_xml extends grade_export {
         $strgrades = get_string('grades');
 
         /// Calculate file name
-        $shortname = format_string($this->course->shortname, true, array('context' => context_course::instance($this->course->id)));
+        $shortname = format_string($this->course->shortname, true, array('context' => course::instance($this->course->id)));
         $downloadfilename = clean_filename("$shortname $strgrades.xml");
 
         make_temp_directory('gradeexport');
         $tempfilename = $CFG->tempdir .'/gradeexport/'. md5(sesskey().microtime().$downloadfilename);
         if (!$handle = fopen($tempfilename, 'w+b')) {
-            throw new \moodle_exception('cannotcreatetempdir');
+            throw new moodle_exception('cannotcreatetempdir');
         }
 
         /// time stamp to ensure uniqueness of batch export

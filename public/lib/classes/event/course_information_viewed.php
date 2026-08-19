@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -74,7 +77,7 @@ class course_information_viewed extends base {
      * @return \moodle_url|null
      */
     public function get_url() {
-        return new \moodle_url('/course/info.php', array('id' => $this->objectid));
+        return new url('/course/info.php', array('id' => $this->objectid));
     }
 
     /**
@@ -87,7 +90,7 @@ class course_information_viewed extends base {
         parent::validate_data();
 
         if ($this->contextlevel != CONTEXT_COURSE) {
-            throw new \coding_exception('Context level must be CONTEXT_COURSE.');
+            throw new coding_exception('Context level must be CONTEXT_COURSE.');
         }
     }
 

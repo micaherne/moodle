@@ -24,6 +24,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../../../config.php');
@@ -42,7 +48,7 @@ $taskid = optional_param('id', null, PARAM_INT);
 $confirmed = optional_param('confirm', 0, PARAM_INT);
 
 if (!\core\task\manager::is_runnable()) {
-    $redirecturl = new \moodle_url('/admin/settings.php', ['section' => 'systempaths']);
+    $redirecturl = new url('/admin/settings.php', ['section' => 'systempaths']);
     throw new moodle_exception('cannotfindthepathtothecli', 'tool_task', $redirecturl->out());
 }
 
@@ -52,14 +58,14 @@ $params = ['classname' => $classname, 'failedonly' => $failedonly, 'dueonly' => 
 if ($taskid) {
     $record = $DB->get_record('task_adhoc', ['id' => $taskid]);
     if (!$record) {
-        throw new \moodle_exception('invalidtaskid');
+        throw new moodle_exception('invalidtaskid');
     }
     $classname = $record->classname;
     $heading = get_string('runadhoctask', 'tool_task', ['task' => $classname, 'taskid' => $taskid]);
     $tasks = [core\task\manager::adhoc_task_from_record($record)];
 } else {
     if (!$classname) {
-        throw new \moodle_exception('noclassname', 'tool_task');
+        throw new moodle_exception('noclassname', 'tool_task');
     }
 
     $heading = get_string(
@@ -78,7 +84,7 @@ if ($taskid) {
 }
 
 // Start output.
-$context = context_system::instance();
+$context = system::instance();
 $PAGE->set_context($context);
 $PAGE->set_heading($SITE->fullname);
 $PAGE->set_title($classname);
@@ -104,9 +110,9 @@ echo $renderer->adhoc_tasks_simple_table($tasks);
 // they confirm.
 if (!$confirmed) {
     echo $OUTPUT->confirm(get_string('runadhoc_confirm', 'tool_task'),
-            new single_button(new moodle_url($runurl, array_merge($params, ['confirm' => 1])),
+            new single_button(new url($runurl, array_merge($params, ['confirm' => 1])),
             get_string('runadhoc', 'tool_task')),
-            new single_button(new moodle_url($tasksurl, $params),
+            new single_button(new url($tasksurl, $params),
             get_string('cancel'), false));
     echo $OUTPUT->footer();
     exit;
@@ -153,7 +159,7 @@ if ($taskid) {
 if ($repeat) {
     echo html_writer::div(
         $OUTPUT->single_button(
-            new moodle_url($runurl, array_merge($params, ['confirm' => 1])),
+            new url($runurl, array_merge($params, ['confirm' => 1])),
             get_string('runagain', 'tool_task')
         )
     );
@@ -161,7 +167,7 @@ if ($repeat) {
 
 echo html_writer::div(
     html_writer::link(
-        new moodle_url($tasksurl, $taskid ? ['classname' => $classname] : []),
+        new url($tasksurl, $taskid ? ['classname' => $classname] : []),
         get_string('backtoadhoctasks', 'tool_task')
     )
 );

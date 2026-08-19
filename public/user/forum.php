@@ -22,6 +22,8 @@
  * @package core_user
  */
 
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/gdlib.php');
 require_once($CFG->dirroot.'/user/forum_form.php');
@@ -42,7 +44,7 @@ $user->markasreadonnotification = get_user_preferences('forum_markasreadonnotifi
 $user->useexperimentalui = get_user_preferences('forum_useexperimentalui', 0, $user->id);
 $forumform->set_data($user);
 
-$redirect = new moodle_url("/user/preferences.php", array('userid' => $user->id));
+$redirect = new url("/user/preferences.php", array('userid' => $user->id));
 if ($forumform->is_cancelled()) {
     redirect($redirect);
 } else if ($data = $forumform->get_data()) {

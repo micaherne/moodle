@@ -23,7 +23,11 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+use core\context\module;
+use core\output\html_writer;
 use core\url;
+use core_course\cached_cm_info;
+use core_course\cm_info;
 
 /**
  * List of features supported in Resource module
@@ -207,7 +211,7 @@ function resource_get_coursemodule_info($coursemodule) {
     require_once("$CFG->dirroot/mod/resource/locallib.php");
     require_once($CFG->libdir.'/completionlib.php');
 
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
 
     if (!$resource = $DB->get_record('resource', array('id'=>$coursemodule->instance),
             'id, name, display, displayoptions, tobemigrated, revision, intro, introformat')) {
@@ -444,7 +448,7 @@ function resource_page_type_list($pagetype, $parentcontext, $currentcontext) {
 function resource_export_contents($cm, $baseurl) {
     global $CFG, $DB;
     $contents = array();
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     $resource = $DB->get_record('resource', array('id'=>$cm->instance), '*', MUST_EXIST);
 
     $fs = get_file_storage();
@@ -594,7 +598,7 @@ function mod_resource_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('view'),
-        new \moodle_url('/mod/resource/view.php', ['id' => $cm->id]),
+        new url('/mod/resource/view.php', ['id' => $cm->id]),
         1,
         true
     );

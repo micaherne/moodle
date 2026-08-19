@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
 
 /**
@@ -75,11 +77,11 @@ class behat_tool_lp extends behat_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_instance_url(string $page, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $page, string $identifier): url {
         switch (strtolower($page)) {
             case 'course competencies':
                 $courseid = $this->get_course_id($identifier);
-                return new moodle_url('/admin/tool/lp/coursecompetencies.php', [
+                return new url('/admin/tool/lp/coursecompetencies.php', [
                     'courseid' => $courseid,
                 ]);
             default:

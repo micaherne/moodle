@@ -24,11 +24,12 @@
 
 namespace core_tag\output;
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\context\system;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
-use moodle_url;
+use core\url;
 use core_tag_tag;
 
 /**
@@ -60,7 +61,7 @@ class tagcloud implements templatable {
      * @param int $rec recursive argument for tag view link
      */
     public function __construct($tagset, $totalcount = 0, $fromctx = 0, $ctx = 0, $rec = 1) {
-        $canmanagetags = has_capability('moodle/tag:manage', \context_system::instance());
+        $canmanagetags = has_capability('moodle/tag:manage', system::instance());
 
         $maxcount = 1;
         foreach ($tagset as $tag) {

@@ -18,7 +18,7 @@ namespace core\context;
 
 use core\context;
 use stdClass;
-use coding_exception, moodle_url;
+use core\exception\coding_exception, core\url;
 
 /**
  * Course context class
@@ -111,10 +111,10 @@ class course extends context {
      */
     public function get_url() {
         if ($this->_instanceid != SITEID) {
-            return new moodle_url('/course/view.php', array('id' => $this->_instanceid));
+            return new url('/course/view.php', array('id' => $this->_instanceid));
         }
 
-        return new moodle_url('/');
+        return new url('/');
     }
 
     /**

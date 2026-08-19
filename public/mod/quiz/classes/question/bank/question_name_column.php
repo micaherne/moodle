@@ -16,6 +16,8 @@
 
 namespace mod_quiz\question\bank;
 
+use core\output\html_writer;
+
 /**
  * A column type for the name of the question name.
  *
@@ -54,11 +56,11 @@ class question_name_column extends \core_question\local\bank\column_base {
     protected function display_content($question, $rowclasses): void {
         $labelfor = $this->label_for($question);
         if ($labelfor) {
-            echo \html_writer::start_tag('label', ['for' => $labelfor]);
+            echo html_writer::start_tag('label', ['for' => $labelfor]);
         }
         echo format_string($question->name);
         if ($labelfor) {
-            echo \html_writer::end_tag('label');
+            echo html_writer::end_tag('label');
         }
     }
 

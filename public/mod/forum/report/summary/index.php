@@ -22,10 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\single_select;
+use core\url;
+
 require_once("../../../../config.php");
 
 if (isguestuser()) {
-    throw new \moodle_exception('noguest');
+    throw new moodle_exception('noguest');
 }
 
 $courseid = required_param('courseid', PARAM_INT);
@@ -63,7 +69,7 @@ foreach ($courseforums as $courseforumid => $courseforum) {
 
 if ($forumid) {
     if (!isset($forumsvisibletouser[$forumid])) {
-        throw new \moodle_exception('A valid forum ID is required to generate a summary report.');
+        throw new moodle_exception('A valid forum ID is required to generate a summary report.');
     }
 
     $filters['forums'] = [$forumid];
@@ -74,7 +80,7 @@ if ($forumid) {
     require_login($courseid, false, $forumcm);
     $context = $forumcm->context;
     $canexport = !$download && has_capability('mod/forum:exportforum', $context);
-    $redirecturl = new moodle_url('/mod/forum/view.php', ['id' => $forumid]);
+    $redirecturl = new url('/mod/forum/view.php', ['id' => $forumid]);
     $numforums = 1;
     $pageurlparams['forumid'] = $forumid;
     $iscoursereport = false;
@@ -89,11 +95,11 @@ if ($forumid) {
         $cms[] = $visibleforum;
     }
 
-    $context = \context_course::instance($courseid);
+    $context = course::instance($courseid);
     $title = $course->fullname;
     // Export currently only supports single forum exports.
     $canexport = false;
-    $redirecturl = new moodle_url('/course/view.php', ['id' => $courseid]);
+    $redirecturl = new url('/course/view.php', ['id' => $courseid]);
     $numforums = count($forumsvisibletouser);
     $iscoursereport = true;
 
@@ -101,7 +107,7 @@ if ($forumid) {
     $accessallforums = empty(array_diff($allforumidsincourse, $filters['forums']));
 }
 
-$pageurl = new moodle_url('/mod/forum/report/summary/index.php', $pageurlparams);
+$pageurl = new url('/mod/forum/report/summary/index.php', $pageurlparams);
 
 $PAGE->set_url($pageurl);
 $PAGE->set_pagelayout('report');
@@ -112,7 +118,7 @@ $PAGE->activityheader->disable();
 $PAGE->navbar->add(get_string('nodetitle', 'forumreport_summary'));
 
 // Activate the secondary nav tab.
-navigation_node::override_active_url(new moodle_url('/mod/forum/report/summary/index.php',
+navigation_node::override_active_url(new url('/mod/forum/report/summary/index.php',
     ['courseid' => $courseid, 'forumid' => $forumid]));
 
 $allowbulkoperations = !$download && !empty($CFG->messaging) && has_capability('moodle/course:bulkmessaging', $context);
@@ -179,7 +185,7 @@ if ($download) {
     }
 
     // Allow switching to course report (or other forum user has access to).
-    $reporturl = new moodle_url('/mod/forum/report/summary/index.php', ['courseid' => $courseid]);
+    $reporturl = new url('/mod/forum/report/summary/index.php', ['courseid' => $courseid]);
     $forumselect = new single_select($reporturl, 'forumid', $forumselectoptions, $forumid, '');
     $forumselect->set_label(get_string('forumselectlabel', 'forumreport_summary'));
     echo $OUTPUT->render($forumselect);

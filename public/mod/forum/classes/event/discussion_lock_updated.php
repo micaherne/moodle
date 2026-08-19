@@ -16,8 +16,8 @@
 
 namespace mod_forum\event;
 
-use coding_exception;
-use moodle_url;
+use core\exception\coding_exception;
+use core\url;
 
 /**
  * The mod_forum discussion lock updated event.
@@ -62,8 +62,8 @@ class discussion_lock_updated extends \core\event\base {
      *
      * @return moodle_url
      */
-    public function get_url(): moodle_url {
-        return new moodle_url('/mod/forum/discuss.php', ['d' => $this->objectid]);
+    public function get_url(): url {
+        return new url('/mod/forum/discuss.php', ['d' => $this->objectid]);
     }
 
     /**
@@ -78,10 +78,10 @@ class discussion_lock_updated extends \core\event\base {
             throw new coding_exception('forumid must be set in $other.');
         }
         if (!isset($this->other['status'])) {
-            throw new \coding_exception('The \'status\' value must be set in other.');
+            throw new coding_exception('The \'status\' value must be set in other.');
         }
         if (!in_array($this->other['status'], ['locked', 'unlocked'], true)) {
-            throw new \coding_exception('The \'status\' value must be \'locked\' or \'unlocked\'.');
+            throw new coding_exception('The \'status\' value must be \'locked\' or \'unlocked\'.');
         }
         if ($this->contextlevel != CONTEXT_MODULE) {
             throw new coding_exception('Context passed must be module context.');

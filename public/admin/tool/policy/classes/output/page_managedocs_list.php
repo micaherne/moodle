@@ -25,19 +25,20 @@
 
 namespace tool_policy\output;
 
-use html_writer;
+use core\context\system;
+use core\output\html_writer;
 use tool_policy\api;
 
 defined('MOODLE_INTERNAL') || die();
 
-use action_menu;
-use action_menu_link;
-use moodle_url;
-use pix_icon;
-use renderable;
-use renderer_base;
-use single_button;
-use templatable;
+use core\output\action_menu;
+use core\output\action_menu\link;
+use core\url;
+use core\output\pix_icon;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\templatable;
 use tool_policy\policy_version;
 
 /**
@@ -61,7 +62,7 @@ class page_managedocs_list implements renderable, templatable {
      */
     public function __construct($policyid = null) {
         $this->policyid = $policyid;
-        $this->returnurl = new moodle_url('/admin/tool/policy/managedocs.php');
+        $this->returnurl = new url('/admin/tool/policy/managedocs.php');
         if ($this->policyid) {
             $this->returnurl->param('archived', $this->policyid);
         }
@@ -76,16 +77,16 @@ class page_managedocs_list implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
 
         $data = (object) [];
-        $data->pluginbaseurl = (new moodle_url('/admin/tool/policy'))->out(false);
-        $data->canmanage = has_capability('tool/policy:managedocs', \context_system::instance());
+        $data->pluginbaseurl = (new url('/admin/tool/policy'))->out(false);
+        $data->canmanage = has_capability('tool/policy:managedocs', system::instance());
         $data->canaddnew = $data->canmanage && !$this->policyid;
-        $data->canviewacceptances = has_capability('tool/policy:viewacceptances', \context_system::instance());
+        $data->canviewacceptances = has_capability('tool/policy:viewacceptances', system::instance());
         $data->title = get_string('policiesagreements', 'tool_policy');
         $data->policies = [];
 
         if ($this->policyid) {
             // We are only interested in the archived versions of the given policy.
-            $data->backurl = (new moodle_url('/admin/tool/policy/managedocs.php'))->out(false);
+            $data->backurl = (new url('/admin/tool/policy/managedocs.php'))->out(false);
             $policy = api::list_policies([$this->policyid], true)[0];
             if ($firstversion = $policy->currentversion ?: (reset($policy->draftversions) ?: reset($policy->archivedversions))) {
                 $data->title = get_string('previousversions', 'tool_policy', format_string($firstversion->name));
@@ -167,13 +168,13 @@ class page_managedocs_list implements renderable, templatable {
 
         $version->indented = $isindented;
 
-        $editbaseurl = new moodle_url('/admin/tool/policy/editpolicydoc.php', [
+        $editbaseurl = new url('/admin/tool/policy/editpolicydoc.php', [
             'sesskey' => sesskey(),
             'policyid' => $policy->id,
             'returnurl' => $this->returnurl->out_as_local_url(false),
         ]);
 
-        $viewurl = new moodle_url('/admin/tool/policy/view.php', [
+        $viewurl = new url('/admin/tool/policy/view.php', [
             'policyid' => $policy->id,
             'versionid' => $version->id,
             'manage' => 1,
@@ -184,38 +185,38 @@ class page_managedocs_list implements renderable, templatable {
         $actionmenu->set_menu_trigger(get_string('actions', 'tool_policy'));
         $actionmenu->prioritise = true;
         if ($moveup) {
-            $actionmenu->add(new action_menu_link(
-                new moodle_url($editbaseurl, ['moveup' => $policy->id]),
+            $actionmenu->add(new link(
+                new url($editbaseurl, ['moveup' => $policy->id]),
                 new pix_icon('t/up', get_string('moveup', 'tool_policy')),
                 get_string('moveup', 'tool_policy'),
                 true
             ));
         }
         if ($movedown) {
-            $actionmenu->add(new action_menu_link(
-                new moodle_url($editbaseurl, ['movedown' => $policy->id]),
+            $actionmenu->add(new link(
+                new url($editbaseurl, ['movedown' => $policy->id]),
                 new pix_icon('t/down', get_string('movedown', 'tool_policy')),
                 get_string('movedown', 'tool_policy'),
                 true
             ));
         }
-        $actionmenu->add(new action_menu_link(
+        $actionmenu->add(new link(
             $viewurl,
             null,
             get_string('view'),
             false
         ));
         if ($status != policy_version::STATUS_ARCHIVED) {
-            $actionmenu->add(new action_menu_link(
-                new moodle_url($editbaseurl, ['versionid' => $version->id]),
+            $actionmenu->add(new link(
+                new url($editbaseurl, ['versionid' => $version->id]),
                 null,
                 get_string('edit'),
                 false
             ));
         }
         if ($status == policy_version::STATUS_ACTIVE) {
-            $actionmenu->add(new action_menu_link(
-                new moodle_url($editbaseurl, ['inactivate' => $policy->id]),
+            $actionmenu->add(new link(
+                new url($editbaseurl, ['inactivate' => $policy->id]),
                 null,
                 get_string('inactivate', 'tool_policy'),
                 false,
@@ -223,8 +224,8 @@ class page_managedocs_list implements renderable, templatable {
             ));
         }
         if ($status == policy_version::STATUS_DRAFT) {
-            $actionmenu->add(new action_menu_link(
-                new moodle_url($editbaseurl, ['makecurrent' => $version->id]),
+            $actionmenu->add(new link(
+                new url($editbaseurl, ['makecurrent' => $version->id]),
                 null,
                 get_string('activate', 'tool_policy'),
                 false,
@@ -232,8 +233,8 @@ class page_managedocs_list implements renderable, templatable {
             ));
         }
         if (api::can_delete_version($version)) {
-            $actionmenu->add(new action_menu_link(
-                new moodle_url($editbaseurl, ['delete' => $version->id]),
+            $actionmenu->add(new link(
+                new url($editbaseurl, ['delete' => $version->id]),
                 null,
                 get_string('delete'),
                 false,
@@ -241,8 +242,8 @@ class page_managedocs_list implements renderable, templatable {
             ));
         }
         if ($status == policy_version::STATUS_ARCHIVED) {
-            $actionmenu->add(new action_menu_link(
-                new moodle_url($editbaseurl, ['versionid' => $version->id]),
+            $actionmenu->add(new link(
+                new url($editbaseurl, ['versionid' => $version->id]),
                 null,
                 get_string('settodraft', 'tool_policy'),
                 false
@@ -250,8 +251,8 @@ class page_managedocs_list implements renderable, templatable {
         }
         if (!$this->policyid && !$isindented && $policy->archivedversions &&
                 ($status != policy_version::STATUS_ARCHIVED || count($policy->archivedversions) > 1)) {
-            $actionmenu->add(new action_menu_link(
-                new moodle_url('/admin/tool/policy/managedocs.php', ['archived' => $policy->id]),
+            $actionmenu->add(new link(
+                new url('/admin/tool/policy/managedocs.php', ['archived' => $policy->id]),
                 null,
                 get_string('viewarchived', 'tool_policy'),
                 false

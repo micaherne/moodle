@@ -26,6 +26,7 @@ namespace core_group\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\metadata\collection;
 use core_group\privacy\provider;
@@ -86,7 +87,7 @@ final class provider_test extends provider_testcase {
         $this->getDataGenerator()->create_group_member(array('groupid' => $group2->id, 'userid' => $user2->id));
         $this->getDataGenerator()->create_group_member(array('groupid' => $group3->id, 'userid' => $user2->id));
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Retrieve groups for user1.
         $this->setUser($user1);
@@ -131,7 +132,7 @@ final class provider_test extends provider_testcase {
                 array('groupid' => $group3->id, 'userid' => $user2->id, 'component' => 'enrol_self'));
         $this->getDataGenerator()->create_group_member(array('groupid' => $group4->id, 'userid' => $user2->id));
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Retrieve groups for user1.
         $this->setUser($user1);
@@ -192,7 +193,7 @@ final class provider_test extends provider_testcase {
                                      WHERE g.courseid = ?", [$course2->id])
         );
 
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         provider::delete_groups_for_all_users($coursecontext1, '');
 
         $this->assertEquals(
@@ -257,7 +258,7 @@ final class provider_test extends provider_testcase {
                                      WHERE g.courseid = ?", [$course2->id])
         );
 
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         provider::delete_groups_for_all_users($coursecontext1, 'enrol_self');
 
         $this->assertEquals(
@@ -300,7 +301,7 @@ final class provider_test extends provider_testcase {
         $this->assertEqualsCanonicalizing([[$group1->id, $group2->id]], groups_get_user_groups($course->id, $user1->id));
         $this->assertEquals([[$group1->id]], groups_get_user_groups($course->id, $user2->id));
 
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         provider::delete_groups_for_all_users($coursecontext, '');
 
         $this->assertEquals([[]], groups_get_user_groups($course->id, $user1->id));
@@ -373,8 +374,8 @@ final class provider_test extends provider_testcase {
         );
 
         $this->setUser($user1);
-        $coursecontext1 = \context_course::instance($course1->id);
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext1 = course::instance($course1->id);
+        $coursecontext2 = course::instance($course2->id);
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist($user1, 'core_group',
                 [$coursecontext1->id, $coursecontext2->id]);
         provider::delete_groups_for_user($approvedcontextlist, '');
@@ -477,8 +478,8 @@ final class provider_test extends provider_testcase {
         );
 
         $this->setUser($user1);
-        $coursecontext1 = \context_course::instance($course1->id);
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext1 = course::instance($course1->id);
+        $coursecontext2 = course::instance($course2->id);
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist($user1, 'core_group',
                 [$coursecontext1->id, $coursecontext2->id]);
         provider::delete_groups_for_user($approvedcontextlist, 'enrol_self');
@@ -583,7 +584,7 @@ final class provider_test extends provider_testcase {
         );
 
         // Delete user1 and user2 from groups in course1.
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         $approveduserlist = new \core_privacy\local\request\approved_userlist($coursecontext1, 'core_group',
                 [$user1->id, $user2->id]);
         provider::delete_groups_for_users($approveduserlist, 'enrol_self');
@@ -618,7 +619,7 @@ final class provider_test extends provider_testcase {
         );
 
         // Delete user1 and user2 from course3.
-        $coursecontext3 = \context_course::instance($course3->id);
+        $coursecontext3 = course::instance($course3->id);
         $approveduserlist = new \core_privacy\local\request\approved_userlist($coursecontext3, 'core_group',
                 [$user1->id, $user2->id]);
         provider::delete_groups_for_users($approveduserlist, 'enrol_self');
@@ -673,7 +674,7 @@ final class provider_test extends provider_testcase {
         $this->assertEqualsCanonicalizing([[$group1->id, $group2->id]], groups_get_user_groups($course->id, $user->id));
 
         $this->setUser($user);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist($user, 'core_group', [$coursecontext->id]);
         provider::delete_groups_for_user($approvedcontextlist, '');
 
@@ -713,8 +714,8 @@ final class provider_test extends provider_testcase {
         $this->getDataGenerator()->create_group_member(array('userid' => $user2->id, 'groupid' => $group2b->id));
         $this->getDataGenerator()->create_group_member(array('userid' => $user2->id, 'groupid' => $group3b->id));
 
-        $coursecontext1 = \context_course::instance($course1->id);
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext1 = course::instance($course1->id);
+        $coursecontext2 = course::instance($course2->id);
 
         // User1 is member of some groups in course1 and course2 + self-conversation.
         $contextlist = provider::get_contexts_for_userid($user1->id);
@@ -755,7 +756,7 @@ final class provider_test extends provider_testcase {
                     'component' => 'enrol_meta'
                 ));
 
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         // User is member of some groups in course1 and course2,
         // but only the membership in course1 is directly managed by core_group.
@@ -787,7 +788,7 @@ final class provider_test extends provider_testcase {
         $this->getDataGenerator()->create_group_member(array('groupid' => $group2->id, 'userid' => $user2->id));
         $this->getDataGenerator()->create_group_member(array('groupid' => $group3->id, 'userid' => $user2->id));
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $this->setUser($user1);
 
@@ -851,7 +852,7 @@ final class provider_test extends provider_testcase {
                                          WHERE g.courseid = ?", [$course2->id])
         );
 
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         provider::delete_data_for_all_users_in_context($coursecontext1);
 
         $this->assertEquals(
@@ -936,8 +937,8 @@ final class provider_test extends provider_testcase {
         );
 
         $this->setUser($user1);
-        $coursecontext1 = \context_course::instance($course1->id);
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext1 = course::instance($course1->id);
+        $coursecontext2 = course::instance($course2->id);
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist($user1, 'core_group',
                 [$coursecontext1->id, $coursecontext2->id]);
         provider::delete_data_for_user($approvedcontextlist);
@@ -1023,7 +1024,7 @@ final class provider_test extends provider_testcase {
                                          WHERE g.courseid = ?", [$course2->id])
         );
 
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         $approveduserlist = new \core_privacy\local\request\approved_userlist($coursecontext1, 'core_group',
                 [$user1->id, $user2->id]);
         provider::delete_data_for_users($approveduserlist);
@@ -1075,7 +1076,7 @@ final class provider_test extends provider_testcase {
         $this->getDataGenerator()->create_group_member(array('userid' => $user2->id, 'groupid' => $group2b->id));
         $this->getDataGenerator()->create_group_member(array('userid' => $user3->id, 'groupid' => $group2a->id));
 
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         $userlist = new \core_privacy\local\request\userlist($coursecontext1, 'core_group');
         \core_group\privacy\provider::get_users_in_context($userlist);

@@ -26,8 +26,17 @@ namespace core_course\local\service;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\user as core_user;
+use core_cache\cache;
 use core_course\local\exporters\course_content_items_exporter;
 use core_course\local\repository\content_item_readonly_repository_interface;
+use core_course\section_info;
 use core_courseformat\sectiondelegate;
 
 /**
@@ -72,14 +81,14 @@ class content_item_service {
      * @return array
      */
     private function get_favourite_content_items_for_user(\stdClass $user): array {
-        $favcache = \cache::make('core', 'user_favourite_course_content_items');
+        $favcache = cache::make('core', 'user_favourite_course_content_items');
         $key = $user->id;
         $favmods = $favcache->get($key);
         if ($favmods !== false) {
             return $favmods;
         }
 
-        $favourites = $this->get_content_favourites(self::FAVOURITE_PREFIX, \context_user::instance($user->id));
+        $favourites = $this->get_content_favourites(self::FAVOURITE_PREFIX, context_user::instance($user->id));
 
         $favcache->set($key, $favourites);
         return $favourites;
@@ -99,7 +108,7 @@ class content_item_service {
     private function get_recommendations(): array {
         global $CFG;
 
-        $recommendationcache = \cache::make('core', self::RECOMMENDATION_CACHE);
+        $recommendationcache = cache::make('core', self::RECOMMENDATION_CACHE);
         $key = $CFG->siteguest;
         $favmods = $recommendationcache->get($key);
         if ($favmods !== false) {
@@ -107,13 +116,13 @@ class content_item_service {
         }
 
         // Make sure the guest user exists in the database.
-        if (!\core_user::get_user($CFG->siteguest)) {
-            throw new \coding_exception('The guest user does not exist in the database.');
+        if (!core_user::get_user($CFG->siteguest)) {
+            throw new coding_exception('The guest user does not exist in the database.');
         }
 
         // Make sure the guest user context exists.
-        if (!$guestusercontext = \context_user::instance($CFG->siteguest, false)) {
-            throw new \coding_exception('The guest user context does not exist.');
+        if (!$guestusercontext = context_user::instance($CFG->siteguest, false)) {
+            throw new coding_exception('The guest user context does not exist.');
         }
 
         $favourites = $this->get_content_favourites(self::RECOMMENDATION_PREFIX, $guestusercontext);
@@ -129,12 +138,12 @@ class content_item_service {
      * @param  \context_user $usercontext User context for the favourite
      * @return array An array of favourite objects.
      */
-    private function get_content_favourites(string $prefix, \context_user $usercontext): array {
+    private function get_content_favourites(string $prefix, context_user $usercontext): array {
         // Get all modules and any submodules which implement get_course_content_items() hook.
         // This gives us the set of all itemtypes which we'll use to register favourite content items.
         // The ids that each plugin returns will be used together with the itemtype to uniquely identify
         // each content item for favouriting.
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugins = $pluginmanager->get_plugins_of_type('mod');
         $itemtypes = [];
         foreach ($plugins as $plugin) {
@@ -148,7 +157,7 @@ class content_item_service {
                     if (component_callback_exists($subpluginname, 'get_course_content_items')) {
                         $itemtypes[] = $prefix . $subpluginname;
                     }
-                } catch (\moodle_exception $e) {
+                } catch (moodle_exception $e) {
                     debugging('Cannot get_course_content_items: ' . $e->getMessage(), DEBUG_DEVELOPER);
                 }
             }
@@ -217,7 +226,7 @@ class content_item_service {
         $ciexporter = new course_content_items_exporter(
             $contentitems,
             [
-                'context' => \context_system::instance(),
+                'context' => system::instance(),
                 'favouriteitems' => $favourites,
                 'recommended' => $recommendations
             ]
@@ -238,10 +247,10 @@ class content_item_service {
      * @param \section_info|null $sectioninfo the section we want to fetch the modules for.
      * @return \stdClass[] the content items, scoped to a course.
      */
-    public function get_content_items_for_user_in_course(\stdClass $user, \stdClass $course, array $linkparams = [], ?\section_info $sectioninfo = null): array {
+    public function get_content_items_for_user_in_course(\stdClass $user, \stdClass $course, array $linkparams = [], ?section_info $sectioninfo = null): array {
         global $PAGE;
 
-        if (!has_capability('moodle/course:manageactivities', \context_course::instance($course->id), $user)) {
+        if (!has_capability('moodle/course:manageactivities', course::instance($course->id), $user)) {
             return [];
         }
 
@@ -249,7 +258,7 @@ class content_item_service {
         $allcontentitems = $this->repository->find_all_for_course($course, $user);
 
         // Content items can only originate from modules or submodules.
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $components = \core_component::get_component_list();
         $parents = [];
         foreach ($allcontentitems as $contentitem) {
@@ -265,7 +274,7 @@ class content_item_service {
                         }
                     }
                 }
-                throw new \moodle_exception('Only modules and submodules can generate content items. \''
+                throw new moodle_exception('Only modules and submodules can generate content items. \''
                     . $contentitem->get_component_name() . '\' is neither.');
             }
             $parents[$contentitem->get_component_name()] = $contentitem->get_component_name();
@@ -298,7 +307,7 @@ class content_item_service {
         $ciexporter = new course_content_items_exporter(
             $availablecontentitems,
             [
-                'context' => \context_course::instance($course->id),
+                'context' => course::instance($course->id),
                 'favouriteitems' => $favourites,
                 'recommended' => $recommended
             ]
@@ -320,7 +329,7 @@ class content_item_service {
      * @return \stdClass the exported content item.
      */
     public function add_to_user_favourites(\stdClass $user, string $componentname, int $contentitemid): \stdClass {
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = context_user::instance($user->id);
         $ufservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
 
         // Because each plugin decides its own ids for content items, a combination of
@@ -329,7 +338,7 @@ class content_item_service {
 
         $ufservice->create_favourite(self::COMPONENT, $itemtype, $contentitemid, $usercontext);
 
-        $favcache = \cache::make('core', 'user_favourite_course_content_items');
+        $favcache = cache::make('core', 'user_favourite_course_content_items');
         $favcache->delete($user->id);
 
         $items = $this->get_all_content_items($user);
@@ -345,7 +354,7 @@ class content_item_service {
      * @return \stdClass the exported content item.
      */
     public function remove_from_user_favourites(\stdClass $user, string $componentname, int $contentitemid): \stdClass {
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = context_user::instance($user->id);
         $ufservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
 
         // Because each plugin decides its own ids for content items, a combination of
@@ -354,7 +363,7 @@ class content_item_service {
 
         $ufservice->delete_favourite(self::COMPONENT, $itemtype, $contentitemid, $usercontext);
 
-        $favcache = \cache::make('core', 'user_favourite_course_content_items');
+        $favcache = cache::make('core', 'user_favourite_course_content_items');
         $favcache->delete($user->id);
 
         $items = $this->get_all_content_items($user);
@@ -371,15 +380,15 @@ class content_item_service {
     public function toggle_recommendation(string $itemtype, int $itemid): bool {
         global $CFG;
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $itemtype = self::RECOMMENDATION_PREFIX . $itemtype;
 
         // Favourites are created using a user context. We'll use the site guest user ID as that should not change and there
         // can be only one.
-        $usercontext = \context_user::instance($CFG->siteguest);
+        $usercontext = context_user::instance($CFG->siteguest);
 
-        $recommendationcache = \cache::make('core', self::RECOMMENDATION_CACHE);
+        $recommendationcache = cache::make('core', self::RECOMMENDATION_CACHE);
 
         $favouritefactory = \core_favourites\service_factory::get_service_for_user_context($usercontext);
         if ($favouritefactory->favourite_exists(self::COMPONENT, $itemtype, $itemid, $context)) {

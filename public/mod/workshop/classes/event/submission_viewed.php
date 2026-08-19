@@ -23,6 +23,9 @@
  */
 
 namespace mod_workshop\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -74,7 +77,7 @@ class submission_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/workshop/submission.php',
+        return new url('/mod/workshop/submission.php',
                 array('cmid' => $this->contextinstanceid, 'id' => $this->objectid));
     }
 
@@ -88,7 +91,7 @@ class submission_viewed extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

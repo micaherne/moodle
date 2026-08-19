@@ -28,6 +28,13 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/calendar/lib.php');
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\user as core_user;
+use core_cache\cache;
 use core_calendar\local\api as local_api;
 use core_calendar\local\event\container as event_container;
 use core_calendar\local\event\forms\create as create_event_form;
@@ -182,7 +189,7 @@ class core_calendar_external extends external_api {
         // Parameter validation.
         $params = self::validate_parameters(self::get_calendar_events_parameters(), array('events' => $events, 'options' => $options));
         $funcparam = array('courses' => array(), 'groups' => array(), 'categories' => array());
-        $hassystemcap = has_capability('moodle/calendar:manageentries', context_system::instance());
+        $hassystemcap = has_capability('moodle/calendar:manageentries', system::instance());
         $warnings = array();
         $coursecategories = array();
 
@@ -197,7 +204,7 @@ class core_calendar_external extends external_api {
 
             foreach ($params['events']['courseids'] as $id) {
                try {
-                    $context = context_course::instance($id);
+                    $context = course::instance($id);
                     self::validate_context($context);
                     $funcparam['courses'][] = $id;
                 } catch (Exception $e) {
@@ -447,16 +454,16 @@ class core_calendar_external extends external_api {
             ]
         );
         if ($params['userid']) {
-            $user = \core_user::get_user($params['userid']);
+            $user = core_user::get_user($params['userid']);
         } else {
             $user = $USER;
         }
 
-        $context = \context_user::instance($user->id);
+        $context = context_user::instance($user->id);
         self::validate_context($context);
 
         if ($params['userid'] && $USER->id !== $params['userid'] && !has_capability('moodle/calendar:manageentries', $context)) {
-            throw new \required_capability_exception($context, 'moodle/calendar:manageentries', 'nopermission', '');
+            throw new required_capability_exception($context, 'moodle/calendar:manageentries', 'nopermission', '');
         }
 
         if (empty($params['aftereventid'])) {
@@ -537,7 +544,7 @@ class core_calendar_external extends external_api {
                 'searchvalue' => $searchvalue
             ]
         );
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         self::validate_context($context);
 
         if (empty($params['aftereventid'])) {
@@ -623,7 +630,7 @@ class core_calendar_external extends external_api {
                 'searchvalue' => $searchvalue
             ]
         );
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         self::validate_context($context);
 
         if (empty($params['courseids'])) {
@@ -813,7 +820,7 @@ class core_calendar_external extends external_api {
         global $PAGE, $USER;
 
         $params = self::validate_parameters(self::get_calendar_event_by_id_parameters(), ['eventid' => $eventid]);
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
 
         self::validate_context($context);
         $warnings = array();
@@ -829,8 +836,8 @@ class core_calendar_external extends external_api {
         if (!$event) {
             // We can't return a warning in this case because the event is not optional.
             // We don't know the context for the event and it's not worth loading it.
-            $syscontext = context_system::instance();
-            throw new \required_capability_exception($syscontext, 'moodle/course:view', 'nopermissions', 'error');
+            $syscontext = system::instance();
+            throw new required_capability_exception($syscontext, 'moodle/course:view', 'nopermissions', 'error');
         }
 
         $cache = new events_related_objects_cache([$event]);
@@ -886,7 +893,7 @@ class core_calendar_external extends external_api {
 
         // Parameter validation.
         $params = self::validate_parameters(self::submit_create_update_form_parameters(), ['formdata' => $formdata]);
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         $data = [];
 
         self::validate_context($context);
@@ -906,7 +913,7 @@ class core_calendar_external extends external_api {
 
         // Event type validation.
         if (in_array(true, $allowedeeventtypes, true) === false) {
-            throw new \moodle_exception('nopermissiontoupdatecalendar');
+            throw new moodle_exception('nopermissiontoupdatecalendar');
         }
         if (empty($eventtype) || !isset($allowedeeventtypes[$eventtype]) || $allowedeeventtypes[$eventtype] == false) {
             return ['validationerror' => true];
@@ -948,7 +955,7 @@ class core_calendar_external extends external_api {
             }
 
             if (!calendar_edit_event_allowed($legacyevent, true)) {
-                throw new \moodle_exception('nopermissiontoupdatecalendar');
+                throw new moodle_exception('nopermissiontoupdatecalendar');
             }
 
             $legacyevent->update($properties);
@@ -1040,7 +1047,7 @@ class core_calendar_external extends external_api {
             'view' => $view,
         ]);
 
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         self::validate_context($context);
         $PAGE->set_url('/calendar/');
 
@@ -1118,7 +1125,7 @@ class core_calendar_external extends external_api {
             'categoryid' => $categoryid,
         ]);
 
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         self::validate_context($context);
 
         $type = \core_calendar\type_factory::get_calendar_instance();
@@ -1200,13 +1207,13 @@ class core_calendar_external extends external_api {
         $event = $vault->get_event_by_id($eventid);
 
         if (!$event) {
-            throw new \moodle_exception('Unable to find event with id ' . $eventid);
+            throw new moodle_exception('Unable to find event with id ' . $eventid);
         }
 
         $legacyevent = $mapper->from_event_to_legacy_event($event);
 
         if (!calendar_edit_event_allowed($legacyevent, true)) {
-            throw new \moodle_exception('nopermissiontoupdatecalendar');
+            throw new moodle_exception('nopermissiontoupdatecalendar');
         }
 
         self::validate_context($legacyevent->context);
@@ -1255,7 +1262,7 @@ class core_calendar_external extends external_api {
             'categoryid' => $categoryid,
         ]);
 
-        $context = \context_user::instance($USER->id);
+        $context = context_user::instance($USER->id);
         self::validate_context($context);
         $PAGE->set_url('/calendar/');
 
@@ -1318,9 +1325,9 @@ class core_calendar_external extends external_api {
         $params = self::validate_parameters(self::get_calendar_access_information_parameters(), ['courseid' => $courseid]);
 
         if (empty($params['courseid']) || $params['courseid'] == SITEID) {
-            $context = \context_system::instance();
+            $context = system::instance();
         } else {
-            $context = \context_course::instance($params['courseid']);
+            $context = course::instance($params['courseid']);
         }
 
         self::validate_context($context);
@@ -1378,9 +1385,9 @@ class core_calendar_external extends external_api {
         $params = self::validate_parameters(self::get_allowed_event_types_parameters(), ['courseid' => $courseid]);
 
         if (empty($params['courseid']) || $params['courseid'] == SITEID) {
-            $context = \context_system::instance();
+            $context = system::instance();
         } else {
-            $context = \context_course::instance($params['courseid']);
+            $context = course::instance($params['courseid']);
         }
 
         self::validate_context($context);

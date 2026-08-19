@@ -18,7 +18,7 @@ namespace mod_quiz\courseformat;
 
 use core\output\renderer_helper;
 use core\url;
-use cm_info;
+use core_course\cm_info;
 use core_calendar\output\humandate;
 use core_courseformat\local\overview\overviewitem;
 use core\output\action_link;

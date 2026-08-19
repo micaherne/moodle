@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
 use qtype_calculatedmulti\qtype_calculatedmulti_answer;
 
 defined('MOODLE_INTERNAL') || die();

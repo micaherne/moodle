@@ -25,6 +25,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\templatable;
+
 require_once('HTML/QuickForm/radio.php');
 require_once('templatable_form_element.php');
 /**

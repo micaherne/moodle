@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use \core_badges\badge;
 use core_badges\helper;
 use core_badges\local\backpack\ob_factory;
 use core_badges\tests\badges_testcase;

@@ -29,6 +29,14 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_cache\cache;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 // require some of the sublibraries first.
@@ -279,7 +287,7 @@ class portfolio_add_button {
             // use the caller defaults
             $this->set_formats();
         }
-        $url = new moodle_url('/portfolio/add.php');
+        $url = new url('/portfolio/add.php');
         foreach ($this->callbackargs as $key => $value) {
             if (!empty($value) && !is_string($value) && !is_numeric($value)) {
                 $a = new stdClass();
@@ -1067,7 +1075,7 @@ function portfolio_insane_notify_admins($insane, $instances=false) {
     $site = get_site();
 
     $a = new StdClass;
-    $a->sitename = format_string($site->fullname, true, array('context' => context_course::instance(SITEID)));
+    $a->sitename = format_string($site->fullname, true, array('context' => course::instance(SITEID)));
     $a->fixurl   = "$CFG->wwwroot/$CFG->admin/settings.php?section=manageportfolios";
     $a->htmllist = portfolio_report_insane($insane, $instances, true);
     $a->textlist = '';

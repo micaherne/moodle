@@ -25,6 +25,11 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -627,7 +632,7 @@ class behat_core_generator extends behat_generator_base {
         // If the provided course shortname is the site shortname we consider it a system role assign.
         if ($data['courseid'] == $SITE->id) {
             // Frontpage course assign.
-            $context = context_course::instance($data['courseid']);
+            $context = course::instance($data['courseid']);
             role_assign($data['roleid'], $data['userid'], $context->id);
 
         } else {
@@ -693,7 +698,7 @@ class behat_core_generator extends behat_generator_base {
             throw new Exception('\'system role assigns\' requires the field \'user\' to be specified');
         }
 
-        $context = context_system::instance();
+        $context = system::instance();
 
         $this->datagenerator->role_assign($data['roleid'], $data['userid'], $context->id);
     }
@@ -759,7 +764,7 @@ class behat_core_generator extends behat_generator_base {
         $roleid = $data['roleid'];
         unset($data['roleid']);
 
-        $this->datagenerator->create_role_capability($roleid, $data, \context_system::instance());
+        $this->datagenerator->create_role_capability($roleid, $data, system::instance());
     }
 
     /**
@@ -913,7 +918,7 @@ class behat_core_generator extends behat_generator_base {
         }
 
         $group = $DB->get_record('groups', ['id' => $data['groupid']]);
-        $coursecontext = context_course::instance($group->courseid);
+        $coursecontext = course::instance($group->courseid);
         if (!$conversation = \core_message\api::get_conversation_by_area('core_group', 'groups', $data['groupid'],
                 $coursecontext->id)) {
             $members = $DB->get_records_menu('groups_members', ['groupid' => $data['groupid']], '', 'userid, id');
@@ -960,7 +965,7 @@ class behat_core_generator extends behat_generator_base {
      */
     protected function process_mute_group_conversations(array $data) {
         if (groups_is_member($data['groupid'], $data['userid'])) {
-            $context = context_course::instance($data['courseid']);
+            $context = course::instance($data['courseid']);
             $conversation = \core_message\api::get_conversation_by_area(
                     'core_group',
                     'groups',
@@ -1091,7 +1096,7 @@ class behat_core_generator extends behat_generator_base {
         }
         $filerecord = [
             'userid' => $userid,
-            'contextid' => context_user::instance($userid)->id,
+            'contextid' => user::instance($userid)->id,
             'component' => 'user',
             'filearea' => 'private',
             'itemid' => 0,

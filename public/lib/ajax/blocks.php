@@ -22,6 +22,8 @@
  * @package core
  */
 
+use core\exception\moodle_exception;
+
 define('AJAX_SCRIPT', true);
 require_once(__DIR__ . '/../../config.php');
 

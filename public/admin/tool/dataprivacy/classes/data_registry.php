@@ -27,7 +27,9 @@
 
 namespace tool_dataprivacy;
 
-use coding_exception;
+use core\context;
+use core\context_helper;
+use core\exception\coding_exception;
 use core\persistent;
 
 defined('MOODLE_INTERNAL') || die();
@@ -77,7 +79,7 @@ class data_registry {
      * @return int[]|false[]
      */
     public static function get_defaults($contextlevel, $pluginname = '') {
-        $classname = \context_helper::get_class_for_level($contextlevel);
+        $classname = context_helper::get_class_for_level($contextlevel);
         list($purposevar, $categoryvar) = self::var_names_from_context($classname, $pluginname);
 
         $purposeid = get_config('tool_dataprivacy', $purposevar);
@@ -154,7 +156,7 @@ class data_registry {
      * @param \context $context
      * @return array
      */
-    public static function get_subject_scope(\context $context) {
+    public static function get_subject_scope(context $context) {
 
         if ($contextcourse = $context->get_course_context(false)) {
             // Below course level we look at module or block level roles + course-assigned roles.
@@ -182,7 +184,7 @@ class data_registry {
      * @param int|false $forcedvalue Use this value as if this was this context instance value.
      * @return persistent|false It return a 'purpose' instance or a 'category' instance, depending on $element
      */
-    public static function get_effective_context_value(\context $context, $element, $forcedvalue = false) {
+    public static function get_effective_context_value(context $context, $element, $forcedvalue = false) {
         global $DB;
 
         if ($element !== 'purpose' && $element !== 'category') {
@@ -210,7 +212,7 @@ class data_registry {
              $elementjoin = 'LEFT JOIN {tool_dataprivacy_category} ele ON ctxins.categoryid = ele.id';
              $elementfields = category::get_sql_fields('ele', 'ele');
         }
-        $contextfields = \context_helper::get_preload_record_columns_sql('ctx');
+        $contextfields = context_helper::get_preload_record_columns_sql('ctx');
         $fields = implode(', ', ['ctx.id', 'm.name AS modname', $contextfields, $elementfields]);
 
         $sql = "SELECT $fields
@@ -226,8 +228,8 @@ class data_registry {
         // Check whether this context is a user context, or a child of a user context.
         // All children of a User context share the same context and cannot be set individually.
         foreach ($contextinstances as $record) {
-            \context_helper::preload_from_record($record);
-            $parent = \context::instance_by_id($record->id, false);
+            context_helper::preload_from_record($record);
+            $parent = context::instance_by_id($record->id, false);
 
             if ($parent->contextlevel == CONTEXT_USER) {
                 // Use the context level value for the user.
@@ -236,7 +238,7 @@ class data_registry {
         }
 
         foreach ($contextinstances as $record) {
-            $parent = \context::instance_by_id($record->id, false);
+            $parent = context::instance_by_id($record->id, false);
 
             $checkcontextlevel = false;
             if (empty($record->eleid)) {
@@ -289,7 +291,7 @@ class data_registry {
         $fieldname = $element . 'id';
 
         if ($contextlevel != CONTEXT_SYSTEM && $contextlevel != CONTEXT_USER) {
-            throw new \coding_exception('Only context_system and context_user values can be retrieved, no other context levels ' .
+            throw new coding_exception('Only context_system and context_user values can be retrieved, no other context levels ' .
                 'have a purpose or a category.');
         }
 

@@ -22,36 +22,46 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configpasswordunmask;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\configtext_with_maxlength;
+use core_admin\setting\setting\heading;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
     // Create a settings page for all of the mail server settings.
-    $settings = new admin_settingpage('messageinbound_mailsettings',
+    $settings = new settingpage('messageinbound_mailsettings',
             new lang_string('incomingmailconfiguration', 'tool_messageinbound'));
 
-    $settings->add(new admin_setting_heading('messageinbound_generalconfiguration',
+    $settings->add(new heading('messageinbound_generalconfiguration',
             new lang_string('messageinboundgeneralconfiguration', 'tool_messageinbound'),
             new lang_string('messageinboundgeneralconfiguration_desc', 'tool_messageinbound'), ''));
-    $settings->add(new admin_setting_configcheckbox('messageinbound_enabled',
+    $settings->add(new configcheckbox('messageinbound_enabled',
             new lang_string('messageinboundenabled', 'tool_messageinbound'),
             new lang_string('messageinboundenabled_desc', 'tool_messageinbound'), 0));
 
     // These settings are used when generating a Inbound Message address.
-    $settings->add(new admin_setting_heading('messageinbound_mailboxconfiguration',
+    $settings->add(new heading('messageinbound_mailboxconfiguration',
             new lang_string('mailboxconfiguration', 'tool_messageinbound'),
             new lang_string('messageinboundmailboxconfiguration_desc', 'tool_messageinbound'), ''));
-    $settings->add(new admin_setting_configtext_with_maxlength('messageinbound_mailbox',
+    $settings->add(new configtext_with_maxlength('messageinbound_mailbox',
             new lang_string('mailbox', 'tool_messageinbound'),
             null, '', PARAM_RAW, null, 15));
-    $settings->add(new admin_setting_configtext('messageinbound_domain',
+    $settings->add(new configtext('messageinbound_domain',
             new lang_string('domain', 'tool_messageinbound'),
             null, '', PARAM_RAW));
 
     // These settings are used when checking the incoming mailbox for mail.
-    $settings->add(new admin_setting_heading('messageinbound_serversettings',
+    $settings->add(new heading('messageinbound_serversettings',
             new lang_string('incomingmailserversettings', 'tool_messageinbound'),
             new lang_string('incomingmailserversettings_desc', 'tool_messageinbound'), ''));
-    $settings->add(new admin_setting_configtext('messageinbound_host',
+    $settings->add(new configtext('messageinbound_host',
             new lang_string('messageinboundhost', 'tool_messageinbound'),
             new lang_string('configmessageinboundhost', 'tool_messageinbound'), '', PARAM_RAW));
 
@@ -63,7 +73,7 @@ if ($hassiteconfig) {
         'tls'       => get_string('tls',            'tool_messageinbound'),
         'tlsv1'     => get_string('tlsv1',          'tool_messageinbound'),
     );
-    $settings->add(new admin_setting_configselect('messageinbound_hostssl',
+    $settings->add(new configselect('messageinbound_hostssl',
             new lang_string('messageinboundhostssl', 'tool_messageinbound'),
             new lang_string('messageinboundhostssl_desc', 'tool_messageinbound'), 'ssl', $options));
 
@@ -80,7 +90,7 @@ if ($hassiteconfig) {
     }
 
     if (count($oauth2services) > 1) {
-        $settings->add(new admin_setting_configselect('messageinbound_hostoauth',
+        $settings->add(new configselect('messageinbound_hostoauth',
             new lang_string('issuer', 'auth_oauth2'),
             get_string('messageinboundhostoauth_help', 'tool_messageinbound'),
             '',
@@ -88,17 +98,17 @@ if ($hassiteconfig) {
         ));
     }
 
-    $settings->add(new admin_setting_configtext('messageinbound_hostuser',
+    $settings->add(new configtext('messageinbound_hostuser',
             new lang_string('messageinboundhostuser', 'tool_messageinbound'),
             new lang_string('messageinboundhostuser_desc', 'tool_messageinbound'), '', PARAM_NOTAGS));
-    $settings->add(new admin_setting_configpasswordunmask('messageinbound_hostpass',
+    $settings->add(new configpasswordunmask('messageinbound_hostpass',
             new lang_string('messageinboundhostpass', 'tool_messageinbound'),
             new lang_string('messageinboundhostpass_desc', 'tool_messageinbound'), ''));
 
     // Add the category to the admin tree.
     $ADMIN->add('email', $settings);
     // Link to the external page for Inbound Message handler configuration.
-    $ADMIN->add('email', new admin_externalpage('messageinbound_handlers',
+    $ADMIN->add('email', new externalpage('messageinbound_handlers',
             new lang_string('message_handlers', 'tool_messageinbound'),
             "$CFG->wwwroot/$CFG->admin/tool/messageinbound/index.php"));
 }

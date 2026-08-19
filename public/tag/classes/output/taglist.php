@@ -24,11 +24,12 @@
 
 namespace core_tag\output;
 
-use templatable;
-use renderer_base;
+use core\context\system;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
 use core_tag_tag;
-use context;
+use core\context;
 
 /**
  * Class to preapare a list of tags for display, usually the list of tags some entry is tagged with.
@@ -73,7 +74,7 @@ class taglist implements templatable {
     public function __construct($tags, $label = null, $classes = '',
             $limit = 10, $pagecontext = null, $accesshidelabel = false, $displaylink = true) {
         global $PAGE;
-        $canmanagetags = has_capability('moodle/tag:manage', \context_system::instance());
+        $canmanagetags = has_capability('moodle/tag:manage', system::instance());
 
         $this->label = ($label === null) ? get_string('tags') : $label;
         $this->accesshidelabel = $accesshidelabel;

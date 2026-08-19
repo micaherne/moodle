@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+
 define('AJAX_SCRIPT', true);
 require_once('../../config.php');
 
@@ -37,13 +40,13 @@ if (!empty($id)) {
     $course = $DB->get_record('course', ['id' => $id], '*');
     if ($course) {
         require_login($course);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
     }
 }
 
 if (empty($course)) {
     require_login();
-    $context = context_system::instance();
+    $context = system::instance();
     $PAGE->set_context($context);
 }
 

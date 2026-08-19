@@ -24,6 +24,7 @@
 
 namespace core_analytics;
 
+use core\output\core_renderer;
 use core_analytics\tests\mlbackend_helper_trait;
 
 defined('MOODLE_INTERNAL') || die();
@@ -438,7 +439,7 @@ final class model_test extends \advanced_testcase {
     public function test_inplace_editable_name(): void {
         global $PAGE;
 
-        $output = new \core_renderer($PAGE, RENDERER_TARGET_GENERAL);
+        $output = new core_renderer($PAGE, RENDERER_TARGET_GENERAL);
 
         // Check as a user with permission to edit the name.
         $this->setAdminUser();
@@ -462,7 +463,7 @@ final class model_test extends \advanced_testcase {
     public function test_get_name_and_rename(): void {
         global $PAGE;
 
-        $output = new \core_renderer($PAGE, RENDERER_TARGET_GENERAL);
+        $output = new core_renderer($PAGE, RENDERER_TARGET_GENERAL);
 
         // By default, the model exported for template uses its target's name in the name inplace editable element.
         $this->assertEquals($this->model->get_name(), $this->model->get_target()->get_name());

@@ -24,6 +24,8 @@
 
 namespace core_analytics\privacy;
 
+use core\context as core_context;
+use core\context_helper;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
 use core_privacy\local\metadata\collection;
@@ -223,7 +225,7 @@ class provider implements
         list ($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
 
         $rootpath = [get_string('analytics', 'analytics')];
-        $ctxfields = \context_helper::get_preload_record_columns_sql('ctx');
+        $ctxfields = context_helper::get_preload_record_columns_sql('ctx');
 
         foreach ($models as $modelid => $model) {
 
@@ -239,8 +241,8 @@ class provider implements
             $predictions = $DB->get_recordset_sql($sql, $params);
 
             foreach ($predictions as $prediction) {
-                \context_helper::preload_from_record($prediction);
-                $context = \context::instance_by_id($prediction->contextid);
+                context_helper::preload_from_record($prediction);
+                $context = core_context::instance_by_id($prediction->contextid);
                 $path = $rootpath;
                 $path[] = get_string('privacy:metadata:analytics:predictions', 'analytics');
                 $path[] = $prediction->id;
@@ -266,8 +268,8 @@ class provider implements
             $params = ['userid' => $userid, 'analysersamplesorigin' => $analyser->get_samples_origin()] + $contextparams;
             $indicatorcalculations = $DB->get_recordset_sql($sql, $params);
             foreach ($indicatorcalculations as $calculation) {
-                \context_helper::preload_from_record($calculation);
-                $context = \context::instance_by_id($calculation->contextid);
+                context_helper::preload_from_record($calculation);
+                $context = core_context::instance_by_id($calculation->contextid);
                 $path = $rootpath;
                 $path[] = get_string('privacy:metadata:analytics:indicatorcalc', 'analytics');
                 $path[] = $calculation->id;
@@ -293,8 +295,8 @@ class provider implements
         $predictionactions = $DB->get_recordset_sql($sql, $params + $contextparams);
         foreach ($predictionactions as $predictionaction) {
 
-            \context_helper::preload_from_record($predictionaction);
-            $context = \context::instance_by_id($predictionaction->contextid);
+            context_helper::preload_from_record($predictionaction);
+            $context = core_context::instance_by_id($predictionaction->contextid);
             $path = $rootpath;
             $path[] = get_string('privacy:metadata:analytics:predictionactions', 'analytics');
             $path[] = $predictionaction->id;
@@ -315,7 +317,7 @@ class provider implements
      *
      * @param   context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(core_context $context) {
         global $DB;
 
         $models = self::get_models_with_user_data();

@@ -23,6 +23,7 @@
  */
 namespace enrol_lti;
 
+use core\context\course;
 use course_enrolment_manager;
 use enrol_lti_plugin;
 use IMSGlobal\LTI\ToolProvider\ResourceLink;
@@ -191,7 +192,7 @@ final class lib_test extends \lti_advantage_testcase {
 
         // Create a course.
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $teacherroleid = $DB->get_field('role', 'id', ['shortname' => 'editingteacher'], MUST_EXIST);
         $studentroleid = $DB->get_field('role', 'id', ['shortname' => 'student'], MUST_EXIST);
 

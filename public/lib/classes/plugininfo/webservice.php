@@ -16,6 +16,8 @@
 
 namespace core\plugininfo;
 
+use core\plugin_manager;
+
 /**
  * Class for webservice protocols
  *
@@ -77,7 +79,7 @@ class webservice extends base {
             add_to_config_log('webserviceprotocols', $CFG->webserviceprotocols ?? '', $new, 'core');
             set_config('webserviceprotocols', $new);
             // Reset caches.
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;

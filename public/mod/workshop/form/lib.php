@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -58,7 +60,7 @@ interface workshop_strategy {
      * @param bool $editable        Shall the form be opened as editable (true) or read-only (false)
      * @param array $options        More assessment form options, editableweight implemented only now
      */
-    public function get_assessment_form(?moodle_url $actionurl=null, $mode='preview', ?stdclass $assessment=null, $editable=true, $options=array());
+    public function get_assessment_form(?url $actionurl=null, $mode='preview', ?stdclass $assessment=null, $editable=true, $options=array());
 
     /**
      * Saves the filled assessment and returns the grade for submission as suggested by the reviewer

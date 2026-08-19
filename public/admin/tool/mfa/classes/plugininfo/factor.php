@@ -16,7 +16,10 @@
 
 namespace tool_mfa\plugininfo;
 
-use moodle_url;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
 use stdClass;
 
 /**
@@ -51,7 +54,7 @@ class factor extends \core\plugininfo\base {
      */
     public static function get_factors(): array {
         $return = [];
-        $factors = \core_plugin_manager::instance()->get_plugins_of_type('factor');
+        $factors = plugin_manager::instance()->get_plugins_of_type('factor');
 
         foreach ($factors as $factor) {
             $classname = '\\factor_'.$factor->name.'\\factor';
@@ -94,7 +97,7 @@ class factor extends \core\plugininfo\base {
      * @return mixed factor object or false if factor not found.
      */
     public static function get_factor(string $name): object|bool {
-        $factors = \core_plugin_manager::instance()->get_plugins_of_type('factor');
+        $factors = plugin_manager::instance()->get_plugins_of_type('factor');
 
         foreach ($factors as $factor) {
             if ($name == $factor->name) {
@@ -145,7 +148,7 @@ class factor extends \core\plugininfo\base {
         \tool_mfa\manager::do_factor_action($pluginname, $action);
 
         \core\session\manager::gc(); // Remove stale sessions.
-        \core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
 
         return true;
     }
@@ -279,7 +282,7 @@ class factor extends \core\plugininfo\base {
      * @param string $parentnodename
      * @param bool $hassiteconfig whether the current user has moodle/site:config capability
      */
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig): void {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig): void {
         global $CFG, $USER, $DB, $OUTPUT, $PAGE; // In case settings.php wants to refer to them.
         /** @var \admin_root $ADMIN */
         $ADMIN = $adminroot; // May be used in settings.php.
@@ -295,7 +298,7 @@ class factor extends \core\plugininfo\base {
 
         $section = $this->get_settings_section_name();
 
-        $settings = new \admin_settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
+        $settings = new settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
 
         include($this->full_path('settings.php'));
 
@@ -331,8 +334,8 @@ class factor extends \core\plugininfo\base {
      *
      * @return moodle_url
      */
-    public static function get_manage_url(): moodle_url {
-        return new moodle_url('/admin/settings.php', [
+    public static function get_manage_url(): url {
+        return new url('/admin/settings.php', [
             'section' => 'managemfa',
         ]);
     }
@@ -422,7 +425,7 @@ class factor extends \core\plugininfo\base {
 
     #[\Override]
     public static function get_sorted_plugins(bool $enabledonly = false): ?array {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugins = $pluginmanager->get_plugins_of_type('factor');
         $orders = self::get_factors();
         $sortedplugins = [];
@@ -453,7 +456,7 @@ class factor extends \core\plugininfo\base {
         \tool_mfa\manager::do_factor_action($pluginname, $action);
 
         \core\session\manager::gc(); // Remove stale sessions.
-        \core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
 
         return true;
     }

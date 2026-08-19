@@ -16,6 +16,9 @@
 
 namespace core;
 
+use core\context\course;
+use core\context\system;
+
 /**
  * Unit tests for format_text defined in weblib.php.
  *
@@ -101,7 +104,7 @@ final class weblib_format_text_test extends \advanced_testcase {
         filter_set_global_state('activitynames', TEXTFILTER_ON);
 
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $page = $this->getDataGenerator()->create_module('page',
             ['course' => $course->id, 'name' => 'Test 1']);
         $cm = get_coursemodule_from_instance('page', $page->id, $page->course, false, MUST_EXIST);
@@ -279,7 +282,7 @@ final class weblib_format_text_test extends \advanced_testcase {
     public function test_with_context_as_options(): void {
         $this->assertEquals(
             '<p>Example</p>',
-            format_text('<p>Example</p>', FORMAT_HTML, \context_system::instance()),
+            format_text('<p>Example</p>', FORMAT_HTML, system::instance()),
         );
 
         $messages = $this->getDebuggingMessages();

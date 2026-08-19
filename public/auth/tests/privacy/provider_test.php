@@ -28,6 +28,7 @@ namespace core_auth\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
+use core\context\system;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
@@ -53,7 +54,7 @@ final class provider_test extends provider_testcase {
         $dg = $this->getDataGenerator();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $sysctx = \context_system::instance();
+        $sysctx = system::instance();
         $now = time();
 
         // Check nothing is there.

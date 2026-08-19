@@ -25,6 +25,17 @@
  **/
 
 /** Make sure this isn't being directly accessed */
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\actions\popup_action;
+use core\output\html_writer;
+use core\url;
+use core_block\output\block_contents;
+use core_cache\cache;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** Include the files that are required by this module */
@@ -183,7 +194,7 @@ function lesson_unseen_branch_jump($lesson, $userid) {
     }
 
     if (!$seenbranches = $lesson->get_content_pages_viewed($retakes, $userid, 'timeseen DESC')) {
-        throw new \moodle_exception('cannotfindrecords', 'lesson');
+        throw new moodle_exception('cannotfindrecords', 'lesson');
     }
 
     // get the lesson pages
@@ -237,7 +248,7 @@ function lesson_random_question_jump($lesson, $pageid) {
     // get the lesson pages
     $params = array ("lessonid" => $lesson->id);
     if (!$lessonpages = $DB->get_records_select("lesson_pages", "lessonid = :lessonid", $params)) {
-        throw new \moodle_exception('cannotfindpages', 'lesson');
+        throw new moodle_exception('cannotfindpages', 'lesson');
     }
 
     // go up the pages till branch table
@@ -465,7 +476,7 @@ function lesson_mediafile_block_contents($cmid, $lesson) {
     $options['width'] = $lesson->mediawidth;
     $options['height'] = $lesson->mediaheight;
 
-    $link = new moodle_url('/mod/lesson/mediafile.php?id='.$cmid);
+    $link = new url('/mod/lesson/mediafile.php?id='.$cmid);
     $action = new popup_action('click', $link, 'lessonmediafile', $options);
     $content = $OUTPUT->action_link($link, get_string('mediafilepopup', 'lesson'), $action, array('title'=>get_string('mediafilepopup', 'lesson')));
 
@@ -488,7 +499,7 @@ function lesson_mediafile_block_contents($cmid, $lesson) {
  **/
 function lesson_clock_block_contents($cmid, $lesson, $timer, $page) {
     // Display for timed lessons and for students only
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
     if ($lesson->timelimit == 0 || has_capability('mod/lesson:manage', $context)) {
         return null;
     }
@@ -582,10 +593,10 @@ function lesson_get_media_html($lesson, $context) {
 
     // get the media file link
     if (strpos($lesson->mediafile, '://') !== false) {
-        $url = new moodle_url($lesson->mediafile);
+        $url = new url($lesson->mediafile);
     } else {
         // the timemodified is used to prevent caching problems, instead of '/' we should better read from files table and use sortorder
-        $url = moodle_url::make_pluginfile_url($context->id, 'mod_lesson', 'mediafile', $lesson->timemodified, '/', ltrim($lesson->mediafile, '/'));
+        $url = url::make_pluginfile_url($context->id, 'mod_lesson', 'mediafile', $lesson->timemodified, '/', ltrim($lesson->mediafile, '/'));
     }
     $title = $lesson->mediafile;
 
@@ -986,7 +997,7 @@ function lesson_get_overview_report_table_and_data(lesson $lesson, $currentgroup
                         $timetotake = null;
                     }
                 }
-                $attempturl = new moodle_url('/mod/lesson/report.php', $attempturlparams);
+                $attempturl = new url('/mod/lesson/report.php', $attempturlparams);
                 $attemptlink = html_writer::link($attempturl, $attemptlinkcontents, ['class' => 'lesson-attempt-link']);
 
                 if ($caneditlesson) {
@@ -1218,7 +1229,7 @@ function lesson_get_user_deadline($courseid) {
     global $DB, $USER;
 
     // For teacher and manager/admins return lesson's deadline.
-    if (has_capability('moodle/course:update', context_course::instance($courseid))) {
+    if (has_capability('moodle/course:update', course::instance($courseid))) {
         $sql = "SELECT lesson.id, lesson.deadline AS userdeadline
                   FROM {lesson} lesson
                  WHERE lesson.course = :courseid";
@@ -1655,7 +1666,7 @@ class lesson extends lesson_base {
         global $DB;
 
         if (!$lesson = $DB->get_record('lesson', array('id' => $lessonid))) {
-            throw new \moodle_exception('invalidcoursemodule');
+            throw new moodle_exception('invalidcoursemodule');
         }
         return new lesson($lesson);
     }
@@ -1669,7 +1680,7 @@ class lesson extends lesson_base {
         require_once($CFG->dirroot.'/calendar/lib.php');
 
         $cm = get_coursemodule_from_instance('lesson', $this->properties->id, $this->properties->course);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $this->delete_all_overrides();
 
@@ -1684,7 +1695,7 @@ class lesson extends lesson_base {
         $DB->delete_records("lesson_timer", array("lessonid"=>$this->properties->id));
         $DB->delete_records("lesson_branch", array("lessonid"=>$this->properties->id));
         if ($events = $DB->get_records('event', array("modulename"=>'lesson', "instance"=>$this->properties->id))) {
-            $coursecontext = context_course::instance($cm->course);
+            $coursecontext = course::instance($cm->course);
             foreach($events as $event) {
                 $event->context = $coursecontext;
                 $event = calendar_event::load($event);
@@ -1736,7 +1747,7 @@ class lesson extends lesson_base {
         // Set the common parameters for one of the events we will be triggering.
         $params = array(
             'objectid' => $override->id,
-            'context' => context_module::instance($cm->id),
+            'context' => module::instance($cm->id),
             'other' => array(
                 'lessonid' => $override->lessonid
             )
@@ -2040,7 +2051,7 @@ class lesson extends lesson_base {
             if (!$this->loadedallpages) {
                 $firstpageid = $DB->get_field('lesson_pages', 'id', array('lessonid'=>$this->properties->id, 'prevpageid'=>0));
                 if (!$firstpageid) {
-                    throw new \moodle_exception('cannotfindfirstpage', 'lesson');
+                    throw new moodle_exception('cannotfindfirstpage', 'lesson');
                 }
                 $this->firstpageid = $firstpageid;
             } else {
@@ -2061,7 +2072,7 @@ class lesson extends lesson_base {
             if (!$this->loadedallpages) {
                 $lastpageid = $DB->get_field('lesson_pages', 'id', array('lessonid'=>$this->properties->id, 'nextpageid'=>0));
                 if (!$lastpageid) {
-                    throw new \moodle_exception('cannotfindlastpage', 'lesson');
+                    throw new moodle_exception('cannotfindlastpage', 'lesson');
                 }
                 $this->lastpageid = $lastpageid;
             } else {
@@ -2167,7 +2178,7 @@ class lesson extends lesson_base {
         // Trigger lesson started event.
         $event = \mod_lesson\event\lesson_started::create(array(
             'objectid' => $this->properties()->id,
-            'context' => context_module::instance($cm->id),
+            'context' => module::instance($cm->id),
             'courseid' => $this->properties()->course
         ));
         $event->trigger();
@@ -2218,7 +2229,7 @@ class lesson extends lesson_base {
                 // Trigger lesson resumed event.
                 $event = \mod_lesson\event\lesson_resumed::create(array(
                     'objectid' => $this->properties->id,
-                    'context' => context_module::instance($cm->id),
+                    'context' => module::instance($cm->id),
                     'courseid' => $this->properties->course
                 ));
                 $event->trigger();
@@ -2230,7 +2241,7 @@ class lesson extends lesson_base {
                 // Trigger lesson restarted event.
                 $event = \mod_lesson\event\lesson_restarted::create(array(
                     'objectid' => $this->properties->id,
-                    'context' => context_module::instance($cm->id),
+                    'context' => module::instance($cm->id),
                     'courseid' => $this->properties->course
                 ));
                 $event->trigger();
@@ -2271,7 +2282,7 @@ class lesson extends lesson_base {
         // Trigger lesson ended event.
         $event = \mod_lesson\event\lesson_ended::create(array(
             'objectid' => $this->properties()->id,
-            'context' => context_module::instance($cm->id),
+            'context' => module::instance($cm->id),
             'courseid' => $this->properties()->course
         ));
         $event->trigger();
@@ -2301,7 +2312,7 @@ class lesson extends lesson_base {
                 $instancename = $DB->get_field($modname, 'name', array('id' => $module->instance));
                 if ($instancename) {
                     return html_writer::link(
-                        new moodle_url('/mod/'.$modname.'/view.php', [
+                        new url('/mod/'.$modname.'/view.php', [
                             'id' => $this->properties->activitylink,
                         ]),
                         get_string(
@@ -2359,7 +2370,7 @@ class lesson extends lesson_base {
     public function duplicate_page($pageid) {
         global $PAGE;
         $cm = get_coursemodule_from_instance('lesson', $this->properties->id, $this->properties->course);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         // Load the page.
         $page = $this->load_page($pageid);
         $properties = $page->properties();
@@ -2693,12 +2704,12 @@ class lesson extends lesson_base {
         global $CFG;
 
         $cm = get_coursemodule_from_instance('lesson', $this->properties->id, $this->properties->course);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $pages = $this->load_all_pages();
 
         if (!array_key_exists($pageid, $pages) || ($after!=0 && !array_key_exists($after, $pages))) {
-            throw new \moodle_exception('cannotfindpages', 'lesson', "$CFG->wwwroot/mod/lesson/edit.php?id=$cm->id");
+            throw new moodle_exception('cannotfindpages', 'lesson', "$CFG->wwwroot/mod/lesson/edit.php?id=$cm->id");
         }
 
         $pagetomove = clone($pages[$pageid]);
@@ -2766,7 +2777,7 @@ class lesson extends lesson_base {
      */
     public function get_context() {
         if ($this->context == null) {
-            $this->context = context_module::instance($this->get_cm()->id);
+            $this->context = module::instance($this->get_cm()->id);
         }
         return $this->context;
     }
@@ -3724,7 +3735,7 @@ class lesson extends lesson_base {
             // $ntries is decremented above.
             if (!$attempts = $this->get_attempts($ntries)) {
                 $attempts = array();
-                $url = new moodle_url('/mod/lesson/view.php', array('id' => $cm->id));
+                $url = new url('/mod/lesson/view.php', array('id' => $cm->id));
             } else {
                 $firstattempt = current($attempts);
                 $pageid = $firstattempt->pageid;
@@ -3733,7 +3744,7 @@ class lesson extends lesson_base {
                 $lastattempt = end($attempts);
                 $USER->modattempts[$this->properties->id] = $lastattempt->pageid;
 
-                $url = new moodle_url('/mod/lesson/view.php', array('id' => $cm->id, 'pageid' => $pageid));
+                $url = new url('/mod/lesson/view.php', array('id' => $cm->id, 'pageid' => $pageid));
             }
             $data->reviewlesson = $url->out(false);
         } else if ($this->properties->modattempts && $canmanage) {
@@ -3976,7 +3987,7 @@ abstract class lesson_page extends lesson_base {
         if ($properties->pageid) {
             $prevpage = $DB->get_record("lesson_pages", array("id" => $properties->pageid), 'id, nextpageid');
             if (!$prevpage) {
-                throw new \moodle_exception('cannotfindpages', 'lesson');
+                throw new moodle_exception('cannotfindpages', 'lesson');
             }
             $newpage->prevpageid = $prevpage->id;
             $newpage->nextpageid = $prevpage->nextpageid;
@@ -4043,7 +4054,7 @@ abstract class lesson_page extends lesson_base {
         } else {
             $page = $DB->get_record("lesson_pages", array("id" => $id));
             if (!$page) {
-                throw new \moodle_exception('cannotfindpages', 'lesson');
+                throw new moodle_exception('cannotfindpages', 'lesson');
             }
         }
         $manager = lesson_page_type_manager::get($lesson);
@@ -4065,7 +4076,7 @@ abstract class lesson_page extends lesson_base {
         global $DB;
 
         $cm = get_coursemodule_from_instance('lesson', $this->lesson->id, $this->lesson->course);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Delete files associated with attempts.
         $fs = get_file_storage();
@@ -4274,7 +4285,7 @@ abstract class lesson_page extends lesson_base {
 
                         // Trigger an event: question answered.
                         $eventparams = array(
-                            'context' => context_module::instance($PAGE->cm->id),
+                            'context' => module::instance($PAGE->cm->id),
                             'objectid' => $this->properties->id,
                             'other' => array(
                                 'pagetype' => $this->get_typestring()
@@ -4575,7 +4586,7 @@ abstract class lesson_page extends lesson_base {
     public static function rewrite_answers_urls($answer, $rewriteanswer = true) {
         global $PAGE;
 
-        $context = context_module::instance($PAGE->cm->id);
+        $context = module::instance($PAGE->cm->id);
         if ($rewriteanswer) {
             $answer->answer = file_rewrite_pluginfile_urls($answer->answer, 'pluginfile.php', $context->id,
                     'mod_lesson', 'page_answers', $answer->id);
@@ -4761,7 +4772,7 @@ abstract class lesson_page extends lesson_base {
         $newanswer->timecreated = $this->properties->timecreated;
 
         $cm = get_coursemodule_from_instance('lesson', $this->lesson->id, $this->lesson->course);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $answers = array();
 
@@ -4955,7 +4966,7 @@ abstract class lesson_page extends lesson_base {
             if (!isset($this->properties->contentsformat)) {
                 $this->properties->contentsformat = FORMAT_HTML;
             }
-            $context = context_module::instance($PAGE->cm->id);
+            $context = module::instance($PAGE->cm->id);
             $contents = file_rewrite_pluginfile_urls($this->properties->contents, 'pluginfile.php', $context->id, 'mod_lesson',
                                                      'page_contents', $this->properties->id);  // Must do this BEFORE format_text()!
             return format_text($contents, $this->properties->contentsformat,
@@ -5296,7 +5307,7 @@ class lesson_page_type_manager {
     public function load_page($pageid, lesson $lesson) {
         global $DB;
         if (!($page =$DB->get_record('lesson_pages', array('id'=>$pageid, 'lessonid'=>$lesson->id)))) {
-            throw new \moodle_exception('cannotfindpages', 'lesson');
+            throw new moodle_exception('cannotfindpages', 'lesson');
         }
         $pagetype = get_class($this->types[$page->qtype]);
         $page = new $pagetype($page, $lesson);

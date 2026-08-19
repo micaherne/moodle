@@ -1,6 +1,12 @@
 <?php
 
-    require_once('../config.php');
+    use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
+
+require_once('../config.php');
     require_once($CFG->libdir.'/adminlib.php');
     require_once($CFG->libdir.'/authlib.php');
     require_once($CFG->dirroot.'/user/lib.php');
@@ -17,10 +23,10 @@
 
     admin_externalpage_setup('editusers');
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
     $site = get_site();
 
-    $returnurl = new moodle_url('/admin/user.php');
+    $returnurl = new url('/admin/user.php');
 
     $PAGE->set_primary_active_tab('siteadminnode');
     $PAGE->navbar->add(get_string('userlist', 'admin'), $PAGE->url);
@@ -30,7 +36,7 @@
     if ($confirmuser and confirm_sesskey()) {
         require_capability('moodle/user:update', $sitecontext);
         if (!$user = $DB->get_record('user', array('id'=>$confirmuser, 'mnethostid'=>$CFG->mnet_localhost_id))) {
-            throw new \moodle_exception('nousers');
+            throw new moodle_exception('nousers');
         }
 
         $auth = \core\di::get(\core\authentication::class)->get_plugin($user->auth);
@@ -46,12 +52,12 @@
 
     } else if ($resendemail && confirm_sesskey()) {
         if (!$user = $DB->get_record('user', ['id' => $resendemail, 'mnethostid' => $CFG->mnet_localhost_id, 'deleted' => 0])) {
-            throw new \moodle_exception('nousers');
+            throw new moodle_exception('nousers');
         }
 
         // Prevent spamming users who are already confirmed.
         if ($user->confirmed) {
-            throw new \moodle_exception('alreadyconfirmed', 'moodle');
+            throw new moodle_exception('alreadyconfirmed', 'moodle');
         }
 
         $returnmsg = get_string('emailconfirmsentsuccess');
@@ -68,10 +74,10 @@
         $user = $DB->get_record('user', array('id'=>$delete, 'mnethostid'=>$CFG->mnet_localhost_id), '*', MUST_EXIST);
 
         if ($user->deleted) {
-            throw new \moodle_exception('usernotdeleteddeleted', 'error');
+            throw new moodle_exception('usernotdeleteddeleted', 'error');
         }
         if (is_siteadmin($user->id)) {
-            throw new \moodle_exception('useradminodelete', 'error');
+            throw new moodle_exception('useradminodelete', 'error');
         }
 
         if ($confirm != md5($delete)) {
@@ -80,7 +86,7 @@
             echo $OUTPUT->heading(get_string('deleteuser', 'admin'));
 
             $optionsyes = array('delete'=>$delete, 'confirm'=>md5($delete), 'sesskey'=>sesskey());
-            $deleteurl = new moodle_url($returnurl, $optionsyes);
+            $deleteurl = new url($returnurl, $optionsyes);
             $deletebutton = new single_button($deleteurl, get_string('delete'), 'post');
 
             echo $OUTPUT->confirm(get_string('deletecheckfull', '', "'$fullname'"), $deletebutton, $returnurl);
@@ -98,17 +104,17 @@
         }
     } else if ($acl and confirm_sesskey()) {
         if (!has_capability('moodle/user:update', $sitecontext)) {
-            throw new \moodle_exception('nopermissions', 'error', '', 'modify the NMET access control list');
+            throw new moodle_exception('nopermissions', 'error', '', 'modify the NMET access control list');
         }
         if (!$user = $DB->get_record('user', array('id'=>$acl))) {
-            throw new \moodle_exception('nousers', 'error');
+            throw new moodle_exception('nousers', 'error');
         }
         if (!is_mnet_remote_user($user)) {
-            throw new \moodle_exception('usermustbemnet', 'error');
+            throw new moodle_exception('usermustbemnet', 'error');
         }
         $accessctrl = strtolower(required_param('accessctrl', PARAM_ALPHA));
         if ($accessctrl != 'allow' and $accessctrl != 'deny') {
-            throw new \moodle_exception('invalidaccessparameter', 'error');
+            throw new moodle_exception('invalidaccessparameter', 'error');
         }
         $aclrecord = $DB->get_record('mnet_sso_access_control', array('username'=>$user->username, 'mnet_host_id'=>$user->mnethostid));
         if (empty($aclrecord)) {
@@ -161,16 +167,16 @@
 
     echo html_writer::start_div('', ['data-region' => 'report-user-list-wrapper']);
 
-    $bulkactions = new user_bulk_action_form(new moodle_url('/admin/user/user_bulk.php'),
+    $bulkactions = new user_bulk_action_form(new url('/admin/user/user_bulk.php'),
         ['excludeactions' => ['displayonpage', 'download'], 'passuserids' => true, 'hidesubmit' => true],
         'post', '',
         ['id' => 'user-bulk-action-form']);
     $bulkactions->set_data(['returnurl' => $PAGE->url->out_as_local_url(false)]);
 
     $report = \core_reportbuilder\system_report_factory::create(\core_admin\reportbuilder\local\systemreports\users::class,
-        context_system::instance(), parameters: ['withcheckboxes' => $bulkactions->has_bulk_actions()]);
+        system::instance(), parameters: ['withcheckboxes' => $bulkactions->has_bulk_actions()]);
     if (has_capability('moodle/user:create', $sitecontext)) {
-        $url = new moodle_url('/user/editadvanced.php', ['id' => -1]);
+        $url = new url('/user/editadvanced.php', ['id' => -1]);
         $report->set_report_action(new \core_reportbuilder\output\report_action(
             get_string('addnewuser', 'moodle'),
             ['class' => 'btn btn-primary ms-auto', 'data-action' => 'add-user', 'href' => (string) $url],

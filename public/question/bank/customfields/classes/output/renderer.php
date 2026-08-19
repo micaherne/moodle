@@ -16,6 +16,8 @@
 
 namespace qbank_customfields\output;
 
+use core\output\plugin_renderer_base;
+
 /**
  * Class renderer.
  *
@@ -24,7 +26,7 @@ namespace qbank_customfields\output;
  * @author     Matt Porritt <mattp@catalyst-ca.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Render custom field data for table display.

@@ -24,16 +24,17 @@
 namespace tool_dataprivacy\output;
 defined('MOODLE_INTERNAL') || die();
 
-use action_menu;
-use action_menu_link_secondary;
-use coding_exception;
-use context_user;
-use moodle_exception;
-use moodle_url;
-use renderable;
-use renderer_base;
+use core\context\system;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\exception\coding_exception;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 use tool_dataprivacy\api;
 use tool_dataprivacy\data_request;
 use tool_dataprivacy\external\data_request_exporter;
@@ -70,7 +71,7 @@ class my_data_requests_page implements renderable, templatable {
         global $USER;
 
         $data = new stdClass();
-        $data->newdatarequesturl = new moodle_url('/admin/tool/dataprivacy/createdatarequest.php');
+        $data->newdatarequesturl = new url('/admin/tool/dataprivacy/createdatarequest.php');
 
         if (!is_https()) {
             $httpwarningmessage = get_string('httpwarning', 'tool_dataprivacy');
@@ -84,10 +85,10 @@ class my_data_requests_page implements renderable, templatable {
             $userid = $request->get('userid');
             $type = $request->get('type');
 
-            $usercontext = context_user::instance($userid, IGNORE_MISSING);
+            $usercontext = user::instance($userid, IGNORE_MISSING);
             if (!$usercontext) {
                 // Use the context system.
-                $outputcontext = \context_system::instance();
+                $outputcontext = system::instance();
             } else {
                 $outputcontext = $usercontext;
             }
@@ -141,10 +142,10 @@ class my_data_requests_page implements renderable, templatable {
             // Prepare actions.
             $actions = [];
             if ($cancancel) {
-                $cancelurl = new moodle_url('#');
+                $cancelurl = new url('#');
                 $canceldata = ['data-action' => 'cancel', 'data-requestid' => $requestid];
                 $canceltext = get_string('cancelrequest', 'tool_dataprivacy');
-                $actions[] = new action_menu_link_secondary($cancelurl, null, $canceltext, $canceldata);
+                $actions[] = new link_secondary($cancelurl, null, $canceltext, $canceldata);
             }
             if ($candownload && $usercontext) {
                 $actions[] = api::get_download_link($usercontext, $requestid);

@@ -16,6 +16,8 @@
 
 namespace block_recentlyaccesseditems;
 
+use core\context\module;
+
 /**
  * Test Recently accessed items block external functions
  *
@@ -63,7 +65,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Student access all forums.
         foreach ($forum as $module) {
-            $event = \mod_forum\event\course_module_viewed::create(array('context' => \context_module::instance($module->cmid),
+            $event = \mod_forum\event\course_module_viewed::create(array('context' => module::instance($module->cmid),
                     'objectid' => $module->id));
             $event->trigger();
             $this->waitForSecond();
@@ -75,7 +77,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Student access all assignments.
         foreach ($assign as $module) {
-            $event = \mod_assign\event\course_module_viewed::create(['context' => \context_module::instance($module->cmid),
+            $event = \mod_assign\event\course_module_viewed::create(['context' => module::instance($module->cmid),
                     'objectid' => $module->id]);
             $event->trigger();
             $this->waitForSecond();
@@ -84,7 +86,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Student access all h5p.
         foreach ($h5pactivity as $module) {
             $event = \mod_h5pactivity\event\course_module_viewed::create(
-                ['context' => \context_module::instance($module->cmid), 'objectid' => $module->id]
+                ['context' => module::instance($module->cmid), 'objectid' => $module->id]
             );
             $event->trigger();
             $this->waitForSecond();

@@ -16,6 +16,8 @@
 
 namespace media_vimeo;
 
+use core\output\html_writer;
+use core\url;
 use core_media_manager;
 
 /**
@@ -57,7 +59,7 @@ final class player_test extends \advanced_testcase {
     public function test_embed_url(): void {
         global $CFG;
 
-        $url = new \moodle_url('http://vimeo.com/1176321');
+        $url = new url('http://vimeo.com/1176321');
 
         $manager = core_media_manager::instance();
         $embedoptions = array(
@@ -85,8 +87,8 @@ final class player_test extends \advanced_testcase {
      */
     public function test_embed_link(): void {
         global $CFG;
-        $url = new \moodle_url('http://vimeo.com/1176321');
-        $text = \html_writer::link($url, 'Watch this one');
+        $url = new url('http://vimeo.com/1176321');
+        $text = html_writer::link($url, 'Watch this one');
         $content = format_text($text, FORMAT_HTML);
 
         $this->assertMatchesRegularExpression('~mediaplugin_vimeo~', $content);
@@ -102,8 +104,8 @@ final class player_test extends \advanced_testcase {
      */
     public function test_embed_media(): void {
         global $CFG;
-        $url = new \moodle_url('http://vimeo.com/1176321');
-        $trackurl = new \moodle_url('http://example.org/some_filename.vtt');
+        $url = new url('http://vimeo.com/1176321');
+        $trackurl = new url('http://example.org/some_filename.vtt');
         $text = '<video controls="true"><source src="'.$url.'"/>' .
             '<track src="'.$trackurl.'">Unsupported text</video>';
         $content = format_text($text, FORMAT_HTML);
@@ -133,7 +135,7 @@ final class player_test extends \advanced_testcase {
     public function test_embed_url_with_code(): void {
         global $CFG;
 
-        $url = new \moodle_url('https://vimeo.com/1176321/abcdef12345');
+        $url = new url('https://vimeo.com/1176321/abcdef12345');
 
         $manager = core_media_manager::instance();
         $embedoptions = array(
@@ -165,8 +167,8 @@ final class player_test extends \advanced_testcase {
      */
     public function test_embed_link_with_code(): void {
         global $CFG;
-        $url = new \moodle_url('https://vimeo.com/1176321/abcdef12345');
-        $text = \html_writer::link($url, 'Watch this one');
+        $url = new url('https://vimeo.com/1176321/abcdef12345');
+        $text = html_writer::link($url, 'Watch this one');
         $content = format_text($text, FORMAT_HTML);
 
         // Video source URL is contains the new vimeo embedded URL format.
@@ -186,8 +188,8 @@ final class player_test extends \advanced_testcase {
      */
     public function test_embed_media_with_code(): void {
         global $CFG;
-        $url = new \moodle_url('https://vimeo.com/1176321/abcdef12345');
-        $trackurl = new \moodle_url('http://example.org/some_filename.vtt');
+        $url = new url('https://vimeo.com/1176321/abcdef12345');
+        $trackurl = new url('http://example.org/some_filename.vtt');
         $text = '<video controls="true"><source src="'.$url.'"/>' .
             '<track src="'.$trackurl.'">Unsupported text</video>';
         $content = format_text($text, FORMAT_HTML);
@@ -217,8 +219,8 @@ final class player_test extends \advanced_testcase {
      * Test that mediaplugin filter skip the process when the URL is invalid.
      */
     public function test_skip_invalid_url_format_with_code(): void {
-        $url = new \moodle_url('https://vimeo.com/_________/abcdef12345s');
-        $text = \html_writer::link($url, 'Invalid Vimeo URL');
+        $url = new url('https://vimeo.com/_________/abcdef12345s');
+        $text = html_writer::link($url, 'Invalid Vimeo URL');
         $content = format_text($text, FORMAT_HTML);
 
         $this->assertStringNotContainsString('player.vimeo.com/video/_________?h=abcdef12345s', $content);
@@ -237,8 +239,8 @@ final class player_test extends \advanced_testcase {
         set_config('donottrack', true, 'media_vimeo');
 
         // Test that the embed code contains the do not track param in the url.
-        $url = new \moodle_url('https://vimeo.com/226053498');
-        $text = \html_writer::link($url, 'Watch this one');
+        $url = new url('https://vimeo.com/226053498');
+        $text = html_writer::link($url, 'Watch this one');
         $content = format_text($text, FORMAT_HTML);
         $this->assertMatchesRegularExpression('~dnt=1~', $content);
     }

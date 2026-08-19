@@ -16,7 +16,7 @@
 
 namespace core_courseformat\privacy;
 
-use context_course;
+use core\context\course;
 use core_privacy\local\request\writer;
 
 /**
@@ -51,7 +51,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Test the user preferences export contains 1 user preference record for the User.
         provider::export_user_preferences($user->id);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $writer = writer::with_context($coursecontext);
         $this->assertTrue($writer->has_any_data());
 

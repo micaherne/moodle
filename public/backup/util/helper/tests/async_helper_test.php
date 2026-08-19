@@ -19,6 +19,8 @@ namespace core_backup;
 use async_helper;
 use backup;
 use backup_controller;
+use core\context\course;
+use core\context\module;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -115,7 +117,7 @@ final class async_helper_test extends \advanced_testcase {
         // We need a grade, easiest is to add an assignment.
         $assignrow = $generator->create_module('assign', array(
             'course' => $course->id));
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
         $item = $assign->get_grade_item();
 
         // Make a test grouping as well.
@@ -139,7 +141,7 @@ final class async_helper_test extends \advanced_testcase {
         $bc->destroy();
         unset($bc);
 
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $result = \async_helper::get_async_backups('course', $coursecontext->instanceid);
 

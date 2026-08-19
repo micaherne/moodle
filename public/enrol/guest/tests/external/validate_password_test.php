@@ -16,6 +16,7 @@
 
 namespace enrol_guest\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 
 /**
@@ -75,7 +76,7 @@ final class validate_password_test extends \advanced_testcase {
 
         // Course hidden, expect exception.
         $DB->set_field('course', 'visible', 0, ['id' => $course->id]);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $result = validate_password::execute($instanceid, '');
     }
 }

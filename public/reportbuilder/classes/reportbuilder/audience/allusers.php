@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\reportbuilder\audience;
 
-use context_system;
+use core\context\system;
 use core_reportbuilder\local\audiences\base;
 use core_reportbuilder\local\helpers\database;
 use MoodleQuickForm;
@@ -79,7 +79,7 @@ class allusers extends base {
      * @return bool
      */
     public function user_can_add(): bool {
-        return has_capability('moodle/user:viewalldetails', context_system::instance());
+        return has_capability('moodle/user:viewalldetails', system::instance());
     }
 
     /**
@@ -88,6 +88,6 @@ class allusers extends base {
      * @return bool
      */
     public function user_can_edit(): bool {
-        return has_capability('moodle/user:viewalldetails', context_system::instance());
+        return has_capability('moodle/user:viewalldetails', system::instance());
     }
 }

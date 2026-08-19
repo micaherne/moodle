@@ -24,7 +24,7 @@
 
 namespace tool_customlang\local\mlang;
 
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdclass;
 
 /**

@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -89,7 +92,7 @@ class calendar_subscription_created extends base
         if ($this->other['eventtype'] == 'category' && isset($this->other['categoryid'])) {
             $params['category'] = $this->other['categoryid'];
         }
-        return new \moodle_url('/calendar/managesubscriptions.php', $params);
+        return new url('/calendar/managesubscriptions.php', $params);
     }
 
     /**
@@ -101,24 +104,24 @@ class calendar_subscription_created extends base
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->context)) {
-            throw new \coding_exception('The \'context\' must be set.');
+            throw new coding_exception('The \'context\' must be set.');
         }
         if (!isset($this->objectid)) {
-            throw new \coding_exception('The \'objectid\' must be set.');
+            throw new coding_exception('The \'objectid\' must be set.');
         }
         if (!isset($this->other['eventtype'])) {
-            throw new \coding_exception('The \'eventtype\' value must be set in other.');
+            throw new coding_exception('The \'eventtype\' value must be set in other.');
         }
         if ($this->other['eventtype'] == 'course' || $this->other['eventtype'] == 'group') {
             if (!isset($this->other['courseid'])) {
-                throw new \coding_exception('The \'courseid\' value must be set in other.');
+                throw new coding_exception('The \'courseid\' value must be set in other.');
             }
             if ($this->other['eventtype'] == 'group' && !isset($this->other['groupid'])) {
-                throw new \coding_exception('The \'groupid\' value must be set in other.');
+                throw new coding_exception('The \'groupid\' value must be set in other.');
             }
         }
         if ($this->other['eventtype'] == 'category' && !isset($this->other['categoryid'])) {
-            throw new \coding_exception('The \'categoryid\' value must be set in other.');
+            throw new coding_exception('The \'categoryid\' value must be set in other.');
         }
     }
 

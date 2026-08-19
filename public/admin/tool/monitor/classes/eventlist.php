@@ -18,7 +18,7 @@ namespace tool_monitor;
 
 use core_collator;
 use core_component;
-use core_plugin_manager;
+use core\plugin_manager;
 use ReflectionClass;
 
 /**
@@ -101,7 +101,7 @@ class eventlist {
      * @return array list of plugins with human readable name, grouped by their type
      */
     public static function get_plugin_list($eventlist = array()) {
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
 
         if (empty($eventlist)) {
             $eventlist = self::get_all_eventlist();

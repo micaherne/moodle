@@ -22,6 +22,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/authlib.php');
@@ -52,7 +54,7 @@ class auth_plugin_oauth2 extends \auth_oauth2\auth {
             foreach ($idps as $idp) {
                 $idpid = $idp['url']->get_param('id');
                 $sesskey = $idp['url']->get_param('sesskey');
-                $testurl = new moodle_url('/auth/oauth2/test.php', ['id' => $idpid, 'sesskey' => $sesskey]);
+                $testurl = new url('/auth/oauth2/test.php', ['id' => $idpid, 'sesskey' => $sesskey]);
 
                 $templateidps[] = ['name' => $idp['name'], 'url' => $testurl->out(), 'iconurl' => $idp['iconurl']];
             }

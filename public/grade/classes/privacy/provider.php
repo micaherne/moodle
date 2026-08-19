@@ -26,9 +26,10 @@
 namespace core_grades\privacy;
 defined('MOODLE_INTERNAL') || die();
 
-use context;
-use context_course;
-use context_system;
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
 use grade_item;
 use grade_grade;
 use grade_scale;
@@ -531,14 +532,14 @@ class provider implements
 
         $recordset = $DB->get_recordset_sql($sql, $params);
         static::recordset_loop_and_export($recordset, 'gi_courseid', [], function($carry, $record) {
-            $context = context_course::instance($record->gi_courseid);
+            $context = course::instance($record->gi_courseid);
             $gg = static::extract_grade_grade_from_record($record);
             $carry[] = static::transform_grade($gg, $context, false);
 
             return $carry;
 
         }, function($courseid, $data) use ($rootpath) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
 
             $pathtofiles = [
                 get_string('grades', 'core_grades'),
@@ -570,7 +571,7 @@ class provider implements
 
         $recordset = $DB->get_recordset_sql($sql, $params);
         static::recordset_loop_and_export($recordset, 'gi_courseid', [], function($carry, $record) {
-            $context = context_course::instance($record->gi_courseid);
+            $context = course::instance($record->gi_courseid);
             $gg = static::extract_grade_grade_from_record($record, true);
             $carry[] = array_merge(static::transform_grade($gg, $context, true), [
                 'action' => static::transform_history_action($record->ggh_action)
@@ -578,7 +579,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($rootpath) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
 
             $pathtofiles = [
                 get_string('grades', 'core_grades'),
@@ -614,7 +615,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($relatedtomepath) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
             writer::with_context($context)->export_related_data($relatedtomepath, 'categories_history',
                 (object) ['modified_records' => $data]);
         });
@@ -640,7 +641,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($relatedtomepath) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
             writer::with_context($context)->export_related_data($relatedtomepath, 'items_history',
                 (object) ['modified_records' => $data]);
         });
@@ -660,7 +661,7 @@ class provider implements
         $params = array_merge($incourseparams, ['userid1' => $userid, 'userid2' => $userid]);
         $recordset = $DB->get_recordset_sql($sql, $params);
         static::recordset_loop_and_export($recordset, 'gi_courseid', [], function($carry, $record) {
-            $context = context_course::instance($record->gi_courseid);
+            $context = course::instance($record->gi_courseid);
             $gg = static::extract_grade_grade_from_record($record);
             $carry[] = array_merge(static::transform_grade($gg, $context, false), [
                 'userid' => transform::user($gg->userid),
@@ -669,7 +670,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($relatedtomepath) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
 
             $pathtofiles = [
                 get_string('grades', 'core_grades'),
@@ -701,7 +702,7 @@ class provider implements
         $params = array_merge($incourseparams, ['userid1' => $userid, 'userid2' => $userid, 'userid3' => $userid]);
         $recordset = $DB->get_recordset_sql($sql, $params);
         static::recordset_loop_and_export($recordset, 'gi_courseid', [], function($carry, $record) use ($userid) {
-            $context = context_course::instance($record->gi_courseid);
+            $context = course::instance($record->gi_courseid);
             $gg = static::extract_grade_grade_from_record($record, true);
             $carry[] = array_merge(static::transform_grade($gg, $context, true), [
                 'userid' => transform::user($gg->userid),
@@ -712,7 +713,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($relatedtomepath) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
 
             $pathtofiles = [
                 get_string('grades', 'core_grades'),
@@ -944,7 +945,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($relatedtomepath) {
-            $context = $courseid ? context_course::instance($courseid) : context_system::instance();
+            $context = $courseid ? course::instance($courseid) : system::instance();
             writer::with_context($context)->export_related_data($relatedtomepath, 'outcomes',
                 (object) ['outcomes' => $data]);
         });
@@ -970,7 +971,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($relatedtomepath) {
-            $context = $courseid ? context_course::instance($courseid) : context_system::instance();
+            $context = $courseid ? course::instance($courseid) : system::instance();
             writer::with_context($context)->export_related_data($relatedtomepath, 'outcomes_history',
                 (object) ['modified_records' => $data]);
         });
@@ -1037,7 +1038,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($relatedtomepath) {
-            $context = $courseid ? context_course::instance($courseid) : context_system::instance();
+            $context = $courseid ? course::instance($courseid) : system::instance();
             writer::with_context($context)->export_related_data($relatedtomepath, 'scales',
                 (object) ['scales' => $data]);
         });
@@ -1064,7 +1065,7 @@ class provider implements
             return $carry;
 
         }, function($courseid, $data) use ($relatedtomepath) {
-            $context = $courseid ? context_course::instance($courseid) : context_system::instance();
+            $context = $courseid ? course::instance($courseid) : system::instance();
             writer::with_context($context)->export_related_data($relatedtomepath, 'scales_history',
                 (object) ['modified_records' => $data]);
         });
@@ -1146,7 +1147,7 @@ class provider implements
                 break;
 
             default:
-                throw new \coding_exception('Unrecognised target: ' . $target);
+                throw new coding_exception('Unrecognised target: ' . $target);
                 break;
         }
 

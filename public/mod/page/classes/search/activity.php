@@ -24,6 +24,8 @@
 
 namespace mod_page\search;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -49,7 +51,7 @@ class activity extends \core_search\base_activity {
 
         try {
             $cm = $this->get_cm($this->get_module_name(), $record->id, $record->course);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
         } catch (\dml_missing_record_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving ' . $this->areaid . ' ' . $record->id . ' document, not all required data is available: ' .

@@ -24,8 +24,8 @@
 
 namespace core\output;
 
-use lang_string;
-use moodle_url;
+use core\lang_string;
+use core\url;
 use stdClass;
 
 /**
@@ -59,7 +59,7 @@ class chooser implements renderable, templatable {
      * @param chooser_section[] $sections The sections.
      * @param string $paramname The name of the parameter for the items value.
      */
-    public function __construct(moodle_url $actionurl, lang_string $title, array $sections, $paramname) {
+    public function __construct(url $actionurl, lang_string $title, array $sections, $paramname) {
         $this->actionurl = $actionurl;
         $this->title = $title;
         $this->sections = $sections;

@@ -26,7 +26,7 @@ use core_reportbuilder\local\filters\user;
 use core_reportbuilder\local\models\schedule;
 use core_reportbuilder\local\filters\text;
 use core_reportbuilder\reportbuilder\audience\manual;
-use core_user;
+use core\user as core_user;
 use core_user\reportbuilder\datasource\users;
 
 /**

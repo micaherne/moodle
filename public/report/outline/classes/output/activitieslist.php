@@ -16,8 +16,12 @@
 
 namespace report_outline\output;
 
+use core\output\action_link;
+use core\output\renderer_base;
+use core\url;
+use core_course\cm_info;
 use core_report\output\coursestructure;
-use course_modinfo;
+use core_course\modinfo;
 
 /**
  * Activities list page.
@@ -37,7 +41,7 @@ class activitieslist extends coursestructure {
      * @param bool $showblogs Whether related blog entries should be shown or not.
      */
     public function __construct(
-            course_modinfo $modinfo,
+            modinfo $modinfo,
             /** @var array $views Views information for activity and users. */
             protected array $views,
             /** @var bool $showlastaccess Whether the last access should be shown or not. */
@@ -56,7 +60,7 @@ class activitieslist extends coursestructure {
      * @param \renderer_base $output
      * @return array|\stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $table = parent::export_for_template($output);
         $table['id'] = 'outlinereport';
         $data = [
@@ -73,7 +77,7 @@ class activitieslist extends coursestructure {
      * @param \renderer_base $output
      * @return array
      */
-    protected function export_headers(\renderer_base $output): array {
+    protected function export_headers(renderer_base $output): array {
         $headers = parent::export_headers($output);
         $headers[] = get_string('views');
 
@@ -96,7 +100,7 @@ class activitieslist extends coursestructure {
      * @param bool $indelegated Whether the activity is part of a delegated section or not.
      * @return array
      */
-    public function export_activity_data(\renderer_base $output, \cm_info $cm, bool $indelegated = false): array {
+    public function export_activity_data(renderer_base $output, cm_info $cm, bool $indelegated = false): array {
         global $CFG;
 
         $data = parent::export_activity_data($output, $cm, $indelegated);
@@ -119,8 +123,8 @@ class activitieslist extends coursestructure {
             $cell = ['activityclass' => 'blog'];
             require_once($CFG->dirroot.'/blog/lib.php');
             if ($blogcount = blog_get_associated_count($cm->get_course()->id, $cm->id)) {
-                $blogurl = new \moodle_url('/blog/index.php', ['modid' => $cm->id]);
-                $cell['link']  = new \action_link($blogurl, $blogcount);
+                $blogurl = new url('/blog/index.php', ['modid' => $cm->id]);
+                $cell['link']  = new action_link($blogurl, $blogcount);
             } else {
                 $cell['text'] = '-';
             }

@@ -26,9 +26,12 @@ namespace report_insights\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use plugin_renderer_base;
-use templatable;
-use renderable;
+use core\context;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\templatable;
+use core\output\renderable;
+use core\url;
 
 /**
  * Renderer class.
@@ -88,7 +91,7 @@ class renderer extends plugin_renderer_base {
      * @param \context $context
      * @return string HTML
      */
-    public function render_no_insights(\context $context) {
+    public function render_no_insights(context $context) {
 
         // We don't want to disclose the name of the model if it has not been enabled.
         $this->page->set_title($context->get_context_name());
@@ -108,7 +111,7 @@ class renderer extends plugin_renderer_base {
      * @param \context $context
      * @return string HTML
      */
-    public function render_no_insights_model(\context $context) {
+    public function render_no_insights_model(context $context) {
 
         // We don't want to disclose the name of the model if it has not been enabled.
         $this->page->set_title($context->get_context_name());
@@ -137,8 +140,8 @@ class renderer extends plugin_renderer_base {
         $output = $this->output->header();
         $output .= $this->output->notification(get_string('analyticsdisabled', 'analytics'),
                 \core\output\notification::NOTIFY_INFO);
-        $output .= \html_writer::tag('a', get_string('continue'), ['class' => 'btn btn-primary',
-            'href' => (new \moodle_url('/'))->out()]);
+        $output .= html_writer::tag('a', get_string('continue'), ['class' => 'btn btn-primary',
+            'href' => (new url('/'))->out()]);
         $output .= $this->output->footer();
 
         return $output;

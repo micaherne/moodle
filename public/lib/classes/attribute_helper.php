@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\exception\coding_exception;
 use ReflectionAttribute;
 
 /**
@@ -94,7 +95,7 @@ class attribute_helper {
         $attributes = self::from($reference, $attributename, $attributeflags);
 
         if ($attributes && count($attributes) > 1) {
-            throw new \coding_exception('More than one attribute found');
+            throw new coding_exception('More than one attribute found');
         }
 
         return $attributes ? $attributes[0] : null;

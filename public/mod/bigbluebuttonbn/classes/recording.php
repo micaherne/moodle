@@ -16,13 +16,14 @@
 
 namespace mod_bigbluebuttonbn;
 
-use cache;
-use context;
-use context_course;
-use context_module;
+use core\context\system;
+use core_cache\cache;
+use core\context;
+use core\context\course;
+use core\context\module;
 use core\persistent;
 use mod_bigbluebuttonbn\local\proxy\recording_proxy;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -187,9 +188,9 @@ class recording extends persistent {
             $params['courseid'] = $courseid;
             $course = $DB->get_record('course', ['id' => $courseid]);
             $groupmode = groups_get_course_groupmode($course);
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
         } else {
-            $context = \context_system::instance();
+            $context = system::instance();
             $groupmode = NOGROUPS;
         }
 
@@ -228,13 +229,13 @@ class recording extends persistent {
         if ($groupmode) {
             $accessallgroups = has_capability('moodle/site:accessallgroups', $context) || $groupmode == VISIBLEGROUPS;
             if ($accessallgroups) {
-                if ($context instanceof context_module) {
+                if ($context instanceof module) {
                     $allowedgroups = groups_get_all_groups($courseid, 0, $groupingid);
                 } else {
                     $allowedgroups = groups_get_all_groups($courseid);
                 }
             } else {
-                if ($context instanceof context_module) {
+                if ($context instanceof module) {
                     $allowedgroups = groups_get_all_groups($courseid, $USER->id, $groupingid);
                 } else {
                     $allowedgroups = groups_get_all_groups($courseid, $USER->id);
@@ -597,7 +598,7 @@ class recording extends persistent {
         if ($playbacks = $this->metadata_get('playbacks')) {
             return array_map(function (array $playback): array {
                 $clone = array_merge([], $playback);
-                $clone['url'] = new moodle_url('/mod/bigbluebuttonbn/bbb_view.php', [
+                $clone['url'] = new url('/mod/bigbluebuttonbn/bbb_view.php', [
                     'action' => 'play',
                     'bn' => $this->raw_get('bigbluebuttonbnid'),
                     'rid' => $this->get('id'),

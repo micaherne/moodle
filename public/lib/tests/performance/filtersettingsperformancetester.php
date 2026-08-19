@@ -25,16 +25,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\output\progress_bar;
+use core\url;
+
 die(); //TODO: this needs to be rewritten as standard advanced_testcase
 
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/ddllib.php');
 
 require_login();
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 require_capability('moodle/site:config', $syscontext);
 
-$baseurl = new moodle_url('/lib/tests/performance/filtersettingsperformancetester.php');
+$baseurl = new url('/lib/tests/performance/filtersettingsperformancetester.php');
 
 $title = 'filter_get_active_in_context performance test';
 $PAGE->set_url($baseurl);
@@ -117,13 +122,13 @@ $DB = $realdb;
 
 echo $OUTPUT->container_start();
 
-$aurl = new moodle_url($baseurl, array('action' => 'setup', 'sesskey'=>sesskey()));
+$aurl = new url($baseurl, array('action' => 'setup', 'sesskey'=>sesskey()));
 echo $OUTPUT->single_button($aurl, 'Set up test tables', 'get', array('disabled'=>($issetup > 0)));
 
-$aurl = new moodle_url($baseurl, array('action' => 'teardown', 'sesskey'=>sesskey()));
+$aurl = new url($baseurl, array('action' => 'teardown', 'sesskey'=>sesskey()));
 echo $OUTPUT->single_button($aurl, 'Drop test tables', 'get', array('disabled'=>($issetup == 0)));
 
-$aurl = new moodle_url($baseurl, array('action' => 'test', 'sesskey'=>sesskey()));
+$aurl = new url($baseurl, array('action' => 'test', 'sesskey'=>sesskey()));
 echo $OUTPUT->single_button($aurl, 'Run tests', 'get', array('disabled'=>($issetup != count($requiredtables))));
 
 echo $OUTPUT->container_end();

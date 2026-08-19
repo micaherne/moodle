@@ -16,6 +16,7 @@
 
 namespace core\output;
 
+use core\exception\coding_exception;
 use Mustache\HelperCollection;
 use Mustache\LambdaHelper;
 use Mustache\Tokenizer;
@@ -177,6 +178,6 @@ class mustache_helper_collection extends HelperCollection {
      * @deprecated Deprecated since Moodle 3.10 (MDL-69050) - use {@see strip_disallowed_helpers}
      */
     public function strip_blacklisted_helpers() {
-        throw new \coding_exception('\core\output\mustache_helper_collection::strip_blacklisted_helpers() has been removed.');
+        throw new coding_exception('\core\output\mustache_helper_collection::strip_blacklisted_helpers() has been removed.');
     }
 }

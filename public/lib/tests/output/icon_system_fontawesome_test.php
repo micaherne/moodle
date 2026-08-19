@@ -39,7 +39,7 @@ final class icon_system_fontawesome_test extends \advanced_testcase {
             if ($component === 'core') {
                 $componentdir = $CFG->dirroot;
             } else if ($component === 'theme') {
-                $componentdir = \core_component::get_component_directory('theme_' . \theme_config::DEFAULT_THEME);
+                $componentdir = \core_component::get_component_directory('theme_' . theme_config::DEFAULT_THEME);
             } else {
                 $componentdir = \core_component::get_component_directory($component);
             }

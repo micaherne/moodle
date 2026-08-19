@@ -24,6 +24,10 @@
 
 namespace core_availability;
 
+use core\context\course;
+use core\context\module;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -42,7 +46,7 @@ class info_module extends info {
      *
      * @param \cm_info $cm Course-module object
      */
-    public function __construct(\cm_info $cm) {
+    public function __construct(cm_info $cm) {
         parent::__construct($cm->get_course(), $cm->visible, $cm->availability);
         $this->cm = $cm;
     }
@@ -70,7 +74,7 @@ class info_module extends info {
     }
 
     public function get_context() {
-        return \context_module::instance($this->cm->id);
+        return module::instance($this->cm->id);
     }
 
     /**
@@ -173,7 +177,7 @@ class info_module extends info {
 
         // If this happens to be already called with a cm_info for the right user
         // then just return uservisible.
-        if (($cmorid instanceof \cm_info) && $cmorid->get_modinfo()->userid == $userid) {
+        if (($cmorid instanceof cm_info) && $cmorid->get_modinfo()->userid == $userid) {
             return $cmorid->uservisible;
         }
 
@@ -194,7 +198,7 @@ class info_module extends info {
 
         // If requested, check user can access the course.
         if ($checkcourse) {
-            $coursecontext = \context_course::instance($cm->course);
+            $coursecontext = course::instance($cm->course);
             if (!is_enrolled($coursecontext, $userid, '', true) &&
                     !has_capability('moodle/course:view', $coursecontext, $userid)) {
                 return false;

@@ -16,6 +16,8 @@
 
 namespace mod_label;
 
+use core\context\module;
+
 /**
  * PHPUnit label generator testcase
  *
@@ -49,7 +51,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals('label', $cm->modname);
         $this->assertEquals($course->id, $cm->course);
 
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $this->assertEquals($label->cmid, $context->instanceid);
     }
 }

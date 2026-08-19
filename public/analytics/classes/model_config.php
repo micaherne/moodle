@@ -24,6 +24,9 @@
 
 namespace core_analytics;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -64,11 +67,11 @@ class model_config {
     public function export(string $zipfilename, bool $includeweights = true): string {
 
         if (!$this->model) {
-            throw new \coding_exception('No model object provided.');
+            throw new coding_exception('No model object provided.');
         }
 
         if (!$this->model->can_export_configuration()) {
-            throw new \moodle_exception('errornoexportconfigrequirements', 'analytics');
+            throw new moodle_exception('errornoexportconfigrequirements', 'analytics');
         }
 
         $zip = new \zip_packer();
@@ -80,7 +83,7 @@ class model_config {
         $exporttmpdir = make_request_directory();
         $jsonfilepath = $exporttmpdir . DIRECTORY_SEPARATOR . 'model-config.json';
         if (!file_put_contents($jsonfilepath, json_encode($modeldata))) {
-            throw new \moodle_exception('errornoexportconfig', 'analytics');
+            throw new moodle_exception('errornoexportconfig', 'analytics');
         }
         $zipfiles[self::CONFIG_FILE_NAME] = $jsonfilepath;
 
@@ -129,7 +132,7 @@ class model_config {
         if ($mlbackenddir) {
             $modeldir = $model->get_output_dir(['execution']);
             if (!$model->get_predictions_processor(true)->import($model->get_unique_id(), $modeldir, $mlbackenddir)) {
-                throw new \moodle_exception('errorimport', 'analytics');
+                throw new moodle_exception('errorimport', 'analytics');
             }
             $model->mark_as_trained();
         }
@@ -263,17 +266,17 @@ class model_config {
 
         if (empty($filelist[self::CONFIG_FILE_NAME])) {
             // Missing required file.
-            throw new \moodle_exception('errorimport', 'analytics');
+            throw new moodle_exception('errorimport', 'analytics');
         }
 
         $jsonmodeldata = file_get_contents($importtempdir . DIRECTORY_SEPARATOR . self::CONFIG_FILE_NAME);
 
         if (!$modeldata = json_decode($jsonmodeldata)) {
-            throw new \moodle_exception('errorimport', 'analytics');
+            throw new moodle_exception('errorimport', 'analytics');
         }
 
         if (empty($modeldata->target) || empty($modeldata->timesplitting) || empty($modeldata->indicators)) {
-            throw new \moodle_exception('errorimport', 'analytics');
+            throw new moodle_exception('errorimport', 'analytics');
         }
 
         $mlbackenddir = $importtempdir . DIRECTORY_SEPARATOR . 'mlbackend';

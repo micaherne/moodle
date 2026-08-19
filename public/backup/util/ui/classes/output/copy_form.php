@@ -25,8 +25,11 @@
 
 namespace core_backup\output;
 
+use core\context\course;
 use core\di;
 use core\hook\manager;
+use core\output\html_writer;
+use core\url;
 use core_backup\hook\after_copy_form_definition;
 
 defined('MOODLE_INTERNAL') || die();
@@ -57,7 +60,7 @@ class copy_form extends \moodleform {
 
         $mform = $this->_form;
         $course = $this->_customdata['course'];
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $courseconfig = get_config('moodlecourse');
         $returnto = $this->_customdata['returnto'];
         $returnurl = $this->_customdata['returnurl'];
@@ -78,7 +81,7 @@ class copy_form extends \moodleform {
         // Notifications of current copies.
         $copies = \copy_helper::get_copies($USER->id, $course->id);
         if (!empty($copies)) {
-            $progresslink = new \moodle_url('/backup/copyprogress.php?', array('id' => $course->id));
+            $progresslink = new url('/backup/copyprogress.php?', array('id' => $course->id));
             $notificationmsg = get_string('copiesinprogress', 'backup', $progresslink->out());
             $notification = $OUTPUT->notification($notificationmsg, 'notifymessage');
             $mform->addElement('html', $notification);
@@ -90,7 +93,7 @@ class copy_form extends \moodleform {
         $mform->setConstant('returnurl', $returnurl);
 
         // Form heading.
-        $mform->addElement('html', \html_writer::div(get_string('copycoursedesc', 'backup'), 'form-text mb-6'));
+        $mform->addElement('html', html_writer::div(get_string('copycoursedesc', 'backup'), 'form-text mb-6'));
 
         // Course fullname.
         $mform->addElement('text', 'fullname', get_string('fullnamecourse'),
@@ -153,7 +156,7 @@ class copy_form extends \moodleform {
             $relativedatesmodegroup = [];
             $relativedatesmodegroup[] = $mform->createElement('select', 'relativedatesmode', get_string('relativedatesmode'),
                 $relativeoptions, $attributes);
-            $relativedatesmodegroup[] = $mform->createElement('html', \html_writer::span(get_string('relativedatesmode_warning'),
+            $relativedatesmodegroup[] = $mform->createElement('html', html_writer::span(get_string('relativedatesmode_warning'),
                 '', ['id' => 'relativedatesmode_warning']));
             $mform->addGroup($relativedatesmodegroup, 'relativedatesmodegroup', get_string('relativedatesmode'), null, false);
             $mform->addHelpButton('relativedatesmodegroup', 'relativedatesmode');

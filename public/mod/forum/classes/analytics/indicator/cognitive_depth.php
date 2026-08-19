@@ -24,6 +24,9 @@
 
 namespace mod_forum\analytics\indicator;
 
+use core\lang_string;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -42,15 +45,15 @@ class cognitive_depth extends activity_base {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('indicator:cognitivedepth', 'mod_forum');
+    public static function get_name(): lang_string {
+        return new lang_string('indicator:cognitivedepth', 'mod_forum');
     }
 
     public function get_indicator_type() {
         return self::INDICATOR_COGNITIVE;
     }
 
-    public function get_cognitive_depth_level(\cm_info $cm) {
+    public function get_cognitive_depth_level(cm_info $cm) {
         return self::COGNITIVE_LEVEL_4;
     }
 

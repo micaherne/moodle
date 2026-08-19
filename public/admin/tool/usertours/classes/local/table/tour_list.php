@@ -26,6 +26,8 @@ namespace tool_usertours\local\table;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\url;
+use core_table\flexible_table;
 use tool_usertours\helper;
 use tool_usertours\tour;
 
@@ -37,7 +39,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  2016 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tour_list extends \flexible_table {
+class tour_list extends flexible_table {
     /** @var int The count of all tours. */
     protected int $tourcount = 0;
 
@@ -47,7 +49,7 @@ class tour_list extends \flexible_table {
     public function __construct() {
         parent::__construct('tours');
 
-        $baseurl = new \moodle_url('/tool/usertours/configure.php');
+        $baseurl = new url('/tool/usertours/configure.php');
         $this->define_baseurl($baseurl);
 
         // Column definition.

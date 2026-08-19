@@ -22,10 +22,17 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\output\html_writer;
+use core\url;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configstoredfile;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Enabled by default.
-$settings->add(new admin_setting_configcheckbox('assignfeedback_editpdf/default',
+$settings->add(new configcheckbox('assignfeedback_editpdf/default',
                    new lang_string('default', 'assignfeedback_editpdf'),
                    new lang_string('default_help', 'assignfeedback_editpdf'), 1));
 
@@ -34,16 +41,16 @@ $name = 'assignfeedback_editpdf/stamps';
 $title = get_string('stamps','assignfeedback_editpdf');
 $description = get_string('stampsdesc', 'assignfeedback_editpdf');
 
-$setting = new admin_setting_configstoredfile($name, $title, $description, 'stamps', 0,
+$setting = new configstoredfile($name, $title, $description, 'stamps', 0,
     array('maxfiles' => 8, 'accepted_types' => array('image')));
 $settings->add($setting);
 
 // Ghostscript setting.
-$systempathslink = new moodle_url('/admin/settings.php', array('section' => 'systempaths'));
+$systempathslink = new url('/admin/settings.php', array('section' => 'systempaths'));
 $systempathlink = html_writer::link($systempathslink, get_string('systempaths', 'admin'));
-$settings->add(new admin_setting_heading('pathtogs', get_string('pathtogs', 'admin'),
+$settings->add(new heading('pathtogs', get_string('pathtogs', 'admin'),
         get_string('pathtogspathdesc', 'assignfeedback_editpdf', $systempathlink)));
 
-$url = new moodle_url('/mod/assign/feedback/editpdf/testgs.php');
+$url = new url('/mod/assign/feedback/editpdf/testgs.php');
 $link = html_writer::link($url, get_string('testgs', 'assignfeedback_editpdf'));
-$settings->add(new admin_setting_heading('testgs', '', $link));
+$settings->add(new heading('testgs', '', $link));

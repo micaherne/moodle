@@ -16,6 +16,7 @@
 
 namespace qbank_statistics\output;
 
+use core\output\plugin_renderer_base;
 use qbank_statistics\helper;
 /**
  * Description
@@ -25,7 +26,7 @@ use qbank_statistics\helper;
  * @author     Nathan Nguyen <nathannguyen@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Render facility index column.

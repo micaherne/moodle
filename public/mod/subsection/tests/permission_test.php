@@ -19,7 +19,8 @@ declare(strict_types=1);
 namespace mod_subsection;
 
 use advanced_testcase;
-use context_course;
+use core\context\course;
+use core\plugin_manager;
 
 /**
  * Unit tests for the subsection permission class
@@ -58,12 +59,12 @@ final class permission_test extends advanced_testcase {
         $courseformat = course_get_format($course->id);
         $targetsection = $courseformat->get_modinfo()->get_section_info(5);
 
-        $manager = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $manager = plugin_manager::resolve_plugininfo_class('mod');
         $manager::enable_plugin('subsection', (int)!$ismoddisabled);
 
         if ($missingcapability) {
             $userrole = $DB->get_field('role', 'id', ['shortname' => 'editingteacher']);
-            assign_capability('mod/subsection:addinstance',  CAP_PROHIBIT, $userrole, context_course::instance($course->id));
+            assign_capability('mod/subsection:addinstance',  CAP_PROHIBIT, $userrole, course::instance($course->id));
         }
 
         if ($isdelegated) {

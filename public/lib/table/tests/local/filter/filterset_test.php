@@ -30,7 +30,7 @@ namespace core_table\local\filter;
 use InvalidArgumentException;
 use UnexpectedValueException;
 use advanced_testcase;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Unit tests for core_table\local\filter\filterset.

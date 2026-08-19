@@ -23,6 +23,9 @@
  */
 namespace core\task;
 
+use core\url;
+use core\user;
+
 /**
  * Simple task to send notifications about failed login attempts.
  */
@@ -166,7 +169,7 @@ class send_failed_login_notifications_task extends scheduled_task {
             $subject = get_string('notifyloginfailuressubject', '', format_string($site->fullname));
             // Calculate the complete body of notification (start + messages + end).
             $params = array('id' => 0, 'modid' => 'site_errors', 'chooselog' => '1', 'logreader' => $readername);
-            $url = new \moodle_url('/report/log/index.php', $params);
+            $url = new url('/report/log/index.php', $params);
             $body = get_string('notifyloginfailuresmessagestart', '', $CFG->wwwroot) .
                     (($CFG->lastnotifyfailure != 0) ? '('.userdate($CFG->lastnotifyfailure).')' : '')."\n\n" .
                     $messages .
@@ -176,7 +179,7 @@ class send_failed_login_notifications_task extends scheduled_task {
             mtrace('Emailing admins about '. $count .' failed login attempts');
             foreach ($recip as $admin) {
                 // Emailing the admins directly rather than putting these through the messaging system.
-                email_to_user($admin, \core_user::get_noreply_user(), $subject, $body);
+                email_to_user($admin, user::get_noreply_user(), $subject, $body);
             }
         }
 

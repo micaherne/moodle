@@ -24,6 +24,9 @@
  */
 
 
+use core\context;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/question/type/edit_question_form.php');

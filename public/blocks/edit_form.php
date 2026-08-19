@@ -25,6 +25,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once($CFG->libdir . '/blocklib.php');
 
 /**
@@ -82,7 +88,7 @@ class block_edit_form extends \core_form\dynamic_form {
             $this->_page = $this->_customdata['page'];
         } else if (!$this->_page) {
             if (!$pagehash = $this->optional_param('pagehash', '', PARAM_ALPHANUMEXT)) {
-                throw new \moodle_exception('missingparam', '', '', 'pagehash');
+                throw new moodle_exception('missingparam', '', '', 'pagehash');
             }
             $this->_page = moodle_page::retrieve_edited_page($pagehash, MUST_EXIST);
             $this->_page->blocks->load_blocks();
@@ -351,7 +357,7 @@ class block_edit_form extends \core_form\dynamic_form {
             $defaults->bui_subpagepattern = '%@NULL@%';
         }
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         if ($defaults->parentcontextid == $systemcontext->id) {
             $defaults->bui_contexts = BUI_CONTEXTS_ENTIRE_SITE; // System-wide and sticky
         } else {
@@ -468,7 +474,7 @@ class block_edit_form extends \core_form\dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         return $this->page->url;
     }
 

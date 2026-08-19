@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -38,7 +43,7 @@ function report_insights_extend_navigation_course($navigation, $course, $context
 
         $modelids = \core_analytics\manager::cached_models_with_insights($context);
         if (!empty($modelids)) {
-            $url = new moodle_url('/report/insights/insights.php', array('contextid' => $context->id));
+            $url = new url('/report/insights/insights.php', array('contextid' => $context->id));
             $node = navigation_node::create(get_string('insights', 'report_insights'), $url, navigation_node::TYPE_SETTING,
                 null, null, new pix_icon('i/report', get_string('insights', 'report_insights')));
             $navigation->add_node($node);
@@ -59,12 +64,12 @@ function report_insights_extend_navigation_course($navigation, $course, $context
 function report_insights_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
 
     if (\core_analytics\manager::is_analytics_enabled()) {
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         if (\core_analytics\manager::check_can_list_insights($context, true)) {
 
             $modelids = \core_analytics\manager::cached_models_with_insights($context);
             if (!empty($modelids)) {
-                $url = new moodle_url('/report/insights/insights.php', array('contextid' => $context->id));
+                $url = new url('/report/insights/insights.php', array('contextid' => $context->id));
                 $node = new core_user\output\myprofile\node('reports', 'insights', get_string('insights', 'report_insights'),
                     null, $url);
                 $tree->add_node($node);
@@ -86,7 +91,7 @@ function report_insights_extend_navigation_category_settings($navigation, $conte
 
         $modelids = \core_analytics\manager::cached_models_with_insights($context);
         if (!empty($modelids)) {
-            $url = new moodle_url('/report/insights/insights.php', array('contextid' => $context->id));
+            $url = new url('/report/insights/insights.php', array('contextid' => $context->id));
 
             $node = navigation_node::create(
                 get_string('insights', 'report_insights'),

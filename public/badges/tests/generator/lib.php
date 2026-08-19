@@ -16,6 +16,8 @@
 
 declare(strict_types=1);
 
+use core\context\user;
+use core\exception\coding_exception;
 use core_badges\badge;
 
 defined('MOODLE_INTERNAL') || die();
@@ -78,7 +80,7 @@ class core_badges_generator extends component_generator_base {
         // Process badge image (if supplied).
         if ($badgeimage !== '') {
             $file = get_file_storage()->create_file_from_pathname([
-                'contextid' => context_user::instance($USER->id)->id,
+                'contextid' => user::instance($USER->id)->id,
                 'userid' => $USER->id,
                 'component' => 'user',
                 'filearea' => 'draft',

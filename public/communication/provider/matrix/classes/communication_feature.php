@@ -32,6 +32,8 @@ use communication_matrix\local\spec\features\synapse\{
     get_user_info_v2 as get_user_info_feature,
     invite_member_to_room_v1 as invite_member_to_room_feature,
 };
+use core\exception\moodle_exception;
+use core\user;
 use core_communication\processor;
 use stdClass;
 use GuzzleHttp\Psr7\Response;
@@ -152,7 +154,7 @@ class communication_feature implements
         $this->matrixapi->require_feature(create_user_feature::class);
 
         foreach ($userids as $userid) {
-            $user = \core_user::get_user($userid);
+            $user = user::get_user($userid);
             $userfullname = fullname($user);
 
             // Proceed if we have a user's full name and email to work with.
@@ -399,7 +401,7 @@ class communication_feature implements
         $response = self::get_body($response);
 
         if (empty($response->room_id)) {
-            throw new \moodle_exception(
+            throw new moodle_exception(
                 'Unable to determine ID of matrix room',
             );
         }
@@ -717,7 +719,7 @@ class communication_feature implements
             roomid: $roomid,
         );
         if ($response->getStatusCode() !== 200) {
-            throw new \moodle_exception(
+            throw new moodle_exception(
                 'Unable to get power levels for room',
             );
         }

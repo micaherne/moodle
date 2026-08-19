@@ -24,9 +24,11 @@
 namespace core_user\external;
 defined('MOODLE_INTERNAL') || die();
 
-use context_system;
-use renderer_base;
-use moodle_url;
+use core\context\system;
+use core\output\renderer_base;
+use core\output\user_picture;
+use core\url;
+use core\user;
 
 /**
  * Class for exporting a user summary from an stdClass.
@@ -40,13 +42,13 @@ class user_summary_exporter extends \core\external\exporter {
         global $PAGE, $CFG;
 
         // Add user picture.
-        $userpicture = new \user_picture($this->data);
+        $userpicture = new user_picture($this->data);
         $userpicture->size = 1; // Size f1.
         $profileimageurl = $userpicture->get_url($PAGE)->out(false);
         $userpicture->size = 0; // Size f2.
         $profileimageurlsmall = $userpicture->get_url($PAGE)->out(false);
 
-        $profileurl = (new moodle_url('/user/profile.php', array('id' => $this->data->id)))->out(false);
+        $profileurl = (new url('/user/profile.php', array('id' => $this->data->id)))->out(false);
 
         // TODO Does not support custom user profile fields (MDL-70456).
         $identityfields = array_flip(\core_user\fields::get_identity_fields(null, false));
@@ -76,7 +78,7 @@ class user_summary_exporter extends \core\external\exporter {
      */
     protected function get_format_parameters_for_department() {
         return [
-            'context' => context_system::instance(), // The system context is cached, so we can get it right away.
+            'context' => system::instance(), // The system context is cached, so we can get it right away.
         ];
     }
 
@@ -87,37 +89,37 @@ class user_summary_exporter extends \core\external\exporter {
      */
     protected function get_format_parameters_for_institution() {
         return [
-            'context' => context_system::instance(), // The system context is cached, so we can get it right away.
+            'context' => system::instance(), // The system context is cached, so we can get it right away.
         ];
     }
 
     public static function define_properties() {
         return array(
             'id' => array(
-                'type' => \core_user::get_property_type('id'),
+                'type' => user::get_property_type('id'),
             ),
             'email' => array(
-                'type' => \core_user::get_property_type('email'),
+                'type' => user::get_property_type('email'),
                 'default' => ''
             ),
             'idnumber' => array(
-                'type' => \core_user::get_property_type('idnumber'),
+                'type' => user::get_property_type('idnumber'),
                 'default' => ''
             ),
             'phone1' => array(
-                'type' => \core_user::get_property_type('phone1'),
+                'type' => user::get_property_type('phone1'),
                 'default' => ''
             ),
             'phone2' => array(
-                'type' => \core_user::get_property_type('phone2'),
+                'type' => user::get_property_type('phone2'),
                 'default' => ''
             ),
             'department' => array(
-                'type' => \core_user::get_property_type('department'),
+                'type' => user::get_property_type('department'),
                 'default' => ''
             ),
             'institution' => array(
-                'type' => \core_user::get_property_type('institution'),
+                'type' => user::get_property_type('institution'),
                 'default' => ''
             )
         );

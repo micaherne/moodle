@@ -22,10 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../../../../../config.php');
 require_once($CFG->dirroot . '/lib/adminlib.php');
 
-navigation_node::override_active_url(new moodle_url('/admin/settings.php', array('section' => 'logsettingdatabase')));
+navigation_node::override_active_url(new url('/admin/settings.php', array('section' => 'logsettingdatabase')));
 admin_externalpage_setup('logstoredbtestsettings');
 
 echo $OUTPUT->header();
@@ -64,7 +68,7 @@ $dboptions['dbhandlesoptions'] = get_config('logstore_database', 'dbhandlesoptio
 try {
     $db->connect(get_config('logstore_database', 'dbhost'), get_config('logstore_database', 'dbuser'),
         get_config('logstore_database', 'dbpass'), get_config('logstore_database', 'dbname'), false, $dboptions);
-} catch (\moodle_exception $e) {
+} catch (moodle_exception $e) {
     echo $OUTPUT->notification('Cannot connect to the database.', 'notifyproblem');
     $CFG->debug = $olddebug;
     ini_set('display_errors', $olddisplay);

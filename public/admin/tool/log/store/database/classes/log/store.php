@@ -23,6 +23,8 @@
  */
 
 namespace logstore_database\log;
+
+use core\exception\moodle_exception;
 defined('MOODLE_INTERNAL') || die();
 
 class store implements \tool_log\log\writer, \core\log\sql_reader {
@@ -101,7 +103,7 @@ class store implements \tool_log\log\writer, \core\log\sql_reader {
                 $this->extdb = false;
                 return false;
             }
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             debugging('Cannot connect to external database: ' . $e->getMessage(), DEBUG_DEVELOPER);
             $this->extdb = false;
             return false;
@@ -146,7 +148,7 @@ class store implements \tool_log\log\writer, \core\log\sql_reader {
         }
         try {
             $this->extdb->insert_records($dbtable, $evententries);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             debugging('Cannot write to external database: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
     }

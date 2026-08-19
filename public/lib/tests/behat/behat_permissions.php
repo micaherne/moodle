@@ -29,6 +29,7 @@ require_once(__DIR__ . '/../../behat/behat_base.php');
 
 use Behat\Mink\Exception\ExpectationException as ExpectationException,
     Behat\Gherkin\Node\TableNode as TableNode;
+use core\context\system;
 
 /**
  * Steps definitions to set up permissions to capabilities.
@@ -48,7 +49,7 @@ class behat_permissions extends behat_base {
      */
     public function i_set_the_following_system_permissions_of_role($rolename, $table) {
         // Applied in the System context.
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Translate the specified rolename into a role.
         $rolenames = role_get_names($context);

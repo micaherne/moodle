@@ -23,6 +23,9 @@
  */
 
 namespace mod_choice\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -75,7 +78,7 @@ class report_downloaded extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/choice/report.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/choice/report.php', array('id' => $this->contextinstanceid));
     }
 
     /**
@@ -89,15 +92,15 @@ class report_downloaded extends \core\event\base {
 
         // Report format downloaded.
         if (!isset($this->other['content'])) {
-            throw new \coding_exception('The \'content\' value must be set in other.');
+            throw new coding_exception('The \'content\' value must be set in other.');
         }
         // Report format downloaded.
         if (!isset($this->other['format'])) {
-            throw new \coding_exception('The \'format\' value must be set in other.');
+            throw new coding_exception('The \'format\' value must be set in other.');
         }
         // ID of the choice activity.
         if (!isset($this->other['choiceid'])) {
-            throw new \coding_exception('The \'choiceid\' value must be set in other.');
+            throw new coding_exception('The \'choiceid\' value must be set in other.');
         }
     }
 

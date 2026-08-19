@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -41,7 +43,7 @@ class enrol_category_plugin extends enrol_plugin {
     public function can_delete_instance($instance) {
         global $DB;
 
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         if (!has_capability('enrol/category:config', $context)) {
             return false;
         }
@@ -60,7 +62,7 @@ class enrol_category_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/category:config', $context);
     }
 

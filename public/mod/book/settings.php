@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configmultiselect;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
@@ -31,16 +35,16 @@ if ($ADMIN->fulltree) {
 
     $options = book_get_numbering_types();
 
-    $settings->add(new admin_setting_configmultiselect('book/numberingoptions',
+    $settings->add(new configmultiselect('book/numberingoptions',
         get_string('numberingoptions', 'mod_book'), get_string('numberingoptions_desc', 'mod_book'),
         array_keys($options), $options));
 
     // Modedit defaults.
 
-    $settings->add(new admin_setting_heading('bookmodeditdefaults',
+    $settings->add(new heading('bookmodeditdefaults',
         get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
 
-    $settings->add(new admin_setting_configselect('book/numbering',
+    $settings->add(new configselect('book/numbering',
         get_string('numbering', 'mod_book'), '', BOOK_NUM_NUMBERS, $options));
 
 }

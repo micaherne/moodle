@@ -19,9 +19,9 @@ declare(strict_types=1);
 namespace core_reportbuilder\table;
 
 use core\output\notification;
-use html_writer;
-use moodle_exception;
-use moodle_url;
+use core\output\html_writer;
+use core\exception\moodle_exception;
+use core\url;
 use stdClass;
 use core_reportbuilder\{datasource, manager};
 use core_reportbuilder\local\models\report;
@@ -65,7 +65,7 @@ class custom_report_table extends base_report_table {
 
         parent::__construct($uniqueid);
 
-        $this->define_baseurl(new moodle_url('/reportbuilder/edit.php', ['id' => $matches['id']]));
+        $this->define_baseurl(new url('/reportbuilder/edit.php', ['id' => $matches['id']]));
 
         // Load the report persistent, and accompanying report instance.
         $this->persistent = new report($matches['id']);

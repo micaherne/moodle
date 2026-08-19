@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\user;
 use \core_privacy\local\request\contextlist;
 
 /**
@@ -89,7 +90,7 @@ final class contextlist_test extends advanced_testcase {
         $this->assertCount(1, $cl);
 
         foreach ($cl->get_contexts() as $context) {
-            $this->assertEquals(\context_user::instance($user->id)->id, $context->id);
+            $this->assertEquals(user::instance($user->id)->id, $context->id);
         }
     }
 
@@ -111,8 +112,8 @@ final class contextlist_test extends advanced_testcase {
         $this->assertCount(2, $cl);
 
         $contexts = $cl->get_contextids();
-        $this->assertContainsEquals(\context_user::instance($user1->id)->id, $contexts);
-        $this->assertContainsEquals(\context_user::instance($user2->id)->id, $contexts);
+        $this->assertContainsEquals(user::instance($user1->id)->id, $contexts);
+        $this->assertContainsEquals(user::instance($user2->id)->id, $contexts);
     }
 
     /**

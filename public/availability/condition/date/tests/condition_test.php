@@ -16,6 +16,7 @@
 
 namespace availability_date;
 
+use core\exception\coding_exception;
 use core_availability\tree;
 
 /**
@@ -87,7 +88,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $date = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->d', $e->getMessage());
         }
 
@@ -96,7 +97,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $date = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->d', $e->getMessage());
         }
 
@@ -105,7 +106,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $date = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->t', $e->getMessage());
         }
 
@@ -114,7 +115,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $date = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->t', $e->getMessage());
         }
 

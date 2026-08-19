@@ -21,6 +21,8 @@
  * @copyright   2023 Amaia Anabitarte <amaia@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+
 class core_completion_generator extends component_generator_base {
 
     /**

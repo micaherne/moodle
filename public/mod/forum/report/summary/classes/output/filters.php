@@ -24,12 +24,13 @@
 
 namespace forumreport_summary\output;
 
-use context_course;
-use moodle_url;
-use renderable;
-use renderer_base;
+use core\context\course;
+use core\context\module;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 use forumreport_summary;
 
 /**
@@ -111,7 +112,7 @@ class filters implements renderable, templatable {
      * @param array $filterdata (optional) Associative array of data that has been set on available filters, if any,
      *                                     in the format filtertype => [values]
      */
-    public function __construct(stdClass $course, array $cms, moodle_url $actionurl, array $filterdata = []) {
+    public function __construct(stdClass $course, array $cms, url $actionurl, array $filterdata = []) {
         $this->cms = $cms;
         $this->courseid = $course->id;
         $this->actionurl = $actionurl;
@@ -160,7 +161,7 @@ class filters implements renderable, templatable {
                 $hasgroups = true;
 
                 // Fetch for the current cm's forum.
-                $context = \context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 $aag = has_capability('moodle/site:accessallgroups', $context);
 
                 if ($groupmode == VISIBLEGROUPS || $aag) {
@@ -185,7 +186,7 @@ class filters implements renderable, templatable {
             $allowedgroupsobj = $usergroups;
         }
 
-        $contextcourse = context_course::instance($this->courseid);
+        $contextcourse = course::instance($this->courseid);
         foreach ($allowedgroupsobj as $group) {
             $groupsavailable[$group->id] = format_string($group->name, true, ['context' => $contextcourse]);
         }

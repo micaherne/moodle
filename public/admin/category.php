@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
 use core\exception\moodle_exception;
 use core\output\html_writer;
 use core\url;
@@ -35,7 +36,7 @@ $return = optional_param('return', '', PARAM_ALPHA);
 $adminediting = optional_param('adminedit', -1, PARAM_BOOL);
 
 require_login(0, false);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url('/admin/category.php', ['category' => $category]);
 $PAGE->set_pagetype("admin-setting-{$category}");
 $PAGE->set_pagelayout('admin');

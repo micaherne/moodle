@@ -24,6 +24,10 @@
 
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -63,7 +67,7 @@ class user_info_field_created extends base {
     public static function create_from_field($field) {
         $event = self::create(array(
             'objectid' => $field->id,
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'other' => array(
                 'shortname' => $field->shortname,
                 'name'      => $field->name,
@@ -101,7 +105,7 @@ class user_info_field_created extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/user/profile/index.php', array(
+        return new url('/user/profile/index.php', array(
             'action' => 'editfield',
             'id' => $this->objectid,
             'datatype' => $this->other['datatype']
@@ -118,15 +122,15 @@ class user_info_field_created extends base {
         parent::validate_data();
 
         if (!isset($this->other['shortname'])) {
-            throw new \coding_exception('The \'shortname\' value must be set in other.');
+            throw new coding_exception('The \'shortname\' value must be set in other.');
         }
 
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
 
         if (!isset($this->other['datatype'])) {
-            throw new \coding_exception('The \'datatype\' value must be set in other.');
+            throw new coding_exception('The \'datatype\' value must be set in other.');
         }
     }
 

@@ -16,6 +16,8 @@
 
 namespace filter_glossary;
 
+use core\context\course;
+
 /**
  * Unit tests.
  *
@@ -37,7 +39,7 @@ final class text_filter_test extends \advanced_testcase {
 
         // Create a test course.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Create a glossary.
         $glossary = $this->getDataGenerator()->create_module(
@@ -84,7 +86,7 @@ final class text_filter_test extends \advanced_testcase {
 
         // Create a test course.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Create a glossary.
         $glossary = $this->getDataGenerator()->create_module(
@@ -124,7 +126,7 @@ final class text_filter_test extends \advanced_testcase {
 
         // Create a test course.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Create a glossary.
         $glossary = $this->getDataGenerator()->create_module(
@@ -165,7 +167,7 @@ final class text_filter_test extends \advanced_testcase {
 
         // Create a test course.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Create a glossary.
         $glossary = $this->getDataGenerator()->create_module(
@@ -214,7 +216,7 @@ final class text_filter_test extends \advanced_testcase {
 
         // Create a test course.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Create a glossary.
         $glossary = $this->getDataGenerator()->create_module(
@@ -261,7 +263,7 @@ final class text_filter_test extends \advanced_testcase {
 
         // Create a test course.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Create a glossary.
         $glossary = $this->getDataGenerator()->create_module(
@@ -306,7 +308,7 @@ final class text_filter_test extends \advanced_testcase {
 
         // Create a test course.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Create a glossary.
         $glossary = $this->getDataGenerator()->create_module(

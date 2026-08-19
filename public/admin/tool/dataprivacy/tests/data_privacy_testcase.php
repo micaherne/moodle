@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -47,7 +49,7 @@ abstract class data_privacy_testcase extends advanced_testcase {
             $users = array($users);
         }
 
-        $context = context_system::instance();
+        $context = system::instance();
 
         // Give the manager role with the capability to manage data requests.
         $managerroleid = $DB->get_field('role', 'id', array('shortname' => 'manager'));

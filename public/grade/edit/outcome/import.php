@@ -22,6 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__.'/../../../config.php');
 require_once($CFG->dirroot.'/lib/formslib.php');
 require_once($CFG->dirroot.'/grade/lib.php');
@@ -32,31 +38,31 @@ $courseid = optional_param('courseid', 0, PARAM_INT);
 $action   = optional_param('action', '', PARAM_ALPHA);
 $scope    = optional_param('scope', 'custom', PARAM_ALPHA);
 
-$url = new moodle_url('/grade/edit/outcome/import.php', array('courseid' => $courseid));
+$url = new url('/grade/edit/outcome/import.php', array('courseid' => $courseid));
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 
 /// Make sure they can even access this course
 if ($courseid) {
     if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
     require_login($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
 
     if (empty($CFG->enableoutcomes)) {
         redirect('../../index.php?id='.$courseid);
     }
-    navigation_node::override_active_url(new moodle_url('/grade/edit/outcome/course.php', ['id' => $courseid]));
+    navigation_node::override_active_url(new url('/grade/edit/outcome/course.php', ['id' => $courseid]));
     $PAGE->navbar->add(get_string('manageoutcomes', 'grades'),
-        new moodle_url('/grade/edit/outcome/index.php', ['id' => $courseid]));
+        new url('/grade/edit/outcome/index.php', ['id' => $courseid]));
     $PAGE->navbar->add(get_string('importoutcomes', 'grades'),
-        new moodle_url('/grade/edit/outcome/import.php', ['courseid' => $courseid]));
+        new url('/grade/edit/outcome/import.php', ['courseid' => $courseid]));
 
 } else {
     require_once $CFG->libdir.'/adminlib.php';
     admin_externalpage_setup('outcomes');
-    $context = context_system::instance();
+    $context = system::instance();
 }
 
 require_capability('moodle/grade:manageoutcomes', $context);
@@ -64,7 +70,7 @@ require_capability('moodle/grade:manageoutcomes', $context);
 $upload_form = new import_outcomes_form();
 
 if ($upload_form->is_cancelled()) {
-    redirect(new moodle_url('/grade/edit/outcome/index.php', ['id' => $courseid]));
+    redirect(new url('/grade/edit/outcome/index.php', ['id' => $courseid]));
     die;
 }
 
@@ -89,7 +95,7 @@ if (!$upload_form->save_file('userfile', $imported_file, true)) {
 if (isset($courseid) && ($scope  == 'custom')) {
     // custom scale
     $local_scope = true;
-} elseif (($scope == 'global') && has_capability('moodle/grade:manage', context_system::instance())) {
+} elseif (($scope == 'global') && has_capability('moodle/grade:manage', system::instance())) {
     // global scale
     $local_scope = false;
 } else {
@@ -241,10 +247,10 @@ if ($handle = fopen($imported_file, 'r')) {
 
     if ($fatal_error) {
         echo $OUTPUT->notification($errormessage, 'error', false);
-        echo $OUTPUT->single_button(new moodle_url('/grade/edit/outcome/import.php', ['courseid' => $courseid]),
+        echo $OUTPUT->single_button(new url('/grade/edit/outcome/import.php', ['courseid' => $courseid]),
             get_string('back'), 'get');
     } else {
-        echo $OUTPUT->single_button(new moodle_url('/grade/edit/outcome/index.php', ['id' => $courseid]),
+        echo $OUTPUT->single_button(new url('/grade/edit/outcome/index.php', ['id' => $courseid]),
             get_string('continue'), 'get');
     }
 } else {

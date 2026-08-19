@@ -16,6 +16,7 @@
 
 namespace tool_policy\external;
 
+use core\context\system;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -24,7 +25,7 @@ use core_external\external_value;
 use core_external\external_warnings;
 use tool_policy\api;
 use tool_policy\policy_version;
-use core_user;
+use core\user;
 
 /**
  * External function for setting user policies acceptances.
@@ -83,14 +84,14 @@ class set_acceptances_status extends external_api {
             define('NO_SITEPOLICY_CHECK', true);
         }
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         external_api::validate_context($systemcontext);
 
         if (empty($params['userid']) || $params['userid'] == $USER->id) {
             $user = $USER;
         } else {
-            $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($params['userid'], '*', MUST_EXIST);
+            user::require_active_user($user);
         }
 
         // Split acceptances.

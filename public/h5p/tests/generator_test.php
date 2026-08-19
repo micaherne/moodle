@@ -16,6 +16,8 @@
 
 namespace core_h5p;
 
+use core\context\module;
+use core\context\system;
 use core_h5p\local\library\autoloader;
 
 /**
@@ -226,7 +228,7 @@ final class generator_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $this->setUser($user);
         $activity = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $course]);
-        $activitycontext = \context_module::instance($activity->cmid);
+        $activitycontext = module::instance($activity->cmid);
         if ($filerecord) {
             $filerecord['contextid'] = $activitycontext->id;
             $filerecord['component'] = 'mod_h5pactivity';
@@ -617,7 +619,7 @@ final class generator_test extends \advanced_testcase {
         }
         call_user_func_array([$generator, 'create_content_file'], $filedata);
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $filearea = $filedata[1];
         $filepath = '/'. dirname($filedata[0]). '/';
         $filename = basename($filedata[0]);

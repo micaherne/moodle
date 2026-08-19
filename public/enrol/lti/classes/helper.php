@@ -24,6 +24,12 @@
 
 namespace enrol_lti;
 
+use core\context;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -184,7 +190,7 @@ class helper {
 
         $fs = get_file_storage();
 
-        $context = \context_user::instance($userid, MUST_EXIST);
+        $context = user::instance($userid, MUST_EXIST);
         $fs->delete_area_files($context->id, 'user', 'newicon');
 
         $filerecord = array(
@@ -389,7 +395,7 @@ class helper {
      * @since Moodle 3.2
      */
     public static function get_launch_url($toolid) {
-        return new \moodle_url('/enrol/lti/tool.php', array('id' => $toolid));
+        return new url('/enrol/lti/tool.php', array('id' => $toolid));
     }
 
     /**
@@ -403,7 +409,7 @@ class helper {
         $name = null;
 
         if (empty($tool->name)) {
-            $toolcontext = \context::instance_by_id($tool->contextid);
+            $toolcontext = context::instance_by_id($tool->contextid);
             $name = $toolcontext->get_context_name();
         } else {
             $name = $tool->name;
@@ -422,7 +428,7 @@ class helper {
     public static function get_description($tool) {
         global $DB;
         $description = '';
-        $context = \context::instance_by_id($tool->contextid);
+        $context = context::instance_by_id($tool->contextid);
         if ($context->contextlevel == CONTEXT_COURSE) {
             $course = $DB->get_record('course', array('id' => $context->instanceid));
             $description = $course->summary;
@@ -464,9 +470,9 @@ class helper {
         $id = $tool->id;
         $token = self::generate_cartridge_token($tool->id);
         if ($CFG->slasharguments) {
-            $url = new \moodle_url('/enrol/lti/cartridge.php/' . $id . '/' . $token . '/cartridge.xml');
+            $url = new url('/enrol/lti/cartridge.php/' . $id . '/' . $token . '/cartridge.xml');
         } else {
-            $url = new \moodle_url('/enrol/lti/cartridge.php',
+            $url = new url('/enrol/lti/cartridge.php',
                     array(
                         'id' => $id,
                         'token' => $token
@@ -492,9 +498,9 @@ class helper {
         $id = $tool->id;
         $token = self::generate_proxy_token($tool->id);
         if ($CFG->slasharguments) {
-            $url = new \moodle_url('/enrol/lti/proxy.php/' . $id . '/' . $token . '/');
+            $url = new url('/enrol/lti/proxy.php/' . $id . '/' . $token . '/');
         } else {
-            $url = new \moodle_url('/enrol/lti/proxy.php',
+            $url = new url('/enrol/lti/proxy.php',
                     array(
                         'id' => $id,
                         'token' => $token
@@ -568,7 +574,7 @@ class helper {
      */
     protected static function get_cartridge_parameters($toolid) {
         global $PAGE, $SITE;
-        $PAGE->set_context(\context_system::instance());
+        $PAGE->set_context(system::instance());
 
         // Get the tool.
         $tool = self::get_lti_tool($toolid);
@@ -581,7 +587,7 @@ class helper {
         $iconurl = $iconurl->out(false);
         $securelaunchurl = null;
         $secureiconurl = null;
-        $vendorurl = new \moodle_url('/');
+        $vendorurl = new url('/');
         $vendorurl = $vendorurl->out(false);
         $description = self::get_description($tool);
 
@@ -639,7 +645,7 @@ class helper {
                         }
                     }
                 } else {
-                    throw new \coding_exception('Please check your XPATH and try again.');
+                    throw new coding_exception('Please check your XPATH and try again.');
                 }
             }
         }

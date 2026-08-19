@@ -19,6 +19,11 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/badgeslib.php');
 require_once($CFG->dirroot . '/badges/renderer.php');
 
+use \core_badges\badge;
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
 use core_badges\local\backpack\helper;
 use core_badges\local\backpack\ob_factory;
 
@@ -91,9 +96,9 @@ class core_badges_assertion {
             array('hash' => $hash), IGNORE_MISSING);
 
         if ($this->_data) {
-            $this->_url = new moodle_url('/badges/badge.php', array('hash' => $this->_data->uniquehash));
+            $this->_url = new url('/badges/badge.php', array('hash' => $this->_data->uniquehash));
         } else {
-            $this->_url = new moodle_url('/badges/badge.php');
+            $this->_url = new url('/badges/badge.php');
         }
         $this->_obversion = $obversion;
     }
@@ -317,18 +322,18 @@ class core_badges_assertion {
         if ($this->_obversion >= OPEN_BADGES_V2) {
             $badge = new badge($this->_data->id);
             if (empty($this->_data->courseid)) {
-                $context = context_system::instance();
+                $context = system::instance();
             } else {
-                $context = context_course::instance($this->_data->courseid);
+                $context = course::instance($this->_data->courseid);
             }
 
             $hash = $this->_data->uniquehash;
-            $assertionsurl = new moodle_url('/badges/assertion.php', array('b' => $hash, 'obversion' => $this->_obversion));
-            $classurl = new moodle_url(
+            $assertionsurl = new url('/badges/assertion.php', array('b' => $hash, 'obversion' => $this->_obversion));
+            $classurl = new url(
                 '/badges/badge_json.php',
                 array('id' => $this->get_badge_id())
             );
-            $issuerurl = new moodle_url('/badges/issuer_json.php', ['id' => $this->get_badge_id()]);
+            $issuerurl = new url('/badges/issuer_json.php', ['id' => $this->get_badge_id()]);
             // For assertion.
             if ($type == OPEN_BADGES_V2_TYPE_ASSERTION) {
                 $json['@context'] = OPEN_BADGES_V2_CONTEXT;

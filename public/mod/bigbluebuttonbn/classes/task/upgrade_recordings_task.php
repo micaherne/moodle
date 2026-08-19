@@ -23,7 +23,7 @@ use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\proxy\recording_proxy;
 use mod_bigbluebuttonbn\logger;
 use mod_bigbluebuttonbn\recording;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Class containing the scheduled task for converting recordings for the BigBlueButton version 2.5 in Moodle 4.0.

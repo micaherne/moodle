@@ -27,6 +27,7 @@
 
 require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
 
+use core\exception\coding_exception;
 use Moodle\BehatExtension\Exception\SkippedException;
 
 /**

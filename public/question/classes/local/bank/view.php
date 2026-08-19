@@ -28,8 +28,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/question/editlib.php');
 
-use coding_exception;
+use core\context;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core\output\datafilter;
+use core\output\html_writer;
+use core\output\paging_bar;
+use core\url;
 use core_question\local\bank\condition;
 use core_question\local\statistics\statistics_bulk_loader;
 use core_question\output\question_bank_filter_ui;
@@ -254,7 +259,7 @@ class view {
 
         // Create the url of the new question page to forward to.
         $this->returnurl = $pageurl->out_as_local_url(false);
-        $this->editquestionurl = new \moodle_url('/question/bank/editquestion/question.php', ['returnurl' => $this->returnurl]);
+        $this->editquestionurl = new url('/question/bank/editquestion/question.php', ['returnurl' => $this->returnurl]);
         $this->editquestionurl->param('cmid', $this->cm->id);
 
         $this->lastchangedid = clean_param($pageurl->param('lastchanged'), PARAM_INT);
@@ -551,13 +556,13 @@ class view {
         $column = $this->requiredcolumns[$colname];
         if (!isset($column) || !$column->is_sortable()) {
             $this->baseurl->remove_params('sortdata');
-            throw new \moodle_exception('unknownsortcolumn', '', $this->baseurl->out(), $colname);
+            throw new moodle_exception('unknownsortcolumn', '', $this->baseurl->out(), $colname);
         }
         // Validate the subsort, if present.
         if ($subsort) {
             $subsorts = $column->is_sortable();
             if (!is_array($subsorts) || !isset($subsorts[$subsort])) {
-                throw new \moodle_exception('unknownsortcolumn', '', $this->baseurl->out(), $sort);
+                throw new moodle_exception('unknownsortcolumn', '', $this->baseurl->out(), $sort);
             }
         }
         return [$colname, $subsort];
@@ -694,7 +699,7 @@ class view {
                 $extrajoins = $viewcomponent->get_extra_joins();
                 foreach ($extrajoins as $prefix => $join) {
                     if (isset($joins[$prefix]) && $joins[$prefix] != $join) {
-                        throw new \coding_exception('Join ' . $join . ' conflicts with previous join ' . $joins[$prefix]);
+                        throw new coding_exception('Join ' . $join . ' conflicts with previous join ' . $joins[$prefix]);
                     }
                     $joins[$prefix] = $join;
                 }
@@ -804,7 +809,7 @@ class view {
      *
      * @return \moodle_url
      */
-    public function base_url(): \moodle_url {
+    public function base_url(): url {
         return $this->baseurl;
     }
 
@@ -815,7 +820,7 @@ class view {
      * @return \moodle_url the URL, HTML-escaped.
      */
     public function edit_question_moodle_url($questionid) {
-        return new \moodle_url($this->editquestionurl, ['id' => $questionid]);
+        return new url($this->editquestionurl, ['id' => $questionid]);
     }
 
     /**
@@ -835,7 +840,7 @@ class view {
      * @return \moodle_url the URL.
      */
     public function copy_question_moodle_url($questionid) {
-        return new \moodle_url($this->editquestionurl, ['id' => $questionid, 'makecopy' => 1]);
+        return new url($this->editquestionurl, ['id' => $questionid, 'makecopy' => 1]);
     }
 
     /**
@@ -851,7 +856,7 @@ class view {
      * Get the context we are displaying the question bank for.
      * @return \context context object.
      */
-    public function get_most_specific_context(): \context {
+    public function get_most_specific_context(): context {
         return $this->contexts->lowest();
     }
 
@@ -888,7 +893,7 @@ class view {
     public function display(): void {
         $editcontexts = $this->contexts->having_one_edit_tab_cap('questions');
 
-        echo \html_writer::start_div('questionbankwindow boxwidthwide boxaligncenter', [
+        echo html_writer::start_div('questionbankwindow boxwidthwide boxaligncenter', [
             'data-component' => 'core_question',
             'data-callback' => 'display_question_bank',
             'data-contextid' => $editcontexts[array_key_last($editcontexts)]->id,
@@ -898,7 +903,7 @@ class view {
         $this->wanted_filters();
         // Continues with list of questions.
         $this->display_question_list();
-        echo \html_writer::end_div();
+        echo html_writer::end_div();
 
     }
 
@@ -908,7 +913,7 @@ class view {
     public function wanted_filters(): void {
         global $OUTPUT;
         [, $contextid] = explode(',', $this->pagevars['cat']);
-        $catcontext = \context::instance_by_id($contextid);
+        $catcontext = context::instance_by_id($contextid);
         // Category selection form.
         $this->display_question_bank_header();
         // Add search conditions.
@@ -983,7 +988,7 @@ class view {
         raise_memory_limit(MEMORY_EXTRA);
 
         [$categoryid, $contextid] = category_condition::validate_category_param($this->pagevars['cat']);
-        $catcontext = \context::instance_by_id($contextid);
+        $catcontext = context::instance_by_id($contextid);
         // Update the question in the list with correct category context when we have selected category filter.
         if (isset($this->pagevars['filter']['category']['values'])) {
             $categoryid = $this->pagevars['filter']['category']['values'][0];
@@ -995,7 +1000,7 @@ class view {
             }
         }
 
-        echo \html_writer::start_tag(
+        echo html_writer::start_tag(
             'div',
             [
                 'id' => 'questionscontainer',
@@ -1009,15 +1014,15 @@ class view {
         $questions = $this->load_questions();
 
         // This html will be refactored in the bulk actions implementation.
-        echo \html_writer::start_tag('form', ['action' => $this->baseurl, 'method' => 'post', 'id' => 'questionsubmit']);
-        echo \html_writer::start_tag('fieldset', ['class' => 'invisiblefieldset', 'style' => "display: block;"]);
-        echo \html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-        echo \html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'addonpage']);
-        echo \html_writer::input_hidden_params($this->baseurl);
+        echo html_writer::start_tag('form', ['action' => $this->baseurl, 'method' => 'post', 'id' => 'questionsubmit']);
+        echo html_writer::start_tag('fieldset', ['class' => 'invisiblefieldset', 'style' => "display: block;"]);
+        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
+        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'addonpage']);
+        echo html_writer::input_hidden_params($this->baseurl);
 
         $filtercondition = json_encode($this->get_pagevars());
         // Embeded filterconditon into the div.
-        echo \html_writer::start_tag('div',
+        echo html_writer::start_tag('div',
             ['class' => 'categoryquestionscontainer', 'data-filtercondition' => $filtercondition]);
         if ($this->totalcount > 0) {
             // Bulk load any required statistics.
@@ -1029,13 +1034,13 @@ class view {
             }
             $this->display_questions($questions, $this->pagevars['qpage'], $this->pagevars['qperpage']);
         }
-        echo \html_writer::end_tag('div');
+        echo html_writer::end_tag('div');
 
         $this->display_bottom_controls($catcontext);
 
-        echo \html_writer::end_tag('fieldset');
-        echo \html_writer::end_tag('form');
-        echo \html_writer::end_tag('div');
+        echo html_writer::end_tag('fieldset');
+        echo html_writer::end_tag('form');
+        echo html_writer::end_tag('div');
     }
 
     /**
@@ -1079,13 +1084,13 @@ class view {
      */
     public function get_aggregate_statistic(int $questionid, string $fieldname): ?float {
         if (!array_key_exists($questionid, $this->loadedstatistics)) {
-            throw new \coding_exception('Question ' . $questionid . ' is not on the current page of ' .
+            throw new coding_exception('Question ' . $questionid . ' is not on the current page of ' .
                     'this question bank view, so its statistics are not available.');
         }
 
         // Must be array_key_exists, not isset, because we care about null values.
         if (!array_key_exists($fieldname, $this->loadedstatistics[$questionid])) {
-            throw new \coding_exception('Statistics field ' . $fieldname . ' was not requested by any ' .
+            throw new coding_exception('Statistics field ' . $fieldname . ' was not requested by any ' .
                     'question bank column in this view, so it is not available.');
         }
 
@@ -1097,7 +1102,7 @@ class view {
      *
      * @param \context $catcontext The context of the category being displayed.
      */
-    protected function display_bottom_controls(\context $catcontext): void {
+    protected function display_bottom_controls(context $catcontext): void {
         $caneditall = has_capability('moodle/question:editall', $catcontext);
         $canuseall = has_capability('moodle/question:useall', $catcontext);
         $canmoveall = has_capability('moodle/question:moveall', $catcontext);
@@ -1105,7 +1110,7 @@ class view {
             global $PAGE;
             $bulkactiondatas = [];
             $params = $this->base_url()->params();
-            $returnurl = new \moodle_url($this->base_url(), ['filter' => json_encode($this->pagevars['filter'])]);
+            $returnurl = new url($this->base_url(), ['filter' => json_encode($this->pagevars['filter'])]);
             $params['returnurl'] = $returnurl;
             foreach ($this->bulkactions as $key => $action) {
                 // Check capabilities.
@@ -1123,7 +1128,7 @@ class view {
                 $actiondata = new \stdClass();
                 $actiondata->actionname = $action->get_bulk_action_title();
                 $actiondata->actionkey = $key;
-                $actiondata->actionurl = new \moodle_url($action->get_bulk_action_url(), $params);
+                $actiondata->actionurl = new url($action->get_bulk_action_url(), $params);
                 $actiondata->actionclasses = $action->get_bulk_action_classes();
                 $bulkactiondata[] = $actiondata;
 
@@ -1159,19 +1164,19 @@ class view {
             return;
         }
         // Pagination.
-        $pageingurl = new \moodle_url($this->base_url());
+        $pageingurl = new url($this->base_url());
         // TODO MDL-82312: it really should not be necessary to set filter here, and not like this.
         // This should be handled in baseurl, but it isn't so we do this so Moodle basically works for now.
         $pageingurl->param('filter', json_encode($this->pagevars['filter']));
-        $pagingbar = new \paging_bar($this->totalcount, $page, $perpage, $pageingurl);
+        $pagingbar = new paging_bar($this->totalcount, $page, $perpage, $pageingurl);
         $pagingbar->pagevar = 'qpage';
         echo $OUTPUT->render($pagingbar);
 
         // Table of questions.
-        echo \html_writer::start_tag('div',
+        echo html_writer::start_tag('div',
             ['class' => 'question_table', 'id' => 'question_table']);
         $this->print_table($questions);
-        echo \html_writer::end_tag('div');
+        echo html_writer::end_tag('div');
         echo $OUTPUT->render($pagingbar);
     }
 
@@ -1204,30 +1209,30 @@ class view {
      */
     protected function print_table($questions): void {
         // Start of the table.
-        echo \html_writer::start_tag('table', [
+        echo html_writer::start_tag('table', [
             'id' => 'categoryquestions',
             'class' => 'question-bank-table table table-hover table-striped generaltable',
             'data-defaultsort' => json_encode($this->sort),
         ]);
 
         // Prints the table header.
-        echo \html_writer::start_tag('thead');
-        echo \html_writer::start_tag('tr', ['class' => 'qbank-column-list']);
+        echo html_writer::start_tag('thead');
+        echo html_writer::start_tag('tr', ['class' => 'qbank-column-list']);
         $this->print_table_headers();
-        echo \html_writer::end_tag('tr');
-        echo \html_writer::end_tag('thead');
+        echo html_writer::end_tag('tr');
+        echo html_writer::end_tag('thead');
 
         // Prints the table row or content.
-        echo \html_writer::start_tag('tbody');
+        echo html_writer::start_tag('tbody');
         $rowcount = 0;
         foreach ($questions as $question) {
             $this->print_table_row($question, $rowcount);
             $rowcount += 1;
         }
-        echo \html_writer::end_tag('tbody');
+        echo html_writer::end_tag('tbody');
 
         // End of the table.
-        echo \html_writer::end_tag('table');
+        echo html_writer::end_tag('table');
     }
 
     /**
@@ -1285,11 +1290,11 @@ class view {
                 }
             }
         }
-        echo \html_writer::start_tag('tr', $attributes);
+        echo html_writer::start_tag('tr', $attributes);
         foreach ($this->visiblecolumns as $column) {
             $column->display($question, $rowclasses);
         }
-        echo \html_writer::end_tag('tr');
+        echo html_writer::end_tag('tr');
         foreach ($this->extrarows as $row) {
             if (str_contains($attributes['class'], 'highlight')) {
                 // Add extrarow class to highlighted row.

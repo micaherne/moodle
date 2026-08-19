@@ -24,6 +24,8 @@
 
 namespace core_user\analytics\indicator;
 
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -42,8 +44,8 @@ class user_track_forums extends \core_analytics\local\indicator\binary {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('indicator:userforumstracking');
+    public static function get_name(): lang_string {
+        return new lang_string('indicator:userforumstracking');
     }
 
     /**

@@ -26,7 +26,7 @@
 namespace core_fileconverter\privacy;
 defined('MOODLE_INTERNAL') || die();
 
-use context;
+use core\context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\userlist;

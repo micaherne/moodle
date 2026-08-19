@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core_admin\setting\setting\special_frontpagedesc;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -146,7 +148,7 @@ final class adminlib_test extends \advanced_testcase {
 
         // Add settings not set during PHPUnit init.
         set_config('supportemail', 'support@example.com');
-        $frontpage = new \admin_setting_special_frontpagedesc();
+        $frontpage = new special_frontpagedesc();
         $frontpage->write_setting('test test');
         // Remove a default setting.
         unset_config('numbering', 'book');

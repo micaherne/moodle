@@ -22,17 +22,19 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\store;
+
 $definitions = array(
     // Used to cache user grades for conditional availability purposes.
     'scores' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'staticacceleration' => true,
         'staticaccelerationsize' => 2, // Should not be required for more than one user at a time.
         'ttl' => 3600,
     ),
     // Used to cache course grade items for conditional availability purposes.
     'items' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'staticacceleration' => true,
         'staticaccelerationsize' => 2, // Should not be required for more than one course at a time.
         'ttl' => 3600,

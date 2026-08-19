@@ -16,8 +16,9 @@
 
 namespace core_admin\table;
 
-use html_writer;
-use moodle_url;
+use core\output\help_icon;
+use core\output\html_writer;
+use core\url;
 use stdClass;
 
 /**
@@ -65,12 +66,12 @@ class block_management_table extends \core_admin\table\plugin_management_table {
 
     public function guess_base_url(): void {
         $this->define_baseurl(
-            new moodle_url('/admin/blocks.php')
+            new url('/admin/blocks.php')
         );
     }
 
-    protected function get_action_url(array $params = []): moodle_url {
-        return new moodle_url('/admin/blocks.php', $params);
+    protected function get_action_url(array $params = []): url {
+        return new url('/admin/blocks.php', $params);
     }
 
 
@@ -91,7 +92,7 @@ class block_management_table extends \core_admin\table\plugin_management_table {
 
     protected function get_columns_with_help(): array {
         return [
-            'protect' => new \help_icon('blockprotect', 'admin'),
+            'protect' => new help_icon('blockprotect', 'admin'),
         ];
     }
 
@@ -104,7 +105,7 @@ class block_management_table extends \core_admin\table\plugin_management_table {
         $blockdata = $this->blockdata[$row->plugininfo->name];
         if (array_key_exists($blockdata->name, $this->courseblocks)) {
             return html_writer::link(
-                new moodle_url('/course/search.php', [
+                new url('/course/search.php', [
                     'blocklist' => $blockdata->id,
                 ]),
                 $blockdata->totalcount,

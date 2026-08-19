@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
+use core\exception\moodle_exception;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/scorm/locallib.php');
 
@@ -24,26 +27,26 @@ $attempt = required_param('attempt', PARAM_INT);  // attempt number.
 
 if (!empty($id)) {
     if (! $cm = get_coursemodule_from_id('scorm', $id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $scorm = $DB->get_record("scorm", array("id" => $cm->instance))) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 } else if (!empty($a)) {
     if (! $scorm = $DB->get_record("scorm", array("id" => $a))) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     if (! $course = $DB->get_record("course", array("id" => $scorm->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $cm = get_coursemodule_from_instance("scorm", $scorm->id, $course->id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 } else {
-    throw new \moodle_exception('missingparameter');
+    throw new moodle_exception('missingparameter');
 }
 
 $PAGE->set_url('/mod/scorm/datamodel.php', array('scoid' => $scoid, 'attempt' => $attempt, 'id' => $cm->id));
@@ -53,7 +56,7 @@ require_login($course, false, $cm);
 if (confirm_sesskey() && (!empty($scoid))) {
     $result = true;
     $request = null;
-    if (has_capability('mod/scorm:savetrack', context_module::instance($cm->id))) {
+    if (has_capability('mod/scorm:savetrack', module::instance($cm->id))) {
         // Preload all current tracking data.
         $sql = "SELECT e.element, v.value, v.timemodified, v.id as valueid
                   FROM {scorm_scoes_value} v

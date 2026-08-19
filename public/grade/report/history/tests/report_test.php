@@ -16,6 +16,10 @@
 
 namespace gradereport_history;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -36,8 +40,8 @@ final class report_test extends \advanced_testcase {
         // Making the setup.
         $c1 = $this->getDataGenerator()->create_course();
         $c2 = $this->getDataGenerator()->create_course();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         // Users.
         $u1 = $this->getDataGenerator()->create_user();
@@ -179,7 +183,7 @@ final class report_test extends \advanced_testcase {
         // Put course in separate groups mode, add grader1 and two students to the same group.
         $c1->groupmode = SEPARATEGROUPS;
         update_course($c1);
-        $this->assertFalse(has_capability('moodle/site:accessallgroups', \context_course::instance($c1->id)));
+        $this->assertFalse(has_capability('moodle/site:accessallgroups', course::instance($c1->id)));
         $g1 = self::getDataGenerator()->create_group(['courseid' => $c1->id, 'name' => 'g1']);
         self::getDataGenerator()->create_group_member(['groupid' => $g1->id, 'userid' => $grader1->id]);
         self::getDataGenerator()->create_group_member(['groupid' => $g1->id, 'userid' => $u1->id]);
@@ -200,8 +204,8 @@ final class report_test extends \advanced_testcase {
         // Making the setup.
         $c1 = $this->getDataGenerator()->create_course();
         $c2 = $this->getDataGenerator()->create_course();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         $c1m1 = $this->getDataGenerator()->create_module('assign', array('course' => $c1));
         $c2m1 = $this->getDataGenerator()->create_module('assign', array('course' => $c2));
@@ -354,7 +358,7 @@ final class report_test extends \advanced_testcase {
 
         // Making the setup.
         $c1 = $this->getDataGenerator()->create_course();
-        $c1ctx = \context_course::instance($c1->id);
+        $c1ctx = course::instance($c1->id);
         $c1m1 = $this->getDataGenerator()->create_module('assign', array('course' => $c1));
 
         // Creating grade history for some users.
@@ -483,7 +487,7 @@ final class report_test extends \advanced_testcase {
         $this->setUser($t1);
 
         // Fetch the users.
-        $users = \gradereport_history\helper::get_users(\context_course::instance($course->id));
+        $users = \gradereport_history\helper::get_users(course::instance($course->id));
         // Confirm that the number of users fetched is the same as the count of expected users.
         $this->assertCount(count($expectedusers), $users);
         foreach ($users as $user) {
@@ -596,7 +600,7 @@ final class report_test extends \advanced_testcase {
         ]);
 
         // Fetch the grade history.
-        $results = $this->get_tablelog_results(\context_course::instance($course->id));
+        $results = $this->get_tablelog_results(course::instance($course->id));
 
         // Check the grade history.
         $this->assertCount(2, $results);
@@ -639,10 +643,10 @@ final class report_test extends \advanced_testcase {
         $params = (array) $params;
 
         if (!isset($params['itemid'])) {
-            throw new \coding_exception('Missing itemid key.');
+            throw new coding_exception('Missing itemid key.');
         }
         if (!isset($params['userid'])) {
-            throw new \coding_exception('Missing userid key.');
+            throw new coding_exception('Missing userid key.');
         }
 
         // Default object.
@@ -678,7 +682,7 @@ final class report_test extends \advanced_testcase {
      * @return mixed Count or array of objects.
      */
     protected function get_tablelog_results($coursecontext, $filters = array(), $count = false) {
-        $table = new gradereport_history_tests_tablelog('something', $coursecontext, new \moodle_url(''), $filters);
+        $table = new gradereport_history_tests_tablelog('something', $coursecontext, new url(''), $filters);
         return $table->get_test_results($count);
     }
 

@@ -25,6 +25,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -37,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class unknown_logged extends base {
     public function init() {
-        throw new \coding_exception('unknown events cannot be triggered');
+        throw new coding_exception('unknown events cannot be triggered');
     }
 
     public static function get_name() {

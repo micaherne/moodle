@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace core_favourites\local\service;
+use core\context;
+use core\exception\moodle_exception;
 use \core_favourites\local\repository\favourite_repository_interface;
 
 defined('MOODLE_INTERNAL') || die();
@@ -53,7 +55,7 @@ class component_favourite_service {
      */
     public function __construct(string $component, favourite_repository_interface $repository) {
         if (!in_array($component, \core_component::get_component_names())) {
-            throw new \moodle_exception("Invalid component name '$component'");
+            throw new moodle_exception("Invalid component name '$component'");
         }
         $this->repo = $repository;
         $this->component = $component;
@@ -69,7 +71,7 @@ class component_favourite_service {
      * @param int $itemid the id of the item to which the favourites relate
      * @param \context $context the context of the items which were favourited.
      */
-    public function delete_favourites_by_type_and_item(string $itemtype, int $itemid, ?\context $context = null) {
+    public function delete_favourites_by_type_and_item(string $itemtype, int $itemid, ?context $context = null) {
         $criteria = ['component' => $this->component, 'itemtype' => $itemtype, 'itemid' => $itemid] +
             ($context ? ['contextid' => $context->id] : []);
         $this->repo->delete_by($criteria);

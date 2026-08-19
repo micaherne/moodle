@@ -27,6 +27,7 @@ namespace tool_policy;
 defined('MOODLE_INTERNAL') || die();
 
 use core\persistent;
+use core_cache\cache;
 
 /**
  * Persistent model representing a single policy document version.
@@ -176,7 +177,7 @@ class policy_version extends persistent {
      */
     protected function after_update($result) {
 
-        $optcache = \cache::make('tool_policy', 'policy_optional');
+        $optcache = cache::make('tool_policy', 'policy_optional');
         $optcache->delete($this->raw_get('id'));
     }
 
@@ -187,7 +188,7 @@ class policy_version extends persistent {
      */
     protected function after_delete($result) {
 
-        $optcache = \cache::make('tool_policy', 'policy_optional');
+        $optcache = cache::make('tool_policy', 'policy_optional');
         $optcache->delete($this->raw_get('id'));
     }
 }

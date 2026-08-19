@@ -22,12 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
     // Introductory explanation.
-    $settings->add(new admin_setting_heading('auth_none/pluginname', '',
+    $settings->add(new heading('auth_none/pluginname', '',
         new lang_string('auth_nonedescription', 'auth_none')));
 
     // Display locking / mapping of profile fields.

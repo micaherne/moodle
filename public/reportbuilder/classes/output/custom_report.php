@@ -21,10 +21,10 @@ namespace core_reportbuilder\output;
 use core_reportbuilder\manager;
 use core_reportbuilder\external\custom_report_exporter;
 use core_reportbuilder\local\models\report;
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Custom report output class

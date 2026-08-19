@@ -15,6 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/filelib.php');
@@ -112,7 +115,7 @@ class oauth_helper {
         }
 
         if (!empty($args['oauth_callback'])) {
-            $this->oauth_callback = new moodle_url($args['oauth_callback']);
+            $this->oauth_callback = new url($args['oauth_callback']);
         }
         if (!empty($args['access_token'])) {
             $this->access_token = $args['access_token'];
@@ -443,7 +446,7 @@ abstract class oauth2_client extends curl {
      * @param moodle_url $returnurl
      * @param string $scope
      */
-    public function __construct($clientid, $clientsecret, moodle_url $returnurl, $scope) {
+    public function __construct($clientid, $clientsecret, url $returnurl, $scope) {
         parent::__construct();
         $this->clientid = $clientid;
         $this->clientsecret = $clientsecret;
@@ -504,7 +507,7 @@ abstract class oauth2_client extends curl {
     public static function callback_url() {
         global $CFG;
 
-        return new moodle_url('/admin/oauth2callback.php');
+        return new url('/admin/oauth2callback.php');
     }
 
     /**
@@ -543,7 +546,7 @@ abstract class oauth2_client extends curl {
             $this->get_additional_login_parameters()
         );
 
-        return new moodle_url($this->auth_url(), $params);
+        return new url($this->auth_url(), $params);
     }
 
     /**
@@ -647,7 +650,7 @@ abstract class oauth2_client extends curl {
      * @return string
      */
     protected function request($url, $options = array(), $acceptheader = 'application/json') {
-        $murl = new moodle_url($url);
+        $murl = new url($url);
 
         if ($this->accesstoken) {
             if ($this->use_http_get()) {

@@ -16,7 +16,13 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 
 /**
  * Content bank content type management.
@@ -31,7 +37,7 @@ class managecontentbankcontenttypes extends \core_admin\setting {
      */
     public function __construct() {
         $this->nosave = true;
-        parent::__construct('contentbank', new \lang_string('managecontentbanktypes'), '', '');
+        parent::__construct('contentbank', new lang_string('managecontentbanktypes'), '', '');
     }
 
     /**
@@ -73,7 +79,7 @@ class managecontentbankcontenttypes extends \core_admin\setting {
         if (parent::is_related($query)) {
             return true;
         }
-        $types = \core_plugin_manager::instance()->get_plugins_of_type('contenttype');
+        $types = plugin_manager::instance()->get_plugins_of_type('contenttype');
         foreach ($types as $type) {
             if (strpos($type->component, $query) !== false) {
                 $this->searchmatchtype = admin_search::SEARCH_MATCH_SETTING_SHORT_NAME;
@@ -98,11 +104,11 @@ class managecontentbankcontenttypes extends \core_admin\setting {
         global $CFG, $OUTPUT;
         $return = '';
 
-        $types = \core_plugin_manager::instance()->get_plugins_of_type('contenttype');
+        $types = plugin_manager::instance()->get_plugins_of_type('contenttype');
         $txt = get_strings(['settings', 'name', 'enable', 'disable', 'order', 'up', 'down', 'default']);
         $txt->uninstall = get_string('uninstallplugin', 'core_admin');
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [$txt->name, $txt->enable, $txt->order, $txt->settings, $txt->uninstall];
         $table->align = ['left', 'center', 'center', 'center', 'center'];
         $table->attributes['class'] = 'managecontentbanktable table generaltable admintable table-hover';
@@ -118,7 +124,7 @@ class managecontentbankcontenttypes extends \core_admin\setting {
         }
 
         foreach ($types as $type) {
-            $url = new \moodle_url(
+            $url = new url(
                 '/admin/contentbank.php',
                 ['sesskey' => sesskey(), 'name' => $type->name]
             );
@@ -126,13 +132,13 @@ class managecontentbankcontenttypes extends \core_admin\setting {
             $class = '';
             $strtypename = $type->displayname;
             if ($type->is_enabled()) {
-                $hideshow = \html_writer::link(
+                $hideshow = html_writer::link(
                     $url->out(false, ['action' => 'disable']),
                     $OUTPUT->pix_icon('t/hide', $txt->disable, 'moodle', ['class' => 'iconsmall'])
                 );
             } else {
                 $class = 'dimmed_text';
-                $hideshow = \html_writer::link(
+                $hideshow = html_writer::link(
                     $url->out(false, ['action' => 'enable']),
                     $OUTPUT->pix_icon('t/show', $txt->enable, 'moodle', ['class' => 'iconsmall'])
                 );
@@ -140,7 +146,7 @@ class managecontentbankcontenttypes extends \core_admin\setting {
 
             $updown = '';
             if ($count) {
-                $updown .= \html_writer::link(
+                $updown .= html_writer::link(
                     $url->out(false, ['action' => 'up']),
                     $OUTPUT->pix_icon('t/up', $txt->up, 'moodle', ['class' => 'iconsmall'])
                 ) . '';
@@ -148,7 +154,7 @@ class managecontentbankcontenttypes extends \core_admin\setting {
                 $updown .= $spacer;
             }
             if ($count < count($types) - 1) {
-                $updown .= '&nbsp;' . \html_writer::link(
+                $updown .= '&nbsp;' . html_writer::link(
                     $url->out(false, ['action' => 'down']),
                     $OUTPUT->pix_icon('t/down', $txt->down, 'moodle', ['class' => 'iconsmall'])
                 );
@@ -158,22 +164,22 @@ class managecontentbankcontenttypes extends \core_admin\setting {
 
             $settings = '';
             if ($type->get_settings_url()) {
-                $settings = \html_writer::link($type->get_settings_url(), $txt->settings);
+                $settings = html_writer::link($type->get_settings_url(), $txt->settings);
             }
 
             $uninstall = '';
-            if ($uninstallurl = \core_plugin_manager::instance()->get_uninstall_url('contenttype_' . $type->name, 'manage')) {
-                $uninstall = \html_writer::link($uninstallurl, $txt->uninstall);
+            if ($uninstallurl = plugin_manager::instance()->get_uninstall_url('contenttype_' . $type->name, 'manage')) {
+                $uninstall = html_writer::link($uninstallurl, $txt->uninstall);
             }
 
-            $row = new \html_table_row([$strtypename, $hideshow, $updown, $settings, $uninstall]);
+            $row = new html_table_row([$strtypename, $hideshow, $updown, $settings, $uninstall]);
             if ($class) {
                 $row->attributes['class'] = $class;
             }
             $table->data[] = $row;
             $count++;
         }
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
         return highlight($query, $return);
     }
 }

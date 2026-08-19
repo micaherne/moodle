@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\renderable;
+use core\url;
+
 define('RATING_UNSET_RATING', -999);
 
 define ('RATING_AGGREGATE_NONE', 0); // No ratings.
@@ -323,7 +329,7 @@ class rating implements renderable {
         if ($popup) {
             $attributes['popup'] = 1;
         }
-        return new moodle_url('/rating/index.php', $attributes);
+        return new url('/rating/index.php', $attributes);
     }
 
     /**
@@ -356,7 +362,7 @@ class rating implements renderable {
         if (!empty($rating)) {
             $args['rating'] = $rating;
         }
-        $url = new moodle_url('/rating/rate.php', $args);
+        $url = new url('/rating/rate.php', $args);
         return $url;
     }
 

@@ -16,6 +16,13 @@
 
 namespace core\event;
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\coding_exception;
+use core_course\cm_info;
+
 /**
  * Base event class.
  *
@@ -139,7 +146,7 @@ abstract class base implements \IteratorAggregate {
         $classname = get_called_class();
         $parts = explode('\\', $classname);
         if (count($parts) !== 3 or $parts[1] !== 'event') {
-            throw new \coding_exception("Invalid event class name '$classname', it must be defined in component\\event\\
+            throw new coding_exception("Invalid event class name '$classname', it must be defined in component\\event\\
                     namespace");
         }
         $this->data['eventname'] = '\\'.$classname;
@@ -147,7 +154,7 @@ abstract class base implements \IteratorAggregate {
 
         $pos = strrpos($parts[2], '_');
         if ($pos === false) {
-            throw new \coding_exception("Invalid event class name '$classname', there must be at least one underscore separating
+            throw new coding_exception("Invalid event class name '$classname', there must be at least one underscore separating
                     object and action words");
         }
         $this->data['target'] = substr($parts[2], 0, $pos);
@@ -216,10 +223,10 @@ abstract class base implements \IteratorAggregate {
             $event->context = $data['context'];
 
         } else if (!empty($data['contextid'])) {
-            $event->context = \context::instance_by_id($data['contextid'], MUST_EXIST);
+            $event->context = context::instance_by_id($data['contextid'], MUST_EXIST);
 
         } else {
-            throw new \coding_exception('context (or contextid) is a required event property, system context may be hardcoded in init() method.');
+            throw new coding_exception('context (or contextid) is a required event property, system context may be hardcoded in init() method.');
         }
 
         $event->data['contextid'] = $event->context->id;
@@ -456,13 +463,13 @@ abstract class base implements \IteratorAggregate {
         $context = false;
         $component = 'legacy';
         if ($legacy->cmid) {
-            $context = \context_module::instance($legacy->cmid, IGNORE_MISSING);
+            $context = module::instance($legacy->cmid, IGNORE_MISSING);
             $component = 'mod_'.$legacy->module;
         } else if ($legacy->course) {
-            $context = \context_course::instance($legacy->course, IGNORE_MISSING);
+            $context = course::instance($legacy->course, IGNORE_MISSING);
         }
         if (!$context) {
-            $context = \context_system::instance();
+            $context = system::instance();
         }
 
         $event->data = array();
@@ -669,7 +676,7 @@ abstract class base implements \IteratorAggregate {
         if (isset($this->context)) {
             return $this->context;
         }
-        $this->context = \context::instance_by_id($this->data['contextid'], IGNORE_MISSING);
+        $this->context = context::instance_by_id($this->data['contextid'], IGNORE_MISSING);
         return $this->context;
     }
 
@@ -714,13 +721,13 @@ abstract class base implements \IteratorAggregate {
         global $DB, $CFG;
 
         if (empty($this->data['crud'])) {
-            throw new \coding_exception('crud must be specified in init() method of each method');
+            throw new coding_exception('crud must be specified in init() method of each method');
         }
         if (!isset($this->data['edulevel'])) {
-            throw new \coding_exception('edulevel must be specified in init() method of each method');
+            throw new coding_exception('edulevel must be specified in init() method of each method');
         }
         if (!empty($this->data['objectid']) and empty($this->data['objecttable'])) {
-            throw new \coding_exception('objecttable must be specified in init() method if objectid present');
+            throw new coding_exception('objecttable must be specified in init() method if objectid present');
         }
 
         if ($CFG->debugdeveloper) {
@@ -774,10 +781,10 @@ abstract class base implements \IteratorAggregate {
         global $CFG;
 
         if ($this->restored) {
-            throw new \coding_exception('Can not trigger restored event');
+            throw new coding_exception('Can not trigger restored event');
         }
         if ($this->triggered or $this->dispatched) {
-            throw new \coding_exception('Can not trigger event twice');
+            throw new coding_exception('Can not trigger event twice');
         }
 
         $this->validate_before_trigger();
@@ -837,11 +844,11 @@ abstract class base implements \IteratorAggregate {
         global $DB, $CFG;
 
         if ($this->triggered) {
-            throw new \coding_exception('It is not possible to add snapshots after triggering of events');
+            throw new coding_exception('It is not possible to add snapshots after triggering of events');
         }
 
         // Special case for course module, allow instance of cm_info to be passed instead of stdClass.
-        if ($tablename === 'course_modules' && $record instanceof \cm_info) {
+        if ($tablename === 'course_modules' && $record instanceof cm_info) {
             $record = $record->get_course_module_record();
         }
 
@@ -878,7 +885,7 @@ abstract class base implements \IteratorAggregate {
         global $DB;
 
         if ($this->restored) {
-            throw new \coding_exception('It is not possible to get snapshots from restored events');
+            throw new coding_exception('It is not possible to get snapshots from restored events');
         }
 
         if (isset($this->recordsnapshots[$tablename][$id])) {
@@ -921,7 +928,7 @@ abstract class base implements \IteratorAggregate {
      * @throws \coding_exception
      */
     public function __set($name, $value) {
-        throw new \coding_exception('Event properties must not be modified.');
+        throw new coding_exception('Event properties must not be modified.');
     }
 
     /**

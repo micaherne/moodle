@@ -16,6 +16,13 @@
 
 // This page prints a particular instance of aicc/scorm package.
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\js_writer;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/scorm/locallib.php');
 require_once($CFG->libdir . '/completionlib.php');
@@ -30,26 +37,26 @@ $displaymode = optional_param('display', '', PARAM_ALPHA);
 
 if (!empty($id)) {
     if (! $cm = get_coursemodule_from_id('scorm', $id, 0, true)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $scorm = $DB->get_record("scorm", array("id" => $cm->instance))) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 } else if (!empty($a)) {
     if (! $scorm = $DB->get_record("scorm", array("id" => $a))) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     if (! $course = $DB->get_record("course", array("id" => $scorm->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $cm = get_coursemodule_from_instance("scorm", $scorm->id, $course->id, true)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 } else {
-    throw new \moodle_exception('missingparameter');
+    throw new moodle_exception('missingparameter');
 }
 
 // PARAM_RAW is used for $currentorg, validate it against records stored in the table.
@@ -69,7 +76,7 @@ if (!empty($scoid)) {
     $scoid = scorm_check_launchable_sco($scorm, $scoid);
 }
 
-$url = new moodle_url('/mod/scorm/player.php', array('scoid' => $scoid, 'cm' => $cm->id));
+$url = new url('/mod/scorm/player.php', array('scoid' => $scoid, 'cm' => $cm->id));
 if ($mode !== 'normal') {
     $url->param('mode', $mode);
 }
@@ -104,7 +111,7 @@ $strscorms = get_string('modulenameplural', 'scorm');
 $strscorm  = get_string('modulename', 'scorm');
 $strpopup = get_string('popup', 'scorm');
 
-$coursecontext = context_course::instance($course->id);
+$coursecontext = course::instance($course->id);
 
 $scormname = format_string($scorm->name);
 if ($mode === 'browse') {
@@ -121,7 +128,7 @@ if ($displaymode == 'popup') {
 } else {
     $PAGE->set_heading($course->fullname);
 }
-if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', context_module::instance($cm->id))) {
+if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', module::instance($cm->id))) {
     echo $OUTPUT->header();
     notice(get_string("activityiscurrentlyhidden"));
     echo $OUTPUT->footer();
@@ -181,7 +188,7 @@ if (empty($scorm->popup) || $displaymode == 'popup') {
         if (
             $format->get_format() == 'singleactivity' &&
             $scorm->skipview == SCORM_SKIPVIEW_ALWAYS &&
-            !has_capability('mod/scorm:viewreport', context_module::instance($cm->id))
+            !has_capability('mod/scorm:viewreport', module::instance($cm->id))
         ) {
             // Redirect students back to site home to avoid redirect loop.
             $exiturl = $CFG->wwwroot;
@@ -276,7 +283,7 @@ if ($result->prerequisites) {
         }
         $name = 'scorm_'.$name;
         echo html_writer::script('', $CFG->wwwroot.'/mod/scorm/player.js');
-        $url = new moodle_url($PAGE->url, array('scoid' => $sco->id, 'display' => 'popup', 'mode' => $mode));
+        $url = new url($PAGE->url, array('scoid' => $sco->id, 'display' => 'popup', 'mode' => $mode));
         echo html_writer::script(
             js_writer::function_call('scorm_openpopup', Array($url->out(false),
                                                        $name, $scorm->options,
@@ -324,7 +331,7 @@ if (file_exists($CFG->dirroot.'/mod/scorm/datamodels/'.$scorm->version.'.php')) 
 }
 
 // Add the keepalive system to keep checking for a connection.
-$redirecturl = new moodle_url('/mod/scorm/view.php', ['id' => $cm->id]);
+$redirecturl = new url('/mod/scorm/view.php', ['id' => $cm->id]);
 $stringname = get_config('core', 'enablemobilewebservice') ? 'networkdroppedmobile' : 'networkdropped';
 \core\session\manager::keepalive($stringname, 'mod_scorm', 30, 10, $redirecturl);
 

@@ -26,9 +26,10 @@
 
 namespace mod_h5pactivity\external;
 
-use context_module;
+use core\context\module;
+use core\url;
 use core_external\external_api;
-use course_modinfo;
+use core_course\modinfo;
 use stdClass;
 
 /**
@@ -94,7 +95,7 @@ final class view_h5pactivity_test extends \core_external\tests\externallib_testc
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_h5pactivity\event\course_module_viewed', $event);
         $this->assertEquals($scenario->contextmodule, $event->get_context());
-        $h5pactivity = new \moodle_url('/mod/h5pactivity/view.php', array('id' => $cm->id));
+        $h5pactivity = new url('/mod/h5pactivity/view.php', array('id' => $cm->id));
         $this->assertEquals($h5pactivity, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -118,7 +119,7 @@ final class view_h5pactivity_test extends \core_external\tests\externallib_testc
         assign_capability('mod/h5pactivity:view', CAP_PROHIBIT, $studentrole->id, $scenario->contextmodule->id);
         // Empty all the caches that may be affected  by this change.
         accesslib_clear_all_caches_for_unit_testing();
-        course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
 
         $this->setUser($scenario->student);
         $this->expectException('moodle_exception');
@@ -135,7 +136,7 @@ final class view_h5pactivity_test extends \core_external\tests\externallib_testc
         $course = $this->getDataGenerator()->create_course();
         $h5pactivity = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $course]);
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
-        $contextmodule = context_module::instance($h5pactivity->cmid);
+        $contextmodule = module::instance($h5pactivity->cmid);
 
         $scenario = new stdClass();
         $scenario->contextmodule = $contextmodule;

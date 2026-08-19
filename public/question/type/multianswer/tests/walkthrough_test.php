@@ -16,6 +16,7 @@
 
 namespace qtype_multianswer;
 
+use core\context\system;
 use qtype_multianswer;
 use question_bank;
 use question_display_options;
@@ -543,7 +544,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
     public function test_corrupted_question(): void {
         global $DB;
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $generator->create_question_category(['contextid' => $syscontext->id]);
 

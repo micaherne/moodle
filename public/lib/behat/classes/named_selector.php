@@ -37,6 +37,8 @@
  * @copyright  2019 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\coding_exception;
+
 trait behat_named_selector {
 
     /**
@@ -81,7 +83,7 @@ trait behat_named_selector {
         $from = $replacement->get_from($component);
 
         if (isset($existing[$from])) {
-            throw new \coding_exception("A named replacement already exists in the partial named selector for '{$from}'.  " .
+            throw new coding_exception("A named replacement already exists in the partial named selector for '{$from}'.  " .
                 "Replacement names must be unique, and should be namespaced to the component");
         }
 

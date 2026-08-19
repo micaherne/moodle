@@ -16,11 +16,11 @@
 
 namespace mod_scorm\output;
 
-use renderable;
-use renderer_base;
-use templatable;
-use moodle_url;
-use url_select;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+use core\output\url_select;
 
 /**
  * Render HTML elements for tertiary nav for scorm.
@@ -61,10 +61,10 @@ class actionbar implements renderable, templatable {
     public function export_for_template(renderer_base $output): array {
         global $PAGE;
 
-        $basicreportlink = new moodle_url('/mod/scorm/report.php', ['id' => $this->id, 'mode' => 'basic']);
-        $graphreportlink = new moodle_url('/mod/scorm/report.php', ['id' => $this->id, 'mode' => 'graphs']);
-        $interactionreportlink = new moodle_url('/mod/scorm/report.php', ['id' => $this->id, 'mode' => 'interactions']);
-        $objectivesreportlink = new moodle_url('/mod/scorm/report.php', ['id' => $this->id, 'mode' => 'objectives']);
+        $basicreportlink = new url('/mod/scorm/report.php', ['id' => $this->id, 'mode' => 'basic']);
+        $graphreportlink = new url('/mod/scorm/report.php', ['id' => $this->id, 'mode' => 'graphs']);
+        $interactionreportlink = new url('/mod/scorm/report.php', ['id' => $this->id, 'mode' => 'interactions']);
+        $objectivesreportlink = new url('/mod/scorm/report.php', ['id' => $this->id, 'mode' => 'objectives']);
 
         $reportmenu = [
             $basicreportlink->out(false) => get_string('pluginname', 'scormreport_basic'),
@@ -96,16 +96,16 @@ class actionbar implements renderable, templatable {
             }
 
             $options['download'] = 'ODS';
-            $downloadodslink = new moodle_url($PAGE->url, $options);
+            $downloadodslink = new url($PAGE->url, $options);
 
             $options['download'] = 'Excel';
-            $downloadexcellink = new moodle_url($PAGE->url, $options);
+            $downloadexcellink = new url($PAGE->url, $options);
 
             $options['download'] = 'CSV';
-            $downloadtextlink = new moodle_url($PAGE->url, $options);
+            $downloadtextlink = new url($PAGE->url, $options);
         }
 
-        $url = new moodle_url('/mod/scorm/report.php', $PAGE->url->remove_params('attemptsmode'));
+        $url = new url('/mod/scorm/report.php', $PAGE->url->remove_params('attemptsmode'));
         $urlselect = new url_select($reportmenu, $url->out(false), null, 'selectscormreports');
         $heading = $reportmenu[$url->out(false)] ?? null;
 

@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
 use core\oauth2\access_token;
 use core\oauth2\api;
 use core\oauth2\endpoint;
@@ -76,7 +77,7 @@ final class oauth2_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         api::create_standard_issuer('nextcloud');
     }
 
@@ -333,7 +334,7 @@ final class oauth2_test extends \advanced_testcase {
                 'discoveryurl' => null,
                 'hasmappingfields' => false,
                 'baseurl' => null,
-                'expectedexception' => \moodle_exception::class,
+                'expectedexception' => moodle_exception::class,
             ],
             'Microsoft' => [
                 'type' => 'microsoft',
@@ -353,14 +354,14 @@ final class oauth2_test extends \advanced_testcase {
                 'discoveryurl' => null,
                 'hasmappingfields' => true,
                 'baseurl' => null,
-                'expectedexception' => \moodle_exception::class,
+                'expectedexception' => moodle_exception::class,
             ],
             'Invalid type should return an exception' => [
                 'type' => 'fictitious',
                 'discoveryurl' => null,
                 'hasmappingfields' => true,
                 'baseurl' => null,
-                'expectedexception' => \moodle_exception::class,
+                'expectedexception' => moodle_exception::class,
             ],
         ];
     }
@@ -556,7 +557,7 @@ final class oauth2_test extends \advanced_testcase {
         $internalfieldlist = $userfieldmapping->get_internalfields();
 
         // Get user fields.
-        $userfields = array_merge(\core_user::AUTHSYNCFIELDS, ['picture', 'username']);
+        $userfields = array_merge(user::AUTHSYNCFIELDS, ['picture', 'username']);
 
         // Internal fields and user fields must exact same.
         $this->assertEquals($userfields, $internalfieldlist);

@@ -23,9 +23,12 @@
  * @author    Laurent David  (laurent [at] call-learning [dt] fr)
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die;
 
-$settings->add(new admin_setting_configtext(
+$settings->add(new configtext(
     'bbbext_simple/config_extension',
     new lang_string('config_extension', 'bbbext_simple'),
     new lang_string('config_extension', 'bbbext_simple'),

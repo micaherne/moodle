@@ -23,6 +23,9 @@
  */
 namespace mod_lti\privacy;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -111,7 +114,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(2, $contextlist);
 
         $contextformodule = $contextlist->current();
-        $cmcontext = \context_module::instance($lti->cmid);
+        $cmcontext = module::instance($lti->cmid);
         $this->assertEquals($cmcontext->id, $contextformodule->id);
 
         $contextlist->next();
@@ -141,7 +144,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->create_lti_submission($lti1->id, $user1->id);
         $this->create_lti_submission($lti1->id, $user2->id);
 
-        $context = \context_module::instance($lti1->cmid);
+        $context = module::instance($lti1->cmid);
         $userlist = new \core_privacy\local\request\userlist($context, $component);
         provider::get_users_in_context($userlist);
 
@@ -153,7 +156,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $this->assertEquals($expected, $actual);
 
-        $context = \context_module::instance($lti2->cmid);
+        $context = module::instance($lti2->cmid);
         $userlist = new \core_privacy\local\request\userlist($context, $component);
         provider::get_users_in_context($userlist);
 
@@ -179,7 +182,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->create_lti_submission($lti->id, $user2->id);
 
         // Export all of the data for the context for user 1.
-        $cmcontext = \context_module::instance($lti->cmid);
+        $cmcontext = module::instance($lti->cmid);
         $this->export_context_data_for_user($user1->id, $cmcontext, 'mod_lti');
         $writer = \core_privacy\local\request\writer::with_context($cmcontext);
 
@@ -221,7 +224,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         lti_add_type($type, new \stdClass());
 
         // Export all of the data for the context.
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $this->export_context_data_for_user($user->id, $coursecontext, 'mod_lti');
         $writer = \core_privacy\local\request\writer::with_context($coursecontext);
 
@@ -230,7 +233,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $data = $writer->get_data();
         $this->assertCount(2, $data->lti_types);
 
-        $coursecontext = \context_course::instance($course2->id);
+        $coursecontext = course::instance($course2->id);
         $this->export_context_data_for_user($user->id, $coursecontext, 'mod_lti');
         $writer = \core_privacy\local\request\writer::with_context($coursecontext);
 
@@ -255,7 +258,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         lti_add_tool_proxy($toolproxy);
 
         // Export all of the data for the context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $this->export_context_data_for_user($user->id, $systemcontext, 'mod_lti');
         $writer = \core_privacy\local\request\writer::with_context($systemcontext);
 
@@ -289,7 +292,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals(2, $count);
 
         // Delete data based on context.
-        $cmcontext = \context_module::instance($lti->cmid);
+        $cmcontext = module::instance($lti->cmid);
         provider::delete_data_for_all_users_in_context($cmcontext);
 
         // After deletion, the lti submissions for that lti activity should have been deleted.
@@ -320,9 +323,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $count = $DB->count_records('lti_submission', ['ltiid' => $lti->id]);
         $this->assertEquals(2, $count);
 
-        $context = \context_module::instance($lti->cmid);
+        $context = module::instance($lti->cmid);
         $contextlist = new approved_contextlist($user1, 'lti',
-            [\context_system::instance()->id, $context->id]);
+            [system::instance()->id, $context->id]);
         provider::delete_data_for_user($contextlist);
 
         // After deletion the lti submission for the first user should have been deleted.
@@ -362,7 +365,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $count = $DB->count_records('lti_submission', ['ltiid' => $lti->id]);
         $this->assertEquals(3, $count);
 
-        $context = \context_module::instance($lti->cmid);
+        $context = module::instance($lti->cmid);
         $approveduserids = [$user1->id, $user2->id];
         $approvedlist = new approved_userlist($context, $component, $approveduserids);
         provider::delete_data_for_users($approvedlist);

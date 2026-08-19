@@ -23,6 +23,9 @@
  */
 namespace core_privacy\tests\request;
 
+use core\context;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -83,7 +86,7 @@ class content_writer implements \core_privacy\local\request\content_writer {
         if (empty($subcontext)) {
             // When subcontext is not specified check presence of user preferences in this context and in system context.
             $hasuserprefs = !empty($this->userprefs->{$this->context->id});
-            $systemcontext = \context_system::instance();
+            $systemcontext = system::instance();
             $hasglobaluserprefs = !empty($this->userprefs->{$systemcontext->id});
             if ($hasuserprefs || $hasglobaluserprefs) {
                 return true;
@@ -157,7 +160,7 @@ class content_writer implements \core_privacy\local\request\content_writer {
      *
      * @param   \context        $context    The context to use
      */
-    public function set_context(\context $context): \core_privacy\local\request\content_writer {
+    public function set_context(context $context): \core_privacy\local\request\content_writer {
         $this->context = $context;
 
         if (isset($this->data->{$this->context->id}) && empty((array) $this->data->{$this->context->id})) {
@@ -210,7 +213,7 @@ class content_writer implements \core_privacy\local\request\content_writer {
      *
      * @return  \context
      */
-    public function get_current_context(): \context {
+    public function get_current_context(): context {
         return $this->context;
     }
 
@@ -475,7 +478,7 @@ class content_writer implements \core_privacy\local\request\content_writer {
      * @return  \stdClass
      */
     public function get_user_preferences(string $component) {
-        $context = \context_system::instance();
+        $context = system::instance();
         $prefs = $this->fetch_root($this->userprefs, [], $context->id);
         if (isset($prefs->{$component})) {
             return $prefs->{$component};

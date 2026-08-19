@@ -24,6 +24,8 @@
  */
 
 
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/question/type/questiontypebase.php');

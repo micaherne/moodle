@@ -17,9 +17,9 @@
 namespace core_group\customfield;
 
 use advanced_testcase;
-use context_course;
-use context_system;
-use moodle_url;
+use core\context\course;
+use core\context\system;
+use core\url;
 use core_customfield\field_controller;
 
 /**
@@ -68,14 +68,14 @@ final class group_handler_test extends advanced_testcase {
      * Test configuration context.
      */
     public function test_get_configuration_context(): void {
-        $this->assertInstanceOf(context_system::class, $this->handler->get_configuration_context());
+        $this->assertInstanceOf(system::class, $this->handler->get_configuration_context());
     }
 
     /**
      * Test getting config URL.
      */
     public function test_get_configuration_url(): void {
-        $this->assertInstanceOf(moodle_url::class, $this->handler->get_configuration_url());
+        $this->assertInstanceOf(url::class, $this->handler->get_configuration_url());
         $this->assertEquals('/group/customfield.php', $this->handler->get_configuration_url()->out_as_local_url());
     }
 
@@ -89,11 +89,11 @@ final class group_handler_test extends advanced_testcase {
         $course = self::getDataGenerator()->create_course();
         $group = self::getDataGenerator()->create_group(['courseid' => $course->id]);
 
-        $this->assertInstanceOf(context_course::class, $this->handler->get_instance_context());
-        $this->assertSame(context_course::instance($COURSE->id), $this->handler->get_instance_context());
+        $this->assertInstanceOf(course::class, $this->handler->get_instance_context());
+        $this->assertSame(course::instance($COURSE->id), $this->handler->get_instance_context());
 
-        $this->assertInstanceOf(context_course::class, $this->handler->get_instance_context($group->id));
-        $this->assertSame(context_course::instance($course->id), $this->handler->get_instance_context($group->id));
+        $this->assertInstanceOf(course::class, $this->handler->get_instance_context($group->id));
+        $this->assertSame(course::instance($course->id), $this->handler->get_instance_context($group->id));
     }
 
     /**
@@ -108,8 +108,8 @@ final class group_handler_test extends advanced_testcase {
         $this->assertFalse($this->handler->can_configure());
 
         $roleid = self::getDataGenerator()->create_role();
-        assign_capability('moodle/group:configurecustomfields', CAP_ALLOW, $roleid, context_system::instance()->id, true);
-        role_assign($roleid, $user->id, context_system::instance()->id);
+        assign_capability('moodle/group:configurecustomfields', CAP_ALLOW, $roleid, system::instance()->id, true);
+        role_assign($roleid, $user->id, system::instance()->id);
 
         $this->assertTrue($this->handler->can_configure());
     }
@@ -121,7 +121,7 @@ final class group_handler_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = self::getDataGenerator()->create_course();
-        $contextid = context_course::instance($course->id)->id;
+        $contextid = course::instance($course->id)->id;
         $group = self::getDataGenerator()->create_group(['courseid' => $course->id]);
         $roleid = self::getDataGenerator()->create_role();
         assign_capability('moodle/course:managegroups', CAP_ALLOW, $roleid, $contextid, true);
@@ -144,7 +144,7 @@ final class group_handler_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = self::getDataGenerator()->create_course();
-        $contextid = context_course::instance($course->id)->id;
+        $contextid = course::instance($course->id)->id;
         $group = self::getDataGenerator()->create_group(['courseid' => $course->id]);
         $manageroleid = self::getDataGenerator()->create_role();
         assign_capability('moodle/course:managegroups', CAP_ALLOW, $manageroleid, $contextid, true);

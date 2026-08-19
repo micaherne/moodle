@@ -16,6 +16,9 @@
 
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+
 /**
  * Question bank plugin event.
  *
@@ -32,12 +35,12 @@ abstract class qbank_plugin_base extends base {
     protected function init() {
         $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['crud'] = 'u';
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 
     protected function validate_data() {
         if (!str_starts_with($this->data['other']['pluginname'], 'qbank_')) {
-            throw new \coding_exception('You must provide the full frankenstyle name of a qbank plugin (e.g. qbank_usage)');
+            throw new coding_exception('You must provide the full frankenstyle name of a qbank plugin (e.g. qbank_usage)');
         }
     }
 

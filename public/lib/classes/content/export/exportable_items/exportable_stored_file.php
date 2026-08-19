@@ -26,11 +26,11 @@ declare(strict_types=1);
 
 namespace core\content\export\exportable_items;
 
-use context;
+use core\context;
 use core\content\export\exportable_item;
 use core\content\export\exported_item;
 use core\content\export\zipwriter;
-use moodle_url;
+use core\url;
 use stored_file;
 
 /**
@@ -186,7 +186,7 @@ class exportable_stored_file extends exportable_item {
      *
      */
     protected static function get_pluginfile_url_for_stored_file(stored_file $file, ?int $pluginfileitemid): string {
-        $link = moodle_url::make_pluginfile_url(
+        $link = url::make_pluginfile_url(
             $file->get_contextid(),
             $file->get_component(),
             $file->get_filearea(),

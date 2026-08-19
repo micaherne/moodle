@@ -23,6 +23,8 @@
  */
 namespace profilefield_text\privacy;
 
+use core\context\system;
+use core\context\user;
 use core_privacy\tests\provider_testcase;
 use profilefield_text\privacy\provider;
 use core_privacy\local\request\approved_userlist;
@@ -59,7 +61,7 @@ final class provider_test extends provider_testcase {
         $userfielddata = $DB->get_records('user_info_data', array('userid' => $user->id));
         // Confirm we got the right number of user field data.
         $this->assertCount(1, $userfielddata);
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $contextlist = provider::get_contexts_for_userid($user->id);
         $this->assertEquals($context, $contextlist->current());
     }
@@ -76,7 +78,7 @@ final class provider_test extends provider_testcase {
         $checkboxprofilefieldid = $this->add_profile_field($categoryid, 'checkbox');
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         // Add text user info data.
         $this->add_user_info_data($user->id, $textprofilefieldid, 'test text');
         // Add checkbox user info data.
@@ -104,7 +106,7 @@ final class provider_test extends provider_testcase {
         $checkboxprofilefieldid = $this->add_profile_field($categoryid, 'checkbox');
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         // Add text user info data.
         $this->add_user_info_data($user->id, $textprofilefieldid, 'test text');
         // Add checkbox user info data.
@@ -132,7 +134,7 @@ final class provider_test extends provider_testcase {
         $checkboxprofilefieldid = $this->add_profile_field($categoryid, 'checkbox');
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         // Add text user info data.
         $this->add_user_info_data($user->id, $textprofilefieldid, 'test text');
         // Add checkbox user info data.
@@ -163,7 +165,7 @@ final class provider_test extends provider_testcase {
 
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         // The list of users should not return anything yet (related data still haven't been created).
         $userlist = new \core_privacy\local\request\userlist($usercontext, $component);
         provider::get_users_in_context($userlist);
@@ -179,7 +181,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // The list of users for system context should not return any users.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist);
         $this->assertCount(0, $userlist);
@@ -199,10 +201,10 @@ final class provider_test extends provider_testcase {
 
         // Create user1.
         $user1 = $this->getDataGenerator()->create_user();
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         // Create user2.
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext2 = user::instance($user2->id);
 
         $this->add_user_info_data($user1->id, $profilefieldid, 'test data');
         $this->add_user_info_data($user2->id, $profilefieldid, 'test data');
@@ -240,7 +242,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // User data should be only removed in the user context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Add userlist2 to the approved user list in the system context.
         $approvedlist = new approved_userlist($systemcontext, $component, $userlist2->get_userids());
         // Delete user1 data using delete_data_for_user.

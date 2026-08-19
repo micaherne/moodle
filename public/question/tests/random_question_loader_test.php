@@ -16,11 +16,14 @@
 
 namespace core_question;
 
+use core\context;
+use core\context\system;
 use core_question\local\bank\condition;
 use core_question\local\bank\question_version_status;
 use core_question\local\bank\random_question_loader;
 use core_question_generator;
 use mod_quiz\quiz_settings;
+use mod_quiz\tests\question_helper_test_trait;
 use qubaid_list;
 use question_bank;
 use question_engine;
@@ -42,7 +45,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  */
 final class random_question_loader_test extends \advanced_testcase {
 
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     public function test_empty_category_gives_null(): void {
         $this->resetAfterTest();
@@ -244,7 +247,7 @@ final class random_question_loader_test extends \advanced_testcase {
         $cat = $generator->create_question_category();
         $question1 = $generator->create_question('shortanswer', null, ['category' => $cat->id]);
         $question2 = $generator->create_question('shortanswer', null, ['category' => $cat->id]);
-        $quba = question_engine::make_questions_usage_by_activity('test', \context_system::instance());
+        $quba = question_engine::make_questions_usage_by_activity('test', system::instance());
         $quba->set_preferred_behaviour('deferredfeedback');
         $question = question_bank::load_question($question2->id);
         $quba->add_question($question);
@@ -674,7 +677,7 @@ final class random_question_loader_test extends \advanced_testcase {
         }
 
         if (!empty($tagnames) && !empty($questions)) {
-            $context = \context::instance_by_id($category->contextid);
+            $context = context::instance_by_id($category->contextid);
             \core_tag_tag::set_item_tags('core_question', 'question', $questions[0]->id, $context, $tagnames);
         }
 

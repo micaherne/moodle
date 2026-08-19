@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_reportbuilder\reportbuilder\audience;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
 use core_reportbuilder_generator;
 use core_user\reportbuilder\datasource\users;
 
@@ -71,7 +71,7 @@ final class systemrole_test extends advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('core_reportbuilder');
 
         self::setAdminUser();
-        $roles = get_assignable_roles(context_system::instance(), ROLENAME_ALIAS);
+        $roles = get_assignable_roles(system::instance(), ROLENAME_ALIAS);
 
         $report = $generator->create_report([
             'name' => 'My report',
@@ -101,7 +101,7 @@ final class systemrole_test extends advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('core_reportbuilder');
 
         self::setAdminUser();
-        $roles = get_assignable_roles(context_system::instance(), ROLENAME_ALIAS);
+        $roles = get_assignable_roles(system::instance(), ROLENAME_ALIAS);
         $this->assertNotEmpty($roles);
 
         $report = $generator->create_report([
@@ -143,13 +143,13 @@ final class systemrole_test extends advanced_testcase {
         $user3 = $this->getDataGenerator()->create_user();
 
         self::setAdminUser();
-        $roles = get_assignable_roles(context_system::instance(), ROLENAME_ALIAS);
+        $roles = get_assignable_roles(system::instance(), ROLENAME_ALIAS);
         $this->assertNotEmpty($roles);
 
         // Assign new role to user1 and user3.
         $roleid = create_role('Dummy role', 'dummyrole', 'dummy role description');
-        role_assign($roleid, $user1->id, context_system::instance()->id);
-        role_assign($roleid, $user3->id, context_system::instance()->id);
+        role_assign($roleid, $user1->id, system::instance()->id);
+        role_assign($roleid, $user3->id, system::instance()->id);
 
         $audience = systemrole::create($report->get('id'), ['roles' => [$roleid]]);
 

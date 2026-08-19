@@ -23,6 +23,8 @@
  */
 namespace core\task;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/calendar/lib.php');
@@ -70,7 +72,7 @@ class calendar_cron_task extends scheduled_task {
                         mtrace(trim(strip_tags($error)));
                     }
                 }
-            } catch (\moodle_exception $ex) {
+            } catch (moodle_exception $ex) {
                 mtrace('Error updating calendar subscription: ' . $ex->getMessage());
             }
         }

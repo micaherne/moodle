@@ -27,6 +27,11 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context;
+use core\context\system;
+use core\context\user as context_user;
+use core\context_helper;
+use core\user as core_user;
 use \core_privacy\local\request\contextlist_base;
 
 /**
@@ -93,8 +98,8 @@ final class contextlist_base_test extends advanced_testcase {
         global $DB;
 
         $contexts = [];
-        $contexts[] = \context_system::instance();
-        $contexts[] = \context_user::instance(\core_user::get_user_by_username('admin')->id);
+        $contexts[] = system::instance();
+        $contexts[] = context_user::instance(core_user::get_user_by_username('admin')->id);
 
         $ids = [];
         foreach ($contexts as $context) {
@@ -142,7 +147,7 @@ final class contextlist_base_test extends advanced_testcase {
         $allcontexts = $DB->get_records('context');
         $contexts = [];
         foreach ($allcontexts as $context) {
-            $contexts[] = \context::instance_by_id($context->id);
+            $contexts[] = context::instance_by_id($context->id);
         }
 
         $uit = new test_contextlist_base();

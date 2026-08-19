@@ -23,11 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 $capabilities = ['moodle/role:assign'];
 
 if ($hassiteconfig || has_any_capability($capabilities, core\context\system::instance())) {
-    $ADMIN->add('roles', new admin_externalpage('toolunsuproles', get_string('pluginname', 'tool_unsuproles'),
+    $ADMIN->add('roles', new externalpage('toolunsuproles', get_string('pluginname', 'tool_unsuproles'),
         "$CFG->wwwroot/$CFG->admin/tool/unsuproles/index.php", ['moodle/site:config', 'moodle/role:assign']));
 }

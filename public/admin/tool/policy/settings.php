@@ -22,6 +22,11 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\lang_string;
+use core\url;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Do nothing if we are not set as the site policies handler.
@@ -34,18 +39,18 @@ $managecaps = [
     'tool/policy:viewacceptances',
 ];
 
-if ($hassiteconfig || has_any_capability($managecaps, context_system::instance())) {
+if ($hassiteconfig || has_any_capability($managecaps, system::instance())) {
 
-    $ADMIN->add('privacy', new admin_externalpage(
+    $ADMIN->add('privacy', new externalpage(
         'tool_policy_managedocs',
         new lang_string('managepolicies', 'tool_policy'),
-        new moodle_url('/admin/tool/policy/managedocs.php'),
+        new url('/admin/tool/policy/managedocs.php'),
         ['tool/policy:managedocs', 'tool/policy:viewacceptances']
     ));
-    $ADMIN->add('privacy', new admin_externalpage(
+    $ADMIN->add('privacy', new externalpage(
         'tool_policy_acceptances',
         new lang_string('useracceptances', 'tool_policy'),
-        new moodle_url('/admin/tool/policy/acceptances.php'),
+        new url('/admin/tool/policy/acceptances.php'),
         ['tool/policy:viewacceptances']
     ));
 }

@@ -22,12 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 
 $toolid = required_param('id', PARAM_INT);
 
-$PAGE->set_context(context_system::instance());
-$url = new moodle_url('/enrol/lti/tool.php');
+$PAGE->set_context(system::instance());
+$url = new url('/enrol/lti/tool.php');
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('popup');
 $PAGE->set_title(get_string('opentool', 'enrol_lti'));
@@ -37,25 +41,25 @@ $tool = \enrol_lti\helper::get_lti_tool($toolid);
 
 // Check if the authentication plugin is disabled.
 if (!\core\di::get(\core\authentication::class)->is_enabled('lti')) {
-    throw new \moodle_exception('pluginnotenabled', 'auth', '', get_string('pluginname', 'auth_lti'));
+    throw new moodle_exception('pluginnotenabled', 'auth', '', get_string('pluginname', 'auth_lti'));
     exit();
 }
 
 // Check if the enrolment plugin is disabled.
 if (!enrol_is_enabled('lti')) {
-    throw new \moodle_exception('enrolisdisabled', 'enrol_lti');
+    throw new moodle_exception('enrolisdisabled', 'enrol_lti');
     exit();
 }
 
 // Check if the enrolment instance is disabled.
 if ($tool->status != ENROL_INSTANCE_ENABLED) {
-    throw new \moodle_exception('enrolisdisabled', 'enrol_lti');
+    throw new moodle_exception('enrolisdisabled', 'enrol_lti');
     exit();
 }
 
 // Check if the enrolment instance has been upgraded to a newer LTI version.
 if ($tool->ltiversion != 'LTI-1p0/LTI-2p0') {
-    throw new \moodle_exception('enrolltiversionincorrect', 'enrol_lti');
+    throw new moodle_exception('enrolltiversionincorrect', 'enrol_lti');
     exit();
 }
 
@@ -65,7 +69,7 @@ $messagetype = required_param('lti_message_type', PARAM_TEXT);
 
 // Only accept launch requests from this endpoint.
 if ($messagetype != "basic-lti-launch-request") {
-    throw new \moodle_exception('invalidrequest', 'enrol_lti');
+    throw new moodle_exception('invalidrequest', 'enrol_lti');
     exit();
 }
 

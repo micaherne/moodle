@@ -23,6 +23,10 @@
  * @package course
  */
 
+use core\context\course;
+use core\output\single_button;
+use core\url;
+
 require_once("../config.php");
 require_once("lib.php");
 require_once($CFG->libdir . '/formslib.php');
@@ -48,7 +52,7 @@ $section = $DB->get_record('course_sections', array('id' => $id), '*', MUST_EXIS
 $course = $DB->get_record('course', array('id' => $section->course), '*', MUST_EXIST);
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/course:update', $context);
 
 // Get section_info object with all availability options.
@@ -80,7 +84,7 @@ if ($deletesection) {
             echo $OUTPUT->header();
             echo $OUTPUT->box_start('noticebox');
             $optionsyes = array('id' => $id, 'confirm' => 1, 'delete' => 1, 'sesskey' => sesskey());
-            $deleteurl = new moodle_url('/course/editsection.php', $optionsyes);
+            $deleteurl = new url('/course/editsection.php', $optionsyes);
             $formcontinue = new single_button($deleteurl, get_string('delete'));
             $formcancel = new single_button($cancelurl, get_string('cancel'), 'get');
             echo $OUTPUT->confirm(get_string('confirmdeletesection', '',

@@ -22,19 +22,26 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\output\html_writer;
+use core\url;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $url = new moodle_url('/admin/course/resetindentation.php', ['format' => 'weeks']);
+    $url = new url('/admin/course/resetindentation.php', ['format' => 'weeks']);
     $link = html_writer::link($url, get_string('resetindentation', 'admin'));
-    $settings->add(new admin_setting_configcheckbox(
+    $settings->add(new configcheckbox(
         'format_weeks/indentation',
         new lang_string('indentation', 'format_weeks'),
         new lang_string('indentation_help', 'format_weeks').'<br />'.$link,
         1
     ));
 
-    $settings->add(new admin_setting_configtext(
+    $settings->add(new configtext(
         name: 'format_weeks/maxinitialsections',
         visiblename: new lang_string('maxinitialsections', 'format_weeks'),
         description: new lang_string('maxinitialsections_help', 'format_weeks'),
@@ -45,7 +52,7 @@ if ($ADMIN->fulltree) {
         1 => get_string('yes'),
         0 => get_string('no'),
     ];
-    $settings->add(new admin_setting_configselect(
+    $settings->add(new configselect(
         'format_weeks/enablelinearnav',
         new lang_string('linearnavigationsettings', 'core_courseformat'),
         new lang_string('linearnavigationsettings_help', 'core_courseformat'),

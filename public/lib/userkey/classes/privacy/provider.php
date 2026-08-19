@@ -26,6 +26,8 @@ namespace core_userkey\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
@@ -73,9 +75,9 @@ class provider implements
      * @param string $script The unique target identifier.
      * @param int $instance The instance ID.
      */
-    public static function get_user_contexts_with_script(userlist $userlist, \context $context, string $script,
+    public static function get_user_contexts_with_script(userlist $userlist, context $context, string $script,
                                                          ?int $instance = null) {
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof user) {
             return;
         }
 
@@ -109,7 +111,7 @@ class provider implements
      * @param  string           $script The owner of the data (usually a component name).
      * @param  int              $instance The instance owner of the data.
      */
-    public static function export_userkeys(\context $context, array $subcontext, string $script, $instance = null) {
+    public static function export_userkeys(context $context, array $subcontext, string $script, $instance = null) {
         global $DB, $USER;
 
         $searchparams = [

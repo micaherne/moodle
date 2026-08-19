@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -79,7 +83,7 @@ class testing_repository_generator extends component_generator_base {
             $record['name'] = $this->get_typename() . ' ' . $this->instancecount;
         }
         if (!isset($record['contextid'])) {
-            $record['contextid'] = context_system::instance()->id;
+            $record['contextid'] = system::instance()->id;
         }
         return $record;
     }

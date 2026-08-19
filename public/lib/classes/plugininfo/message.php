@@ -16,6 +16,8 @@
 
 namespace core\plugininfo;
 
+use core\exception\moodle_exception;
+
 /**
  * Defines classes used for plugin info.
  *
@@ -40,7 +42,7 @@ class message extends base {
         global $DB;
 
         if (!$plugin = $DB->get_record('message_processors', ['name' => $pluginname])) {
-            throw new \moodle_exception('invalidplugin', 'message', '', $pluginname);
+            throw new moodle_exception('invalidplugin', 'message', '', $pluginname);
         }
 
         $haschanged = false;

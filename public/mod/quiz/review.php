@@ -25,6 +25,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
 use mod_quiz\output\attempt_summary_information;
 use mod_quiz\output\navigation_panel_review;
 use mod_quiz\output\renderer;
@@ -39,7 +42,7 @@ $page      = optional_param('page', 0, PARAM_INT);
 $showall   = optional_param('showall', null, PARAM_BOOL);
 $cmid      = optional_param('cmid', null, PARAM_INT);
 
-$url = new moodle_url('/mod/quiz/review.php', ['attempt' => $attemptid]);
+$url = new url('/mod/quiz/review.php', ['attempt' => $attemptid]);
 if ($page !== 0) {
     $url->param('page', $page);
 } else if ($showall) {

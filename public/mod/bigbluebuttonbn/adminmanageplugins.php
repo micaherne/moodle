@@ -22,6 +22,7 @@
  * @author    Laurent David (laurent@call-learning.fr)
  */
 
+use core\context\system;
 use mod_bigbluebuttonbn\local\plugins\admin_plugin_manager;
 
 require_once(__DIR__ . '/../../config.php');
@@ -37,7 +38,7 @@ if (!empty($plugin)) {
 // Create the class for this controller.
 $pluginmanager = new admin_plugin_manager();
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 // Execute the controller.
 $pluginmanager->execute($action, $plugin);

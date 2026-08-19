@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace enrol_lti\local\ltiadvantage\repository;
+use core\exception\coding_exception;
+use core\url;
 use enrol_lti\local\ltiadvantage\entity\deployment;
 use enrol_lti\local\ltiadvantage\entity\resource_link;
 
@@ -65,15 +67,15 @@ class resource_link_repository {
                 $scopes[] = $record->scorescope;
             }
             $resourcelink->add_grade_service(
-                $record->lineitemsservice ? new \moodle_url($record->lineitemsservice) : null,
-                $record->lineitemservice ? new \moodle_url($record->lineitemservice) : null,
+                $record->lineitemsservice ? new url($record->lineitemsservice) : null,
+                $record->lineitemservice ? new url($record->lineitemservice) : null,
                 $scopes
             );
         }
 
         if ($record->contextmembershipsurl) {
             $resourcelink->add_names_and_roles_service(
-                new \moodle_url($record->contextmembershipsurl),
+                new url($record->contextmembershipsurl),
                 json_decode($record->nrpsserviceversions)
             );
         }
@@ -145,7 +147,7 @@ class resource_link_repository {
         $id = $resourcelink->get_id();
         $exists = $id ? $this->exists($id) : false;
         if ($id && !$exists) {
-            throw new \coding_exception("Cannot save resource_link with id '{$id}'. The record does not exist.");
+            throw new coding_exception("Cannot save resource_link with id '{$id}'. The record does not exist.");
         }
 
         $record = $this->record_from_resource_link($resourcelink);

@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/backup/converter/convertlib.php');
@@ -76,7 +78,7 @@ class imscc11_store_backup_file extends backup_execution_step {
         $id        = $dinfo[0]->id;                    // Id of activity/section/course (depends of type)
         $courseid  = $dinfo[0]->courseid;              // Id of the course
 
-        $ctxid     = context_user::instance($userid)->id;
+        $ctxid     = user::instance($userid)->id;
         $component = 'user';
         $filearea  = 'backup';
         $itemid    = 0;

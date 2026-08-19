@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\module;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\user;
 use core_external\external_api;
 use core_external\external_format_value;
 use core_external\external_function_parameters;
@@ -120,7 +125,7 @@ class core_group_external extends external_api {
             }
 
             // now security checks
-            $context = context_course::instance($group->courseid, IGNORE_MISSING);
+            $context = course::instance($group->courseid, IGNORE_MISSING);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -222,7 +227,7 @@ class core_group_external extends external_api {
                     . 'visibility, participation', MUST_EXIST);
 
             // now security checks
-            $context = context_course::instance($group->courseid, IGNORE_MISSING);
+            $context = course::instance($group->courseid, IGNORE_MISSING);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -297,7 +302,7 @@ class core_group_external extends external_api {
         $params = self::validate_parameters(self::get_course_groups_parameters(), array('courseid'=>$courseid));
 
         // now security checks
-        $context = context_course::instance($params['courseid'], IGNORE_MISSING);
+        $context = course::instance($params['courseid'], IGNORE_MISSING);
         try {
             self::validate_context($context);
         } catch (Exception $e) {
@@ -387,7 +392,7 @@ class core_group_external extends external_api {
             }
 
             // now security checks
-            $context = context_course::instance($group->courseid, IGNORE_MISSING);
+            $context = course::instance($group->courseid, IGNORE_MISSING);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -445,7 +450,7 @@ class core_group_external extends external_api {
             // validate params
             $group = groups_get_group($groupid, 'id, courseid, name, enrolmentkey', MUST_EXIST);
             // now security checks
-            $context = context_course::instance($group->courseid, IGNORE_MISSING);
+            $context = course::instance($group->courseid, IGNORE_MISSING);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -525,7 +530,7 @@ class core_group_external extends external_api {
             $user = $DB->get_record('user', array('id'=>$userid, 'deleted'=>0, 'mnethostid'=>$CFG->mnet_localhost_id), '*', MUST_EXIST);
 
             // now security checks
-            $context = context_course::instance($group->courseid, IGNORE_MISSING);
+            $context = course::instance($group->courseid, IGNORE_MISSING);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -603,7 +608,7 @@ class core_group_external extends external_api {
             $user = $DB->get_record('user', array('id'=>$userid, 'deleted'=>0, 'mnethostid'=>$CFG->mnet_localhost_id), '*', MUST_EXIST);
 
             // now security checks
-            $context = context_course::instance($group->courseid, IGNORE_MISSING);
+            $context = course::instance($group->courseid, IGNORE_MISSING);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -687,7 +692,7 @@ class core_group_external extends external_api {
             }
 
             // Now security checks            .
-            $context = context_course::instance($grouping->courseid);
+            $context = course::instance($grouping->courseid);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -800,7 +805,7 @@ class core_group_external extends external_api {
             $grouping->courseid = $currentgrouping->courseid;
 
             // Now security checks.
-            $context = context_course::instance($grouping->courseid);
+            $context = course::instance($grouping->courseid);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -881,7 +886,7 @@ class core_group_external extends external_api {
             $grouping = groups_get_grouping($groupingid, '*', MUST_EXIST);
 
             // Now security checks.
-            $context = context_course::instance($grouping->courseid);
+            $context = course::instance($grouping->courseid);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -998,7 +1003,7 @@ class core_group_external extends external_api {
         $params = self::validate_parameters(self::get_course_groupings_parameters(), array('courseid'=>$courseid));
 
         // Now security checks.
-        $context = context_course::instance($params['courseid']);
+        $context = course::instance($params['courseid']);
 
         try {
             self::validate_context($context);
@@ -1081,7 +1086,7 @@ class core_group_external extends external_api {
             }
 
             // Now security checks.
-            $context = context_course::instance($grouping->courseid);
+            $context = course::instance($grouping->courseid);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -1157,7 +1162,7 @@ class core_group_external extends external_api {
             }
 
             // Now security checks.
-            $context = context_course::instance($grouping->courseid);
+            $context = course::instance($grouping->courseid);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -1233,7 +1238,7 @@ class core_group_external extends external_api {
             }
 
             // Now security checks.
-            $context = context_course::instance($grouping->courseid);
+            $context = course::instance($grouping->courseid);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -1308,8 +1313,8 @@ class core_group_external extends external_api {
         if (empty($userid)) {
             $userid = $USER->id;
         } else {
-            $user = core_user::get_user($userid, '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($userid, '*', MUST_EXIST);
+            user::require_active_user($user);
         }
 
         // Get courses.
@@ -1442,16 +1447,16 @@ class core_group_external extends external_api {
         $cm = get_coursemodule_from_id(null, $cmid, 0, false, MUST_EXIST);
 
         // Security checks.
-        $context = context_module::instance($cm->id);
-        $coursecontext = context_course::instance($cm->course);
+        $context = module::instance($cm->id);
+        $coursecontext = course::instance($cm->course);
         self::validate_context($context);
 
         if (empty($userid)) {
             $userid = $USER->id;
         }
 
-        $user = core_user::get_user($userid, '*', MUST_EXIST);
-        core_user::require_active_user($user);
+        $user = user::get_user($userid, '*', MUST_EXIST);
+        user::require_active_user($user);
 
          // Check if we have permissions for retrieve the information.
         if ($user->id != $USER->id) {
@@ -1549,7 +1554,7 @@ class core_group_external extends external_api {
         $cm = get_coursemodule_from_id(null, $cmid, 0, false, MUST_EXIST);
 
         // Security checks.
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         $groupmode = groups_get_activity_groupmode($cm);
@@ -1661,7 +1666,7 @@ class core_group_external extends external_api {
             $group->courseid = $currentgroup->courseid;
 
             // Now security checks.
-            $context = context_course::instance($group->courseid);
+            $context = course::instance($group->courseid);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {

@@ -23,8 +23,10 @@
  */
 namespace core_competency;
 
-use coding_exception;
-use lang_string;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\lang_string;
 use core_course\external\course_summary_exporter;
 
 /**
@@ -102,7 +104,7 @@ class course_competency extends persistent {
             return array();
         }
 
-        $ctxfields = \context_helper::get_preload_record_columns_sql('ctx');
+        $ctxfields = context_helper::get_preload_record_columns_sql('ctx');
         list($plugins, $params) = $DB->get_in_or_equal($plugins, SQL_PARAMS_NAMED, 'ee');
         $params['competencyid'] = $competencyid;
         $params['userid'] = $userid;
@@ -179,7 +181,7 @@ class course_competency extends persistent {
                 $strname = 'complete';
                 break;
             default:
-                throw new \moodle_exception('errorcoursecompetencyrule', 'core_competency', '', $ruleoutcome);
+                throw new moodle_exception('errorcoursecompetencyrule', 'core_competency', '', $ruleoutcome);
                 break;
         }
 

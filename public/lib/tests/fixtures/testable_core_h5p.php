@@ -26,6 +26,9 @@
 
 namespace core_h5p;
 
+use core\context\system;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -46,9 +49,9 @@ class h5p_test_factory extends factory {
         if ($this->core === null ) {
             $fs = new file_storage();
             $language = framework::get_language();
-            $context = \context_system::instance();
+            $context = system::instance();
 
-            $url = \moodle_url::make_pluginfile_url($context->id, 'core_h5p', '', null,
+            $url = url::make_pluginfile_url($context->id, 'core_h5p', '', null,
                 '', '')->out();
 
             $this->core = new h5p_test_core($this->get_framework(), $fs, $url, $language, true);
@@ -91,7 +94,7 @@ class h5p_test_core extends core {
      * @param string $endpoint The endpoint required. Valid values: "site", "content".
      * @return \moodle_url The endpoint moodle_url object.
      */
-    public function get_api_endpoint(?string $library = null, string $endpoint = 'content'): \moodle_url {
+    public function get_api_endpoint(?string $library = null, string $endpoint = 'content'): url {
 
         if ($library) {
             $h5purl = $this->endpoint . '/' . $library . '.h5p';
@@ -101,6 +104,6 @@ class h5p_test_core extends core {
             $h5purl = $this->endpoint . '/h5puuid.json';
         }
 
-        return new \moodle_url($h5purl);
+        return new url($h5purl);
     }
 }

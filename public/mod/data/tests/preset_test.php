@@ -16,6 +16,7 @@
 
 namespace mod_data;
 
+use core\context\user;
 use file_archive;
 use stdClass;
 use zip_archive;
@@ -98,7 +99,7 @@ final class preset_test extends \advanced_testcase {
         $filerecord = [
             'component' => 'user',
             'filearea' => 'draft',
-            'contextid' => \context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'itemid' => $draftid,
             'filename' => 'preset.xml',
             'filepath' => '/'

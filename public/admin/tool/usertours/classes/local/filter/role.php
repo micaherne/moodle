@@ -16,8 +16,10 @@
 
 namespace tool_usertours\local\filter;
 
+use core_cache\cache;
+use core_cache\store;
 use tool_usertours\tour;
-use context;
+use core\context;
 
 /**
  * Theme filter.
@@ -98,7 +100,7 @@ class role extends base {
 
         // Use a request cache to save on DB queries.
         // We may be checking multiple tours and they'll all be for the same userid, and contextid.
-        $cache = \cache::make_from_params(\cache_store::MODE_REQUEST, 'tool_usertours', 'filter_role');
+        $cache = cache::make_from_params(store::MODE_REQUEST, 'tool_usertours', 'filter_role');
 
         // Get all of the roles used in this context, including special roles such as user, and frontpageuser.
         $cachekey = "{$USER->id}_{$context->id}";

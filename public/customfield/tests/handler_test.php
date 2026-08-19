@@ -20,7 +20,7 @@ namespace core_customfield;
 
 use advanced_testcase;
 use core_course\customfield\course_handler;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Unit tests for the abstract custom fields handler

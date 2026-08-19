@@ -22,9 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
-$ADMIN->add('reports', new admin_externalpage('reportperformance', get_string('pluginname', 'report_performance'),
+$ADMIN->add('reports', new externalpage('reportperformance', get_string('pluginname', 'report_performance'),
         $CFG->wwwroot."/report/performance/index.php", 'report/performance:view'));
 
 // No report settings.

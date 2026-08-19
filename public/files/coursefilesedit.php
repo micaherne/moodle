@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once(__DIR__ . '/coursefilesedit_form.php');
 require_once($CFG->dirroot . '/repository/lib.php');
@@ -27,7 +30,7 @@ $itemid    = 0;
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 
-$url = new moodle_url('/files/coursefilesedit.php', array('contextid'=>$contextid));
+$url = new url('/files/coursefilesedit.php', array('contextid'=>$contextid));
 
 require_login($course);
 require_capability('moodle/course:managefiles', $context);
@@ -50,7 +53,7 @@ $options = array('subdirs'=>1, 'maxfiles'=>-1, 'accepted_types'=>'*', 'return_ty
 file_prepare_standard_filemanager($data, 'files', $options, $context, $component, $filearea, $itemid);
 $form = new coursefiles_edit_form(null, array('data'=>$data, 'contextid'=>$contextid));
 
-$returnurl = new moodle_url('/files/index.php', array('contextid'=>$contextid));
+$returnurl = new url('/files/index.php', array('contextid'=>$contextid));
 
 if ($form->is_cancelled()) {
     redirect($returnurl);

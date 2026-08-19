@@ -22,6 +22,17 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\user_picture;
+use core\plugin_manager;
+use core\user as core_user;
+
 define('MESSAGE_SHORTLENGTH', 300);
 
 define('MESSAGE_HISTORY_ALL', 1);
@@ -190,7 +201,7 @@ function message_search_users($courseids, $searchtext, $sort='', $exceptions='')
         // Getting the context IDs or each course.
         $contextids = array();
         foreach ($courseids as $courseid) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
             $contextids = array_merge($contextids, $context->get_parent_context_ids(true));
         }
         list($contextwhere, $contextparams) = $DB->get_in_or_equal(array_unique($contextids), SQL_PARAMS_NAMED, 'context');
@@ -383,7 +394,7 @@ function get_message_processors($ready = false, $reset = false, $resetonly = fal
 function get_message_providers() {
     global $CFG, $DB;
 
-    $pluginman = core_plugin_manager::instance();
+    $pluginman = plugin_manager::instance();
 
     $providers = $DB->get_records('message_providers', null, 'name');
 
@@ -391,7 +402,7 @@ function get_message_providers() {
     foreach ($providers as $providerid => $provider) {
         $plugin = $pluginman->get_plugin_info($provider->component);
         if ($plugin) {
-            if ($plugin->get_status() === core_plugin_manager::PLUGIN_STATUS_MISSING) {
+            if ($plugin->get_status() === plugin_manager::PLUGIN_STATUS_MISSING) {
                 unset($providers[$providerid]);   // Plugins does not exist
                 continue;
             }
@@ -697,7 +708,7 @@ function message_output_fragment_processor_settings($args = []) {
 function core_message_can_edit_message_profile($user) {
     global $USER;
     if ($user->id == $USER->id) {
-        return has_capability('moodle/user:editownmessageprofile', context_system::instance());
+        return has_capability('moodle/user:editownmessageprofile', system::instance());
     } else {
         $personalcontext = context_user::instance($user->id);
         if (!has_capability('moodle/user:editmessageprofile', $personalcontext)) {

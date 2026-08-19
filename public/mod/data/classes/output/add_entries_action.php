@@ -16,9 +16,11 @@
 
 namespace mod_data\output;
 
-use moodle_url;
-use templatable;
-use renderable;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Renderable class for the Add entries button in the database activity.
@@ -48,7 +50,7 @@ class add_entries_action implements templatable, renderable {
      * @param \renderer_base $output The renderer to be used to render the add entries button.
      * @return \stdClass or null if the user has no permission to add new entries.
      */
-    public function export_for_template(\renderer_base $output): ?\stdClass {
+    public function export_for_template(renderer_base $output): ?\stdClass {
         global $PAGE, $DB;
 
         $database = $DB->get_record('data', ['id' => $this->id]);
@@ -57,8 +59,8 @@ class add_entries_action implements templatable, renderable {
         $groupmode = groups_get_activity_groupmode($cm);
 
         if (data_user_can_add_entry($database, $currentgroup, $groupmode, $PAGE->context)) {
-            $addentrylink = new moodle_url('/mod/data/edit.php', ['d' => $this->id, 'backto' => $PAGE->url->out(false)]);
-            $button = new \single_button($addentrylink, get_string('add', 'mod_data'), 'get', \single_button::BUTTON_PRIMARY);
+            $addentrylink = new url('/mod/data/edit.php', ['d' => $this->id, 'backto' => $PAGE->url->out(false)]);
+            $button = new single_button($addentrylink, get_string('add', 'mod_data'), 'get', single_button::BUTTON_PRIMARY);
             return $button->export_for_template($output);
         }
 

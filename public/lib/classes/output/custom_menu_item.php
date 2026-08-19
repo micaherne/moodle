@@ -17,7 +17,7 @@
 namespace core\output;
 
 use core\context\system as context_system;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -73,7 +73,7 @@ class custom_menu_item implements renderable, templatable {
     public function __construct(
         $text,
         /** @var moodle_url The link to give the icon if it has no children */
-        protected ?moodle_url $url = null,
+        protected ?url $url = null,
         $title = null,
         $sort = null,
         /**
@@ -104,7 +104,7 @@ class custom_menu_item implements renderable, templatable {
      */
     public function add(
         $text,
-        ?moodle_url $url = null,
+        ?url $url = null,
         $title = null,
         $sort = null,
         $attributes = [],
@@ -226,7 +226,7 @@ class custom_menu_item implements renderable, templatable {
      * Sets the url for the node
      * @param moodle_url $url
      */
-    public function set_url(moodle_url $url) {
+    public function set_url(url $url) {
         $this->url = $url;
     }
 

@@ -23,6 +23,15 @@
  */
 
 /** The states a filter can be in, stored in the filter_active table. */
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\coding_exception;
+use core_cache\cache;
+use core_cache\store;
+use core_course\modinfo;
+use core_filters\filter_object;
+
 define('TEXTFILTER_ON', 1);
 /** The states a filter can be in, stored in the filter_active table. */
 define('TEXTFILTER_INHERIT', 0);
@@ -108,7 +117,7 @@ function filter_set_global_state($filtername, $state, $move = 0) {
 
     $transaction = $DB->start_delegated_transaction();
 
-    $syscontext = context_system::instance();
+    $syscontext = system::instance();
     $filters = $DB->get_records('filter_active', array('contextid' => $syscontext->id), 'sortorder ASC');
 
     $on = array();
@@ -240,7 +249,7 @@ function filter_get_active_state(string $filtername, $contextid = null): int {
     global $DB;
 
     if ($contextid === null) {
-        $contextid = context_system::instance()->id;
+        $contextid = system::instance()->id;
     }
     if (is_object($contextid)) {
         $contextid = $contextid->id;
@@ -278,7 +287,7 @@ function filter_is_enabled($filtername) {
  * @return array where the keys and values are both the filter name, like 'tex'.
  */
 function filter_get_globally_enabled() {
-    $cache = \cache::make_from_params(\cache_store::MODE_REQUEST, 'core_filter', 'global_filters');
+    $cache = cache::make_from_params(store::MODE_REQUEST, 'core_filter', 'global_filters');
     $enabledfilters = $cache->get('enabled');
     if ($enabledfilters !== false) {
         return $enabledfilters;
@@ -317,7 +326,7 @@ function filter_get_globally_enabled_filters_with_config() {
           ORDER BY f.sortorder";
 
     $rs = $DB->get_recordset_sql($sql, [
-        'contextid' => context_system::instance()->id,
+        'contextid' => system::instance()->id,
         'disabled' => TEXTFILTER_DISABLED
     ]);
 
@@ -401,7 +410,7 @@ function filter_set_local_state($filter, $contextid, $state) {
                 "Must be one of TEXTFILTER_ON, TEXTFILTER_OFF or TEXTFILTER_INHERIT.");
     }
 
-    if ($contextid == context_system::instance()->id) {
+    if ($contextid == system::instance()->id) {
         throw new coding_exception('You cannot use filter_set_local_state ' .
                 'with $contextid equal to the system context id.');
     }
@@ -584,7 +593,7 @@ function filter_get_active_in_context($context) {
  *
  * @param course_modinfo $modinfo Course object from get_fast_modinfo
  */
-function filter_preload_activities(course_modinfo $modinfo) {
+function filter_preload_activities(modinfo $modinfo) {
     global $DB, $FILTERLIB_PRIVATE;
 
     if (!isset($FILTERLIB_PRIVATE)) {
@@ -604,13 +613,13 @@ function filter_preload_activities(course_modinfo $modinfo) {
     $cmcontexts = array();
     $cmcontextids = array();
     foreach ($modinfo->get_cms() as $cm) {
-        $modulecontext = context_module::instance($cm->id);
+        $modulecontext = module::instance($cm->id);
         $cmcontextids[] = $modulecontext->id;
         $cmcontexts[] = $modulecontext;
     }
 
     // Get course context and all other parents.
-    $coursecontext = context_course::instance($modinfo->get_course_id());
+    $coursecontext = course::instance($modinfo->get_course_id());
     $parentcontextids = explode('/', substr($coursecontext->path, 1));
     $allcontextids = array_merge($cmcontextids, $parentcontextids);
 
@@ -755,7 +764,7 @@ function filter_get_available_in_context($context) {
  */
 function filter_get_global_states() {
     global $DB;
-    $context = context_system::instance();
+    $context = system::instance();
     return $DB->get_records('filter_active', array('contextid' => $context->id), 'sortorder', 'filter,active,sortorder');
 }
 
@@ -1020,7 +1029,7 @@ function filter_prepare_phrases_for_filtering(array $linkarray) {
  *
  * @param filterobject $linkobject the link object on which to set additional fields.
  */
-function filter_prepare_phrase_for_replacement(filterobject $linkobject) {
+function filter_prepare_phrase_for_replacement(filter_object $linkobject) {
     if ($linkobject->replacementcallback !== null) {
         list($linkobject->hreftagbegin, $linkobject->hreftagend, $linkobject->replacementphrase) =
                 call_user_func_array($linkobject->replacementcallback, $linkobject->replacementcallbackdata);

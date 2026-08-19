@@ -16,6 +16,8 @@
 
 namespace tool_usertours;
 
+use core\exception\moodle_exception;
+
 /**
  * Target class.
  *
@@ -67,7 +69,7 @@ class target {
      */
     public static function get_target_type(step $step) {
         if (!isset(self::$mapping[$step->get_targettype()])) {
-            throw new \moodle_exception('Unknown Target type');
+            throw new moodle_exception('Unknown Target type');
         }
 
         $targettype = self::$mapping[$step->get_targettype()];

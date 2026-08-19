@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\context\system;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -59,7 +62,7 @@ class webservice_service_deleted extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/settings.php', array('section' => 'externalservices'));
+        return new url('/admin/settings.php', array('section' => 'externalservices'));
     }
 
     /**
@@ -68,7 +71,7 @@ class webservice_service_deleted extends base {
      * @return void
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = 'external_services';

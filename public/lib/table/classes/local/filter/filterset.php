@@ -30,7 +30,7 @@ namespace core_table\local\filter;
 use InvalidArgumentException;
 use JsonSerializable;
 use UnexpectedValueException;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Class representing a set of filters.

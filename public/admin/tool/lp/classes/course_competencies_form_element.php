@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\course;
+use core\exception\coding_exception;
 use core_competency\api;
 use core_competency\external\competency_exporter;
 require_once($CFG->libdir . '/form/autocomplete.php');
@@ -73,7 +75,7 @@ class tool_lp_course_competencies_form_element extends MoodleQuickForm_autocompl
         $competencies = api::list_course_competencies($courseid);
         $validoptions = array();
 
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
         foreach ($competencies as $competency) {
             // We don't need to show the description as part of the options, so just set this to null.
             $competency['competency']->set('description', null);

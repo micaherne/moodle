@@ -16,7 +16,7 @@
 
 namespace mod_forum\courseformat;
 
-use cm_info;
+use core_course\cm_info;
 use core\url;
 use core_calendar\output\humandate;
 use core\output\local\properties\text_align;

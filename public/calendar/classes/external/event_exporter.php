@@ -30,7 +30,7 @@ require_once($CFG->dirroot . "/calendar/lib.php");
 
 use core_calendar\local\event\container;
 use core_calendar\output\humantimeperiod;
-use renderer_base;
+use core\output\renderer_base;
 use core\url;
 
 /**

@@ -16,6 +16,8 @@
 
 namespace qbank_usage\output;
 
+use core\output\plugin_renderer_base;
+
 /**
  * Renderer for usage plugin.
  *
@@ -24,7 +26,7 @@ namespace qbank_usage\output;
  * @author     Safat Shahin <safatshahin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Render the html fragment for usage modal.

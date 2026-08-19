@@ -22,6 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\url;
+use core_course\cached_cm_info;
+use core_course\cm_info;
+
 define('CHOICE_PUBLISH_ANONYMOUS', '0');
 define('CHOICE_PUBLISH_NAMES', '1');
 
@@ -191,7 +199,7 @@ function choice_prepare_options($choice, $user, $coursemodule, $allresponses) {
     $cdisplay['limitanswers'] = $choice->limitanswers;
     $cdisplay['showavailable'] = $choice->showavailable;
 
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
 
     foreach ($choice->option as $optionid => $text) {
         if (isset($text)) {
@@ -301,15 +309,15 @@ function choice_user_submit_response($formanswer, $choice, $userid, $course, $cm
     global $DB, $CFG, $USER;
     require_once($CFG->libdir . '/completionlib.php');
 
-    $continueurl = new moodle_url('/mod/choice/view.php', ['id' => $cm->id]);
+    $continueurl = new url('/mod/choice/view.php', ['id' => $cm->id]);
 
     if (empty($formanswer)) {
-        throw new \moodle_exception('atleastoneoption', 'choice', $continueurl);
+        throw new moodle_exception('atleastoneoption', 'choice', $continueurl);
     }
 
     if (is_array($formanswer)) {
         if (!$choice->allowmultiple) {
-            throw new \moodle_exception('multiplenotallowederror', 'choice', $continueurl);
+            throw new moodle_exception('multiplenotallowederror', 'choice', $continueurl);
         }
         $formanswers = $formanswer;
     } else {
@@ -319,7 +327,7 @@ function choice_user_submit_response($formanswer, $choice, $userid, $course, $cm
     $options = $DB->get_records('choice_options', ['choiceid' => $choice->id], '', 'id');
     foreach ($formanswers as $key => $val) {
         if (!isset($options[$val])) {
-            throw new \moodle_exception('cannotsubmit', 'choice', $continueurl);
+            throw new moodle_exception('cannotsubmit', 'choice', $continueurl);
         }
     }
     // Start lock to prevent synchronous access to the same data
@@ -334,7 +342,7 @@ function choice_user_submit_response($formanswer, $choice, $userid, $course, $cm
         // Opening the lock.
         $choicelock = $lockfactory->get_lock($resouce, $timeout, MINSECS);
         if (!$choicelock) {
-            throw new \moodle_exception('cannotsubmit', 'choice', $continueurl);
+            throw new moodle_exception('cannotsubmit', 'choice', $continueurl);
         }
     }
 
@@ -345,7 +353,7 @@ function choice_user_submit_response($formanswer, $choice, $userid, $course, $cm
         return $answer->optionid;
     }, $current);
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $choicesexceeded = false;
     $countanswers = [];
@@ -448,7 +456,7 @@ function choice_user_submit_response($formanswer, $choice, $userid, $course, $cm
     } else {
         // This is a choice with limited options, and one of the options selected has just run over its limit.
         $choicelock->release();
-        throw new \moodle_exception('choicefull', 'choice', $continueurl);
+        throw new moodle_exception('choicefull', 'choice', $continueurl);
     }
 
     // Release lock.
@@ -522,7 +530,7 @@ function prepare_choice_show_results($choice, $course, $cm, $allresponses) {
         $display->options[$optionid]->text = format_string(
             $optiontext,
             true,
-            ['context' => context_module::instance($cm->id)]
+            ['context' => module::instance($cm->id)]
         );
         $display->options[$optionid]->maxanswer = $choice->maxanswers[$optionid];
 
@@ -535,7 +543,7 @@ function prepare_choice_show_results($choice, $course, $cm, $allresponses) {
     unset($display->maxanswers);
 
     $display->numberofuser = count(array_unique($allusers));
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     $display->viewresponsecapability = has_capability('mod/choice:readresponses', $context);
     $display->deleterepsonsecapability = has_capability('mod/choice:deleteresponses', $context);
     $display->fullnamecapability = has_capability('moodle/site:viewfullnames', $context);
@@ -769,7 +777,7 @@ function choice_reset_userdata($data) {
 function choice_get_response_data($choice, $cm, $groupmode, $onlyactive, ?int $groupid = null) {
     global $CFG, $USER, $DB;
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     if ($groupmode > 0) {
         if (is_null($groupid)) {
@@ -854,7 +862,7 @@ function choice_extend_settings_navigation(settings_navigation $settings, naviga
     if (has_capability('mod/choice:readresponses', $settings->get_page()->cm->context)) {
         $choicenode->add(
             get_string('responses', 'choice'),
-            new moodle_url('/mod/choice/report.php', ['id' => $settings->get_page()->cm->id])
+            new url('/mod/choice/report.php', ['id' => $settings->get_page()->cm->id])
         );
     }
 }
@@ -1137,7 +1145,7 @@ function mod_choice_core_calendar_provide_event_action(
 
     return $factory->create_instance(
         get_string('viewchoices', 'choice'),
-        new \moodle_url('/mod/choice/view.php', ['id' => $cm->id]),
+        new url('/mod/choice/view.php', ['id' => $cm->id]),
         1,
         $actionable
     );
@@ -1220,7 +1228,7 @@ function mod_choice_core_calendar_event_timestart_updated(\calendar_event $event
     }
 
     $coursemodule = get_fast_modinfo($courseid)->instances[$modulename][$instanceid];
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
 
     // The user does not have the capability to modify this activity.
     if (!has_capability('moodle/course:manageactivities', $context)) {

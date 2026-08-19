@@ -17,6 +17,8 @@
 namespace core\check;
 
 use core\output\action_link;
+use core\output\renderable;
+use core\output\renderer_base;
 
 /**
  * A check object returns a result object
@@ -30,7 +32,7 @@ use core\output\action_link;
  * @copyright  2020 Brendan Heywood <brendan@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class result implements \renderable {
+class result implements renderable {
     /**
      * This is used to notify if a check does not apply.
      *
@@ -160,7 +162,7 @@ class result implements \renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         return array(
             'status'        => clean_text(get_string('status' . $this->status)),
             'isna'          => $this->status === self::NA,

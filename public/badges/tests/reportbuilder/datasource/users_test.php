@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace core_badges\reportbuilder\datasource;
 
+use core\output\html_writer;
+use core\url;
 use core_badges_generator;
 use core_reportbuilder_generator;
 use core_reportbuilder\local\filters\{boolean_select, date, select, tags, text};
@@ -162,7 +164,7 @@ final class users_test extends core_reportbuilder_testcase {
         $this->assertEmpty($coursename);
         $this->assertEmpty($cohortname);
 
-        $expectedbadgesitelink = \html_writer::link(new \moodle_url('/badges/overview.php',
+        $expectedbadgesitelink = html_writer::link(new url('/badges/overview.php',
             ['id' => $badgesite->id]), ($badgesite->name));
 
         // User issued site badge.
@@ -183,7 +185,7 @@ final class users_test extends core_reportbuilder_testcase {
         $this->assertEquals('PHPUnit test site', $coursename);
         $this->assertEquals($cohort->name, $cohortname);
 
-        $expectedbadgecourselink = \html_writer::link(new \moodle_url('/badges/overview.php',
+        $expectedbadgecourselink = html_writer::link(new url('/badges/overview.php',
             ['id' => $badgecourse->id]), ($badgecourse->name));
 
         // User issued course badge.

@@ -26,6 +26,9 @@ namespace block_html\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\block;
+use core\context\course;
+use core\context\user;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -137,7 +140,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      */
     protected function construct_user_page(\stdClass $user) {
         $page = new \moodle_page();
-        $page->set_context(\context_user::instance($user->id));
+        $page->set_context(user::instance($user->id));
         $page->set_pagelayout('mydashboard');
         $page->set_pagetype('my-index');
         $page->blocks->load_blocks();
@@ -152,7 +155,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      */
     protected function construct_course_page(\stdClass $course) {
         $page = new \moodle_page();
-        $page->set_context(\context_course::instance($course->id));
+        $page->set_context(course::instance($course->id));
         $page->set_pagelayout('standard');
         $page->set_pagetype('course-view');
         $page->set_course($course);
@@ -174,7 +177,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
         $block = $this->create_user_block($title, $content, $format);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
 
         // Get the contexts.
         $contextlist = provider::get_contexts_for_userid($user->id);
@@ -223,7 +226,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $DB->update_record('block_instances', $block->instance);
         $block = block_instance('html', $block->instance);
 
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
 
         // Get the contexts.
         $contextlist = provider::get_contexts_for_userid($user->id);
@@ -256,11 +259,11 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setUser($user);
 
         $block = $this->create_user_block($title, $content, $format);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $contexts[$context->id] = $context;
 
         $block = $this->create_user_block($title, $content, $format);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $contexts[$context->id] = $context;
 
         // Get the contexts.
@@ -300,7 +303,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'editingteacher');
 
         $block = $this->create_course_block($course, $title, $content, $format);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
 
         // Get the contexts.
         $contextlist = provider::get_contexts_for_userid($user->id);
@@ -328,14 +331,14 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'editingteacher');
 
         $block = $this->create_course_block($course, $title, $content, $format);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
 
         $block = $this->create_user_block($title, $content, $format);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $contexts[$context->id] = $context;
 
         $block = $this->create_user_block($title, $content, $format);
-        $context = \context_block::instance($block->instance->id);
+        $context = block::instance($block->instance->id);
         $contexts[$context->id] = $context;
 
         // Get the contexts.
@@ -364,7 +367,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setUser($user1);
 
         $userblock = $this->create_user_block($title, $content, $blockformat);
-        $usercontext = \context_block::instance($userblock->instance->id);
+        $usercontext = block::instance($userblock->instance->id);
 
         // Create a user with a course context HTML block.
         $user2 = $this->getDataGenerator()->create_user();
@@ -373,7 +376,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $course = $this->getDataGenerator()->create_course();
         $this->getDataGenerator()->enrol_user($user2->id, $course->id, 'editingteacher');
         $courseblock = $this->create_course_block($course, $title, $content, $blockformat);
-        $coursecontext = \context_block::instance($courseblock->instance->id);
+        $coursecontext = block::instance($courseblock->instance->id);
 
         // Ensure only the user with a user context HTML block is returned.
         $userlist = new \core_privacy\local\request\userlist($usercontext, $component);
@@ -408,12 +411,12 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setUser($user1);
 
         $block1 = $this->create_user_block($title, $content, $blockformat);
-        $context1 = \context_block::instance($block1->instance->id);
+        $context1 = block::instance($block1->instance->id);
 
         $user2 = $this->getDataGenerator()->create_user();
         $this->setUser($user2);
         $block2 = $this->create_user_block($title, $content, $blockformat);
-        $context2 = \context_block::instance($block2->instance->id);
+        $context2 = block::instance($block2->instance->id);
 
         // Create and populate the userlists.
         $userlist1 = new \core_privacy\local\request\userlist($context1, $component);

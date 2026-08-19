@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\exception\required_capability_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -32,7 +36,7 @@ $returntype = optional_param('return', null, PARAM_ALPHA);
 require_login(0, false);
 \core_competency\api::require_enabled();
 
-$url = new moodle_url('/admin/tool/lp/editplan.php', array('id' => $id, 'userid' => $userid, 'return' => $returntype));
+$url = new url('/admin/tool/lp/editplan.php', array('id' => $id, 'userid' => $userid, 'return' => $returntype));
 
 $plan = null;
 if (empty($id)) {
@@ -81,7 +85,7 @@ $data = $form->get_data();
 if ($data) {
     if (empty($data->id)) {
         $plan = \core_competency\api::create_plan($data);
-        $returnurl = new moodle_url('/admin/tool/lp/plan.php', ['id' => $plan->get('id')]);
+        $returnurl = new url('/admin/tool/lp/plan.php', ['id' => $plan->get('id')]);
         $returnmsg = get_string('plancreated', 'tool_lp');
     } else {
         \core_competency\api::update_plan($data);

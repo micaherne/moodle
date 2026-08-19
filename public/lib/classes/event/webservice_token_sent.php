@@ -23,6 +23,8 @@
  */
 
 namespace core\event;
+
+use core\context\system;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -59,7 +61,7 @@ class webservice_token_sent extends base {
      * @return void
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = 'external_tokens';

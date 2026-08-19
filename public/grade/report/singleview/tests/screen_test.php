@@ -16,6 +16,7 @@
 
 namespace gradereport_singleview;
 
+use core\context\course;
 use gradereport_singleview_screen_testable;
 
 defined('MOODLE_INTERNAL') || die();
@@ -47,7 +48,7 @@ final class screen_test extends \advanced_testcase {
 
         // Create a course, users and groups.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $group = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
         $teacher = $this->getDataGenerator()->create_user();
         $user1 = $this->getDataGenerator()->create_user();

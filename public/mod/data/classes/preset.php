@@ -17,9 +17,9 @@
 namespace mod_data;
 
 use core_component;
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 use data_field_base;
-use moodle_exception;
+use core\exception\moodle_exception;
 use SimpleXMLElement;
 use stdClass;
 use stored_file;
@@ -316,7 +316,7 @@ class preset {
 
         // Check if all files have been generated.
         if (! static::is_directory_a_preset($exportdir)) {
-            throw new \moodle_exception('generateerror', 'data');
+            throw new moodle_exception('generateerror', 'data');
         }
 
         $presetfilenames = array_merge(array_values(manager::TEMPLATES_LIST), ['preset.xml']);

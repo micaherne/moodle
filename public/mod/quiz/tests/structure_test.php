@@ -17,6 +17,7 @@
 namespace mod_quiz;
 
 use core\exception\coding_exception;
+use mod_quiz\tests\question_helper_test_trait;
 use question_bank;
 
 defined('MOODLE_INTERNAL') || die();
@@ -35,7 +36,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  */
 final class structure_test extends \advanced_testcase {
 
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
 
 
@@ -183,7 +184,7 @@ final class structure_test extends \advanced_testcase {
         $sections = $structure->get_sections();
         $section = reset($sections);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $structure->remove_section_heading($section->id);
     }
 
@@ -385,7 +386,7 @@ final class structure_test extends \advanced_testcase {
 
         $idtomove = $structure->get_question_in_slot(3)->slotid;
         $idmoveafter = $structure->get_question_in_slot(2)->slotid;
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $structure->move_slot($idtomove, $idmoveafter, '1');
     }
 
@@ -402,7 +403,7 @@ final class structure_test extends \advanced_testcase {
 
         $idtomove = $structure->get_question_in_slot(1)->slotid;
         $idmoveafter = $structure->get_question_in_slot(2)->slotid;
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $structure->move_slot($idtomove, $idmoveafter, '4');
     }
 
@@ -768,7 +769,7 @@ final class structure_test extends \advanced_testcase {
         $structure = structure::create_for_quiz($quizobj);
 
         $structure->remove_slot(1);
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $structure->remove_slot(2);
     }
 
@@ -784,7 +785,7 @@ final class structure_test extends \advanced_testcase {
         ]);
         $structure = structure::create_for_quiz($quizobj);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $structure->remove_slot(3);
     }
 

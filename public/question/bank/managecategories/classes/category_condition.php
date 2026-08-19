@@ -17,6 +17,7 @@
 namespace qbank_managecategories;
 
 use core\context;
+use core\context\module;
 use core\output\datafilter;
 use core_question\local\bank\condition;
 use core_question\local\bank\view;
@@ -93,7 +94,7 @@ class category_condition extends condition {
      */
     public function get_default_category(): \stdClass {
         if (empty($this->category)) {
-            return question_get_default_category(\context_module::instance($this->cm->id)->id, true);
+            return question_get_default_category(module::instance($this->cm->id)->id, true);
         }
 
         return $this->category;

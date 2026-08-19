@@ -22,8 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 
 $badgeid = optional_param('id', null, PARAM_INT);
 
-redirect(new moodle_url('/badges/json/issuer.php', ['id' => $badgeid]));
+redirect(new url('/badges/json/issuer.php', ['id' => $badgeid]));

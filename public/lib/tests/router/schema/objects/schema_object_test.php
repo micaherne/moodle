@@ -16,6 +16,7 @@
 
 namespace core\router\schema\objects;
 
+use core\exception\coding_exception;
 use core\router\schema\referenced_object;
 use core\router\schema\specification;
 use core\tests\router\route_testcase;
@@ -63,7 +64,7 @@ final class schema_object_test extends route_testcase {
     }
 
     public function test_invalid_content(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
 
         new schema_object(content: ['invalid']);
     }

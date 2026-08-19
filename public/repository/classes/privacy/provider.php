@@ -24,6 +24,8 @@
 
 namespace core_repository\privacy;
 
+use core\context as core_context;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\context;
@@ -105,7 +107,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof user) {
             return;
         }
 
@@ -177,7 +179,7 @@ class provider implements
      *
      * @param   context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(core_context $context) {
         global $DB;
 
         // Sanity check that context is at the User context level, then get the userid.
@@ -200,7 +202,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_user) {
+        if ($context instanceof user) {
             $DB->delete_records('repository_instances', ['userid' => $context->instanceid]);
         }
     }

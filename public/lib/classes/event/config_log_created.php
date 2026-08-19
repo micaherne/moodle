@@ -23,7 +23,8 @@
  */
 namespace core\event;
 
-use moodle_url;
+use core\exception\coding_exception;
+use core\url;
 
 /**
  * Event class for when an admin config log is created.
@@ -81,7 +82,7 @@ class config_log_created extends base {
      * @return moodle_url
      */
     public function get_url() {
-        return new moodle_url('/report/configlog/index.php', [
+        return new url('/report/configlog/index.php', [
             'search' => $this->other['name'],
         ]);
     }
@@ -96,16 +97,16 @@ class config_log_created extends base {
         parent::validate_data();
 
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
         if (!array_key_exists('plugin', $this->other)) {
-            throw new \coding_exception('The \'plugin\' value must be set in other.');
+            throw new coding_exception('The \'plugin\' value must be set in other.');
         }
         if (!array_key_exists('oldvalue', $this->other)) {
-            throw new \coding_exception('The \'oldvalue\' value must be set in other.');
+            throw new coding_exception('The \'oldvalue\' value must be set in other.');
         }
         if (!array_key_exists('value', $this->other)) {
-            throw new \coding_exception('The \'value\' value must be set in other.');
+            throw new coding_exception('The \'value\' value must be set in other.');
         }
     }
 

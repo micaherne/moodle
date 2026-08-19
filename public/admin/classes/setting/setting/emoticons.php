@@ -16,6 +16,10 @@
 
 namespace core_admin\setting\setting;
 
+use core\output\html_writer;
+use core\output\pix_emoticon;
+use core\url;
+
 /**
  * Administration interface for emoticon_manager settings.
  *
@@ -76,7 +80,7 @@ class emoticons extends \core_admin\setting {
         if ($this->config_write($this->name, $manager->encode_stored_config($emoticons))) {
             return ''; // Success.
         } else {
-            return get_string('errorsetting', 'admin') . $this->visiblename . \html_writer::empty_tag('br');
+            return get_string('errorsetting', 'admin') . $this->visiblename . html_writer::empty_tag('br');
         }
     }
 
@@ -112,7 +116,7 @@ class emoticons extends \core_admin\setting {
                     } else {
                         $alt = $fields[0]->value;
                     }
-                    $icon = new \pix_emoticon($fields[1]->value, $alt, $fields[2]->value);
+                    $icon = new pix_emoticon($fields[1]->value, $alt, $fields[2]->value);
                 }
                 $context->emoticons[] = [
                     'fields' => $fields,
@@ -123,7 +127,7 @@ class emoticons extends \core_admin\setting {
             }
         }
 
-        $context->reseturl = new \moodle_url('/admin/resetemoticons.php');
+        $context->reseturl = new url('/admin/resetemoticons.php');
         $element = $OUTPUT->render_from_template('core_admin/setting_emoticons', $context);
         return format_admin_setting($this, $this->visiblename, $element, $this->description, false, '', null, $query);
     }

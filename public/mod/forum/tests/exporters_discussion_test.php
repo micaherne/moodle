@@ -16,6 +16,7 @@
 
 namespace mod_forum;
 
+use core\context\module;
 use mod_forum\local\entities\discussion as discussion_entity;
 use mod_forum\local\exporters\discussion as discussion_exporter;
 
@@ -67,7 +68,7 @@ final class exporters_discussion_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $entityfactory = \mod_forum\local\container::get_entity_factory();
         $forum = $entityfactory->get_forum_from_stdClass($forum, $context, $coursemodule, $course);
         $group = $datagenerator->create_group(['courseid' => $course->id]);

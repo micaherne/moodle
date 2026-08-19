@@ -21,6 +21,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once('../../config.php');
 require_once('lib.php');
 
@@ -179,7 +184,7 @@ if ($starredonly) {
 }
 
 $PAGE->set_pagelayout('standard');
-$PAGE->set_url(new moodle_url('/mod/forum/search.php', $params));
+$PAGE->set_url(new url('/mod/forum/search.php', $params));
 $PAGE->set_secondary_active_tab("coursehome");
 
 if (empty($search)) {   // Check the other parameters instead
@@ -229,7 +234,7 @@ if ($search) {
 }
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_course_login($course);
@@ -249,9 +254,9 @@ $strpage = get_string("page");
 
 if (!$search || $showform) {
 
-    $url = new moodle_url('/mod/forum/index.php', array('id' => $course->id));
+    $url = new url('/mod/forum/index.php', array('id' => $course->id));
     $PAGE->navbar->add($strforums, $url);
-    $url = new moodle_url('/mod/forum/search.php', array('id' => $course->id));
+    $url = new url('/mod/forum/search.php', array('id' => $course->id));
     $PAGE->navbar->add(get_string('advancedsearch', 'forum'), $url);
 
     $PAGE->set_title($strsearch);
@@ -270,7 +275,7 @@ $searchterms = explode(' ', $searchterms);
 
 $searchform = forum_search_form($course, $search);
 
-$PAGE->navbar->add($strsearch, new moodle_url('/mod/forum/search.php', array('id'=>$course->id)));
+$PAGE->navbar->add($strsearch, new url('/mod/forum/search.php', array('id'=>$course->id)));
 $PAGE->navbar->add($strsearchresults);
 if (!$posts = forum_search_posts($searchterms, $course->id, $page*$perpage, $perpage, $totalcount)) {
     $PAGE->set_title($strsearchresults);
@@ -326,7 +331,7 @@ $params = [
     'showform'  => 1,
     'starredonly' => $starredonly
 ];
-$url    = new moodle_url("/mod/forum/search.php", $params);
+$url    = new url("/mod/forum/search.php", $params);
 foreach ($tags as $tag) {
     $url .= "&tags[]=$tag";
 }
@@ -338,7 +343,7 @@ echo $OUTPUT->heading($strforums, 2);
 
 echo $OUTPUT->heading("$strsearchresults: $totalcount", 3);
 
-$url = new moodle_url('search.php', array('search' => $search, 'id' => $course->id, 'perpage' => $perpage));
+$url = new url('search.php', array('search' => $search, 'id' => $course->id, 'perpage' => $perpage));
 echo $OUTPUT->paging_bar($totalcount, $page, $perpage, $url);
 
 //added to implement highlighting of search terms found only in HTML markup
@@ -395,12 +400,12 @@ foreach ($posts as $post) {
     // Replace the simple subject with the three items forum name -> thread name -> subject
     // (if all three are appropriate) each as a link.
     if (!isset($discussionsbyid[$post->discussion])) {
-        throw new \moodle_exception('invaliddiscussionid', 'forum');
+        throw new moodle_exception('invaliddiscussionid', 'forum');
     }
 
     $discussion = $discussionsbyid[$post->discussion];
     if (!isset($forumsbyid[$discussion->get_forum_id()])) {
-        throw new \moodle_exception('invalidforumid', 'forum');
+        throw new moodle_exception('invalidforumid', 'forum');
     }
 
     $forum = $forumsbyid[$discussion->get_forum_id()];
@@ -500,7 +505,7 @@ function forum_menu_list($course)  {
         if (!$cm->uservisible) {
             continue;
         }
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         if (!has_capability('mod/forum:viewdiscussion', $context)) {
             continue;
         }

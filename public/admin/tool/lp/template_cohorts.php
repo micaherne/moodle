@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\required_capability_exception;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 
 $id = required_param('id', PARAM_INT);
@@ -41,7 +44,7 @@ if (!$canreadtemplate) {
 }
 
 // Set up the page.
-$url = new moodle_url('/admin/tool/lp/template_cohorts.php', array(
+$url = new url('/admin/tool/lp/template_cohorts.php', array(
     'id' => $id,
     'pagecontextid' => $pagecontextid
 ));

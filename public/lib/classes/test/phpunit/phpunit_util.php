@@ -20,6 +20,11 @@ namespace core\test\phpunit;
 // phpcs:disable moodle.PHP.ForbiddenFunctions.FoundWithAlternative
 // phpcs:disable moodle.Files.MoodleInternal.MoodleInternalGlobalState
 
+use core\navigation\navigation_node;
+use core\output\bootstrap_renderer;
+use core\plugin_manager;
+use core\test\test_finder;
+use core_filters\filter_manager;
 use stdClass;
 
 /**
@@ -195,9 +200,9 @@ class phpunit_util extends \core\test\testing_util {
         $COURSE = $SITE;
 
         // Reinitialise following globals.
-        $OUTPUT = new \bootstrap_renderer();
+        $OUTPUT = new bootstrap_renderer();
         $PAGE = new \moodle_page();
-        \navigation_node::reset_all_data();
+        navigation_node::reset_all_data();
         $FULLME = null;
         $ME = null;
         $SCRIPT = null;
@@ -217,7 +222,7 @@ class phpunit_util extends \core\test\testing_util {
         get_string_manager()->reset_caches(true);
         reset_text_filters_cache(true);
         get_message_processors(false, true, true);
-        \filter_manager::reset_caches();
+        filter_manager::reset_caches();
         \core_filetypes::reset_caches();
         \core_search\manager::clear_static();
         \core\user::reset_caches();
@@ -250,8 +255,8 @@ class phpunit_util extends \core\test\testing_util {
         get_fast_modinfo(0, 0, true);
 
         // Reset other singletons.
-        if (class_exists(\core_plugin_manager::class)) {
-            \core_plugin_manager::reset_caches(true);
+        if (class_exists(plugin_manager::class)) {
+            plugin_manager::reset_caches(true);
         }
         if (class_exists(\core\update\checker::class)) {
             \core\update\checker::reset_caches(true);
@@ -1076,7 +1081,7 @@ class phpunit_util extends \core\test\testing_util {
         $ftemplate = str_replace('@root@', '', $ftemplate);
 
         // Gets all the components with tests.
-        $components = \tests_finder::get_components_with_tests('phpunit');
+        $components = test_finder::get_components_with_tests('phpunit');
         $moodleroot = self::get_moodle_relative_to_root_package();
 
         // Create the corresponding phpunit.xml file for each component.

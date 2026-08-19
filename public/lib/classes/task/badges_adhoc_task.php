@@ -15,6 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace core\task;
+
+use core\exception\moodle_exception;
+use core\url;
 /**
  * Class badges_adhoc_task
  *
@@ -52,9 +55,9 @@ class badges_adhoc_task extends adhoc_task {
             $issued = $badge->review_all_criteria();
             mtrace("$traceprefix badge was issued to $issued users.");
 
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $badgeeditlink =
-                new \moodle_url('/badges/edit.php', ['id' => $data->badgeid, 'action' => 'badge']);
+                new url('/badges/edit.php', ['id' => $data->badgeid, 'action' => 'badge']);
 
             switch($e->errorcode){
                 case 'invalidcoursemoduleid':

@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace core_favourites\local\service;
+use core\context;
+use core\context\user;
+use core\exception\moodle_exception;
 use \core_favourites\local\entity\favourite;
 use \core_favourites\local\repository\favourite_repository_interface;
 
@@ -52,7 +55,7 @@ class user_favourite_service {
      * @param \context_user $usercontext The context of the user to which this service operations are scoped.
      * @param \core_favourites\local\repository\favourite_repository_interface $repository a favourites repository.
      */
-    public function __construct(\context_user $usercontext, favourite_repository_interface $repository) {
+    public function __construct(user $usercontext, favourite_repository_interface $repository) {
         $this->repo = $repository;
         $this->userid = $usercontext->instanceid;
     }
@@ -68,13 +71,13 @@ class user_favourite_service {
      * @return favourite the favourite, once created.
      * @throws \moodle_exception if the component name is invalid, or if the repository encounters any errors.
      */
-    public function create_favourite(string $component, string $itemtype, int $itemid, \context $context,
+    public function create_favourite(string $component, string $itemtype, int $itemid, context $context,
             ?int $ordering = null): favourite {
         // Access: Any component can ask to favourite something, we can't verify access to that 'something' here though.
 
         // Validate the component name.
         if (!in_array($component, \core_component::get_component_names())) {
-            throw new \moodle_exception("Invalid component name '$component'");
+            throw new moodle_exception("Invalid component name '$component'");
         }
 
         $favourite = new favourite($component, $itemtype, $itemid, $context->id, $this->userid);
@@ -97,7 +100,7 @@ class user_favourite_service {
      */
     public function find_favourites_by_type(string $component, string $itemtype, int $limitfrom = 0, int $limitnum = 0): array {
         if (!in_array($component, \core_component::get_component_names())) {
-            throw new \moodle_exception("Invalid component name '$component'");
+            throw new moodle_exception("Invalid component name '$component'");
         }
         return $this->repo->find_by(
             [
@@ -125,7 +128,7 @@ class user_favourite_service {
      */
     public function find_all_favourites(string $component, array $itemtypes = [], int $limitfrom = 0, int $limitnum = 0): array {
         if (!in_array($component, \core_component::get_component_names())) {
-            throw new \moodle_exception("Invalid component name '$component'");
+            throw new moodle_exception("Invalid component name '$component'");
         }
         $params = [
             'userid' => $this->userid,
@@ -198,16 +201,16 @@ class user_favourite_service {
      * @param \context $context the context of the item which was favourited.
      * @throws \moodle_exception if the user does not control the favourite, or it doesn't exist.
      */
-    public function delete_favourite(string $component, string $itemtype, int $itemid, \context $context) {
+    public function delete_favourite(string $component, string $itemtype, int $itemid, context $context) {
         if (!in_array($component, \core_component::get_component_names())) {
-            throw new \moodle_exception("Invalid component name '$component'");
+            throw new moodle_exception("Invalid component name '$component'");
         }
 
         // Business logic: check the user owns the favourite.
         try {
             $favourite = $this->repo->find_favourite($this->userid, $component, $itemtype, $itemid, $context->id);
-        } catch (\moodle_exception $e) {
-            throw new \moodle_exception("Favourite does not exist for the user. Cannot delete.");
+        } catch (moodle_exception $e) {
+            throw new moodle_exception("Favourite does not exist for the user. Cannot delete.");
         }
 
         $this->repo->delete($favourite->id);
@@ -222,7 +225,7 @@ class user_favourite_service {
      * @param \context $context the context of the item which was favourited.
      * @return bool true if the item is favourited, false otherwise.
      */
-    public function favourite_exists(string $component, string $itemtype, int $itemid, \context $context): bool {
+    public function favourite_exists(string $component, string $itemtype, int $itemid, context $context): bool {
         return $this->repo->exists_by(
             [
                 'userid' => $this->userid,
@@ -243,7 +246,7 @@ class user_favourite_service {
      * @param \context $context the context of the item which was favourited.
      * @return favourite|null
      */
-    public function get_favourite(string $component, string $itemtype, int $itemid, \context $context) {
+    public function get_favourite(string $component, string $itemtype, int $itemid, context $context) {
         try {
             return $this->repo->find_favourite(
                 $this->userid,
@@ -265,7 +268,7 @@ class user_favourite_service {
      * @param \context|null $context the context of the item which was favourited.
      * @return int
      */
-    public function count_favourites_by_type(string $component, string $itemtype, ?\context $context = null) {
+    public function count_favourites_by_type(string $component, string $itemtype, ?context $context = null) {
         $criteria = [
             'userid' => $this->userid,
             'component' => $component,

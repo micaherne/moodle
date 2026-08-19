@@ -22,6 +22,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+
 define('CLI_SCRIPT', true);
 define('NO_OUTPUT_BUFFERING', true);
 

@@ -16,6 +16,7 @@
 
 namespace tool_mfa\event;
 
+use core\context\user;
 use stdClass;
 
 /**
@@ -46,7 +47,7 @@ class user_revoked_factor extends \core\event\base {
 
         $data = [
             'relateduserid' => null,
-            'context' => \context_user::instance($user->id),
+            'context' => user::instance($user->id),
             'other' => [
                 'userid' => $user->id,
                 'factorname' => $factorname,

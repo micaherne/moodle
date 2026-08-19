@@ -16,11 +16,11 @@
 
 namespace core_courseformat\external;
 
-use cm_info;
+use core_course\cm_info;
 use core\external\exporter;
 use core_courseformat\output\local\overview\overviewtable;
 use core_courseformat\local\overview\overviewitem;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * The overviewtable output data exporter for Webservice.

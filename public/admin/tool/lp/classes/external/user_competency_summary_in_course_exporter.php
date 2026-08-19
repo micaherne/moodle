@@ -29,10 +29,10 @@ use core_competency\user_competency;
 use core_competency\external\plan_exporter;
 use core_course\external\course_module_summary_exporter;
 use core_course\external\course_summary_exporter;
-use context_course;
-use renderer_base;
+use core\context\course;
+use core\output\renderer_base;
 use stdClass;
-use moodle_url;
+use core\url;
 
 /**
  * Class for exporting user competency data with additional related data in a plan.
@@ -88,7 +88,7 @@ class user_competency_summary_in_course_exporter extends \core\external\exporter
         $result->usercompetencysummary->cangrade = user_competency::can_grade_user_in_course($this->related['user']->id,
             $this->related['course']->id);
 
-        $context = context_course::instance($this->related['course']->id);
+        $context = course::instance($this->related['course']->id);
         $exporter = new course_summary_exporter($this->related['course'], array('context' => $context));
         $result->course = $exporter->export($output);
 
@@ -112,7 +112,7 @@ class user_competency_summary_in_course_exporter extends \core\external\exporter
             $exportedplans[] = $planexporter->export($output);
         }
         $result->plans = $exportedplans;
-        $result->pluginbaseurl = (new moodle_url('/admin/tool/lp'))->out(true);
+        $result->pluginbaseurl = (new url('/admin/tool/lp'))->out(true);
 
         return (array) $result;
     }

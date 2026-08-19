@@ -30,6 +30,7 @@ namespace core_calendar\local\event;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
 use core_calendar\action_factory;
 use core_calendar\local\event\data_access\event_vault;
 use core_calendar\local\event\entities\action_event;
@@ -163,7 +164,7 @@ class container {
                         return true;
                     }
 
-                    $coursecontext = \context_course::instance($dbrow->courseid);
+                    $coursecontext = course::instance($dbrow->courseid);
                     if (!$cm->get_course()->visible &&
                             !has_capability('moodle/course:viewhiddencourses', $coursecontext, $requestinguserid)) {
                         return true;

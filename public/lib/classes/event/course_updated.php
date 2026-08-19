@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -80,7 +82,7 @@ class course_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/course/edit.php', array('id' => $this->objectid));
+        return new url('/course/edit.php', array('id' => $this->objectid));
     }
 
     public static function get_objectid_mapping() {

@@ -26,6 +26,7 @@
 namespace core_grades;
 
 use advanced_testcase;
+use core\test\testing_util;
 use mod_forum\local\container;
 use mod_forum\local\entities\forum as forum_entity;
 
@@ -113,7 +114,7 @@ final class component_gradeitem_test extends advanced_testcase {
     public function test_get_formatted_grade_for_user_with_rubric(): void {
         $this->resetAfterTest();
 
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         $forum = $this->get_forum_instance();
@@ -166,7 +167,7 @@ final class component_gradeitem_test extends advanced_testcase {
     public function test_get_formatted_grade_for_user_with_marking_guide(): void {
         $this->resetAfterTest();
 
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $guidegenerator = $generator->get_plugin_generator('gradingform_guide');
 
         $forum = $this->get_forum_instance();

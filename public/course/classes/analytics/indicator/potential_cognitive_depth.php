@@ -26,7 +26,10 @@ namespace core_course\analytics\indicator;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\exception\coding_exception;
+use core\lang_string;
 use \core_analytics\local\indicator\community_of_inquiry_activity;
+use core_course\cm_info;
 
 /**
  * Potential cognitive depth indicator.
@@ -45,8 +48,8 @@ class potential_cognitive_depth extends \core_analytics\local\indicator\linear {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('indicator:potentialcognitive', 'moodle');
+    public static function get_name(): lang_string {
+        return new lang_string('indicator:potentialcognitive', 'moodle');
     }
 
     /**
@@ -74,12 +77,12 @@ class potential_cognitive_depth extends \core_analytics\local\indicator\linear {
 
         if ($sampleorigin === 'course_modules') {
             $cm = $this->retrieve('course_modules', $sampleid);
-            $cminfo = \cm_info::create($cm);
+            $cminfo = cm_info::create($cm);
 
             $cognitivedepthindicator = $this->get_cognitive_indicator($cminfo->modname);
             $potentiallevel = $cognitivedepthindicator->get_cognitive_depth_level($cminfo);
             if ($potentiallevel > community_of_inquiry_activity::MAX_COGNITIVE_LEVEL) {
-                throw new \coding_exception('Maximum cognitive depth level is ' .
+                throw new coding_exception('Maximum cognitive depth level is ' .
                     community_of_inquiry_activity::MAX_COGNITIVE_LEVEL . ', ' . $potentiallevel . ' provided by ' .
                         get_class($this));
             }
@@ -100,7 +103,7 @@ class potential_cognitive_depth extends \core_analytics\local\indicator\linear {
                 }
                 $level = $cognitivedepthindicator->get_cognitive_depth_level($cm);
                 if ($level > community_of_inquiry_activity::MAX_COGNITIVE_LEVEL) {
-                    throw new \coding_exception('Maximum cognitive depth level is ' .
+                    throw new coding_exception('Maximum cognitive depth level is ' .
                         community_of_inquiry_activity::MAX_COGNITIVE_LEVEL . ', ' . $level . ' provided by ' . get_class($this));
                 }
                 if ($level > $potentiallevel) {

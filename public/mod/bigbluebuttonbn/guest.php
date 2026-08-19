@@ -23,6 +23,7 @@
  * @author    Laurent David  (laurent [at] call-learning [dt] fr)
  */
 
+use core\exception\moodle_exception;
 use mod_bigbluebuttonbn\form\guest_login;
 use mod_bigbluebuttonbn\local\exceptions\server_not_available_exception;
 use mod_bigbluebuttonbn\local\proxy\bigbluebutton_proxy;

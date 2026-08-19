@@ -16,9 +16,9 @@
 
 namespace mod_bigbluebuttonbn;
 
-use cache;
-use cache_store;
-use context_course;
+use core_cache\cache;
+use core_cache\store;
+use core\context\course;
 use core_tag_tag;
 use Exception;
 use Firebase\JWT\Key;
@@ -342,7 +342,7 @@ class meeting {
     protected static function retrieve_cached_meeting_info(instance $instance, $updatecache = false) {
         $meetingid = $instance->get_meeting_id();
         $cachettl = (int) config::get('waitformoderator_cache_ttl');
-        $cache = cache::make_from_params(cache_store::MODE_APPLICATION, 'mod_bigbluebuttonbn', 'meetings_cache');
+        $cache = cache::make_from_params(store::MODE_APPLICATION, 'mod_bigbluebuttonbn', 'meetings_cache');
         $result = $cache->get($meetingid);
         $now = time();
         if (!$updatecache && !empty($result) && $now < ($result['creation_time'] + $cachettl)) {

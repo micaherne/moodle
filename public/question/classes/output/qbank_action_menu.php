@@ -19,10 +19,10 @@ namespace core_question\output;
 use core\output\select_menu;
 use core_question\local\bank\navigation_node_base;
 use core_question\local\bank\plugin_features_base;
-use moodle_url;
-use renderer_base;
-use templatable;
-use renderable;
+use core\url;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Rendered HTML elements for tertiary nav for Question bank.
@@ -38,7 +38,7 @@ class qbank_action_menu implements templatable, renderable {
     private $currenturl;
 
     /** @var ?moodle_url $actionurl URL for additional action button */
-    protected ?moodle_url $actionurl = null;
+    protected ?url $actionurl = null;
 
     /** @var ?string $actionlabel Label for additional action button  */
     protected ?string $actionlabel = null;
@@ -48,7 +48,7 @@ class qbank_action_menu implements templatable, renderable {
      *
      * @param moodle_url $currenturl The current URL.
      */
-    public function __construct(moodle_url $currenturl) {
+    public function __construct(url $currenturl) {
         $this->currenturl = $currenturl;
     }
 
@@ -59,7 +59,7 @@ class qbank_action_menu implements templatable, renderable {
      * @param string $label
      * @return void
      */
-    public function set_action_button(moodle_url $url, string $label): void {
+    public function set_action_button(url $url, string $label): void {
         $this->actionurl = $url;
         $this->actionlabel = $label;
     }
@@ -71,7 +71,7 @@ class qbank_action_menu implements templatable, renderable {
      * @return array data for the template
      */
     public function export_for_template(renderer_base $output): array {
-        $questionslink = new moodle_url('/question/edit.php', $this->currenturl->params());
+        $questionslink = new url('/question/edit.php', $this->currenturl->params());
         $menu = [
             $questionslink->out(false) => get_string('questions', 'question'),
         ];

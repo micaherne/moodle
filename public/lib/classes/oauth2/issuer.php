@@ -26,7 +26,7 @@ namespace core\oauth2;
 defined('MOODLE_INTERNAL') || die();
 
 use core\persistent;
-use lang_string;
+use core\lang_string;
 
 /**
  * Class for loading/storing issuer from the DB

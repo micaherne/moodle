@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\context\module;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 
@@ -34,7 +37,7 @@ $lesson = new lesson($DB->get_record('lesson', array('id' => $cm->instance), '*'
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/lesson:manage', $context);
 
 $mode    = optional_param('mode', get_user_preferences('lesson_view', 'collapsed'), PARAM_ALPHA);
@@ -43,7 +46,7 @@ if (!in_array($mode, array('single', 'full', 'collapsed'))) {
     $mode = 'collapsed';
 }
 
-$url = new moodle_url('/mod/lesson/edit.php', ['id' => $cm->id, 'mode' => $mode]);
+$url = new url('/mod/lesson/edit.php', ['id' => $cm->id, 'mode' => $mode]);
 $PAGE->set_url($url);
 $PAGE->force_settings_menu();
 $PAGE->set_secondary_active_tab('modulepage');

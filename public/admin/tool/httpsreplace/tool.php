@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\navigation\navigation_cache;
+use core\output\html_writer;
+use core\output\progress_bar;
+use core\url;
+use core_table\output\html_table;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../../../config.php');
@@ -30,10 +37,10 @@ require_once($CFG->libdir . '/adminlib.php');
 
 admin_externalpage_setup('toolhttpsreplace');
 
-$context = context_system::instance();
+$context = system::instance();
 
 $PAGE->set_context($context);
-$PAGE->set_url(new moodle_url('/admin/tool/httpsreplace/index.php'));
+$PAGE->set_url(new url('/admin/tool/httpsreplace/index.php'));
 $PAGE->set_title(get_string('pageheader', 'tool_httpsreplace'));
 $PAGE->set_pagelayout('admin');
 
@@ -109,5 +116,5 @@ if (!$data = $form->get_data()) {
 
     $progressbar->update_full(100, get_string('complete', 'tool_httpsreplace'));
 
-    echo $OUTPUT->continue_button(new moodle_url('/admin/settings.php', ['section' => 'httpsecurity']));
+    echo $OUTPUT->continue_button(new url('/admin/settings.php', ['section' => 'httpsecurity']));
 }

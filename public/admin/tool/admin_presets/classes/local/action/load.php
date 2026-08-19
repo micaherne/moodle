@@ -16,7 +16,8 @@
 
 namespace tool_admin_presets\local\action;
 
-use moodle_exception;
+use core\exception\moodle_exception;
+use core\url;
 use stdClass;
 use tool_admin_presets\form\continue_form;
 use tool_admin_presets\form\load_form;
@@ -38,11 +39,11 @@ class load extends base {
     public function execute(): void {
         global $OUTPUT;
 
-        $url = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'load', 'mode' => 'execute']);
+        $url = new url('/admin/tool/admin_presets/index.php', ['action' => 'load', 'mode' => 'execute']);
         $this->moodleform = new load_form($url);
 
         if ($this->moodleform->is_cancelled()) {
-            redirect(new \moodle_url('/admin/tool/admin_presets/index.php?action=base'));
+            redirect(new url('/admin/tool/admin_presets/index.php?action=base'));
         }
 
         if ($this->moodleform->is_submitted() && $this->moodleform->is_validated() && ($this->moodleform->get_data())) {
@@ -79,7 +80,7 @@ class load extends base {
             $application->skippedchanges = $skippeddata;
 
             $this->outputs = $OUTPUT->render_from_template('tool_admin_presets/settings_application', $application);
-            $url = new \moodle_url('/admin/tool/admin_presets/index.php');
+            $url = new url('/admin/tool/admin_presets/index.php');
             $this->moodleform = new continue_form($url);
         }
     }
@@ -152,11 +153,11 @@ class load extends base {
                 $applieddata->message = get_string('nosettingswillbeapplied', 'tool_admin_presets');
 
                 // Only display the Continue button.
-                $url = new \moodle_url('/admin/tool/admin_presets/index.php');
+                $url = new url('/admin/tool/admin_presets/index.php');
                 $this->moodleform = new continue_form($url);
             } else {
                 // Display the form to apply the preset.
-                $url = new \moodle_url('/admin/tool/admin_presets/index.php', ['action' => 'load', 'mode' => 'execute']);
+                $url = new url('/admin/tool/admin_presets/index.php', ['action' => 'load', 'mode' => 'execute']);
                 $this->moodleform = new load_form($url);
                 $this->moodleform->set_data($data);
             }

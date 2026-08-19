@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use \assignfeedback_editpdf\document_services;
 use \assignfeedback_editpdf\page_editor;
+use core\context\system;
+use core\url;
 
 /**
  * library class for editpdf feedback plugin extending feedback plugin base class
@@ -80,7 +82,7 @@ class assign_feedback_editpdf extends assign_feedback_plugin {
 
         $stampfiles = array();
         $fs = get_file_storage();
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $asscontext = $this->assignment->get_context();
 
         // Three file areas are used for stamps.
@@ -147,7 +149,7 @@ class assign_feedback_editpdf extends assign_feedback_plugin {
             // Always serve the perpetual system stamp.
             // This ensures that the stamp is highly cached and reduces the hit on the application server.
             $gradestamp = $systemstamps[$systempathnamehash];
-            $url = moodle_url::make_pluginfile_url(
+            $url = url::make_pluginfile_url(
                 $gradestamp->get_contextid(),
                 $gradestamp->get_component(),
                 $gradestamp->get_filearea(),
@@ -163,7 +165,7 @@ class assign_feedback_editpdf extends assign_feedback_plugin {
         $filename = '';
         [$filearea, $fileitemid] = document_services::get_file_area_and_id($this->assignment, $grade);
         if ($feedbackfile) {
-            $url = moodle_url::make_pluginfile_url(
+            $url = url::make_pluginfile_url(
                 $this->assignment->get_context()->id,
                 document_services::COMPONENT,
                 $filearea,
@@ -197,7 +199,7 @@ class assign_feedback_editpdf extends assign_feedback_plugin {
      * @return  string
      */
     protected function get_system_stamp_path(stored_file $stamp): string {
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         return file_storage::get_pathname_hash(
             $systemcontext->id,

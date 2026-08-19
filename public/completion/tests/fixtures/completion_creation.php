@@ -23,6 +23,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -55,10 +58,10 @@ trait completion_creation {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $assign = $this->getDataGenerator()->create_module('assign', ['course' => $course->id, 'completion' => 1]);
-        $modulecontext = context_module::instance($assign->cmid);
+        $modulecontext = module::instance($assign->cmid);
         $cm = get_coursemodule_from_id('assign', $assign->cmid);
 
         // Set completion rules.

@@ -24,6 +24,8 @@
 
 namespace core_calendar\local\event\exceptions;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -32,5 +34,5 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2017 Cameron Ball <cameron@cameron1729.xyz>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class invalid_callback_exception extends \moodle_exception {
+class invalid_callback_exception extends moodle_exception {
 }

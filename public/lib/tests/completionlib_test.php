@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\module;
+use core\plugin_manager;
+use core\user;
+use core_cache\cache;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -1620,7 +1627,7 @@ final class completionlib_test extends advanced_testcase {
         $this->assertCompletionEquals($forum->cmid,
             $event->get_record_snapshot('course_modules_completion', $event->objectid)->coursemoduleid);
         $this->assertCompletionEquals($current, $event->get_record_snapshot('course_modules_completion', $event->objectid));
-        $this->assertCompletionEquals(context_module::instance($forum->cmid), $event->get_context());
+        $this->assertCompletionEquals(module::instance($forum->cmid), $event->get_context());
         $this->assertCompletionEquals($USER->id, $event->userid);
         $this->assertCompletionEquals($this->user->id, $event->relateduserid);
         $this->assertInstanceOf('moodle_url', $event->get_url());
@@ -1651,7 +1658,7 @@ final class completionlib_test extends advanced_testcase {
         $this->assertCompletionEquals($this->course->id, $event->courseid);
         $this->assertCompletionEquals($USER->id, $event->userid);
         $this->assertCompletionEquals($this->user->id, $event->relateduserid);
-        $this->assertCompletionEquals(context_course::instance($this->course->id), $event->get_context());
+        $this->assertCompletionEquals(course::instance($this->course->id), $event->get_context());
         $this->assertInstanceOf('moodle_url', $event->get_url());
     }
 
@@ -1676,7 +1683,7 @@ final class completionlib_test extends advanced_testcase {
         $this->assertCount(1, $messages);
         $message = array_pop($messages);
 
-        $this->assertCompletionEquals(core_user::get_noreply_user()->id, $message->useridfrom);
+        $this->assertCompletionEquals(user::get_noreply_user()->id, $message->useridfrom);
         $this->assertCompletionEquals($this->user->id, $message->useridto);
         $this->assertCompletionEquals('coursecompleted', $message->eventtype);
         $this->assertCompletionEquals(get_string('coursecompleted', 'completion'), $message->subject);
@@ -1690,7 +1697,7 @@ final class completionlib_test extends advanced_testcase {
      */
     public function test_course_completion_updated_event(): void {
         $this->setup_data();
-        $coursecontext = context_course::instance($this->course->id);
+        $coursecontext = course::instance($this->course->id);
         $coursecompletionevent = \core\event\course_completion_updated::create(
                 array(
                     'courseid' => $this->course->id,
@@ -2388,7 +2395,7 @@ final class completionlib_test extends advanced_testcase {
         );
 
         // Disable the book module.
-        $manager = core_plugin_manager::resolve_plugininfo_class('mod');
+        $manager = plugin_manager::resolve_plugininfo_class('mod');
         $manager::enable_plugin($bookmodule, 0);
 
         // Calling get_criteria() should return only the 2 enabled activities.

@@ -16,7 +16,8 @@
 
 namespace core\navigation\views;
 
-use navigation_node;
+use core\navigation\navigation_node;
+use core\url;
 use ReflectionMethod;
 
 /**
@@ -87,10 +88,10 @@ final class primary_test extends \advanced_testcase {
 
         // If seturl is null then set actionurl of child6 to '/'.
         if ($seturl === null) {
-            $child6actionurl = new \moodle_url('/');
+            $child6actionurl = new url('/');
         } else {
             // If seturl is provided then set actionurl of child6 to '/foo'.
-            $child6actionurl = new \moodle_url('/foo');
+            $child6actionurl = new url('/foo');
         }
         $child6 = $child2->add('sixth child', $child6actionurl, navigation_node::TYPE_COURSE, 'sixthchld', 'sixthchild');
         // Activate the sixthchild node.
@@ -116,10 +117,10 @@ final class primary_test extends \advanced_testcase {
         global $PAGE;
 
         if ($seturl !== null) {
-            navigation_node::override_active_url(new \moodle_url($seturl));
+            navigation_node::override_active_url(new url($seturl));
         } else {
             $PAGE->set_url('/');
-            navigation_node::override_active_url(new \moodle_url('/'));
+            navigation_node::override_active_url(new url('/'));
         }
         if ($key !== null) {
             $PAGE->set_primary_active_tab($key);

@@ -25,7 +25,7 @@
 
 namespace core\dataformat;
 
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Base class for dataformat.

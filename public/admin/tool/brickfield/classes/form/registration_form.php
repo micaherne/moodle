@@ -26,10 +26,10 @@
 namespace tool_brickfield\form;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
+use core\exception\coding_exception;
 use dml_exception;
-use html_writer;
-use moodle_exception;
+use core\output\html_writer;
+use core\exception\moodle_exception;
 use moodleform;
 use stdClass;
 use tool_brickfield\manager;

@@ -23,10 +23,10 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_system;
-use context_course;
-use context_module;
-use moodle_exception;
+use core\context\system;
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
 
 /**
  * This is the external method for adding a blog post entry.
@@ -90,10 +90,10 @@ class add_entry extends external_api {
             throw new moodle_exception('blogdisable', 'blog');
         }
 
-        $context = context_system::instance();
+        $context = system::instance();
 
         if (!has_capability('moodle/blog:create', $context)) {
-            throw new \moodle_exception('cannoteditentryorblog', 'blog');
+            throw new moodle_exception('cannoteditentryorblog', 'blog');
         }
 
         // Prepare the entry object.
@@ -141,7 +141,7 @@ class add_entry extends external_api {
 
         // Validate course association. We need to convert the course id to context.
         if (!empty($entrydata->courseassoc)) {
-            $coursecontext = context_course::instance($entrydata->courseassoc);
+            $coursecontext = course::instance($entrydata->courseassoc);
             $entrydata->courseid = $entrydata->courseassoc;
             $entrydata->courseassoc = $coursecontext->id;   // Convert to context.
             $context = $coursecontext;
@@ -149,7 +149,7 @@ class add_entry extends external_api {
 
         // Validate mod association.
         if (!empty($entrydata->modassoc)) {
-            $modcontext = context_module::instance($entrydata->modassoc);
+            $modcontext = module::instance($entrydata->modassoc);
             if (!empty($coursecontext) && $coursecontext->id != $modcontext->get_course_context(true)->id) {
                 throw new moodle_exception('errorinvalidparam', 'webservice', '', 'modassoc');
             }

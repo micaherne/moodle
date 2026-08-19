@@ -26,9 +26,9 @@
 namespace mod_lesson\privacy;
 defined('MOODLE_INTERNAL') || die();
 
-use context;
-use context_helper;
-use context_module;
+use core\context;
+use core\context_helper;
+use core\context\module;
 use stdClass;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
@@ -179,7 +179,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!is_a($context, \context_module::class)) {
+        if (!is_a($context, module::class)) {
             return;
         }
 
@@ -240,7 +240,7 @@ class provider implements
 
         // If the context export was requested, then let's at least describe the lesson.
         foreach ($cmids as $cmid) {
-            $context = context_module::instance($cmid);
+            $context = module::instance($cmid);
             $contextdata = helper::get_context_data($context, $user);
             helper::export_context_files($context, $user);
             writer::with_context($context)->export_data([], $contextdata);
@@ -275,7 +275,7 @@ class provider implements
 
             return $data;
         }, function($lessonid, $data) use ($lessonidstocmids) {
-            $context = context_module::instance($lessonidstocmids[$lessonid]);
+            $context = module::instance($lessonidstocmids[$lessonid]);
             if (isset($data->reason)) {
                 $data->reason = format_text($data->reason, $data->reasonformat, ['context' => $context]);
                 unset($data->reasonformat);
@@ -292,7 +292,7 @@ class provider implements
             ];
             return $carry;
         }, function($lessonid, $data) use ($lessonidstocmids) {
-            $context = context_module::instance($lessonidstocmids[$lessonid]);
+            $context = module::instance($lessonidstocmids[$lessonid]);
             writer::with_context($context)->export_related_data([], 'grades', (object) ['grades' => $data]);
         });
 
@@ -307,7 +307,7 @@ class provider implements
             ];
             return $carry;
         }, function($lessonid, $data) use ($lessonidstocmids) {
-            $context = context_module::instance($lessonidstocmids[$lessonid]);
+            $context = module::instance($lessonidstocmids[$lessonid]);
             writer::with_context($context)->export_related_data([], 'timers', (object) ['timers' => $data]);
         });
 
@@ -352,7 +352,7 @@ class provider implements
 
         $recordset = $DB->get_recordset_sql($sql, $params);
         static::recordset_loop_and_export($recordset, 'lessonid', [], function($carry, $record) use ($lessonidstocmids) {
-            $context = context_module::instance($lessonidstocmids[$record->lessonid]);
+            $context = module::instance($lessonidstocmids[$record->lessonid]);
             $options = ['context' => $context];
 
             $take = isset($record->attempt_retry) ? $record->attempt_retry : $record->branch_retry;
@@ -403,7 +403,7 @@ class provider implements
             return $carry;
 
         }, function($lessonid, $data) use ($lessonidstocmids) {
-            $context = context_module::instance($lessonidstocmids[$lessonid]);
+            $context = module::instance($lessonidstocmids[$lessonid]);
             writer::with_context($context)->export_related_data([], 'attempts', (object) [
                 'attempts' => array_values($data)
             ]);
@@ -496,7 +496,7 @@ class provider implements
         $recordset = $DB->get_recordset_select('lesson_attempts', $sql, $params, '', 'id, lessonid');
         foreach ($recordset as $record) {
             $cmid = $lessonidstocmids[$record->lessonid];
-            $context = context_module::instance($cmid);
+            $context = module::instance($cmid);
             $fs->delete_area_files($context->id, 'mod_lesson', 'essay_responses', $record->id);
             $fs->delete_area_files($context->id, 'mod_lesson', 'essay_answers', $record->id);
         }
@@ -554,7 +554,7 @@ class provider implements
      * @param context_module $context The module context.
      * @return int
      */
-    protected static function get_lesson_id_from_context(context_module $context) {
+    protected static function get_lesson_id_from_context(module $context) {
         $cm = get_coursemodule_from_id('lesson', $context->instanceid);
         return $cm ? (int) $cm->instance : 0;
     }
@@ -619,7 +619,7 @@ class provider implements
      * @param context_module $context The module context.
      * @return array
      */
-    protected static function transform_attempt(stdClass $data, context_module $context) {
+    protected static function transform_attempt(stdClass $data, module $context) {
         global $DB;
 
         $options = ['context' => $context];

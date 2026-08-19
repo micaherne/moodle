@@ -19,8 +19,9 @@ declare(strict_types=1);
 namespace core\content\export;
 
 use advanced_testcase;
-use context_module;
-use context_system;
+use core\context\course;
+use core\context\module;
+use core\context\system;
 use ZipArchive;
 
 /**
@@ -43,12 +44,12 @@ final class zipwriter_test extends advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $folder = $this->getDataGenerator()->create_module('folder', ['course' => $course->id]);
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Add a file to the intro.
         $fileintroname = "fileintro.txt";
         $filerecord = [
-            'contextid' => context_module::instance($folder->cmid)->id,
+            'contextid' => module::instance($folder->cmid)->id,
             'component' => 'mod_folder',
             'filearea'  => 'intro',
             'itemid'    => 0,
@@ -77,7 +78,7 @@ final class zipwriter_test extends advanced_testcase {
      * Test add_file_from_string().
      */
     public function test_add_file_from_string(): void {
-        $context = context_system::instance();
+        $context = system::instance();
 
         $pathinfolder = "/path/to/my/file.txt";
         $mycontent = "Zippidy do dah";

@@ -16,7 +16,7 @@
 
 namespace core\lock;
 
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Timing wrapper around a lock factory.
@@ -48,7 +48,7 @@ class timing_wrapper_lock_factory implements lock_factory {
         if (!$factory) {
             // This parameter has to be optional because of the interface, but it is actually
             // required.
-            throw new \coding_exception('The $factory parameter must be specified');
+            throw new coding_exception('The $factory parameter must be specified');
         }
         $this->factory = $factory;
     }

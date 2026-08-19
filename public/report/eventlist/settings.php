@@ -22,11 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
     $url = $CFG->wwwroot . '/report/eventlist/index.php';
-    $ADMIN->add('reports', new admin_externalpage('reporteventlists', get_string('pluginname', 'report_eventlist'), $url));
+    $ADMIN->add('reports', new externalpage('reporteventlists', get_string('pluginname', 'report_eventlist'), $url));
 
     // No report settings.
     $settings = null;

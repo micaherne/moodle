@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -81,7 +84,7 @@ class course_module_completion_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/progress/index.php', array('course' => $this->courseid));
+        return new url('/report/progress/index.php', array('course' => $this->courseid));
     }
 
     /**
@@ -93,11 +96,11 @@ class course_module_completion_updated extends base {
         parent::validate_data();
         // Make sure the context level is set to module.
         if ($this->contextlevel !== CONTEXT_MODULE) {
-            throw new \coding_exception('Context level must be CONTEXT_MODULE.');
+            throw new coding_exception('Context level must be CONTEXT_MODULE.');
         }
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

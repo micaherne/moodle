@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_tag\reportbuilder\datasource;
 
-use lang_string;
+use core\lang_string;
 use core\reportbuilder\local\entities\context;
 use core_reportbuilder\datasource;
 use core_reportbuilder\local\entities\user;

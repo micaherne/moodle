@@ -22,6 +22,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\action_link;
+use core\output\pix_icon;
+use core\url;
 use mod_h5pactivity\local\manager;
 use core_h5p\factory;
 use core_h5p\player;
@@ -54,7 +57,7 @@ $config = core_h5p\helper::decode_display_options($core, $moduleinstance->displa
 $fs = get_file_storage();
 $files = $fs->get_area_files($context->id, 'mod_h5pactivity', 'package', 0, 'id', false);
 $file = reset($files);
-$fileurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
+$fileurl = url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
                     $file->get_filearea(), $file->get_itemid(), $file->get_filepath(),
                     $file->get_filename(), false);
 
@@ -80,7 +83,7 @@ if (!$manager->can_submit() && !isguestuser()) {
     // If tracking is disabled, show a warning.
     if (!$manager->is_tracking_enabled()) {
         if (has_capability('moodle/course:manageactivities', $context)) {
-            $url = new moodle_url('/course/modedit.php', ['update' => $cm->id]);
+            $url = new url('/course/modedit.php', ['update' => $cm->id]);
             $message = get_string('trackingdisabled_enable', 'mod_h5pactivity', $url->out());
         } else {
             $message = get_string('trackingdisabled', 'mod_h5pactivity');
@@ -93,7 +96,7 @@ $extraactions = [];
 
 if ($manager->can_view_all_attempts() && $manager->is_tracking_enabled()) {
     $extraactions[] = new action_link(
-        new moodle_url('/mod/h5pactivity/report.php', ['id' => $cm->id]),
+        new url('/mod/h5pactivity/report.php', ['id' => $cm->id]),
         get_string('viewattempts', 'mod_h5pactivity', $manager->count_attempts()),
         null,
         null,

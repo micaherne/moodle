@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
 use core\url;
 use core_question\local\bank\question_edit_contexts;
 

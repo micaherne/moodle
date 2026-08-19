@@ -16,6 +16,8 @@
 
 namespace enrol_lti\local\ltiadvantage\repository;
 
+use core\context\course;
+use core\context\module;
 use enrol_lti\helper;
 
 /**
@@ -109,10 +111,10 @@ final class published_resource_repository_test extends \advanced_testcase {
         usort($resources, function($a, $b) {
             return strcmp($a->get_contextid(), $b->get_contextid());
         });
-        $this->assertEquals($resources[0]->get_contextid(), \context_course::instance($course->id)->id);
-        $this->assertEquals($resources[1]->get_contextid(), \context_module::instance($mod->cmid)->id);
-        $this->assertEquals($resources[2]->get_contextid(), \context_module::instance($mod3->cmid)->id);
-        $this->assertEquals($resources[3]->get_contextid(), \context_module::instance($mod4->cmid)->id);
+        $this->assertEquals($resources[0]->get_contextid(), course::instance($course->id)->id);
+        $this->assertEquals($resources[1]->get_contextid(), module::instance($mod->cmid)->id);
+        $this->assertEquals($resources[2]->get_contextid(), module::instance($mod3->cmid)->id);
+        $this->assertEquals($resources[3]->get_contextid(), module::instance($mod4->cmid)->id);
         $this->assertTrue($resources[0]->supports_grades());
         $this->assertTrue($resources[1]->supports_grades());
         $this->assertFalse($resources[2]->supports_grades());
@@ -120,7 +122,7 @@ final class published_resource_repository_test extends \advanced_testcase {
 
         $resources = $resourcerepo->find_all_for_user($user2->id);
         $this->assertCount(1, $resources);
-        $this->assertEquals($resources[0]->get_contextid(), \context_module::instance($mod2->cmid)->id);
+        $this->assertEquals($resources[0]->get_contextid(), module::instance($mod2->cmid)->id);
         $this->assertFalse($resources[0]->supports_grades());
 
         $this->assertEmpty($resourcerepo->find_all_for_user($user3->id));
@@ -143,16 +145,16 @@ final class published_resource_repository_test extends \advanced_testcase {
         usort($resources, function ($a, $b) {
             return strcmp($a->get_contextid(), $b->get_contextid());
         });
-        $this->assertEquals($resources[0]->get_contextid(), \context_module::instance($mod->cmid)->id);
-        $this->assertEquals($resources[1]->get_contextid(), \context_module::instance($mod3->cmid)->id);
-        $this->assertEquals($resources[2]->get_contextid(), \context_module::instance($mod4->cmid)->id);
+        $this->assertEquals($resources[0]->get_contextid(), module::instance($mod->cmid)->id);
+        $this->assertEquals($resources[1]->get_contextid(), module::instance($mod3->cmid)->id);
+        $this->assertEquals($resources[2]->get_contextid(), module::instance($mod4->cmid)->id);
         $this->assertTrue($resources[0]->supports_grades());
         $this->assertFalse($resources[1]->supports_grades());
         $this->assertFalse($resources[2]->supports_grades()); // Multiple grade items isn't supported in content selection.
 
         $resources = $resourcerepo->find_all_by_ids_for_user([$tool->id, $tool2->id, $tool3->id], $user2->id);
         $this->assertCount(1, $resources);
-        $this->assertEquals($resources[0]->get_contextid(), \context_module::instance($mod2->cmid)->id);
+        $this->assertEquals($resources[0]->get_contextid(), module::instance($mod2->cmid)->id);
         $this->assertFalse($resources[0]->supports_grades());
 
         $this->assertEmpty($resourcerepo->find_all_by_ids_for_user([$tool->id], $user2->id));
@@ -188,7 +190,7 @@ final class published_resource_repository_test extends \advanced_testcase {
         $this->assertCount(4, $resources);
 
         // Check other course level roles without the capability, e.g. 'teacher'.
-        role_unassign($editingteacherrole->id, $modaccessonlyuser->id, \context_course::instance($course->id)->id);
+        role_unassign($editingteacherrole->id, $modaccessonlyuser->id, course::instance($course->id)->id);
         $this->getDataGenerator()->enrol_user($modaccessonlyuser->id, $course->id, 'teacher');
         $resources = $resourcerepo->find_all_for_user($modaccessonlyuser->id);
         $this->assertCount(0, $resources);

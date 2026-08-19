@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace tool_dataprivacy;
+
+use core\context_helper;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/' . $CFG->admin . '/tool/dataprivacy/lib.php');
@@ -77,7 +79,7 @@ class category extends \core\persistent {
         }
 
         $pluginconfig = get_config('tool_dataprivacy');
-        $levels = \context_helper::get_all_levels();
+        $levels = context_helper::get_all_levels();
         foreach ($levels as $level => $classname) {
 
             list($unused, $categoryvar) = \tool_dataprivacy\data_registry::var_names_from_context($classname);

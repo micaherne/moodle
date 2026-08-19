@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\coursecat;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\lang_string;
 use tool_uploadcourse\permissions;
 
 defined('MOODLE_INTERNAL') || die();
@@ -635,12 +640,12 @@ class tool_uploadcourse_course {
         if (!empty($coursedata['lang'])) {
             if ($exists) {
                 $courseid = $DB->get_field('course', 'id', ['shortname' => $this->shortname]);
-                if (!has_capability('moodle/course:setforcedlanguage', context_course::instance($courseid))) {
+                if (!has_capability('moodle/course:setforcedlanguage', course::instance($courseid))) {
                     $this->error('cannotforcelang', new lang_string('cannotforcelang', 'tool_uploadcourse'));
                     return false;
                 }
             } else {
-                $catcontext = context_coursecat::instance($coursedata['category']);
+                $catcontext = coursecat::instance($coursedata['category']);
                 if (!guess_if_creator_will_have_course_capability('moodle/course:setforcedlanguage', $catcontext)) {
                     $this->error('cannotforcelang', new lang_string('cannotforcelang', 'tool_uploadcourse'));
                     return false;
@@ -739,10 +744,10 @@ class tool_uploadcourse_course {
 
         // Custom fields. If the course already exists and mode isn't set to force creation, we can use its context.
         if ($exists && $mode !== tool_uploadcourse_processor::MODE_CREATE_ALL) {
-            $context = context_course::instance($coursedata['id']);
+            $context = course::instance($coursedata['id']);
         } else {
             // The category ID is taken from the defaults if it exists, otherwise from course data.
-            $context = context_coursecat::instance($this->defaults['category'] ?? $coursedata['category']);
+            $context = coursecat::instance($this->defaults['category'] ?? $coursedata['category']);
         }
         $customfielddata = tool_uploadcourse_helper::get_custom_course_field_data($this->rawdata, $this->defaults, $context,
             $errors);
@@ -939,7 +944,7 @@ class tool_uploadcourse_course {
         }
 
         // Mark context as dirty.
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $context->mark_dirty();
     }
 
@@ -1170,7 +1175,7 @@ class tool_uploadcourse_course {
      */
     protected function validate_role_context(int $courseid, int $roleid): bool {
         if (empty($this->assignableroles[$courseid])) {
-            $coursecontext = \context_course::instance($courseid);
+            $coursecontext = course::instance($courseid);
             $this->assignableroles[$courseid] = get_assignable_roles($coursecontext, ROLENAME_SHORT);
         }
         if (!array_key_exists($roleid, $this->assignableroles[$courseid])) {

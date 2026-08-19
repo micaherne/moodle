@@ -16,9 +16,9 @@
 
 namespace mod_quiz\event;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core\event\base;
-use moodle_url;
+use core\url;
 
 /**
  * Event fired when a quiz attempt is reopened.
@@ -52,8 +52,8 @@ class attempt_reopened extends base {
         return get_string('eventquizattemptreopened', 'mod_quiz');
     }
 
-    public function get_url(): moodle_url {
-        return new moodle_url('/mod/quiz/review.php', ['attempt' => $this->objectid]);
+    public function get_url(): url {
+        return new url('/mod/quiz/review.php', ['attempt' => $this->objectid]);
     }
 
     protected function validate_data(): void {

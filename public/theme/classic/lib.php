@@ -23,6 +23,9 @@
  */
 
 // This line protects the file from being accessed by a URL directly.
+use core\context\system;
+use core\output\theme_config;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -38,7 +41,7 @@ function theme_classic_get_main_scss_content($theme) {
     $filename = !empty($theme->settings->preset) ? $theme->settings->preset : null;
     $fs = get_file_storage();
 
-    $context = context_system::instance();
+    $context = system::instance();
     $scss .= file_get_contents($CFG->dirroot . '/theme/classic/scss/classic/pre.scss');
     if ($filename && ($presetfile = $fs->get_file($context->id, 'theme_classic', 'preset', 0, '/', $filename))) {
         $scss .= $presetfile->get_content();

@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once("$CFG->libdir/formslib.php");
 require_once("$CFG->libdir/filestorage/file_storage.php");
@@ -36,13 +41,13 @@ if (empty($returnurl)) {
     $returnurl = get_local_referer(false);
     if (empty($returnurl)) {
         // If local referer is empty, returnurl will be set to default site page.
-        $returnurl = new \moodle_url('/');
+        $returnurl = new url('/');
     }
 }
 
 $contentid = null;
 $isreferenced = false;
-$context = \context_system::instance();
+$context = system::instance();
 if (!empty($contenturl)) {
     list($originalfile, $h5p, $file) = \core_h5p\api::get_original_content_from_pluginfile_url($contenturl);
     $isreferenced = ($file !== false);
@@ -64,23 +69,23 @@ if (!empty($contenturl)) {
         if ($file) {
             list($context, $course, $cm) = get_context_info_array($file->get_contextid());
             if ($course) {
-                $context = \context_course::instance($course->id);
+                $context = course::instance($course->id);
             }
         } else {
             list($context, $course, $cm) = get_context_info_array($originalfile->get_contextid());
             if ($course) {
-                $context = \context_course::instance($course->id);
+                $context = course::instance($course->id);
             }
         }
     }
 }
 
 if (empty($contentid)) {
-    throw new \moodle_exception('error:emptycontentid', 'core_h5p', $returnurl);
+    throw new moodle_exception('error:emptycontentid', 'core_h5p', $returnurl);
 }
 
 $pagetitle = get_string('h5peditor', 'core_h5p');
-$url = new \moodle_url("/h5p/edit.php");
+$url = new url("/h5p/edit.php");
 
 $PAGE->set_context($context);
 $PAGE->set_url($url);

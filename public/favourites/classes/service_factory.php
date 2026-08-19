@@ -24,6 +24,8 @@
  */
 namespace core_favourites;
 
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -42,7 +44,7 @@ class service_factory {
      * @param \context_user $context the context of the user to which the service should be scoped.
      * @return \core_favourites\local\service\user_favourite_service the service object.
      */
-    public static function get_service_for_user_context(\context_user $context): local\service\user_favourite_service {
+    public static function get_service_for_user_context(user $context): local\service\user_favourite_service {
         return new local\service\user_favourite_service($context, new local\repository\favourite_repository());
     }
 

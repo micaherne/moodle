@@ -16,6 +16,7 @@
 
 namespace core\router\schema\response;
 
+use core\exception\coding_exception;
 use core\param;
 use core\router\schema\header_object;
 use core\router\schema\objects\schema_object;
@@ -117,7 +118,7 @@ final class response_test extends route_testcase {
     }
 
     public function test_invalid_content(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
 
         $response = new response(
             content: [

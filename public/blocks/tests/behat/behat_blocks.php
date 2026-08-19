@@ -27,6 +27,7 @@
 
 use Behat\Mink\Exception\ElementNotFoundException as ElementNotFoundException;
 use Behat\Gherkin\Node\TableNode as TableNode;
+use core\exception\coding_exception;
 
 require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
 

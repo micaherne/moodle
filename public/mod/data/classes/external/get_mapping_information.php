@@ -16,6 +16,7 @@
 
 namespace mod_data\external;
 
+use core\exception\moodle_exception;
 use core\notification;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -67,7 +68,7 @@ class get_mapping_information extends external_api {
 
             $importer = preset_importer::create_from_plugin_or_directory($manager, $params['importedpreset']);
             $result['data'] = $importer->get_mapping_information();
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $result['warnings'][] = [
                 'item' => $importedpreset,
                 'warningcode' => 'exception',

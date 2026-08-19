@@ -22,15 +22,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     $options = array('all'=>get_string('allcourses', 'block_course_list'), 'own'=>get_string('owncourses', 'block_course_list'));
 
-    $settings->add(new admin_setting_configselect('block_course_list_adminview', get_string('adminview', 'block_course_list'),
+    $settings->add(new configselect('block_course_list_adminview', get_string('adminview', 'block_course_list'),
                        get_string('configadminview', 'block_course_list'), 'all', $options));
 
-    $settings->add(new admin_setting_configcheckbox('block_course_list_hideallcourseslink', get_string('hideallcourseslink', 'block_course_list'),
+    $settings->add(new configcheckbox('block_course_list_hideallcourseslink', get_string('hideallcourseslink', 'block_course_list'),
                        get_string('confighideallcourseslink', 'block_course_list'), 0));
 }
 

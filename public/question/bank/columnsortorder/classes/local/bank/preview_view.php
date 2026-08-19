@@ -16,6 +16,7 @@
 
 namespace qbank_columnsortorder\local\bank;
 
+use core\output\html_writer;
 use core_question\local\bank\view;
 use qbank_columnsortorder\column_manager;
 
@@ -49,11 +50,11 @@ class preview_view extends view {
         if ($rowclasses) {
             $attributes['class'] = $rowclasses;
         }
-        echo \html_writer::start_tag('tr', $attributes);
+        echo html_writer::start_tag('tr', $attributes);
         foreach ($this->visiblecolumns as $column) {
             $column->display_preview($question, $rowclasses);
         }
-        echo \html_writer::end_tag('tr');
+        echo html_writer::end_tag('tr');
         foreach ($this->extrarows as $row) {
             $row->display_preview($question, $rowclasses);
         }

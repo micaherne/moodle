@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/repository/lib.php');
 
@@ -102,7 +106,7 @@ class repository_upload extends repository {
         $record->license  = $license;
         $record->author   = $author;
 
-        $context = context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         $elname = 'repo_upload_file';
 
         $fs = get_file_storage();
@@ -244,13 +248,13 @@ class repository_upload extends repository {
                 $event['newfile'] = new stdClass;
                 $event['newfile']->filepath = $record->filepath;
                 $event['newfile']->filename = $unusedfilename;
-                $event['newfile']->url = moodle_url::make_draftfile_url($record->itemid, $record->filepath,
+                $event['newfile']->url = url::make_draftfile_url($record->itemid, $record->filepath,
                     $unusedfilename)->out(false);
 
                 $event['existingfile'] = new stdClass;
                 $event['existingfile']->filepath = $record->filepath;
                 $event['existingfile']->filename = $existingfilename;
-                $event['existingfile']->url = moodle_url::make_draftfile_url($record->itemid, $record->filepath,
+                $event['existingfile']->url = url::make_draftfile_url($record->itemid, $record->filepath,
                     $existingfilename)->out(false);
                 return $event;
             }
@@ -273,7 +277,7 @@ class repository_upload extends repository {
         $logevent->trigger();
 
         return array(
-            'url' => moodle_url::make_draftfile_url($record->itemid, $record->filepath, $record->filename)->out(false),
+            'url' => url::make_draftfile_url($record->itemid, $record->filepath, $record->filename)->out(false),
             'id' => $record->itemid,
             'file' => $record->filename);
     }

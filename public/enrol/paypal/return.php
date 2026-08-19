@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 require("../../config.php");
 require_once("$CFG->dirroot/enrol/paypal/lib.php");
 
@@ -31,7 +33,7 @@ if (!$course = $DB->get_record("course", array("id"=>$id))) {
     redirect($CFG->wwwroot);
 }
 
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 $PAGE->set_context($context);
 
 require_login();

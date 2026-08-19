@@ -20,7 +20,7 @@ namespace core_files\reportbuilder\local\entities;
 
 use core_collator;
 use core_filetypes;
-use lang_string;
+use core\lang_string;
 use license_manager;
 use stdClass;
 use core_reportbuilder\local\entities\base;

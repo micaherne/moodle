@@ -16,6 +16,8 @@
 
 namespace mod_assign\external;
 
+use core\exception\require_login_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -62,7 +64,7 @@ final class start_submission_test extends \mod_assign\externallib_advanced_testc
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
         $assign = $generator->create_instance(['course' => $this->course->id]);
 
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         start_submission::execute($assign->id);
     }
 

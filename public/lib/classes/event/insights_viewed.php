@@ -29,6 +29,8 @@
  */
 
 namespace core\event;
+
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -73,7 +75,7 @@ class insights_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/insights/insights.php', array('modelid' => $this->other['modelid'],
+        return new url('/report/insights/insights.php', array('modelid' => $this->other['modelid'],
             'contextid' => $this->data['contextid']));
     }
 }

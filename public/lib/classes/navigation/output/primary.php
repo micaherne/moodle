@@ -16,11 +16,12 @@
 
 namespace core\navigation\output;
 
-use renderable;
-use renderer_base;
-use templatable;
-use custom_menu;
-use filter_manager;
+use core\context\system;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\custom_menu;
+use core_filters\filter_manager;
 
 /**
  * Primary navigation renderable
@@ -125,8 +126,8 @@ class primary implements renderable, templatable {
         // If filtering of the primary custom menu is enabled, apply only the string filters.
         if (!empty($CFG->navfilter && !empty($CFG->stringfilters))) {
             // Apply filters that are enabled for Content and Headings.
-            $filtermanager = \filter_manager::instance();
-            $custommenuitems = $filtermanager->filter_string($custommenuitems, \context_system::instance());
+            $filtermanager = filter_manager::instance();
+            $custommenuitems = $filtermanager->filter_string($custommenuitems, system::instance());
         }
 
         $currentlang = current_language();

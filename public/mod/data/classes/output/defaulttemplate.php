@@ -16,10 +16,11 @@
 
 namespace mod_data\output;
 
+use core\output\renderer_base;
 use core_tag_tag;
 use mod_data\manager;
-use templatable;
-use renderable;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Renderable class for the default templates in the database activity.
@@ -67,7 +68,7 @@ class defaulttemplate implements templatable, renderable {
      * @param \renderer_base $output The renderer to be used to render the action bar elements.
      * @return array The data to display.
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $result = [];
         $exportedfields = [];
         foreach ($this->fields as $field) {

@@ -26,9 +26,10 @@ namespace core_calendar\external;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
 use core\external\exporter;
-use renderer_base;
-use moodle_url;
+use core\output\renderer_base;
+use core\url;
 
 /**
  * Class for displaying the month view.
@@ -90,7 +91,7 @@ class month_exporter extends exporter {
         $this->calendar = $calendar;
         $this->firstdayofweek = $type->get_starting_weekday();
 
-        $this->url = new moodle_url('/calendar/view.php', [
+        $this->url = new url('/calendar/view.php', [
                 'view' => 'month',
                 'time' => $calendar->time,
             ]);
@@ -230,10 +231,10 @@ class month_exporter extends exporter {
         $nextperiod = $this->get_next_month_data();
         $date = $this->related['type']->timestamp_to_date_array($this->calendar->time);
 
-        $nextperiodlink = new moodle_url($this->url);
+        $nextperiodlink = new url($this->url);
         $nextperiodlink->param('time', $nextperiod[0]);
 
-        $previousperiodlink = new moodle_url($this->url);
+        $previousperiodlink = new url($this->url);
         $previousperiodlink->param('time', $previousperiod[0]);
 
         $viewmode = $this->calendar->get_viewmode() ?? 'month';
@@ -463,7 +464,7 @@ class month_exporter extends exporter {
      */
     protected function get_default_add_context() {
         if (calendar_user_can_add_event($this->calendar->course)) {
-            return \context_course::instance($this->calendar->course->id);
+            return course::instance($this->calendar->course->id);
         }
 
         return null;

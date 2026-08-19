@@ -24,6 +24,8 @@
 
 namespace report_stats\event;
 
+use core\context\course;
+
 /**
  * Class report_stats_events_testcase
  *
@@ -53,7 +55,7 @@ final class events_test extends \advanced_testcase {
     public function test_report_viewed(): void {
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Trigger event for stats report viewed.
         $event = \report_stats\event\report_viewed::create(array('context' => $context, 'relateduserid' => $user->id,
@@ -79,7 +81,7 @@ final class events_test extends \advanced_testcase {
     public function test_user_report_viewed(): void {
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Trigger event for user stats report viewed.
         $event = \report_stats\event\user_report_viewed::create(array('context' => $context, 'relateduserid' => $user->id));

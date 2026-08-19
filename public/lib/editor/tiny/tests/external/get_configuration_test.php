@@ -19,6 +19,8 @@ declare(strict_types=1);
 namespace editor_tiny\external;
 
 use advanced_testcase;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
 use core_external\external_api;
 use editor_tiny\plugininfo\tiny;
 
@@ -88,7 +90,7 @@ final class get_configuration_test extends advanced_testcase {
                 $this->expectException(\core\exception\require_login_exception::class);
             }
         } else {
-            throw new \coding_exception("Invalid context level: {$contextlevel}");
+            throw new coding_exception("Invalid context level: {$contextlevel}");
         }
 
         $this->setUser($user);
@@ -148,7 +150,7 @@ final class get_configuration_test extends advanced_testcase {
      * Test the external function with an invalid context level.
      */
     public function test_execute_invalid_context_level(): void {
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
 
         get_configuration::execute('invalid', (int) SITEID);
     }
@@ -157,7 +159,7 @@ final class get_configuration_test extends advanced_testcase {
      * Test the external function with an invalid instance ID.
      */
     public function test_execute_invalid_instance_id(): void {
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
 
         get_configuration::execute('course', -1);
     }

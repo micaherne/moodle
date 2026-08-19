@@ -21,7 +21,7 @@ namespace mod_feedback\external\questions;
 use core_external\external_api;
 use core_external\external_value;
 use core_external\external_function_parameters;
-use context_module;
+use core\context\module;
 
 /**
  * External method for reordering feedback questions.
@@ -65,7 +65,7 @@ class reorder extends external_api {
 
         $cm = get_coursemodule_from_id('feedback', $cmid, 0, false, MUST_EXIST);
         $feedback = $DB->get_record('feedback', ['id' => $cm->instance], '*', MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         self::validate_context($context);
         require_capability('mod/feedback:edititems', $context);

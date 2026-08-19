@@ -23,6 +23,8 @@
  * @copyright  Sam Marshall
  */
 
+use core\navigation\navigation_cache;
+use core_cache\cache;
 use core_course\modinfo;
 use core\exception\coding_exception;
 use core\exception\moodle_exception;

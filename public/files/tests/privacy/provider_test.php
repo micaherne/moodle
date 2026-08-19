@@ -26,6 +26,8 @@ namespace core_files\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user;
 use core_files\privacy\provider;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
@@ -48,7 +50,7 @@ final class provider_test extends provider_testcase {
 
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $userctx = \context_user::instance($user->id);
+        $userctx = user::instance($user->id);
 
         create_user_key('core_files', $user->id);
 
@@ -67,7 +69,7 @@ final class provider_test extends provider_testcase {
 
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $keyvalue = get_user_key('core_files', $user->id);
         $key = $DB->get_record('user_private_key', ['value' => $keyvalue]);
@@ -95,7 +97,7 @@ final class provider_test extends provider_testcase {
 
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         create_user_key('core_files', $user->id);
 
@@ -148,7 +150,7 @@ final class provider_test extends provider_testcase {
 
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $userctx = \context_user::instance($user->id);
+        $userctx = user::instance($user->id);
 
         $userlist = new \core_privacy\local\request\userlist($userctx, $component);
         provider::get_users_in_context($userlist);
@@ -164,7 +166,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // The list of users within contexts different than user should be empty.
-        $systemctx = \context_system::instance();
+        $systemctx = system::instance();
         $userlist = new \core_privacy\local\request\userlist($systemctx, $component);
         provider::get_users_in_context($userlist);
         $this->assertCount(0, $userlist);
@@ -180,10 +182,10 @@ final class provider_test extends provider_testcase {
 
         // Create user1.
         $user1 = $this->getDataGenerator()->create_user();
-        $userctx1 = \context_user::instance($user1->id);
+        $userctx1 = user::instance($user1->id);
         // Create user2.
         $user2 = $this->getDataGenerator()->create_user();
-        $userctx2 = \context_user::instance($user2->id);
+        $userctx2 = user::instance($user2->id);
 
         create_user_key('core_files', $user1->id);
         create_user_key('core_files', $user2->id);
@@ -214,7 +216,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // Convert $userlist2 into an approved_contextlist in the system context.
-        $systemctx = \context_system::instance();
+        $systemctx = system::instance();
         $approvedlist3 = new approved_userlist($systemctx, $component, $userlist2->get_userids());
         // Delete using delete_data_for_user.
         provider::delete_data_for_users($approvedlist3);

@@ -16,6 +16,11 @@
 
 namespace enrol_category;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\output\progress_trace\null_progress_trace;
+
 /**
  * Category enrolment sync functional test.
  *
@@ -41,13 +46,13 @@ final class plugin_test extends \advanced_testcase {
     }
 
     protected function enable_role_sync($roleid) {
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         assign_capability('enrol/category:synchronised', CAP_ALLOW, $roleid, $syscontext, true);
     }
 
     protected function disable_role_sync($roleid) {
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         unassign_capability('enrol/category:synchronised', $roleid, $syscontext);
     }
@@ -62,7 +67,7 @@ final class plugin_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $this->assertFalse(enrol_is_enabled('category'));
         $this->enable_plugin();
@@ -122,37 +127,37 @@ final class plugin_test extends \advanced_testcase {
 
         // Test assign event.
 
-        role_assign($managerrole->id, $user1->id, \context_coursecat::instance($cat1->id));
-        role_assign($managerrole->id, $user3->id, \context_course::instance($course1->id));
-        role_assign($managerrole->id, $user3->id, \context_course::instance($course2->id));
+        role_assign($managerrole->id, $user1->id, coursecat::instance($cat1->id));
+        role_assign($managerrole->id, $user3->id, course::instance($course1->id));
+        role_assign($managerrole->id, $user3->id, course::instance($course2->id));
         $this->assertEquals(0, $DB->count_records('user_enrolments', array()));
 
-        role_assign($studentrole->id, $user1->id, \context_coursecat::instance($cat2->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course2->id), $user1->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course3->id), $user1->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course4->id), $user1->id));
+        role_assign($studentrole->id, $user1->id, coursecat::instance($cat2->id));
+        $this->assertTrue(is_enrolled(course::instance($course2->id), $user1->id));
+        $this->assertTrue(is_enrolled(course::instance($course3->id), $user1->id));
+        $this->assertTrue(is_enrolled(course::instance($course4->id), $user1->id));
         $this->assertEquals(3, $DB->count_records('user_enrolments', array()));
 
-        role_assign($managerrole->id, $user2->id, \context_coursecat::instance($cat3->id));
+        role_assign($managerrole->id, $user2->id, coursecat::instance($cat3->id));
         $this->assertEquals(3, $DB->count_records('user_enrolments', array()));
 
-        role_assign($teacherrole->id, $user4->id, \context_coursecat::instance($cat1->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course1->id), $user4->id));
+        role_assign($teacherrole->id, $user4->id, coursecat::instance($cat1->id));
+        $this->assertTrue(is_enrolled(course::instance($course1->id), $user4->id));
         $this->assertEquals(4, $DB->count_records('user_enrolments', array()));
 
         // Test role unassigned event.
 
-        role_unassign($teacherrole->id, $user4->id, \context_coursecat::instance($cat1->id)->id);
-        $this->assertFalse(is_enrolled(\context_course::instance($course1->id), $user4->id));
+        role_unassign($teacherrole->id, $user4->id, coursecat::instance($cat1->id)->id);
+        $this->assertFalse(is_enrolled(course::instance($course1->id), $user4->id));
         $this->assertEquals(3, $DB->count_records('user_enrolments', array()));
 
         // Make sure handlers are disabled when plugin disabled.
 
         $this->disable_plugin();
-        role_unassign($studentrole->id, $user1->id, \context_coursecat::instance($cat2->id)->id);
+        role_unassign($studentrole->id, $user1->id, coursecat::instance($cat2->id)->id);
         $this->assertEquals(3, $DB->count_records('user_enrolments', array()));
 
-        role_assign($studentrole->id, $user3->id, \context_coursecat::instance($cat1->id));
+        role_assign($studentrole->id, $user3->id, coursecat::instance($cat1->id));
         $this->assertEquals(3, $DB->count_records('user_enrolments', array()));
 
     }
@@ -191,47 +196,47 @@ final class plugin_test extends \advanced_testcase {
         $this->enable_plugin();
 
         $this->assertEquals(0, $DB->count_records('role_assignments', array()));
-        role_assign($managerrole->id, $user1->id, \context_coursecat::instance($cat1->id));
-        role_assign($managerrole->id, $user3->id, \context_course::instance($course1->id));
-        role_assign($managerrole->id, $user3->id, \context_course::instance($course2->id));
+        role_assign($managerrole->id, $user1->id, coursecat::instance($cat1->id));
+        role_assign($managerrole->id, $user3->id, course::instance($course1->id));
+        role_assign($managerrole->id, $user3->id, course::instance($course2->id));
         $this->assertEquals(0, $DB->count_records('user_enrolments', array()));
 
 
         $this->disable_plugin(); // Stops the event handlers.
-        role_assign($studentrole->id, $user1->id, \context_coursecat::instance($cat2->id));
+        role_assign($studentrole->id, $user1->id, coursecat::instance($cat2->id));
         $this->assertEquals(0, $DB->count_records('user_enrolments', array()));
         $this->enable_plugin();
         enrol_category_sync_course($course2);
-        $this->assertTrue(is_enrolled(\context_course::instance($course2->id), $user1->id));
-        $this->assertFalse(is_enrolled(\context_course::instance($course3->id), $user1->id));
-        $this->assertFalse(is_enrolled(\context_course::instance($course4->id), $user1->id));
+        $this->assertTrue(is_enrolled(course::instance($course2->id), $user1->id));
+        $this->assertFalse(is_enrolled(course::instance($course3->id), $user1->id));
+        $this->assertFalse(is_enrolled(course::instance($course4->id), $user1->id));
         $this->assertEquals(1, $DB->count_records('user_enrolments', array()));
 
         enrol_category_sync_course($course2);
         enrol_category_sync_course($course3);
         enrol_category_sync_course($course4);
-        $this->assertFalse(is_enrolled(\context_course::instance($course1->id), $user1->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course2->id), $user1->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course3->id), $user1->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course4->id), $user1->id));
+        $this->assertFalse(is_enrolled(course::instance($course1->id), $user1->id));
+        $this->assertTrue(is_enrolled(course::instance($course2->id), $user1->id));
+        $this->assertTrue(is_enrolled(course::instance($course3->id), $user1->id));
+        $this->assertTrue(is_enrolled(course::instance($course4->id), $user1->id));
         $this->assertEquals(3, $DB->count_records('user_enrolments', array()));
 
         $this->disable_plugin(); // Stops the event handlers.
-        role_assign($studentrole->id, $user2->id, \context_coursecat::instance($cat1->id));
-        role_assign($teacherrole->id, $user4->id, \context_coursecat::instance($cat1->id));
-        role_unassign($studentrole->id, $user1->id, \context_coursecat::instance($cat2->id)->id);
+        role_assign($studentrole->id, $user2->id, coursecat::instance($cat1->id));
+        role_assign($teacherrole->id, $user4->id, coursecat::instance($cat1->id));
+        role_unassign($studentrole->id, $user1->id, coursecat::instance($cat2->id)->id);
         $this->assertEquals(3, $DB->count_records('user_enrolments', array()));
         $this->enable_plugin();
         enrol_category_sync_course($course2);
-        $this->assertFalse(is_enrolled(\context_course::instance($course2->id), $user1->id));
-        $this->assertFalse(is_enrolled(\context_course::instance($course2->id), $user2->id));
-        $this->assertFalse(is_enrolled(\context_course::instance($course2->id), $user4->id));
+        $this->assertFalse(is_enrolled(course::instance($course2->id), $user1->id));
+        $this->assertFalse(is_enrolled(course::instance($course2->id), $user2->id));
+        $this->assertFalse(is_enrolled(course::instance($course2->id), $user4->id));
         enrol_category_sync_course($course1);
         enrol_category_sync_course($course3);
         enrol_category_sync_course($course4);
         $this->assertEquals(2, $DB->count_records('user_enrolments', array()));
-        $this->assertTrue(is_enrolled(\context_course::instance($course1->id), $user2->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course1->id), $user4->id));
+        $this->assertTrue(is_enrolled(course::instance($course1->id), $user2->id));
+        $this->assertTrue(is_enrolled(course::instance($course1->id), $user4->id));
 
         $this->disable_role_sync($studentrole->id);
         enrol_category_sync_course($course1);
@@ -239,7 +244,7 @@ final class plugin_test extends \advanced_testcase {
         enrol_category_sync_course($course3);
         enrol_category_sync_course($course4);
         $this->assertEquals(1, $DB->count_records('user_enrolments', array()));
-        $this->assertTrue(is_enrolled(\context_course::instance($course1->id), $user4->id));
+        $this->assertTrue(is_enrolled(course::instance($course1->id), $user4->id));
 
         $this->assertEquals(1, $DB->count_records('enrol', array('enrol'=>'category')));
         $this->disable_role_sync($teacherrole->id);
@@ -257,7 +262,7 @@ final class plugin_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         // Setup a few courses and categories.
 
@@ -287,39 +292,39 @@ final class plugin_test extends \advanced_testcase {
         $this->enable_plugin();
 
         $this->assertEquals(0, $DB->count_records('role_assignments', array()));
-        role_assign($managerrole->id, $user1->id, \context_coursecat::instance($cat1->id));
-        role_assign($managerrole->id, $user3->id, \context_course::instance($course1->id));
-        role_assign($managerrole->id, $user3->id, \context_course::instance($course2->id));
+        role_assign($managerrole->id, $user1->id, coursecat::instance($cat1->id));
+        role_assign($managerrole->id, $user3->id, course::instance($course1->id));
+        role_assign($managerrole->id, $user3->id, course::instance($course2->id));
         $this->assertEquals(0, $DB->count_records('user_enrolments', array()));
 
         $result = enrol_category_sync_full($trace);
         $this->assertSame(0, $result);
 
         $this->disable_plugin();
-        role_assign($studentrole->id, $user1->id, \context_coursecat::instance($cat2->id));
+        role_assign($studentrole->id, $user1->id, coursecat::instance($cat2->id));
         $this->enable_plugin();
         $result = enrol_category_sync_full($trace);
         $this->assertSame(0, $result);
         $this->assertEquals(3, $DB->count_records('user_enrolments', array()));
-        $this->assertTrue(is_enrolled(\context_course::instance($course2->id), $user1->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course3->id), $user1->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course4->id), $user1->id));
+        $this->assertTrue(is_enrolled(course::instance($course2->id), $user1->id));
+        $this->assertTrue(is_enrolled(course::instance($course3->id), $user1->id));
+        $this->assertTrue(is_enrolled(course::instance($course4->id), $user1->id));
 
         $this->disable_plugin();
-        role_unassign($studentrole->id, $user1->id, \context_coursecat::instance($cat2->id)->id);
-        role_assign($studentrole->id, $user2->id, \context_coursecat::instance($cat1->id));
-        role_assign($teacherrole->id, $user4->id, \context_coursecat::instance($cat1->id));
-        role_assign($teacherrole->id, $user3->id, \context_coursecat::instance($cat2->id));
-        role_assign($managerrole->id, $user3->id, \context_course::instance($course3->id));
+        role_unassign($studentrole->id, $user1->id, coursecat::instance($cat2->id)->id);
+        role_assign($studentrole->id, $user2->id, coursecat::instance($cat1->id));
+        role_assign($teacherrole->id, $user4->id, coursecat::instance($cat1->id));
+        role_assign($teacherrole->id, $user3->id, coursecat::instance($cat2->id));
+        role_assign($managerrole->id, $user3->id, course::instance($course3->id));
         $this->enable_plugin();
         $result = enrol_category_sync_full($trace);
         $this->assertSame(0, $result);
         $this->assertEquals(5, $DB->count_records('user_enrolments', array()));
-        $this->assertTrue(is_enrolled(\context_course::instance($course1->id), $user2->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course1->id), $user4->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course2->id), $user3->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course3->id), $user3->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course4->id), $user3->id));
+        $this->assertTrue(is_enrolled(course::instance($course1->id), $user2->id));
+        $this->assertTrue(is_enrolled(course::instance($course1->id), $user4->id));
+        $this->assertTrue(is_enrolled(course::instance($course2->id), $user3->id));
+        $this->assertTrue(is_enrolled(course::instance($course3->id), $user3->id));
+        $this->assertTrue(is_enrolled(course::instance($course4->id), $user3->id));
 
         // Cleanup everything.
 

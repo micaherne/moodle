@@ -23,6 +23,9 @@
  */
 namespace report_participation\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -79,7 +82,7 @@ class report_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/participation/index.php', array('id' => $this->courseid,
+        return new url('/report/participation/index.php', array('id' => $this->courseid,
             'instanceid' => $this->other['instanceid'], 'roleid' => $this->other['roleid']));
     }
 
@@ -92,23 +95,23 @@ class report_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (empty($this->other['instanceid'])) {
-            throw new \coding_exception('The \'instanceid\' value must be set in other.');
+            throw new coding_exception('The \'instanceid\' value must be set in other.');
         }
 
         if (empty($this->other['roleid'])) {
-            throw new \coding_exception('The \'roleid\' value must be set in other.');
+            throw new coding_exception('The \'roleid\' value must be set in other.');
         }
 
         if (!isset($this->other['groupid'])) {
-            throw new \coding_exception('The \'groupid\' value must be set in other.');
+            throw new coding_exception('The \'groupid\' value must be set in other.');
         }
 
         if (!isset($this->other['timefrom'])) {
-            throw new \coding_exception('The \'timefrom\' value must be set in other.');
+            throw new coding_exception('The \'timefrom\' value must be set in other.');
         }
 
         if (!isset($this->other['action'])) {
-            throw new \coding_exception('The \'action\' value must be set in other.');
+            throw new coding_exception('The \'action\' value must be set in other.');
         }
 
     }

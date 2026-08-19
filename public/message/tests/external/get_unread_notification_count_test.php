@@ -17,7 +17,7 @@
 namespace core_message\external;
 
 use core_message\tests\helper as testhelper;
-use externallib_advanced_testcase;
+use core_external\tests\externallib_testcase;
 
 /**
  * External function test for get_unread_notification_count.

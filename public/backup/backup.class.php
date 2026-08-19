@@ -31,6 +31,8 @@
  *
  * TODO: Finish phpdocs
  */
+use core\exception\moodle_exception;
+
 abstract class backup implements checksumable {
 
     // Backup type

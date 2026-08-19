@@ -16,6 +16,8 @@
 
 namespace mod_lti\event;
 
+use core\context\system;
+
 /**
  * Unknown service API called event tests
  *
@@ -37,7 +39,7 @@ final class unknown_service_api_called_test extends \advanced_testcase {
      */
     public function test_event_context(): void {
         $event = unknown_service_api_called::create();
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 
     /*

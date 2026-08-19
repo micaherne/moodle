@@ -16,6 +16,8 @@
 
 namespace mod_glossary;
 
+use core_course\modinfo;
+
 /**
  * Concept fetching and caching tests.
  *
@@ -167,7 +169,7 @@ final class concept_cache_test extends \advanced_testcase {
         $this->assertCount(4, $concepts1[0]);
         $this->assertCount(4, $concepts1[1]);
         $this->setUser($user);
-        \course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
         \mod_glossary\local\concept_cache::reset_caches();
         $concepts1 = \mod_glossary\local\concept_cache::get_concepts($course1->id);
         $this->assertCount(3, $concepts1[0]);

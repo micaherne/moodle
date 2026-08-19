@@ -25,8 +25,9 @@
 
 namespace quizaccess_seb\event;
 
-use context_system;
+use core\context\system;
 use core\event\base;
+use core\url;
 use quizaccess_seb\template;
 
 defined('MOODLE_INTERNAL') || die();
@@ -49,7 +50,7 @@ class template_updated extends base {
      * @param context_system $context Context system.
      * @return base
      */
-    public static function create_strict(template $template, context_system $context): base {
+    public static function create_strict(template $template, system $context): base {
         global $USER;
         $tid = $template->get('id');
 
@@ -87,7 +88,7 @@ class template_updated extends base {
             'id' => $this->objectid,
             'action' => 'edit',
         ];
-        return new \moodle_url('/mod/quiz/accessrule/seb/template.php', $params);
+        return new url('/mod/quiz/accessrule/seb/template.php', $params);
     }
 
     /**

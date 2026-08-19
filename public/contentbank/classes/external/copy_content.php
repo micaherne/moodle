@@ -16,6 +16,8 @@
 
 namespace core_contentbank\external;
 
+use core\context;
+use core\exception\moodle_exception;
 use core_contentbank\contentbank;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -80,7 +82,7 @@ class copy_content extends external_api {
                 $cb = new contentbank();
                 $content = $cb->get_content_from_id($record->id);
                 $contenttype = $content->get_content_type_instance();
-                $context = \context::instance_by_id($record->contextid, MUST_EXIST);
+                $context = context::instance_by_id($record->contextid, MUST_EXIST);
                 self::validate_context($context);
                 // Check capability.
                 if ($contenttype->can_copy($content)) {
@@ -120,7 +122,7 @@ class copy_content extends external_api {
                         'message' => get_string('nopermissiontocopy', 'core_contentbank'),
                     ];
                 }
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 // The content or the context don't exist.
                 $warnings[] = [
                     'item' => $params['contentid'],

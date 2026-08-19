@@ -24,6 +24,10 @@
 
 namespace core_analytics;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -103,7 +107,7 @@ class dataset_manager {
 
         if ($filearea !== self::EXPORT_FILEAREA && $filearea !== self::LABELLED_FILEAREA &&
                 $filearea !== self::UNLABELLED_FILEAREA) {
-            throw new \coding_exception('Invalid provided filearea');
+            throw new coding_exception('Invalid provided filearea');
         }
 
         $this->modelid = $modelid;
@@ -128,7 +132,7 @@ class dataset_manager {
             'component' => 'analytics',
             'filearea' => $this->filearea,
             'itemid' => $this->modelid,
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'filepath' => '/analysable/' . $this->analysableid . '/' .
                 \core_analytics\analysis::clean_time_splitting_id($this->timesplittingid) . '/',
             'filename' => self::get_filename($this->evaluation)
@@ -169,7 +173,7 @@ class dataset_manager {
         $fs = get_file_storage();
         // Evaluation data is always labelled.
         $filepath = '/timesplitting/' . \core_analytics\analysis::clean_time_splitting_id($timesplittingid) . '/';
-        return $fs->get_file(\context_system::instance()->id, 'analytics', self::LABELLED_FILEAREA, $modelid,
+        return $fs->get_file(system::instance()->id, 'analytics', self::LABELLED_FILEAREA, $modelid,
             $filepath, self::EVALUATION_FILENAME);
     }
 
@@ -203,7 +207,7 @@ class dataset_manager {
         foreach ($timesplittingids as $timesplittingid) {
 
             $filepath = '/timesplitting/' . \core_analytics\analysis::clean_time_splitting_id($timesplittingid) . '/';
-            $files = $fs->get_directory_files(\context_system::instance()->id, 'analytics', $filearea, $modelid, $filepath);
+            $files = $fs->get_directory_files(system::instance()->id, 'analytics', $filearea, $modelid, $filepath);
             foreach ($files as $file) {
 
                 // Discard evaluation files.
@@ -262,7 +266,7 @@ class dataset_manager {
         $filename = self::get_filename(true);
         $filepath = '/analysable/' . $analysableid . '/' .
             \core_analytics\analysis::clean_time_splitting_id($timesplittingid) . '/';
-        return $fs->get_file(\context_system::instance()->id, 'analytics', $filearea, $modelid, $filepath, $filename);
+        return $fs->get_file(system::instance()->id, 'analytics', $filearea, $modelid, $filepath, $filename);
     }
 
     /**
@@ -313,7 +317,7 @@ class dataset_manager {
         // Start writing to the merge file.
         $wh = fopen($tmpfilepath, 'w');
         if (!$wh) {
-            throw new \moodle_exception('errorcannotwritedataset', 'analytics', '', $tmpfilepath);
+            throw new moodle_exception('errorcannotwritedataset', 'analytics', '', $tmpfilepath);
         }
 
         fputcsv($wh, $varnames, escape: '\\');
@@ -341,7 +345,7 @@ class dataset_manager {
             'component' => 'analytics',
             'filearea' => $filearea,
             'itemid' => $modelid,
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'filepath' => '/timesplitting/' . \core_analytics\analysis::clean_time_splitting_id($timesplittingid) . '/',
             'filename' => self::get_filename($evaluation)
         ];
@@ -362,7 +366,7 @@ class dataset_manager {
 
         $fs = get_file_storage();
 
-        $contextid = \context_system::instance()->id;
+        $contextid = system::instance()->id;
         $filepath = '/timesplitting/' . \core_analytics\analysis::clean_time_splitting_id($timesplittingid) . '/';
 
         $files = $fs->get_directory_files($contextid, 'analytics', self::LABELLED_FILEAREA, $modelid,
@@ -391,7 +395,7 @@ class dataset_manager {
     public static function get_structured_data(\stored_file $dataset) {
 
         if ($dataset->get_filearea() !== 'unlabelled') {
-            throw new \coding_exception('Sorry, only support for unlabelled data');
+            throw new coding_exception('Sorry, only support for unlabelled data');
         }
 
         $rh = $dataset->get_content_file_handle();
@@ -434,7 +438,7 @@ class dataset_manager {
      */
     public static function clear_model_files($modelid) {
         $fs = get_file_storage();
-        return $fs->delete_area_files(\context_system::instance()->id, 'analytics', false, $modelid);
+        return $fs->delete_area_files(system::instance()->id, 'analytics', false, $modelid);
     }
 
     /**

@@ -16,6 +16,8 @@
 
 namespace auth_lti\privacy;
 
+use core\context as core_context;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -76,7 +78,7 @@ class provider implements
                 'sub' => $login->sub,
                 'sub256' => $login->sub256
             ];
-            writer::with_context(\context_user::instance($user->id))->export_data([
+            writer::with_context(user::instance($user->id))->export_data([
                 get_string('privacy:metadata:auth_lti', 'auth_lti'), $login->issuer
             ], $data);
         }
@@ -88,7 +90,7 @@ class provider implements
      *
      * @param  \context $context The context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(core_context $context) {
         if ($context->contextlevel != CONTEXT_USER) {
             return;
         }
@@ -123,7 +125,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof user) {
             return;
         }
 
@@ -142,7 +144,7 @@ class provider implements
     public static function delete_data_for_users(approved_userlist $userlist) {
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_user) {
+        if ($context instanceof user) {
             static::delete_user_data($context->instanceid);
         }
     }

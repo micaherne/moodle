@@ -23,6 +23,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\plugin_manager;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
@@ -110,7 +113,7 @@ class tool_installaddon_installfromzip_form extends moodleform {
      */
     public function validation($data, $files) {
 
-        $pluginman = core_plugin_manager::instance();
+        $pluginman = plugin_manager::instance();
         $errors = parent::validation($data, $files);
 
         if (!empty($data['plugintype'])) {

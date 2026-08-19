@@ -16,6 +16,7 @@
 
 namespace mod_assign;
 
+use core\context\module;
 use mod_assign_testable_assign;
 
 defined('MOODLE_INTERNAL') || die();
@@ -207,7 +208,7 @@ final class base_test extends \advanced_testcase {
         }
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         return new mod_assign_testable_assign($context, $cm, $this->course);
     }
 

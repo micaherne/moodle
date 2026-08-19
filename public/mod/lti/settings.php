@@ -48,33 +48,40 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\setting\heading;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 /*
  * @var admin_settingpage $settings
  */
-$modltifolder = new admin_category('modltifolder', new lang_string('pluginname', 'mod_lti'), $module->is_enabled() === false);
+$modltifolder = new category('modltifolder', new lang_string('pluginname', 'mod_lti'), $module->is_enabled() === false);
 $ADMIN->add('modsettings', $modltifolder);
 $settings->visiblename = new lang_string('manage_tools', 'mod_lti');
 $settings->hidden = true;
 $ADMIN->add('modltifolder', $settings);
-$proxieslink = new admin_externalpage('ltitoolproxies',
+$proxieslink = new externalpage('ltitoolproxies',
         get_string('manage_tool_proxies', 'lti'),
-        new moodle_url('/mod/lti/toolproxies.php'));
+        new url('/mod/lti/toolproxies.php'));
 $proxieslink->hidden = true;
 $ADMIN->add('modltifolder', $proxieslink);
-$ADMIN->add('modltifolder', new admin_externalpage('ltitoolconfigure',
+$ADMIN->add('modltifolder', new externalpage('ltitoolconfigure',
         get_string('manage_external_tools', 'lti'),
-        new moodle_url('/mod/lti/toolconfigure.php')));
+        new url('/mod/lti/toolconfigure.php')));
 
-foreach (core_plugin_manager::instance()->get_plugins_of_type('ltisource') as $plugin) {
+foreach (plugin_manager::instance()->get_plugins_of_type('ltisource') as $plugin) {
     /*
      * @var \mod_lti\plugininfo\ltisource $plugin
      */
     $plugin->load_settings($ADMIN, 'modltifolder', $hassiteconfig);
 }
 
-$toolproxiesurl = new moodle_url('/mod/lti/toolproxies.php');
+$toolproxiesurl = new url('/mod/lti/toolproxies.php');
 $toolproxiesurl = $toolproxiesurl->out();
 
 if ($ADMIN->fulltree) {
@@ -213,7 +220,7 @@ if ($ADMIN->fulltree) {
 //]]
 </script>
 EOD;
-    $settings->add(new admin_setting_heading('lti_types', new lang_string('external_tool_types', 'lti') .
+    $settings->add(new heading('lti_types', new lang_string('external_tool_types', 'lti') .
         $OUTPUT->help_icon('main_admin', 'lti'), $template));
 }
 

@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace enrol_lti\local\ltiadvantage\repository;
+use core\url;
 use enrol_lti\local\ltiadvantage\entity\application_registration;
 use enrol_lti\local\ltiadvantage\entity\deployment;
 
@@ -41,11 +42,11 @@ final class deployment_repository_test extends \advanced_testcase {
             $registration = application_registration::create(
                 'Test',
                 'a2c94a2c94',
-                new \moodle_url('http://lms.example.org'),
+                new url('http://lms.example.org'),
                 'clientid_123',
-                new \moodle_url('https://example.org/authrequesturl'),
-                new \moodle_url('https://example.org/jwksurl'),
-                new \moodle_url('https://example.org/accesstokenurl')
+                new url('https://example.org/authrequesturl'),
+                new url('https://example.org/jwksurl'),
+                new url('https://example.org/accesstokenurl')
             );
             $registrationrepo = new application_registration_repository();
             $createdregistration = $registrationrepo->save($registration);
@@ -270,20 +271,20 @@ final class deployment_repository_test extends \advanced_testcase {
         $registration1 = application_registration::create(
             'Test',
             'a2c94a2c94',
-            new \moodle_url('http://lms.example.org'),
+            new url('http://lms.example.org'),
             'clientid_123',
-            new \moodle_url('https://example.org/authrequesturl'),
-            new \moodle_url('https://example.org/jwksurl'),
-            new \moodle_url('https://example.org/accesstokenurl')
+            new url('https://example.org/authrequesturl'),
+            new url('https://example.org/jwksurl'),
+            new url('https://example.org/accesstokenurl')
         );
         $registration2 = application_registration::create(
             'Test 2',
             'c56bcdc56bcd',
-            new \moodle_url('http://lms2.example.org'),
+            new url('http://lms2.example.org'),
             'clientid_345',
-            new \moodle_url('https://example.org/authrequesturl'),
-            new \moodle_url('https://example.org/jwksurl'),
-            new \moodle_url('https://example.org/accesstokenurl')
+            new url('https://example.org/authrequesturl'),
+            new url('https://example.org/jwksurl'),
+            new url('https://example.org/accesstokenurl')
         );
         $registrationrepo = new application_registration_repository();
         $deploymentrepo = new deployment_repository();

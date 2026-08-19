@@ -24,8 +24,8 @@
 
 namespace tool_customlang\local\mlang;
 
-use coding_exception;
-use moodle_exception;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 
 /**
  * Parser of Moodle strings defined as associative array.

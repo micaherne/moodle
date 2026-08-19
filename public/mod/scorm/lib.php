@@ -19,6 +19,15 @@
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\course;
+use core\context\module;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\output\html_writer;
+use core\url;
+use core_course\cached_cm_info;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** SCORM_TYPE_LOCAL = local */
@@ -113,7 +122,7 @@ function scorm_add_instance($scorm, $mform=null) {
     $cmidnumber = $scorm->cmidnumber;
     $courseid   = $scorm->course;
 
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
     $scorm = scorm_option2text($scorm);
     $scorm->width  = (int)str_replace('%', '', $scorm->width);
@@ -213,7 +222,7 @@ function scorm_update_instance($scorm, $mform=null) {
 
     $scorm->id = $scorm->instance;
 
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
     if ($scorm->scormtype === SCORM_TYPE_LOCAL) {
         if (!empty($scorm->packagefile)) {
@@ -356,7 +365,7 @@ function scorm_user_outline($course, $user, $mod, $scorm) {
         $result = (object) [
             'time' => grade_get_date_for_user_grade($grade, $user),
         ];
-        if (!$grade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+        if (!$grade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
             $result->info = get_string('gradenoun') . ': '. $grade->str_long_grade;
         } else {
             $result->info = get_string('gradenoun') . ': ' . get_string('hidden', 'grades');
@@ -399,7 +408,7 @@ function scorm_user_complete($course, $user, $mod, $scorm) {
     $grades = grade_get_grades($course->id, 'mod', 'scorm', $scorm->id, $user->id);
     if (!empty($grades->items[0]->grades)) {
         $grade = reset($grades->items[0]->grades);
-        if (!$grade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+        if (!$grade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
             echo $OUTPUT->container(get_string('gradenoun').': '.$grade->str_long_grade);
             if ($grade->str_feedback) {
                 echo $OUTPUT->container(get_string('feedback').': '.$grade->str_feedback);
@@ -1164,7 +1173,7 @@ function scorm_dndupload_register() {
  */
 function scorm_dndupload_handle($uploadinfo) {
 
-    $context = context_module::instance($uploadinfo->coursemodule);
+    $context = module::instance($uploadinfo->coursemodule);
     file_save_draft_area_files($uploadinfo->draftitemid, $context->id, 'mod_scorm', 'package', 0);
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'mod_scorm', 'package', 0, 'sortorder, itemid, filepath, filename', false);
@@ -1573,7 +1582,7 @@ function mod_scorm_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('enter', 'scorm'),
-        new \moodle_url('/mod/scorm/view.php', array('id' => $cm->id)),
+        new url('/mod/scorm/view.php', array('id' => $cm->id)),
         1,
         $actionable
     );
@@ -1703,7 +1712,7 @@ function mod_scorm_core_calendar_event_timestart_updated(\calendar_event $event,
     $modified = false;
 
     $coursemodule = get_fast_modinfo($courseid)->instances[$modulename][$instanceid];
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
 
     // The user does not have the capability to modify this activity.
     if (!has_capability('moodle/course:manageactivities', $context)) {
@@ -1844,7 +1853,7 @@ function mod_scorm_core_calendar_get_event_action_string(string $eventtype): str
  */
 function scorm_extend_settings_navigation(settings_navigation $settings, navigation_node $scormnode): void {
     if (has_capability('mod/scorm:viewreport', $settings->get_page()->cm->context)) {
-        $url = new moodle_url('/mod/scorm/report.php', ['id' => $settings->get_page()->cm->id]);
+        $url = new url('/mod/scorm/report.php', ['id' => $settings->get_page()->cm->id]);
         $scormnode->add(get_string("reports", "scorm"), $url, navigation_node::TYPE_CUSTOM, null, 'scormreport');
     }
 }

@@ -25,6 +25,8 @@
 
 namespace quizaccess_seb;
 
+use core\exception\invalid_parameter_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -57,7 +59,7 @@ class config_key {
      */
     public static function generate(string $xml): config_key {
         if (!empty($xml) && !helper::is_valid_seb_config($xml)) {
-            throw new \invalid_parameter_exception('Invalid a PList XML string, representing SEB config');
+            throw new invalid_parameter_exception('Invalid a PList XML string, representing SEB config');
         }
 
         $plist = new property_list($xml);

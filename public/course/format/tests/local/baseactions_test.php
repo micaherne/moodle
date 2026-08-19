@@ -17,8 +17,8 @@
 namespace core_courseformat\local;
 use core_courseformat\formatactions;
 use ReflectionMethod;
-use section_info;
-use cm_info;
+use core_course\section_info;
+use core_course\cm_info;
 
 /**
  * Base format actions class tests.

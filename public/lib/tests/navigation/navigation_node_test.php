@@ -20,6 +20,7 @@ use core\output\action_link;
 use core\output\actions\popup_action;
 use core\output\pix_icon;
 use core\tests\navigation\navigation_testcase;
+use core\url;
 
 /**
  * Tests for navigation_node.
@@ -39,7 +40,7 @@ final class navigation_node_test extends navigation_testcase {
             'shorttext' => 'A very silly extra long short text string, more than 25 characters',
             'key' => 'key',
             'type' => 'navigation_node::TYPE_COURSE',
-            'action' => new \moodle_url('http://www.moodle.org/')];
+            'action' => new url('http://www.moodle.org/')];
 
         $node = new navigation_node($fakeproperties);
         $this->assertSame($fakeproperties['text'], $node->text);
@@ -258,7 +259,7 @@ final class navigation_node_test extends navigation_testcase {
         $node = $this->setup_node();
 
         $node1 = $node->add('active node 1', null, navigation_node::TYPE_CUSTOM, null, 'anode1');
-        $node2 = $node->add('active node 2', new \moodle_url($CFG->wwwroot), navigation_node::TYPE_COURSE, null, 'anode2');
+        $node2 = $node->add('active node 2', new url($CFG->wwwroot), navigation_node::TYPE_COURSE, null, 'anode2');
         $node1->make_active();
         $node->get('anode2')->make_active();
         $this->assertTrue($node1->isactive);
@@ -384,16 +385,16 @@ final class navigation_node_test extends navigation_testcase {
             'The navigation node has an action link.' =>
                 [
                     navigation_node::create('Node', new action_link(
-                        new \moodle_url('/'),
+                        new url('/'),
                         '',
-                        new popup_action('click', new \moodle_url('/'))
+                        new popup_action('click', new url('/'))
                     ), navigation_node::TYPE_SETTING),
                     true,
                 ],
 
             'The navigation node does not have an action link.' =>
                 [
-                    navigation_node::create('Node', new \moodle_url('/'), navigation_node::TYPE_SETTING),
+                    navigation_node::create('Node', new url('/'), navigation_node::TYPE_SETTING),
                     false,
                 ],
         ];
@@ -440,22 +441,22 @@ final class navigation_node_test extends navigation_testcase {
             'The navigation node has an action link with an action attached.' =>
                 [
                     navigation_node::create('Node', new action_link(
-                        new \moodle_url('/'),
+                        new url('/'),
                         '',
-                        new popup_action('click', new \moodle_url('/'))
+                        new popup_action('click', new url('/'))
                     ), navigation_node::TYPE_SETTING),
                 ],
             'The navigation node has an action link without an action.' =>
                 [
                     navigation_node::create(
                         'Node',
-                        new action_link(new \moodle_url('/'), '', null),
+                        new action_link(new url('/'), '', null),
                         navigation_node::TYPE_SETTING
                     ),
                 ],
             'The navigation node does not have an action link.' =>
                 [
-                    navigation_node::create('Node', new \moodle_url('/'), navigation_node::TYPE_SETTING),
+                    navigation_node::create('Node', new url('/'), navigation_node::TYPE_SETTING),
                 ],
         ];
     }

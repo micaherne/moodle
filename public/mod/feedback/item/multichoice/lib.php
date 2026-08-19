@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') OR die('not allowed');
 require_once($CFG->dirroot.'/mod/feedback/item/feedback_item_class.php');
 
@@ -319,7 +321,7 @@ class feedback_item_multichoice extends feedback_item_base {
         $class = 'multichoice-' . $info->subtype;
         $inputname = $item->typ . '_' . $item->id;
         $options = $this->get_options($item);
-        $separator = !empty($info->horizontal) ? ' ' : \html_writer::div('', 'w-100');
+        $separator = !empty($info->horizontal) ? ' ' : html_writer::div('', 'w-100');
         $tmpvalue = $form->get_item_value($item) ?? 0; // Used for element defaults, so must be a valid value (not null).
 
         // Subtypes:

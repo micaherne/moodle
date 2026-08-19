@@ -16,6 +16,8 @@
 
 namespace core\output;
 
+use core_cache\cache;
+
 /**
  * Class allowing different systems for mapping and rendering icons.
  *
@@ -548,7 +550,7 @@ class icon_system_fontawesome extends icon_system_font {
      */
     public function get_icon_name_map() {
         if ($this->map === []) {
-            $cache = \cache::make('core', 'fontawesomeiconmapping');
+            $cache = cache::make('core', 'fontawesomeiconmapping');
 
             // Create different mapping keys for different icon system classes, there may be several different
             // themes on the same site.

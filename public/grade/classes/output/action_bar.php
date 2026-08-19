@@ -16,8 +16,9 @@
 
 namespace core_grades\output;
 
-use templatable;
-use renderable;
+use core\context;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * The base class for the action bar in the gradebook pages.
@@ -36,7 +37,7 @@ abstract class action_bar implements templatable, renderable {
      *
      * @param \context $context The context object.
      */
-    public function __construct(\context $context) {
+    public function __construct(context $context) {
         $this->context = $context;
     }
 

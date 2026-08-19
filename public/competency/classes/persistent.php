@@ -16,6 +16,8 @@
 
 namespace core_competency;
 
+use core\exception\coding_exception;
+
 /**
  * Abstract class for core_competency objects saved to the DB.
  *
@@ -42,7 +44,7 @@ abstract class persistent extends \core\persistent {
         } else if (strpos($method, 'set_') === 0) {
             return $this->set(substr($method, 4), $arguments[0]);
         }
-        throw new \coding_exception('Unexpected method call: ' . $method);
+        throw new coding_exception('Unexpected method call: ' . $method);
     }
 
 }

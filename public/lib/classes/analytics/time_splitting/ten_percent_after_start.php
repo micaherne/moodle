@@ -24,6 +24,9 @@
 
 namespace core\analytics\time_splitting;
 
+use core\exception\coding_exception;
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -40,8 +43,8 @@ class ten_percent_after_start extends \core_analytics\local\time_splitting\after
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('timesplitting:tenpercentafterstart');
+    public static function get_name(): lang_string {
+        return new lang_string('timesplitting:tenpercentafterstart');
     }
 
     /**
@@ -70,7 +73,7 @@ class ten_percent_after_start extends \core_analytics\local\time_splitting\after
     protected function wait_period(\core_analytics\analysable $analysable) {
 
         if (!$analysable->get_end() || !$analysable->get_start()) {
-            throw new \coding_exception('Analysables with no start or end should be discarded in is_valid_analysable.');
+            throw new coding_exception('Analysables with no start or end should be discarded in is_valid_analysable.');
         }
 
         $diff = $analysable->get_end() - $analysable->get_start();

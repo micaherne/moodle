@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once('edit_form.php');
@@ -21,13 +26,13 @@ require_once($CFG->dirroot . '/course/lib.php');
 
 $noteid = optional_param('id', 0, PARAM_INT);
 
-$url = new moodle_url('/notes/edit.php');
+$url = new url('/notes/edit.php');
 
 if ($noteid) {
     // Existing note.
     $url->param('id', $noteid);
     if (!$note = note_load($noteid)) {
-        throw new \moodle_exception('invalidid', 'notes');
+        throw new moodle_exception('invalidid', 'notes');
     }
 
 } else {
@@ -53,20 +58,20 @@ if ($noteid) {
 $PAGE->set_url($url);
 
 if (!$course = $DB->get_record('course', array('id' => $note->courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
 
 if (empty($CFG->enablenotes)) {
-    throw new \moodle_exception('notesdisabled', 'notes');
+    throw new moodle_exception('notesdisabled', 'notes');
 }
 
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/notes:manage', $context);
 
 if (!$user = $DB->get_record('user', array('id' => $note->userid))) {
-    throw new \moodle_exception('invaliduserid');
+    throw new moodle_exception('invaliduserid');
 }
 
 $editoroptions = [
@@ -117,13 +122,13 @@ if ($noteid) {
 
 // Output HTML.
 $link = null;
-if (course_can_view_participants($context) || course_can_view_participants(context_system::instance())) {
-    $link = new moodle_url('/user/index.php', array('id' => $course->id));
+if (course_can_view_participants($context) || course_can_view_participants(system::instance())) {
+    $link = new url('/user/index.php', array('id' => $course->id));
 }
 $PAGE->navbar->add(get_string('participants'), $link);
-$PAGE->navbar->add(fullname($user), new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id)));
+$PAGE->navbar->add(fullname($user), new url('/user/view.php', array('id' => $user->id, 'course' => $course->id)));
 $PAGE->navbar->add(get_string('notes', 'notes'),
-                   new moodle_url('/notes/index.php', array('user' => $user->id, 'course' => $course->id)));
+                   new url('/notes/index.php', array('user' => $user->id, 'course' => $course->id)));
 $PAGE->navbar->add($strnotes);
 $PAGE->set_title($course->shortname . ': ' . $strnotes);
 $PAGE->set_heading($course->fullname);

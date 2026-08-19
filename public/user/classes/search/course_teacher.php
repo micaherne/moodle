@@ -25,6 +25,9 @@
 
 namespace core_user\search;
 
+use core\context;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/user/lib.php');
@@ -64,7 +67,7 @@ class course_teacher extends \core_search\base {
      * @param \context|null $context Optional context to restrict scope of returned results
      * @return \moodle_recordset|null Recordset (or null if no results)
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
         $teacherroleids = get_config('core', 'searchteacherroles');
 
@@ -107,7 +110,7 @@ class course_teacher extends \core_search\base {
      * @return \core_search\document
      */
     public function get_document($record, $options = array()) {
-        $context = \context::instance_by_id($record->contextid);
+        $context = context::instance_by_id($record->contextid);
 
         // Content.
         if ($context->contextlevel == CONTEXT_COURSE) {
@@ -167,7 +170,7 @@ class course_teacher extends \core_search\base {
     public function get_context_url(\core_search\document $doc) {
         $user = $this->get_user($doc->get('itemid'));
         $courseid = $doc->get('courseid');
-        return new \moodle_url('/user/view.php', array('id' => $user->id, 'course' => $courseid));
+        return new url('/user/view.php', array('id' => $user->id, 'course' => $courseid));
     }
 
     /**

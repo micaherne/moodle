@@ -28,6 +28,9 @@
  * @copyright 2009 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context;
+use core\context\system;
+
 class block_tags_edit_form extends block_edit_form {
     protected function specific_definition($mform) {
         global $CFG;
@@ -53,7 +56,7 @@ class block_tags_edit_form extends block_edit_form {
         $mform->addElement('select', 'config_showstandard', get_string('defaultdisplay', 'block_tags'), $defaults);
         $mform->setDefault('config_showstandard', core_tag_tag::BOTH_STANDARD_AND_NOT);
 
-        $defaults = array(0 => context_system::instance()->get_context_name());
+        $defaults = array(0 => system::instance()->get_context_name());
         $parentcontext = context::instance_by_id($this->block->instance->parentcontextid);
         if ($parentcontext->contextlevel > CONTEXT_COURSE) {
             $coursecontext = $parentcontext->get_course_context();

@@ -24,8 +24,9 @@
 namespace tool_dataprivacy\local;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use moodle_exception;
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use tool_dataprivacy\api;
 use tool_dataprivacy\data_request;
 
@@ -207,7 +208,7 @@ class helper {
         // Our prospective list of users.
         if ($candidates = $DB->get_records_sql($sql, $params)) {
             foreach ($candidates as $key => $child) {
-                $childcontext = \context_user::instance($child->id);
+                $childcontext = user::instance($child->id);
                 if (has_capability('tool/dataprivacy:makedatarequestsforchildren', $childcontext, $userid)) {
                     $finalresults[$key] = $child;
                 }

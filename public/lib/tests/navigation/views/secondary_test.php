@@ -17,9 +17,12 @@
 namespace core\navigation\views;
 
 use booktool_print\output\renderer;
-use navigation_node;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\navigation\navigation_node;
 use ReflectionMethod;
-use moodle_url;
+use core\url;
 
 /**
  * Class core_secondary_testcase
@@ -101,25 +104,25 @@ final class secondary_test extends \advanced_testcase {
         switch ($context) {
             case 'course':
                 $pagecourse = $this->getDataGenerator()->create_course(['format' => $courseformat]);
-                $contextrecord = \context_course::instance($pagecourse->id, MUST_EXIST);
+                $contextrecord = course::instance($pagecourse->id, MUST_EXIST);
                 if ($courseformat === 'singleactivity') {
-                    $pageurl = new \moodle_url('/course/edit.php', ['id' => $pagecourse->id]);
+                    $pageurl = new url('/course/edit.php', ['id' => $pagecourse->id]);
                 } else {
-                    $pageurl = new \moodle_url('/course/view.php', ['id' => $pagecourse->id]);
+                    $pageurl = new url('/course/view.php', ['id' => $pagecourse->id]);
                 }
                 break;
             case 'module':
                 $pagecourse = $this->getDataGenerator()->create_course(['format' => $courseformat]);
                 $assign = $this->getDataGenerator()->create_module('assign', ['course' => $pagecourse->id]);
                 $cm = get_coursemodule_from_id('assign', $assign->cmid);
-                $contextrecord = \context_module::instance($cm->id);
-                $pageurl = new \moodle_url('/mod/assign/view.php', ['id' => $cm->id]);
+                $contextrecord = module::instance($cm->id);
+                $pageurl = new url('/mod/assign/view.php', ['id' => $cm->id]);
                 $PAGE->set_cm($cm);
                 break;
             case 'system':
-                $contextrecord = \context_system::instance();
+                $contextrecord = system::instance();
                 $PAGE->set_pagelayout('admin');
-                $pageurl = new \moodle_url('/admin/index.php');
+                $pageurl = new url('/admin/index.php');
 
         }
         $PAGE->set_url($pageurl);
@@ -174,10 +177,10 @@ final class secondary_test extends \advanced_testcase {
 
         // If seturl is null then set actionurl of child6 to '/'.
         if ($seturl === null) {
-            $child6actionurl = new \moodle_url('/');
+            $child6actionurl = new url('/');
         } else {
             // If seturl is provided then set actionurl of child6 to '/foo'.
-            $child6actionurl = new \moodle_url('/foo');
+            $child6actionurl = new url('/foo');
         }
         $child6 = $child2->add('sixth child', $child6actionurl, navigation_node::TYPE_COURSE, 'sixthchld', 'sixthchild');
         // Activate the sixthchild node.
@@ -203,10 +206,10 @@ final class secondary_test extends \advanced_testcase {
         global $PAGE;
 
         if ($seturl !== null) {
-            navigation_node::override_active_url(new \moodle_url($seturl));
+            navigation_node::override_active_url(new url($seturl));
         } else {
             $PAGE->set_url('/');
-            navigation_node::override_active_url(new \moodle_url('/'));
+            navigation_node::override_active_url(new url('/'));
         }
         if ($key !== null) {
             $PAGE->set_secondary_active_tab($key);
@@ -427,7 +430,7 @@ final class secondary_test extends \advanced_testcase {
                 $children = $value['children'] ?? $value;
                 $child = $this->generate_node_tree_construct($children, $key);
                 if (isset($value['action'])) {
-                    $child->action = new \moodle_url($value['action']);
+                    $child->action = new url($value['action']);
                 }
                 $node->add_node($child);
             } else {
@@ -457,7 +460,7 @@ final class secondary_test extends \advanced_testcase {
             ]
         ];
         $node = $this->generate_node_tree_construct($structure, 'primarynode');
-        $node->action = new \moodle_url('/');
+        $node->action = new url('/');
 
         $PAGE->set_url($selectedurl);
         $secondary = new secondary($PAGE);
@@ -669,7 +672,7 @@ final class secondary_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $PAGE->set_context($context);
         $PAGE->set_url('/');
 
@@ -823,13 +826,13 @@ final class secondary_test extends \advanced_testcase {
         ];
 
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $PAGE->set_context($context);
 
         $PAGE->set_url($selectedurl);
-        navigation_node::override_active_url(new \moodle_url($selectedurl));
+        navigation_node::override_active_url(new url($selectedurl));
         $node = $this->generate_node_tree_construct($structure, 'primarynode');
-        $node->action = new \moodle_url('/');
+        $node->action = new url('/');
 
         $secondary = new secondary($PAGE);
         $secondary->add_node($node);
@@ -902,11 +905,11 @@ final class secondary_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $pagecourse = $this->getDataGenerator()->create_course();
-        $contextrecord = \context_course::instance($pagecourse->id, MUST_EXIST);
+        $contextrecord = course::instance($pagecourse->id, MUST_EXIST);
 
         $id = ($contextidentifier == 'contextid') ? $contextrecord->id : $pagecourse->id;
 
-        $pageurl = new \moodle_url($url, [$contextidentifier => $id]);
+        $pageurl = new url($url, [$contextidentifier => $id]);
         $PAGE->set_url($pageurl);
         navigation_node::override_active_url($pageurl);
         $PAGE->set_context($contextrecord);

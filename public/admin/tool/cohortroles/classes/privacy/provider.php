@@ -24,6 +24,7 @@
 
 namespace tool_cohortroles\privacy;
 
+use core\context as core_context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\context;
@@ -187,7 +188,7 @@ class provider implements
         $cohortroles = $DB->get_records_sql($sql, $params);
 
         foreach ($cohortroles as $cohortrole) {
-            $context = \context::instance_by_id($cohortrole->contextid);
+            $context = core_context::instance_by_id($cohortrole->contextid);
 
             // The tool_cohortroles data export is organised in:
             // {User Context}/Cohort roles management/{cohort name}/{role shortname}/data.json.
@@ -228,7 +229,7 @@ class provider implements
      *
      * @param   context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(core_context $context) {
         global $DB;
 
         // When we process user deletions and expiries, we always delete from the user context.

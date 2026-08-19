@@ -16,6 +16,8 @@
 
 namespace aiprovider_azureai;
 
+use core\context\user;
+use core\exception\coding_exception;
 use core\http_client;
 use core_ai\ai_image;
 use GuzzleHttp\Psr7\Request;
@@ -79,7 +81,7 @@ class process_generate_image extends abstract_processor {
         } else if ($ratio === 'portrait') {
             $size = '1024x1792';
         } else {
-            throw new \coding_exception('Invalid aspect ratio: ' . $ratio);
+            throw new coding_exception('Invalid aspect ratio: ' . $ratio);
         }
         return $size;
     }
@@ -152,7 +154,7 @@ class process_generate_image extends abstract_processor {
         // We put the file in the user draft area initially.
         // Placements (on behalf of the user) can then move it to the correct location.
         $fileinfo = new \stdClass();
-        $fileinfo->contextid = \context_user::instance($userid)->id;
+        $fileinfo->contextid = user::instance($userid)->id;
         $fileinfo->filearea = 'draft';
         $fileinfo->component = 'user';
         $fileinfo->itemid = file_get_unused_draft_itemid();

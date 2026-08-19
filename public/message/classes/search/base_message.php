@@ -24,6 +24,14 @@
 
 namespace core_message\search;
 
+use core\context;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
+use core\user as core_user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/message/lib.php');
@@ -53,15 +61,15 @@ abstract class base_message extends \core_search\base {
     public function get_document($record, $options = array()) {
 
         // Check if user still exists, before proceeding.
-        $user = \core_user::get_user($options['user1id'], 'deleted');
+        $user = core_user::get_user($options['user1id'], 'deleted');
         if ($user->deleted == 1) {
             return false;
         }
 
         // Get user context.
         try {
-            $usercontext = \context_user::instance($options['user1id']);
-        } catch (\moodle_exception $ex) {
+            $usercontext = context_user::instance($options['user1id']);
+        } catch (moodle_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving ' . $this->areaid . ' ' . $record->id . ' document, not all required data is available: ' .
                     $ex->getMessage(), DEBUG_DEVELOPER);
@@ -96,7 +104,7 @@ abstract class base_message extends \core_search\base {
     public function get_doc_url(\core_search\document $doc) {
         $users = $this->get_current_other_users($doc);
         $position = 'm'.$doc->get('itemid');
-        return new \moodle_url('/message/index.php', array('history' => MESSAGE_HISTORY_ALL,
+        return new url('/message/index.php', array('history' => MESSAGE_HISTORY_ALL,
                 'user1' => $users['currentuserid'], 'user2' => $users['otheruserid']), $position);
     }
 
@@ -108,7 +116,7 @@ abstract class base_message extends \core_search\base {
      */
     public function get_context_url(\core_search\document $doc) {
         $users = $this->get_current_other_users($doc);
-        return new \moodle_url('/message/index.php', array('user1' => $users['currentuserid'], 'user2' => $users['otheruserid']));
+        return new url('/message/index.php', array('user1' => $users['currentuserid'], 'user2' => $users['otheruserid']));
     }
 
     /**
@@ -141,7 +149,7 @@ abstract class base_message extends \core_search\base {
      * @return \moodle_recordset|null Recordset or null if no results possible
      * @throws \coding_exception If context invalid
      */
-    protected function get_document_recordset_helper($modifiedfrom, ?\context $context,
+    protected function get_document_recordset_helper($modifiedfrom, ?context $context,
             $userfield) {
         global $DB;
 
@@ -155,14 +163,14 @@ abstract class base_message extends \core_search\base {
         $where = $userfield . ' != :noreplyuser AND ' . $userfield .
                 ' != :supportuser AND m.timecreated >= :modifiedfrom';
         $params = [
-            'noreplyuser' => \core_user::NOREPLY_USER,
-            'supportuser' => \core_user::SUPPORT_USER,
+            'noreplyuser' => core_user::NOREPLY_USER,
+            'supportuser' => core_user::SUPPORT_USER,
             'modifiedfrom' => $modifiedfrom
         ];
 
         // Check context to see whether to add other restrictions.
         if ($context === null) {
-            $context = \context_system::instance();
+            $context = system::instance();
         }
         switch ($context->contextlevel) {
             case CONTEXT_COURSECAT:
@@ -182,7 +190,7 @@ abstract class base_message extends \core_search\base {
                 break;
 
             default:
-                throw new \coding_exception('Unexpected contextlevel: ' . $context->contextlevel);
+                throw new coding_exception('Unexpected contextlevel: ' . $context->contextlevel);
         }
 
         $sql = "SELECT m.*, mcm.userid as useridto

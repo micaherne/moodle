@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\system;
 use core_files\conversion;
 use core_files\converter;
 
@@ -123,7 +124,7 @@ final class converter_test extends advanced_testcase {
      */
     protected function create_stored_file($filecontent = 'content', $filename = 'testfile.txt', $filerecord = []) {
         $filerecord = array_merge([
-                'contextid' => context_system::instance()->id,
+                'contextid' => system::instance()->id,
                 'component' => 'core',
                 'filearea'  => 'unittest',
                 'itemid'    => 0,

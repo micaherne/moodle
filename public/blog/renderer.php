@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -40,7 +45,7 @@ class core_blog_renderer extends plugin_renderer_base {
 
         global $CFG;
 
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
 
         $stredit = get_string('edit');
         $strdelete = get_string('delete');
@@ -63,7 +68,7 @@ class core_blog_renderer extends plugin_renderer_base {
         $o .= $this->output->container_start('topic starter header clearfix');
 
         // Title.
-        $titlelink = html_writer::link(new moodle_url('/blog/index.php',
+        $titlelink = html_writer::link(new url('/blog/index.php',
                                                        array('entryid' => $entry->id)),
                                                        format_string($entry->subject));
         $o .= $this->output->container($titlelink, 'subject');
@@ -72,7 +77,7 @@ class core_blog_renderer extends plugin_renderer_base {
         $by = new stdClass();
         $fullname = fullname($entry->renderable->user, has_capability('moodle/site:viewfullnames', $syscontext));
         $userurlparams = array('id' => $entry->renderable->user->id, 'course' => $this->page->course->id);
-        $by->name = html_writer::link(new moodle_url('/user/view.php', $userurlparams), $fullname);
+        $by->name = html_writer::link(new url('/user/view.php', $userurlparams), $fullname);
 
         $by->date = userdate($entry->created);
         $o .= $this->output->container(get_string('bynameondate', 'forum', $by), 'author');
@@ -179,16 +184,16 @@ class core_blog_renderer extends plugin_renderer_base {
 
             // External blog entries should not be edited.
             if (empty($entry->uniquehash)) {
-                $o .= html_writer::link(new moodle_url('/blog/edit.php',
+                $o .= html_writer::link(new url('/blog/edit.php',
                                                         array('action' => 'edit', 'entryid' => $entry->id)),
                                                         $stredit) . ' | ';
             }
-            $o .= html_writer::link(new moodle_url('/blog/edit.php',
+            $o .= html_writer::link(new url('/blog/edit.php',
                                                     array('action' => 'delete', 'entryid' => $entry->id)),
                                                     $strdelete) . ' | ';
         }
 
-        $entryurl = new moodle_url('/blog/index.php', array('entryid' => $entry->id));
+        $entryurl = new url('/blog/index.php', array('entryid' => $entry->id));
         $o .= html_writer::link($entryurl, get_string('permalink', 'blog'));
 
         $o .= $this->output->container_end();
@@ -224,7 +229,7 @@ class core_blog_renderer extends plugin_renderer_base {
      */
     public function render_blog_entry_attachment(blog_entry_attachment $attachment) {
 
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
 
         // Image attachments don't get printed as links.
         if (file_mimetype_in_typegroup($attachment->file->get_mimetype(), 'web_image')) {

@@ -26,6 +26,8 @@ namespace profilefield_datetime\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\user;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\contextlist;
 use \core_privacy\local\request\approved_contextlist;
@@ -92,7 +94,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof user) {
             return;
         }
 
@@ -140,7 +142,7 @@ class provider implements
      *
      * @param   context $context A user context.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         // Delete data only for user context.
         if ($context->contextlevel == CONTEXT_USER) {
             static::delete_data($context->instanceid);
@@ -155,7 +157,7 @@ class provider implements
     public static function delete_data_for_users(approved_userlist $userlist) {
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_user) {
+        if ($context instanceof user) {
             static::delete_data($context->instanceid);
         }
     }

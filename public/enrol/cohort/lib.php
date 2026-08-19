@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\lang_string;
+use core\output\progress_trace\null_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -49,7 +54,7 @@ class enrol_cohort_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/cohort:config', $context);
     }
 
@@ -74,14 +79,14 @@ class enrol_cohort_plugin extends enrol_plugin {
             }
             $cohortname = format_string($cohort->name, true, array('context'=>context::instance_by_id($cohort->contextid)));
             if ($role = $DB->get_record('role', array('id'=>$instance->roleid))) {
-                $role = role_get_name($role, context_course::instance($instance->courseid, IGNORE_MISSING), ROLENAME_BOTH);
+                $role = role_get_name($role, course::instance($instance->courseid, IGNORE_MISSING), ROLENAME_BOTH);
                 return get_string('pluginname', 'enrol_'.$enrol) . ' (' . $cohortname . ' - ' . $role .')';
             } else {
                 return get_string('pluginname', 'enrol_'.$enrol) . ' (' . $cohortname . ')';
             }
 
         } else {
-            return format_string($instance->name, true, array('context'=>context_course::instance($instance->courseid)));
+            return format_string($instance->name, true, array('context'=>course::instance($instance->courseid)));
         }
     }
 
@@ -95,7 +100,7 @@ class enrol_cohort_plugin extends enrol_plugin {
     public function can_add_instance($courseid) {
         global $CFG;
         require_once($CFG->dirroot . '/cohort/lib.php');
-        $coursecontext = context_course::instance($courseid);
+        $coursecontext = course::instance($courseid);
         if (!has_capability('moodle/course:enrolconfig', $coursecontext) or !has_capability('enrol/cohort:config', $coursecontext)) {
             return false;
         }
@@ -121,7 +126,7 @@ class enrol_cohort_plugin extends enrol_plugin {
                 $fields2['customint1'] = $cid;
                 if (!empty($fields['customint2']) && $fields['customint2'] == COHORT_CREATE_GROUP) {
                     // Create a new group for the cohort if requested.
-                    $context = context_course::instance($course->id);
+                    $context = course::instance($course->id);
                     require_capability('moodle/course:managegroups', $context);
                     $groupid = enrol_cohort_create_new_group($course->id, $cid);
                     $fields2['customint2'] = $groupid;
@@ -148,7 +153,7 @@ class enrol_cohort_plugin extends enrol_plugin {
         global $CFG;
 
         // NOTE: no cohort changes here!!!
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         if ($data->roleid != $instance->roleid) {
             // The sync script can only add roles, for perf reasons it does not modify them.
             $params = array(
@@ -323,7 +328,7 @@ class enrol_cohort_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/cohort:config', $context);
     }
 
@@ -619,7 +624,7 @@ class enrol_cohort_plugin extends enrol_plugin {
         $error = null;
         if (isset($enrolmentdata['customint1'])) {
             $cohortid = $enrolmentdata['customint1'];
-            $coursecontext = \context_course::instance($courseid);
+            $coursecontext = course::instance($courseid);
             if (!cohort_get_cohort($cohortid, $coursecontext)) {
                 $error = new lang_string('contextcohortnotallowed', 'cohort', $enrolmentdata['cohortidnumber']);
             }

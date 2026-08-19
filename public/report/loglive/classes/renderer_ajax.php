@@ -29,6 +29,8 @@
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\plugin_renderer_base;
+
 class report_loglive_renderer_ajax extends plugin_renderer_base {
 
     /**

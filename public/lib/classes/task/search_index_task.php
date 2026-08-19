@@ -23,6 +23,8 @@
  */
 namespace core\task;
 
+use core\output\progress_trace\text_progress_trace;
+
 /**
  * Runs global search indexing.
  *
@@ -56,7 +58,7 @@ class search_index_task extends scheduled_task {
         $start = time();
 
         // Do normal indexing.
-        $globalsearch->index(false, $timelimit, new \text_progress_trace());
+        $globalsearch->index(false, $timelimit, new text_progress_trace());
 
         // Do requested indexing (if any) for the rest of the time.
         if ($timelimit != 0) {
@@ -67,6 +69,6 @@ class search_index_task extends scheduled_task {
                 return;
             }
         }
-        $globalsearch->process_index_requests($timelimit, new \text_progress_trace());
+        $globalsearch->process_index_requests($timelimit, new text_progress_trace());
     }
 }

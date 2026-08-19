@@ -16,6 +16,7 @@
 
 namespace core_backup;
 
+use core\context\module;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
 
@@ -241,7 +242,7 @@ final class restore_stepslib_date_test extends \restore_date_testcase {
         // Testing the restore of an overridden grade.
         list($course, $assign) = $this->create_course_and_module('assign', []);
         $cm = $DB->get_record('course_modules', ['course' => $course->id, 'instance' => $assign->id]);
-        $assignobj = new \mod_assign_testable_assign(\context_module::instance($cm->id), $cm, $course);
+        $assignobj = new \mod_assign_testable_assign(module::instance($cm->id), $cm, $course);
         $submission = $assignobj->get_user_submission($USER->id, true);
         $grade = $assignobj->get_user_grade($USER->id, true);
         $grade->grade = 75;
@@ -297,7 +298,7 @@ final class restore_stepslib_date_test extends \restore_date_testcase {
                 'completionusegrade' => 1 // Student must receive a grade to complete this activity.
             ]);
         $cm = $DB->get_record('course_modules', ['course' => $course->id, 'instance' => $assign->id]);
-        $assignobj = new \mod_assign_testable_assign(\context_module::instance($cm->id), $cm, $course);
+        $assignobj = new \mod_assign_testable_assign(module::instance($cm->id), $cm, $course);
         $submission = $assignobj->get_user_submission($USER->id, true);
         $grade = $assignobj->get_user_grade($USER->id, true);
         $grade->grade = 75;

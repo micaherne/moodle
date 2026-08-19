@@ -23,10 +23,10 @@
  */
 namespace tool_lp\output;
 
-use renderable;
-use renderer_base;
-use templatable;
-use context_course;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\context\course;
 use core_competency\external\competency_exporter;
 use core_user\external\user_summary_exporter;
 use core_competency\external\performance_helper;
@@ -77,7 +77,7 @@ class user_competency_course_navigation implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         global $CFG, $DB, $PAGE;
 
-        $context = context_course::instance($this->courseid);
+        $context = course::instance($this->courseid);
 
         $data = new stdClass();
         $data->userid = $this->userid;

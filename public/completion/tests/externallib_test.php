@@ -16,6 +16,8 @@
 
 namespace core_completion;
 
+use core\context\course;
+use core\exception\moodle_exception;
 use core_completion_external;
 use core_external\external_api;
 
@@ -286,14 +288,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertEquals(5, $activitiesfound);
 
         // Change teacher role capabilities (disable access all groups).
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         assign_capability('moodle/site:accessallgroups', CAP_PROHIBIT, $teacherrole->id, $context);
         accesslib_clear_all_caches_for_unit_testing();
 
         try {
             $result = core_completion_external::get_activities_completion_status($course->id, $student->id);
             $this->fail('Exception expected due to groups permissions.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('accessdenied', $e->errorcode);
         }
 
@@ -385,7 +387,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->getDataGenerator()->enrol_user($student->id, $course->id, $studentrole->id);
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         $this->getDataGenerator()->enrol_user($teacher->id, $course->id, $teacherrole->id);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Create an activity with automatic completion (a forum).
         $forum   = $this->getDataGenerator()->create_module('forum',  ['course' => $course->id],
@@ -507,14 +509,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertEquals($studentresult, $teacherresult);
 
         // Change teacher role capabilities (disable access al goups).
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         assign_capability('moodle/site:accessallgroups', CAP_PROHIBIT, $teacherrole->id, $context);
         accesslib_clear_all_caches_for_unit_testing();
 
         try {
             $result = core_completion_external::get_course_completion_status($course->id, $student->id);
             $this->fail('Exception expected due to groups permissions.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('accessdenied', $e->errorcode);
         }
 
@@ -590,7 +592,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $result = core_completion_external::mark_course_self_completed($course->id);
             $this->fail('Exception expected due course already self completed.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('useralreadymarkedcomplete', $e->errorcode);
         }
 

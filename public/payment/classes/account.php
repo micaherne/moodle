@@ -24,7 +24,10 @@
 
 namespace core_payment;
 
+use core\context;
+use core\context\system;
 use core\persistent;
+use core\url;
 
 /**
  * Class account
@@ -58,7 +61,7 @@ class account extends persistent {
             'contextid' => [
                 'type' => PARAM_INT,
                 'default' => function() {
-                    return \context_system::instance()->id;
+                    return system::instance()->id;
                 }
             ],
             'enabled' => [
@@ -78,8 +81,8 @@ class account extends persistent {
      * @return \context
      * @throws \coding_exception
      */
-    public function get_context(): \context {
-        return \context::instance_by_id($this->get('contextid'));
+    public function get_context(): context {
+        return context::instance_by_id($this->get('contextid'));
     }
 
     /**
@@ -100,8 +103,8 @@ class account extends persistent {
      * @throws \coding_exception
      * @throws \moodle_exception
      */
-    public function get_edit_url(array $extraparams = []): \moodle_url {
-        return new \moodle_url('/payment/manage_account.php',
+    public function get_edit_url(array $extraparams = []): url {
+        return new url('/payment/manage_account.php',
             ($this->get('id') ? ['id' => $this->get('id')] : []) + $extraparams);
     }
 

@@ -24,6 +24,9 @@
 
 namespace mod_forum\privacy;
 
+use core\context;
+use core\context\module;
+use core\user;
 use core_grades\component_gradeitem as gradeitem;
 use \core_privacy\local\request\userlist;
 use \core_privacy\local\request\approved_contextlist;
@@ -289,7 +292,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!is_a($context, \context_module::class)) {
+        if (!is_a($context, module::class)) {
             return;
         }
 
@@ -388,7 +391,7 @@ class provider implements
      * @param   int         $userid The userid of the user whose data is to be exported.
      */
     public static function export_user_preferences(int $userid) {
-        $user = \core_user::get_user($userid);
+        $user = user::get_user($userid);
 
         switch ($user->maildigest) {
             case 1:
@@ -604,7 +607,7 @@ class provider implements
         foreach ($forums as $forum) {
             $mappings[$forum->id] = $forum->contextid;
 
-            $context = \context::instance_by_id($mappings[$forum->id]);
+            $context = context::instance_by_id($mappings[$forum->id]);
 
             // Store the main forum data.
             $data = request_helper::get_context_data($context, $user);
@@ -681,7 +684,7 @@ class provider implements
             // No need to take timestart into account as the user has some involvement already.
             // Ignore discussion timeend as it should not block access to user data.
             $forumswithdata[$discussion->forum] = true;
-            $context = \context::instance_by_id($mappings[$discussion->forum]);
+            $context = context::instance_by_id($mappings[$discussion->forum]);
 
             // Store related metadata for this discussion.
             static::export_discussion_subscription_data($userid, $context, $discussion);
@@ -758,7 +761,7 @@ class provider implements
 
         $discussions = $DB->get_records_sql($sql, $params);
         foreach ($discussions as $discussion) {
-            $context = \context::instance_by_id($mappings[$discussion->forumid]);
+            $context = context::instance_by_id($mappings[$discussion->forumid]);
             static::export_all_posts_in_discussion($userid, $context, $discussion);
         }
     }
@@ -770,7 +773,7 @@ class provider implements
      * @param   \context    $context The instance of the forum context.
      * @param   \stdClass   $discussion The discussion whose data is being exported.
      */
-    protected static function export_all_posts_in_discussion(int $userid, \context $context, \stdClass $discussion) {
+    protected static function export_all_posts_in_discussion(int $userid, context $context, \stdClass $discussion) {
         global $DB, $USER;
 
         $discussionid = $discussion->id;
@@ -849,7 +852,7 @@ class provider implements
      * @param   array       $parentarea The subcontext of the parent.
      * @param   \stdClass   $structure The post structure and all of its children
      */
-    protected static function export_posts_in_structure(int $userid, \context $context, $parentarea, \stdClass $structure) {
+    protected static function export_posts_in_structure(int $userid, context $context, $parentarea, \stdClass $structure) {
         foreach ($structure->children as $post) {
             if (!$post->hasdata) {
                 // This tree has no content belonging to the user. Skip it and all children.
@@ -876,7 +879,7 @@ class provider implements
      * @param   array       $postarea The subcontext of the parent.
      * @param   \stdClass   $post The post structure and all of its children
      */
-    protected static function export_post_data(int $userid, \context $context, $postarea, $post) {
+    protected static function export_post_data(int $userid, context $context, $postarea, $post) {
         // Store related metadata.
         static::export_read_data($userid, $context, $postarea, $post);
 
@@ -964,7 +967,7 @@ class provider implements
                     break;
             }
 
-            writer::with_context(\context_module::instance($forum->cmid))
+            writer::with_context(module::instance($forum->cmid))
                 ->export_metadata([], 'digestpreference', $maildigest,
                     get_string('privacy:digesttypepreference', 'mod_forum', $a));
 
@@ -985,7 +988,7 @@ class provider implements
     protected static function export_subscription_data(int $userid, \stdClass $forum, int $subscribed) {
         if (null !== $subscribed) {
             // The user is subscribed to this forum.
-            writer::with_context(\context_module::instance($forum->cmid))
+            writer::with_context(module::instance($forum->cmid))
                 ->export_metadata([], 'subscriptionpreference', 1, get_string('privacy:subscribedtoforum', 'mod_forum'));
 
             return true;
@@ -1002,7 +1005,7 @@ class provider implements
      * @param   \stdClass   $discussion The discussion whose data is being exported.
      * @return  bool        Whether any data was stored.
      */
-    protected static function export_discussion_subscription_data(int $userid, \context_module $context, \stdClass $discussion) {
+    protected static function export_discussion_subscription_data(int $userid, module $context, \stdClass $discussion) {
         $area = static::get_discussion_area($discussion);
         if (null !== $discussion->preference) {
             // The user has a specific subscription preference for this discussion.
@@ -1044,7 +1047,7 @@ class provider implements
     protected static function export_tracking_data(int $userid, \stdClass $forum, int $tracked) {
         if (null !== $tracked) {
             // The user has a main preference to track all forums, but has opted out of this one.
-            writer::with_context(\context_module::instance($forum->cmid))
+            writer::with_context(module::instance($forum->cmid))
                 ->export_metadata([], 'trackreadpreference', 0, get_string('privacy:readtrackingdisabled', 'mod_forum'));
 
             return true;
@@ -1056,7 +1059,7 @@ class provider implements
     protected static function export_grading_data(int $userid, \stdClass $forum, int $grade) {
         global $USER;
         if (null !== $grade) {
-            $context = \context_module::instance($forum->cmid);
+            $context = module::instance($forum->cmid);
             $exportpath = array_merge([],
                 [get_string('privacy:metadata:forum_grades', 'mod_forum')]);
             $gradingmanager = get_grading_manager($context, 'mod_forum', 'forum');
@@ -1064,7 +1067,7 @@ class provider implements
 
             // Check for advanced grading and retrieve that information.
             if (isset($controller)) {
-                $gradeduser = \core_user::get_user($userid);
+                $gradeduser = user::get_user($userid);
                 // Fetch the gradeitem instance.
                 $gradeitem = gradeitem::instance($controller->get_component(), $context, $controller->get_area());
                 $grade = $gradeitem->get_grade_for_user($gradeduser, $USER);
@@ -1074,7 +1077,7 @@ class provider implements
                 self::export_grade_data($grade, $context, $forum, $exportpath);
             }
             // The user has a grade for this forum.
-            writer::with_context(\context_module::instance($forum->cmid))
+            writer::with_context(module::instance($forum->cmid))
                 ->export_metadata($exportpath, 'gradingenabled', 1, get_string('privacy:metadata:forum_grades:grade', 'mod_forum'));
 
             return true;
@@ -1083,7 +1086,7 @@ class provider implements
         return false;
     }
 
-    protected static function export_grade_data(int $grade, \context $context, \stdClass $forum, array $path) {
+    protected static function export_grade_data(int $grade, context $context, \stdClass $forum, array $path) {
         $gradedata = (object)[
             'forum' => $forum->name,
             'grade' => $grade,
@@ -1102,7 +1105,7 @@ class provider implements
      * @param   \stdClass   $post The post whose data is being exported.
      * @return  bool        Whether any data was stored.
      */
-    protected static function export_read_data(int $userid, \context_module $context, array $postarea, \stdClass $post) {
+    protected static function export_read_data(int $userid, module $context, array $postarea, \stdClass $post) {
         if (null !== $post->firstread) {
             $a = (object) [
                 'firstread' => $post->firstread,
@@ -1131,11 +1134,11 @@ class provider implements
      *
      * @param   context                 $context   The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         // Check that this is a context_module.
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
 

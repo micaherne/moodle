@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+
 /**
  * Server timezone setting.
  *
@@ -36,8 +38,8 @@ class servertimezone extends \core_admin\setting\setting\configselect {
 
         parent::__construct(
             'timezone',
-            new \lang_string('timezone', 'core_admin'),
-            new \lang_string('configtimezone', 'core_admin'),
+            new lang_string('timezone', 'core_admin'),
+            new lang_string('configtimezone', 'core_admin'),
             $default,
             null
         );
@@ -57,7 +59,7 @@ class servertimezone extends \core_admin\setting\setting\configselect {
         $this->choices = \core_date::get_list_of_timezones($current, false);
         if ($current == 99) {
             // Do not show 99 unless it is current value, we want to get rid of it over time.
-            $this->choices['99'] = new \lang_string(
+            $this->choices['99'] = new lang_string(
                 'timezonephpdefault',
                 'core_admin',
                 \core_date::get_default_php_timezone()

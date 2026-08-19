@@ -22,16 +22,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configselect_with_advanced;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     // Modedit defaults.
-    $settings->add(new admin_setting_heading('imscpmodeditdefaults',
+    $settings->add(new heading('imscpmodeditdefaults',
                                              get_string('modeditdefaults', 'admin'),
                                              get_string('condifmodeditdefaults', 'admin')));
     $options = array('-1' => get_string('all'), '0' => get_string('no'),
                      '1' => '1', '2' => '2', '5' => '5', '10' => '10', '20' => '20');
-    $settings->add(new admin_setting_configselect_with_advanced('imscp/keepold',
+    $settings->add(new configselect_with_advanced('imscp/keepold',
         get_string('keepold', 'imscp'), get_string('keepoldexplain', 'imscp'),
         array('value' => 1, 'adv' => false), $options));
 }

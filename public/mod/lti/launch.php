@@ -46,6 +46,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lti/lib.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
@@ -59,7 +63,7 @@ $cm = get_coursemodule_from_id('lti', $cmid, 0, false, MUST_EXIST);
 $lti = $DB->get_record('lti', array('id' => $cm->instance), '*', MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 require_login($course, true, $cm);
 require_capability('mod/lti:view', $context);
@@ -94,7 +98,7 @@ if ($typeid) {
 
 
 if (!empty($missingtooltype)) {
-    $PAGE->set_url(new moodle_url('/mod/lti/launch.php'));
+    $PAGE->set_url(new url('/mod/lti/launch.php'));
     $PAGE->set_context($context);
     $PAGE->set_secondary_active_tab('modulepage');
     $PAGE->set_pagelayout('incourse');

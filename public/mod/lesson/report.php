@@ -23,6 +23,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
  **/
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_select;
+use core\url;
+use core_table\output\html_table;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 
@@ -39,10 +47,10 @@ require_login($course, false, $cm);
 
 $currentgroup = groups_get_activity_group($cm, true);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/lesson:viewreports', $context);
 
-$url = new moodle_url('/mod/lesson/report.php', array('id'=>$id));
+$url = new url('/mod/lesson/report.php', array('id'=>$id));
 $url->param('action', $action);
 if ($pageid !== null) {
     $url->param('pageid', $pageid);
@@ -110,7 +118,7 @@ if ($action === 'delete') {
             }
         }
     }
-    redirect(new moodle_url($PAGE->url, array('action'=>'reportoverview')));
+    redirect(new url($PAGE->url, array('action'=>'reportoverview')));
 
 } else if ($action === 'reportoverview') {
     /**************************************************************************
@@ -140,9 +148,9 @@ if ($action === 'delete') {
 
     groups_print_activity_menu($cm, $url);
 
-    $course_context = context_course::instance($course->id);
+    $course_context = course::instance($course->id);
     if (has_capability('gradereport/grader:view', $course_context) && has_capability('moodle/grade:viewall', $course_context)) {
-        $seeallgradeslink = new moodle_url('/grade/report/grader/index.php', array('id'=>$course->id));
+        $seeallgradeslink = new url('/grade/report/grader/index.php', array('id'=>$course->id));
         $seeallgradeslink = html_writer::link($seeallgradeslink, get_string('seeallcoursegrades', 'grades'));
         echo $OUTPUT->box($seeallgradeslink, 'allcoursegrades');
     }
@@ -155,7 +163,7 @@ if ($action === 'delete') {
 
     // Show bulk actions when user has capability to edit the lesson.
     if (has_capability('mod/lesson:edit', $context)) {
-        $reporturl = new moodle_url('/mod/lesson/report.php');
+        $reporturl = new url('/mod/lesson/report.php');
         $formid  = 'mod-lesson-report-form';
 
         // Sesskey hidden input.
@@ -269,9 +277,9 @@ if ($action === 'delete') {
 
     groups_print_activity_menu($cm, $url);
 
-    $course_context = context_course::instance($course->id);
+    $course_context = course::instance($course->id);
     if (has_capability('gradereport/grader:view', $course_context) && has_capability('moodle/grade:viewall', $course_context)) {
-        $seeallgradeslink = new moodle_url('/grade/report/grader/index.php', array('id'=>$course->id));
+        $seeallgradeslink = new url('/grade/report/grader/index.php', array('id'=>$course->id));
         $seeallgradeslink = html_writer::link($seeallgradeslink, get_string('seeallcoursegrades', 'grades'));
         echo $OUTPUT->box($seeallgradeslink, 'allcoursegrades');
     }
@@ -365,7 +373,7 @@ if ($action === 'delete') {
         echo html_writer::table($table);
     }
 } else {
-    throw new \moodle_exception('unknowaction');
+    throw new moodle_exception('unknowaction');
 }
 
 /// Finish the page

@@ -25,6 +25,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\lang_string;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\output\progress_trace;
+use core\output\progress_trace\null_progress_trace;
+use core\output\progress_trace\text_progress_trace;
+use core\url;
+use core\user;
+use core_cache\helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** Course enrol instance enabled. (used in enrol->status) */
@@ -434,7 +448,7 @@ function enrol_course_updated($inserted, $course, $data) {
 function enrol_add_course_navigation(navigation_node $coursenode, $course) {
     global $CFG;
 
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
 
     $instances = enrol_get_instances($course->id, true);
     $plugins   = enrol_get_plugins(true);
@@ -451,7 +465,7 @@ function enrol_add_course_navigation(navigation_node $coursenode, $course) {
     // List all participants - allows assigning roles, groups, etc.
     // Have this available even in the site context as the page is still accessible from the frontpage.
     if (has_capability('moodle/course:enrolreview', $coursecontext)) {
-        $url = new moodle_url('/user/index.php', array('id' => $course->id));
+        $url = new url('/user/index.php', array('id' => $course->id));
         $usersnode->add(get_string('enrolledusers', 'enrol'), $url, navigation_node::TYPE_SETTING,
             null, 'review', new pix_icon('i/enrolusers', ''));
     }
@@ -459,7 +473,7 @@ function enrol_add_course_navigation(navigation_node $coursenode, $course) {
     if ($course->id != SITEID) {
         // manage enrol plugin instances
         if (has_capability('moodle/course:enrolconfig', $coursecontext) or has_capability('moodle/course:enrolreview', $coursecontext)) {
-            $url = new moodle_url('/enrol/instances.php', array('id'=>$course->id));
+            $url = new url('/enrol/instances.php', array('id'=>$course->id));
         } else {
             $url = NULL;
         }
@@ -478,7 +492,7 @@ function enrol_add_course_navigation(navigation_node $coursenode, $course) {
         }
 
         if (has_capability('moodle/course:renameroles', $coursecontext)) {
-            $url = new moodle_url('/enrol/renameroles.php', array('id' => $course->id));
+            $url = new url('/enrol/renameroles.php', array('id' => $course->id));
             $instancesnode->add(
                 get_string('rolerenaming'),
                 $url,
@@ -491,7 +505,7 @@ function enrol_add_course_navigation(navigation_node $coursenode, $course) {
 
     // Manage groups in this course or even frontpage
     if (($course->groupmode || !$course->groupmodeforce) && has_capability('moodle/course:managegroups', $coursecontext)) {
-        $url = new moodle_url('/group/index.php', array('id'=>$course->id));
+        $url = new url('/group/index.php', array('id'=>$course->id));
         $usersnode->add(get_string('groups'), $url, navigation_node::TYPE_SETTING, null, 'groups', new pix_icon('i/group', ''));
     }
 
@@ -501,7 +515,7 @@ function enrol_add_course_navigation(navigation_node $coursenode, $course) {
     )) {
         // Override roles
         if (has_capability('moodle/role:review', $coursecontext)) {
-            $url = new moodle_url('/admin/roles/permissions.php', array('contextid'=>$coursecontext->id));
+            $url = new url('/admin/roles/permissions.php', array('contextid'=>$coursecontext->id));
         } else {
             $url = NULL;
         }
@@ -510,13 +524,13 @@ function enrol_add_course_navigation(navigation_node $coursenode, $course) {
         // Add assign or override roles if allowed
         if ($course->id == SITEID or (!empty($CFG->adminsassignrolesincourse) and is_siteadmin())) {
             if (has_capability('moodle/role:assign', $coursecontext)) {
-                $url = new moodle_url('/admin/roles/assign.php', array('contextid'=>$coursecontext->id));
+                $url = new url('/admin/roles/assign.php', array('contextid'=>$coursecontext->id));
                 $permissionsnode->add(get_string('assignedroles', 'role'), $url, navigation_node::TYPE_SETTING, null, 'roles', new pix_icon('i/assignroles', ''));
             }
         }
         // Check role permissions
         if (has_any_capability(array('moodle/role:assign', 'moodle/role:safeoverride', 'moodle/role:override'), $coursecontext)) {
-            $url = new moodle_url('/admin/roles/check.php', array('contextid'=>$coursecontext->id));
+            $url = new url('/admin/roles/check.php', array('contextid'=>$coursecontext->id));
             $permissionsnode->add(get_string('checkpermissions', 'role'), $url, navigation_node::TYPE_SETTING, null, 'permissions', new pix_icon('i/checkpermissions', ''));
         }
     }
@@ -525,7 +539,7 @@ function enrol_add_course_navigation(navigation_node $coursenode, $course) {
     if ($course->id != SITEID) {
         //TODO, create some new UI for role assignments at course level
         if (has_capability('moodle/course:reviewotherusers', $coursecontext)) {
-            $url = new moodle_url('/enrol/otherusers.php', array('id'=>$course->id));
+            $url = new url('/enrol/otherusers.php', array('id'=>$course->id));
             $usersnode->add(get_string('notenrolledusers', 'enrol'), $url, navigation_node::TYPE_SETTING, null, 'otherusers', new pix_icon('i/assignroles', ''));
         }
     }
@@ -562,7 +576,7 @@ function enrol_add_course_navigation(navigation_node $coursenode, $course) {
                     }
                     $plugin = $plugins[$instance->enrol];
                     if ($plugin->show_enrolme_link($instance)) {
-                        $url = new moodle_url('/enrol/index.php', array('id'=>$course->id));
+                        $url = new url('/enrol/index.php', array('id'=>$course->id));
                         $shortname = format_string($course->shortname, true, array('context' => $coursecontext));
                         $coursenode->add(get_string('enrolme', 'core_enrol', $shortname), $url, navigation_node::TYPE_SETTING, null, 'enrolself', new pix_icon('i/user', ''));
                         break;
@@ -780,7 +794,7 @@ function enrol_get_my_courses($fields = null, $sort = null, $limit = 0, $coursei
                 if (array_key_exists($CFG->guestroleid, $roles)) {
                     // Work out the course id from context path.
                     $context = context::instance_by_id(preg_replace('~^.*/~', '', $contextpath));
-                    if ($context instanceof context_course) {
+                    if ($context instanceof course) {
                         $courseids[$context->instanceid] = true;
                     }
                 }
@@ -825,7 +839,7 @@ function enrol_get_my_courses($fields = null, $sort = null, $limit = 0, $coursei
     foreach ($courses as $id=>$course) {
         context_helper::preload_from_record($course);
         if (!$course->visible) {
-            if (!$context = context_course::instance($id, IGNORE_MISSING)) {
+            if (!$context = course::instance($id, IGNORE_MISSING)) {
                 unset($courses[$id]);
                 continue;
             }
@@ -956,7 +970,7 @@ function enrol_get_users_courses($userid, $onlyactive = false, $fields = null, $
         foreach ($courses as $id=>$course) {
             context_helper::preload_from_record($course);
             if (!$course->visible) {
-                if (!$context = context_course::instance($id)) {
+                if (!$context = course::instance($id)) {
                     unset($courses[$id]);
                     continue;
                 }
@@ -980,7 +994,7 @@ function enrol_get_users_courses($userid, $onlyactive = false, $fields = null, $
 function enrol_get_course_users_roles(int $courseid): array {
     global $DB;
 
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
 
     $roles = array();
 
@@ -1037,7 +1051,7 @@ function enrol_user_sees_own_courses($user = null) {
             return true;
         }
         context_helper::preload_from_record($course);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         if (has_capability('moodle/course:viewhiddencourses', $context, $user)) {
             return true;
         }
@@ -1172,7 +1186,7 @@ function enrol_user_delete($user) {
 function enrol_course_delete($course, $userid = null) {
     global $DB;
 
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     $instances = enrol_get_instances($course->id, false);
     $plugins = enrol_get_plugins(true);
 
@@ -1790,7 +1804,7 @@ function enrol_get_course_users($courseid = false, $onlyactive = false, $usersfi
     global $DB;
 
     if (!$courseid && !$usersfilter && !$uefilter) {
-        throw new \coding_exception('You should specify at least 1 filter: courseid, users or user enrolments');
+        throw new coding_exception('You should specify at least 1 filter: courseid, users or user enrolments');
     }
 
     $sql = "SELECT ue.id AS ueid, ue.status AS uestatus, ue.enrolid AS ueenrolid, ue.timestart AS uetimestart,
@@ -1902,7 +1916,7 @@ abstract class enrol_plugin {
             $enrol = $this->get_name();
             return get_string('pluginname', 'enrol_'.$enrol);
         } else {
-            $context = context_course::instance($instance->courseid);
+            $context = course::instance($instance->courseid);
             return format_string($instance->name, true, array('context'=>$context));
         }
     }
@@ -2122,7 +2136,7 @@ abstract class enrol_plugin {
         if ($instance->enrol !== $name) {
             throw new coding_exception('invalid enrol instance!');
         }
-        $context = context_course::instance($instance->courseid, MUST_EXIST);
+        $context = course::instance($instance->courseid, MUST_EXIST);
         if (!isset($recovergrades)) {
             $recovergrades = $CFG->recovergradesdefault;
         }
@@ -2265,14 +2279,14 @@ abstract class enrol_plugin {
         mark_user_dirty($userid);
 
         // Invalidate core_access cache for get_suspended_userids.
-        cache_helper::invalidate_by_definition('core', 'suspended_userids', array(), array($instance->courseid));
+        helper::invalidate_by_definition('core', 'suspended_userids', array(), array($instance->courseid));
 
         // Trigger event.
         $event = \core\event\user_enrolment_updated::create(
                 array(
                     'objectid' => $ue->id,
                     'courseid' => $instance->courseid,
-                    'context' => context_course::instance($instance->courseid),
+                    'context' => course::instance($instance->courseid),
                     'relateduserid' => $ue->userid,
                     'other' => array('enrol' => $name)
                     )
@@ -2301,7 +2315,7 @@ abstract class enrol_plugin {
         if ($instance->enrol !== $name) {
             throw new coding_exception('invalid enrol instance!');
         }
-        $context = context_course::instance($instance->courseid, MUST_EXIST);
+        $context = course::instance($instance->courseid, MUST_EXIST);
 
         if (!$ue = $DB->get_record('user_enrolments', array('enrolid'=>$instance->id, 'userid'=>$userid))) {
             // weird, user not enrolled
@@ -2431,7 +2445,7 @@ abstract class enrol_plugin {
      * @return boolean
      */
     public function can_edit_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
 
         return has_capability('enrol/' . $instance->enrol . ':config', $context);
     }
@@ -2508,7 +2522,7 @@ abstract class enrol_plugin {
             return NULL;
         }
 
-        $context = context_course::instance($instance->courseid, MUST_EXIST);
+        $context = course::instance($instance->courseid, MUST_EXIST);
 
         if (!has_capability("enrol/$name:unenrolself", $context)) {
             return NULL;
@@ -2518,7 +2532,7 @@ abstract class enrol_plugin {
             return NULL;
         }
 
-        return new moodle_url("/enrol/$name/unenrolself.php", array('enrolid'=>$instance->id));
+        return new url("/enrol/$name/unenrolself.php", array('enrolid'=>$instance->id));
     }
 
     /**
@@ -2724,7 +2738,7 @@ abstract class enrol_plugin {
         );
         \core\di::get(\core\hook\manager::class)->dispatch($hook);
 
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         \core\event\enrol_instance_updated::create_from_record($instance)->trigger();
 
         // Invalidate all enrol caches.
@@ -2769,7 +2783,7 @@ abstract class enrol_plugin {
         // finally drop the enrol row
         $DB->delete_records('enrol', array('id'=>$instance->id));
 
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         \core\event\enrol_instance_deleted::create_from_record($instance)->trigger();
 
         // Invalidate all enrol caches.
@@ -2825,11 +2839,11 @@ abstract class enrol_plugin {
      */
     public function add_course_navigation($instancesnode, stdClass $instance) {
         if ($this->use_standard_editing_ui()) {
-            $context = context_course::instance($instance->courseid);
+            $context = course::instance($instance->courseid);
             $cap = 'enrol/' . $instance->enrol . ':config';
             if (has_capability($cap, $context)) {
                 $linkparams = array('courseid' => $instance->courseid, 'id' => $instance->id, 'type' => $instance->enrol);
-                $managelink = new moodle_url('/enrol/editinstance.php', $linkparams);
+                $managelink = new url('/enrol/editinstance.php', $linkparams);
                 $instancesnode->add($this->get_instance_name($instance), $managelink, navigation_node::TYPE_SETTING);
             }
         }
@@ -2845,11 +2859,11 @@ abstract class enrol_plugin {
 
         $icons = array();
         if ($this->use_standard_editing_ui()) {
-            $context = context_course::instance($instance->courseid);
+            $context = course::instance($instance->courseid);
             $cap = 'enrol/' . $instance->enrol . ':config';
             if (has_capability($cap, $context)) {
                 $linkparams = array('courseid' => $instance->courseid, 'id' => $instance->id, 'type' => $instance->enrol);
-                $editlink = new moodle_url("/enrol/editinstance.php", $linkparams);
+                $editlink = new url("/enrol/editinstance.php", $linkparams);
                 $icons[] = $OUTPUT->action_icon($editlink, new pix_icon('t/edit', get_string('edit'), 'core',
                     array('class' => 'iconsmall')));
             }
@@ -2940,7 +2954,7 @@ abstract class enrol_plugin {
         if ($this->allow_manage($instance) && has_capability("enrol/{$instance->enrol}:manage", $context)) {
             $title = get_string('editenrolment', 'enrol');
             $icon = new pix_icon('t/edit', $title);
-            $url = new moodle_url('/enrol/editenrolment.php', $params);
+            $url = new url('/enrol/editenrolment.php', $params);
             $actionparams = [
                 'class' => 'editenrollink',
                 'rel' => $ue->id,
@@ -2953,7 +2967,7 @@ abstract class enrol_plugin {
         if ($this->allow_unenrol_user($instance, $ue) && has_capability("enrol/{$instance->enrol}:unenrol", $context)) {
             $title = get_string('unenrol', 'enrol');
             $icon = new pix_icon('t/delete', $title);
-            $url = new moodle_url('/enrol/unenroluser.php', $params);
+            $url = new url('/enrol/unenroluser.php', $params);
             $actionparams = [
                 'class' => 'unenrollink',
                 'rel' => $ue->id,
@@ -3215,7 +3229,7 @@ abstract class enrol_plugin {
             $lastenrollid = $ue->enrolid;
 
             $enroller = $this->get_enroller($ue->enrolid);
-            $context = context_course::instance($ue->courseid);
+            $context = course::instance($ue->courseid);
 
             $user = $DB->get_record('user', ['id' => $ue->userid]);
 
@@ -3275,7 +3289,7 @@ abstract class enrol_plugin {
         $oldforcelang = force_current_language($user->lang);
 
         $enroller = $this->get_enroller($ue->enrolid);
-        $context = context_course::instance($ue->courseid);
+        $context = course::instance($ue->courseid);
 
         $subject = get_string('expirymessageenrolledsubject', 'enrol_'.$name);
         $body = $this->get_expiry_message_body($user, $ue, $name, $enroller, $context);
@@ -3295,7 +3309,7 @@ abstract class enrol_plugin {
         $message->fullmessagehtml   = markdown_to_html($body);
         $message->smallmessage      = $subject;
         $message->contexturlname    = $coursename;
-        $message->contexturl        = (string)new moodle_url('/course/view.php', ['id' => $ue->courseid]);
+        $message->contexturl        = (string)new url('/course/view.php', ['id' => $ue->courseid]);
 
         if (message_send($message)) {
             $stringmessage = 'notifying user %s that enrolment in course %s expires on %s';
@@ -3345,7 +3359,7 @@ abstract class enrol_plugin {
         $name = $this->get_name();
 
         $instance = $DB->get_record('enrol', array('id'=>$eid, 'enrol'=>$name));
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         $course = $DB->get_record('course', array('id'=>$instance->courseid));
 
         $enroller = $this->get_enroller($instance->id);
@@ -3361,7 +3375,7 @@ abstract class enrol_plugin {
         $a->course    = format_string($course->fullname, true, array('context'=>$context));
         $a->threshold = get_string('numdays', '', $instance->expirythreshold / (60*60*24));
         $a->users     = implode("\n", $users);
-        $a->extendurl = (string)new moodle_url('/user/index.php', array('id'=>$instance->courseid));
+        $a->extendurl = (string)new url('/user/index.php', array('id'=>$instance->courseid));
 
         $subject = get_string('expirymessageenrollersubject', 'enrol_'.$name, $a);
         $body = get_string('expirymessageenrollerbody', 'enrol_'.$name, $a);
@@ -3619,7 +3633,7 @@ abstract class enrol_plugin {
         }
 
         if ($sendoption === ENROL_SEND_EMAIL_FROM_NOREPLY) {
-            $contact = core_user::get_noreply_user();
+            $contact = user::get_noreply_user();
         }
 
         return $contact;
@@ -3644,9 +3658,9 @@ abstract class enrol_plugin {
         global $DB, $CFG;
         require_once($CFG->dirroot . '/course/lib.php');
 
-        $user = core_user::get_user($userid);
+        $user = user::get_user($userid);
         $course = get_course($instance->courseid);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Fallback to the instance role ID if parameter not specified.
         $courseroleid = $roleid ?: $instance->roleid;
@@ -3658,7 +3672,7 @@ abstract class enrol_plugin {
         $a->coursestartdate = userdate($course->startdate, get_string('strftimedatetime', 'core_langconfig'));
         $a->profileurl = \core\user::get_profile_url($user, $context)->out();
 
-        $placeholders = \core_user::get_name_placeholders($user);
+        $placeholders = user::get_name_placeholders($user);
         foreach ($placeholders as $field => $value) {
             $a->{$field} = $value;
         }

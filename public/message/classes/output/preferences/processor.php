@@ -26,8 +26,9 @@ namespace core_message\output\preferences;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Class to create context for one of the message processors settings on the message preferences page.
@@ -73,7 +74,7 @@ class processor implements templatable, renderable {
         $this->type = $type;
     }
 
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         return [
             'userid' => $this->user->id,
             'displayname' => get_string('pluginname', 'message_'.$this->type),

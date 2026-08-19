@@ -24,6 +24,9 @@
 
 namespace core_availability;
 
+use core\exception\coding_exception;
+use core\plugin_manager;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -139,17 +142,17 @@ class tree extends tree_node {
 
         // Check object.
         if (!is_object($structure)) {
-            throw new \coding_exception('Invalid availability structure (not object)');
+            throw new coding_exception('Invalid availability structure (not object)');
         }
 
         // Extract operator.
         if (!isset($structure->op)) {
-            throw new \coding_exception('Invalid availability structure (missing ->op)');
+            throw new coding_exception('Invalid availability structure (missing ->op)');
         }
         $this->op = $structure->op;
         if (!in_array($this->op, array(self::OP_AND, self::OP_OR,
                 self::OP_NOT_AND, self::OP_NOT_OR), true)) {
-            throw new \coding_exception('Invalid availability structure (unknown ->op)');
+            throw new coding_exception('Invalid availability structure (unknown ->op)');
         }
 
         // For root tree, get show options.
@@ -159,16 +162,16 @@ class tree extends tree_node {
             if ($this->op === self::OP_AND || $this->op === self::OP_NOT_OR) {
                 // Per-child show options.
                 if (!isset($structure->showc)) {
-                    throw new \coding_exception(
+                    throw new coding_exception(
                             'Invalid availability structure (missing ->showc)');
                 }
                 if (!is_array($structure->showc)) {
-                    throw new \coding_exception(
+                    throw new coding_exception(
                             'Invalid availability structure (->showc not array)');
                 }
                 foreach ($structure->showc as $value) {
                     if (!is_bool($value)) {
-                        throw new \coding_exception(
+                        throw new coding_exception(
                                 'Invalid availability structure (->showc value not bool)');
                     }
                 }
@@ -181,11 +184,11 @@ class tree extends tree_node {
                 // But they don't have either, so how do we know which one to do?
                 // There might as well be only one value.)
                 if (!isset($structure->show)) {
-                    throw new \coding_exception(
+                    throw new coding_exception(
                             'Invalid availability structure (missing ->show)');
                 }
                 if (!is_bool($structure->show)) {
-                    throw new \coding_exception(
+                    throw new coding_exception(
                             'Invalid availability structure (->show not bool)');
                 }
                 $this->show = $structure->show;
@@ -193,7 +196,7 @@ class tree extends tree_node {
         }
 
         // Get list of enabled plugins.
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $enabled = $pluginmanager->get_enabled_plugins('availability');
 
         // For unit tests, also allow the mock plugin type (even though it
@@ -204,18 +207,18 @@ class tree extends tree_node {
 
         // Get children.
         if (!isset($structure->c)) {
-            throw new \coding_exception('Invalid availability structure (missing ->c)');
+            throw new coding_exception('Invalid availability structure (missing ->c)');
         }
         if (!is_array($structure->c)) {
-            throw new \coding_exception('Invalid availability structure (->c not array)');
+            throw new coding_exception('Invalid availability structure (->c not array)');
         }
         if (is_array($this->showchildren) && count($structure->showc) != count($structure->c)) {
-            throw new \coding_exception('Invalid availability structure (->c, ->showc mismatch)');
+            throw new coding_exception('Invalid availability structure (->c, ->showc mismatch)');
         }
         $this->children = array();
         foreach ($structure->c as $index => $child) {
             if (!is_object($child)) {
-                throw new \coding_exception('Invalid availability structure (child not object)');
+                throw new coding_exception('Invalid availability structure (child not object)');
             }
 
             // First see if it's a condition. These have a defined type.
@@ -228,7 +231,7 @@ class tree extends tree_node {
                         // doesn't exist.
                         continue;
                     } else {
-                        throw new \coding_exception('Unknown condition type: ' . $child->type);
+                        throw new coding_exception('Unknown condition type: ' . $child->type);
                     }
                 }
                 $this->children[] = new $classname($child);
@@ -454,7 +457,7 @@ class tree extends tree_node {
      */
     public function get_full_information(info $info) {
         if (!$this->root) {
-            throw new \coding_exception('Only supported on root item');
+            throw new coding_exception('Only supported on root item');
         }
         return $this->get_full_information_recursive(false, $info, null, true);
     }
@@ -471,7 +474,7 @@ class tree extends tree_node {
      */
     public function get_result_information(info $info, result $result) {
         if (!$this->root) {
-            throw new \coding_exception('Only supported on root item');
+            throw new coding_exception('Only supported on root item');
         }
         return $this->get_full_information_recursive(false, $info, $result, true);
     }
@@ -588,7 +591,7 @@ class tree extends tree_node {
                 $negative = true;
                 break;
             default:
-                throw new \coding_exception('Unknown operator');
+                throw new coding_exception('Unknown operator');
         }
         switch($this->op) {
             case self::OP_AND:
@@ -600,7 +603,7 @@ class tree extends tree_node {
                 $andoperator = false;
                 break;
             default:
-                throw new \coding_exception('Unknown operator');
+                throw new coding_exception('Unknown operator');
         }
 
         // Select NOT (or not) for children. It flips if this is a 'not' group.
@@ -723,7 +726,7 @@ class tree extends tree_node {
             case self::OP_NOT_AND:
                 break;
             default:
-                throw new \coding_exception('Invalid $op');
+                throw new coding_exception('Invalid $op');
         }
 
         // Do simple tree.
@@ -774,20 +777,20 @@ class tree extends tree_node {
                 // The JSON will break if anything isn't an actual bool, so check.
                 foreach ($show as $item) {
                     if (!is_bool($item)) {
-                        throw new \coding_exception('$show array members must be bool');
+                        throw new coding_exception('$show array members must be bool');
                     }
                 }
                 // Check the size matches.
                 if (count($show) != count($result->c)) {
-                    throw new \coding_exception('$show array size does not match $children');
+                    throw new coding_exception('$show array size does not match $children');
                 }
                 $result->showc = $show;
             } else {
-                throw new \coding_exception('$show must be bool or array');
+                throw new coding_exception('$show must be bool or array');
             }
         } else {
             if (!is_bool($show)) {
-                throw new \coding_exception('For this operator, $show must be bool');
+                throw new coding_exception('For this operator, $show must be bool');
             }
             $result->show = $show;
         }

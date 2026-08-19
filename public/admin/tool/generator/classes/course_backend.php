@@ -21,6 +21,10 @@
  * @copyright 2013 The Open University
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\module;
+use core\exception\coding_exception;
+use core\output\html_writer;
+
 class tool_generator_course_backend extends tool_generator_backend {
     /**
      * @var array Number of sections in course
@@ -446,7 +450,7 @@ class tool_generator_course_backend extends tool_generator_backend {
 
         // Add files.
         $fs = get_file_storage();
-        $context = context_module::instance($resource->cmid);
+        $context = module::instance($resource->cmid);
         $filerecord = array('component' => 'mod_resource', 'filearea' => 'content',
                 'contextid' => $context->id, 'itemid' => 0, 'filepath' => '/');
         for ($i = 0; $i < $count; $i++) {
@@ -502,7 +506,7 @@ class tool_generator_course_backend extends tool_generator_backend {
             fclose($handle);
 
             // Add file.
-            $context = context_module::instance($resource->cmid);
+            $context = module::instance($resource->cmid);
             $filerecord = array('component' => 'mod_resource', 'filearea' => 'content',
                     'contextid' => $context->id, 'itemid' => 0, 'filepath' => '/',
                     'filename' => 'bigfile' . $i . '.dat');

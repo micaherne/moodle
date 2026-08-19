@@ -16,6 +16,8 @@
 
 namespace mod_bigbluebuttonbn\local\exceptions;
 
+use core\exception\moodle_exception;
+
 /**
  * Class server_not_available_exception
  *
@@ -27,7 +29,7 @@ namespace mod_bigbluebuttonbn\local\exceptions;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author    Laurent David  (laurent [at] call-learning [dt] fr)
  */
-class server_not_available_exception extends \moodle_exception {
+class server_not_available_exception extends moodle_exception {
 
     /**
      * Constructor

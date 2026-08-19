@@ -17,6 +17,7 @@
 namespace core\context;
 
 use core\context, core\context_helper;
+use core\url;
 
 /**
  * Unit tests for block context class.
@@ -40,7 +41,7 @@ final class block_test extends \advanced_testcase {
         $context = block::instance($block->id);
 
         $this->assertInstanceOf(block::class, $context);
-        $this->assertInstanceOf(\context_block::class, $context);
+        $this->assertInstanceOf(block::class, $context);
     }
 
     /**
@@ -114,9 +115,9 @@ final class block_test extends \advanced_testcase {
         $block = $this->getDataGenerator()->create_block('online_users');
         $context = block::instance($block->id);
 
-        $expected = new \moodle_url('/');
+        $expected = new url('/');
         $url = $context->get_url();
-        $this->assertInstanceOf(\moodle_url::class, $url);
+        $this->assertInstanceOf(url::class, $url);
         $this->assertSame($expected->out(), $url->out());
     }
 

@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 class block_course_summary extends block_base {
 
     /**
@@ -62,7 +64,7 @@ class block_course_summary extends block_base {
         $options = new stdClass();
         $options->noclean = true;    // Don't clean Javascripts etc
         $options->overflowdiv = true;
-        $context = context_course::instance($this->page->course->id);
+        $context = course::instance($this->page->course->id);
         $this->page->course->summary = file_rewrite_pluginfile_urls($this->page->course->summary, 'pluginfile.php', $context->id, 'course', 'summary', NULL);
         $this->content->text = format_text($this->page->course->summary, $this->page->course->summaryformat, $options);
         $this->content->footer = '';

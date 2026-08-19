@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace core_customfield\external;
 
+use core\exception\moodle_exception;
 use core_customfield\event\shared_category_usage_disabled;
 use core_customfield\event\shared_category_usage_enabled;
 use core_customfield\handler;
@@ -80,7 +81,7 @@ class toggle_shared_category extends external_api {
 
         $handler = handler::get_handler($component, $area, $itemid);
         if (!$handler->can_configure()) {
-            throw new \moodle_exception('nopermissions', 'error', '', get_string('customfield:configureshared', 'core_role'));
+            throw new moodle_exception('nopermissions', 'error', '', get_string('customfield:configureshared', 'core_role'));
         }
 
         global $DB;

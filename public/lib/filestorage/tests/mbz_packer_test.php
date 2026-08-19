@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -45,7 +47,7 @@ final class mbz_packer_test extends \advanced_testcase {
         $CFG->usezipbackups = true;
         $filefalse = $CFG->tempdir . '/false.mbz';
         $this->assertNotEmpty($packer->archive_to_pathname($files, $filefalse));
-        $context = \context_system::instance();
+        $context = system::instance();
         $this->assertNotEmpty($storagefalse = $packer->archive_to_storage(
                 $files, $context->id, 'phpunit', 'data', 0, '/', 'false.mbz'));
 
@@ -53,7 +55,7 @@ final class mbz_packer_test extends \advanced_testcase {
         $CFG->usezipbackups = false;
         $filetrue = $CFG->tempdir . '/true.mbz';
         $this->assertNotEmpty($packer->archive_to_pathname($files, $filetrue));
-        $context = \context_system::instance();
+        $context = system::instance();
         $this->assertNotEmpty($storagetrue = $packer->archive_to_storage(
                 $files, $context->id, 'phpunit', 'data', 0, '/', 'true.mbz'));
 

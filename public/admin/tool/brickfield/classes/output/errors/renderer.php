@@ -16,6 +16,9 @@
 
 namespace tool_brickfield\output\errors;
 
+use core\output\html_writer;
+use core\output\paging_bar;
+use core\url;
 use tool_brickfield\accessibility;
 use tool_brickfield\local\areas\module_area_base;
 use tool_brickfield\local\tool\filter;
@@ -45,7 +48,7 @@ class renderer extends \tool_brickfield\output\renderer {
         $templatedata = new \stdClass();
 
         // Need a URL for the paging bar.
-        $pageurl = new \moodle_url(
+        $pageurl = new url(
             accessibility::get_plugin_url(),
             [
                 'courseid' => $filter->courseid,
@@ -81,7 +84,7 @@ class renderer extends \tool_brickfield\output\renderer {
             $templatedata->tabledata[] = $row;
         }
 
-        $bar = new \paging_bar($data->errortotal, $filter->page, $filter->perpage, $pageurl->out());
+        $bar = new paging_bar($data->errortotal, $filter->page, $filter->perpage, $pageurl->out());
         $templatedata->pagenavigation = $this->render($bar);
 
         return $this->render_from_template(manager::PLUGINNAME . '/errors', $templatedata);
@@ -110,7 +113,7 @@ class renderer extends \tool_brickfield\output\renderer {
         if (!isset($link)) {
             debugging($err->component . ' ' . $err->tablename);
         }
-        $out .= \html_writer::link($link, get_string('edit'), ['title' => $title]);
+        $out .= html_writer::link($link, get_string('edit'), ['title' => $title]);
 
         return $out;
     }

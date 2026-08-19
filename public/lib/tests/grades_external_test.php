@@ -16,6 +16,9 @@
 
 namespace core;
 
+use core\context\course;
+use core\context\user;
+use core\exception\moodle_exception;
 use core_grades_external;
 use core_external\external_api;
 
@@ -43,7 +46,7 @@ final class grades_external_test extends \core_external\tests\externallib_testca
 
         // Adds a course, a teacher, 2 students, an assignment and grades for the students.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
 
@@ -59,7 +62,7 @@ final class grades_external_test extends \core_external\tests\externallib_testca
 
         $parent = $this->getDataGenerator()->create_user();
         $this->setUser($parent);
-        $student1context = \context_user::instance($student1->id);
+        $student1context = user::instance($student1->id);
         // Creates a new role, gives it the capability and gives $USER that role.
         $parentroleid = $this->assignUserCapability('moodle/grade:viewall', $student1context->id);
         // Enrol the user in the course using the new role.
@@ -205,7 +208,7 @@ final class grades_external_test extends \core_external\tests\externallib_testca
                 array( array('studentid' => $student1->id, 'grade' => $student1grade))
             );
             $this->fail('moodle_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertTrue(true);
         }
 
@@ -222,7 +225,7 @@ final class grades_external_test extends \core_external\tests\externallib_testca
                 array( array('studentid' => $student1->id, 'grade' => $student1grade))
             );
             $this->fail('moodle_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertTrue(true);
         }
 
@@ -239,13 +242,13 @@ final class grades_external_test extends \core_external\tests\externallib_testca
                 array('hidden' => 1)
             );
             $this->fail('moodle_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertTrue(true);
         }
 
         // Give the student role 'moodle/grade:hide' and they should now be able to hide the grade item.
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         assign_capability('moodle/grade:hide', CAP_ALLOW, $studentrole->id, $coursecontext->id);
         accesslib_clear_all_caches_for_unit_testing();
 

@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -27,7 +33,7 @@ $sure    = optional_param('sure', '', PARAM_ALPHA);
 $type    = optional_param('type', '', PARAM_PLUGIN);
 $downloadcontents = optional_param('downloadcontents', false, PARAM_BOOL);
 
-$context = context_system::instance();
+$context = system::instance();
 
 $pagename = 'repositorycontroller';
 
@@ -39,10 +45,10 @@ if ($edit){
     $pagename = 'repositoryinstancenew';
 }
 
-admin_externalpage_setup($pagename, '', null, new moodle_url('/admin/repositoryinstance.php'));
+admin_externalpage_setup($pagename, '', null, new url('/admin/repositoryinstance.php'));
 
 // The URL used for redirection, and that all edit related URLs will be based off.
-$parenturl = new moodle_url('/admin/repository.php', ['action' => 'edit']);
+$parenturl = new url('/admin/repository.php', ['action' => 'edit']);
 
 if ($new) {
     $parenturl->param('repos', $new);
@@ -95,10 +101,10 @@ if (!empty($edit) || !empty($new)) {
             $data = data_submitted();
         }
         if ($success) {
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
             redirect($parenturl);
         } else {
-            throw new \moodle_exception('instancenotsaved', 'repository', $parenturl);
+            throw new moodle_exception('instancenotsaved', 'repository', $parenturl);
         }
         exit;
     } else {
@@ -113,7 +119,7 @@ if (!empty($edit) || !empty($new)) {
     require_sesskey();
     $instance = repository::get_type_by_typename($hide);
     $instance->hide();
-    core_plugin_manager::reset_caches();
+    plugin_manager::reset_caches();
     $return = true;
 } else if (!empty($delete)) {
     $instance = repository::get_instance($delete);
@@ -127,10 +133,10 @@ if (!empty($edit) || !empty($new)) {
         require_sesskey();
         if ($instance->delete($downloadcontents)) {
             $deletedstr = get_string('instancedeleted', 'repository');
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
             redirect($parenturl, $deletedstr, 3);
         } else {
-            throw new \moodle_exception('instancenotdeleted', 'repository', $parenturl);
+            throw new moodle_exception('instancenotdeleted', 'repository', $parenturl);
         }
         exit;
     }
@@ -138,13 +144,13 @@ if (!empty($edit) || !empty($new)) {
     echo $OUTPUT->header();
     echo $OUTPUT->box_start('generalbox', 'notice');
 
-    $continueurl = new moodle_url($PAGE->url, [
+    $continueurl = new url($PAGE->url, [
         'type' => $type,
         'delete' => $delete,
         'sure' => 'yes',
     ]);
 
-    $continueanddownloadurl = new moodle_url($continueurl, array(
+    $continueanddownloadurl = new url($continueurl, array(
         'downloadcontents' => 1
     ));
 

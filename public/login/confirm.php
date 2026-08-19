@@ -24,6 +24,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+
 require(__DIR__ . '/../config.php');
 require_once(__DIR__ . '/lib.php');
 require_once($CFG->libdir . '/authlib.php');
@@ -35,7 +38,7 @@ $s = optional_param('s', '', PARAM_RAW);        // Old parameter:  username
 $redirect = optional_param('redirect', '', PARAM_LOCALURL);    // Where to redirect the browser once the user has been confirmed.
 
 $PAGE->set_url('/login/confirm.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 if (!$authplugin = signup_get_user_confirmation_authplugin()) {
     throw new moodle_exception('confirmationnotenabled');
@@ -77,7 +80,7 @@ if (!empty($data) || (!empty($p) && !empty($s))) {
         // The user has confirmed successfully, let's log them in
 
         if (!$user = get_complete_user_data('username', $username)) {
-            throw new \moodle_exception('cannotfinduser', '', '', s($username));
+            throw new moodle_exception('cannotfinduser', '', '', s($username));
         }
 
         if (!$user->suspended) {
@@ -122,10 +125,10 @@ if (!empty($data) || (!empty($p) && !empty($s))) {
         echo $OUTPUT->footer();
         exit;
     } else {
-        throw new \moodle_exception('invalidconfirmdata');
+        throw new moodle_exception('invalidconfirmdata');
     }
 } else {
-    throw new \moodle_exception("errorwhenconfirming");
+    throw new moodle_exception("errorwhenconfirming");
 }
 
 redirect("$CFG->wwwroot/");

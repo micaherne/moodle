@@ -22,8 +22,19 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\coursecat;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\plugin_renderer_base;
+use core\output\renderable;
+use core\output\single_button;
+use core\url;
 use core_course\output\activity_icon;
 use core\output\local\properties\iconsize;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -268,7 +279,7 @@ class core_backup_renderer extends plugin_renderer_base {
      * @param moodle_url $nextstageurl URL to send user to
      * @return string HTML code to display
      */
-    public function backup_details_unknown(moodle_url $nextstageurl) {
+    public function backup_details_unknown(url $nextstageurl) {
 
         $html  = html_writer::start_div('unknownformat');
         $html .= $this->output->heading(get_string('errorinvalidformat', 'backup'), 2);
@@ -289,7 +300,7 @@ class core_backup_renderer extends plugin_renderer_base {
      * @param int $currentcourse
      * @return string
      */
-    public function course_selector(moodle_url $nextstageurl, $wholecourse = true, ?restore_category_search $categories = null,
+    public function course_selector(url $nextstageurl, $wholecourse = true, ?restore_category_search $categories = null,
                                     ?restore_course_search $courses = null, $currentcourse = null) {
         global $CFG;
         require_once($CFG->dirroot.'/course/lib.php');
@@ -406,7 +417,7 @@ class core_backup_renderer extends plugin_renderer_base {
      * @param import_course_search $courses
      * @return string
      */
-    public function import_course_selector(moodle_url $nextstageurl, ?import_course_search $courses = null) {
+    public function import_course_selector(url $nextstageurl, ?import_course_search $courses = null) {
         $html  = html_writer::start_tag('div', array('class' => 'import-course-selector backup-restore'));
         $html .= html_writer::start_tag('form', array('method' => 'post', 'action' => $nextstageurl->out_omit_querystring()));
         foreach ($nextstageurl->params() as $key => $value) {
@@ -572,8 +583,8 @@ class core_backup_renderer extends plugin_renderer_base {
      * @return string
      */
     public function continue_button($url, $method = 'post') {
-        if (!($url instanceof moodle_url)) {
-            $url = new moodle_url($url);
+        if (!($url instanceof url)) {
+            $url = new url($url);
         }
         if ($method != 'post') {
             $method = 'get';
@@ -612,11 +623,11 @@ class core_backup_renderer extends plugin_renderer_base {
             );
             $status = $this->render_from_template('core/async_backup_progress', $progresssetup);
         } else if ($statuscode == backup::STATUS_FINISHED_ERR) { // Error.
-            $icon = $this->output->render(new \pix_icon('i/delete', get_string('failed', 'backup')));
-            $status = \html_writer::span($icon, 'action-icon');
+            $icon = $this->output->render(new pix_icon('i/delete', get_string('failed', 'backup')));
+            $status = html_writer::span($icon, 'action-icon');
         } else if ($statuscode == backup::STATUS_FINISHED_OK) { // Complete.
-            $icon = $this->output->render(new \pix_icon('i/checked', get_string('successful', 'backup')));
-            $status = \html_writer::span($icon, 'action-icon');
+            $icon = $this->output->render(new pix_icon('i/checked', get_string('successful', 'backup')));
+            $status = html_writer::span($icon, 'action-icon');
         }
 
         return $status;
@@ -715,7 +726,7 @@ class core_backup_renderer extends plugin_renderer_base {
                 if ($file->is_directory()) {
                     continue;
                 }
-                $fileurl = moodle_url::make_pluginfile_url(
+                $fileurl = url::make_pluginfile_url(
                     $file->get_contextid(),
                     $file->get_component(),
                     $file->get_filearea(),
@@ -733,7 +744,7 @@ class core_backup_renderer extends plugin_renderer_base {
                 $params['filecontextid'] = $file->get_contextid();
                 $params['contextid'] = $viewer->currentcontext->id;
                 $params['itemid'] = $file->get_itemid();
-                $restoreurl = new moodle_url('/backup/restorefile.php', $params);
+                $restoreurl = new url('/backup/restorefile.php', $params);
                 $restorelink = html_writer::link($restoreurl, get_string('restore'));
                 $downloadlink = html_writer::link($fileurl, get_string('download'));
 
@@ -778,7 +789,7 @@ class core_backup_renderer extends plugin_renderer_base {
 
         if ($canmanagebackups) {
             $html .= $this->output->single_button(
-                new moodle_url('/backup/backupfilesedit.php', array(
+                new url('/backup/backupfilesedit.php', array(
                         'currentcontext' => $viewer->currentcontext->id,
                         'contextid' => $viewer->filecontext->id,
                         'filearea' => $viewer->filearea,
@@ -821,12 +832,12 @@ class core_backup_renderer extends plugin_renderer_base {
                 $row->cells = [
                     html_writer::empty_tag('input', $attrs),
                     html_writer::label(
-                        format_string($course->shortname, true, ['context' => context_course::instance($course->id)]),
+                        format_string($course->shortname, true, ['context' => course::instance($course->id)]),
                         $id,
                         true,
                         ['class' => 'd-block']
                     ),
-                    format_string($course->fullname, true, ['context' => context_course::instance($course->id)])
+                    format_string($course->fullname, true, ['context' => course::instance($course->id)])
                 ];
                 $table->data[] = $row;
             }
@@ -924,12 +935,12 @@ class core_backup_renderer extends plugin_renderer_base {
                 html_writer::empty_tag('input', ['type' => 'radio', 'name' => 'importid', 'value' => $course->id,
                     'id' => $id]),
                 html_writer::label(
-                    format_string($course->shortname, true, ['context' => context_course::instance($course->id)]),
+                    format_string($course->shortname, true, ['context' => course::instance($course->id)]),
                     $id,
                     true,
                     ['class' => 'd-block']
                 ),
-                format_string($course->fullname, true, ['context' => context_course::instance($course->id)])
+                format_string($course->fullname, true, ['context' => course::instance($course->id)])
             ];
             $table->data[] = $row;
         }
@@ -987,13 +998,13 @@ class core_backup_renderer extends plugin_renderer_base {
                 if (!$category->visible) {
                     $row->attributes['class'] .= ' dimmed';
                 }
-                $context = context_coursecat::instance($category->id);
+                $context = coursecat::instance($category->id);
                 $id = $this->make_unique_id('restore-category');
                 $row->cells = [
                     html_writer::empty_tag('input', ['type' => 'radio', 'name' => 'targetid', 'value' => $category->id,
                         'id' => $id]),
                     html_writer::label(
-                        format_string($category->name, true, ['context' => context_coursecat::instance($category->id)]),
+                        format_string($category->name, true, ['context' => coursecat::instance($category->id)]),
                         $id,
                         true,
                         ['class' => 'd-block']
@@ -1101,12 +1112,12 @@ class core_backup_renderer extends plugin_renderer_base {
         $copies = \copy_helper::get_copies($userid, $courseid);
 
         foreach ($copies as $copy) {
-            $sourceurl = new \moodle_url('/course/view.php', array('id' => $copy->sourceid));
+            $sourceurl = new url('/course/view.php', array('id' => $copy->sourceid));
 
             $tablerow = array(
                 html_writer::link($sourceurl, format_string($copy->source, true,
-                    ['context' => context_course::instance($copy->sourceid)])),
-                format_string($copy->destination, true, ['context' => context_course::instance($copy->sourceid)]),
+                    ['context' => course::instance($copy->sourceid)])),
+                format_string($copy->destination, true, ['context' => course::instance($copy->sourceid)]),
                 userdate($copy->timecreated),
                 get_string($copy->operation),
                 $this->get_status_display($copy->status, $copy->backupid, $copy->restoreid, $copy->operation)

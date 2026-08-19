@@ -16,6 +16,8 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+
 /**
  * Tests for user.
  *
@@ -176,7 +178,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid lang 'vvvv' provided."
                 ]
             ],
@@ -191,7 +193,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid timezone 'NOT/FOUND' provided."
                 ]
             ],
@@ -208,7 +210,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid country code 'FFF'."
                 ]
             ],
@@ -227,7 +229,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid maildisplay value '3'. Must be in the range {0..2}."
                 ]
             ],
@@ -347,7 +349,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => 'Invalid sourceid value. Cannot be an empty string.'
                 ]
             ],
@@ -363,7 +365,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => 'Invalid lang value. Cannot be an empty string.'
                 ]
             ],
@@ -379,7 +381,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => 'Invalid timezone value. Cannot be an empty string.'
                 ]
             ],
@@ -395,7 +397,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid lang 'vvvv' provided."
                 ]
             ],
@@ -411,7 +413,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid timezone 'NOT/FOUND' provided."
                 ]
             ],
@@ -431,7 +433,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid country code 'FFF'."
                 ]
             ],
@@ -451,7 +453,7 @@ final class user_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid maildisplay value '4'. Must be in the range {0..2}."
                 ]
             ],
@@ -526,7 +528,7 @@ final class user_test extends \advanced_testcase {
                 'arg' => -1,
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid resourcelinkid '-1' provided. Must be > 0."
                 ]
             ],
@@ -563,7 +565,7 @@ final class user_test extends \advanced_testcase {
                 'arg' => 'FFF',
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid country code 'FFF'."
                 ]
             ],
@@ -600,7 +602,7 @@ final class user_test extends \advanced_testcase {
                 'arg' => 'NOT/FOUND',
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid timezone 'NOT/FOUND' provided."
                 ]
             ],
@@ -630,7 +632,7 @@ final class user_test extends \advanced_testcase {
                 'arg' => '-1',
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid maildisplay value '-1'. Must be in the range {0..2}."
                 ]
             ],
@@ -639,7 +641,7 @@ final class user_test extends \advanced_testcase {
                 'arg' => '3',
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid maildisplay value '3'. Must be in the range {0..2}."
                 ]
             ],
@@ -655,7 +657,7 @@ final class user_test extends \advanced_testcase {
                 'arg' => '',
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => 'Invalid lang value. Cannot be an empty string.'
                 ]
             ],
@@ -664,7 +666,7 @@ final class user_test extends \advanced_testcase {
                 'arg' => 'ff',
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid lang 'ff' provided."
                 ]
             ],
@@ -702,7 +704,7 @@ final class user_test extends \advanced_testcase {
                 'arg' => -1,
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => 'Cannot set negative access time'
                 ]
             ],

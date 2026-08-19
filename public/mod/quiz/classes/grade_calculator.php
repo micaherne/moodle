@@ -16,7 +16,7 @@
 
 namespace mod_quiz;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core\di;
 use core\hook;
 use core_component;

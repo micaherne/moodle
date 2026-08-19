@@ -16,6 +16,8 @@
 
 namespace core_courseformat\external;
 
+use core\context\system;
+
 /**
  * Tests for overviewaction_exporter.
  *
@@ -53,7 +55,7 @@ final class overviewaction_exporter_test extends \advanced_testcase {
             badgestyle: $badgestyle,
         );
 
-        $exporter = new overviewaction_exporter($overviewaction, ['context' => \context_system::instance()]);
+        $exporter = new overviewaction_exporter($overviewaction, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('linkurl', $data);

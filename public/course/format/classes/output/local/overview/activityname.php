@@ -16,7 +16,7 @@
 
 namespace core_courseformat\output\local\overview;
 
-use cm_info;
+use core_course\cm_info;
 use core\output\externable;
 use core\output\named_templatable;
 use core\output\renderable;

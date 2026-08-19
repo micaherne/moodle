@@ -28,6 +28,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require(__DIR__.'/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -59,7 +62,7 @@ if ($purgecaches) {
 if (!empty($CFG->skiplangupgrade)) {
     echo $OUTPUT->header();
     echo $OUTPUT->box(get_string('langimportdisabled', 'tool_langimport'));
-    echo $OUTPUT->single_button(new moodle_url($PAGE->url, array('purgecaches' => 1)), get_string('purgestringcaches', 'tool_langimport'));
+    echo $OUTPUT->single_button(new url($PAGE->url, array('purgecaches' => 1)), get_string('purgestringcaches', 'tool_langimport'));
     echo $OUTPUT->footer();
     die;
 }
@@ -99,7 +102,7 @@ if ($mode == DELETION_OF_SELECTED_LANG and (!empty($uninstalllang) or !empty($co
     } else if (empty($confirmtounistall) and confirm_sesskey()) { // User chose langs to be deleted, show confirmation.
         echo $OUTPUT->header();
         echo $OUTPUT->confirm(get_string('uninstallconfirm', 'tool_langimport', implode(', ', $uninstalllang)),
-            new moodle_url($PAGE->url, array(
+            new url($PAGE->url, array(
                 'mode' => DELETION_OF_SELECTED_LANG,
                 'confirmtouninstall' => implode('/', $uninstalllang),
             )), $PAGE->url);
@@ -212,12 +215,12 @@ if ($missingparents) {
     }
 }
 
-$uninstallurl = new moodle_url('/admin/tool/langimport/index.php', array('mode' => DELETION_OF_SELECTED_LANG));
+$uninstallurl = new url('/admin/tool/langimport/index.php', array('mode' => DELETION_OF_SELECTED_LANG));
 $updateurl = null;
 if ($remote) {
-    $updateurl = new moodle_url('/admin/tool/langimport/index.php', array('mode' => UPDATE_ALL_LANG));
+    $updateurl = new url('/admin/tool/langimport/index.php', array('mode' => UPDATE_ALL_LANG));
 }
-$installurl = new moodle_url('/admin/tool/langimport/index.php', array('mode' => INSTALLATION_OF_SELECTED_LANG));
+$installurl = new url('/admin/tool/langimport/index.php', array('mode' => INSTALLATION_OF_SELECTED_LANG));
 
 // List of available languages.
 $options = array();

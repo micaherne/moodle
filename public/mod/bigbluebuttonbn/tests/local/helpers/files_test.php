@@ -25,9 +25,10 @@
 
 namespace mod_bigbluebuttonbn\local\helpers;
 
-use context_course;
-use context_module;
-use context_system;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\require_login_exception;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\test\testcase_helper_trait;
 use stdClass;
@@ -57,9 +58,9 @@ final class files_test extends \advanced_testcase {
      */
     public function test_pluginfile_valid(): void {
         $this->resetAfterTest();
-        $this->assertFalse(files::pluginfile_valid(context_course::instance($this->get_course()->id), 'presentation'));
-        $this->assertTrue(files::pluginfile_valid(context_system::instance(), 'presentation'));
-        $this->assertFalse(files::pluginfile_valid(context_system::instance(), 'otherfilearea'));
+        $this->assertFalse(files::pluginfile_valid(course::instance($this->get_course()->id), 'presentation'));
+        $this->assertTrue(files::pluginfile_valid(system::instance(), 'presentation'));
+        $this->assertFalse(files::pluginfile_valid(system::instance(), 'otherfilearea'));
     }
 
     /**
@@ -142,7 +143,7 @@ final class files_test extends \advanced_testcase {
         $fulldirset = explode('/', $presentation['url']);
         $filename = array_pop($fulldirset);
         $this->setGuestUser();
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         $cm = $instance->get_cm();
         $cmrecord = $cm->get_course_module_record();
         files::pluginfile_file($this->get_course(), $cmrecord, $instance->get_context(), 'presentation', [$filename]);
@@ -187,9 +188,9 @@ final class files_test extends \advanced_testcase {
 
         // From test_delete_original_file_from_draft (lib/test/filelib_test.php)
         // Create a bbb private file.
-        $this->create_sample_file(self::PRESENTATION_FILENAME, context_module::instance($bbformdata->coursemodule)->id);
+        $this->create_sample_file(self::PRESENTATION_FILENAME, module::instance($bbformdata->coursemodule)->id);
         file_prepare_draft_area($bbformdata->presentation,
-            context_module::instance($bbformdata->coursemodule)->id,
+            module::instance($bbformdata->coursemodule)->id,
             'mod_bigbluebuttonbn',
             'presentation', 0);
 

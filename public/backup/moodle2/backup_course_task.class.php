@@ -31,6 +31,8 @@
  *
  * TODO: Finish phpdocs
  */
+use core\context\course;
+
 class backup_course_task extends backup_task {
 
     protected $courseid;
@@ -42,7 +44,7 @@ class backup_course_task extends backup_task {
     public function __construct($name, $courseid, $plan = null) {
 
         $this->courseid   = $courseid;
-        $this->contextid  = context_course::instance($this->courseid)->id;
+        $this->contextid  = course::instance($this->courseid)->id;
 
         parent::__construct($name, $plan);
     }

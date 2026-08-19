@@ -24,13 +24,13 @@
 namespace tool_lp\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
-use moodle_url;
-use context_system;
-use context_course;
+use core\url;
+use core\context\system;
+use core\context\course;
 use core_competency\api;
 use tool_lp\course_competency_statistics;
 use core_competency\competency;
@@ -92,7 +92,7 @@ class course_competencies_page implements renderable, templatable {
      * @param int $courseid The course record for this page.
      */
     public function __construct($courseid, $moduleid) {
-        $this->context = context_course::instance($courseid);
+        $this->context = course::instance($courseid);
         $this->courseid = $courseid;
         $this->moduleid = $moduleid;
         $this->coursecompetencylist = api::list_course_competencies($courseid);
@@ -129,7 +129,7 @@ class course_competencies_page implements renderable, templatable {
         foreach ($contexts as $context) {
             $canmanage = has_capability('moodle/competency:competencymanage', $context);
             if ($canmanage) {
-                $this->manageurl = new moodle_url('/admin/tool/lp/competencyframeworks.php',
+                $this->manageurl = new url('/admin/tool/lp/competencyframeworks.php',
                     array('pagecontextid' => $context->id));
                 $this->canmanagecompetencyframeworks = true;
                 break;
@@ -151,7 +151,7 @@ class course_competencies_page implements renderable, templatable {
         $data->moduleid = $this->moduleid;
         $data->pagecontextid = $this->context->id;
         $data->competencies = array();
-        $data->pluginbaseurl = (new moodle_url('/admin/tool/lp'))->out(true);
+        $data->pluginbaseurl = (new url('/admin/tool/lp'))->out(true);
 
         $gradable = is_enrolled($this->context, $USER, 'moodle/competency:coursecompetencygradable');
         if ($gradable) {

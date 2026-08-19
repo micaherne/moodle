@@ -28,8 +28,8 @@ namespace tool_policy\output;
 defined('MOODLE_INTERNAL') || die();
 
 use core\output\mustache_template_finder;
-use plugin_renderer_base;
-use renderable;
+use core\output\plugin_renderer_base;
+use core\output\renderable;
 use Exception;
 
 /**

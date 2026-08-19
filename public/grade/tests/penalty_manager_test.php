@@ -17,7 +17,7 @@
 namespace core_grades;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
 use core\plugininfo\gradepenalty;
 use grade_item;
 
@@ -124,7 +124,7 @@ final class penalty_manager_test extends advanced_testcase {
 
         // Add a single penalty rule at system context: 10% penalty if overdue.
         $DB->insert_record('gradepenalty_duedate_rule', (object)[
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'overdueby' => 1,
             'penalty' => 10,
             'sortorder' => 1,
@@ -186,7 +186,7 @@ final class penalty_manager_test extends advanced_testcase {
         gradepenalty::enable_plugin('duedate', true);
 
         $DB->insert_record('gradepenalty_duedate_rule', (object)[
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'overdueby' => 1,
             'penalty' => 10,
             'sortorder' => 1,
@@ -260,7 +260,7 @@ final class penalty_manager_test extends advanced_testcase {
 
         // 10% penalty rule: any overdue submission loses 10% of grademax.
         $DB->insert_record('gradepenalty_duedate_rule', (object)[
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'overdueby' => 1,
             'penalty'   => 10,
             'sortorder' => 1,

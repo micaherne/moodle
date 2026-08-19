@@ -25,6 +25,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 debugging('core\\event\\role_capabilities_updated has been deprecated. Please use
@@ -76,9 +78,9 @@ class role_capabilities_updated extends base {
      */
     public function get_url() {
         if ($this->contextlevel == CONTEXT_SYSTEM) {
-            return new \moodle_url('/admin/roles/define.php', array('action' => 'view', 'roleid' => $this->objectid));
+            return new url('/admin/roles/define.php', array('action' => 'view', 'roleid' => $this->objectid));
         } else {
-            return new \moodle_url('/admin/roles/override.php', array('contextid' => $this->contextid,
+            return new url('/admin/roles/override.php', array('contextid' => $this->contextid,
                 'roleid' => $this->objectid));
         }
     }

@@ -30,6 +30,8 @@
  * @param int $count
  * @return string
  */
+use core\context\system;
+
 function data_export_xls($export, $dataname, $count) {
     global $CFG;
 
@@ -151,7 +153,7 @@ function data_get_exportdata($dataid, $fields, $selectedfields, $currentgroup=0,
         DEBUG_DEVELOPER);
 
     if (is_null($context)) {
-        $context = context_system::instance();
+        $context = system::instance();
     }
     // exporting user data needs special permission
     $userdetails = $userdetails && has_capability('mod/data:exportuserinfo', $context);

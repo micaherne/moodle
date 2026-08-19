@@ -4,10 +4,12 @@
 // (using portfolio/file.php) but still give them the 'return to where you were' link
 // to go back to their assignment, or whatever
 
+use core\exception\moodle_exception;
+
 require(__DIR__.'/../../config.php');
 
 if (empty($CFG->enableportfolios)) {
-    throw new \moodle_exception('disabled', 'portfolio');
+    throw new moodle_exception('disabled', 'portfolio');
 }
 
 require_once($CFG->libdir.'/portfoliolib.php');

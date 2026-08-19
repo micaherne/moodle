@@ -33,6 +33,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**

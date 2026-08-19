@@ -24,6 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use PHPUnit\Framework\TestCase;
 
@@ -751,7 +752,7 @@ abstract class base_testcase extends PHPUnit\Framework\TestCase {
         $fullpath = static::get_fixture_path($component, $path);
 
         if (!file_exists($fullpath)) {
-            throw new \coding_exception("Fixture file not found: $fullpath");
+            throw new coding_exception("Fixture file not found: $fullpath");
         }
 
         require_once($fullpath);

@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require('../../config.php');
 require_once($CFG->dirroot.'/report/log/locallib.php');
 require_once($CFG->dirroot.'/lib/tablelib.php');
@@ -46,8 +51,8 @@ if (!$course) {
     $sitecoursefilter = $courseid;
 }
 
-$coursecontext   = context_course::instance($course->id);
-$personalcontext = context_user::instance($user->id);
+$coursecontext   = course::instance($course->id);
+$personalcontext = user::instance($user->id);
 
 if ($course->id == SITEID) {
     $PAGE->set_context($personalcontext);
@@ -65,7 +70,7 @@ if ($USER->id != $user->id and has_capability('moodle/user:viewuseractivitiesrep
 list($all, $today) = report_log_can_access_user_report($user, $course);
 
 if (!$today && !$all) {
-    throw new \moodle_exception('nocapability', 'report_log');
+    throw new moodle_exception('nocapability', 'report_log');
 }
 
 if ($mode === 'today') {
@@ -88,7 +93,7 @@ $PAGE->set_title("$course->shortname: $stractivityreport");
 
 // Create the appropriate breadcrumb.
 $navigationnode = array(
-        'url' => new moodle_url('/report/log/user.php', ['id' => $user->id, 'course' => $courseid, 'mode' => $mode]),
+        'url' => new url('/report/log/user.php', ['id' => $user->id, 'course' => $courseid, 'mode' => $mode]),
     );
 if ($mode === 'today') {
     $navigationnode['name'] = get_string('todaylogs');

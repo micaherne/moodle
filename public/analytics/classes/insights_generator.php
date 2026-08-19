@@ -24,6 +24,11 @@
 
 namespace core_analytics;
 
+use core\context;
+use core\context\course;
+use core\url;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/lib/messagelib.php');
@@ -130,13 +135,13 @@ class insights_generator {
      * @param  string      $fullmessagehtml
      * @return null
      */
-    private function notification(\context $context, \stdClass $user, \moodle_url $insighturl, string $fullmessage, string $fullmessagehtml) {
+    private function notification(context $context, \stdClass $user, url $insighturl, string $fullmessage, string $fullmessagehtml) {
 
         $message = new \core\message\message();
         $message->component = 'moodle';
         $message->name = 'insights';
 
-        $message->userfrom = \core_user::get_support_user();
+        $message->userfrom = user::get_support_user();
         $message->userto = $user;
 
         $message->subject = $this->target->get_insight_subject($this->modelid, $context);
@@ -160,14 +165,14 @@ class insights_generator {
      * @param  \context $context
      * @return int
      */
-    private function get_context_courseid(\context $context) {
+    private function get_context_courseid(context $context) {
 
         if (empty($this->contextcourseids[$context->id])) {
 
             $coursecontext = $context->get_course_context(false);
             if (!$coursecontext) {
                 // Default to the frontpage course context.
-                $coursecontext = \context_course::instance(SITEID);
+                $coursecontext = course::instance(SITEID);
             }
             $this->contextcourseids[$context->id] = $coursecontext->instanceid;
         }
@@ -183,7 +188,7 @@ class insights_generator {
      * @param  \stdClass                    $user
      * @return array Three items array with formats [\moodle_url, string, string]
      */
-    private function prediction_info(\core_analytics\prediction $prediction, \context $context, \stdClass $user) {
+    private function prediction_info(\core_analytics\prediction $prediction, context $context, \stdClass $user) {
         global $OUTPUT;
 
         // The prediction actions get passed to the target so that it can show them in its preferred way.
@@ -207,7 +212,7 @@ class insights_generator {
             if (!$action->get_url()->get_param('forwardurl')) {
 
                 $params = ['actionvisiblename' => $action->get_text(), 'target' => '_blank'];
-                $actiondoneurl = new \moodle_url('/report/insights/done.php', $params);
+                $actiondoneurl = new url('/report/insights/done.php', $params);
                 // Set the forward url to the 'done' script.
                 $action->get_url()->param('forwardurl', $actiondoneurl->out(false));
             }

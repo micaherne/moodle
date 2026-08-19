@@ -16,10 +16,11 @@
 
 namespace filter_glossary;
 
-use cache;
-use cache_store;
+use core_cache\cache;
+use core_cache\store;
 use core\output\html_writer;
 use core\url;
+use core_filters\filter_manager;
 use core_filters\filter_object;
 use stdClass;
 
@@ -52,7 +53,7 @@ class text_filter extends \core_filters\text_filter {
         global $USER;
 
         if ($this->cache === null) {
-            $this->cache = cache::make_from_params(cache_store::MODE_REQUEST, 'filter', 'glossary');
+            $this->cache = cache::make_from_params(store::MODE_REQUEST, 'filter', 'glossary');
         }
 
         // Try to get current course.
@@ -223,7 +224,7 @@ class text_filter extends \core_filters\text_filter {
      * @return string The formatted string.
      */
     private function glossary_format_string(string $text): string {
-        $filtermanager = \filter_manager::instance();
+        $filtermanager = filter_manager::instance();
 
         try {
             // Basically runs format_text, but without the glossary filter to prevent recursion.

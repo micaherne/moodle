@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -29,7 +32,7 @@ $id = optional_param('id', 0, PARAM_INT);
 $accountid = optional_param('accountid', 0, PARAM_INT);
 $gatewayname = optional_param('gateway', null, PARAM_COMPONENT);
 
-$pageurl = new moodle_url('/payment/manage_gateway.php');
+$pageurl = new url('/payment/manage_gateway.php');
 admin_externalpage_setup('paymentaccounts', '', [], $pageurl);
 
 $enabledplugins = \core\plugininfo\paygw::get_enabled_plugins();
@@ -56,10 +59,10 @@ $PAGE->set_heading($id ? format_string($account->get('name')) : get_string('crea
 $form = new \core_payment\form\account_gateway($pageurl->out(false), ['persistent' => $gateway]);
 
 if ($form->is_cancelled()) {
-    redirect(new moodle_url('/payment/accounts.php'));
+    redirect(new url('/payment/accounts.php'));
 } else if ($data = $form->get_data()) {
     \core_payment\helper::save_payment_gateway($data);
-    redirect(new moodle_url('/payment/accounts.php'));
+    redirect(new url('/payment/accounts.php'));
 }
 
 echo $OUTPUT->header();

@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\coursecat;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/csvlib.class.php');
@@ -30,17 +35,17 @@ $importid         = optional_param('importid', '', PARAM_INT);
 $categoryid = optional_param('categoryid', 0, PARAM_INT);
 $previewrows = optional_param('previewrows', 10, PARAM_INT);
 
-$returnurl = new moodle_url('/admin/tool/uploadcourse/index.php');
+$returnurl = new url('/admin/tool/uploadcourse/index.php');
 
 if ($categoryid) {
     // When categoryid is specified, setup the page for this category and check capability in its context.
     require_login(null, false);
     $category = core_course_category::get($categoryid);
     $categoryname = isset($category) ? $category->get_formatted_name() : $SITE->fullname;
-    $context = context_coursecat::instance($categoryid);
+    $context = coursecat::instance($categoryid);
     require_capability('tool/uploadcourse:use', $context);
     $PAGE->set_context($context);
-    $PAGE->set_url(new moodle_url('/admin/tool/uploadcourse/index.php', ['categoryid' => $categoryid]));
+    $PAGE->set_url(new url('/admin/tool/uploadcourse/index.php', ['categoryid' => $categoryid]));
     $PAGE->set_pagelayout('admin');
     $PAGE->set_title("$categoryname: " . get_string('uploadcourses', 'tool_uploadcourse'));
     $PAGE->set_heading($categoryname);
@@ -58,9 +63,9 @@ if (empty($importid)) {
         $readcount = $cir->load_csv_content($content, $form1data->encoding, $form1data->delimiter_name);
         unset($content);
         if ($readcount === false) {
-            throw new \moodle_exception('csvfileerror', 'tool_uploadcourse', $returnurl, $cir->get_error());
+            throw new moodle_exception('csvfileerror', 'tool_uploadcourse', $returnurl, $cir->get_error());
         } else if ($readcount == 0) {
-            throw new \moodle_exception('csvemptyfile', 'error', $returnurl, $cir->get_error());
+            throw new moodle_exception('csvemptyfile', 'error', $returnurl, $cir->get_error());
         }
     } else {
         echo $OUTPUT->header();
@@ -82,7 +87,7 @@ if (!empty($form1data)) {
         $data["options[$key]"] = $value;
     }
 }
-$context = context_system::instance();
+$context = system::instance();
 $mform2 = new tool_uploadcourse_step2_form(null, array('contextid' => $context->id, 'columns' => $cir->get_columns(),
     'data' => $data));
 

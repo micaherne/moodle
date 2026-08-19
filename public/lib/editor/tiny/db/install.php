@@ -26,7 +26,9 @@
 /**
  * Enable the TinyMCE Editor on its install.
  */
+use core\plugin_manager;
+
 function xmldb_editor_tiny_install(): void {
-    $editormanager = \core_plugin_manager::resolve_plugininfo_class('editor');
+    $editormanager = plugin_manager::resolve_plugininfo_class('editor');
     $editormanager::enable_plugin('tiny', true);
 }

@@ -16,8 +16,8 @@
 
 namespace gradereport_grader\external;
 
-use context_course;
-use core_user;
+use core\context\course;
+use core\user;
 use core_user_external;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -26,7 +26,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
 use grade_report_grader;
-use user_picture;
+use core\output\user_picture;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -73,7 +73,7 @@ class get_users_in_report extends external_api {
         );
 
         $warnings = [];
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
         self::validate_context($context);
 
         require_capability('gradereport/grader:view', $context);
@@ -96,7 +96,7 @@ class get_users_in_report extends external_api {
             $userforselector = new \stdClass();
             $userforselector->id = $user->id;
             $userforselector->fullname = fullname($user);
-            $userforselector->initials = core_user::get_initials($user);
+            $userforselector->initials = user::get_initials($user);
             foreach (\core_user\fields::get_name_fields() as $field) {
                 $userforselector->$field = $user->$field ?? null;
             }

@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+
 require_once(__DIR__ . "/../../config.php");
 
 $id = required_param('id', PARAM_INT);  // Course module ID.
@@ -30,20 +33,20 @@ $cm = get_coursemodule_from_id('folder', $id, 0, true, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/folder:view', $context);
 
 $folder = $DB->get_record('folder', array('id' => $cm->instance), '*', MUST_EXIST);
 
 $downloadable = folder_archive_available($folder, $cm);
 if (!$downloadable) {
-    throw new \moodle_exception('cannotdownloaddir', 'repository');
+    throw new moodle_exception('cannotdownloaddir', 'repository');
 }
 
 $fs = get_file_storage();
 $files = $fs->get_area_files($context->id, 'mod_folder', 'content');
 if (empty($files)) {
-    throw new \moodle_exception('cannotdownloaddir', 'repository');
+    throw new moodle_exception('cannotdownloaddir', 'repository');
 }
 
 // Log zip as downloaded.

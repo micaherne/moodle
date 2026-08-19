@@ -16,6 +16,9 @@
 
 namespace core\output;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 /**
  * Unit tests for lib/classes/output/mustache_template_finder.php
  *
@@ -165,7 +168,7 @@ final class mustache_template_finder_test extends \advanced_testcase {
      */
     public function test_invalid_component_get_template_directories_for_component(): void {
         // Test something invalid.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         mustache_template_finder::get_template_directories_for_component('octopus', 'classic');
     }
 
@@ -265,7 +268,7 @@ final class mustache_template_finder_test extends \advanced_testcase {
      * @covers ::get_template_filepath
      */
     public function test_invalid_component_get_template_filepath(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Coding error detected, it must be fixed by a programmer: ' .
                                       'Component was not valid: core_octopus');
         mustache_template_finder::get_template_filepath('core_octopus/octopus', 'classic');
@@ -277,7 +280,7 @@ final class mustache_template_finder_test extends \advanced_testcase {
      * @covers ::get_template_filepath
      */
     public function test_missing_template_get_template_filepath(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage('Sorry, the requested file could not be found (core/octopus)');
         mustache_template_finder::get_template_filepath('core/octopus', 'classic');
     }
@@ -288,7 +291,7 @@ final class mustache_template_finder_test extends \advanced_testcase {
      * @covers ::get_template_filepath
      */
     public function test_invalid_name_get_template_filepath(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Templates names must be specified as "componentname/templatename" (octopus requested)');
         mustache_template_finder::get_template_filepath('octopus', 'classic');
     }

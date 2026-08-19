@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -134,7 +138,7 @@ abstract class testing_module_generator extends component_generator_base {
         $instance = $DB->get_record($this->get_modulename(), array('id'=>$id), '*', MUST_EXIST);
 
         $cm = get_coursemodule_from_id($this->get_modulename(), $cmid, $instance->course, true, MUST_EXIST);
-        context_module::instance($cm->id);
+        module::instance($cm->id);
 
         $instance->cmid = $cm->id;
 
@@ -273,7 +277,7 @@ abstract class testing_module_generator extends component_generator_base {
             debugging('Did you forget to enable completion tracking for the course before generating module with completion tracking?', DEBUG_DEVELOPER);
         }
 
-        if (!empty($record->lang) && !has_capability('moodle/course:setforcedlanguage', context_course::instance($course->id))) {
+        if (!empty($record->lang) && !has_capability('moodle/course:setforcedlanguage', course::instance($course->id))) {
             throw new coding_exception('Attempt to generate an activity when the current user does not have ' .
                     'permission moodle/course:setforcedlanguage. This does not work.');
         }
@@ -291,7 +295,7 @@ abstract class testing_module_generator extends component_generator_base {
             $instance,
             $record,
             $modulename,
-            \context_module::instance($instance->cmid),
+            module::instance($instance->cmid),
             "mod_{$modulename}",
             'intro',
             0

@@ -16,8 +16,12 @@
 
 namespace core_courseformat\local;
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core_cache\helper;
+use core_course\modinfo;
 use core_courseformat\formatactions;
-use section_info;
+use core_course\section_info;
 use stdClass;
 use core\event\course_module_updated;
 use core\event\course_section_deleted;
@@ -262,7 +266,7 @@ class sectionactions extends baseactions {
 
         $format = course_get_format($this->course);
         $sectionname = $format->get_section_name($sectioninfo);
-        $context = \context_course::instance($this->course->id);
+        $context = course::instance($this->course->id);
         $event = course_section_deleted::create(
             [
                 'objectid' => $sectioninfo->id,
@@ -376,7 +380,7 @@ class sectionactions extends baseactions {
         // Some fields can not be updated using this method.
         $fields = array_diff_key((array) $fields, array_flip(['id', 'course', 'section', 'sequence']));
         if (array_key_exists('name', $fields) && \core_text::strlen($fields['name']) > 1333) {
-            throw new \moodle_exception('maximumchars', 'moodle', '', 1333);
+            throw new moodle_exception('maximumchars', 'moodle', '', 1333);
         }
 
         // If the section is delegated to a component, it may control some section values.
@@ -393,7 +397,7 @@ class sectionactions extends baseactions {
         $sectioninfo->get_component_instance()?->section_updated((object) $fields);
 
         // We need to update the section cache before the format options are updated.
-        \course_modinfo::purge_course_section_cache_by_id($courseid, $sectioninfo->id);
+        modinfo::purge_course_section_cache_by_id($courseid, $sectioninfo->id);
         rebuild_course_cache($courseid, false, true);
 
         course_get_format($courseid)->update_section_format_options($fields);
@@ -402,7 +406,7 @@ class sectionactions extends baseactions {
             [
                 'objectid' => $sectioninfo->id,
                 'courseid' => $courseid,
-                'context' => \context_course::instance($courseid),
+                'context' => course::instance($courseid),
                 'other' => ['sectionnum' => $sectioninfo->section],
             ]
         );
@@ -630,7 +634,7 @@ class sectionactions extends baseactions {
             }
         }
 
-        \course_modinfo::purge_course_modules_cache($this->course->id, $cmids);
+        modinfo::purge_course_modules_cache($this->course->id, $cmids);
         rebuild_course_cache($this->course->id, false, true);
         foreach ($cmids as $cmid) {
             $cm = get_coursemodule_from_id(null, $cmid, $this->course->id);
@@ -699,7 +703,7 @@ class sectionactions extends baseactions {
         }
 
         // Make sure the cache is reset.
-        \course_modinfo::purge_course_section_cache_by_number($this->course->id, $marker);
+        modinfo::purge_course_section_cache_by_number($this->course->id, $marker);
         rebuild_course_cache(
             courseid: $this->course->id,
             clearonly: true,
@@ -707,6 +711,6 @@ class sectionactions extends baseactions {
         );
         $format = $this->get_format();
         $cachekey = "{$this->course->id}_{$format->get_format()}";
-        \cache_helper::invalidate_by_event('changesincourseactionstate', [$cachekey]);
+        helper::invalidate_by_event('changesincourseactionstate', [$cachekey]);
     }
 }

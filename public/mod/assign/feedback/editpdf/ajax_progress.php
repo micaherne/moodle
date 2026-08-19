@@ -28,6 +28,9 @@ define('AJAX_SCRIPT', true);
 define('NO_MOODLE_COOKIES', true);
 
 use \assignfeedback_editpdf\document_services;
+use core\context\module;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 require_once('../../../../config.php');
 
 try {
@@ -38,7 +41,7 @@ try {
     // Retrieve the assignments.
     require_once($CFG->dirroot . '/mod/assign/locallib.php');
     $cm = get_coursemodule_from_instance('assign', $assignmentid, 0, false, MUST_EXIST);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     $assignment = new assign($context, null, null);
 
     // Get the generated images from file API call.

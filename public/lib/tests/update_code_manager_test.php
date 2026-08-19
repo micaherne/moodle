@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -111,7 +113,7 @@ final class update_code_manager_test extends \advanced_testcase {
         $zipfilepath = self::get_fixture_path(__NAMESPACE__, 'update_validator/zips/multidir.zip');
         $targetdir = make_request_directory();
         // Attempting to rename the root folder if there are multiple ones should lead to exception.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $files = $codeman->unzip_plugin_file($zipfilepath, $targetdir, 'foo');
     }
 

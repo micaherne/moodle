@@ -26,6 +26,8 @@ namespace block_html\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\block;
 use \core_privacy\local\request\userlist;
 use \core_privacy\local\request\approved_contextlist;
 use \core_privacy\local\request\approved_userlist;
@@ -102,7 +104,7 @@ class provider implements
         // is at the user context.
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_block) {
+        if (!$context instanceof block) {
             return;
         }
 
@@ -151,7 +153,7 @@ class provider implements
 
         $instances = $DB->get_recordset_sql($sql, $params);
         foreach ($instances as $instance) {
-            $context = \context_block::instance($instance->id);
+            $context = block::instance($instance->id);
             $block = block_instance('html', $instance);
             if (empty($block->config)) {
                 // Skip this block. It has not been configured.
@@ -186,9 +188,9 @@ class provider implements
      *
      * @param \context $context   The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
 
-        if (!$context instanceof \context_block) {
+        if (!$context instanceof block) {
             return;
         }
 
@@ -206,7 +208,7 @@ class provider implements
     public static function delete_data_for_users(approved_userlist $userlist) {
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_block && ($blockinstance = static::get_instance_from_context($context))) {
+        if ($context instanceof block && ($blockinstance = static::get_instance_from_context($context))) {
             blocks_delete_instance($blockinstance);
         }
     }
@@ -220,7 +222,7 @@ class provider implements
         // The only way to delete data for the html block is to delete the block instance itself.
         foreach ($contextlist as $context) {
 
-            if (!$context instanceof \context_block) {
+            if (!$context instanceof block) {
                 continue;
             }
             if ($blockinstance = static::get_instance_from_context($context)) {
@@ -235,7 +237,7 @@ class provider implements
      * @param   \context_block $context The context to fetch
      * @return  \stdClass
      */
-    protected static function get_instance_from_context(\context_block $context) {
+    protected static function get_instance_from_context(block $context) {
         global $DB;
 
         return $DB->get_record('block_instances', ['id' => $context->instanceid, 'blockname' => 'html']);

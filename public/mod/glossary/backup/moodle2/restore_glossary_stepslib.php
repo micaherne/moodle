@@ -29,6 +29,9 @@
 /**
  * Structure step to restore one glossary activity
  */
+use core\context\module;
+use core\context\system;
+
 class restore_glossary_activity_structure_step extends restore_activity_structure_step {
 
     protected function define_structure() {
@@ -69,7 +72,7 @@ class restore_glossary_activity_structure_step extends restore_activity_structur
         if (!in_array($data->displayformat, $formats)) {
             $data->displayformat = 'dictionary';
         }
-        if (!empty($data->globalglossary) && !has_capability('mod/glossary:manageentries', context_system::instance())) {
+        if (!empty($data->globalglossary) && !has_capability('mod/glossary:manageentries', system::instance())) {
             $data->globalglossary = 0;
         }
         if (!empty($data->mainglossary) and $data->mainglossary == 1 and
@@ -93,7 +96,7 @@ class restore_glossary_activity_structure_step extends restore_activity_structur
         $data->userid = $this->get_mappingid('user', $data->userid);
         $data->sourceglossaryid = $this->get_mappingid('glossary', $data->sourceglossaryid);
 
-        $context = context_module::instance($this->task->get_moduleid());
+        $context = module::instance($this->task->get_moduleid());
         if (!empty($data->definitiontrust) && !trusttext_trusted($context)) {
             $data->definitiontrust = 0;
         }
@@ -153,7 +156,7 @@ class restore_glossary_activity_structure_step extends restore_activity_structur
             return;
         }
 
-        $context = context_module::instance($this->task->get_moduleid());
+        $context = module::instance($this->task->get_moduleid());
         core_tag_tag::add_item_tag('mod_glossary', 'glossary_entries', $itemid, $context, $tag);
     }
 

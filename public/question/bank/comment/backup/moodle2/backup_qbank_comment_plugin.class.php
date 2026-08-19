@@ -22,6 +22,8 @@
  * @author      Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+
 class backup_qbank_comment_plugin extends \backup_qbank_plugin {
 
     /**
@@ -54,7 +56,7 @@ class backup_qbank_comment_plugin extends \backup_qbank_plugin {
                 AND c.commentarea = 'question'
                 AND c.itemid = :itemid",
             [
-                'contextid' => backup_helper::is_sqlparam(context_system::instance()->id),
+                'contextid' => backup_helper::is_sqlparam(system::instance()->id),
                 'itemid' => backup::VAR_PARENTID,
             ]
         );

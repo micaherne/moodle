@@ -17,8 +17,8 @@
 namespace tool_mobile;
 
 use core\hook\output\extend_url;
-use html_writer;
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 use tool_mobile\local\hooks\before_extend_ios_app_banner;
 
 /**
@@ -64,7 +64,7 @@ class hook_callbacks {
 
         // Android with hook-based URL augmentation.
         if (!empty($mobilesettings->androidappid)) {
-            $url = new moodle_url('/admin/tool/mobile/mobile.webmanifest.php');
+            $url = new url('/admin/tool/mobile/mobile.webmanifest.php');
             $urlhook = new extend_url($url);
             \core\di::get(\core\hook\manager::class)->dispatch($urlhook);
             $url = $urlhook->get_url();
@@ -115,7 +115,7 @@ class hook_callbacks {
         if (!NO_MOODLE_COOKIES && !empty($_COOKIE['tool_mobile_launch'])) {
             if (empty($SESSION->wantsurl) || strpos($SESSION->wantsurl, '/tool/mobile/launch.php') === false) {
                 $params = json_decode($_COOKIE['tool_mobile_launch'], true);
-                $SESSION->wantsurl = (new \moodle_url("/$CFG->admin/tool/mobile/launch.php", $params))->out(false);
+                $SESSION->wantsurl = (new url("/$CFG->admin/tool/mobile/launch.php", $params))->out(false);
             }
         }
     }

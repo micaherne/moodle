@@ -25,12 +25,14 @@
 namespace core\hub;
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_exception;
-use moodle_url;
-use context_system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
+use core\context\system;
+use core_cache\cache;
 use stdClass;
-use html_writer;
-use core_plugin_manager;
+use core\output\html_writer;
+use core\plugin_manager;
 
 /**
  * Methods to use when registering the site at the moodle sites directory.
@@ -116,8 +118,8 @@ class registration {
         if ($registration = self::get_registration()) {
             return $registration;
         }
-        if (has_capability('moodle/site:config', context_system::instance())) {
-            throw new moodle_exception('registrationwarning', 'admin', new moodle_url('/admin/registration/index.php'));
+        if (has_capability('moodle/site:config', system::instance())) {
+            throw new moodle_exception('registrationwarning', 'admin', new url('/admin/registration/index.php'));
         } else {
             throw new moodle_exception('registrationwarningcontactadmin', 'admin');
         }
@@ -274,9 +276,9 @@ class registration {
             $moodlerelease = $matches[1];
         }
         $pluginusagelinks = [
-            'overview' => new moodle_url('/admin/plugins.php'),
-            'activities' => new moodle_url('/admin/modules.php'),
-            'blocks' => new moodle_url('/admin/blocks.php'),
+            'overview' => new url('/admin/plugins.php'),
+            'activities' => new url('/admin/modules.php'),
+            'blocks' => new url('/admin/blocks.php'),
         ];
         $senddata = [
             'moodlerelease' => get_string('sitereleasenum', 'hub', $moodlerelease),
@@ -403,7 +405,7 @@ class registration {
 
         $registration = self::get_registration(false);
         if (!$registration || $registration->token !== $token) {
-            throw new moodle_exception('wrongtoken', 'hub', new moodle_url('/admin/registration/index.php'));
+            throw new moodle_exception('wrongtoken', 'hub', new url('/admin/registration/index.php'));
         }
 
         // Update hub information of the site.
@@ -490,7 +492,7 @@ class registration {
         // We should also check if the url is registered in the hub.
         if (self::is_registered() && api::is_site_registered_in_hub()) {
             // Caller of this method must make sure that site is not registered.
-            throw new \coding_exception('Site already registered');
+            throw new coding_exception('Site already registered');
         }
 
         // Delete 'confirmed' registrations.
@@ -518,7 +520,7 @@ class registration {
         // The most conservative limit for the redirect URL length is 2000 characters. Only pass parameters before
         // we reach this limit. The next registration update will update all fields.
         // We will also update registration after we receive confirmation from stats.moodle.org.
-        $url = new moodle_url(HUB_MOODLEORGHUBURL . '/local/hub/siteregistration.php',
+        $url = new url(HUB_MOODLEORGHUBURL . '/local/hub/siteregistration.php',
             ['token' => $hub->token, 'url' => $params['url']]);
         foreach ($params as $key => $value) {
             if (strlen($url->out(false, [$key => $value])) > 2000) {
@@ -590,7 +592,7 @@ class registration {
         $registration = self::get_registration(false);
         if (!$registration || $registration->token != $token) {
             throw new moodle_exception('wrongtoken', 'hub',
-               new moodle_url('/admin/registration/index.php'));
+               new url('/admin/registration/index.php'));
         }
 
         $DB->delete_records('registration_hubs', array('id' => $registration->id));
@@ -692,15 +694,15 @@ class registration {
             // No redirection during behat runs.
             return;
         }
-        if (!has_capability('moodle/site:config', context_system::instance())) {
+        if (!has_capability('moodle/site:config', system::instance())) {
             return;
         }
         if (
             site_is_public() &&
             (self::show_after_install() || self::get_new_registration_fields())
         ) {
-            $returnurl = new moodle_url($url);
-            redirect(new moodle_url('/admin/registration/index.php', ['returnurl' => $returnurl->out_as_local_url(false)]));
+            $returnurl = new url($url);
+            redirect(new url('/admin/registration/index.php', ['returnurl' => $returnurl->out_as_local_url(false)]));
         }
     }
 
@@ -714,7 +716,7 @@ class registration {
     public static function get_plugin_usage_data(): array {
         global $DB;
 
-        $pluginman = core_plugin_manager::instance();
+        $pluginman = plugin_manager::instance();
         $plugininfo = $pluginman->get_plugins();
         $data = [];
 
@@ -990,7 +992,7 @@ class registration {
         global $DB;
 
         // Check cache first.
-        $cache = \cache::make('core', 'hub_filepoolusage');
+        $cache = cache::make('core', 'hub_filepoolusage');
         $cached = $cache->get('filepoolusage');
         if ($cached !== false) {
             return $cached;
@@ -1017,7 +1019,7 @@ class registration {
      */
     public static function reset_caches(): void {
         self::$registration = null;
-        \cache::make('core', 'hub_filepoolusage')->purge();
+        cache::make('core', 'hub_filepoolusage')->purge();
     }
 
     /**

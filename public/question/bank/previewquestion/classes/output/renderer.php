@@ -16,7 +16,9 @@
 
 namespace qbank_previewquestion\output;
 
-use context;
+use core\context;
+use core\output\actions\popup_action;
+use core\output\plugin_renderer_base;
 use qbank_previewquestion\helper;
 use qbank_previewquestion\question_preview_options;
 
@@ -28,7 +30,7 @@ use qbank_previewquestion\question_preview_options;
  * @author     2021 Safat Shahin <safatshahin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Render an icon, optionally with the word 'Preview' beside it, to preview a given question.
@@ -53,7 +55,7 @@ class renderer extends \plugin_renderer_base {
         $image = $this->pix_icon('t/preview', $alt, '', ['class' => 'iconsmall']);
         $link = helper::question_preview_url($questionid, null, null, null, null, $context, null,
                 question_preview_options::ALWAYS_LATEST);
-        $action = new \popup_action('click', $link, 'questionpreview', helper::question_preview_popup_params());
+        $action = new popup_action('click', $link, 'questionpreview', helper::question_preview_popup_params());
 
         return $this->action_link($link, $image . $label, $action, $attributes);
     }

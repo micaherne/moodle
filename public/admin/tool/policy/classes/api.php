@@ -16,11 +16,13 @@
 
 namespace tool_policy;
 
-use coding_exception;
-use context_helper;
-use context_system;
-use context_user;
+use core\exception\coding_exception;
+use core\context_helper;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
 use core\session\manager;
+use core_cache\cache;
 use stdClass;
 use tool_policy\event\acceptance_created;
 use tool_policy\event\acceptance_updated;
@@ -121,7 +123,7 @@ class api {
 
         $policies = [];
         $versions = [];
-        $optcache = \cache::make('tool_policy', 'policy_optional');
+        $optcache = cache::make('tool_policy', 'policy_optional');
 
         $rs = $DB->get_recordset_sql($sql, $params);
 
@@ -152,7 +154,7 @@ class api {
         }
 
         $return = [];
-        $context = context_system::instance();
+        $context = system::instance();
         $output = $PAGE->get_renderer('tool_policy');
 
         foreach ($policies as $policyid => $policydata) {
@@ -222,7 +224,7 @@ class api {
             }
         }
 
-        throw new \moodle_exception('errorpolicyversionnotfound', 'tool_policy');
+        throw new moodle_exception('errorpolicyversionnotfound', 'tool_policy');
     }
 
     /**
@@ -281,7 +283,7 @@ class api {
         // Check if the user is viewing the policy on someone else's behalf.
         // Typical scenario is a parent viewing the policy on behalf of her child.
         if ($behalfid > 0) {
-            $behalfcontext = context_user::instance($behalfid);
+            $behalfcontext = user::instance($behalfid);
 
             if ($behalfid != $userid && !has_capability('tool/policy:acceptbehalf', $behalfcontext, $userid)) {
                 return false;
@@ -294,12 +296,12 @@ class api {
         }
 
         // Users who can manage policies, can see all versions.
-        if (has_capability('tool/policy:managedocs', context_system::instance(), $userid)) {
+        if (has_capability('tool/policy:managedocs', system::instance(), $userid)) {
             return true;
         }
 
         // User who can see all acceptances, must be also allowed to see what was accepted.
-        if (has_capability('tool/policy:viewacceptances', context_system::instance(), $userid)) {
+        if (has_capability('tool/policy:viewacceptances', system::instance(), $userid)) {
             return true;
         }
 
@@ -349,7 +351,7 @@ class api {
 
         foreach ($rs as $record) {
             context_helper::preload_from_record($record);
-            $childcontext = context_user::instance($record->id);
+            $childcontext = user::instance($record->id);
             if (has_capability('tool/policy:acceptbehalf', $childcontext, $userid)) {
                 $minors[$record->id] = $record;
             }
@@ -541,7 +543,7 @@ class api {
      */
     public static function can_delete_version($version) {
         // TODO MDL-61900 allow to delete not only draft versions.
-        return has_capability('tool/policy:managedocs', context_system::instance()) &&
+        return has_capability('tool/policy:managedocs', system::instance()) &&
                 $version->status == policy_version::STATUS_DRAFT;
     }
 
@@ -579,7 +581,7 @@ class api {
         return [
             'subdirs' => false,
             'maxfiles' => -1,
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'noclean' => true,
         ];
     }
@@ -596,7 +598,7 @@ class api {
         return [
             'subdirs' => false,
             'maxfiles' => -1,
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'noclean' => true,
         ];
     }
@@ -788,7 +790,7 @@ class api {
 
         if (!isloggedin() || isguestuser()) {
             if ($throwexception) {
-                throw new \moodle_exception('noguest');
+                throw new moodle_exception('noguest');
             } else {
                 return false;
             }
@@ -800,16 +802,16 @@ class api {
 
         if ($userid == $USER->id && !manager::is_loggedinas()) {
             if ($throwexception) {
-                require_capability('tool/policy:accept', context_system::instance());
+                require_capability('tool/policy:accept', system::instance());
                 return;
             } else {
-                return has_capability('tool/policy:accept', context_system::instance());
+                return has_capability('tool/policy:accept', system::instance());
             }
         }
 
         // Check capability to accept on behalf as the real user.
         $realuser = manager::get_realuser();
-        $usercontext = \context_user::instance($userid);
+        $usercontext = user::instance($userid);
         if ($throwexception) {
             require_capability('tool/policy:acceptbehalf', $usercontext, $realuser);
             return;
@@ -834,7 +836,7 @@ class api {
             if (static::get_agreement_optional($versionid) == policy_version::AGREEMENT_COMPULSORY) {
                 // Compulsory policies can't be declined (that is what makes them compulsory).
                 if ($throwexception) {
-                    throw new \moodle_exception('errorpolicyversioncompulsory', 'tool_policy');
+                    throw new moodle_exception('errorpolicyversioncompulsory', 'tool_policy');
                 } else {
                     return false;
                 }
@@ -863,7 +865,7 @@ class api {
         // Guests' acceptance is not stored so there is nothing to revoke.
         if (!isloggedin() || isguestuser()) {
             if ($throwexception) {
-                throw new \moodle_exception('noguest');
+                throw new moodle_exception('noguest');
             } else {
                 return false;
             }
@@ -880,7 +882,7 @@ class api {
             } else if ($agreementoptional == policy_version::AGREEMENT_OPTIONAL) {
                 $optional[] = $versionid;
             } else {
-                throw new \coding_exception('Unexpected optional flag value');
+                throw new coding_exception('Unexpected optional flag value');
             }
         }
 
@@ -898,7 +900,7 @@ class api {
             }
 
             $realuser = manager::get_realuser();
-            $usercontext = \context_user::instance($userid);
+            $usercontext = user::instance($userid);
             if ($throwexception) {
                 require_capability('tool/policy:acceptbehalf', $usercontext, $realuser);
                 return;
@@ -1085,7 +1087,7 @@ class api {
         }
 
         // Cleanup our bits in the presignup cache (we can not rely on them at this stage any more anyway).
-        $cache = \cache::make('core', 'presignup');
+        $cache = cache::make('core', 'presignup');
         $cache->delete('tool_policy_userpolicyagreed');
         $cache->delete('tool_policy_viewedpolicies');
         $cache->delete('tool_policy_policyversionidsagreed');
@@ -1126,7 +1128,7 @@ class api {
     public static function get_agreement_optional($versionid) {
         global $DB;
 
-        $optcache = \cache::make('tool_policy', 'policy_optional');
+        $optcache = cache::make('tool_policy', 'policy_optional');
 
         $hit = $optcache->get($versionid);
 

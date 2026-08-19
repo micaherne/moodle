@@ -24,7 +24,7 @@
 
 namespace mod_assign\event;
 
-use context_module;
+use core\context\module;
 use mod_assign\override_manager;
 use mod_assign_test_generator;
 use stdClass;
@@ -56,7 +56,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
         $instance = $generator->create_instance(array('course' => $course->id));
-        $modcontext = context_module::instance($instance->cmid);
+        $modcontext = module::instance($instance->cmid);
 
         $data = array(
             'context' => $modcontext,
@@ -83,7 +83,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
         $instance = $generator->create_instance(array('course' => $course->id));
-        $modcontext = context_module::instance($instance->cmid);
+        $modcontext = module::instance($instance->cmid);
 
         // Standard Event parameters.
         $params = array(
@@ -143,7 +143,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
         $instance = $generator->create_instance(array('course' => $course->id));
-        $modcontext = context_module::instance($instance->cmid);
+        $modcontext = module::instance($instance->cmid);
 
         // Standard Event parameters.
         $params = array(
@@ -1110,7 +1110,7 @@ final class events_test extends \advanced_testcase {
         $params = array(
             'objectid' => 1,
             'relateduserid' => 2,
-            'context' => context_module::instance($assign->cmid),
+            'context' => module::instance($assign->cmid),
             'other' => array(
                 'assignid' => $assign->id
             )
@@ -1125,7 +1125,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_assign\event\user_override_created', $event);
-        $this->assertEquals(context_module::instance($assign->cmid), $event->get_context());
+        $this->assertEquals(module::instance($assign->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1143,7 +1143,7 @@ final class events_test extends \advanced_testcase {
 
         $params = array(
             'objectid' => 1,
-            'context' => context_module::instance($assign->cmid),
+            'context' => module::instance($assign->cmid),
             'other' => array(
                 'assignid' => $assign->id,
                 'groupid' => 2
@@ -1159,7 +1159,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_assign\event\group_override_created', $event);
-        $this->assertEquals(context_module::instance($assign->cmid), $event->get_context());
+        $this->assertEquals(module::instance($assign->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1178,7 +1178,7 @@ final class events_test extends \advanced_testcase {
         $params = array(
             'objectid' => 1,
             'relateduserid' => 2,
-            'context' => context_module::instance($assign->cmid),
+            'context' => module::instance($assign->cmid),
             'other' => array(
                 'assignid' => $assign->id
             )
@@ -1193,7 +1193,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_assign\event\user_override_updated', $event);
-        $this->assertEquals(context_module::instance($assign->cmid), $event->get_context());
+        $this->assertEquals(module::instance($assign->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1211,7 +1211,7 @@ final class events_test extends \advanced_testcase {
 
         $params = array(
             'objectid' => 1,
-            'context' => context_module::instance($assign->cmid),
+            'context' => module::instance($assign->cmid),
             'other' => array(
                 'assignid' => $assign->id,
                 'groupid' => 2
@@ -1227,7 +1227,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_assign\event\group_override_updated', $event);
-        $this->assertEquals(context_module::instance($assign->cmid), $event->get_context());
+        $this->assertEquals(module::instance($assign->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1241,7 +1241,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $assigninstance = $this->getDataGenerator()->create_module('assign', array('course' => $course->id));
         $cm = get_coursemodule_from_instance('assign', $assigninstance->id, $course->id);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Create a teacher with capability to manage overrides.
         $teacher = $this->getDataGenerator()->create_user();
@@ -1266,7 +1266,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_assign\event\user_override_deleted', $event);
-        $this->assertEquals(context_module::instance($cm->id), $event->get_context());
+        $this->assertEquals(module::instance($cm->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1280,7 +1280,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $assigninstance = $this->getDataGenerator()->create_module('assign', array('course' => $course->id));
         $cm = get_coursemodule_from_instance('assign', $assigninstance->id, $course->id);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Create a teacher with capability to manage overrides.
         $teacher = $this->getDataGenerator()->create_user();
@@ -1308,7 +1308,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_assign\event\group_override_deleted', $event);
-        $this->assertEquals(context_module::instance($cm->id), $event->get_context());
+        $this->assertEquals(module::instance($cm->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -1357,7 +1357,7 @@ final class events_test extends \advanced_testcase {
         $instance = $generator->create_instance(array('course' => $course->id, 'blindmarking' => 1));
 
         $cm = get_coursemodule_from_instance('assign', $instance->id, $course->id);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new \assign($context, $cm, $course);
 
         $this->setUser($teacher);

@@ -24,6 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+use core\context\course;
+use core\exception\require_login_exception;
+use core\url;
 use core_courseformat\base as course_format;
 use core_courseformat\output\site_renderer;
 
@@ -57,7 +60,7 @@ class format_site extends course_format {
         $section = $this->get_section($section);
         if ((string)$section->name !== '') {
             // Return the name the user set.
-            return format_string($section->name, true, array('context' => context_course::instance($this->courseid)));
+            return format_string($section->name, true, array('context' => course::instance($this->courseid)));
         }
         // The section zero is located in a block.
         if ($section->sectionnum == 0) {
@@ -75,7 +78,7 @@ class format_site extends course_format {
      * @return null|moodle_url
      */
     public function get_view_url($section, $options = array()) {
-        return new moodle_url('/', array('redirect' => 0));
+        return new url('/', array('redirect' => 0));
     }
 
     /**

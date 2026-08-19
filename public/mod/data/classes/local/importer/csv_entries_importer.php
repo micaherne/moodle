@@ -16,12 +16,12 @@
 
 namespace mod_data\local\importer;
 
-use context_module;
+use core\context\module;
 use core_php_time_limit;
 use core_tag_tag;
-use core_user;
+use core\user;
 use csv_import_reader;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 
 /**
@@ -67,14 +67,14 @@ class csv_entries_importer extends entries_importer {
         $iid = csv_import_reader::get_new_iid('moddata');
         $cir = new csv_import_reader($iid, 'moddata');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $readcount = $cir->load_csv_content($this->get_data_file_content(), $encoding, $fielddelimiter);
         if (empty($readcount)) {
-            throw new \moodle_exception('csvfailed', 'data', "{$CFG->wwwroot}/mod/data/edit.php?d={$data->id}");
+            throw new moodle_exception('csvfailed', 'data', "{$CFG->wwwroot}/mod/data/edit.php?d={$data->id}");
         } else {
             if (!$fieldnames = $cir->get_columns()) {
-                throw new \moodle_exception('cannotreadtmpfile', 'error');
+                throw new moodle_exception('cannotreadtmpfile', 'error');
             }
 
             // Check the fieldnames are valid.
@@ -117,7 +117,7 @@ class csv_entries_importer extends entries_importer {
             }
 
             if (!empty($errorfield)) {
-                throw new \moodle_exception('fieldnotmatched', 'data',
+                throw new moodle_exception('fieldnotmatched', 'data',
                     "{$CFG->wwwroot}/mod/data/edit.php?d={$data->id}", $errorfield);
             }
 
@@ -153,7 +153,7 @@ class csv_entries_importer extends entries_importer {
 
                 $authorid = null;
                 if ($userfieldid) {
-                    if (!($author = core_user::get_user_by_username($record[$userfieldid], 'id'))) {
+                    if (!($author = user::get_user_by_username($record[$userfieldid], 'id'))) {
                         $authorid = null;
                     } else {
                         $authorid = $author->id;

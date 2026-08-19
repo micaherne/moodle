@@ -25,6 +25,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
@@ -225,7 +227,7 @@ class course_completion_form extends moodleform {
         if (!empty($current)) {
             $mform->setExpanded('roles');
         }
-        $roles = get_roles_with_capability('moodle/course:markcomplete', CAP_ALLOW, context_course::instance($course->id, IGNORE_MISSING));
+        $roles = get_roles_with_capability('moodle/course:markcomplete', CAP_ALLOW, course::instance($course->id, IGNORE_MISSING));
 
         if (!empty($roles)) {
             foreach ($roles as $role) {

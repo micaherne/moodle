@@ -28,12 +28,13 @@ namespace core_contentbank;
 defined('MOODLE_INTERNAL') || die();
 
 use advanced_testcase;
-use context_block;
-use context_course;
-use context_coursecat;
-use context_module;
-use context_system;
-use context_user;
+use core\context\block;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\plugin_manager;
 use Exception;
 
 global $CFG;
@@ -117,7 +118,7 @@ final class contentbank_test extends advanced_testcase {
 
         $cb = new contentbank();
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         // All contexts allowed for admins.
         $this->setAdminUser();
@@ -140,7 +141,7 @@ final class contentbank_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $cb = new contentbank();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         // Set a user with no permissions.
         $user = $this->getDataGenerator()->create_user();
@@ -169,7 +170,7 @@ final class contentbank_test extends advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $this->setUser($teacher);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Teachers has permission in their context to upload supported by H5P content type.
         $contextsupporters = $cb->load_context_supported_extensions($coursecontext);
@@ -191,7 +192,7 @@ final class contentbank_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $cb = new contentbank();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $this->setAdminUser();
 
         $supporter = $cb->get_extension_supporter($extension, $systemcontext);
@@ -223,9 +224,9 @@ final class contentbank_test extends advanced_testcase {
         $coursecat = $this->getDataGenerator()->create_category();
         $course = $this->getDataGenerator()->create_course();
         $existingcontexts = [];
-        $existingcontexts['system'] = \context_system::instance();
-        $existingcontexts['category'] = \context_coursecat::instance($coursecat->id);
-        $existingcontexts['course'] = \context_course::instance($course->id);
+        $existingcontexts['system'] = system::instance();
+        $existingcontexts['category'] = coursecat::instance($coursecat->id);
+        $existingcontexts['course'] = course::instance($course->id);
 
         if (empty($where)) {
             $contextid = 0;
@@ -366,7 +367,7 @@ final class contentbank_test extends advanced_testcase {
 
         $this->resetAfterTest();
         $this->setAdminUser();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $name = 'greeting-card.h5p';
 
         // Create a dummy H5P file.
@@ -402,13 +403,13 @@ final class contentbank_test extends advanced_testcase {
         $cb = new \core_contentbank\contentbank();
 
         // Create a category and two courses.
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $coursecat = $this->getDataGenerator()->create_category();
-        $coursecatcontext = context_coursecat::instance($coursecat->id);
+        $coursecatcontext = coursecat::instance($coursecat->id);
         $course1 = $this->getDataGenerator()->create_course();
-        $course1context = context_course::instance($course1->id);
+        $course1context = course::instance($course1->id);
         $course2 = $this->getDataGenerator()->create_course();
-        $course2context = context_course::instance($course2->id);
+        $course2context = course::instance($course2->id);
 
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
@@ -450,11 +451,11 @@ final class contentbank_test extends advanced_testcase {
         $cb = new \core_contentbank\contentbank();
 
         // Create a category and two courses.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $coursecat = $this->getDataGenerator()->create_category();
-        $coursecatcontext = \context_coursecat::instance($coursecat->id);
+        $coursecatcontext = coursecat::instance($coursecat->id);
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Check there's no error when trying to delete content from an empty content bank.
         $this->assertTrue($cb->delete_contents($systemcontext));
@@ -475,9 +476,9 @@ final class contentbank_test extends advanced_testcase {
 
         // Create a category and two courses.
         $course1 = $this->getDataGenerator()->create_course();
-        $course1context = context_course::instance($course1->id);
+        $course1context = course::instance($course1->id);
         $course2 = $this->getDataGenerator()->create_course();
-        $course2context = context_course::instance($course2->id);
+        $course2context = course::instance($course2->id);
 
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
@@ -506,9 +507,9 @@ final class contentbank_test extends advanced_testcase {
         $cb = new \core_contentbank\contentbank();
 
         // Create a category and two courses.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Check there's no error when trying to move content context from an empty content bank.
         $this->assertTrue($cb->delete_contents($systemcontext, $coursecontext));
@@ -561,13 +562,13 @@ final class contentbank_test extends advanced_testcase {
             $enabled = false;
 
             // Mock core_plugin_manager class and the method get_plugins_of_type.
-            $pluginmanager = $this->getMockBuilder(\core_plugin_manager::class)
+            $pluginmanager = $this->getMockBuilder(plugin_manager::class)
                 ->disableOriginalConstructor()
                 ->onlyMethods(['get_plugins_of_type'])
                 ->getMock();
 
             // Replace protected singletoninstance reference (core_plugin_manager property) with mock object.
-            $ref = new \ReflectionProperty(\core_plugin_manager::class, 'singletoninstance');
+            $ref = new \ReflectionProperty(plugin_manager::class, 'singletoninstance');
             $ref->setValue(null, $pluginmanager);
 
             // Return values of get_plugins_of_type method.
@@ -619,7 +620,7 @@ final class contentbank_test extends advanced_testcase {
         $cb = new \core_contentbank\contentbank();
 
         // Create a category and two courses.
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
@@ -646,27 +647,27 @@ final class contentbank_test extends advanced_testcase {
         $cb = new contentbank();
 
         // System context.
-        $this->assertTrue($cb->is_context_allowed(context_system::instance()));
+        $this->assertTrue($cb->is_context_allowed(system::instance()));
 
         // User context.
         $user = $this->getDataGenerator()->create_user();
-        $this->assertFalse($cb->is_context_allowed(context_user::instance($user->id)));
+        $this->assertFalse($cb->is_context_allowed(user::instance($user->id)));
 
         // Category context.
         $category = $this->getDataGenerator()->create_category();
-        $this->assertTrue($cb->is_context_allowed(context_coursecat::instance($category->id)));
+        $this->assertTrue($cb->is_context_allowed(coursecat::instance($category->id)));
 
         // Course context.
         $course = $this->getDataGenerator()->create_course(['category' => $category->id]);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $this->assertTrue($cb->is_context_allowed($coursecontext));
 
         // Module context.
         $module = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
-        $this->assertFalse($cb->is_context_allowed(context_module::instance($module->cmid)));
+        $this->assertFalse($cb->is_context_allowed(module::instance($module->cmid)));
 
         // Block context.
         $block = $this->getDataGenerator()->create_block('online_users', ['parentcontextid' => $coursecontext->id]);
-        $this->assertFalse($cb->is_context_allowed(context_block::instance($block->id)));
+        $this->assertFalse($cb->is_context_allowed(block::instance($block->id)));
     }
 }

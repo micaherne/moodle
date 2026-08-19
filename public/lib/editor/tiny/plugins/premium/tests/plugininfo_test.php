@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace tiny_premium;
 
 use advanced_testcase;
+use core\context\system;
 
 /**
  * Unit tests for the \tiny_premium\plugininfo class.
@@ -52,7 +53,7 @@ final class plugininfo_test extends advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
-        $context = \context_system::instance();
+        $context = system::instance();
         $this->setUser($user);
 
         $configs = plugininfo::get_plugin_configuration_for_external($context);

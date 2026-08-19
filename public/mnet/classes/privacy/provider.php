@@ -23,6 +23,8 @@
 namespace core_mnet\privacy;
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
@@ -149,7 +151,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist): void {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof user) {
             return;
         }
 
@@ -168,7 +170,7 @@ class provider implements
     public static function export_user_data(approved_contextlist $contextlist): void {
         global $DB;
 
-        $context = \context_user::instance($contextlist->get_user()->id);
+        $context = user::instance($contextlist->get_user()->id);
 
         $sql = "SELECT ml.id, mh.wwwroot, mh.name, ml.remoteid, ml.time, ml.userid, ml.ip, ml.course,
                        ml.coursename, ml.module, ml.cmid, ml.action, ml.url, ml.info
@@ -220,7 +222,7 @@ class provider implements
      *
      * @param \context $context Context to delete data from.
      */
-    public static function delete_data_for_all_users_in_context(\context $context): void {
+    public static function delete_data_for_all_users_in_context(context $context): void {
         global $DB;
 
         if ($context->contextlevel != CONTEXT_USER) {
@@ -240,7 +242,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_user) {
+        if ($context instanceof user) {
             $DB->delete_records('mnet_log', ['userid' => $context->instanceid]);
         }
     }

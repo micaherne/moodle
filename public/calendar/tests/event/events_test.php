@@ -24,6 +24,8 @@
 
 namespace core_calendar\event;
 
+use core\context\user;
+use core\exception\coding_exception;
 use core_calendar_externallib_testcase;
 
 defined('MOODLE_INTERNAL') || die();
@@ -114,7 +116,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_event_created_validations(): void {
         $this->resetAfterTest();
-        $context = \context_user::instance($this->user->id);
+        $context = user::instance($this->user->id);
 
         // Test not setting other['repeatid'].
         try {
@@ -128,7 +130,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\core\\event\\calendar_event_created to be triggered without
                     other['repeatid']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'repeatid\' value must be set in other.', $e->getMessage());
         }
 
@@ -144,7 +146,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\core\\event\\calendar_event_created to be triggered without
                     other['name']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'name\' value must be set in other.', $e->getMessage());
         }
 
@@ -160,7 +162,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\core\\event\\calendar_event_deleted to be triggered without
                     other['timestart']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'timestart\' value must be set in other.', $e->getMessage());
         }
     }
@@ -258,7 +260,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_event_updated_validations(): void {
         $this->resetAfterTest();
-        $context = \context_user::instance($this->user->id);
+        $context = user::instance($this->user->id);
 
         // Test not setting other['repeatid'].
         try {
@@ -272,7 +274,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\core\\event\\calendar_event_updated to be triggered without
                     other['repeatid']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'repeatid\' value must be set in other.', $e->getMessage());
         }
 
@@ -288,7 +290,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\core\\event\\calendar_event_updated to be triggered without
                     other['name']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'name\' value must be set in other.', $e->getMessage());
         }
 
@@ -304,7 +306,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\core\\event\\calendar_event_deleted to be triggered without
                     other['timestart']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'timestart\' value must be set in other.', $e->getMessage());
         }
     }
@@ -370,7 +372,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_calendar_event_deleted_validations(): void {
         $this->resetAfterTest();
-        $context = \context_user::instance($this->user->id);
+        $context = user::instance($this->user->id);
 
         // Test not setting other['repeatid'].
         try {
@@ -384,7 +386,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\core\\event\\calendar_event_deleted to be triggered without
                     other['repeatid']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'repeatid\' value must be set in other.', $e->getMessage());
         }
 
@@ -400,7 +402,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\core\\event\\calendar_event_deleted to be triggered without
                     other['name']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'name\' value must be set in other.', $e->getMessage());
         }
 
@@ -416,7 +418,7 @@ final class events_test extends \advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\core\\event\\calendar_event_deleted to be triggered without
                     other['timestart']");
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'timestart\' value must be set in other.', $e->getMessage());
         }
     }

@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 define('CLI_SCRIPT', 1);
 
 require(__DIR__ . '/../../config.php');
@@ -74,27 +76,27 @@ if ($options['showdebugging']) {
 }
 
 if (!$admin = get_admin()) {
-    throw new \moodle_exception('noadmins');
+    throw new moodle_exception('noadmins');
 }
 
 if (!file_exists($options['file'])) {
-    throw new \moodle_exception('filenotfound');
+    throw new moodle_exception('filenotfound');
 }
 
 if ($options['categoryid']) {
     if (!$category = $DB->get_record('course_categories', ['id' => $options['categoryid']], 'id')) {
-        throw new \moodle_exception('invalidcategoryid');
+        throw new moodle_exception('invalidcategoryid');
     }
 }
 
 if ($options['courseid']) {
     if (!$course = $DB->get_record('course', ['id' => $options['courseid']], 'id')) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
 }
 
 if (empty($category) && empty($course)) {
-    throw new \moodle_exception('invalidoption');
+    throw new moodle_exception('invalidoption');
 }
 
 $backupdir = restore_controller::get_tempdir_name(SITEID, $USER->id);
@@ -153,7 +155,7 @@ try {
 } catch (Exception $e) {
     cli_heading(get_string('cleaningtempdata'));
     fulldelete($path);
-    throw new \moodle_exception('generalexceptionmessage', 'error', '', $e->getMessage());
+    throw new moodle_exception('generalexceptionmessage', 'error', '', $e->getMessage());
 }
 
 cli_heading(get_string('restoredcourseid', 'backup', $courseid));

@@ -23,6 +23,9 @@
  */
 
 namespace mod_lti\event;
+
+use core\context\system;
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -56,7 +59,7 @@ class unknown_service_api_called extends \core\event\base {
      */
     public function get_message_data() {
         if ($this->is_restored()) {
-            throw new \coding_exception('Function get_message_data() can not be used on restored events.');
+            throw new coding_exception('Function get_message_data() can not be used on restored events.');
         }
         return $this->eventdata;
     }
@@ -67,7 +70,7 @@ class unknown_service_api_called extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
     }
 
     /**

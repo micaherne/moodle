@@ -25,6 +25,7 @@
 
 namespace assignsubmission_comments\event;
 
+use core\url;
 use mod_assign_test_generator;
 defined('MOODLE_INTERNAL') || die();
 
@@ -83,7 +84,7 @@ final class events_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\assignsubmission_comments\event\comment_created', $event);
         $this->assertEquals($context, $event->get_context());
-        $url = new \moodle_url('/mod/assign/view.php', array('id' => $assign->get_course_module()->id));
+        $url = new url('/mod/assign/view.php', array('id' => $assign->get_course_module()->id));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -124,7 +125,7 @@ final class events_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\assignsubmission_comments\event\comment_deleted', $event);
         $this->assertEquals($context, $event->get_context());
-        $url = new \moodle_url('/mod/assign/view.php', array('id' => $assign->get_course_module()->id));
+        $url = new url('/mod/assign/view.php', array('id' => $assign->get_course_module()->id));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }

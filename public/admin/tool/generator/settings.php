@@ -22,20 +22,22 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-    $ADMIN->add('development', new admin_externalpage('toolgeneratorcourse',
+    $ADMIN->add('development', new externalpage('toolgeneratorcourse',
             get_string('maketestcourse', 'tool_generator'),
             $CFG->wwwroot . '/' . $CFG->admin . '/tool/generator/maketestcourse.php'));
 
-    $ADMIN->add('development', new admin_externalpage('toolgeneratortestplan',
+    $ADMIN->add('development', new externalpage('toolgeneratortestplan',
             get_string('maketestplan', 'tool_generator'),
             $CFG->wwwroot . '/' . $CFG->admin . '/tool/generator/maketestplan.php'));
 
     $ADMIN->add(
         'development',
-        new admin_externalpage(
+        new externalpage(
             'toolgenerator_runtestscenario',
             get_string('testscenario', 'tool_generator'),
             $CFG->wwwroot . '/' . $CFG->admin . '/tool/generator/runtestscenario.php'

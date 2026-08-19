@@ -16,8 +16,8 @@
 
 namespace mod_choice;
 
-use cm_info;
-use context_module;
+use core_course\cm_info;
+use core\context\module;
 use stdClass;
 
 /**
@@ -53,7 +53,7 @@ class manager {
         /** @var stdClass $instance activity instance object */
         private stdClass $instance
     ) {
-        $this->context = context_module::instance($cm->id);
+        $this->context = module::instance($cm->id);
         $this->db = \core\di::get(\moodle_database::class);
         $this->course = $cm->get_course();
     }
@@ -90,7 +90,7 @@ class manager {
      *
      * @return context_module
      */
-    public function get_context(): context_module {
+    public function get_context(): module {
         return $this->context;
     }
 

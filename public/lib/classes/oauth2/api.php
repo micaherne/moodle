@@ -28,9 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/filelib.php');
 
 use stdClass;
-use moodle_url;
-use context_system;
-use moodle_exception;
+use core\url;
+use core\context\system;
+use core\exception\moodle_exception;
 
 /**
  * Static list of api methods for system oauth2 configuration.
@@ -47,7 +47,7 @@ class api {
      * @return \core\oauth2\issuer
      */
     public static function init_standard_issuer($type) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
 
         $classname = self::get_service_classname($type);
         if (class_exists($classname)) {
@@ -63,7 +63,7 @@ class api {
      * @return \core\oauth2\issuer
      */
     public static function create_endpoints_for_standard_issuer($type, $issuer) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
 
         $classname = self::get_service_classname($type);
         if (class_exists($classname)) {
@@ -81,7 +81,7 @@ class api {
      * @return \core\oauth2\issuer
      */
     public static function create_standard_issuer($type, $baseurl = false) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
 
         switch ($type) {
             case 'imsobv2p1':
@@ -235,7 +235,7 @@ class api {
      * @param bool $autorefresh Should the client support the use of refresh tokens to persist access across sessions.
      * @return \core\oauth2\client
      */
-    public static function get_user_oauth_client(issuer $issuer, moodle_url $currenturl, $additionalscopes = '',
+    public static function get_user_oauth_client(issuer $issuer, url $currenturl, $additionalscopes = '',
             $autorefresh = false) {
         $class = self::get_client_classname($issuer->get('servicetype'));
         $client = new $class($issuer, $currenturl, $additionalscopes, false, $autorefresh);
@@ -328,7 +328,7 @@ class api {
      * @return issuer The created/updated issuer.
      */
     protected static function create_or_update_issuer($data, bool $create): issuer {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $issuer = new issuer($data->id ?? 0, $data);
 
         // Will throw exceptions on validation failures.
@@ -375,7 +375,7 @@ class api {
      * @return \core\oauth2\endpoint
      */
     public static function update_endpoint($data) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $endpoint = new endpoint(0, $data);
 
         // Will throw exceptions on validation failures.
@@ -391,7 +391,7 @@ class api {
      * @return \core\oauth2\endpoint
      */
     public static function create_endpoint($data) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $endpoint = new endpoint(0, $data);
 
         // Will throw exceptions on validation failures.
@@ -406,7 +406,7 @@ class api {
      * @return \core\oauth2\user_field_mapping
      */
     public static function update_user_field_mapping($data) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $userfieldmapping = new user_field_mapping(0, $data);
 
         // Will throw exceptions on validation failures.
@@ -422,7 +422,7 @@ class api {
      * @return \core\oauth2\user_field_mapping
      */
     public static function create_user_field_mapping($data) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $userfieldmapping = new user_field_mapping(0, $data);
 
         // Will throw exceptions on validation failures.
@@ -439,7 +439,7 @@ class api {
      * @return boolean
      */
     public static function move_up_issuer($id) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $current = new issuer($id);
 
         $sortorder = $current->get('sortorder');
@@ -472,7 +472,7 @@ class api {
      * @return boolean
      */
     public static function move_down_issuer($id) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $current = new issuer($id);
 
         $max = issuer::count_records();
@@ -509,7 +509,7 @@ class api {
      * @return boolean
      */
     public static function disable_issuer($id) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $issuer = new issuer($id);
 
         $issuer->set('enabled', 0);
@@ -526,7 +526,7 @@ class api {
      * @return boolean
      */
     public static function enable_issuer($id) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $issuer = new issuer($id);
 
         $issuer->set('enabled', 1);
@@ -542,7 +542,7 @@ class api {
      * @return boolean
      */
     public static function delete_issuer($id) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $issuer = new issuer($id);
 
         $systemaccount = self::get_system_account($issuer);
@@ -569,7 +569,7 @@ class api {
      * @return boolean
      */
     public static function delete_endpoint($id) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $endpoint = new endpoint($id);
 
         // Will throw exceptions on validation failures.
@@ -585,7 +585,7 @@ class api {
      * @return boolean
      */
     public static function delete_user_field_mapping($id) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         $userfieldmapping = new user_field_mapping($id);
 
         // Will throw exceptions on validation failures.
@@ -602,7 +602,7 @@ class api {
      * @return boolean
      */
     public static function connect_system_account($issuer, $returnurl) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
 
         // We need to authenticate with an oauth 2 client AS a system user and get a refresh token for offline access.
         $scopes = self::get_system_scopes_for_issuer($issuer);

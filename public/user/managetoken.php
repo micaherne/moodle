@@ -23,11 +23,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+
 require('../config.php');
 
 require_login();
 
-$usercontext = context_user::instance($USER->id);
+$usercontext = user::instance($USER->id);
 
 $PAGE->set_context($usercontext);
 $PAGE->set_url('/user/managetoken.php');
@@ -63,7 +66,7 @@ if ( !is_siteadmin($USER->id)
                 EXTERNAL_TOKEN_PERMANENT,
                 \core_external\util::get_service_by_id($token->externalserviceid),
                 $USER->id,
-                context_system::instance()
+                system::instance()
             );
 
             redirect($PAGE->url, get_string('resettokencomplete', 'core_webservice'));

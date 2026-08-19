@@ -16,7 +16,8 @@
 
 namespace core\router;
 
-use invalid_parameter_exception;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Interfaces\RouteInterface;
@@ -83,7 +84,7 @@ class request_validator implements request_validator_interface {
             fn ($pathtype) => $pathtype->is_required($moodleroute),
         ));
         if ($requiredparams > count($slimroute->getArguments())) {
-            throw new \coding_exception(sprintf(
+            throw new coding_exception(sprintf(
                 "Route %s has %d arguments, but %d pathtypes were specified.",
                 $slimroute->getPattern(),
                 count($slimroute->getArguments()),

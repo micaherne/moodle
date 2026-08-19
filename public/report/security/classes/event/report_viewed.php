@@ -23,6 +23,8 @@
  */
 namespace report_security\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -68,7 +70,7 @@ class report_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/security/index.php');
+        return new url('/report/security/index.php');
     }
 
 }

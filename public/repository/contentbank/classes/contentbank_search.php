@@ -24,6 +24,8 @@
 
 namespace repository_contentbank;
 
+use core\context;
+
 /**
  * Represents the content bank search related functionality.
  *
@@ -47,7 +49,7 @@ class contentbank_search {
         // Return all content bank content that matches the search criteria and can be viewed/accessed by the user.
         $contents = $contentbank->search_contents($search);
         return array_reduce($contents, function($list, $content) {
-            $contentcontext = \context::instance_by_id($content->get_content()->contextid);
+            $contentcontext = context::instance_by_id($content->get_content()->contextid);
             $browser = \repository_contentbank\helper::get_contentbank_browser($contentcontext);
             // If the user can access the content and content node can be created, add the node into the
             // search results list.

@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -137,7 +139,7 @@ class edit_grade_form extends moodleform {
     function definition_after_data() {
         global $CFG, $COURSE, $DB;
 
-        $context = context_course::instance($COURSE->id);
+        $context = course::instance($COURSE->id);
 
         $mform =& $this->_form;
         $grade_item = $this->_customdata['grade_item'];

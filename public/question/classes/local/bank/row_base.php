@@ -24,6 +24,8 @@
 
 namespace core_question\local\bank;
 
+use core\output\html_writer;
+
 /**
  * Base class for 'columns' that are actually displayed as a row following the main question row.
  *
@@ -48,11 +50,11 @@ abstract class row_base extends column_base {
      */
     protected function display_start($question, $rowclasses): void {
         if ($rowclasses) {
-            echo \html_writer::start_tag('tr', ['class' => $rowclasses]);
+            echo html_writer::start_tag('tr', ['class' => $rowclasses]);
         } else {
-            echo \html_writer::start_tag('tr');
+            echo html_writer::start_tag('tr');
         }
-        echo \html_writer::start_tag('td',
+        echo html_writer::start_tag('td',
                 ['colspan' => $this->qbank->get_column_count(), 'class' => $this->get_name()]);
     }
 
@@ -63,8 +65,8 @@ abstract class row_base extends column_base {
      * @param string $rowclasses
      */
     protected function display_end($question, $rowclasses): void {
-        echo \html_writer::end_tag('td');
-        echo \html_writer::end_tag('tr');
+        echo html_writer::end_tag('td');
+        echo html_writer::end_tag('tr');
     }
 
 }

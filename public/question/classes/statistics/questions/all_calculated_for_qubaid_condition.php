@@ -26,6 +26,7 @@
 
 namespace core_question\statistics\questions;
 
+use core\exception\coding_exception;
 use question_bank;
 
 /**
@@ -115,13 +116,13 @@ class all_calculated_for_qubaid_condition {
     public function for_subq($questionid, $variant = null) {
         if ($variant === null) {
             if (!isset($this->subquestionstats[$questionid])) {
-                throw new \coding_exception('Reference to unknown question id ' . $questionid);
+                throw new coding_exception('Reference to unknown question id ' . $questionid);
             } else {
                 return $this->subquestionstats[$questionid];
             }
         } else {
             if (!isset($this->subquestionstats[$questionid]->variantstats[$variant])) {
-                throw new \coding_exception('Reference to unknown question id ' . $questionid .
+                throw new coding_exception('Reference to unknown question id ' . $questionid .
                         ' variant ' . $variant);
             } else {
                 return $this->subquestionstats[$questionid]->variantstats[$variant];
@@ -173,13 +174,13 @@ class all_calculated_for_qubaid_condition {
     public function for_slot($slot, $variant = null) {
         if ($variant === null) {
             if (!isset($this->questionstats[$slot])) {
-                throw new \coding_exception('Reference to unknown slot ' . $slot);
+                throw new coding_exception('Reference to unknown slot ' . $slot);
             } else {
                 return $this->questionstats[$slot];
             }
         } else {
             if (!isset($this->questionstats[$slot]->variantstats[$variant])) {
-                throw new \coding_exception('Reference to unknown slot ' . $slot . ' variant ' . $variant);
+                throw new coding_exception('Reference to unknown slot ' . $slot . ' variant ' . $variant);
             } else {
                 return $this->questionstats[$slot]->variantstats[$variant];
             }

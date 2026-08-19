@@ -24,6 +24,9 @@
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 class qtype_calculatedmulti_qe2_attempt_updater extends question_qtype_attempt_updater {
     protected $selecteditem = null;
     /** @var array variable name => value */

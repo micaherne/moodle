@@ -29,10 +29,13 @@
  * @param array $roles An array of roles to get data for.
  * @return context[] An array of contexts.
  */
+use core\context;
+use core\context\system;
+
 function tool_capability_calculate_role_data($capability, array $roles) {
     global $DB;
 
-    $systemcontext = context_system::instance();
+    $systemcontext = system::instance();
     $roleids = array_keys($roles);
 
     // Work out the bits needed for the SQL WHERE clauses.

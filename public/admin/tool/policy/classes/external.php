@@ -24,13 +24,13 @@
 
 namespace tool_policy;
 
-use context_system;
+use core\context\system;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use moodle_exception;
+use core\exception\moodle_exception;
 use tool_policy\form\accept_policy;
 
 /**
@@ -80,7 +80,7 @@ class external extends external_api {
         $versionid = $params['versionid'];
         $behalfid = $params['behalfid'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         $PAGE->set_context($context);
 
         try {
@@ -99,7 +99,7 @@ class external extends external_api {
                 list($policy['content'], $notusedformat) = \core_external\util::format_text(
                     $version->content,
                     $version->contentformat,
-                    \context_system::instance(),
+                    system::instance(),
                     'tool_policy',
                     'policydocumentcontent',
                     $version->id
@@ -161,7 +161,7 @@ class external extends external_api {
         $params = self::validate_parameters(self::submit_accept_on_behalf_parameters(),
             ['jsonformdata' => $jsonformdata]);
 
-        self::validate_context(context_system::instance());
+        self::validate_context(system::instance());
 
         $serialiseddata = json_decode($params['jsonformdata']);
 

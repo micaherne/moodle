@@ -23,7 +23,7 @@
  */
 namespace repository_nextcloud;
 
-use context;
+use core\context;
 use \core\oauth2\api;
 use \core\notification;
 use repository_exception;

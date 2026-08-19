@@ -24,6 +24,10 @@
 
 namespace mod_lesson\event;
 
+use core\context\module;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -49,7 +53,7 @@ class page_updated extends \core\event\base {
      * @param \context_module $context
      * @return page_updated
      */
-    public static function create_from_lesson_page(\lesson_page $lessonpage, \context_module $context) {
+    public static function create_from_lesson_page(\lesson_page $lessonpage, module $context) {
         $data = array(
             'context' => $context,
             'objectid' => $lessonpage->properties()->id,
@@ -85,7 +89,7 @@ class page_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/lesson/view.php', array('id' => $this->contextinstanceid, 'pageid' => $this->objectid));
+        return new url('/mod/lesson/view.php', array('id' => $this->contextinstanceid, 'pageid' => $this->objectid));
     }
 
     /**
@@ -108,10 +112,10 @@ class page_updated extends \core\event\base {
         parent::validate_data();
         // Make sure this class is never used without proper object details.
         if (!$this->contextlevel === CONTEXT_MODULE) {
-            throw new \coding_exception('Context level must be CONTEXT_MODULE.');
+            throw new coding_exception('Context level must be CONTEXT_MODULE.');
         }
         if (!isset($this->other['pagetype'])) {
-            throw new \coding_exception('The \'pagetype\' value must be set in other.');
+            throw new coding_exception('The \'pagetype\' value must be set in other.');
         }
     }
 

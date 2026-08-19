@@ -16,6 +16,8 @@
 
 namespace mod_lti\output;
 
+use core\context\course;
+use core\output\renderable;
 use core_reportbuilder\system_report_factory;
 use mod_lti\reportbuilder\local\systemreports\course_external_tools_list;
 
@@ -26,7 +28,7 @@ use mod_lti\reportbuilder\local\systemreports\course_external_tools_list;
  * @copyright  2023 Jake Dallimore <jrhdallimore@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_tools_page implements \renderable {
+class course_tools_page implements renderable {
 
     /** @var course_external_tools_list the course tools system report instance. */
     protected course_external_tools_list $coursetoolsreport;
@@ -42,7 +44,7 @@ class course_tools_page implements \renderable {
     public function __construct(int $courseid) {
         global $DB;
 
-        $context = \context_course::instance($courseid);
+        $context = course::instance($courseid);
 
         // Page intro, zero state and 'add new' button.
         $canadd = has_capability('mod/lti:addcoursetool', $context);

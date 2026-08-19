@@ -46,6 +46,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_course\cached_cm_info;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__ . '/deprecatedlib.php');
@@ -308,7 +315,7 @@ function mod_lti_get_all_content_items(\core_course\local\entity\content_item $d
         } else {
             $type->icon = html_writer::empty_tag('img', array('src' => $ltitype->icon, 'alt' => $ltitype->name, 'class' => 'icon'));
         }
-        $type->link = new moodle_url('/course/modedit.php', array('add' => 'lti', 'return' => 0, 'typeid' => $ltitype->id));
+        $type->link = new url('/course/modedit.php', array('add' => 'lti', 'return' => 0, 'typeid' => $ltitype->id));
 
         // Preconfigured tools take their own id + 1. This logic exists because, previously, the entry permitting manual instance
         // creation (the $defaultmodulecontentitem, or 'External tool' item) was included and had the id 1. This logic prevented id
@@ -367,20 +374,20 @@ function lti_get_coursemodule_info($coursemodule) {
     if (lti_request_is_using_ssl() &&
         (!empty($lti->secureicon) || (isset($toolconfig['secureicon']) && !empty($toolconfig['secureicon'])))) {
         if (!empty($lti->secureicon)) {
-            $info->iconurl = new moodle_url($lti->secureicon);
+            $info->iconurl = new url($lti->secureicon);
         } else {
-            $info->iconurl = new moodle_url($toolconfig['secureicon']);
+            $info->iconurl = new url($toolconfig['secureicon']);
         }
     } else if (!empty($lti->icon)) {
-        $info->iconurl = new moodle_url($lti->icon);
+        $info->iconurl = new url($lti->icon);
     } else if (isset($toolconfig['icon']) && !empty($toolconfig['icon'])) {
-        $info->iconurl = new moodle_url($toolconfig['icon']);
+        $info->iconurl = new url($toolconfig['icon']);
     }
 
     // Does the link open in a new window?
     $launchcontainer = lti_get_launch_container($lti, $toolconfig);
     if ($launchcontainer == LTI_LAUNCH_CONTAINER_WINDOW) {
-        $launchurl = new moodle_url('/mod/lti/launch.php', array('id' => $coursemodule->id));
+        $launchurl = new url('/mod/lti/launch.php', array('id' => $coursemodule->id));
         $info->onclick = "window.open('" . $launchurl->out(false) . "', 'lti-".$coursemodule->id."'); return false;";
     }
 
@@ -733,7 +740,7 @@ function mod_lti_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('view'),
-        new \moodle_url('/mod/lti/view.php', ['id' => $cm->id]),
+        new url('/mod/lti/view.php', ['id' => $cm->id]),
         1,
         true
     );
@@ -749,7 +756,7 @@ function mod_lti_core_calendar_provide_event_action(calendar_event $event,
  */
 function mod_lti_extend_navigation_course($navigation, $course, $context): void {
     if (has_capability('mod/lti:addpreconfiguredinstance', $context)) {
-        $url = new moodle_url('/mod/lti/coursetools.php', ['id' => $course->id]);
+        $url = new url('/mod/lti/coursetools.php', ['id' => $course->id]);
         $settingsnode = navigation_node::create(get_string('courseexternaltools', 'mod_lti'), $url, navigation_node::TYPE_SETTING,
             null, 'coursetools', new pix_icon('i/settings', ''));
         $navigation->add_node($settingsnode);

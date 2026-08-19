@@ -16,7 +16,7 @@
 
 namespace gradereport_user\external;
 
-use context_course;
+use core\context\course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -60,7 +60,7 @@ class get_access_information extends external_api {
 
         $params = self::validate_parameters(self::execute_parameters(), ['courseid' => $courseid]);
 
-        $context = context_course::instance($params['courseid']);
+        $context = course::instance($params['courseid']);
 
         self::validate_context($context);
 

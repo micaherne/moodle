@@ -16,6 +16,9 @@
 
 namespace core_courseformat\output\local;
 
+use core\exception\coding_exception;
+use core\output\renderer_base;
+
 /**
  * Base templatable class for coursformat templateables which are typically overridden by course formats.
  *
@@ -31,7 +34,7 @@ trait courseformat_named_templatable {
      * @param \renderer_base $renderer The renderer requesting the template name
      * @return string
      */
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         $fullpath = str_replace('\\', '/', get_class($this));
 
         $specialrenderers = '@^.*/output/(local|courseformat)/(?<template>.+)$@';
@@ -41,6 +44,6 @@ trait courseformat_named_templatable {
             return "core_courseformat/local/{$matches['template']}";
         }
 
-        throw new \coding_exception("Unable to determine template name for class " . get_class($this));
+        throw new coding_exception("Unable to determine template name for class " . get_class($this));
     }
 }

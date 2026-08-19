@@ -22,6 +22,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -75,7 +78,7 @@ class mod_resource_generator extends testing_module_generator {
             if (empty($USER->username) || $USER->username === 'guest') {
                 throw new coding_exception('resource generator requires a current user');
             }
-            $usercontext = context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             $filename = $record->defaultfilename ?? 'resource' . ($this->instancecount + 1) . '.txt';
 
             // Pick a random context id for specified user.

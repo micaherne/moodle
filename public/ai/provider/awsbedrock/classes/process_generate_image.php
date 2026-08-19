@@ -17,6 +17,8 @@
 namespace aiprovider_awsbedrock;
 
 use Aws\Result;
+use core\context\user;
+use core\exception\coding_exception;
 use core_ai\ai_image;
 
 /**
@@ -74,7 +76,7 @@ class process_generate_image extends abstract_processor {
             $width  = $dimensions[$quality][$aspectratio]['width'];
             $height = $dimensions[$quality][$aspectratio]['height'];
         } else {
-            throw new \coding_exception('Unknown aspect ratio or quality.');
+            throw new coding_exception('Unknown aspect ratio or quality.');
         }
 
         // Create the prompt object.
@@ -131,7 +133,7 @@ class process_generate_image extends abstract_processor {
         } else if (str_contains($model, 'stability')) {
             $requestobj = $this->create_stability_request($requestobj, $modelsettings);
         } else {
-            throw new \coding_exception('Unknown model class type.');
+            throw new coding_exception('Unknown model class type.');
         }
 
         return [
@@ -161,7 +163,7 @@ class process_generate_image extends abstract_processor {
 
         // Handle image generation models.
         if (!str_contains($model, 'amazon') && !str_contains($model, 'stability')) {
-            throw new \coding_exception('Unknown model class type.');
+            throw new coding_exception('Unknown model class type.');
         }
 
         $imagebase64 = $bodyobj->images[0] ?? null;
@@ -208,24 +210,24 @@ class process_generate_image extends abstract_processor {
         // Decode the base64 image into a binary format we can use.
         $binarydata = base64_decode($base64, true);
         if ($binarydata === false) {
-            throw new \coding_exception('Invalid image data returned by AWS Bedrock.');
+            throw new coding_exception('Invalid image data returned by AWS Bedrock.');
         }
 
         // Construct a filename for the image, because we don't get one explicitly.
         $imageinfo = getimagesizefromstring($binarydata);
         if ($imageinfo === false || empty($imageinfo[2])) {
-            throw new \coding_exception('Invalid image binary returned by AWS Bedrock.');
+            throw new coding_exception('Invalid image binary returned by AWS Bedrock.');
         }
         $fileext = image_type_to_extension($imageinfo[2]);
         if ($fileext === false) {
-            throw new \coding_exception('Unsupported image format returned by AWS Bedrock.');
+            throw new coding_exception('Unsupported image format returned by AWS Bedrock.');
         }
         $filename = substr(hash('sha512', ($base64)), 0, 16) . $fileext;
 
         // Save the image to a temp location and add the watermark.
         $tempdst = make_request_directory() . DIRECTORY_SEPARATOR . $filename;
         if (file_put_contents($tempdst, $binarydata) === false) {
-            throw new \coding_exception('Unable to write temporary image file.');
+            throw new coding_exception('Unable to write temporary image file.');
         }
         $image = new ai_image($tempdst);
         $image->add_watermark()->save();
@@ -233,7 +235,7 @@ class process_generate_image extends abstract_processor {
         // We put the file in the user draft area initially.
         // Placements (on behalf of the user) can then move it to the correct location.
         $fileinfo = new \stdClass();
-        $fileinfo->contextid = \context_user::instance($USER->id)->id;
+        $fileinfo->contextid = user::instance($USER->id)->id;
         $fileinfo->filearea = 'draft';
         $fileinfo->component = 'user';
         $fileinfo->itemid = file_get_unused_draft_itemid();
@@ -243,7 +245,7 @@ class process_generate_image extends abstract_processor {
         $fs = get_file_storage();
         $filecontent = file_get_contents($tempdst);
         if ($filecontent === false) {
-            throw new \coding_exception('Unable to read temporary image file.');
+            throw new coding_exception('Unable to read temporary image file.');
         }
         return $fs->create_file_from_string($fileinfo, $filecontent);
     }

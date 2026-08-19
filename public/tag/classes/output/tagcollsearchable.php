@@ -24,8 +24,9 @@
 
 namespace core_tag\output;
 
-use context_system;
-use lang_string;
+use core\context\system;
+use core\lang_string;
+use core\output\renderer_base;
 use core_tag_collection;
 
 /**
@@ -43,7 +44,7 @@ class tagcollsearchable extends \core\output\inplace_editable {
      * @param \stdClass $tagcoll
      */
     public function __construct($tagcoll) {
-        $editable = has_capability('moodle/tag:manage', context_system::instance());
+        $editable = has_capability('moodle/tag:manage', system::instance());
         $edithint = new lang_string('editsearchable', 'core_tag');
         $value = $tagcoll->searchable ? 1 : 0;
 
@@ -57,7 +58,7 @@ class tagcollsearchable extends \core\output\inplace_editable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         if ($this->value) {
             $this->displayvalue = $output->pix_icon('i/checked', get_string('yes'));
         } else {
@@ -76,7 +77,7 @@ class tagcollsearchable extends \core\output\inplace_editable {
      */
     public static function update($itemid, $newvalue) {
         global $DB;
-        require_capability('moodle/tag:manage', context_system::instance());
+        require_capability('moodle/tag:manage', system::instance());
         $tagcoll = $DB->get_record('tag_coll', array('id' => $itemid), '*', MUST_EXIST);
         core_tag_collection::update($tagcoll, array('searchable' => $newvalue));
         return new self($tagcoll);

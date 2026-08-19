@@ -22,7 +22,7 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core\output\icon_system_fontawesome;
-use theme_config;
+use core\output\theme_config;
 
 /**
  * Web service to load font awesome icon maps.

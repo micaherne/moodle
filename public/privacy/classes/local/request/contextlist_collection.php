@@ -25,6 +25,8 @@
  */
 namespace core_privacy\local\request;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,10 +79,10 @@ class contextlist_collection implements \Iterator, \Countable {
     public function add_contextlist(contextlist_base $contextlist) {
         $component = $contextlist->get_component();
         if (empty($component)) {
-            throw new \moodle_exception("The contextlist must have a component set");
+            throw new moodle_exception("The contextlist must have a component set");
         }
         if (isset($this->contextlists[$component])) {
-            throw new \moodle_exception("A contextlist has already been added for the '{$component}' component");
+            throw new moodle_exception("A contextlist has already been added for the '{$component}' component");
         }
 
         $this->contextlists[$component] = $contextlist;

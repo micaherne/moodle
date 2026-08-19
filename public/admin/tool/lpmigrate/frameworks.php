@@ -22,13 +22,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
-$context = context_system::instance();
+$context = system::instance();
 require_login(null, false);
 require_capability('tool/lpmigrate:frameworksmigrate', $context);
 
-$url = new moodle_url('/admin/tool/lpmigrate/frameworks.php');
+$url = new url('/admin/tool/lpmigrate/frameworks.php');
 $title = get_string('migrateframeworks', 'tool_lpmigrate');
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('standard');

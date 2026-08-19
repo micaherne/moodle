@@ -24,6 +24,8 @@
 
 namespace core_privacy\tests\request;
 
+use core\context;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -39,7 +41,7 @@ class approved_contextlist extends \core_privacy\local\request\approved_contextl
      * @param   \context    $context        The context to be added.
      * @return  $this
      */
-    public function add_context(\context $context) {
+    public function add_context(context $context) {
         return $this->add_context_by_id($context->id);
     }
 

@@ -16,6 +16,7 @@
 
 namespace core\task;
 
+use core\test\testing_util;
 use core_h5p\local\library\autoloader;
 use core_h5p\h5p_test_factory;
 
@@ -53,7 +54,7 @@ final class h5p_get_content_types_task_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         // Fetch generator.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $h5pgenerator = $generator->get_plugin_generator('core_h5p');
 
         $factory = new h5p_test_factory();

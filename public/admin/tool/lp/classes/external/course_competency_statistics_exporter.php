@@ -24,8 +24,8 @@
 namespace tool_lp\external;
 defined('MOODLE_INTERNAL') || die();
 
-use renderer_base;
-use moodle_url;
+use core\output\renderer_base;
+use core\url;
 use core_competency\external\competency_exporter;
 use core_competency\external\performance_helper;
 

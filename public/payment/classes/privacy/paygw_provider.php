@@ -16,6 +16,8 @@
 
 namespace core_payment\privacy;
 
+use core\context;
+
 interface paygw_provider {
 
     /**
@@ -25,7 +27,7 @@ interface paygw_provider {
      * @param array $subcontext The location within the current context that the payment data belongs
      * @param \stdClass $payment The payment record
      */
-    public static function export_payment_data(\context $context, array $subcontext, \stdClass $payment);
+    public static function export_payment_data(context $context, array $subcontext, \stdClass $payment);
 
     /**
      * Delete all user data related to the given payments.

@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 
+use core\output\help_icon;
+use core\output\html_writer;
 use mod_quiz\access_manager;
 use mod_quiz\question\display_options;
 

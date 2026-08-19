@@ -16,8 +16,8 @@
 
 namespace core_course\hook;
 
-use cm_info;
-use section_info;
+use core_course\cm_info;
+use core_course\section_info;
 use core\hook\described_hook;
 use core_courseformat\output\local\content\activitychooserbutton;
 

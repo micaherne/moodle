@@ -26,6 +26,8 @@ namespace core_mnet\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user;
 use core_mnet\privacy\provider;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
@@ -75,7 +77,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $contextlist);
 
         // Check that a context is returned is the expected.
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $this->assertEquals($usercontext->id, $contextlist->get_contextids()[0]);
     }
 
@@ -106,7 +108,7 @@ final class provider_test extends provider_testcase {
 
         $DB->insert_record('mnet_log', $logrecord);
 
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         /** @var \core_privacy\tests\request\content_writer $writer */
         $writer = writer::with_context($usercontext);
@@ -137,7 +139,7 @@ final class provider_test extends provider_testcase {
 
         $DB->insert_record('mnet_log', $logrecord1);
 
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
 
         $user2 = $this->getDataGenerator()->create_user();
 
@@ -185,7 +187,7 @@ final class provider_test extends provider_testcase {
 
         $DB->insert_record('mnet_log', $logrecord1);
 
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
 
         $user2 = $this->getDataGenerator()->create_user();
 
@@ -228,7 +230,7 @@ final class provider_test extends provider_testcase {
         $component = 'core_mnet';
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         // The list of users should not return anything yet (related data still haven't been created).
         $userlist = new \core_privacy\local\request\userlist($usercontext, $component);
@@ -251,7 +253,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // The list of users for system context should not return any users.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist);
         $this->assertCount(0, $userlist);
@@ -268,10 +270,10 @@ final class provider_test extends provider_testcase {
         $component = 'core_mnet';
         // Create user1.
         $user1 = $this->getDataGenerator()->create_user();
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         // Create user2.
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext2 = user::instance($user2->id);
 
         // Insert mnet_log record.
         $logrecord1 = new \stdClass();
@@ -321,7 +323,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // User data should be only removed in the user context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Add userlist2 to the approved user list in the system context.
         $approvedlist = new approved_userlist($systemcontext, $component, $userlist2->get_userids());
         // Delete user1 data using delete_data_for_user.

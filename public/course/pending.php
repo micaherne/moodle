@@ -27,7 +27,9 @@ use core\context\system as context_system;
 use core\exception\moodle_exception;
 use core\url;
 use core\output\html_writer;
+use core_course\course_request;
 use core_course\form\reject_course_request as reject_course_request_form;
+use core_table\output\html_table;
 
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/adminlib.php');

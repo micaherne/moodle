@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -46,7 +48,7 @@ class tag_edit_form extends moodleform {
         $mform->addElement('hidden', 'returnurl');
         $mform->setType('returnurl', PARAM_LOCALURL);
 
-        $systemcontext   = context_system::instance();
+        $systemcontext   = system::instance();
 
         if (has_capability('moodle/tag:manage', $systemcontext)) {
             $mform->addElement('text', 'rawname', get_string('name', 'tag'), ['maxlength' => TAG_MAX_LENGTH, 'size' => 50]);

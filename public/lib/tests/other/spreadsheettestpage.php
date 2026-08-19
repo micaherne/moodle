@@ -22,11 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/excellib.class.php');
 require_once($CFG->libdir . '/odslib.class.php');
 
-$context = context_system::instance();
+$context = system::instance();
 $PAGE->set_url('/lib/tests/other/spreadsheettestpage.php');
 $PAGE->set_context($context);
 
@@ -65,8 +68,8 @@ Known problems:
 
     echo markdown_to_html($notes);
     echo $OUTPUT->box_end();
-    echo $OUTPUT->single_button(new moodle_url($PAGE->url, array('type' => 'xslx')), 'Test Excel format');
-    echo $OUTPUT->single_button(new moodle_url($PAGE->url, array('type' => 'ods')), 'Test ODS format');
+    echo $OUTPUT->single_button(new url($PAGE->url, array('type' => 'xslx')), 'Test Excel format');
+    echo $OUTPUT->single_button(new url($PAGE->url, array('type' => 'ods')), 'Test ODS format');
     echo $OUTPUT->footer();
     die;
 }

@@ -16,6 +16,8 @@
 
 namespace qbank_managecategories;
 
+use core\context\module;
+
 /**
  * Test base for category tests
  *
@@ -75,7 +77,7 @@ abstract class manage_category_test_base extends \advanced_testcase {
      * @return \stdClass category record
      */
     protected function create_question_category_for_a_qbank(\stdClass $qbank, array $categorydetails = []): \stdClass {
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         return $this->create_new_question_category_for_a_context($context->id, $categorydetails);
     }
 
@@ -98,7 +100,7 @@ abstract class manage_category_test_base extends \advanced_testcase {
      * @return \stdClass category record
      */
     protected function create_question_category_for_a_quiz(\stdClass $quiz, array $categorydetails = []): \stdClass {
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         return $this->create_new_question_category_for_a_context($context->id, $categorydetails);
     }
 

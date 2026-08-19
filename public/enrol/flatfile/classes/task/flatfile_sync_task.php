@@ -24,6 +24,8 @@
 
 namespace enrol_flatfile\task;
 
+use core\output\progress_trace\null_progress_trace;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -58,7 +60,7 @@ class flatfile_sync_task extends \core\task\scheduled_task {
 
         // Instance of enrol_flatfile_plugin.
         $plugin = enrol_get_plugin('flatfile');
-        $result = $plugin->sync(new \null_progress_trace());
+        $result = $plugin->sync(new null_progress_trace());
         return $result;
 
     }

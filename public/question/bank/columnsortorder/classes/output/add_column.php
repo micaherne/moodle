@@ -16,10 +16,12 @@
 
 namespace qbank_columnsortorder\output;
 
+use core\output\renderable;
+use core\output\templatable;
 use core_reportbuilder\local\models\column;
 use qbank_columnsortorder\column_manager;
-use moodle_url;
-use renderer_base;
+use core\url;
+use core\output\renderer_base;
 
 /**
  * Renderable for the "add column" dropdown list
@@ -29,12 +31,12 @@ use renderer_base;
  * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class add_column implements \renderable, \templatable {
+class add_column implements renderable, templatable {
     /** @var column_manager The column manager for getting the list of hidden columns. */
     protected column_manager $columnmanager;
 
     /** @var moodle_url The current page URL to redirect back to. */
-    protected moodle_url $returnurl;
+    protected url $returnurl;
 
     /** @var bool True if we are changing global config, false for user preferences. */
     protected bool $global;
@@ -46,7 +48,7 @@ class add_column implements \renderable, \templatable {
      * @param moodle_url $returnurl
      * @param bool $global
      */
-    public function __construct(column_manager $columnmanager, moodle_url $returnurl, bool $global = false) {
+    public function __construct(column_manager $columnmanager, url $returnurl, bool $global = false) {
         $this->columnmanager = $columnmanager;
         $this->returnurl = $returnurl;
         $this->global = $global;
@@ -55,7 +57,7 @@ class add_column implements \renderable, \templatable {
     public function export_for_template(renderer_base $output): array {
         $hiddencolumns = [];
         foreach ($this->columnmanager->get_hidden_columns() as $class => $name) {
-            $addurl = new moodle_url('/question/bank/columnsortorder/actions.php', [
+            $addurl = new url('/question/bank/columnsortorder/actions.php', [
                 'action' => 'add',
                 'global' => $this->global,
                 'column' => $class,

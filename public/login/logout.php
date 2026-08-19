@@ -24,10 +24,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once('../config.php');
 
 $PAGE->set_url('/login/logout.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 // We want not null default to prevent required sesskey warning.
 $sesskey = optional_param('sesskey', '__notpresent__', PARAM_RAW);
@@ -49,7 +52,7 @@ if (!isloggedin()) {
     $PAGE->set_title(get_string('logout'));
     $PAGE->set_heading($SITE->fullname);
     echo $OUTPUT->header();
-    echo $OUTPUT->confirm(get_string('logoutconfirm'), new moodle_url($PAGE->url, array('sesskey'=>sesskey())), $CFG->wwwroot.'/');
+    echo $OUTPUT->confirm(get_string('logoutconfirm'), new url($PAGE->url, array('sesskey'=>sesskey())), $CFG->wwwroot.'/');
     echo $OUTPUT->footer();
     die;
 }

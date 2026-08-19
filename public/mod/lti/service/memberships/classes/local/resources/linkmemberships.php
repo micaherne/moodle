@@ -26,6 +26,7 @@
 
 namespace ltiservice_memberships\local\resources;
 
+use core\context\course;
 use mod_lti\local\ltiservice\resource_base;
 use ltiservice_memberships\local\service\memberships;
 use core_availability\info_module;
@@ -95,7 +96,7 @@ class linkmemberships extends resource_base {
             $response->set_code(404);
             return;
         }
-        if (!($context = \context_course::instance($lti->course))) {
+        if (!($context = course::instance($lti->course))) {
             $response->set_code(404);
             return;
         }

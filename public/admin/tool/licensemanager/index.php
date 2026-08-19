@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require_once('../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/licenselib.php');
@@ -33,7 +35,7 @@ $license = optional_param('license', '', PARAM_NOTAGS);
 
 // Route via the manager.
 $licensemanager = new \tool_licensemanager\manager();
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url(\tool_licensemanager\helper::get_licensemanager_url());
 $PAGE->set_title(get_string('licensemanager', 'tool_licensemanager'));
 

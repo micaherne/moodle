@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\user as core_user;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -84,7 +89,7 @@ class gradereport_overview_external extends external_api {
             $userid = $USER->id;
         }
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         self::validate_context($systemcontext);
 
         if ($USER->id != $userid) {
@@ -96,7 +101,7 @@ class gradereport_overview_external extends external_api {
 
         // We need the site course, and course context.
         $course = get_course(SITEID);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Get the course final grades now.
         $gpr = new grade_plugin_return(array('type' => 'report', 'plugin' => 'overview', 'courseid' => $course->id,
@@ -187,7 +192,7 @@ class gradereport_overview_external extends external_api {
         $warnings = array();
         $course = get_course($params['courseid']);
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         self::validate_context($context);
 
         $userid = $params['userid'];
@@ -197,7 +202,7 @@ class gradereport_overview_external extends external_api {
             $user = core_user::get_user($userid, '*', MUST_EXIST);
             core_user::require_active_user($user);
         }
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $personalcontext = context_user::instance($userid);
 
         $access = grade_report_overview::check_access($systemcontext, $context, $personalcontext, $course, $userid);

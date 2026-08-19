@@ -21,6 +21,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\coursecat;
+use core\context\module;
 use core_question\local\bank\question_version_status;
 
 defined('MOODLE_INTERNAL') || die();
@@ -60,7 +62,7 @@ final class qformat_aiken_export_test extends advanced_testcase {
         $category = $this->getDataGenerator()->create_category();
         $course = $this->getDataGenerator()->create_course(array('category' => $category->id));
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $context = context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $generator->create_question_category(array('contextid' => $context->id));
         $question1 = $generator->create_question('shortanswer', null,
@@ -96,7 +98,7 @@ EOT;
         $course = $this->getDataGenerator()->create_course(array('category' => $category->id));
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $context = context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $cat = $generator->create_question_category(array('contextid' => $context->id));
         $question  = $generator->create_question('multichoice', 'one_of_four',
                 array('category' => $cat->id));
@@ -127,7 +129,7 @@ EOT;
         $category = $this->getDataGenerator()->create_category();
         $course = $this->getDataGenerator()->create_course(['category' => $category->id]);
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $context = context_coursecat::instance($category->id);
+        $context = coursecat::instance($category->id);
         $cat = $generator->create_question_category(['contextid' => $context->id]);
 
         // Create a visible and a hidden question.

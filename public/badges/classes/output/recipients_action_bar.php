@@ -16,9 +16,9 @@
 
 namespace core_badges\output;
 
-use moodle_url;
-use renderer_base;
-use single_button;
+use core\url;
+use core\output\renderer_base;
+use core\output\single_button;
 
 /**
  * Class recipients_action_bar - Display the action bar
@@ -49,7 +49,7 @@ class recipients_action_bar extends manage_badge_action_bar {
         // Add button for badge manual award.
         if ($this->badge->has_manual_award_criteria()
                 && has_capability('moodle/badges:awardbadge', $this->page->context) && $this->badge->is_active()) {
-            $url = new moodle_url('/badges/award.php', ['id' => $this->badge->id]);
+            $url = new url('/badges/award.php', ['id' => $this->badge->id]);
             $button = new single_button($url, get_string('award', 'badges'), 'post', single_button::BUTTON_PRIMARY);
             $elements['awardbutton'] = $button->export_for_template($output);
         }

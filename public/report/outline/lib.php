@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -34,7 +40,7 @@ defined('MOODLE_INTERNAL') || die;
  */
 function report_outline_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('report/outline:view', $context)) {
-        $url = new moodle_url('/report/outline/index.php', array('id'=>$course->id));
+        $url = new url('/report/outline/index.php', array('id'=>$course->id));
         $navigation->add(get_string('pluginname', 'report_outline'), $url, navigation_node::TYPE_SETTING, null, null, new pix_icon('i/report', ''));
     }
 }
@@ -48,9 +54,9 @@ function report_outline_extend_navigation_course($navigation, $course, $context)
  */
 function report_outline_extend_navigation_user($navigation, $user, $course) {
     if (report_outline_can_access_user_report($user, $course)) {
-        $url = new moodle_url('/report/outline/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>'outline'));
+        $url = new url('/report/outline/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>'outline'));
         $navigation->add(get_string('outlinereport'), $url);
-        $url = new moodle_url('/report/outline/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>'complete'));
+        $url = new url('/report/outline/user.php', array('id'=>$user->id, 'course'=>$course->id, 'mode'=>'complete'));
         $navigation->add(get_string('completereport'), $url);
     }
 }
@@ -67,8 +73,8 @@ function report_outline_extend_navigation_user($navigation, $user, $course) {
 function report_outline_can_access_user_report($user, $course) {
     global $USER;
 
-    $coursecontext = context_course::instance($course->id);
-    $personalcontext = context_user::instance($user->id);
+    $coursecontext = course::instance($course->id);
+    $personalcontext = user::instance($user->id);
 
     if ($user->id == $USER->id) {
         if ($course->showreports and (is_viewing($coursecontext, $USER) or is_enrolled($coursecontext, $USER))) {
@@ -141,11 +147,11 @@ function report_outline_myprofile_navigation(core_user\output\myprofile\tree $tr
         $course = get_fast_modinfo(SITEID)->get_course();
     }
     if (report_outline_can_access_user_report($user, $course)) {
-        $url = new moodle_url('/report/outline/user.php',
+        $url = new url('/report/outline/user.php',
                 array('id' => $user->id, 'course' => $course->id, 'mode' => 'outline'));
         $node = new core_user\output\myprofile\node('reports', 'outline', get_string('outlinereport'), null, $url);
         $tree->add_node($node);
-        $url = new moodle_url('/report/outline/user.php',
+        $url = new url('/report/outline/user.php',
             array('id' => $user->id, 'course' => $course->id, 'mode' => 'complete'));
         $node = new core_user\output\myprofile\node('reports', 'complete', get_string('completereport'), null, $url);
         $tree->add_node($node);

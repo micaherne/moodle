@@ -16,6 +16,8 @@
 
 namespace qtype_multichoice;
 
+use core\context\system;
+use core\output\html_writer;
 use question_state;
 
 defined('MOODLE_INTERNAL') || die();
@@ -240,7 +242,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         // Start a new attempt based on the first one.
         $firstattemptqa = $this->quba->get_question_attempt($this->slot);
         $this->quba = \question_engine::make_questions_usage_by_activity('unit_test',
-                \context_system::instance());
+                system::instance());
         $this->quba->set_preferred_behaviour('deferredfeedback');
         $this->slot = $this->quba->add_question(clone($mc), 3);
         $this->quba->start_question_based_on($this->slot, $firstattemptqa);
@@ -302,7 +304,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         $this->render();
 
         // Check for 'Show standard instruction'.
-        $standardinstruction = \html_writer::tag('legend', get_string('answer'), [
+        $standardinstruction = html_writer::tag('legend', get_string('answer'), [
             'class' => 'prompt h6 fw-normal visually-hidden',
         ]);
         $this->assertStringContainsString($standardinstruction, $this->currentoutput);

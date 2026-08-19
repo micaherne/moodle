@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/repository/lib.php');
@@ -66,7 +70,7 @@ class repository_equella extends repository {
      */
     public function get_listing($path = null, $page = null) {
         global $COURSE;
-        $callbackurl = new moodle_url('/repository/equella/callback.php', array('repo_id'=>$this->id));
+        $callbackurl = new url('/repository/equella/callback.php', array('repo_id'=>$this->id));
 
         $mimetypesstr = '';
         $restrict = '';
@@ -287,7 +291,7 @@ class repository_equella extends repository {
             if ($field->datatype != 'text') {
                 continue;
             }
-            $userfieldoptions[$field->shortname] = format_string($field->name, true, ['context' => context_system::instance()]);
+            $userfieldoptions[$field->shortname] = format_string($field->name, true, ['context' => system::instance()]);
         }
         $mform->addElement('select', 'equella_userfield', get_string('equellauserfield', 'repository_equella'), $userfieldoptions);
         $mform->setDefault('equella_userfield', $userfieldoptions['default']);

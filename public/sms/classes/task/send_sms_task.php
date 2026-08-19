@@ -16,6 +16,7 @@
 
 namespace core_sms\task;
 
+use core\exception\moodle_exception;
 use core\task\adhoc_task;
 use core_sms\message;
 use core_sms\message_status;
@@ -53,7 +54,7 @@ class send_sms_task extends adhoc_task {
         if (in_array($status, $retryfailures)) {
             // Only retry if the failure encountered will possibly resolve in subsequent attempts.
             mtrace("SMS failed status: {$status?->value} - task will retry");
-            throw new \moodle_exception('SMS Gateway encountered a failure');
+            throw new moodle_exception('SMS Gateway encountered a failure');
         } else {
             mtrace("SMS send status: " . ($status?->value ?? message_status::UNKNOWN->value));
         }

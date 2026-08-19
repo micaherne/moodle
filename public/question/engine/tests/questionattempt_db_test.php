@@ -16,6 +16,7 @@
 
 namespace core_question;
 
+use core\context\system;
 use question_attempt;
 use question_bank;
 use question_engine;
@@ -221,7 +222,7 @@ final class questionattempt_db_test extends \data_loading_method_test_base {
         question_bank::start_unit_test();
         question_bank::load_test_question_data($question);
         $observer = new testable_question_engine_unit_of_work(
-                question_engine::make_questions_usage_by_activity('unit_test', \context_system::instance()));
+                question_engine::make_questions_usage_by_activity('unit_test', system::instance()));
         $qa = question_attempt::load_from_records($records, 1, $observer, 'deferredfeedback');
         question_bank::end_unit_test();
 

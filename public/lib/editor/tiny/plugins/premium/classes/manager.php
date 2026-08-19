@@ -16,7 +16,7 @@
 
 namespace tiny_premium;
 
-use moodle_url;
+use core\url;
 use moodleform;
 use stdClass;
 
@@ -192,7 +192,7 @@ class manager {
      */
     public static function get_settings_form(
         string $plugin,
-        ?moodle_url $return = null,
+        ?url $return = null,
     ): moodleform {
         $formclassname = '\tiny_premium\form\tiny_premium_' . $plugin . '_settings_form';
         if (!class_exists($formclassname)) {

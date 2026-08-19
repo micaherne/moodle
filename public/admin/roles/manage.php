@@ -31,6 +31,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot . '/' . $CFG->admin . '/roles/lib.php');
@@ -49,7 +56,7 @@ $defineurl = $CFG->wwwroot . '/' . $CFG->admin . '/roles/define.php';
 admin_externalpage_setup('defineroles');
 
 // Check access permissions.
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 require_capability('moodle/role:manage', $systemcontext);
 
 // Get some basic data we are going to need.
@@ -68,7 +75,7 @@ $confirmed = (optional_param('confirm', false, PARAM_BOOL) && data_submitted() &
 switch ($action) {
     case 'delete':
         if (isset($undeletableroles[$roleid])) {
-            throw new \moodle_exception('cannotdeletethisrole', '', $baseurl);
+            throw new moodle_exception('cannotdeletethisrole', '', $baseurl);
         }
         if (!$confirmed) {
             // Show confirmation.
@@ -81,15 +88,15 @@ switch ($action) {
             $a->count = $DB->count_records_select('role_assignments',
                 'roleid = ?', array($roleid), 'COUNT(DISTINCT userid)');
 
-            $formcontinue = new single_button(new moodle_url($baseurl, $optionsyes), get_string('yes'));
-            $formcancel = new single_button(new moodle_url($baseurl), get_string('no'), 'get');
+            $formcontinue = new single_button(new url($baseurl, $optionsyes), get_string('yes'));
+            $formcancel = new single_button(new url($baseurl), get_string('no'), 'get');
             echo $OUTPUT->confirm(get_string('deleterolesure', 'core_role', $a), $formcontinue, $formcancel);
             echo $OUTPUT->footer();
             die;
         }
         if (!delete_role($roleid)) {
             // The delete failed.
-            throw new \moodle_exception('cannotdeleterolewithid', 'error', $baseurl, $roleid);
+            throw new moodle_exception('cannotdeleterolewithid', 'error', $baseurl, $roleid);
         }
         // Deleted a role sitewide...
         redirect($baseurl);
@@ -108,10 +115,10 @@ switch ($action) {
                 }
             }
             if (is_null($thisrole) || is_null($prevrole)) {
-                throw new \moodle_exception('cannotmoverolewithid', 'error', '', $roleid);
+                throw new moodle_exception('cannotmoverolewithid', 'error', '', $roleid);
             }
             if (!switch_roles($thisrole, $prevrole)) {
-                throw new \moodle_exception('cannotmoverolewithid', 'error', '', $roleid);
+                throw new moodle_exception('cannotmoverolewithid', 'error', '', $roleid);
             }
         }
 
@@ -131,10 +138,10 @@ switch ($action) {
                 }
             }
             if (is_null($nextrole)) {
-                throw new \moodle_exception('cannotmoverolewithid', 'error', '', $roleid);
+                throw new moodle_exception('cannotmoverolewithid', 'error', '', $roleid);
             }
             if (!switch_roles($thisrole, $nextrole)) {
-                throw new \moodle_exception('cannotmoverolewithid', 'error', '', $roleid);
+                throw new moodle_exception('cannotmoverolewithid', 'error', '', $roleid);
             }
         }
 
@@ -189,7 +196,7 @@ foreach ($roles as $role) {
     $riskicons = '';
     foreach ($allrisks as $type => $risk) {
         if ($risks[$type] > 0) {
-            $filterurl = new moodle_url('/admin/roles/define.php', [
+            $filterurl = new url('/admin/roles/define.php', [
                 'action' => 'view',
                 'roleid' => $role->id,
                 'risk' => $type,
@@ -263,7 +270,7 @@ foreach ($roles as $role) {
 echo html_writer::table($table);
 
 echo $OUTPUT->container_start('buttons');
-echo $OUTPUT->single_button(new moodle_url($defineurl, array('action' => 'add')), get_string('addrole', 'core_role'), 'get');
+echo $OUTPUT->single_button(new url($defineurl, array('action' => 'add')), get_string('addrole', 'core_role'), 'get');
 echo $OUTPUT->container_end();
 
 echo $OUTPUT->footer();

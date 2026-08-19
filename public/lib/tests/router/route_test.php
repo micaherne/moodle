@@ -16,6 +16,7 @@
 
 namespace core\router;
 
+use core\exception\coding_exception;
 use core\param;
 use core\router\response\empty_response;
 use core\router\route;
@@ -158,7 +159,7 @@ final class route_test extends route_testcase {
      * @param array $args
      */
     public function test_params_not_params(array $args): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         new route(...$args);
     }
 

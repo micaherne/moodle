@@ -38,7 +38,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
 use core_text;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * This is the external method for updating a glossary entry.

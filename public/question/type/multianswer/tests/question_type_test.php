@@ -16,6 +16,8 @@
 
 namespace qtype_multianswer;
 
+use core\context\system;
+use core\context_helper;
 use qtype_multianswer;
 use qtype_multianswer_edit_form;
 use qtype_multichoice_base;
@@ -157,7 +159,7 @@ final class question_type_test extends \advanced_testcase {
     public function test_load_question(): void {
         $this->resetAfterTest();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         /** @var \core_question_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $generator->create_question_category(['contextid' => $syscontext->id]);
@@ -410,7 +412,7 @@ final class question_type_test extends \advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $generator->create_question_category(['contextid' => $syscontext->id]);
 
@@ -466,7 +468,7 @@ final class question_type_test extends \advanced_testcase {
         $editedquestion = test_question_maker::get_question_data('multianswer', 'twosubq');
         $editedquestion->id = $question->id;
         $editedquestion->category = $cat->id;
-        $editedquestion->context = \context_helper::instance_by_id($cat->contextid);
+        $editedquestion->context = context_helper::instance_by_id($cat->contextid);
         $editedsubq1 = test_question_maker::get_question_form_data('multichoice', 'one_of_four');
         $editedsubq1->id = $originalsubq1->id;
         $editedsubq1->qtype = 'multichoice';

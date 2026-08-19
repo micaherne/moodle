@@ -25,6 +25,8 @@
  */
 namespace core_course;
 
+use core\exception\coding_exception;
+
 /**
  * Tests for the \core_course\task\course_delete_modules class.
  *
@@ -103,9 +105,9 @@ final class course_delete_modules_test extends \advanced_testcase {
         $removaltask->set_custom_data($data);
         try {
             $removaltask->execute();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             // Assert exception.
-            $this->assertInstanceOf(\coding_exception::class, $e);
+            $this->assertInstanceOf(coding_exception::class, $e);
             $errormsg = str_replace('\\', '/', $e->getMessage()); // Normalise dir separator.
             $this->assertStringContainsString('cannotdeletemodulemissinglib', $errormsg);
             $this->assertStringContainsString('Missing file mod/TestModuleToDelete/lib.php', $errormsg);

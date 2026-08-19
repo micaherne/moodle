@@ -27,16 +27,18 @@ namespace tool_policy\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use context_system;
+use core\context\system;
+use core\context\user as context_user;
 use core\output\notification;
 use core\session\manager;
-use core_user;
-use html_writer;
-use moodle_url;
-use renderable;
-use renderer_base;
-use single_button;
-use templatable;
+use core\user;
+use core\output\html_writer;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\templatable;
+use core_cache\cache;
 use tool_policy\api;
 use tool_policy\policy_version;
 
@@ -99,7 +101,7 @@ class page_agreedocs implements renderable, templatable {
 
         $behalfid = $behalfid ?: $USER->id;
         if ($realuser->id != $behalfid) {
-            $this->behalfuser = core_user::get_user($behalfid, '*', MUST_EXIST);
+            $this->behalfuser = user::get_user($behalfid, '*', MUST_EXIST);
             $this->behalfid = $this->behalfuser->id;
         }
 
@@ -184,7 +186,7 @@ class page_agreedocs implements renderable, templatable {
             // New user.
             if (!empty($this->action) && confirm_sesskey()) {
                 $currentpolicyversionids = [];
-                $presignupcache = \cache::make('core', 'presignup');
+                $presignupcache = cache::make('core', 'presignup');
                 $acceptances = $presignupcache->get('tool_policy_policyversionidsagreed');
                 if (!$acceptances) {
                     $acceptances = [];
@@ -205,7 +207,7 @@ class page_agreedocs implements renderable, templatable {
                 $presignupcache->set('tool_policy_policyversionidsagreed', $acceptances);
             } else if (empty($this->policies)) {
                 // There are no policies to agree to. Update the policyagreed value to avoid show empty consent page.
-                \cache::make('core', 'presignup')->set('tool_policy_userpolicyagreed', 1);
+                cache::make('core', 'presignup')->set('tool_policy_userpolicyagreed', 1);
             }
             if (!empty($this->policies) && !$this->signupuserpolicyagreed) {
                 // During the signup process, inform users they must agree to all policies before continuing.
@@ -247,7 +249,7 @@ class page_agreedocs implements renderable, templatable {
             }
 
         } else {
-            $presignupcache = \cache::make('core', 'presignup');
+            $presignupcache = cache::make('core', 'presignup');
             $acceptances = $presignupcache->get('tool_policy_policyversionidsagreed');
             if ($acceptances) {
                 foreach ($allpolicies as $ix => $policy) {
@@ -263,10 +265,10 @@ class page_agreedocs implements renderable, templatable {
             foreach ($allpolicies as $policy) {
                 if ($policy->agreementstyle == policy_version::AGREEMENTSTYLE_OWNPAGE) {
                     if (empty($returnurl)) {
-                        $returnurl = (new moodle_url('/admin/tool/policy/index.php'))->out_as_local_url(false);
+                        $returnurl = (new url('/admin/tool/policy/index.php'))->out_as_local_url(false);
                     }
                     $urlparams = ['versionid' => $policy->id, 'returnurl' => $returnurl];
-                    redirect(new moodle_url('/admin/tool/policy/view.php', $urlparams));
+                    redirect(new url('/admin/tool/policy/view.php', $urlparams));
                 }
             }
 
@@ -275,7 +277,7 @@ class page_agreedocs implements renderable, templatable {
                 $currentpolicyversionids[] = $policy->id;
             }
 
-            $cache = \cache::make('core', 'presignup');
+            $cache = cache::make('core', 'presignup');
             $cachekey = 'tool_policy_viewedpolicies';
 
             $viewedpolicies = $cache->get($cachekey) ?: [];
@@ -291,14 +293,14 @@ class page_agreedocs implements renderable, templatable {
                 $viewedpolicies[] = $policyversionid;
                 $cache->set($cachekey, $viewedpolicies);
                 if (empty($returnurl)) {
-                    $returnurl = new moodle_url('/admin/tool/policy/index.php');
+                    $returnurl = new url('/admin/tool/policy/index.php');
                 }
                 $urlparams = ['versionid' => $policyversionid,
                               'returnurl' => $returnurl,
                               'numpolicy' => count($currentpolicyversionids) - count($pendingpolicies),
                               'totalpolicies' => count($currentpolicyversionids),
                 ];
-                redirect(new moodle_url('/admin/tool/policy/view.php', $urlparams));
+                redirect(new url('/admin/tool/policy/view.php', $urlparams));
             }
         } else {
             // Update the policyagreed for the user to avoid infinite loop because there are no policies to-be-accepted.
@@ -319,18 +321,18 @@ class page_agreedocs implements renderable, templatable {
                 $returnurl = $SESSION->wantsurl;
                 unset($SESSION->wantsurl);
             } else {
-                $returnurl = new moodle_url('/admin/tool/policy/user.php');
+                $returnurl = new url('/admin/tool/policy/user.php');
             }
         } else {
             // Non-authenticated user.
-            $issignup = \cache::make('core', 'presignup')->get('tool_policy_issignup');
+            $issignup = cache::make('core', 'presignup')->get('tool_policy_issignup');
             if ($issignup) {
                 // User came here from signup page - redirect back there.
-                $returnurl = new moodle_url('/login/signup.php');
-                \cache::make('core', 'presignup')->set('tool_policy_issignup', false);
+                $returnurl = new url('/login/signup.php');
+                cache::make('core', 'presignup')->set('tool_policy_issignup', false);
             } else {
                 // Guests should not be on this page unless it's part of signup - redirect home.
-                $returnurl = new moodle_url('/');
+                $returnurl = new url('/');
             }
         }
 
@@ -346,7 +348,7 @@ class page_agreedocs implements renderable, templatable {
         global $PAGE, $SITE, $USER;
 
         // Guest users or not logged users (but the users during the signup process) are not allowed to access to this page.
-        $newsignupuser = \cache::make('core', 'presignup')->get('tool_policy_issignup');
+        $newsignupuser = cache::make('core', 'presignup')->get('tool_policy_issignup');
         if (!$this->isexistinguser && !$newsignupuser) {
             $this->redirect_to_previous_url();
         }
@@ -358,7 +360,7 @@ class page_agreedocs implements renderable, templatable {
         } else {
             // For new users, the behalfid parameter is ignored.
             if ($this->behalfid) {
-                redirect(new moodle_url('/admin/tool/policy/index.php'));
+                redirect(new url('/admin/tool/policy/index.php'));
             }
         }
 
@@ -374,17 +376,17 @@ class page_agreedocs implements renderable, templatable {
         if ($this->isexistinguser && !empty($this->behalfid) && $this->behalfid != $USER->id) {
             $myparams['userid'] = $this->behalfid;
         }
-        $myurl = new moodle_url('/admin/tool/policy/index.php', $myparams);
+        $myurl = new url('/admin/tool/policy/index.php', $myparams);
 
         // Redirect to policy docs before the consent page.
         $this->redirect_to_policies($userid, $myurl);
 
         // Page setup.
-        $PAGE->set_context(context_system::instance());
+        $PAGE->set_context(system::instance());
         $PAGE->set_url($myurl);
         $PAGE->set_heading($SITE->fullname);
         $PAGE->set_title(get_string('policiesagreements', 'tool_policy'));
-        $PAGE->navbar->add(get_string('policiesagreements', 'tool_policy'), new moodle_url('/admin/tool/policy/index.php'));
+        $PAGE->navbar->add(get_string('policiesagreements', 'tool_policy'), new url('/admin/tool/policy/index.php'));
     }
 
     /**
@@ -399,7 +401,7 @@ class page_agreedocs implements renderable, templatable {
         $lang = current_language();
         foreach ($this->policies as $policy) {
             // Get a link to display the full policy document.
-            $policy->url = new moodle_url('/admin/tool/policy/view.php',
+            $policy->url = new url('/admin/tool/policy/view.php',
                 array('policyid' => $policy->policyid, 'returnurl' => qualified_me()));
             $policyattributes = array('data-action' => 'view',
                                       'data-versionid' => $policy->id,
@@ -458,8 +460,8 @@ class page_agreedocs implements renderable, templatable {
             $myparams['userid'] = $this->behalfid;
         }
         $data = (object) [
-            'pluginbaseurl' => (new moodle_url('/admin/tool/policy'))->out(false),
-            'myurl' => (new moodle_url('/admin/tool/policy/index.php', $myparams))->out(false),
+            'pluginbaseurl' => (new url('/admin/tool/policy'))->out(false),
+            'myurl' => (new url('/admin/tool/policy/index.php', $myparams))->out(false),
             'sesskey' => sesskey(),
         ];
 
@@ -488,9 +490,9 @@ class page_agreedocs implements renderable, templatable {
 
         // If viewing docs in behalf of other user, get his/her full name and profile link.
         if (!empty($this->behalfuser)) {
-            $userfullname = fullname($this->behalfuser, has_capability('moodle/site:viewfullnames', \context_system::instance()) ||
-                        has_capability('moodle/site:viewfullnames', \context_user::instance($this->behalfid)));
-            $data->behalfuser = html_writer::link(\context_user::instance($this->behalfid)->get_url(), $userfullname);
+            $userfullname = fullname($this->behalfuser, has_capability('moodle/site:viewfullnames', system::instance()) ||
+                        has_capability('moodle/site:viewfullnames', context_user::instance($this->behalfid)));
+            $data->behalfuser = html_writer::link(context_user::instance($this->behalfid)->get_url(), $userfullname);
         }
 
         // User can cancel accepting policies only if it is a part of signup.

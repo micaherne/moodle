@@ -16,6 +16,7 @@
 
 namespace core\authentication;
 
+use core\context\system;
 use core\di;
 use core\exception\coding_exception;
 use core\exception\moodle_exception;
@@ -582,7 +583,7 @@ final class password_test extends \advanced_testcase {
         $tokenrecord->userid = $user->id;
         $tokenrecord->tokentype = EXTERNAL_TOKEN_PERMANENT;
         $tokenrecord->externalserviceid = 1;
-        $tokenrecord->contextid = \context_system::instance()->id;
+        $tokenrecord->contextid = system::instance()->id;
         $tokenrecord->creatorid = $user->id;
         $tokenrecord->timecreated = time();
         $DB->insert_record('external_tokens', $tokenrecord);

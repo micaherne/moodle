@@ -28,7 +28,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core\http_client;
+use core\url;
 use enrol_lti\local\ltiadvantage\lib\lti_cookie;
 use enrol_lti\local\ltiadvantage\lib\issuer_database;
 use enrol_lti\local\ltiadvantage\lib\launch_cache_session;
@@ -76,14 +80,14 @@ if (empty($messagelaunch)) {
 $auth = \core\di::get(\core\authentication::class)->get_plugin('lti');
 $auth->complete_login(
     $messagelaunch->getLaunchData(),
-    new moodle_url('/enrol/lti/launch_deeplink.php', ['launchid' => $messagelaunch->getLaunchId()]),
+    new url('/enrol/lti/launch_deeplink.php', ['launchid' => $messagelaunch->getLaunchId()]),
     auth_plugin_lti::PROVISIONING_MODE_PROMPT_EXISTING_ONLY
 );
 
 require_login(null, false);
 global $USER, $CFG;
-$PAGE->set_context(context_system::instance());
-$url = new moodle_url('/enrol/lti/launch_deeplink.php');
+$PAGE->set_context(system::instance());
+$url = new url('/enrol/lti/launch_deeplink.php');
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('popup');
 $PAGE->set_title(get_string('opentool', 'enrol_lti'));

@@ -24,6 +24,8 @@
 
 namespace core_admin\form;
 
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
@@ -79,7 +81,7 @@ class testoutgoingmailconf_form extends \moodleform {
         $errors = parent::validation($data, $files);
 
         if (isset($data['from']) && $data['from']) {
-            $userfrom = \core_user::get_user_by_username($data['from']);
+            $userfrom = user::get_user_by_username($data['from']);
 
             if (!$userfrom && !validate_email($data['from'])) {
                 $errors['from'] = get_string('testoutgoingmailconf_fromemail_invalid', 'admin');

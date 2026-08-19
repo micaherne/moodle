@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_bigbluebuttonbn\output;
 
-use html_table;
-use html_writer;
+use core_table\output\html_table;
+use core\output\html_writer;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\meeting;
 use mod_bigbluebuttonbn\plugin;
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
 
 /**

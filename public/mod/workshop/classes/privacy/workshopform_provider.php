@@ -25,6 +25,8 @@
 
 namespace mod_workshop\privacy;
 
+use core\context;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -46,5 +48,5 @@ interface workshopform_provider extends
      * @param array $subcontext Subcontext within the context to export to
      * @param int $assessmentid ID of the assessment
      */
-    public static function export_assessment_form(\stdClass $user, \context $context, array $subcontext, int $assessmentid);
+    public static function export_assessment_form(\stdClass $user, context $context, array $subcontext, int $assessmentid);
 }

@@ -17,7 +17,7 @@
 namespace core_course\output\actionbar;
 
 use core\output\comboboxsearch;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -41,7 +41,7 @@ class user_selector extends comboboxsearch {
      */
     public function __construct(
         private stdClass $course,
-        private moodle_url $resetlink,
+        private url $resetlink,
         private ?int $userid = null,
         private ?int $groupid = null,
         private string $usersearch = '',

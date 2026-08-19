@@ -24,12 +24,13 @@
 
 namespace mod_wiki\privacy;
 
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
-use context_user;
-use context;
+use core\context\user;
+use core\context;
 use core_privacy\local\request\helper;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
@@ -130,7 +131,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!is_a($context, \context_module::class)) {
+        if (!is_a($context, module::class)) {
             return;
         }
 
@@ -261,7 +262,7 @@ class provider implements
      * @param bool $onlyforthisuser
      * @return array
      */
-    protected static function get_page_comments($user, \context $context, $pageid, $onlyforthisuser = true) {
+    protected static function get_page_comments($user, context $context, $pageid, $onlyforthisuser = true) {
         global $USER, $DB;
         $params = [
             'contextid' => $context->id,

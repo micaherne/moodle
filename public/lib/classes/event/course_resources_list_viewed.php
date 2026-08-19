@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -72,7 +75,7 @@ class course_resources_list_viewed extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url("/course/resources.php", array('id' => $this->courseid));
+        return new url("/course/resources.php", array('id' => $this->courseid));
     }
 
     /**
@@ -83,7 +86,7 @@ class course_resources_list_viewed extends base {
      */
     protected function validate_data() {
         if ($this->contextlevel != CONTEXT_COURSE) {
-            throw new \coding_exception('Context passed must be course context.');
+            throw new coding_exception('Context passed must be course context.');
         }
     }
 }

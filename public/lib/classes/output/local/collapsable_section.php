@@ -16,8 +16,10 @@
 
 namespace core\output\local;
 
+use core\output\html_writer;
 use core\output\named_templatable;
 use core\output\renderable;
+use core\output\renderer_base;
 
 /**
  * Collapsable section output.
@@ -102,8 +104,8 @@ class collapsable_section implements named_templatable, renderable {
     }
 
     #[\Override]
-    public function export_for_template(\renderer_base $output): array {
-        $elementid = $this->extras['id'] ?? \html_writer::random_id('collapsableSection_');
+    public function export_for_template(renderer_base $output): array {
+        $elementid = $this->extras['id'] ?? html_writer::random_id('collapsableSection_');
 
         $data = [
             'titlecontent' => $this->titlecontent,
@@ -141,7 +143,7 @@ class collapsable_section implements named_templatable, renderable {
     }
 
     #[\Override]
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core/local/collapsable_section';
     }
 }

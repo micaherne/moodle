@@ -16,6 +16,8 @@
 
 namespace quizaccess_seb;
 
+use core\exception\invalid_parameter_exception;
+
 /**
  * PHPUnit Tests for config_key class.
  *
@@ -31,7 +33,7 @@ final class config_key_test extends \advanced_testcase {
      * Test that trying to generate the hash key with bad xml will result in an error.
      */
     public function test_config_key_not_generated_with_bad_xml(): void {
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $this->expectExceptionMessage("Invalid a PList XML string, representing SEB config");
         config_key::generate("<?xml This is some bad xml for sure.");
     }

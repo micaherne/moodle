@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -57,7 +61,7 @@ class enrol_category_observer {
 
         // Make sure the role is to be actually synchronised,
         // please note we are ignoring overrides of the synchronised capability (for performance reasons in full sync).
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         if (!$DB->record_exists('role_capabilities', array('contextid'=>$syscontext->id, 'roleid'=>$ra->roleid, 'capability'=>'enrol/category:synchronised', 'permission'=>CAP_ALLOW))) {
             return;
         }
@@ -114,7 +118,7 @@ class enrol_category_observer {
         }
 
         // Now this is going to be a bit slow, take all enrolments in child courses and verify each separately.
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         if (!$roles = get_roles_with_capability('enrol/category:synchronised', CAP_ALLOW, $syscontext)) {
             return;
         }
@@ -133,7 +137,7 @@ class enrol_category_observer {
         $params['userid'] = $ra->userid;
 
         foreach ($rs as $instance) {
-            $coursecontext = context_course::instance($instance->courseid);
+            $coursecontext = course::instance($instance->courseid);
             $contextids = $coursecontext->get_parent_context_ids();
             array_pop($contextids); // Remove system context, we are interested in categories only.
 

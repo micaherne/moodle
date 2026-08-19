@@ -26,10 +26,10 @@ namespace mod_h5pactivity\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
-use renderer_base;
-use moodle_url;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
+use core\url;
 
 /**
  * Class to help display report link in mod_h5pactivity.
@@ -51,7 +51,7 @@ class reportlink implements renderable, templatable {
      * @param moodle_url $url the destination url
      * @param string $message the link message
      */
-    public function __construct(moodle_url $url, string $message) {
+    public function __construct(url $url, string $message) {
         $this->url = $url;
         $this->message = $message;
     }

@@ -25,6 +25,7 @@ namespace core_files;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
 use stored_file;
 
 /**
@@ -376,7 +377,7 @@ class conversion extends \core\persistent {
         }
 
         return [
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea'  => 'documentconversion',
             'itemid'    => 0,

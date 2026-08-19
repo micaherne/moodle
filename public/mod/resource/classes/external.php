@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_files;
@@ -71,7 +72,7 @@ class mod_resource_external extends external_api {
         $resource = $DB->get_record('resource', array('id' => $params['resourceid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($resource, 'resource');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         require_capability('mod/resource:view', $context);
@@ -149,7 +150,7 @@ class mod_resource_external extends external_api {
             // We can avoid then additional validate_context calls.
             $resources = get_all_instances_in_courses("resource", $courses);
             foreach ($resources as $resource) {
-                $context = context_module::instance($resource->coursemodule);
+                $context = module::instance($resource->coursemodule);
 
                 helper_for_get_mods_by_courses::format_name_and_intro($resource, 'mod_resource');
                 $resource->contentfiles = util::get_area_files($context->id, 'mod_resource', 'content');

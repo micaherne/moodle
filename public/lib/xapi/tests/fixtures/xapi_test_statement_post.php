@@ -24,7 +24,7 @@
 
 namespace core_xapi\event;
 
-use context_system;
+use core\context\system;
 use core_xapi\local\statement;
 
 defined('MOODLE_INTERNAL') || die();

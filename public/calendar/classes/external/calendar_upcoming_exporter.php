@@ -26,9 +26,10 @@ namespace core_calendar\external;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
 use core\external\exporter;
 use core_calendar\output\humantimeperiod;
-use renderer_base;
+use core\output\renderer_base;
 use core\url;
 use core_calendar\local\event\container;
 
@@ -163,7 +164,7 @@ class calendar_upcoming_exporter extends exporter {
      */
     protected function get_default_add_context() {
         if (calendar_user_can_add_event($this->calendar->course)) {
-            return \context_course::instance($this->calendar->course->id);
+            return course::instance($this->calendar->course->id);
         }
 
         return null;

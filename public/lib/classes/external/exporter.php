@@ -24,9 +24,9 @@
 namespace core\external;
 
 use stdClass;
-use renderer_base;
-use context;
-use coding_exception;
+use core\output\renderer_base;
+use core\context;
+use core\exception\coding_exception;
 use core_external\external_format_value;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;

@@ -16,7 +16,7 @@
 
 namespace mod_feedback;
 
-use cm_info;
+use core_course\cm_info;
 use stdClass;
 
 /**

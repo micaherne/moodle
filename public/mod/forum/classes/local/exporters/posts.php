@@ -30,7 +30,7 @@ use mod_forum\local\entities\author as author_entity;
 use mod_forum\local\entities\post as post_entity;
 use mod_forum\local\exporters\post as post_exporter;
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');
 

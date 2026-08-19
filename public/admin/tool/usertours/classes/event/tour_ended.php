@@ -16,6 +16,8 @@
 
 namespace tool_usertours\event;
 
+use core\exception\coding_exception;
+
 /**
  * The tool_usertours tour_ended event.
  *
@@ -59,15 +61,15 @@ class tour_ended extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['stepindex'])) {
-            throw new \coding_exception('The \'stepindex\' value must be set in other.');
+            throw new coding_exception('The \'stepindex\' value must be set in other.');
         }
 
         if (!isset($this->other['stepid'])) {
-            throw new \coding_exception('The \'stepid\' value must be set in other.');
+            throw new coding_exception('The \'stepid\' value must be set in other.');
         }
 
         if (!isset($this->other['pageurl'])) {
-            throw new \coding_exception('The \'pageurl\' value must be set in other.');
+            throw new coding_exception('The \'pageurl\' value must be set in other.');
         }
     }
 

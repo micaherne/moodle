@@ -18,9 +18,10 @@ declare(strict_types=1);
 
 namespace customfield_number\external;
 
+use core\context\course;
 use core_customfield_generator;
 use core_external\external_api;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Unit tests for the customfield_number\external\recalculate.
@@ -48,7 +49,7 @@ final class recalculate_test extends \core_external\tests\externallib_testcase {
         $field->set('configdata', json_encode($configdata));
         $field->save();
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $roleid = $DB->get_field('role', 'id', ['shortname' => 'editingteacher']);
         $this->unassignUserCapability('moodle/course:changelockedcustomfields', $context->id, $roleid);
 

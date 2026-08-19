@@ -24,6 +24,8 @@
 
 namespace repository_contentbank\browser;
 
+use core\context\coursecat;
+
 /**
  * Represents the content bank browser in the course category context.
  *
@@ -38,7 +40,7 @@ class contentbank_browser_context_coursecat extends contentbank_browser {
      *
      * @param \context_coursecat $context The current context
      */
-    public function __construct(\context_coursecat $context) {
+    public function __construct(coursecat $context) {
         $this->context = $context;
     }
 

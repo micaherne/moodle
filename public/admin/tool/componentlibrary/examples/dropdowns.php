@@ -26,14 +26,18 @@
 
 declare(strict_types=1);
 
+use core\context\system;
+use core\output\pix_icon;
+use core\url;
+
 require_once(__DIR__ . '/../../../../config.php');
 
 require_login();
-require_capability('moodle/site:configview', context_system::instance());
+require_capability('moodle/site:configview', system::instance());
 
 global $PAGE, $OUTPUT;
-$PAGE->set_url(new moodle_url('/admin/tool/componentlibrary/examples/dropdowns.php'));
-$PAGE->set_context(context_system::instance());
+$PAGE->set_url(new url('/admin/tool/componentlibrary/examples/dropdowns.php'));
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('embedded');
 
 $PAGE->set_heading('Moodle dropdowns');
@@ -73,7 +77,7 @@ $choice = new core\output\choicelist('Choice description text');
 // Option one is a link.
 $choice->add_option('option1', 'Option 1', [
     'icon' => new pix_icon('t/show', 'Eye icon 1'),
-    'url' => new moodle_url('/admin/tool/componentlibrary/examples/dropdowns.php'),
+    'url' => new url('/admin/tool/componentlibrary/examples/dropdowns.php'),
 ]);
 // Option two has an icon and description.
 $choice->add_option('option2', 'Option 2', [

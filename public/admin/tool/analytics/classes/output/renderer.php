@@ -26,7 +26,10 @@ namespace tool_analytics\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use plugin_renderer_base;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+use core_table\sql_table;
 
 
 /**
@@ -55,7 +58,7 @@ class renderer extends plugin_renderer_base {
      * @param \table_sql $table
      * @return string HTML
      */
-    public function render_table(\table_sql $table) {
+    public function render_table(sql_table $table) {
 
         ob_start();
         $table->out(10, true);
@@ -127,7 +130,7 @@ class renderer extends plugin_renderer_base {
         }
 
         if (!CLI_SCRIPT) {
-            $output .= $this->output->single_button(new \moodle_url('/admin/tool/analytics/index.php'),
+            $output .= $this->output->single_button(new url('/admin/tool/analytics/index.php'),
                     get_string('continue'), 'get');
         }
 
@@ -205,7 +208,7 @@ class renderer extends plugin_renderer_base {
         }
 
         if (!CLI_SCRIPT) {
-            $output .= $this->output->single_button(new \moodle_url('/admin/tool/analytics/index.php'),
+            $output .= $this->output->single_button(new url('/admin/tool/analytics/index.php'),
                     get_string('continue'), 'get');
         }
 
@@ -249,8 +252,8 @@ class renderer extends plugin_renderer_base {
         $output = $this->output->header();
         $output .= $this->output->notification(get_string('analyticsdisabled', 'analytics'),
                 \core\output\notification::NOTIFY_INFO);
-        $output .= \html_writer::tag('a', get_string('continue'), ['class' => 'btn btn-primary',
-            'href' => (new \moodle_url('/'))->out()]);
+        $output .= html_writer::tag('a', get_string('continue'), ['class' => 'btn btn-primary',
+            'href' => (new url('/'))->out()]);
         $output .= $this->output->footer();
 
         return $output;

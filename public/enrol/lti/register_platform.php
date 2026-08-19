@@ -25,7 +25,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\navigation\navigation_node;
 use core\output\notification;
+use core\url;
 use enrol_lti\local\ltiadvantage\form\create_registration_form;
 use enrol_lti\local\ltiadvantage\form\platform_registration_form;
 use enrol_lti\local\ltiadvantage\entity\application_registration;
@@ -47,14 +50,14 @@ if (!in_array($action, ['add', 'view', 'edit', 'delete'])) {
 }
 
 // The page to go back to when the respective action has been performed.
-$toolregistrationurl = new moodle_url($CFG->wwwroot . "/" . $CFG->admin . "/settings.php",
+$toolregistrationurl = new url($CFG->wwwroot . "/" . $CFG->admin . "/settings.php",
     ['section' => 'enrolsettingslti_registrations']);
 
 // Local anon helper to extend the nav for this page and call admin_externalpage_setup.
 $pagesetup = function(string $pagetitle) {
     global $PAGE;
     navigation_node::override_active_url(
-        new moodle_url('/admin/settings.php', ['section' => 'enrolsettingslti_registrations'])
+        new url('/admin/settings.php', ['section' => 'enrolsettingslti_registrations'])
     );
     admin_externalpage_setup('enrolsettingslti_registrations_edit', '', null, '', ['pagelayout' => 'admin']);
     $PAGE->navbar->add($pagetitle);
@@ -65,7 +68,7 @@ if ($action == 'view') {
     $tabselect = optional_param('tabselect', 'platformdetails', PARAM_ALPHA);
     global $PAGE;
     $pagesetup(get_string('registerplatformedit', 'enrol_lti'));
-    $pageurl = new moodle_url('/enrol/lti/register_platform.php', ['action' => 'view', 'regid' => $regid]);
+    $pageurl = new url('/enrol/lti/register_platform.php', ['action' => 'view', 'regid' => $regid]);
 
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('registerplatformedit', 'enrol_lti'));
@@ -77,7 +80,7 @@ if ($action == 'view') {
 
 } else if ($action === 'add') {
     $pagesetup(get_string('registerplatformadd', 'enrol_lti'));
-    $pageurl = new moodle_url('/enrol/lti/register_platform.php', ['action' => 'add']);
+    $pageurl = new url('/enrol/lti/register_platform.php', ['action' => 'add']);
 
     $mform = new create_registration_form($pageurl->out(false));
     if ($data = $mform->get_data()) {
@@ -88,7 +91,7 @@ if ($action == 'view') {
         $draft = $regservice->create_draft_application_registration($data);
 
         // Redirect to the registration view, which will display endpoints and allow the user to complete the registration.
-        redirect(new moodle_url('/enrol/lti/register_platform.php',
+        redirect(new url('/enrol/lti/register_platform.php',
             ['action' => 'view', 'regid' => $draft->get_id(), 'tabselect' => 'tooldetails']));
 
     } else if (!$mform->is_cancelled()) {
@@ -104,8 +107,8 @@ if ($action == 'view') {
     $regid = required_param('regid', PARAM_INT);
     $pagesetup(get_string('registerplatformedit', 'enrol_lti'));
 
-    $pageurl = new moodle_url('/enrol/lti/register_platform.php', ['action' => 'edit', 'regid' => $regid]);
-    $viewurl = new moodle_url('/enrol/lti/register_platform.php', ['action' => 'view', 'regid' => $regid]);
+    $pageurl = new url('/enrol/lti/register_platform.php', ['action' => 'edit', 'regid' => $regid]);
+    $viewurl = new url('/enrol/lti/register_platform.php', ['action' => 'view', 'regid' => $regid]);
 
     $mform = new platform_registration_form($pageurl->out(false));
     if (($data = $mform->get_data()) && confirm_sesskey()) {
@@ -149,7 +152,7 @@ if ($action == 'view') {
 
     if (!optional_param('confirm', false, PARAM_BOOL)) {
         $continueparams = ['action' => 'delete', 'regid' => $regid, 'sesskey' => sesskey(), 'confirm' => true];
-        $continueurl = new moodle_url('/enrol/lti/register_platform.php', $continueparams);
+        $continueurl = new url('/enrol/lti/register_platform.php', $continueparams);
         $appregrepo = new application_registration_repository();
         $appreg = $appregrepo->find($regid);
         if (!$appreg) {

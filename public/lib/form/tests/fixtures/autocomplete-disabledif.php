@@ -21,6 +21,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+
 require_once(__DIR__ . '/../../../../config.php');
 require_once($CFG->libdir . '/formslib.php');
 
@@ -28,7 +31,7 @@ if (!defined('BEHAT_SITE_RUNNING')) {
     throw new coding_exception('This fixture can only be used in Behat tests.');
 }
 require_login();
-require_capability('moodle/site:config', context_system::instance());
+require_capability('moodle/site:config', system::instance());
 
 
 /**
@@ -53,7 +56,7 @@ class test_form extends moodleform {
     }
 }
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url('/lib/form/tests/fixtures/autocomplete-disabledif.php');
 echo $OUTPUT->header();
 

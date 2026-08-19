@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\exception\require_login_exception;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 
 $userid = optional_param('userid', 0, PARAM_INT);
@@ -35,7 +40,7 @@ if (isguestuser()) {
 \core_competency\api::require_enabled();
 
 $course = $DB->get_record('course', array('id' => $courseid));
-$context = context_course::instance($courseid);
+$context = course::instance($courseid);
 $currentgroup = groups_get_course_group($course, true);
 if (empty($userid)) {
     $gradable = get_enrolled_users($context, 'moodle/competency:coursecompetencygradable', $currentgroup, 'u.id', null, 0, 1);
@@ -54,10 +59,10 @@ if (empty($userid)) {
 }
 
 $params = array('userid' => $userid, 'competencyid' => $competencyid, 'courseid' => $courseid);
-$url = new moodle_url('/admin/tool/lp/user_competency_in_course.php', $params);
+$url = new url('/admin/tool/lp/user_competency_in_course.php', $params);
 
 if ($userid > 0) {
-    $usercontext = context_user::instance($userid);
+    $usercontext = user::instance($userid);
     $user = $DB->get_record('user', array('id' => $userid));
 }
 $competency = new \core_competency\competency($competencyid);
@@ -83,7 +88,7 @@ if ($userid > 0) {
     echo $OUTPUT->context_header($userheading, 3);
 }
 
-$baseurl = new moodle_url('/admin/tool/lp/user_competency_in_course.php');
+$baseurl = new url('/admin/tool/lp/user_competency_in_course.php');
 $nav = new \tool_lp\output\user_competency_course_navigation($userid, $competencyid, $courseid, $baseurl);
 echo $output->render($nav);
 if ($userid > 0) {

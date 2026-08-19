@@ -16,9 +16,11 @@
 
 namespace mod_data\form;
 
-use context;
-use moodle_exception;
-use moodle_url;
+use core\context;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
 use core_form\dynamic_form;
 
 /**
@@ -40,7 +42,7 @@ class import_presets extends dynamic_form {
         global $CFG;
         $filepath = $this->save_temp_file('importfile');
         $context = $this->get_context_for_dynamic_submission();
-        $returnurl = new moodle_url('/mod/data/preset.php', [
+        $returnurl = new url('/mod/data/preset.php', [
             'id' => $context->instanceid,
             'action' => 'importzip',
             'filepath' => str_replace($CFG->tempdir, '', $filepath)
@@ -59,7 +61,7 @@ class import_presets extends dynamic_form {
     protected function get_context_for_dynamic_submission(): context {
         $cmid = $this->optional_param('cmid', null, PARAM_INT);
         $cm = get_coursemodule_from_id('data', $cmid);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         return $context;
     }
 
@@ -92,9 +94,9 @@ class import_presets extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $cmid = $this->optional_param('cmid', null, PARAM_INT);
-        return new moodle_url('/mod/data/preset.php', ['id' => $cmid]);
+        return new url('/mod/data/preset.php', ['id' => $cmid]);
     }
 
     /**
@@ -104,7 +106,7 @@ class import_presets extends dynamic_form {
      */
     protected function definition() {
         $mform = $this->_form;
-        $mform->addElement('html', \html_writer::div(get_string('importpreset_desc', 'mod_data'), 'py-3'));
+        $mform->addElement('html', html_writer::div(get_string('importpreset_desc', 'mod_data'), 'py-3'));
         $mform->addElement('hidden', 'cmid');
         $mform->setType('cmid', PARAM_INT);
 

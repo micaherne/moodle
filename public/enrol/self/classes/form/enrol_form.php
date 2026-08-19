@@ -18,12 +18,14 @@ declare(strict_types=1);
 
 namespace enrol_self\form;
 
+use core\context;
 use core\context\course as context_course;
 use core\context\system as context_system;
+use core\exception\moodle_exception;
 use core_form\dynamic_form;
 use core_text;
-use html_writer;
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 
 /**
  * Form for entering password for self enrolment
@@ -67,7 +69,7 @@ class enrol_form extends dynamic_form {
             $instances = enrol_get_instances($courseid, true);
             $this->instance = $instances[$instanceid] ?? null;
             if (empty($this->instance) || $this->instance->enrol !== 'self') {
-                throw new \moodle_exception('invalidenrolinstance', 'enrol');
+                throw new moodle_exception('invalidenrolinstance', 'enrol');
             }
         }
         return $this->instance;
@@ -95,7 +97,7 @@ class enrol_form extends dynamic_form {
             if ($USER->id == $keyholder->id
                     || has_capability('moodle/user:viewdetails', context_system::instance())
                     || has_coursecontact_role($keyholder->id)) {
-                $profileurl = new moodle_url('/user/profile.php', ['id' => $keyholder->id, 'course' => $this->instance->courseid]);
+                $profileurl = new url('/user/profile.php', ['id' => $keyholder->id, 'course' => $this->instance->courseid]);
                 $profilelink = html_writer::link($profileurl, fullname($keyholder));
             } else {
                 $profilelink = fullname($keyholder);
@@ -147,31 +149,31 @@ class enrol_form extends dynamic_form {
         $course = get_course($courseid);
         $context = context_course::instance($instance->courseid);
         if (!\core_course_category::can_view_course_info($course) && !is_enrolled($context, $USER, '', true)) {
-            throw new \moodle_exception('coursehidden', '', $CFG->wwwroot . '/');
+            throw new moodle_exception('coursehidden', '', $CFG->wwwroot . '/');
         }
         if (isguestuser()) {
-            throw new \moodle_exception('noguestaccess', 'enrol');
+            throw new moodle_exception('noguestaccess', 'enrol');
         }
         $canselfenrol = $this->get_plugin()->can_self_enrol($instance);
         if ($canselfenrol !== true) {
-            throw new \moodle_exception($canselfenrol);
+            throw new moodle_exception($canselfenrol);
         }
         if (!$instance->password) {
-            throw new \moodle_exception('nopassword', 'enrol_self');
+            throw new moodle_exception('nopassword', 'enrol_self');
         }
     }
 
     #[\Override]
-    protected function get_context_for_dynamic_submission(): \context {
+    protected function get_context_for_dynamic_submission(): context {
         // This form is used for users who are not yet enrolled in the course and do not have access to the course.
         // For the purpose of permission checks they must be able to access the course category for this course.
         return context_course::instance($this->get_instance()->courseid)->get_parent_context();
     }
 
     #[\Override]
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $instance = $this->get_instance();
-        return new moodle_url('/enrol/index.php', ['id' => $instance->courseid, 'instance' => $instance->id]);
+        return new url('/enrol/index.php', ['id' => $instance->courseid, 'instance' => $instance->id]);
     }
 
     /**

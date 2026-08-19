@@ -17,6 +17,7 @@
 namespace core\check;
 
 use core\output\html_writer;
+use core\url;
 
 /**
  * A table of check results.
@@ -113,7 +114,7 @@ class table implements \core\output\renderable {
         foreach ($this->checks as $check) {
             $ref = $check->get_ref();
 
-            $link = new \moodle_url($this->url, ['detail' => $ref]);
+            $link = new url($this->url, ['detail' => $ref]);
 
             $results = empty($this->checkname)
                 ? [$check->get_result()]
@@ -129,9 +130,9 @@ class table implements \core\output\renderable {
 
                 $row[] = $result->get_summary()
                     . '<br>'
-                    . \html_writer::start_tag('small')
+                    . html_writer::start_tag('small')
                     . $output->action_link($link, get_string('moreinfo'))
-                    . \html_writer::end_tag('small');
+                    . html_writer::end_tag('small');
 
                 $actionlink = $result->get_action_link() ?? $check->get_action_link();
                 if ($actionlink) {
@@ -143,7 +144,7 @@ class table implements \core\output\renderable {
                 $table->data[] = $row;
             }
         }
-        $html .= \html_writer::table($table);
+        $html .= html_writer::table($table);
 
         if ($this->detail) {
             $results = [];

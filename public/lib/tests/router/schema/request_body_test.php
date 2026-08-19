@@ -16,6 +16,8 @@
 
 namespace core\router\schema;
 
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
 use core\router\schema\objects\schema_object;
 use core\router\schema\response\content\json_media_type;
 use core\router\schema\response\content\payload_response_type;
@@ -47,7 +49,7 @@ final class request_body_test extends route_testcase {
     }
 
     public function test_content_wrong_type(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         new request_body(
             content: [new schema_object(content: [])],
         );
@@ -78,7 +80,7 @@ final class request_body_test extends route_testcase {
                 new json_media_type(content: []),
             ],
         );
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $object->get_body_for_request(new ServerRequest('GET', 'http://example.com'));
     }
 

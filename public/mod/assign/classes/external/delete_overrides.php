@@ -16,7 +16,7 @@
 
 namespace mod_assign\external;
 
-use context_module;
+use core\context\module;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -66,7 +66,7 @@ class delete_overrides extends external_api {
         // Get the assignment and course module.
         $assign = $DB->get_record('assign', ['id' => $params['assignid']], '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance('assign', $assign->id, $assign->course, false, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         self::validate_context($context);
 

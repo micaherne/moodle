@@ -16,6 +16,8 @@
 
 namespace mod_data\backup;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -54,7 +56,7 @@ final class restore_date_test extends \restore_date_testcase {
 
         // Ratings.
         $ratingoptions = new \stdClass;
-        $ratingoptions->context = \context_module::instance($data->cmid);
+        $ratingoptions->context = module::instance($data->cmid);
         $ratingoptions->ratingarea = 'entry';
         $ratingoptions->component = 'mod_data';
         $ratingoptions->itemid  = $datarecord->id;
@@ -80,7 +82,7 @@ final class restore_date_test extends \restore_date_testcase {
         $this->assertEquals($datarecord->timemodified, $newdatarecord->timemodified);
 
         // Rating test.
-        $newrating = $DB->get_record('rating', ['contextid' => \context_module::instance($newcm->id)->id]);
+        $newrating = $DB->get_record('rating', ['contextid' => module::instance($newcm->id)->id]);
         $this->assertEquals($rating->timecreated, $newrating->timecreated);
         $this->assertEquals($rating->timemodified, $newrating->timemodified);
     }

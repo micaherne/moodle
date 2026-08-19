@@ -24,6 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require('../config.php');
 require_once($CFG->dirroot.'/user/lib.php');
 require_once('change_password_form.php');
@@ -34,7 +39,7 @@ require_once('lib.php');
 $id     = optional_param('id', SITEID, PARAM_INT); // current course
 $return = optional_param('return', 0, PARAM_BOOL); // redirect after password change
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 
 $PAGE->set_url('/login/change_password.php', array('id'=>$id));
 
@@ -56,7 +61,7 @@ if ($return) {
 $strparticipants = get_string('participants');
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 // require proper login; guest user can not change password
@@ -67,7 +72,7 @@ if (!isloggedin() or isguestuser()) {
     redirect(get_login_url());
 }
 
-$PAGE->set_context(context_user::instance($USER->id));
+$PAGE->set_context(user::instance($USER->id));
 $PAGE->set_pagelayout('admin');
 $PAGE->set_course($course);
 
@@ -78,7 +83,7 @@ if (!get_user_preferences('auth_forcepasswordchange', false)) {
 
 // do not allow "Logged in as" users to change any passwords
 if (\core\session\manager::is_loggedinas()) {
-    throw new \moodle_exception('cannotcallscript');
+    throw new moodle_exception('cannotcallscript');
 }
 
 if (is_mnet_remote_user($USER)) {
@@ -86,14 +91,14 @@ if (is_mnet_remote_user($USER)) {
     if ($idprovider = $DB->get_record('mnet_host', array('id'=>$USER->mnethostid))) {
         $message .= get_string('userchangepasswordlink', 'mnet', $idprovider);
     }
-    throw new \moodle_exception('userchangepasswordlink', 'mnet', '', $message);
+    throw new moodle_exception('userchangepasswordlink', 'mnet', '', $message);
 }
 
 // load the appropriate auth plugin
 $userauth = \core\di::get(\core\authentication::class)->get_plugin($USER->auth);
 
 if (!$userauth->can_change_password()) {
-    throw new \moodle_exception('nopasswordchange', 'auth');
+    throw new moodle_exception('nopasswordchange', 'auth');
 }
 
 if ($changeurl = $userauth->change_password_url()) {
@@ -112,7 +117,7 @@ if ($mform->is_cancelled()) {
 } else if ($data = $mform->get_data()) {
 
     if (!$userauth->user_update_password($USER, $data->newpassword1)) {
-        throw new \moodle_exception('errorpasswordupdate', 'auth');
+        throw new moodle_exception('errorpasswordupdate', 'auth');
     }
 
     \core\user::add_password_history($USER->id, $data->newpassword1);
@@ -144,7 +149,7 @@ if ($mform->is_cancelled()) {
     $PAGE->set_heading(fullname($USER));
     echo $OUTPUT->header();
 
-    notice($strpasswordchanged, new moodle_url($PAGE->url, array('return'=>1)));
+    notice($strpasswordchanged, new url($PAGE->url, array('return'=>1)));
 
     echo $OUTPUT->footer();
     exit;

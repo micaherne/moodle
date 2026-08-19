@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configmultiselect;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
@@ -32,21 +38,21 @@ if ($ADMIN->fulltree) {
     $defaultdisplayoptions = array(RESOURCELIB_DISPLAY_OPEN);
 
     //--- general settings -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_configmultiselect('page/displayoptions',
+    $settings->add(new configmultiselect('page/displayoptions',
         get_string('displayoptions', 'page'), get_string('configdisplayoptions', 'page'),
         $defaultdisplayoptions, $displayoptions));
 
     //--- modedit defaults -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_heading('pagemodeditdefaults', get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
+    $settings->add(new heading('pagemodeditdefaults', get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
 
-    $settings->add(new admin_setting_configcheckbox('page/printintro',
+    $settings->add(new configcheckbox('page/printintro',
         get_string('printintro', 'page'), get_string('printintroexplain', 'page'), 0));
-    $settings->add(new admin_setting_configcheckbox('page/printlastmodified',
+    $settings->add(new configcheckbox('page/printlastmodified',
         get_string('printlastmodified', 'page'), get_string('printlastmodifiedexplain', 'page'), 1));
-    $settings->add(new admin_setting_configselect('page/display',
+    $settings->add(new configselect('page/display',
         get_string('displayselect', 'page'), get_string('displayselectexplain', 'page'), RESOURCELIB_DISPLAY_OPEN, $displayoptions));
-    $settings->add(new admin_setting_configtext('page/popupwidth',
+    $settings->add(new configtext('page/popupwidth',
         get_string('popupwidth', 'page'), get_string('popupwidthexplain', 'page'), 620, PARAM_INT, 7));
-    $settings->add(new admin_setting_configtext('page/popupheight',
+    $settings->add(new configtext('page/popupheight',
         get_string('popupheight', 'page'), get_string('popupheightexplain', 'page'), 450, PARAM_INT, 7));
 }

@@ -16,6 +16,7 @@
 
 namespace core\router\response;
 
+use core\exception\moodle_exception;
 use core\param;
 use core\router\schema\objects\scalar_type;
 use core\router\schema\objects\schema_object;
@@ -126,7 +127,7 @@ abstract class exception_response extends \core\router\schema\response\response 
             'stacktrace' => [],
         ];
 
-        if (is_a($exception, \moodle_exception::class)) {
+        if (is_a($exception, moodle_exception::class)) {
             $data['errorcode'] = $exception->errorcode;
         }
 

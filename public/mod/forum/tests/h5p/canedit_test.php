@@ -18,6 +18,7 @@ declare(strict_types = 1);
 
 namespace mod_forum\h5p;
 
+use core\context\course;
 use stdClass;
 
 /**
@@ -53,7 +54,7 @@ final class canedit_test extends \advanced_testcase {
 
         // Create course.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Create some users.
         $this->setAdminUser();

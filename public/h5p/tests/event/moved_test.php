@@ -16,6 +16,8 @@
 
 namespace core_h5p\event;
 
+use core\context\module;
+use core\url;
 use core_h5p\local\library\autoloader;
 
 /**
@@ -47,9 +49,9 @@ final class moved_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
         $page = $this->getDataGenerator()->create_module('page', array('course' => $course->id));
-        $pagecontext = \context_module::instance($page->cmid);
+        $pagecontext = module::instance($page->cmid);
         // Url dummy just for testing proposal.
-        $url  = \moodle_url::make_pluginfile_url(
+        $url  = url::make_pluginfile_url(
             $pagecontext->id,
             \core_h5p\file_storage::COMPONENT,
             'unittest',

@@ -26,6 +26,9 @@
  */
 namespace mod_assign\privacy;
 
+use core\context;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,7 +72,7 @@ class assign_plugin_request_data {
      * @param \stdClass $user The user object.
      * @param \assign $assign The assign object.
      */
-    public function __construct(\context $context, \assign $assign, ?\stdClass $pluginobject = null, array $subcontext = [],
+    public function __construct(context $context, \assign $assign, ?\stdClass $pluginobject = null, array $subcontext = [],
             ?\stdClass $user = null) {
         $this->context = $context;
         $this->pluginobject = $pluginobject;
@@ -195,7 +198,7 @@ class assign_plugin_request_data {
         global $DB;
 
         if (empty($this->get_userids())) {
-            throw new \coding_exception('Please use set_userids() before calling this method.');
+            throw new coding_exception('Please use set_userids() before calling this method.');
         }
 
         list($sql, $params) = $DB->get_in_or_equal($this->get_userids(), SQL_PARAMS_NAMED);

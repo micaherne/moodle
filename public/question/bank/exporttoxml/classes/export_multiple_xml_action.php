@@ -16,6 +16,7 @@
 
 namespace qbank_exporttoxml;
 
+use core\url;
 use core_question\local\bank\bulk_action_base;
 use Override;
 
@@ -39,8 +40,8 @@ class export_multiple_xml_action extends bulk_action_base {
     }
 
     #[\Override]
-    public function get_bulk_action_url(): \moodle_url {
-        return new \moodle_url('/question/bank/exporttoxml/exportmany.php');
+    public function get_bulk_action_url(): url {
+        return new url('/question/bank/exporttoxml/exportmany.php');
     }
 
     #[\Override]

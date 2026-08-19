@@ -22,13 +22,16 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 require_login();
 \core_analytics\manager::check_can_manage_models();
 
 if (!\core_analytics\manager::is_analytics_enabled()) {
-    $PAGE->set_context(\context_system::instance());
+    $PAGE->set_context(system::instance());
     $renderer = $PAGE->get_renderer('tool_analytics');
     echo $renderer->render_analytics_disabled();
     exit(0);
@@ -37,8 +40,8 @@ if (!\core_analytics\manager::is_analytics_enabled()) {
 $confirmed = optional_param('confirmed', false, PARAM_BOOL);
 $restoreids = optional_param_array('restoreid', [], PARAM_ALPHANUM);
 
-$returnurl = new \moodle_url('/admin/tool/analytics/index.php');
-$myurl = new \moodle_url('/admin/tool/analytics/restoredefault.php');
+$returnurl = new url('/admin/tool/analytics/index.php');
+$myurl = new url('/admin/tool/analytics/restoredefault.php');
 
 \tool_analytics\output\helper::set_navbar(get_string('restoredefault', 'tool_analytics'), $myurl);
 

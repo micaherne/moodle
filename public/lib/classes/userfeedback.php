@@ -23,6 +23,8 @@
  */
 
 use core\hook\output\before_standard_footer_html_generation;
+use core\output\html_writer;
+use core\url;
 
 /**
  * This Class contains helper functions for user feedback functionality.
@@ -123,7 +125,7 @@ class core_userfeedback {
      *
      * @return moodle_url
      */
-    public static function make_link(): moodle_url {
+    public static function make_link(): url {
         global $CFG, $PAGE;
 
         $baseurl = $CFG->userfeedback_url ?? 'https://feedback.moodle.org/lms';
@@ -133,7 +135,7 @@ class core_userfeedback {
         $theme = $PAGE->theme->name;
         $themeversion = get_config('theme_'.$theme, 'version');
 
-        $url = new moodle_url($baseurl, [
+        $url = new url($baseurl, [
             'lang' => $lang,
             'moodle_url' => $moodleurl,
             'moodle_version' => $moodleversion,

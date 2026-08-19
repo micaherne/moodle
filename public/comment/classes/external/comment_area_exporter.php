@@ -27,7 +27,7 @@ namespace core_comment\external;
 defined('MOODLE_INTERNAL') || die();
 
 use core_comment\manager;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 /**

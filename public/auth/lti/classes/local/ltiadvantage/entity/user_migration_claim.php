@@ -16,6 +16,8 @@
 
 namespace auth_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+
 /**
  * A simplified representation of a 'https://purl.imsglobal.org/spec/lti/claim/lti1p1' migration claim.
  *
@@ -54,14 +56,14 @@ class user_migration_claim {
     public function __construct(array $jwt, array $consumersecrets) {
         // Can't get a claim instance without the claim data.
         if (empty($jwt['https://purl.imsglobal.org/spec/lti/claim/lti1p1'])) {
-            throw new \coding_exception("Missing the 'https://purl.imsglobal.org/spec/lti/claim/lti1p1' JWT claim");
+            throw new coding_exception("Missing the 'https://purl.imsglobal.org/spec/lti/claim/lti1p1' JWT claim");
         }
         $claim = $jwt['https://purl.imsglobal.org/spec/lti/claim/lti1p1'];
 
         // The oauth_consumer_key property MUST be sent.
         // See: https://www.imsglobal.org/spec/lti/v1p3/migr#oauth_consumer_key.
         if (empty($claim['oauth_consumer_key'])) {
-            throw new \coding_exception("Missing 'oauth_consumer_key' property in lti1p1 migration claim.");
+            throw new coding_exception("Missing 'oauth_consumer_key' property in lti1p1 migration claim.");
         }
 
         // The oauth_consumer_key_sign property MAY be sent.
@@ -69,7 +71,7 @@ class user_migration_claim {
         // legacy users through a combination of consumerkey and userid.
         // See: https://www.imsglobal.org/spec/lti/v1p3/migr#oauth_consumer_key_sign.
         if (empty($claim['oauth_consumer_key_sign'])) {
-            throw new \coding_exception("Missing 'oauth_consumer_key_sign' property in lti1p1 migration claim.");
+            throw new coding_exception("Missing 'oauth_consumer_key_sign' property in lti1p1 migration claim.");
         }
 
         if (!$this->verify_signature(
@@ -82,7 +84,7 @@ class user_migration_claim {
             $jwt['nonce'],
             $consumersecrets
         )) {
-            throw new \coding_exception("Invalid 'oauth_consumer_key_sign' signature in lti1p1 claim.");
+            throw new coding_exception("Invalid 'oauth_consumer_key_sign' signature in lti1p1 claim.");
         }
 
         $this->consumerkey = $claim['oauth_consumer_key'];

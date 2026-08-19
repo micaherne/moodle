@@ -25,8 +25,8 @@
 namespace core\oauth2;
 
 use \core\task\scheduled_task;
-use core_user;
-use moodle_exception;
+use core\user;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -66,7 +66,7 @@ class refresh_system_tokens_task extends scheduled_task {
             $message->courseid          = SITEID;
             $message->component         = 'moodle';
             $message->name              = 'errors';
-            $message->userfrom          = core_user::get_noreply_user();
+            $message->userfrom          = user::get_noreply_user();
             $message->userto            = $admin;
             $message->subject           = $short;
             $message->fullmessage       = $long;

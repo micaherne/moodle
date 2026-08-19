@@ -23,6 +23,11 @@
  */
 namespace core\plugininfo;
 
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
+
 /**
  * Class for media plugins
  *
@@ -56,7 +61,7 @@ class media extends base {
      * @param string $parentnodename
      * @param bool $hassiteconfig
      */
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
         global $CFG, $USER, $DB, $OUTPUT, $PAGE; // In case settings.php wants to refer to them.
         /** @var \admin_root $ADMIN */
         $ADMIN = $adminroot; // May be used in settings.php.
@@ -75,7 +80,7 @@ class media extends base {
 
         $settings = null;
         if (file_exists($this->full_path('settings.php'))) {
-            $settings = new \admin_settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
+            $settings = new settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
             include($this->full_path('settings.php')); // This may also set $settings to null.
         }
         if ($settings) {
@@ -88,7 +93,7 @@ class media extends base {
      * @return \moodle_url
      */
     public static function get_manage_url() {
-        return new \moodle_url('/admin/settings.php', array('section' => 'managemediaplayers'));
+        return new url('/admin/settings.php', array('section' => 'managemediaplayers'));
     }
 
     public static function get_enabled_plugins() {
@@ -96,7 +101,7 @@ class media extends base {
 
         $order = (!empty($CFG->media_plugins_sortorder)) ? explode(',', $CFG->media_plugins_sortorder) : [];
         if ($order) {
-            $plugins = \core_plugin_manager::instance()->get_installed_plugins('media');
+            $plugins = plugin_manager::instance()->get_installed_plugins('media');
             $order = array_intersect($order, array_keys($plugins));
         }
         return array_combine($order, $order);
@@ -115,7 +120,7 @@ class media extends base {
             // Enable media plugin.
 
             /** @var \core\plugininfo\media[] $pluginsbytype */
-            $pluginsbytype = \core_plugin_manager::instance()->get_plugins_of_type('media');
+            $pluginsbytype = plugin_manager::instance()->get_plugins_of_type('media');
             if (!array_key_exists($pluginname, $pluginsbytype)) {
                 // Can not be enabled.
                 return false;
@@ -168,11 +173,11 @@ class media extends base {
             $list = explode(',', $list);
         }
         if ($list) {
-            $plugins = \core_plugin_manager::instance()->get_installed_plugins('media');
+            $plugins = plugin_manager::instance()->get_installed_plugins('media');
             $list = array_intersect($list, array_keys($plugins));
         }
         set_config('media_plugins_sortorder', join(',', $list));
-        \core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
         \core_media_manager::reset_caches();
     }
 
@@ -213,7 +218,7 @@ class media extends base {
 
     // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
     public static function get_sorted_plugins(bool $enabledonly = false): ?array {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
 
         $plugins = $pluginmanager->get_plugins_of_type('media');
         $enabledplugins = $pluginmanager->get_enabled_plugins('media');

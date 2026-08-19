@@ -28,6 +28,8 @@
  */
 
 /** NO_DEBUG_DISPLAY - bool, Disable moodle debug and error messages. Set to false to see any errors during RSS generation */
+use core\context\module;
+
 define('NO_DEBUG_DISPLAY', true);
 
 /** NO_MOODLE_COOKIES - bool, Disable the use of sessions/cookies - we recreate $USER for every call. */
@@ -77,7 +79,7 @@ if ($token === "$inttoken") {
 
         foreach ($modinfo->get_instances_of($componentname) as $modinstanceid => $cm) {
             if ($modinstanceid == $instanceid) {
-                $context = context_module::instance($cm->id, IGNORE_MISSING);
+                $context = module::instance($cm->id, IGNORE_MISSING);
                 break;
             }
         }

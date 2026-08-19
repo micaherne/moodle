@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot . '/' . $CFG->admin .'/mnet/profilefields_form.php');
@@ -54,9 +56,9 @@ if ($data = $form->get_data()) {
     set_config('host' . $hostid . 'exportdefault', $data->exportdefault, 'mnet');
     set_config('host' . $hostid . 'exportfields', implode(',', $data->exportfields), 'mnet');
 
-    redirect(new moodle_url('/admin/mnet/peers.php'), get_string('changessaved'));
+    redirect(new url('/admin/mnet/peers.php'), get_string('changessaved'));
 } elseif ($form->is_cancelled()) {
-    redirect(new moodle_url('/admin/mnet/peers.php', array('hostid' => $hostid)));
+    redirect(new url('/admin/mnet/peers.php', array('hostid' => $hostid)));
 }
 
 echo $OUTPUT->header();

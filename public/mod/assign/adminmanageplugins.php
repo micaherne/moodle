@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot.'/mod/assign/adminlib.php');
 
@@ -36,7 +38,7 @@ if (!empty($plugin)) {
 // Create the class for this controller.
 $pluginmanager = new assign_plugin_manager($subtype);
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 // Execute the controller.
 $pluginmanager->execute($action, $plugin);

@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 // Profiling tool, added to development.
@@ -31,6 +33,6 @@ $hasextension = $hasextension || extension_loaded('tideways');
 $hasextension = $hasextension || extension_loaded('xhprof');
 $isenabled = !empty($CFG->profilingenabled) || !empty($CFG->earlyprofilingenabled);
 if ($hasextension && $isenabled) {
-    $ADMIN->add('development', new admin_externalpage('toolprofiling', get_string('pluginname', 'tool_profiling'),
+    $ADMIN->add('development', new externalpage('toolprofiling', get_string('pluginname', 'tool_profiling'),
             "$CFG->wwwroot/$CFG->admin/tool/profiling/index.php", 'moodle/site:config'));
 }

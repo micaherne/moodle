@@ -21,7 +21,9 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
+use core\exception\moodle_exception;
 use core_external\external_api;
+use core_external\tests\externallib_testcase;
 
 /**
  * Test class for view_module_instance_list external service.
@@ -32,7 +34,7 @@ use core_external\external_api;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 #[\PHPUnit\Framework\Attributes\CoversClass(view_module_instance_list::class)]
-final class view_module_instance_list_test extends \externallib_advanced_testcase {
+final class view_module_instance_list_test extends externallib_testcase {
     /**
      * Test for webservice view_module_instance_list base cases.
      *
@@ -62,7 +64,7 @@ final class view_module_instance_list_test extends \externallib_advanced_testcas
         $sink = $this->redirectEvents();
 
         if ($expectexception) {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         }
 
         $result = view_module_instance_list::execute($course->id, $modname);
@@ -134,7 +136,7 @@ final class view_module_instance_list_test extends \externallib_advanced_testcas
 
         $this->setUser($user);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
 
         $result = view_module_instance_list::execute(-1, 'assign');
         $result = external_api::clean_returnvalue(view_module_instance_list::execute_returns(), $result);
@@ -172,7 +174,7 @@ final class view_module_instance_list_test extends \externallib_advanced_testcas
         // Student cannot view the course.
         $this->setUser($student);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
 
         $result = view_module_instance_list::execute($course->id, 'assign');
         $result = external_api::clean_returnvalue(view_module_instance_list::execute_returns(), $result);

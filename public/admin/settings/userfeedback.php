@@ -22,11 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
 
-    $userfeedback->add(new admin_setting_configcheckbox('enableuserfeedback',
+    $userfeedback->add(new configcheckbox('enableuserfeedback',
             new lang_string('enableuserfeedback', 'admin'),
             new lang_string('enableuserfeedback_desc', 'admin'), 0, 1, 0));
 
@@ -35,12 +40,12 @@ if ($hassiteconfig) {
         core_userfeedback::REMIND_PERIODICALLY => new lang_string('userfeedbackperiodically', 'admin'),
         core_userfeedback::REMIND_NEVER => new lang_string('never'),
     ];
-    $userfeedback->add(new admin_setting_configselect('userfeedback_nextreminder',
+    $userfeedback->add(new configselect('userfeedback_nextreminder',
             new lang_string('userfeedbacknextreminder', 'admin'),
             new lang_string('userfeedbacknextreminder_desc', 'admin'), 1, $options));
     $userfeedback->hide_if('userfeedback_nextreminder', 'enableuserfeedback');
 
-    $userfeedback->add(new admin_setting_configtext('userfeedback_remindafter',
+    $userfeedback->add(new configtext('userfeedback_remindafter',
             new lang_string('userfeedbackremindafter', 'admin'),
             new lang_string('userfeedbackremindafter_desc', 'admin'), 90, PARAM_INT));
     $userfeedback->hide_if('userfeedback_remindafter', 'enableuserfeedback');

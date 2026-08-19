@@ -16,7 +16,7 @@
 
 namespace tiny_h5p;
 
-use context;
+use core\context;
 use editor_tiny\plugin;
 use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_menuitems;

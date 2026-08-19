@@ -16,6 +16,7 @@
 
 namespace core\router;
 
+use core\exception\invalid_parameter_exception;
 use core\param;
 use core\router\schema\parameters\path_parameter;
 use core\router\schema\parameters\query_parameter;
@@ -196,7 +197,7 @@ final class request_validator_test extends route_testcase {
 
         // Validate the request.
         $validator = \core\di::get(request_validator::class);
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $validator->validate_request($request);
     }
 
@@ -261,7 +262,7 @@ final class request_validator_test extends route_testcase {
 
         // Validate the request.
         $validator = \core\di::get(request_validator::class);
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $validator->validate_request($request);
     }
 
@@ -323,7 +324,7 @@ final class request_validator_test extends route_testcase {
 
         // Validate the request.
         $validator = \core\di::get(request_validator::class);
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $validator->validate_request($request);
     }
 

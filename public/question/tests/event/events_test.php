@@ -24,6 +24,8 @@
 
 namespace core_question\event;
 
+use core\context;
+use core\context\module;
 use qtype_description;
 use qtype_description_edit_form;
 use qtype_description_test_helper;
@@ -57,7 +59,7 @@ final class events_test extends \advanced_testcase {
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
-        $contexts = new \core_question\local\bank\question_edit_contexts(\context_module::instance($quiz->cmid));
+        $contexts = new \core_question\local\bank\question_edit_contexts(module::instance($quiz->cmid));
 
         $defaultcategory = question_get_default_category($contexts->lowest()->id, true);
 
@@ -68,7 +70,7 @@ final class events_test extends \advanced_testcase {
 
         // Log the view of this category.
         $params = [
-                'context' => \context_module::instance($quiz->cmid),
+                'context' => module::instance($quiz->cmid),
                 'other' => ['categoryid' => $category->id, 'format' => 'testformat'],
         ];
 
@@ -82,7 +84,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\questions_imported', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEquals($category->id, $event->other['categoryid']);
         $this->assertEquals('testformat', $event->other['format']);
         $this->assertDebuggingNotCalled();
@@ -101,7 +103,7 @@ final class events_test extends \advanced_testcase {
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
-        $contexts = new \core_question\local\bank\question_edit_contexts(\context_module::instance($quiz->cmid));
+        $contexts = new \core_question\local\bank\question_edit_contexts(module::instance($quiz->cmid));
 
         $defaultcategory = question_get_default_category($contexts->lowest()->id, true);
 
@@ -112,7 +114,7 @@ final class events_test extends \advanced_testcase {
 
         // Log the view of this category.
         $params = [
-                'context' => \context_module::instance($quiz->cmid),
+                'context' => module::instance($quiz->cmid),
                 'other' => ['categoryid' => $category->id, 'format' => 'testformat'],
         ];
 
@@ -126,7 +128,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\questions_exported', $event);
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($quiz->cmid), $event->get_context());
         $this->assertEquals($category->id, $event->other['categoryid']);
         $this->assertEquals('testformat', $event->other['format']);
         $this->assertDebuggingNotCalled();
@@ -274,7 +276,7 @@ final class events_test extends \advanced_testcase {
         $questiondata = $generator->create_question('description', null, ['category' => $cat->id]);
         $question = \question_bank::load_question($questiondata->id);
 
-        $event = \core\event\question_viewed::create_from_question_instance($question, \context::instance_by_id($cat->contextid));
+        $event = \core\event\question_viewed::create_from_question_instance($question, context::instance_by_id($cat->contextid));
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();

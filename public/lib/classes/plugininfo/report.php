@@ -23,7 +23,7 @@
  */
 namespace core\plugininfo;
 
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -41,6 +41,6 @@ class report extends base {
      * @return moodle_url
      */
     public static function get_manage_url() {
-        return new moodle_url('/admin/reports.php');
+        return new url('/admin/reports.php');
     }
 }

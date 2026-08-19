@@ -16,11 +16,12 @@
 
 namespace mod_quiz\form;
 
-use cm_info;
-use context;
-use context_module;
+use core\exception\moodle_exception;
+use core_course\cm_info;
+use core\context;
+use core\context\module;
 use mod_quiz_mod_form;
-use moodle_url;
+use core\url;
 use moodleform;
 use stdClass;
 
@@ -69,8 +70,8 @@ class edit_override_form extends moodleform {
      * @param bool $groupmode editing group override (true) or user override (false).
      * @param stdClass|null $override the override being edited, if it already exists.
      */
-    public function __construct(moodle_url $submiturl,
-            cm_info $cm, stdClass $quiz, context_module $context,
+    public function __construct(url $submiturl,
+            cm_info $cm, stdClass $quiz, module $context,
             bool $groupmode, ?stdClass $override) {
 
         $this->cm = $cm;
@@ -111,8 +112,8 @@ class edit_override_form extends moodleform {
                 $groups = $accessallgroups ? groups_get_all_groups($cm->course) : groups_get_activity_allowed_groups($cm);
                 if (empty($groups)) {
                     // Generate an error.
-                    $link = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
-                    throw new \moodle_exception('groupsnone', 'quiz', $link);
+                    $link = new url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
+                    throw new moodle_exception('groupsnone', 'quiz', $link);
                 }
 
                 $groupchoices = [];
@@ -175,8 +176,8 @@ class edit_override_form extends moodleform {
 
                 if (empty($users)) {
                     // Generate an error.
-                    $link = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
-                    throw new \moodle_exception('usersnone', 'quiz', $link);
+                    $link = new url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
+                    throw new moodle_exception('usersnone', 'quiz', $link);
                 }
 
                 $userchoices = [];

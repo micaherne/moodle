@@ -16,6 +16,8 @@
 
 namespace tool_policy;
 
+use core\context\system;
+use core\context\user;
 use tool_policy\test\helper;
 
 /**
@@ -246,8 +248,8 @@ final class api_test extends \advanced_testcase {
         $officer = $this->getDataGenerator()->create_user();
         $manager = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $childcontext = \context_user::instance($child->id);
+        $syscontext = system::instance();
+        $childcontext = user::instance($child->id);
 
         $roleminorid = create_role('Digital minor', 'digiminor', 'Not old enough to accept site policies themselves');
         $roleparentid = create_role('Parent', 'parent', 'Can accept policies on behalf of their child');
@@ -325,8 +327,8 @@ final class api_test extends \advanced_testcase {
         $officer = $this->getDataGenerator()->create_user();
         $manager = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $childcontext = \context_user::instance($child->id);
+        $syscontext = system::instance();
+        $childcontext = user::instance($child->id);
 
         $roleminorid = create_role('Digital minor', 'digiminor', 'Not old enough to accept site policies themselves');
         $roleparentid = create_role('Parent', 'parent', 'Can accept policies on behalf of their child');
@@ -401,8 +403,8 @@ final class api_test extends \advanced_testcase {
         $officer = $this->getDataGenerator()->create_user();
         $manager = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $childcontext = \context_user::instance($child->id);
+        $syscontext = system::instance();
+        $childcontext = user::instance($child->id);
 
         $roleminorid = create_role('Digital minor', 'digiminor', 'Not old enough to accept site policies themselves');
         $roleparentid = create_role('Parent', 'parent', 'Can accept policies on behalf of their child');
@@ -483,8 +485,8 @@ final class api_test extends \advanced_testcase {
         $officer = $this->getDataGenerator()->create_user();
         $manager = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $childcontext = \context_user::instance($child->id);
+        $syscontext = system::instance();
+        $childcontext = user::instance($child->id);
 
         $roleminorid = create_role('Digital minor', 'digiminor', 'Not old enough to accept site policies themselves');
         $roleparentid = create_role('Parent', 'parent', 'Can accept policies on behalf of their child');
@@ -688,9 +690,9 @@ final class api_test extends \advanced_testcase {
         $child1 = $this->getDataGenerator()->create_user();
         $child2 = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $child1context = \context_user::instance($child1->id);
-        $child2context = \context_user::instance($child2->id);
+        $syscontext = system::instance();
+        $child1context = user::instance($child1->id);
+        $child2context = user::instance($child2->id);
 
         $roleparentid = create_role('Parent', 'parent', 'Can accept policies on behalf of their child');
 

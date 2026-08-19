@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\navigation\navigation_node;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -106,7 +110,7 @@ class format_legacy extends core_courseformat\base {
         }
 
         $course = $this->get_course();
-        $url = new moodle_url('/course/view.php', array('id' => $course->id));
+        $url = new url('/course/view.php', array('id' => $course->id));
 
         $sr = null;
         if (array_key_exists('sr', $options)) {
@@ -187,7 +191,7 @@ class format_legacy extends core_courseformat\base {
         if ($navigation->includesectionnum === false) {
             $selectedsection = optional_param('section', null, PARAM_INT);
             if ($selectedsection !== null && (!defined('AJAX_SCRIPT') || AJAX_SCRIPT == '0') &&
-                    $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)) {
+                    $PAGE->url->compare(new url('/course/view.php'), URL_MATCH_BASE)) {
                 $navigation->includesectionnum = $selectedsection;
             }
         }

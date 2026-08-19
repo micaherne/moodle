@@ -24,6 +24,7 @@
 
 namespace format_topics\output\courseformat\content;
 
+use core\output\renderer_base;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\content\section as section_base;
 use stdClass;
@@ -40,7 +41,7 @@ class section extends section_base {
     /** @var course_format the course format */
     protected $format;
 
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
         $format = $this->format;
 
         $data = parent::export_for_template($output);

@@ -24,6 +24,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+
 define('AJAX_SCRIPT', true);
 
 require_once('../../config.php');
@@ -32,7 +35,7 @@ require_once($CFG->dirroot.'/course/lib.php');
 $action = required_param('action', PARAM_ALPHA);
 require_sesskey(); // Gotta have the sesskey.
 require_login(); // Gotta be logged in (of course).
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 // Prepare an outcome object. We always use this.
 $outcome = new stdClass;

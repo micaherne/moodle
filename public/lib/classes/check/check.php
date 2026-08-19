@@ -24,7 +24,8 @@
  */
 namespace core\check;
 
-use coding_exception;
+use core\exception\coding_exception;
+use core\output\action_link;
 
 /**
  * Base class for checks
@@ -117,7 +118,7 @@ abstract class check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
+    public function get_action_link(): ?action_link {
         return null;
     }
 

@@ -23,10 +23,13 @@
  */
 namespace tool_licensemanager\output;
 
-use html_table;
-use html_table_cell;
-use html_table_row;
-use html_writer;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+use core\output\html_writer;
 use license_manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -38,7 +41,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2020 Tom Dickman <tomdickman@catalyst-au.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class table implements \renderable {
+class table implements renderable {
 
     /**
      * 'Create License' link.
@@ -61,7 +64,7 @@ class table implements \renderable {
      *
      * @return string HTML for license manager table.
      */
-    public function create_license_manager_table(array $licenses, \renderer_base $output) {
+    public function create_license_manager_table(array $licenses, renderer_base $output) {
         $table = new html_table();
         $table->head  = [
             get_string('enable'),
@@ -108,7 +111,7 @@ class table implements \renderable {
      *
      * @return \html_table_row of columns values for row.
      */
-    protected function get_license_table_row_data($license, bool $canmoveup, bool $canmovedown, \renderer_base $output) {
+    protected function get_license_table_row_data($license, bool $canmoveup, bool $canmovedown, renderer_base $output) {
         global $CFG;
 
         $summary = $license->fullname . ' ('. $license->shortname . ')';
@@ -134,7 +137,7 @@ class table implements \renderable {
             }
 
             if ($license->custom == license_manager::CUSTOM_LICENSE) {
-                $deletelink = new \moodle_url('/admin/tool/licensemanager/index.php', [
+                $deletelink = new url('/admin/tool/licensemanager/index.php', [
                     'action' => 'delete',
                     'license' => $license->shortname,
                     'sesskey' => sesskey(),

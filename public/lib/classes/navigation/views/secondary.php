@@ -16,9 +16,12 @@
 
 namespace core\navigation\views;
 
-use navigation_node;
-use url_select;
-use settings_navigation;
+use core\context\course;
+use core\context\module;
+use core\navigation\navigation_node;
+use core\output\url_select;
+use core\navigation\settings_navigation;
+use core\url;
 
 /**
  * Class secondary_navigation_view.
@@ -428,7 +431,7 @@ class secondary extends view {
         // Add the respective first node, provided there are other nodes included.
         if (!empty($nodekeys = $rootnode->children->get_key_list())) {
             $rootnode->add_node(
-                navigation_node::create($firstnodeidentifier, new \moodle_url('/course/view.php', ['id' => $course->id]),
+                navigation_node::create($firstnodeidentifier, new url('/course/view.php', ['id' => $course->id]),
                     self::TYPE_COURSE, null, 'coursehome'), reset($nodekeys)
             );
         }
@@ -712,7 +715,7 @@ class secondary extends view {
         $nodes = $this->get_default_module_mapping();
 
         if ($mainnode) {
-            $url = new \moodle_url('/mod/' . $settingsnav->get_page()->activityname . '/view.php',
+            $url = new url('/mod/' . $settingsnav->get_page()->activityname . '/view.php',
                 ['id' => $settingsnav->get_page()->cm->id]);
             $setactive = $url->compare($settingsnav->get_page()->url, URL_MATCH_BASE);
             $node = $rootnode->add(get_string('modulename', $settingsnav->get_page()->activityname), $url,
@@ -739,7 +742,7 @@ class secondary extends view {
         $nodes = $this->get_default_category_mapping();
 
         if ($mainnode) {
-            $url = new \moodle_url('/course/index.php', ['categoryid' => $this->context->instanceid]);
+            $url = new url('/course/index.php', ['categoryid' => $this->context->instanceid]);
             $this->add(get_string('category'), $url, self::TYPE_CONTAINER, null, 'categorymain');
 
             // Add the initial nodes.
@@ -764,14 +767,14 @@ class secondary extends view {
         // anchors and page reload doesn't happen. On every nested admin settings page, the secondary nav needs to
         // exist as links with anchors appended in order to redirect back to the admin search page and the corresponding
         // tab. Note this value refers to being present on the page itself, before a search has been performed.
-        $isadminsearchpage = $PAGE->url->compare(new \moodle_url('/admin/search.php', ['query' => '']), URL_MATCH_PARAMS);
+        $isadminsearchpage = $PAGE->url->compare(new url('/admin/search.php', ['query' => '']), URL_MATCH_PARAMS);
         if ($node) {
             $siteadminnode = $this->add(get_string('general'), "#link$node->key", null, null, 'siteadminnode');
             if ($isadminsearchpage) {
                 $siteadminnode->action = false;
                 $siteadminnode->tab = "#link$node->key";
             } else {
-                $siteadminnode->action = new \moodle_url("/admin/search.php", [], "link$node->key");
+                $siteadminnode->action = new url("/admin/search.php", [], "link$node->key");
             }
             foreach ($node->children as $child) {
                 if ($child->display && !$child->is_short_branch()) {
@@ -780,7 +783,7 @@ class secondary extends view {
                         $child->action = false;
                         $child->tab = "#link$child->key";
                     } else {
-                        $child->action = new \moodle_url("/admin/search.php", [], "link$child->key");
+                        $child->action = new url("/admin/search.php", [], "link$child->key");
                     }
                     $this->add_node(clone $child);
                 } else {
@@ -1105,7 +1108,7 @@ class secondary extends view {
         // We should display the module related navigation in the course context as well. Therefore, we need to
         // re-initialize the page object and manually set the course module to the one that it is currently visible in
         // the course in order to obtain the required module settings navigation.
-        if ($page->context instanceof \context_course) {
+        if ($page->context instanceof course) {
             $this->page->set_secondary_active_tab($coursesecondarynode->key);
             // Get the currently used module in course.
             $format = course_get_format($course);
@@ -1124,7 +1127,7 @@ class secondary extends view {
             }
             $page = new \moodle_page();
             $page->set_cm($module, $course);
-            $page->set_url(new \moodle_url('/mod/' . $page->activityname . '/view.php', ['id' => $page->cm->id]));
+            $page->set_url(new url('/mod/' . $page->activityname . '/view.php', ['id' => $page->cm->id]));
         }
 
         $this->load_module_navigation($page->settingsnav, $activitysecondarynode);
@@ -1135,13 +1138,13 @@ class secondary extends view {
             // a dropdown menu.
             $activitysecondarynode->showchildreninsubmenu = true;
             $this->add_node($activitysecondarynode);
-            if ($this->context instanceof \context_module) {
+            if ($this->context instanceof module) {
                 $this->page->set_secondary_active_tab($activitysecondarynode->key);
             }
         } else { // Otherwise, add the 'View activity' node to the secondary navigation.
-            $viewactivityurl = new \moodle_url('/mod/' . $page->activityname . '/view.php', ['id' => $page->cm->id]);
+            $viewactivityurl = new url('/mod/' . $page->activityname . '/view.php', ['id' => $page->cm->id]);
             $this->add(get_string('modulename', $page->activityname), $viewactivityurl, null, null, 'modulepage');
-            if ($this->context instanceof \context_module) {
+            if ($this->context instanceof module) {
                 $this->page->set_secondary_active_tab('modulepage');
             }
         }

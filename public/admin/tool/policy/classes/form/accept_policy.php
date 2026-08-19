@@ -24,6 +24,10 @@
 
 namespace tool_policy\form;
 
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
 use tool_policy\api;
 use tool_policy\policy_version;
 
@@ -48,10 +52,10 @@ class accept_policy extends \moodleform {
         $mform = $this->_form;
 
         if (empty($this->_customdata['userids']) || !is_array($this->_customdata['userids'])) {
-            throw new \moodle_exception('missingparam', 'error', '', 'userids');
+            throw new moodle_exception('missingparam', 'error', '', 'userids');
         }
         if (empty($this->_customdata['versionids']) || !is_array($this->_customdata['versionids'])) {
-            throw new \moodle_exception('missingparam', '', '', 'versionids');
+            throw new moodle_exception('missingparam', '', '', 'versionids');
         }
         $action = $this->_customdata['action'];
         $userids = clean_param_array($this->_customdata['userids'], PARAM_INT);
@@ -88,7 +92,7 @@ class accept_policy extends \moodleform {
             $mform->addElement('static', 'ack', '', get_string('declineacknowledgement', 'tool_policy'));
             $mform->addElement('hidden', 'action', 'decline');
         } else {
-            throw new \moodle_exception('invalidaccessparameter');
+            throw new moodle_exception('invalidaccessparameter');
         }
 
         $mform->setType('action', PARAM_ALPHA);
@@ -130,7 +134,7 @@ class accept_policy extends \moodleform {
         $params['usercontextlevel'] = CONTEXT_USER;
         $userfieldsapi = \core_user\fields::for_name();
         $users = $DB->get_records_sql("SELECT u.id" . $userfieldsapi->get_sql('u')->selects . ", " .
-                \context_helper::get_preload_record_columns_sql('ctx') .
+                context_helper::get_preload_record_columns_sql('ctx') .
             " FROM {user} u JOIN {context} ctx ON ctx.contextlevel=:usercontextlevel AND ctx.instanceid = u.id
             WHERE u.id " . $sql, $params);
 
@@ -140,9 +144,9 @@ class accept_policy extends \moodleform {
             }
             $user = $users[$userid];
             if (isguestuser($user)) {
-                throw new \moodle_exception('noguest');
+                throw new moodle_exception('noguest');
             }
-            \context_helper::preload_from_record($user);
+            context_helper::preload_from_record($user);
             if ($action === 'revoke') {
                 api::can_revoke_policies($versionids, $userid, true);
             } else if ($action === 'accept') {
@@ -167,14 +171,14 @@ class accept_policy extends \moodleform {
         foreach ($versionids as $versionid) {
             $version = api::get_policy_version($versionid, $policies);
             if ($version->audience == policy_version::AUDIENCE_GUESTS) {
-                throw new \moodle_exception('errorpolicyversionnotfound', 'tool_policy');
+                throw new moodle_exception('errorpolicyversionnotfound', 'tool_policy');
             }
-            $url = new \moodle_url('/admin/tool/policy/view.php', ['versionid' => $version->id]);
+            $url = new url('/admin/tool/policy/view.php', ['versionid' => $version->id]);
             $policyname = $version->name;
             if ($version->status != policy_version::STATUS_ACTIVE) {
                 $policyname .= ' ' . $version->revision;
             }
-            $versionnames[$version->id] = \html_writer::link($url, $policyname,
+            $versionnames[$version->id] = html_writer::link($url, $policyname,
                 ['data-action' => 'view', 'data-versionid' => $version->id]);
         }
         return $versionnames;

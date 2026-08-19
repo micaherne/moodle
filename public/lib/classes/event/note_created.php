@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +80,7 @@ class note_created extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        $logurl = new \moodle_url('/notes/index.php', array('course' => $this->courseid, 'user' => $this->relateduserid));
+        $logurl = new url('/notes/index.php', array('course' => $this->courseid, 'user' => $this->relateduserid));
         $logurl->set_anchor('note-' . $this->objectid);
         return $logurl;
     }
@@ -92,7 +95,7 @@ class note_created extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

@@ -24,9 +24,13 @@
  */
 namespace core\task;
 
+use core\exception\moodle_exception;
 use core\lock\lock;
 use core\lock\lock_factory;
+use core\plugin_manager;
 use core\shutdown_manager;
+use core\url;
+use core\user;
 
 define('CORE_TASK_TASKS_FILENAME', 'db/tasks.php');
 /**
@@ -266,7 +270,7 @@ class manager {
 
         if ($userid = $task->get_userid()) {
             // User found. Check that they are suitable.
-            \core_user::require_active_user(\core_user::get_user($userid, '*', MUST_EXIST), true, true);
+            user::require_active_user(user::get_user($userid, '*', MUST_EXIST), true, true);
         }
 
         $record = self::record_from_adhoc_task($task);
@@ -374,7 +378,7 @@ class manager {
     public static function adhoc_task_from_record($record) {
         $classname = self::get_canonical_class_name($record->classname);
         if (!class_exists($classname)) {
-            throw new \moodle_exception('invalidtaskclassname', '', '', $record->classname);
+            throw new moodle_exception('invalidtaskclassname', '', '', $record->classname);
         }
         $task = new $classname();
         if (isset($record->nextruntime)) {
@@ -696,7 +700,7 @@ class manager {
         foreach ($records as $record) {
             try {
                 $tasks[] = self::adhoc_task_from_record($record);
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 debugging("Failed to load task: $record->classname", DEBUG_DEVELOPER, $e->getTrace());
             }
         }
@@ -729,7 +733,7 @@ class manager {
         ) {
             try {
                 $uniquetasksinqueue[$uniqueclassname] = self::adhoc_task_from_record($record);
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 debugging("Failed to load task: $record->classname", DEBUG_DEVELOPER, $e->getTrace());
             }
         }
@@ -859,7 +863,7 @@ class manager {
                 // Safety check in case the task in the DB does not match a real class (maybe something was uninstalled).
                 try {
                     $task = self::adhoc_task_from_record($record);
-                } catch (\moodle_exception $e) {
+                } catch (moodle_exception $e) {
                     debugging("Failed to load task: $record->classname", DEBUG_DEVELOPER);
                     $lock->release();
                     unset(self::$miniqueue[$taskid]);
@@ -967,7 +971,7 @@ class manager {
 
         $record = $DB->get_record('task_adhoc', ['id' => $taskid]);
         if (!$record) {
-            throw new \moodle_exception('invalidtaskid');
+            throw new moodle_exception('invalidtaskid');
         }
 
         $cronlockfactory = \core\lock\lock_config::get_lock_factory('cron');
@@ -976,7 +980,7 @@ class manager {
             // Safety check in case the task in the DB does not match a real class (maybe something was uninstalled).
             try {
                 $task = self::adhoc_task_from_record($record);
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 $lock->release();
                 throw $e;
             }
@@ -1012,7 +1016,7 @@ class manager {
         // as late as possible and release it as soon as possible.
         if (!$cronlock = $cronlockfactory->get_lock('core_cron', 10)) {
             $lock->release();
-            throw new \moodle_exception('locktimeout');
+            throw new moodle_exception('locktimeout');
         }
 
         $task->set_lock($lock);
@@ -1027,7 +1031,7 @@ class manager {
      */
     private static function task_component_is_deprecated(task_base $task): bool {
         // Only supports plugin type deprecation. Info will be null for other, non-plugin components.
-        if ($info = \core_plugin_manager::instance()->get_plugin_info($task->get_component())) {
+        if ($info = plugin_manager::instance()->get_plugin_info($task->get_component())) {
             if ($info->is_deprecated() || $info->is_deleted()) {
                 return true;
             }
@@ -1054,7 +1058,7 @@ class manager {
         $params = ['timestart1' => $timestart, 'timestart2' => $timestart];
         $records = $DB->get_records_select('task_scheduled', $where, $params);
 
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
 
         foreach ($records as $record) {
             $task = self::scheduled_task_from_record($record);
@@ -1091,7 +1095,7 @@ class manager {
                 // as late as possible and release it as soon as possible.
                 if (!$cronlock = $cronlockfactory->get_lock('core_cron', 10)) {
                     $lock->release();
-                    throw new \moodle_exception('locktimeout');
+                    throw new moodle_exception('locktimeout');
                 }
 
                 $cronlock->release();
@@ -1703,8 +1707,8 @@ class manager {
         global $CFG;
 
         if (!self::is_runnable()) {
-            $redirecturl = new \moodle_url('/admin/settings.php', ['section' => 'systempaths']);
-            throw new \moodle_exception('cannotfindthepathtothecli', 'tool_task', $redirecturl->out());
+            $redirecturl = new url('/admin/settings.php', ['section' => 'systempaths']);
+            throw new moodle_exception('cannotfindthepathtothecli', 'tool_task', $redirecturl->out());
         } else {
             // Shell-escaped path to the PHP binary.
             $phpbinary = escapeshellarg(self::find_php_cli_path());
@@ -1803,8 +1807,8 @@ class manager {
         global $CFG;
 
         if (!self::is_runnable()) {
-            $redirecturl = new \moodle_url('/admin/settings.php', ['section' => 'systempaths']);
-            throw new \moodle_exception('cannotfindthepathtothecli', 'tool_task', $redirecturl->out());
+            $redirecturl = new url('/admin/settings.php', ['section' => 'systempaths']);
+            throw new moodle_exception('cannotfindthepathtothecli', 'tool_task', $redirecturl->out());
         }
 
         // Shell-escaped path to the PHP binary.

@@ -16,6 +16,9 @@
 
 namespace search_simpledb;
 
+use core\context\course;
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -142,7 +145,7 @@ final class engine_test extends \advanced_testcase {
 
         // Based on core_mocksearch\search\indexer.
         $this->assertEquals($USER->id, $results[0]->get('userid'));
-        $this->assertEquals(\context_course::instance(SITEID)->id, $results[0]->get('contextid'));
+        $this->assertEquals(course::instance(SITEID)->id, $results[0]->get('contextid'));
 
         // Do a test to make sure we aren't searching non-query fields, like areaid.
         $querydata->q = \core_search\manager::generate_areaid('core_mocksearch', 'mock_search_area');
@@ -348,7 +351,7 @@ final class engine_test extends \advanced_testcase {
         $generator->create_module('page', ['course' => $course1, 'name' => 'C1P2', 'content' => 'xyzzy']);
         $course2 = $generator->create_course(['fullname' => 'C2', 'summary' => 'xyzzy']);
         $course2page = $generator->create_module('page', ['course' => $course2, 'name' => 'C2P', 'content' => 'xyzzy']);
-        $course2pagecontext = \context_module::instance($course2page->cmid);
+        $course2pagecontext = module::instance($course2page->cmid);
 
         $this->search->index();
 

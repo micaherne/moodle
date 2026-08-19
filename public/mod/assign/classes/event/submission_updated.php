@@ -24,6 +24,8 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -72,13 +74,13 @@ abstract class submission_updated extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['submissionid'])) {
-            throw new \coding_exception('The \'submissionid\' value must be set in other.');
+            throw new coding_exception('The \'submissionid\' value must be set in other.');
         }
         if (!isset($this->other['submissionattempt'])) {
-            throw new \coding_exception('The \'submissionattempt\' value must be set in other.');
+            throw new coding_exception('The \'submissionattempt\' value must be set in other.');
         }
         if (!isset($this->other['submissionstatus'])) {
-            throw new \coding_exception('The \'submissionstatus\' value must be set in other.');
+            throw new coding_exception('The \'submissionstatus\' value must be set in other.');
         }
     }
 

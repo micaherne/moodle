@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\context\module;
+use core\exception\moodle_exception;
+
 require_once("../../config.php");
 require_once($CFG->libdir.'/questionlib.php');
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
@@ -39,7 +42,7 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 $lesson = new lesson($DB->get_record('lesson', array('id' => $cm->instance), '*', MUST_EXIST));
 
 require_login($course, false, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/lesson:edit', $context);
 
 $strimportquestions = get_string("importquestions", "lesson");
@@ -81,7 +84,7 @@ if ($data = $mform->get_data()) {
     $formatclass = 'qformat_'.$data->format;
     $formatclassfile = $CFG->dirroot.'/question/format/'.$data->format.'/format.php';
     if (!is_readable($formatclassfile)) {
-        throw new \moodle_exception('unknowformat', '', '', $data->format);
+        throw new moodle_exception('unknowformat', '', '', $data->format);
     }
     require_once($formatclassfile);
     $format = new $formatclass();
@@ -90,17 +93,17 @@ if ($data = $mform->get_data()) {
 
     // Do anything before that we need to
     if (! $format->importpreprocess()) {
-                throw new \moodle_exception('preprocesserror', 'lesson');
+                throw new moodle_exception('preprocesserror', 'lesson');
             }
 
     // Process the uploaded file
     if (! $format->importprocess($importfile, $lesson, $pageid)) {
-                throw new \moodle_exception('processerror', 'lesson');
+                throw new moodle_exception('processerror', 'lesson');
             }
 
     // In case anything needs to be done after
     if (! $format->importpostprocess()) {
-                throw new \moodle_exception('postprocesserror', 'lesson');
+                throw new moodle_exception('postprocesserror', 'lesson');
             }
 
             echo "<hr>";

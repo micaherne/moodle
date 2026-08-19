@@ -23,6 +23,10 @@
  */
 
 // Do not check for the site policies in require_login() to avoid the redirect loop.
+use core\context\system;
+use core\output\single_button;
+use core\url;
+
 define('NO_SITEPOLICY_CHECK', true);
 
 require_once('../config.php');
@@ -70,7 +74,7 @@ $strpolicyagree = get_string('policyagree');
 $strpolicyagreement = get_string('policyagreement');
 $strpolicyagreementclick = get_string('policyagreementclick');
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_title($strpolicyagreement);
 $PAGE->set_heading($SITE->fullname);
 $PAGE->navbar->add($strpolicyagreement);
@@ -91,8 +95,8 @@ echo '<div class="noticebox">';
 echo resourcelib_embed_general($sitepolicy, $strpolicyagreement, $clicktoopen, $mimetype);
 echo '</div>';
 
-$formcontinue = new single_button(new moodle_url('policy.php', array('agree' => 1)), get_string('yes'));
-$formcancel = new single_button(new moodle_url($CFG->wwwroot.'/login/logout.php', array('agree' => 0)), get_string('no'));
+$formcontinue = new single_button(new url('policy.php', array('agree' => 1)), get_string('yes'));
+$formcancel = new single_button(new url($CFG->wwwroot.'/login/logout.php', array('agree' => 0)), get_string('no'));
 echo $OUTPUT->confirm($strpolicyagree, $formcontinue, $formcancel);
 
 echo $OUTPUT->footer();

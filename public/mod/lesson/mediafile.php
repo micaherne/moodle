@@ -26,6 +26,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 
@@ -44,7 +46,7 @@ $lesson->update_effective_access($USER->id);
 $context = $lesson->context;
 $canmanage = $lesson->can_manage();
 
-$url = new moodle_url('/mod/lesson/mediafile.php', array('id'=>$id));
+$url = new url('/mod/lesson/mediafile.php', array('id'=>$id));
 if ($printclose !== '') {
     $url->param('printclose', $printclose);
 }

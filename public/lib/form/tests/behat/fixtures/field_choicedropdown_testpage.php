@@ -23,6 +23,7 @@
  */
 
 use core\output\choicelist;
+use core\output\pix_icon;
 
 require_once(__DIR__ . '/../../../../../config.php');
 

@@ -27,6 +27,9 @@ require_once($CFG->dirroot . '/question/editlib.php');
 require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/question/renderer.php');
 
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
 use qbank_exportquestions\exportquestions_helper;
 use qbank_exportquestions\form\export_form;
 
@@ -98,9 +101,9 @@ if ($fromform = $exportform->get_data()) {
         $PAGE->requires->js_function_call('document.location.replace', [$exporturl->out(false)], false, 1);
     }
 
-    echo $OUTPUT->continue_button(new moodle_url($PAGE->settingsnav->find(
+    echo $OUTPUT->continue_button(new url($PAGE->settingsnav->find(
                                             'questionbank',
-                                            \navigation_node::TYPE_CONTAINER)->action, $thispageurl->params()));
+                                            navigation_node::TYPE_CONTAINER)->action, $thispageurl->params()));
     echo $OUTPUT->footer();
     exit;
 }

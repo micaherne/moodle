@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/question/format/xml/format.php');
@@ -36,7 +38,7 @@ $urlparams = ['id' => $questionid, 'sesskey' => sesskey()];
 
 $cm = get_coursemodule_from_id(null, $cmid);
 require_login($cm->course, false, $cm);
-$thiscontext = context_module::instance($cmid);
+$thiscontext = module::instance($cmid);
 $urlparams['cmid'] = $cmid;
 
 require_sesskey();

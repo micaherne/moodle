@@ -22,6 +22,7 @@ global $CFG;
 
 require_once($CFG->libdir . '/badgeslib.php');
 
+use core\exception\coding_exception;
 use core_badges_generator;
 use core_badges\local\backpack\helper;
 
@@ -51,7 +52,7 @@ final class helper_test extends \advanced_testcase {
         $this->setAdminUser();
 
         if ($expected === 'exception') {
-            $this->expectException(\coding_exception::class);
+            $this->expectException(coding_exception::class);
         }
         $this->assertEquals($expected, helper::convert_apiversion($version));
     }

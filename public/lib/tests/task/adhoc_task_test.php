@@ -16,7 +16,9 @@
 
 namespace core\task;
 
+use core\exception\coding_exception;
 use core\url;
+use core\user;
 
 /**
  * Test class for adhoc tasks.
@@ -586,7 +588,7 @@ final class adhoc_task_test extends \advanced_testcase {
      */
     public function test_reschedule_or_queue_adhoc_task_different_user(): void {
         $this->resetAfterTest(true);
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
 
         // Schedule adhoc task.
         $task = new adhoc_test_task();
@@ -685,7 +687,7 @@ final class adhoc_task_test extends \advanced_testcase {
      */
     public function test_queue_adhoc_task_if_not_scheduled(): void {
         $this->resetAfterTest(true);
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
 
         // Schedule adhoc task.
         $task = new adhoc_test_task();
@@ -732,14 +734,14 @@ final class adhoc_task_test extends \advanced_testcase {
 
         // Schedule same adhoc task without custom data but with a userid.
         $task6 = new adhoc_test_task();
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $task6->set_userid($user->id);
         $this->assertNotEmpty(manager::queue_adhoc_task($task6, true));
         $this->assertEquals(6, count(manager::get_adhoc_tasks('core\task\adhoc_test_task')));
 
         // Schedule same adhoc task again without custom data but with a userid.
         $task6 = new adhoc_test_task();
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $task6->set_userid($user->id);
         $this->assertEmpty(manager::queue_adhoc_task($task6, true));
         $this->assertEquals(6, count(manager::get_adhoc_tasks('core\task\adhoc_test_task')));
@@ -819,7 +821,7 @@ final class adhoc_task_test extends \advanced_testcase {
 
         // Create an adhoc task in future.
         $task = new adhoc_test_task();
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $task->set_userid($user->id);
         manager::queue_adhoc_task($task);
 
@@ -1152,7 +1154,7 @@ final class adhoc_task_test extends \advanced_testcase {
      */
     public function test_set_soft_retry_delay_rejects_invalid_values(int $value): void {
         $task = new adhoc_test_task();
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $task->set_soft_retry_delay($value);
     }
 

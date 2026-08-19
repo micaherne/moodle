@@ -16,7 +16,7 @@
 
 namespace mod_bigbluebuttonbn\external;
 
-use context_module;
+use core\context\module;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -80,7 +80,7 @@ class view_bigbluebuttonbn extends external_api {
                 ]
             ];
         }
-        $context = context_module::instance($instance->get_cm_id());
+        $context = module::instance($instance->get_cm_id());
         self::validate_context($context);
 
         require_capability('mod/bigbluebuttonbn:view', $context);

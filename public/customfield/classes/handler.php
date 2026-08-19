@@ -17,7 +17,10 @@
 namespace core_customfield;
 
 use backup_nested_element;
+use core\context;
 use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
 use core_customfield\output\field_data;
 use stdClass;
 
@@ -78,7 +81,7 @@ abstract class handler {
      */
     final protected function __construct(int $itemid = 0) {
         if (!preg_match('|^(\w+_[\w_]+)\\\\customfield\\\\([\w_]+)_handler$|', static::class, $matches)) {
-            throw new \coding_exception('Handler class name must have format: <PLUGIN>\\customfield\\<AREA>_handler');
+            throw new coding_exception('Handler class name must have format: <PLUGIN>\\customfield\\<AREA>_handler');
         }
         $this->component = $matches[1];
         $this->area = $matches[2];
@@ -129,7 +132,7 @@ abstract class handler {
             return $classname::create($itemid);
         }
         $a = ['component' => s($component), 'area' => s($area)];
-        throw new \moodle_exception('unknownhandler', 'core_customfield', '', $a);
+        throw new moodle_exception('unknownhandler', 'core_customfield', '', $a);
     }
 
     /**
@@ -155,14 +158,14 @@ abstract class handler {
      *
      * @return \context
      */
-    abstract public function get_configuration_context(): \context;
+    abstract public function get_configuration_context(): context;
 
     /**
      * URL for configuration of the fields on this handler.
      *
      * @return \moodle_url
      */
-    abstract public function get_configuration_url(): \moodle_url;
+    abstract public function get_configuration_url(): url;
 
     /**
      * Context that should be used for data stored for the given record
@@ -170,7 +173,7 @@ abstract class handler {
      * @param int $instanceid id of the instance or 0 if the instance is being created
      * @return \context
      */
-    abstract public function get_instance_context(int $instanceid = 0): \context;
+    abstract public function get_instance_context(int $instanceid = 0): context;
 
     /**
      * Get itemid
@@ -246,7 +249,7 @@ abstract class handler {
             $this->get_itemid()
         );
         if ($category === null) {
-            throw new \moodle_exception('categorynotfound', 'core_customfield');
+            throw new moodle_exception('categorynotfound', 'core_customfield');
         }
         return $category;
     }
@@ -293,7 +296,7 @@ abstract class handler {
         );
 
         if (!$category || !array_key_exists($field->get('id'), $category->get_fields())) {
-            throw new \moodle_exception('fieldnotfound', 'core_customfield');
+            throw new moodle_exception('fieldnotfound', 'core_customfield');
         }
         return $category->get_fields()[$field->get('id')];
     }
@@ -709,7 +712,7 @@ abstract class handler {
      */
     public function instance_form_save(stdClass $instance, bool $isnewinstance = false) {
         if (empty($instance->id)) {
-            throw new \coding_exception('Caller must ensure that id is already set in data before calling this method');
+            throw new coding_exception('Caller must ensure that id is already set in data before calling this method');
         }
         if (!preg_grep('/^customfield_/', array_keys((array)$instance))) {
             // For performance.
@@ -852,7 +855,7 @@ abstract class handler {
      * @return int|void Implementations should conditionally return the ID of the created or updated record.
      */
     public function restore_instance_data_from_backup(\restore_task $task, array $data) {
-        throw new \coding_exception('Must be implemented in the handler');
+        throw new coding_exception('Must be implemented in the handler');
     }
 
     /**

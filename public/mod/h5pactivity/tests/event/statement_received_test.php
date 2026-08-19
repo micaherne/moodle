@@ -25,7 +25,7 @@
 namespace mod_h5pactivity\event;
 
 use advanced_testcase;
-use context_module;
+use core\context\module;
 
 /**
  * H5P activity events test cases.
@@ -56,7 +56,7 @@ final class statement_received_test extends advanced_testcase {
         $activity = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $course->id]);
 
         $params = [
-            'context' => context_module::instance($activity->cmid),
+            'context' => module::instance($activity->cmid),
             'objectid' => $activity->id
         ];
         $event = statement_received::create($params);
@@ -70,7 +70,7 @@ final class statement_received_test extends advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_h5pactivity\event\statement_received', $event);
-        $this->assertEquals(context_module::instance($activity->cmid), $event->get_context());
+        $this->assertEquals(module::instance($activity->cmid), $event->get_context());
         $this->assertEquals($activity->id, $event->objectid);
         $this->assertEventContextNotUsed($event);
     }

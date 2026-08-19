@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/badgeslib.php');
 
@@ -71,11 +74,11 @@ class badge_deleted extends base {
     public function get_url() {
         if ($this->other['badgetype'] == BADGE_TYPE_COURSE) {
             // Course badge.
-            $return = new \moodle_url('/badges/index.php',
+            $return = new url('/badges/index.php',
                     array('type' => BADGE_TYPE_COURSE, 'id' => $this->other['courseid']));
         } else {
             // Site badge.
-            $return = new \moodle_url('/badges/index.php', array('type' => BADGE_TYPE_SITE));
+            $return = new url('/badges/index.php', array('type' => BADGE_TYPE_SITE));
         }
         return $return;
     }
@@ -90,18 +93,18 @@ class badge_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->objectid)) {
-            throw new \coding_exception('The \'objectid\' must be set.');
+            throw new coding_exception('The \'objectid\' must be set.');
         }
         if (!isset($this->other['badgetype'])) {
-            throw new \coding_exception('The \'badgetype\' value must be set in other.');
+            throw new coding_exception('The \'badgetype\' value must be set in other.');
         } else {
             if (($this->other['badgetype'] != BADGE_TYPE_COURSE) && ($this->other['badgetype'] != BADGE_TYPE_SITE)) {
-                throw new \coding_exception('Invalid \'badgetype\' value.');
+                throw new coding_exception('Invalid \'badgetype\' value.');
             }
         }
         if ($this->other['badgetype'] == BADGE_TYPE_COURSE) {
             if (!isset($this->other['courseid'])) {
-                throw new \coding_exception('The \'courseid\' value must be set in other.');
+                throw new coding_exception('The \'courseid\' value must be set in other.');
             }
         }
     }

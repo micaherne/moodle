@@ -34,9 +34,9 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_system;
-use context_course;
-use moodle_exception;
+use core\context\system;
+use core\context\course;
+use core\exception\moodle_exception;
 use core_blog\external\post_exporter;
 
 /**
@@ -96,10 +96,10 @@ class external extends external_api {
             $filters['entryid'], $filters['userid']);
 
         if ($courseid && $courseid != SITEID) {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
             self::validate_context($context);
         } else {
-            $context = context_system::instance();
+            $context = system::instance();
             if ($CFG->bloglevel == BLOG_GLOBAL_LEVEL) {
                 // Everybody can see anything - no login required unless site is locked down using forcelogin.
                 if ($CFG->forcelogin) {

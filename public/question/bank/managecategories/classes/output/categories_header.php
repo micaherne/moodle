@@ -16,10 +16,10 @@
 
 namespace qbank_managecategories\output;
 
-use context;
-use renderable;
-use renderer_base;
-use templatable;
+use core\context;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use qbank_managecategories\question_categories;
 
 /**

@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -94,14 +96,14 @@ function block_myoverview_user_preferences(): array {
             BLOCK_MYOVERVIEW_GROUPING_HIDDEN,
             BLOCK_MYOVERVIEW_GROUPING_CUSTOMFIELD,
         ),
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
 
     $preferences['block_myoverview_user_grouping_customfieldvalue_preference'] = [
         'null' => NULL_ALLOWED,
         'default' => null,
         'type' => PARAM_RAW,
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     ];
 
     $preferences['block_myoverview_user_sort_preference'] = array(
@@ -114,7 +116,7 @@ function block_myoverview_user_preferences(): array {
             BLOCK_MYOVERVIEW_SORTING_SHORTNAME,
             BLOCK_MYOVERVIEW_SORTING_STARTDATE,
         ),
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
 
     $preferences['block_myoverview_user_view_preference'] = array(
@@ -126,7 +128,7 @@ function block_myoverview_user_preferences(): array {
             BLOCK_MYOVERVIEW_VIEW_LIST,
             BLOCK_MYOVERVIEW_VIEW_SUMMARY
         ),
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
 
     $preferences['/^block_myoverview_hidden_course_(\d)+$/'] = array(
@@ -135,7 +137,7 @@ function block_myoverview_user_preferences(): array {
         'type' => PARAM_INT,
         'null' => NULL_NOT_ALLOWED,
         'default' => 0,
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
 
     $preferences['block_myoverview_user_paging_preference'] = array(
@@ -149,7 +151,7 @@ function block_myoverview_user_preferences(): array {
             BLOCK_MYOVERVIEW_PAGING_96,
             BLOCK_MYOVERVIEW_PAGING_ALL
         ),
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
 
     return $preferences;

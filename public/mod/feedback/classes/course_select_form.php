@@ -21,6 +21,9 @@
  * @copyright 2016 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -44,7 +47,7 @@ class mod_feedback_course_select_form extends moodleform {
      * @param bool $editable
      */
     public function __construct($action, mod_feedback_structure $feedbackstructure, $editable = true) {
-        $this->action = new moodle_url($action, ['courseid' => null]);
+        $this->action = new url($action, ['courseid' => null]);
         $this->feedbackstructure = $feedbackstructure;
         parent::__construct($action, null, 'post', '', ['id' => 'feedback_course_filter'], $editable);
     }

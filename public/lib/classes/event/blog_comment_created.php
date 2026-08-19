@@ -23,6 +23,8 @@
  */
 
 namespace core\event;
+
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -41,7 +43,7 @@ class blog_comment_created extends comment_created {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/blog/index.php', array('entryid' => $this->other['itemid']));
+        return new url('/blog/index.php', array('entryid' => $this->other['itemid']));
     }
 
     /**

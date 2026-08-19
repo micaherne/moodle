@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 require_once('../config.php');
 require_once('lib.php');
 
@@ -43,7 +45,7 @@ $instanceinfo = [
 
 // Requires communication to be enabled.
 if (!core_communication\api::is_available()) {
-    throw new \moodle_exception('communicationdisabled', 'communication');
+    throw new moodle_exception('communicationdisabled', 'communication');
 }
 
 // Attempt to load the communication instance with the provided params.
@@ -57,7 +59,7 @@ $communication = \core_communication\api::load_by_instance(
 
 // No communication, no way this form can be used.
 if (!$communication) {
-    throw new \moodle_exception('nocommunicationinstance', 'communication');
+    throw new moodle_exception('nocommunicationinstance', 'communication');
 }
 
 // Set variables according to the component callback and use them on the page.

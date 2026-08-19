@@ -24,6 +24,12 @@
 
 namespace tool_analytics\output;
 
+use core\context;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -33,7 +39,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2019 David Monllao {@link http://www.davidmonllao.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class insights_report implements \renderable, \templatable {
+class insights_report implements renderable, templatable {
 
     /**
      * @var \core_analytics\model
@@ -55,7 +61,7 @@ class insights_report implements \renderable, \templatable {
     public function __construct(\core_analytics\model $model, ?int $contextid = null) {
         $this->model = $model;
         if ($contextid) {
-            $this->context = \context::instance_by_id($contextid);
+            $this->context = context::instance_by_id($contextid);
         }
     }
 
@@ -65,7 +71,7 @@ class insights_report implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output): \stdClass {
+    public function export_for_template(renderer_base $output): \stdClass {
 
         // Prepare the context object.
         $data = new \stdClass();
@@ -78,7 +84,7 @@ class insights_report implements \renderable, \templatable {
         // Context selector.
         $predictioncontexts = $this->model->get_predictions_contexts(false);
         if ($predictioncontexts && count($predictioncontexts) > 1) {
-            $url = new \moodle_url('/admin/tool/analytics/model.php', ['id' => $this->model->get_id(),
+            $url = new url('/admin/tool/analytics/model.php', ['id' => $this->model->get_id(),
                 'action' => 'insightsreport']);
 
             if ($this->context) {
@@ -147,7 +153,7 @@ class insights_report implements \renderable, \templatable {
      */
     private function init_action_labels(\stdClass $predictionactionrecord): array {
 
-        $predictioncontext = \context::instance_by_id($predictionactionrecord->contextid);
+        $predictioncontext = context::instance_by_id($predictionactionrecord->contextid);
 
         // Just 1 result, we just want to retrieve the prediction action names.
         list ($unused, $predictions) = $this->model->get_predictions($predictioncontext, false, 0, 1);

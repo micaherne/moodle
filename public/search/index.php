@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 
 $page = optional_param('page', 0, PARAM_INT);
@@ -37,7 +41,7 @@ if (\core_search\manager::is_search_area_categories_enabled()) {
 
 // Moving areaids, courseids, timestart, and timeend further down as they might come as an array if they come from the form.
 
-$context = context_system::instance();
+$context = system::instance();
 $pagetitle = get_string('globalsearch', 'search');
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('standard');
@@ -53,7 +57,7 @@ require_capability('moodle/search:query', $context);
 $searchrenderer = $PAGE->get_renderer('core_search');
 
 if (\core_search\manager::is_global_search_enabled() === false) {
-    $PAGE->set_url(new moodle_url('/search/index.php'));
+    $PAGE->set_url(new url('/search/index.php'));
     echo $OUTPUT->header();
     echo $searchrenderer->render_search_disabled();
     echo $OUTPUT->footer();
@@ -160,7 +164,7 @@ if ($cat instanceof \core_search\area_category) {
     $urlparams['cat'] = $cat->get_name();
 }
 
-$url = new moodle_url('/search/index.php', $urlparams);
+$url = new url('/search/index.php', $urlparams);
 $PAGE->set_url($url);
 
 // We are ready to render.

@@ -23,6 +23,8 @@
  */
 namespace core\plugininfo;
 
+use core\exception\moodle_exception;
+use core\plugin_manager;
 use core\url;
 
 defined('MOODLE_INTERNAL') || die();
@@ -116,14 +118,14 @@ class repository extends base {
             if ($enabled == self::REPOSITORY_ON || $enabled == self::REPOSITORY_OFF) {
                 $type = new \repository_type($pluginname, [], $enabled);
                 if (!$haschanged = $type->create()) {
-                    throw new \moodle_exception('invalidplugin', 'repository', '', $pluginname);
+                    throw new moodle_exception('invalidplugin', 'repository', '', $pluginname);
                 }
             }
         }
         if ($haschanged) {
             // Include this information into config changes table.
             add_to_config_log('repository_visibility', $oldvalue, $enabled, $pluginname);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;

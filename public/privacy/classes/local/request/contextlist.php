@@ -24,6 +24,8 @@
 
 namespace core_privacy\local\request;
 
+use core\context_helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -46,7 +48,7 @@ class contextlist extends contextlist_base {
     public function add_from_sql(string $sql, array $params): contextlist {
         global $DB;
 
-        $fields = \context_helper::get_preload_record_columns_sql('ctx');
+        $fields = context_helper::get_preload_record_columns_sql('ctx');
         if ($fieldname = $this->guess_id_field_from_sql($sql)) {
             if (is_numeric($fieldname)) {
                 $wrapper = "
@@ -73,7 +75,7 @@ class contextlist extends contextlist_base {
         $contextids = [];
         foreach ($contexts as $context) {
             $contextids[] = $context->ctxid;
-            \context_helper::preload_from_record($context);
+            context_helper::preload_from_record($context);
         }
         $contexts->close();
 

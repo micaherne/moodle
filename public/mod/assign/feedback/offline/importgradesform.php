@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\renderable;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 
 require_once($CFG->libdir.'/formslib.php');
@@ -57,7 +61,7 @@ class assignfeedback_offline_import_grades_form extends moodleform implements re
         $draftid = $params['draftid'];
 
         if (!$gradeimporter) {
-            throw new \moodle_exception('invalidarguments');
+            throw new moodle_exception('invalidarguments');
             return;
         }
 
@@ -72,12 +76,12 @@ class assignfeedback_offline_import_grades_form extends moodleform implements re
             }
         }
         if (!$gradeimporter->init()) {
-            $thisurl = new moodle_url('/mod/assign/view.php', array('action'=>'viewpluginpage',
+            $thisurl = new url('/mod/assign/view.php', array('action'=>'viewpluginpage',
                                                                      'pluginsubtype'=>'assignfeedback',
                                                                      'plugin'=>'offline',
                                                                      'pluginaction'=>'uploadgrades',
                                                                      'id'=>$assignment->get_course_module()->id));
-            throw new \moodle_exception('invalidgradeimport', 'assignfeedback_offline', $thisurl);
+            throw new moodle_exception('invalidgradeimport', 'assignfeedback_offline', $thisurl);
             return;
         }
 

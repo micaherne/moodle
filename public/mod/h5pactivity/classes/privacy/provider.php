@@ -16,6 +16,8 @@
 
 namespace mod_h5pactivity\privacy;
 
+use core\context;
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -101,7 +103,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!is_a($context, \context_module::class)) {
+        if (!is_a($context, module::class)) {
             return;
         }
 
@@ -148,7 +150,7 @@ class provider implements
         $userid = $user->id;
         // Get H5P attempts data.
         foreach ($contexts as $contextid) {
-            $context = \context::instance_by_id($contextid);
+            $context = context::instance_by_id($contextid);
             $data = helper::get_context_data($context, $user);
             writer::with_context($context)->export_data([], $data);
             helper::export_context_files($context, $user);
@@ -208,7 +210,7 @@ class provider implements
         // {Course name}/{H5P activity name}/{My attempts}/{Attempt X}/data.json
         // where X is the attempt number.
         array_walk($alldata, function($attemptsdata, $contextid) {
-            $context = \context::instance_by_id($contextid);
+            $context = context::instance_by_id($contextid);
             array_walk($attemptsdata, function($data, $attempt) use ($context) {
                 $subcontext = [
                     get_string('myattempts', 'mod_h5pactivity'),
@@ -227,7 +229,7 @@ class provider implements
      *
      * @param \context $context A user context.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         // This should not happen, but just in case.
         if ($context->contextlevel != CONTEXT_MODULE) {
             return;
@@ -282,7 +284,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if (!is_a($context, \context_module::class)) {
+        if (!is_a($context, module::class)) {
             return;
         }
 

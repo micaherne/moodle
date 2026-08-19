@@ -16,6 +16,8 @@
 
 namespace tool_usertours\privacy;
 
+use core\context\system;
+use core\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\writer;
 use tool_usertours\tour;
@@ -59,10 +61,10 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      * Ensure that export_user_preferences returns no data if the user has completed no tours.
      */
     public function test_export_user_preferences_no_pref(): void {
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         provider::export_user_preferences($user->id);
 
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
 
         $this->assertFalse($writer->has_any_data());
     }
@@ -78,11 +80,11 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $tour = $this->create_test_tour();
 
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $tour->mark_user_completed();
         provider::export_user_preferences($user->id);
 
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
 
         $this->assertTrue($writer->has_any_data());
         $prefs = $writer->get_user_preferences('tool_usertours');
@@ -101,12 +103,12 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $tour = $this->create_test_tour();
 
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $tour->mark_user_completed();
         $tour->request_user_reset();
         provider::export_user_preferences($user->id);
 
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
 
         $this->assertTrue($writer->has_any_data());
         $prefs = $writer->get_user_preferences('tool_usertours');
@@ -134,7 +136,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Export test users preferences.
         provider::export_user_preferences($user->id);
 
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertTrue($writer->has_any_data());
 
         $prefs = (array)$writer->get_user_preferences('tool_usertours');
@@ -159,7 +161,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $tour1 = $this->create_test_tour();
         $tour2 = $this->create_test_tour();
 
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
 
         $alltours = $DB->get_records('tool_usertours_tours');
 
@@ -168,7 +170,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $tour2->mark_user_completed();
         $tour2->remove();
 
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
 
         provider::export_user_preferences($user->id);
         $this->assertTrue($writer->has_any_data());

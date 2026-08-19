@@ -26,10 +26,12 @@
  * @todo       MDL-82383 This file will be deleted in Moodle 6.0.
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
 $type       = required_param('type', PARAM_INT);
 $courseid   = optional_param('id', 0, PARAM_INT);
 
-redirect(new moodle_url('/badges/index.php', ['type' => $type, 'id' => $courseid]));
+redirect(new url('/badges/index.php', ['type' => $type, 'id' => $courseid]));

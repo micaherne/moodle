@@ -16,6 +16,7 @@
 
 namespace mod_quiz;
 
+use core\context\module;
 use mod_quiz\question\bank\qbank_helper;
 use mod_quiz\quiz_settings;
 
@@ -96,7 +97,7 @@ final class tags_test extends \advanced_testcase {
         $this->assertCount(1, $qbanks);
         $qbank = reset($qbanks);
 
-        $defaultcategory = question_get_default_category(\context_module::instance($qbank->id)->id, true);
+        $defaultcategory = question_get_default_category(module::instance($qbank->id)->id, true);
         $this->assertEquals($defaultcategory->id, $question->category);
         $randomincludingsubcategories = $DB->get_record('question_set_references',
             ['itemid' => reset($slots)->id, 'component' => 'mod_quiz', 'questionarea' => 'slot']);

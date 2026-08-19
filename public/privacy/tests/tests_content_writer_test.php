@@ -27,6 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\user as core_user;
 use \core_privacy\local\request\writer;
 use \core_privacy\tests\request\content_writer;
 
@@ -42,7 +46,7 @@ final class tests_content_writer_test extends advanced_testcase {
      * It should be possible to store and retrieve data.
      */
     public function test_export_data(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
         $writer = $this->get_writer_instance();
 
         $dataa = (object) [
@@ -69,15 +73,15 @@ final class tests_content_writer_test extends advanced_testcase {
     public function test_export_data_no_context_clash(): void {
         $writer = $this->get_writer_instance();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $dataa = (object) [
             'example' => 'a',
         ];
         $writer->set_context($context)
             ->export_data(['data'], $dataa);
 
-        $adminuser = \core_user::get_user_by_username('admin');
-        $usercontext = \context_user::instance($adminuser->id);
+        $adminuser = core_user::get_user_by_username('admin');
+        $usercontext = context_user::instance($adminuser->id);
         $datab = (object) [
             'example' => 'b',
         ];
@@ -101,7 +105,7 @@ final class tests_content_writer_test extends advanced_testcase {
      */
     public function test_get_data_with_children(): void {
         $writer = $this->get_writer_instance();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $writer->set_context($context)
             ->export_data(['a'], (object) ['parent' => true])
@@ -116,7 +120,7 @@ final class tests_content_writer_test extends advanced_testcase {
      * It should be possible to store and retrieve metadata.
      */
     public function test_export_metadata(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
         $writer = $this->get_writer_instance();
 
         $writer->set_context($context)
@@ -152,12 +156,12 @@ final class tests_content_writer_test extends advanced_testcase {
     public function test_export_metadata_no_context_clash(): void {
         $writer = $this->get_writer_instance();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $writer->set_context($context)
             ->export_metadata(['metadata'], 'somekey', 'value1', 'description1');
 
-        $adminuser = \core_user::get_user_by_username('admin');
-        $usercontext = \context_user::instance($adminuser->id);
+        $adminuser = core_user::get_user_by_username('admin');
+        $usercontext = context_user::instance($adminuser->id);
         $writer->set_context($usercontext)
             ->export_metadata(['metadata'], 'somekey', 'value2', 'description2');
 
@@ -193,9 +197,9 @@ final class tests_content_writer_test extends advanced_testcase {
      * It should be possible to store and retrieve user preferences.
      */
     public function test_export_user_preference(): void {
-        $context = \context_system::instance();
-        $adminuser = \core_user::get_user_by_username('admin');
-        $usercontext = \context_user::instance($adminuser->id);
+        $context = system::instance();
+        $adminuser = core_user::get_user_by_username('admin');
+        $usercontext = context_user::instance($adminuser->id);
         $writer = $this->get_writer_instance();
 
         $writer->set_context($context)
@@ -234,10 +238,10 @@ final class tests_content_writer_test extends advanced_testcase {
      */
     public function test_export_user_preference_no_context_clash(): void {
         $writer = $this->get_writer_instance();
-        $context = \context_system::instance();
-        $coursecontext = \context_course::instance(SITEID);
-        $adminuser = \core_user::get_user_by_username('admin');
-        $usercontext = \context_user::instance($adminuser->id);
+        $context = system::instance();
+        $coursecontext = course::instance(SITEID);
+        $adminuser = core_user::get_user_by_username('admin');
+        $usercontext = context_user::instance($adminuser->id);
 
         $writer->set_context($context)
             ->export_user_preference('core_tests', 'somekey', 'value0', 'description0');
@@ -274,7 +278,7 @@ final class tests_content_writer_test extends advanced_testcase {
      */
     public function test_get_metadata_with_children(): void {
         $writer = $this->get_writer_instance();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $writer->set_context($context)
             ->export_metadata(['a'], 'abc', 'ABC', 'A, B, C')
@@ -288,7 +292,7 @@ final class tests_content_writer_test extends advanced_testcase {
      * It should be possible to export files in the files and children contexts.
      */
     public function test_export_file_special_folders(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $filea = $this->get_stored_file('/', 'files');
         $fileb = $this->get_stored_file('/children/', 'foo.zip');
@@ -311,14 +315,14 @@ final class tests_content_writer_test extends advanced_testcase {
      */
     public function test_export_file_no_context_clash(): void {
         $writer = $this->get_writer_instance();
-        $context = \context_system::instance();
+        $context = system::instance();
         $filea = $this->get_stored_file('/foo/', 'foo.txt');
         $writer = $this->get_writer_instance()
             ->set_context($context)
             ->export_file([], $filea);
 
-        $adminuser = \core_user::get_user_by_username('admin');
-        $usercontext = \context_user::instance($adminuser->id);
+        $adminuser = core_user::get_user_by_username('admin');
+        $usercontext = context_user::instance($adminuser->id);
         $fileb = $this->get_stored_file('/foo/', 'foo.txt');
         $writer->set_context($usercontext)
             ->export_file([], $fileb);
@@ -341,7 +345,7 @@ final class tests_content_writer_test extends advanced_testcase {
      */
     public function test_get_file_with_children(): void {
         $writer = $this->get_writer_instance();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $filea = $this->get_stored_file('/foo/', 'foo.txt');
         $fileb = $this->get_stored_file('/foo/', 'foo.txt');
@@ -363,7 +367,7 @@ final class tests_content_writer_test extends advanced_testcase {
      * It should be possible to export related data in the files and children contexts.
      */
     public function test_export_related_data(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $writer = $this->get_writer_instance()
             ->set_context($context)
@@ -395,12 +399,12 @@ final class tests_content_writer_test extends advanced_testcase {
     public function test_export_related_data_no_context_clash(): void {
         $writer = $this->get_writer_instance();
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $writer->set_context($context)
             ->export_related_data(['file', 'data'], 'file', 'data1');
 
-        $adminuser = \core_user::get_user_by_username('admin');
-        $usercontext = \context_user::instance($adminuser->id);
+        $adminuser = core_user::get_user_by_username('admin');
+        $usercontext = context_user::instance($adminuser->id);
         $writer->set_context($usercontext)
             ->export_related_data(['file', 'data'], 'file', 'data2');
 
@@ -420,7 +424,7 @@ final class tests_content_writer_test extends advanced_testcase {
      */
     public function test_get_related_data_with_children(): void {
         $writer = $this->get_writer_instance();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $writer->set_context($context)
             ->export_related_data(['a'], 'abc', 'ABC')
@@ -434,7 +438,7 @@ final class tests_content_writer_test extends advanced_testcase {
      * It should be possible to export related files in the files and children contexts.
      */
     public function test_export_custom_file(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $writer = $this->get_writer_instance()
             ->set_context($context)
@@ -463,13 +467,13 @@ final class tests_content_writer_test extends advanced_testcase {
      */
     public function test_export_custom_file_no_context_clash(): void {
         $writer = $this->get_writer_instance();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $writer->set_context($context)
             ->export_custom_file(['file.txt'], 'file.txt', 'Content 1');
 
-        $adminuser = \core_user::get_user_by_username('admin');
-        $usercontext = \context_user::instance($adminuser->id);
+        $adminuser = core_user::get_user_by_username('admin');
+        $usercontext = context_user::instance($adminuser->id);
         $writer->set_context($usercontext)
             ->export_custom_file(['file.txt'], 'file.txt', 'Content 2');
 
@@ -489,7 +493,7 @@ final class tests_content_writer_test extends advanced_testcase {
      */
     public function test_get_custom_file_with_children(): void {
         $writer = $this->get_writer_instance();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $writer->set_context($context)
             ->export_custom_file(['a'], 'file.txt', 'ABC')

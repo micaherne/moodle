@@ -25,6 +25,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core\user;
+
 require_once(__DIR__ . '/../../../config.php');
 
 $serviceshortname  = required_param('service',  PARAM_ALPHANUMEXT);
@@ -58,9 +64,9 @@ setcookie('tool_mobile_launch', $ldata, $expires, $CFG->sessioncookiepath, $CFG-
 
 // We have been requested to start a SSO process via OpenID.
 if (!empty($oauthsso) && \core\di::get(\core\authentication::class)->is_enabled('oauth2')) {
-    $wantsurl = new moodle_url('/admin/tool/mobile/launch.php',
+    $wantsurl = new url('/admin/tool/mobile/launch.php',
         array('service' => $serviceshortname, 'passport' => $passport, 'urlscheme' => $urlscheme, 'confirmed' => $confirmed));
-    $oauthurl = new moodle_url('/auth/oauth2/login.php',
+    $oauthurl = new url('/auth/oauth2/login.php',
         array('id' => $oauthsso, 'sesskey' => sesskey(), 'wantsurl' => $wantsurl));
     header('Location: ' . $oauthurl->out(false));
     die;
@@ -78,7 +84,7 @@ if (empty($SESSION->justloggedin) &&
 require_login(0, false);
 
 // Require an active user: not guest, not suspended.
-core_user::require_active_user($USER);
+user::require_active_user($USER);
 
 // Remove cookie.
 unset($_COOKIE['tool_mobile_launch']);
@@ -95,7 +101,7 @@ if (empty($SESSION->justloggedin) and $token->timecreated < $timenow) {
     $privatetoken = null;
 }
 
-$siteadmin = has_capability('moodle/site:config', context_system::instance(), $USER->id);
+$siteadmin = has_capability('moodle/site:config', system::instance(), $USER->id);
 
 // Passport is generated in the mobile app, so the app opening can be validated using that variable.
 // Passports are valid only one time, it's deleted in the app once used.
@@ -119,7 +125,7 @@ $location = "$urlscheme://token=$apptoken";
 // If we come from the confirmation page, we should display a nicer page.
 $isios = core_useragent::is_ios();
 if ($confirmed or $isios) {
-    $PAGE->set_context(context_system::instance());
+    $PAGE->set_context(system::instance());
     $PAGE->set_heading($COURSE->fullname);
     $params = array('service' => $serviceshortname, 'passport' => $passport, 'urlscheme' => $urlscheme, 'confirmed' => $confirmed);
     $PAGE->set_url("/$CFG->admin/tool/mobile/launch.php", $params);
@@ -131,7 +137,7 @@ if ($confirmed or $isios) {
         $PAGE->set_title($confirmedstr);
         echo $OUTPUT->notification($confirmedstr, \core\output\notification::NOTIFY_SUCCESS);
         echo $OUTPUT->box_start('generalbox centerpara boxwidthnormal boxaligncenter');
-        echo $OUTPUT->single_button(new moodle_url('/course/'), get_string('courses'));
+        echo $OUTPUT->single_button(new url('/course/'), get_string('courses'));
         echo $OUTPUT->box_end();
     }
 

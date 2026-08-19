@@ -23,14 +23,19 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_heading('factor_nosetup/description', '',
+    $settings->add(new heading('factor_nosetup/description', '',
         new lang_string('settings:description', 'factor_nosetup')));
-    $settings->add(new admin_setting_heading('factor_nosetup/settings', new lang_string('settings', 'moodle'), ''));
+    $settings->add(new heading('factor_nosetup/settings', new lang_string('settings', 'moodle'), ''));
 
-    $enabled = new admin_setting_configcheckbox('factor_nosetup/enabled',
+    $enabled = new configcheckbox('factor_nosetup/enabled',
         new lang_string('settings:enablefactor', 'tool_mfa'),
         new lang_string('settings:enablefactor_help', 'tool_mfa'), 0);
     $enabled->set_updatedcallback(function () {
@@ -38,7 +43,7 @@ if ($ADMIN->fulltree) {
     });
     $settings->add($enabled);
 
-    $settings->add(new admin_setting_configtext('factor_nosetup/weight',
+    $settings->add(new configtext('factor_nosetup/weight',
         new lang_string('settings:weight', 'tool_mfa'),
         new lang_string('settings:weight_help', 'tool_mfa'), 100, PARAM_INT));
 }

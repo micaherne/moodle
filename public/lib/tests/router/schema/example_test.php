@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace core\router\schema;
+use core\exception\coding_exception;
 use core\tests\router\route_testcase;
 
 /**
@@ -54,7 +55,7 @@ final class example_test extends route_testcase {
     }
 
     public function test_value_or_externalvalue(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         new example(
             name: 'First example',
             value: 'This is a value',

@@ -24,7 +24,7 @@
 
 namespace core\output;
 
-use lang_string;
+use core\lang_string;
 use stdClass;
 
 /**

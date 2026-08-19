@@ -16,6 +16,9 @@
 
 namespace qtype_essay\form;
 
+use core\context\module;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
@@ -47,7 +50,7 @@ final class edit_form_test extends \advanced_testcase {
 
         $course = self::getDataGenerator()->create_course();
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $bankcontext = \context_module::instance($qbank->cmid);
+        $bankcontext = module::instance($qbank->cmid);
         $category = question_get_default_category($bankcontext->id, true);
         $fakequestion = new \stdClass();
         $fakequestion->qtype = 'essay';
@@ -63,7 +66,7 @@ final class edit_form_test extends \advanced_testcase {
         $fakequestion->filetypeslist = '';
 
         $form = new $classname(
-            new \moodle_url('/'),
+            new url('/'),
             $fakequestion,
             $category,
             new \core_question\local\bank\question_edit_contexts($bankcontext)

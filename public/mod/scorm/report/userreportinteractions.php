@@ -22,6 +22,12 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+use core_table\flexible_table;
+
 require_once("../../../config.php");
 require_once($CFG->dirroot.'/mod/scorm/locallib.php');
 require_once($CFG->dirroot.'/mod/scorm/report/reportlib.php');
@@ -34,7 +40,7 @@ $download = optional_param('download', '', PARAM_ALPHA);
 $mode = optional_param('mode', '', PARAM_ALPHA); // Scorm mode from which reached here.
 
 // Building the url to use for links.+ data details buildup.
-$url = new moodle_url('/mod/scorm/report/userreportinteractions.php', array('id' => $id,
+$url = new url('/mod/scorm/report/userreportinteractions.php', array('id' => $id,
     'user' => $userid,
     'attempt' => $attempt));
 
@@ -52,7 +58,7 @@ $PAGE->set_show_navigation_footer(false);
 
 // Checking login +logging +getting context.
 require_login($course, false, $cm);
-$contextmodule = context_module::instance($cm->id);
+$contextmodule = module::instance($cm->id);
 require_capability('mod/scorm:viewreport', $contextmodule);
 
 // Check user has group access.
@@ -81,7 +87,7 @@ $usertrack = scorm_format_interactions($trackdata);
 $questioncount = get_scorm_question_count($scorm->id);
 
 $courseshortname = format_string($course->shortname, true,
-    array('context' => context_course::instance($course->id)));
+    array('context' => course::instance($course->id)));
 $exportfilename = $courseshortname . '-' . format_string($scorm->name, true) . '-' . get_string('interactions', 'scorm');
 
 
@@ -95,7 +101,7 @@ if (!$table->is_downloading($download, $exportfilename)) {
 
     $PAGE->set_title("$course->shortname: ".format_string($scorm->name));
     $PAGE->set_heading($course->fullname);
-    $PAGE->navbar->add($strreport, new moodle_url('/mod/scorm/report.php', array('id' => $cm->id)));
+    $PAGE->navbar->add($strreport, new url('/mod/scorm/report.php', array('id' => $cm->id)));
 
     $PAGE->navbar->add(fullname($user). " - $strattempt $attempt");
 

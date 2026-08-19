@@ -22,6 +22,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\actions\confirm_action;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_table\flexible_table;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/tablelib.php');
 
@@ -39,7 +46,7 @@ if ($courseid) {
     $PAGE->set_course($course);
     $context = $PAGE->context;
 } else {
-    $context = context_system::instance();
+    $context = system::instance();
     $PAGE->set_context($context);
 }
 
@@ -58,7 +65,7 @@ if ($returnurl) {
     $urlparams['returnurl'] = $returnurl;
     $extraparams = '&returnurl=' . $returnurl;
 }
-$baseurl = new moodle_url('/blocks/rss_client/managefeeds.php', $urlparams);
+$baseurl = new url('/blocks/rss_client/managefeeds.php', $urlparams);
 $PAGE->set_url($baseurl);
 
 if ($managesharedfeeds) {
@@ -89,7 +96,7 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_title($strmanage);
 $PAGE->set_heading($strmanage);
 
-$managefeeds = new moodle_url('/blocks/rss_client/managefeeds.php', $urlparams);
+$managefeeds = new url('/blocks/rss_client/managefeeds.php', $urlparams);
 $PAGE->navbar->add(get_string('blocks'));
 $PAGE->navbar->add(get_string('pluginname', 'block_rss_client'));
 $PAGE->navbar->add(get_string('managefeeds', 'block_rss_client'), $managefeeds);
@@ -129,10 +136,10 @@ foreach($feeds as $feed) {
         $feedinfo .= $OUTPUT->render($notification);
     }
 
-    $editurl = new moodle_url('/blocks/rss_client/editfeed.php?rssid=' . $feed->id . $extraparams);
+    $editurl = new url('/blocks/rss_client/editfeed.php?rssid=' . $feed->id . $extraparams);
     $editaction = $OUTPUT->action_icon($editurl, new pix_icon('t/edit', get_string('edit')));
 
-    $deleteurl = new moodle_url('/blocks/rss_client/managefeeds.php?deleterssid=' . $feed->id . '&sesskey=' . sesskey() . $extraparams);
+    $deleteurl = new url('/blocks/rss_client/managefeeds.php?deleterssid=' . $feed->id . '&sesskey=' . sesskey() . $extraparams);
     $deleteicon = new pix_icon('t/delete', get_string('delete'));
     $deleteaction = $OUTPUT->action_icon($deleteurl, $deleteicon, new confirm_action(get_string('deletefeedconfirm', 'block_rss_client')));
 

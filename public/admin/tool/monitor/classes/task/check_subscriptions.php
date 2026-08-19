@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace tool_monitor\task;
+use core\context\course;
+use core\context\system;
 use tool_monitor\subscription;
 use tool_monitor\subscription_manager;
 
@@ -129,10 +131,10 @@ class check_subscriptions extends \core\task\scheduled_task {
             // Determine the context, based on the subscription course id.
             $sitelevelsubscription = false;
             if (empty($sub->courseid)) {
-                $context = \context_system::instance();
+                $context = system::instance();
                 $sitelevelsubscription = true;
             } else {
-                $context = \context_course::instance($sub->courseid);
+                $context = course::instance($sub->courseid);
             }
 
             // Check capability in the context.

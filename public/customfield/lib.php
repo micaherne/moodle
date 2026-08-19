@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 
 defined('MOODLE_INTERNAL') || die;

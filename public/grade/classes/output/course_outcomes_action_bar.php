@@ -16,7 +16,9 @@
 
 namespace core_grades\output;
 
-use moodle_url;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\url;
 
 /**
  * Renderable class for the action bar elements in the gradebook course outcomes page.
@@ -42,21 +44,21 @@ class course_outcomes_action_bar extends action_bar {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         if ($this->context->contextlevel !== CONTEXT_COURSE) {
             return [];
         }
         $courseid = $this->context->instanceid;
         // Get the data used to output the general navigation selector.
         $generalnavselector = new general_action_bar($this->context,
-            new moodle_url('/grade/edit/outcome/course.php', ['id' => $courseid]), 'outcome', 'course');
+            new url('/grade/edit/outcome/course.php', ['id' => $courseid]), 'outcome', 'course');
         $data = $generalnavselector->export_for_template($output);
 
         if (has_capability('moodle/grade:manageoutcomes', $this->context)) {
             // Add a button to the action bar with a link to the 'manage outcomes' page.
-            $manageoutcomeslink = new moodle_url('/grade/edit/outcome/index.php', ['id' => $courseid]);
-            $manageoutcomesbutton = new \single_button($manageoutcomeslink, get_string('manageoutcomes', 'grades'),
-                'get', \single_button::BUTTON_PRIMARY);
+            $manageoutcomeslink = new url('/grade/edit/outcome/index.php', ['id' => $courseid]);
+            $manageoutcomesbutton = new single_button($manageoutcomeslink, get_string('manageoutcomes', 'grades'),
+                'get', single_button::BUTTON_PRIMARY);
             $data['manageoutcomesbutton'] = $manageoutcomesbutton->export_for_template($output);
         }
 

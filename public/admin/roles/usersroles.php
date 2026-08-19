@@ -24,6 +24,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 
 // Get params.
@@ -34,11 +42,11 @@ $courseid = required_param('courseid', PARAM_INT);
 $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 
-$usercontext = context_user::instance($user->id);
-$coursecontext = context_course::instance($course->id);
-$systemcontext = context_system::instance();
+$usercontext = user::instance($user->id);
+$coursecontext = course::instance($course->id);
+$systemcontext = system::instance();
 
-$baseurl = new moodle_url('/admin/roles/usersroles.php', array('userid'=>$userid, 'courseid'=>$courseid));
+$baseurl = new url('/admin/roles/usersroles.php', array('userid'=>$userid, 'courseid'=>$courseid));
 
 $PAGE->set_url($baseurl);
 $PAGE->set_pagelayout('admin');
@@ -55,7 +63,7 @@ if ($course->id == SITEID) {
 $canview = has_any_capability(array('moodle/role:assign', 'moodle/role:safeoverride',
         'moodle/role:override', 'moodle/role:manage'), $usercontext);
 if (!$canview) {
-    throw new \moodle_exception('nopermissions', 'error', '', get_string('checkpermissions', 'core_role'));
+    throw new moodle_exception('nopermissions', 'error', '', get_string('checkpermissions', 'core_role'));
 }
 
 if ($userid != $USER->id) {

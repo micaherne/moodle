@@ -17,7 +17,7 @@
 namespace core_search;
 
 use advanced_testcase;
-use context_course;
+use core\context\course;
 use core_mocksearch\search\mock_search_area;
 use mock_search\engine;
 use testable_core_search;
@@ -161,7 +161,7 @@ final class document_test extends \advanced_testcase {
         $engine = new engine();
 
         $course = $this->getDataGenerator()->create_course(['fullname' => 'Course & Title']);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $roleid = $DB->get_field('role', 'id', ['shortname' => $rolename]);
         foreach ($capexceptions as $capability) {

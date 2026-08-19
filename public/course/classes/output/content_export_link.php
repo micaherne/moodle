@@ -24,6 +24,9 @@
 
 namespace core_course\output;
 
+use core\context;
+use core\url;
+
 /**
  * Prepares content for buttons/links to course content export/download.
  *
@@ -39,13 +42,13 @@ class content_export_link {
      * @param \context $context The context of the content being exported.
      * @return \stdClass
      */
-    public static function get_attributes(\context $context): \stdClass {
+    public static function get_attributes(context $context): \stdClass {
         global $CFG;
         $downloadattr = new \stdClass();
-        $downloadattr->url = new \moodle_url('/course/downloadcontent.php', ['contextid' => $context->id]);
+        $downloadattr->url = new url('/course/downloadcontent.php', ['contextid' => $context->id]);
         $downloadattr->displaystring = get_string('downloadcoursecontent', 'course');
         $maxfilesize = display_size($CFG->maxsizeperdownloadcoursefile);
-        $downloadlink = new \moodle_url('/course/downloadcontent.php', ['contextid' => $context->id, 'download' => 1]);
+        $downloadlink = new url('/course/downloadcontent.php', ['contextid' => $context->id, 'download' => 1]);
 
         $downloadattr->elementattributes = [
             'data-downloadcourse' => 1,

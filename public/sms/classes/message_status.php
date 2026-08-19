@@ -18,6 +18,7 @@ namespace core_sms;
 
 use core\attribute_helper;
 use core\attribute\description;
+use core\lang_string;
 
 /**
  * The general status of a message. Gateways are able to provide more specific statuses to supplement these.
@@ -90,7 +91,7 @@ enum message_status: string {
      *
      * @return null|\lang_string
      */
-    public function description(): ?\lang_string {
+    public function description(): ?lang_string {
         return attribute_helper::instance($this, description::class);
     }
 }

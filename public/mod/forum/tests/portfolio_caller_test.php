@@ -16,6 +16,8 @@
 
 namespace mod_forum;
 
+use core\context\module;
+
 /**
  * Class mod_forum_portfolio_caller_testcase
  *
@@ -40,7 +42,7 @@ final class portfolio_caller_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id));
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
 
         /* @var mod_forum_generator $forumgenerator */
         $forumgenerator = $this->getDataGenerator()->get_plugin_generator('mod_forum');
@@ -85,7 +87,7 @@ final class portfolio_caller_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id));
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
 
         /* @var mod_forum_generator $forumgenerator */
         $forumgenerator = $this->getDataGenerator()->get_plugin_generator('mod_forum');

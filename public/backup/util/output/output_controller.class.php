@@ -35,6 +35,9 @@
  * This class adopts the singleton pattern to be able to provide some persistency
  * and global access.
  */
+use core\output\progress_trace\html_list_progress_trace;
+use core\output\progress_trace\text_progress_trace;
+
 class output_controller {
 
     private static $instance; // The unique instance of output_controller available along the request

@@ -24,6 +24,8 @@
 
 namespace dataformat_html;
 
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -46,8 +48,8 @@ class writer extends \core\dataformat\base {
      */
     public function start_output() {
         echo "<!DOCTYPE html><html><head>";
-        echo \html_writer::empty_tag('meta', ['charset' => 'UTF-8']);
-        echo \html_writer::tag('title', $this->filename);
+        echo html_writer::empty_tag('meta', ['charset' => 'UTF-8']);
+        echo html_writer::tag('title', $this->filename);
         echo "<style>
 html, body {
     margin: 0;
@@ -85,11 +87,11 @@ table {
      */
     public function start_sheet($columns) {
         echo "<table border=1 cellspacing=0 cellpadding=3>";
-        echo \html_writer::start_tag('tr');
+        echo html_writer::start_tag('tr');
         foreach ($columns as $k => $v) {
-            echo \html_writer::tag('th', $v);
+            echo html_writer::tag('th', $v);
         }
-        echo \html_writer::end_tag('tr');
+        echo html_writer::end_tag('tr');
     }
 
     /**
@@ -110,11 +112,11 @@ table {
     public function write_record($record, $rownum) {
         $record = $this->format_record($record);
 
-        echo \html_writer::start_tag('tr');
+        echo html_writer::start_tag('tr');
         foreach ($record as $cell) {
-            echo \html_writer::tag('td', $cell);
+            echo html_writer::tag('td', $cell);
         }
-        echo \html_writer::end_tag('tr');
+        echo html_writer::end_tag('tr');
     }
 
     /**

@@ -17,7 +17,7 @@
 namespace tool_usertours\local\filter;
 
 use tool_usertours\tour;
-use context;
+use core\context;
 
 /**
  * Course filter.

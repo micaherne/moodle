@@ -16,6 +16,7 @@
 
 namespace core_communication\privacy;
 
+use core\context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -52,7 +53,7 @@ class provider implements
         // None of the core communication tables should be exported.
     }
 
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         // None of the data from these tables should be deleted.
     }
 

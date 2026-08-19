@@ -23,6 +23,7 @@
  */
 namespace mod_data\privacy;
 
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_userlist;
 use mod_data\privacy\provider;
@@ -184,7 +185,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $contextlist = provider::get_contexts_for_userid($this->student->id);
         $this->assertCount(1, $contextlist);
         $contextforuser = $contextlist->current();
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
         $this->assertEquals($cmcontext->id, $contextforuser->id);
     }
 
@@ -194,7 +195,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
     public function test_get_users_in_context(): void {
         $component = 'mod_data';
         $cm = get_coursemodule_from_instance('data', $this->datamodule->id);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         $userlist = new \core_privacy\local\request\userlist($cmcontext, $component);
         provider::get_users_in_context($userlist);
@@ -225,7 +226,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
     public function test_export_for_context(): void {
         global $DB;
         $cm = get_coursemodule_from_instance('data', $this->datamodule->id);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
         $records = $DB->get_records_select('data_records', 'userid = :userid ORDER BY id', ['userid' => $this->student->id]);
         $record = reset($records);
         $contents = $DB->get_records('data_content', ['recordid' => $record->id]);
@@ -250,7 +251,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      */
     public function test_delete_data_for_all_users_in_context(): void {
         $cm = get_coursemodule_from_instance('data', $this->datamodule->id);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         provider::delete_data_for_all_users_in_context($cmcontext);
 
@@ -264,7 +265,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      */
     public function test_delete_data_for_user(): void {
         $cm = get_coursemodule_from_instance('data', $this->datamodule->id);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         $appctxt = new \core_privacy\local\request\approved_contextlist($this->student, 'mod_data', [$cmcontext->id]);
         provider::delete_data_for_user($appctxt);
@@ -278,7 +279,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      */
     public function test_delete_data_for_users(): void {
         $cm = get_coursemodule_from_instance('data', $this->datamodule->id);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
         $userstodelete = [$this->student->id, $this->student2->id];
 
         // Ensure student, student 2 and student 3 have data before being deleted.

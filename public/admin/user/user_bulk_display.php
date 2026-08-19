@@ -1,5 +1,9 @@
 <?php
 
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -9,7 +13,7 @@ $dir  = optional_param('dir', 'asc', PARAM_ALPHA);
 admin_externalpage_setup('userbulk');
 
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
-$return = new moodle_url($returnurl ?: '/admin/user/user_bulk.php');
+$return = new url($returnurl ?: '/admin/user/user_bulk.php');
 
 if (empty($SESSION->bulk_users)) {
     redirect($return);

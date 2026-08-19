@@ -29,6 +29,9 @@
  * @copyright 2013 Davo Smith
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\output\renderable;
+use core\url;
+
 class assignfeedback_editpdf_widget implements renderable {
 
     /** @var int $assignment - Assignment instance id */
@@ -41,7 +44,7 @@ class assignfeedback_editpdf_widget implements renderable {
     public int $attemptnumber = 0;
 
     /** @var moodle_url $downloadurl */
-    public ?moodle_url $downloadurl = null;
+    public ?url $downloadurl = null;
 
     /** @var string $downloadfilename */
     public ?string $downloadfilename = null;

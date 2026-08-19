@@ -23,11 +23,11 @@
  */
 namespace tool_dataprivacy\output;
 
-use moodle_url;
-use renderable;
-use renderer_base;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -59,7 +59,7 @@ class request_filter implements renderable, templatable {
         $this->filteroptions = $filteroptions;
         $this->selectedoptions = $selectedoptions;
         if (!empty($baseurl)) {
-            $this->baseurl = new moodle_url($baseurl);
+            $this->baseurl = new url($baseurl);
         }
     }
 

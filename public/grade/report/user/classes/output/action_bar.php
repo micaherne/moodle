@@ -16,7 +16,9 @@
 
 namespace gradereport_user\output;
 
-use moodle_url;
+use core\context;
+use core\output\renderer_base;
+use core\url;
 use core_grades\output\general_action_bar;
 
 /**
@@ -50,7 +52,7 @@ class action_bar extends \core_grades\output\action_bar {
      * @param string $usersearch String to search matching user.
      */
     public function __construct(
-        \context $context,
+        context $context,
         int $userview,
         ?int $userid = null,
         ?int $currentgroupid = null,
@@ -78,14 +80,14 @@ class action_bar extends \core_grades\output\action_bar {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $PAGE, $USER;
 
         // If in the course context, we should display the general navigation selector in gradebook.
         $courseid = $this->context->instanceid;
         // Get the data used to output the general navigation selector.
         $generalnavselector = new general_action_bar($this->context,
-            new moodle_url('/grade/report/user/index.php', ['id' => $courseid]), 'gradereport', 'user');
+            new url('/grade/report/user/index.php', ['id' => $courseid]), 'gradereport', 'user');
         $data = $generalnavselector->export_for_template($output);
 
         // If the user has the capability to view all grades, display the group selector (if applicable), the user selector
@@ -97,8 +99,8 @@ class action_bar extends \core_grades\output\action_bar {
                 $data['groupselector'] = $groupselector->export_for_template($output);
             }
 
-            $resetlink = new moodle_url('/grade/report/user/index.php', ['id' => $courseid, 'group' => 0, 'reset' => 1]);
-            $baseurl = new moodle_url('/grade/report/user/index.php', ['id' => $courseid]);
+            $resetlink = new url('/grade/report/user/index.php', ['id' => $courseid, 'group' => 0, 'reset' => 1]);
+            $baseurl = new url('/grade/report/user/index.php', ['id' => $courseid]);
             $PAGE->requires->js_call_amd('gradereport_user/user', 'init', [$baseurl->out(false)]);
 
             $userselector = new \core_course\output\actionbar\user_selector(
@@ -115,9 +117,9 @@ class action_bar extends \core_grades\output\action_bar {
 
             // Do not output the 'view mode' selector when in zero state or when the current user is viewing its own report.
             if (!is_null($this->userid) && $USER->id != $this->userid) {
-                $viewasotheruser = new moodle_url('/grade/report/user/index.php',
+                $viewasotheruser = new url('/grade/report/user/index.php',
                     ['id' => $courseid, 'userid' => $this->userid, 'userview' => GRADE_REPORT_USER_VIEW_USER]);
-                $viewasmyself = new moodle_url('/grade/report/user/index.php',
+                $viewasmyself = new url('/grade/report/user/index.php',
                     ['id' => $courseid, 'userid' => $this->userid, 'userview' => GRADE_REPORT_USER_VIEW_SELF]);
 
                 $selectoroptions = [

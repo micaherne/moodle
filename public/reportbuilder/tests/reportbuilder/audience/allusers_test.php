@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_reportbuilder\reportbuilder\audience;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
 use core_reportbuilder_generator;
 use core_user\reportbuilder\datasource\users;
 
@@ -80,8 +80,8 @@ final class allusers_test extends advanced_testcase {
 
         // Grant priveleges to user.
         $roleid = create_role('Dummy role', 'dummyrole', 'dummy role description');
-        assign_capability('moodle/user:viewalldetails', CAP_ALLOW, $roleid, context_system::instance()->id);
-        role_assign($roleid, $user->id, context_system::instance()->id);
+        assign_capability('moodle/user:viewalldetails', CAP_ALLOW, $roleid, system::instance()->id);
+        role_assign($roleid, $user->id, system::instance()->id);
         $this->assertTrue($audience->user_can_add());
     }
 
@@ -113,8 +113,8 @@ final class allusers_test extends advanced_testcase {
 
         // Grant priveleges to user.
         $roleid = create_role('Dummy role', 'dummyrole', 'dummy role description');
-        assign_capability('moodle/user:viewalldetails', CAP_ALLOW, $roleid, context_system::instance()->id);
-        role_assign($roleid, $user->id, context_system::instance()->id);
+        assign_capability('moodle/user:viewalldetails', CAP_ALLOW, $roleid, system::instance()->id);
+        role_assign($roleid, $user->id, system::instance()->id);
         $this->assertTrue($audience->user_can_edit());
     }
 

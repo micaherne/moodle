@@ -25,7 +25,7 @@ namespace mod_lesson\external;
 defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
 use core_external\external_files;
 use core_external\util as external_util;
 

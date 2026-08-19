@@ -27,6 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\system;
+use core\context\user as context_user;
+use core\user as core_user;
 use \core_privacy\local\request\userlist_base;
 
 /**
@@ -47,7 +50,7 @@ final class userlist_base_test extends advanced_testcase {
      * @covers ::get_userids
      */
     public function test_get_userids($input, $expected, $count): void {
-        $uut = new test_userlist_base(\context_system::instance(), 'core_tests');
+        $uut = new test_userlist_base(system::instance(), 'core_tests');
         $uut->set_userids($input);
 
         $result = $uut->get_userids();
@@ -106,7 +109,7 @@ final class userlist_base_test extends advanced_testcase {
 
         $ids = array_keys($users);
 
-        $uut = new test_userlist_base(\context_system::instance(), 'core_tests');
+        $uut = new test_userlist_base(system::instance(), 'core_tests');
         $uut->set_userids($ids);
 
         $result = $uut->get_users();
@@ -128,7 +131,7 @@ final class userlist_base_test extends advanced_testcase {
      * @covers ::count
      */
     public function test_countable($input, $expected, $count): void {
-        $uut = new test_userlist_base(\context_system::instance(), 'core_tests');
+        $uut = new test_userlist_base(system::instance(), 'core_tests');
         $uut->set_userids($input);
 
         $this->assertCount($count, $uut);
@@ -160,7 +163,7 @@ final class userlist_base_test extends advanced_testcase {
 
         $ids = array_keys($users);
 
-        $uut = new test_userlist_base(\context_system::instance(), 'core_tests');
+        $uut = new test_userlist_base(system::instance(), 'core_tests');
         $uut->set_userids($ids);
 
         foreach ($uut as $key => $user) {
@@ -180,7 +183,7 @@ final class userlist_base_test extends advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
 
-        $uut = new test_userlist_base(\context_system::instance(), 'core_tests');
+        $uut = new test_userlist_base(system::instance(), 'core_tests');
         $uut->set_userids([$user->id]);
 
         $this->assertCount(1, $uut);
@@ -197,7 +200,7 @@ final class userlist_base_test extends advanced_testcase {
      * @covers ::count
      */
     public function test_current_user_invalid(): void {
-        $uut = new test_userlist_base(\context_system::instance(), 'core_tests');
+        $uut = new test_userlist_base(system::instance(), 'core_tests');
         $uut->set_userids([-100]);
 
         $this->assertCount(1, $uut);
@@ -214,7 +217,7 @@ final class userlist_base_test extends advanced_testcase {
 
         $u1 = $this->getDataGenerator()->create_user();
 
-        $uut = new test_userlist_base(\context_system::instance(), 'core_tests');
+        $uut = new test_userlist_base(system::instance(), 'core_tests');
         $uut->set_userids([-100, $u1->id]);
 
         $this->assertCount(2, $uut);
@@ -227,7 +230,7 @@ final class userlist_base_test extends advanced_testcase {
      * @covers ::set_component
      */
     public function test_set_component_in_constructor(): void {
-        $uut = new test_userlist_base(\context_system::instance(), 'core_tests');
+        $uut = new test_userlist_base(system::instance(), 'core_tests');
         $this->assertEquals('core_tests', $uut->get_component());
     }
 
@@ -237,7 +240,7 @@ final class userlist_base_test extends advanced_testcase {
      * @covers ::__construct
      */
     public function test_set_context_in_constructor(): void {
-        $context = \context_user::instance(\core_user::get_user_by_username('admin')->id);
+        $context = context_user::instance(core_user::get_user_by_username('admin')->id);
 
         $uut = new test_userlist_base($context, 'core_tests');
         $this->assertEquals($context, $uut->get_context());

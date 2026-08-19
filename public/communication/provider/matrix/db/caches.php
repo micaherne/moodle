@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 $definitions = [
@@ -30,7 +32,7 @@ $definitions = [
     // The keys used are the revision, lang and component of the string file.
     // The static acceleration size has been based upon student access of the site.
     'serverversions' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,

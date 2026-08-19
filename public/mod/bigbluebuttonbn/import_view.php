@@ -23,6 +23,7 @@
  * @author    Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 
+use core\exception\moodle_exception;
 use core\notification;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\output\import_view;

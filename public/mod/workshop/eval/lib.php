@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/lib/formslib.php');
@@ -51,7 +53,7 @@ abstract class workshop_evaluation {
      *
      * @return workshop_evaluation_settings_form
      */
-    public function get_settings_form(?moodle_url $actionurl=null) {
+    public function get_settings_form(?url $actionurl=null) {
 
         $customdata = array('workshop' => $this->workshop);
         $attributes = array('class' => 'evalsettingsform');

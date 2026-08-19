@@ -27,6 +27,7 @@ declare(strict_types = 1);
 
 namespace core_table\external\dynamic;
 
+use core\exception\invalid_parameter_exception;
 use core_table\local\filter\filter;
 use advanced_testcase;
 
@@ -45,7 +46,7 @@ final class get_test extends advanced_testcase {
     public function test_execute_invalid_component_format(): void {
         $this->resetAfterTest();
 
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         get::execute(
             "core-user",
             "participants",
@@ -130,7 +131,7 @@ final class get_test extends advanced_testcase {
                 'values' => [(int) $course->id]
             ]
         ];
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $this->expectExceptionMessage("Invalid parameter value detected (filters => Invalid parameter value detected " .
         "(Missing required key in single structure: name): Missing required key in single structure: name");
 

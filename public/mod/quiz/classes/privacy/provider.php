@@ -25,6 +25,8 @@
 
 namespace mod_quiz\privacy;
 
+use core\context;
+use core\context\module;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
@@ -193,7 +195,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_module) {
+        if (!$context instanceof module) {
             return;
         }
 
@@ -349,7 +351,7 @@ class provider implements
      *
      * @param   context                 $context   The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         if ($context->contextlevel != CONTEXT_MODULE) {
             // Only quiz module will be handled.
             return;
@@ -548,7 +550,7 @@ class provider implements
         $attempts = $DB->get_recordset_sql($sql, $params);
         foreach ($attempts as $attempt) {
             $quiz = $DB->get_record('quiz', ['id' => $attempt->quiz]);
-            $context = \context_module::instance($attempt->cmid);
+            $context = module::instance($attempt->cmid);
             $attemptsubcontext = helper::get_quiz_attempt_subcontext($attempt, $contextlist->get_user());
             $options = quiz_get_review_options($quiz, $attempt, $context);
 

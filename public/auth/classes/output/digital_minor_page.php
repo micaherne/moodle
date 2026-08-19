@@ -26,9 +26,10 @@ namespace core_auth\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
 
 /**
  * Digital minor renderable class.
@@ -55,7 +56,7 @@ class digital_minor_page implements renderable, templatable {
             'sitename' => $sitename,
             'supportname' => $supportname,
             'supportemail' => $supportemail,
-            'homelink' => new \moodle_url('/')
+            'homelink' => new url('/')
         ];
 
         return $context;

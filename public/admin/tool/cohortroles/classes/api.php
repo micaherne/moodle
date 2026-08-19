@@ -24,7 +24,7 @@
 namespace tool_cohortroles;
 
 use stdClass;
-use context_system;
+use core\context\system;
 use core\invalid_persistent_exception;
 
 /**
@@ -45,7 +45,7 @@ class api {
      */
     public static function create_cohort_role_assignment(stdClass $record) {
         $cohortroleassignment = new cohort_role_assignment(0, $record);
-        $context = context_system::instance();
+        $context = system::instance();
 
         // First we do a permissions check.
         require_capability('moodle/role:manage', $context);
@@ -75,7 +75,7 @@ class api {
      */
     public static function delete_cohort_role_assignment($id) {
         $cohortroleassignment = new cohort_role_assignment($id);
-        $context = context_system::instance();
+        $context = system::instance();
 
         // First we do a permissions check.
         require_capability('moodle/role:manage', $context);
@@ -96,7 +96,7 @@ class api {
      * @return array of cohort_role_assignment
      */
     public static function list_cohort_role_assignments($sort = '', $order = 'ASC', $skip = 0, $limit = 0) {
-        $context = context_system::instance();
+        $context = system::instance();
 
         // First we do a permissions check.
         require_capability('moodle/role:manage', $context);
@@ -113,7 +113,7 @@ class api {
      * @return int
      */
     public static function count_cohort_role_assignments() {
-        $context = context_system::instance();
+        $context = system::instance();
 
         // First we do a permissions check.
         require_capability('moodle/role:manage', $context);
@@ -135,7 +135,7 @@ class api {
     public static function sync_all_cohort_roles() {
         global $DB;
 
-        $context = context_system::instance();
+        $context = system::instance();
 
         // First we do a permissions check.
         require_capability('moodle/role:manage', $context);

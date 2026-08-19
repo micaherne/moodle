@@ -16,9 +16,10 @@
 
 namespace core_contentbank;
 
-use core_plugin_manager;
+use core\plugin_manager;
+use core_cache\cache;
 use stored_file;
-use context;
+use core\context;
 
 /**
  * Content bank class
@@ -65,7 +66,7 @@ class contentbank {
      * @return array The array with all the extensions supported and the supporting plugin names.
      */
     public function load_all_supported_extensions(): array {
-        $extensionscache = \cache::make('core', 'contentbank_enabled_extensions');
+        $extensionscache = cache::make('core', 'contentbank_enabled_extensions');
         $supportedextensions = $extensionscache->get('enabled_extensions');
         if ($supportedextensions === false) {
             // Load all enabled extensions.
@@ -96,7 +97,7 @@ class contentbank {
      * @return array The array with all the extensions supported and the supporting plugin names.
      */
     public function load_context_supported_extensions(?context $context = null): array {
-        $extensionscache = \cache::make('core', 'contentbank_context_extensions');
+        $extensionscache = cache::make('core', 'contentbank_context_extensions');
 
         $contextextensions = $extensionscache->get($context->id);
         if ($contextextensions === false) {
@@ -231,8 +232,8 @@ class contentbank {
             $userid = $USER->id;
         }
 
-        $categoriescache = \cache::make('core', 'contentbank_allowed_categories');
-        $coursescache = \cache::make('core', 'contentbank_allowed_courses');
+        $categoriescache = cache::make('core', 'contentbank_allowed_categories');
+        $coursescache = cache::make('core', 'contentbank_allowed_courses');
 
         $categories = $categoriescache->get($userid);
         $courses = $coursescache->get($userid);
@@ -258,7 +259,7 @@ class contentbank {
      * @param stored_file $file The file to get information from
      * @return content
      */
-    public function create_content_from_file(\context $context, int $userid, stored_file $file): ?content {
+    public function create_content_from_file(context $context, int $userid, stored_file $file): ?content {
         global $USER;
         if (empty($userid)) {
             $userid = $USER->id;
@@ -330,13 +331,13 @@ class contentbank {
      *
      * @return string[] List of content types where the user has permission to access the feature.
      */
-    public function get_contenttypes_with_capability_feature(string $feature, ?\context $context = null, bool $enabled = true): array {
+    public function get_contenttypes_with_capability_feature(string $feature, ?context $context = null, bool $enabled = true): array {
         $contenttypes = [];
         // Check enabled content types or all of them.
         if ($enabled) {
             $contenttypestocheck = $this->get_enabled_content_types();
         } else {
-            $plugins = core_plugin_manager::instance()->get_plugins_of_type('contenttype');
+            $plugins = plugin_manager::instance()->get_plugins_of_type('contenttype');
             foreach ($plugins as $plugin) {
                 $contenttypeclassname = "\\{$plugin->type}_{$plugin->name}\\contenttype";
                 $contenttypestocheck[$contenttypeclassname] = $plugin->name;

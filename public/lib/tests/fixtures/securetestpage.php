@@ -22,13 +22,15 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require_once(__DIR__ . '/../../../config.php');
 // Behat test fixture only.
 defined('BEHAT_SITE_RUNNING') || die('Only available on Behat test server');
 
 $PAGE->set_pagelayout('secure');
 $PAGE->set_url('/lib/tests/fixtures/securetestpage.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $title = 'Secure test page';
 $PAGE->set_title($title);
 $PAGE->set_heading($title);

@@ -24,8 +24,8 @@
 
 namespace mod_bigbluebuttonbn\local\helpers;
 
-use cache;
-use cache_store;
+use core_cache\cache;
+use core_cache\store;
 use core\context;
 use core\context\{course, system};
 use mod_bigbluebuttonbn\instance;
@@ -419,7 +419,7 @@ class roles {
      * @return void
      */
     public static function participant_joined(string $meetingid, bool $ismoderator): void {
-        $cache = cache::make_from_params(cache_store::MODE_APPLICATION, 'mod_bigbluebuttonbn', 'meetings_cache');
+        $cache = cache::make_from_params(store::MODE_APPLICATION, 'mod_bigbluebuttonbn', 'meetings_cache');
         $result = $cache->get($meetingid);
         $meetinginfo = json_decode($result['meeting_info']);
         $meetinginfo->participantCount += 1;

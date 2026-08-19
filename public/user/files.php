@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\output\html_writer;
+
 require('../config.php');
 
 require_login();
@@ -30,7 +33,7 @@ if (isguestuser()) {
     die();
 }
 
-$context = context_user::instance($USER->id);
+$context = user::instance($USER->id);
 require_capability('moodle/user:manageownfiles', $context);
 
 $title = get_string('privatefiles');

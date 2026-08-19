@@ -22,6 +22,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot . '/user/editlib.php');
 require_once($CFG->dirroot . '/user/lib.php');
@@ -34,7 +36,7 @@ list($user, $course) = useredit_setup_preference_page($userid, SITEID);
 
 $options = \core\user::get_default_homepage_options();
 if (empty($options)) {
-    redirect(new moodle_url('/user/preferences.php', ['userid' => $user->id]));
+    redirect(new url('/user/preferences.php', ['userid' => $user->id]));
 }
 
 $form = new core_user\form\defaulthomepage_form();
@@ -54,7 +56,7 @@ if (isset($CFG->enablemycourses) && !$CFG->enablemycourses && $user->defaulthome
 }
 $form->set_data($user);
 
-$redirect = new moodle_url('/user/preferences.php', ['userid' => $user->id]);
+$redirect = new url('/user/preferences.php', ['userid' => $user->id]);
 if ($form->is_cancelled()) {
     redirect($redirect);
 } else if ($data = $form->get_data()) {

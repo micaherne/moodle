@@ -18,7 +18,7 @@ namespace core_course\route\controller;
 
 use core\router\route;
 use core\router\require_login;
-use navigation_node;
+use core\navigation\navigation_node;
 use Psr\Http\Message\ResponseInterface;
 
 /**

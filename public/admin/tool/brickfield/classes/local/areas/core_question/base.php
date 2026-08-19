@@ -16,8 +16,11 @@
 
 namespace tool_brickfield\local\areas\core_question;
 
+use core\context;
+use core\context\course;
 use core\event\question_created;
 use core\event\question_updated;
+use core\url;
 use tool_brickfield\area_base;
 
 /**
@@ -72,7 +75,7 @@ abstract class base extends area_base {
      */
     public function find_course_areas(int $courseid): ?\moodle_recordset {
         global $DB;
-        $coursecontext = \context_course::instance($courseid);
+        $coursecontext = course::instance($courseid);
         $param = [
             'module' => CONTEXT_MODULE,
             'coursecontextpath' => $DB->sql_like_escape($coursecontext->path) . '/%',
@@ -151,16 +154,16 @@ abstract class base extends area_base {
      * @param \stdClass $componentinfo
      * @return \moodle_url
      */
-    public static function get_edit_url(\stdClass $componentinfo): \moodle_url {
+    public static function get_edit_url(\stdClass $componentinfo): url {
         $questionid = $componentinfo->itemid;
-        $context = \context::instance_by_id($componentinfo->contextid);
+        $context = context::instance_by_id($componentinfo->contextid);
         $cmid = $context->instanceid;
         // Question answers are editable on main question page.
         // Hence, use refid for these links.
         if ($componentinfo->tablename === 'question_answers') {
             $questionid = $componentinfo->refid;
         }
-        return new \moodle_url(
+        return new url(
             '/question/bank/editquestion/question.php',
             [
                 'id' => $questionid,

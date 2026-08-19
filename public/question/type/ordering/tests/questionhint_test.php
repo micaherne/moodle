@@ -17,6 +17,7 @@
 namespace qtype_ordering;
 
 use advanced_testcase;
+use core\context\system;
 use qtype_ordering;
 use question_bank;
 
@@ -70,7 +71,7 @@ final class questionhint_test extends advanced_testcase {
     public function test_make_hint(): void {
         $this->resetAfterTest();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $generator->create_question_category(['contextid' => $syscontext->id]);
 

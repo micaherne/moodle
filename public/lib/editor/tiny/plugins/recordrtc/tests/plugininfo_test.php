@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace tiny_recordrtc;
 
 use advanced_testcase;
+use core\context\system;
 
 /**
  * Unit tests for the \tiny_recordrtc\plugininfo class.
@@ -50,7 +51,7 @@ final class plugininfo_test extends advanced_testcase {
     public function test_for_external(bool $guest, bool $expectedenabled, array $expectedconfiguration): void {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
-        $context = \context_system::instance();
+        $context = system::instance();
         if ($guest) {
             $this->setUser($user);
         } else {
@@ -69,7 +70,7 @@ final class plugininfo_test extends advanced_testcase {
     public function test_for_external_with_ignore_limits_capability(): void {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
-        $context = \context_system::instance();
+        $context = system::instance();
         $roleid = $generator->create_role();
         assign_capability('moodle/course:ignorefilesizelimits', CAP_ALLOW, $roleid, $context->id);
         role_assign($roleid, $user->id, $context->id);

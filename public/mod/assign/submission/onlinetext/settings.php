@@ -22,7 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$settings->add(new admin_setting_configcheckbox('assignsubmission_onlinetext/default',
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+
+$settings->add(new configcheckbox('assignsubmission_onlinetext/default',
                    new lang_string('default', 'assignsubmission_onlinetext'),
                    new lang_string('default_help', 'assignsubmission_onlinetext'), 0));
 

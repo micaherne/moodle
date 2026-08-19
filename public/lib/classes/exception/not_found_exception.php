@@ -25,7 +25,7 @@ use core\router\response\not_found_response;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
  */
-class not_found_exception extends \moodle_exception implements response_aware_exception {
+class not_found_exception extends moodle_exception implements response_aware_exception {
     /**
      * Constructor for a new not found exception.
      *

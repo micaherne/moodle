@@ -16,6 +16,7 @@
 
 namespace core_my\external;
 
+use core\context\system;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -73,7 +74,7 @@ class view_page extends external_api {
         }
 
         // Trigger my/dashboard view event.
-        $context = \context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         if ($status) {
             $event = $eventname::create(['context' => $context]);

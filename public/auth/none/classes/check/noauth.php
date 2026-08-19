@@ -28,6 +28,8 @@ namespace auth_none\check;
 defined('MOODLE_INTERNAL') || die();
 
 use core\check\result;
+use core\output\action_link;
+use core\url;
 
 /**
  * Verifies unsupported noauth setting
@@ -43,9 +45,9 @@ class noauth extends \core\check\check {
      *
      * @return action_link
      */
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url('/admin/settings.php?section=manageauths'),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url('/admin/settings.php?section=manageauths'),
             get_string('authsettings', 'admin'));
     }
 

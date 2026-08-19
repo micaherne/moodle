@@ -24,14 +24,20 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configduration;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_heading('factor_token/description', '',
+    $settings->add(new heading('factor_token/description', '',
         new lang_string('settings:description', 'factor_token')));
-    $settings->add(new admin_setting_heading('factor_token/settings', new lang_string('settings', 'moodle'), ''));
+    $settings->add(new heading('factor_token/settings', new lang_string('settings', 'moodle'), ''));
 
-    $enabled = new admin_setting_configcheckbox('factor_token/enabled',
+    $enabled = new configcheckbox('factor_token/enabled',
         new lang_string('settings:enablefactor', 'tool_mfa'),
         new lang_string('settings:enablefactor_help', 'tool_mfa'), 0);
     $enabled->set_updatedcallback(function () {
@@ -39,15 +45,15 @@ if ($ADMIN->fulltree) {
     });
     $settings->add($enabled);
 
-    $settings->add(new admin_setting_configtext('factor_token/weight',
+    $settings->add(new configtext('factor_token/weight',
         new lang_string('settings:weight', 'tool_mfa'),
         new lang_string('settings:weight_help', 'tool_mfa'), 100, PARAM_INT));
 
-    $settings->add(new admin_setting_configduration('factor_token/expiry',
+    $settings->add(new configduration('factor_token/expiry',
         new lang_string('settings:expiry', 'factor_token'),
         new lang_string('settings:expiry_help', 'factor_token'), DAYSECS));
 
-    $settings->add(new admin_setting_configcheckbox('factor_token/expireovernight',
+    $settings->add(new configcheckbox('factor_token/expireovernight',
         new lang_string('settings:expireovernight', 'factor_token'),
         new lang_string('settings:expireovernight_help', 'factor_token'), 1));
 }

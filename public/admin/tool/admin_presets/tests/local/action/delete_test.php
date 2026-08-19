@@ -16,6 +16,8 @@
 
 namespace tool_admin_presets\local\action;
 
+use core\exception\moodle_exception;
+
 /**
  * Tests for the delete class.
  *
@@ -70,7 +72,7 @@ final class delete_test extends \advanced_testcase {
         } catch (\exception $e) {
             // If delete action was successfull, redirect should be called so we will encounter an
             // 'unsupported redirect error' moodle_exception.
-            $this->assertInstanceOf(\moodle_exception::class, $e);
+            $this->assertInstanceOf(moodle_exception::class, $e);
         } finally {
             // Check the preset data has been removed.
             $presets = $DB->get_records('adminpresets');
@@ -120,7 +122,7 @@ final class delete_test extends \advanced_testcase {
         $_POST['sesskey'] = sesskey();
 
         $action = new delete();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $action->execute();
     }
 
@@ -144,7 +146,7 @@ final class delete_test extends \advanced_testcase {
         $_POST['id'] = $presetid * 2; // Unexisting preset identifier.
 
         $action = new delete();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $action->show();
     }
 }

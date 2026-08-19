@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -31,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2017 Stephen Bourget
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_ldap_admin_setting_special_ntlm_configtext extends admin_setting_configtext {
+class auth_ldap_admin_setting_special_ntlm_configtext extends configtext {
 
     /**
      * We need to validate the username format when using NTLM.

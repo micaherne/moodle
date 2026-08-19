@@ -22,6 +22,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core_course\modinfo;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -180,13 +185,13 @@ class tool_generator_testplan_backend extends tool_generator_backend {
     protected static function generate_users_file($targetcourseid, $updateuserspassword, ?int $size = null) {
         global $CFG;
 
-        $coursecontext = context_course::instance($targetcourseid);
+        $coursecontext = course::instance($targetcourseid);
 
         // If requested, get the number of users (threads) to use in the plan. We only need those in the exported file.
         $planusers = self::$users[$size] ?? 0;
         $users = get_enrolled_users($coursecontext, '', 0, 'u.id, u.username, u.auth', 'u.username ASC', 0, $planusers);
         if (!$users) {
-            throw new \moodle_exception('coursewithoutusers', 'tool_generator');
+            throw new moodle_exception('coursewithoutusers', 'tool_generator');
         }
 
         $lines = array();
@@ -196,7 +201,7 @@ class tool_generator_testplan_backend extends tool_generator_backend {
             if ($updateuserspassword) {
                 $userauth = \core\di::get(\core\authentication::class)->get_plugin($user->auth);
                 if (!$userauth->user_update_password($user, $CFG->tool_generator_users_password)) {
-                    throw new \moodle_exception('errorpasswordupdate', 'auth');
+                    throw new moodle_exception('errorpasswordupdate', 'auth');
                 }
             }
 
@@ -216,7 +221,7 @@ class tool_generator_testplan_backend extends tool_generator_backend {
      */
     protected static function get_file_record($filearea, $filetype) {
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $filerecord = new stdClass();
         $filerecord->contextid = $systemcontext->id;
@@ -245,23 +250,23 @@ class tool_generator_testplan_backend extends tool_generator_backend {
         // Getting course contents info as the current user (will be an admin).
         $course = new stdClass();
         $course->id = $targetcourseid;
-        $courseinfo = new course_modinfo($course, $USER->id);
+        $courseinfo = new modinfo($course, $USER->id);
 
         // Getting the first page module instance.
         if (!$pages = $courseinfo->get_instances_of('page')) {
-            throw new \moodle_exception('error_nopageinstances', 'tool_generator');
+            throw new moodle_exception('error_nopageinstances', 'tool_generator');
         }
         $data->pageid = reset($pages)->id;
 
         // Getting the first forum module instance and it's first discussion and reply as well.
         if (!$forums = $courseinfo->get_instances_of('forum')) {
-            throw new \moodle_exception('error_noforuminstances', 'tool_generator');
+            throw new moodle_exception('error_noforuminstances', 'tool_generator');
         }
         $forum = reset($forums);
 
         // Getting the first discussion (and reply).
         if (!$discussions = forum_get_discussions($forum, 'd.timemodified ASC', false, -1, 1)) {
-            throw new \moodle_exception('error_noforumdiscussions', 'tool_generator');
+            throw new moodle_exception('error_noforumdiscussions', 'tool_generator');
         }
         $discussion = reset($discussions);
 
@@ -292,7 +297,7 @@ class tool_generator_testplan_backend extends tool_generator_backend {
             }
         }
 
-        $coursecontext = context_course::instance($course, IGNORE_MISSING);
+        $coursecontext = course::instance($course, IGNORE_MISSING);
         if (!$coursecontext) {
             $errors['courseid'] = get_string('error_nonexistingcourse', 'tool_generator');
             return $errors;

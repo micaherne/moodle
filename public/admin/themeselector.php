@@ -22,6 +22,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\theme_config;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -55,7 +58,7 @@ if (!$definedinconfig && !empty($choose) && confirm_sesskey()) {
     // Load the theme to make sure it is valid.
     $theme = theme_config::load($choose);
 
-    if ($theme instanceof \theme_config) {
+    if ($theme instanceof theme_config) {
         set_config('theme', $theme->name);
         $notifytype = 'success';
         $notifymessage = get_string('themesaved');
@@ -65,7 +68,7 @@ if (!$definedinconfig && !empty($choose) && confirm_sesskey()) {
     }
 
     // Redirect with notification.
-    redirect(new moodle_url('/admin/themeselector.php'), $notifymessage, null, $notifytype);
+    redirect(new url('/admin/themeselector.php'), $notifymessage, null, $notifytype);
 }
 
 // Insert header.
@@ -105,7 +108,7 @@ foreach ($themes as $themename => $themedir) {
     $themedata['choose'] = $themename;
 
     // Image to display for previewing.
-    $image = new moodle_url('/theme/image.php', ['theme' => $themename, 'image' => 'screenshot', 'component' => 'theme']);
+    $image = new url('/theme/image.php', ['theme' => $themename, 'image' => 'screenshot', 'component' => 'theme']);
     $themedata['image'] = $image;
 
     // Is this the current theme?
@@ -114,7 +117,7 @@ foreach ($themes as $themename => $themedir) {
         $currentthemeindex = $index;
     } else if (!$definedinconfig) {
         // Form params.
-        $actionurl = new moodle_url('/admin/themeselector.php');
+        $actionurl = new url('/admin/themeselector.php');
         $themedata['actionurl'] = $actionurl;
         $themedata['sesskey'] = sesskey();
     }
@@ -123,13 +126,13 @@ foreach ($themes as $themename => $themedir) {
     $settingspath = "$themedir/settings.php";
     if (file_exists($settingspath)) {
         $section = "themesetting{$themename}";
-        $settingsurl = new moodle_url('/admin/settings.php', ['section' => $section]);
+        $settingsurl = new url('/admin/settings.php', ['section' => $section]);
         $themedata['settingsurl'] = $settingsurl;
     }
 
     // Link to the theme usage report if override enabled and it is being used in at least one context.
     if (\core\output\theme_usage::is_theme_used_in_any_context($themename) === \core\output\theme_usage::THEME_IS_USED) {
-        $reporturl = new moodle_url($CFG->wwwroot . '/report/themeusage/index.php');
+        $reporturl = new url($CFG->wwwroot . '/report/themeusage/index.php');
         $reporturl->params(['themechoice' => $themename]);
         $themedata['reporturl'] = $reporturl->out(false);
     }

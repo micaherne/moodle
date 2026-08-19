@@ -16,6 +16,7 @@
 
 namespace aiplacement_courseassist;
 
+use core\context\course;
 use core_ai\ai_test_trait;
 
 defined('MOODLE_INTERNAL') || die();
@@ -37,7 +38,7 @@ final class utils_test extends \advanced_testcase {
     /** @var \stdClass Course object. */
     private \stdClass $course;
     /** @var \context_course Course context. */
-    private \context_course $context;
+    private course $context;
     /** @var \stdClass Teacher role. */
     private \stdClass $teacherrole;
 
@@ -49,7 +50,7 @@ final class utils_test extends \advanced_testcase {
         $this->users[1] = $this->getDataGenerator()->create_user();
         $this->users[2] = $this->getDataGenerator()->create_user();
         $this->course = $this->getDataGenerator()->create_course();
-        $this->context = \context_course::instance($this->course->id);
+        $this->context = course::instance($this->course->id);
         $this->teacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
         $this->getDataGenerator()->enrol_user($this->users[1]->id, $this->course->id, 'manager');
         $this->getDataGenerator()->enrol_user($this->users[2]->id, $this->course->id, 'editingteacher');

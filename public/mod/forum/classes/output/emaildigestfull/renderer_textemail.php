@@ -24,6 +24,8 @@
 
 namespace mod_forum\output\emaildigestfull;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,7 +55,7 @@ class renderer_textemail extends \mod_forum\output\email\renderer_textemail {
      * @return string
      */
     public function format_message_text($cm, $post) {
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $message = file_rewrite_pluginfile_urls(
             $post->message,
             'pluginfile.php',

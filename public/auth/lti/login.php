@@ -32,8 +32,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
 use core\event\user_login_failed;
+use core\exception\coding_exception;
 use core\output\notification;
+use core\url;
 
 require_once(__DIR__ . '/../../config.php');
 
@@ -68,7 +71,7 @@ if ($newaccount) {
         // Site settings prevent creating new accounts.
         $errormsg = get_string('cannotcreateaccounts', 'auth_lti');
         $SESSION->loginerrormsg = $errormsg;
-        redirect(new moodle_url('/login/index.php'));
+        redirect(new url('/login/index.php'));
     } else {
         // Create a new account and link it, logging the user in.
         $auth = \core\di::get(\core\authentication::class)->get_plugin('lti');
@@ -76,8 +79,8 @@ if ($newaccount) {
         complete_user_login($newuser);
         $auth->update_user_account($newuser, $launchdata, $launchdata['iss']);
 
-        $PAGE->set_context(context_system::instance());
-        $PAGE->set_url(new moodle_url('/auth/lti/login.php'));
+        $PAGE->set_context(system::instance());
+        $PAGE->set_url(new url('/auth/lti/login.php'));
         $PAGE->set_pagelayout('popup');
         $renderer = $PAGE->get_renderer('auth_lti');
         echo $OUTPUT->header();
@@ -100,8 +103,8 @@ if ($newaccount) {
     $auth = \core\di::get(\core\authentication::class)->get_plugin('lti');
     $auth->create_user_binding($launchdata['iss'], $launchdata['sub'], $USER->id);
 
-    $PAGE->set_context(context_system::instance());
-    $PAGE->set_url(new moodle_url('/auth/lti/login.php'));
+    $PAGE->set_context(system::instance());
+    $PAGE->set_url(new url('/auth/lti/login.php'));
     $PAGE->set_pagelayout('popup');
     $renderer = $PAGE->get_renderer('auth_lti');
     echo $OUTPUT->header();
@@ -114,8 +117,8 @@ if ($newaccount) {
 }
 
 // Render the relevant account provisioning page, based on the provisioningmode set in the calling code.
-$PAGE->set_context(context_system::instance());
-$PAGE->set_url(new moodle_url('/auth/lti/login.php'));
+$PAGE->set_context(system::instance());
+$PAGE->set_url(new url('/auth/lti/login.php'));
 $PAGE->set_pagelayout('popup');
 $renderer = $PAGE->get_renderer('auth_lti');
 

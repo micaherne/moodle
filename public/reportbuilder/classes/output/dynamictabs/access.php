@@ -18,13 +18,13 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\output\dynamictabs;
 
-use context_system;
+use core\context\system;
 use core\output\dynamic_tabs\base;
 use core_reportbuilder\local\models\report;
 use core_reportbuilder\local\systemreports\report_access_list;
 use core_reportbuilder\permission;
 use core_reportbuilder\system_report_factory;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Access dynamic tab
@@ -42,7 +42,7 @@ class access extends base {
      * @return array
      */
     public function export_for_template(renderer_base $output): array {
-        $report = system_report_factory::create(report_access_list::class, context_system::instance(), '', '', 0,
+        $report = system_report_factory::create(report_access_list::class, system::instance(), '', '', 0,
             ['id' => $this->data['reportid']]);
         $data['report'] = $report->output();
         return $data;

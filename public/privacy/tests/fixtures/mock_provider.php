@@ -24,6 +24,8 @@
 
 namespace mod_testcomponent\privacy;
 
+use core\context;
+use core\context\system;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\contextlist;
@@ -51,7 +53,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      */
     public static function get_contexts_for_userid(int $userid): contextlist {
         $cl = new contextlist();
-        $cl->add_from_sql("SELECT c.id FROM {context} c WHERE c.id = :id", ['id' => \context_system::instance()->id]);
+        $cl->add_from_sql("SELECT c.id FROM {context} c WHERE c.id = :id", ['id' => system::instance()->id]);
 
         return $cl;
     }
@@ -70,7 +72,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
      *
      * @param   context         $context   The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         // This does nothing. We only want to confirm this can be called via the \core_privacy\manager.
     }
 

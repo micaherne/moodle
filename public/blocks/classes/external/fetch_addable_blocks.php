@@ -16,6 +16,7 @@
 
 namespace core_block\external;
 
+use core\context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -83,7 +84,7 @@ class fetch_addable_blocks extends external_api {
             // For backward-compatibility and Mobile App instead of pagehash
             // we can specify context, pagelayout, pagetype and subtype.
 
-            $context = \context::instance_by_id($params['pagecontextid']);
+            $context = context::instance_by_id($params['pagecontextid']);
             // Validate the context. This will also set the context in $PAGE.
             self::validate_context($context);
 

@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require(__DIR__ . '/../../../../../config.php');
 require_once($CFG->libdir . '/filestorage/file_storage.php');
 require_once($CFG->dirroot . '/repository/lib.php');
@@ -53,12 +58,12 @@ if ($context->contextlevel == CONTEXT_MODULE) {
 
 // Guests can never manage files.
 if (isguestuser()) {
-    throw new \moodle_exception('noguest');
+    throw new moodle_exception('noguest');
 }
 
 $title = get_string('managefiles', 'tiny_media');
 
-$url = new moodle_url('/lib/editor/tiny/plugins/media/manage.php', [
+$url = new url('/lib/editor/tiny/plugins/media/manage.php', [
     'itemid' => $itemid,
     'maxbytes' => $maxbytes,
     'subdirs' => $subdirs,
@@ -91,7 +96,7 @@ $options = [
     'context' => $context
 ];
 
-$usercontext = context_user::instance($USER->id);
+$usercontext = user::instance($USER->id);
 $fs = get_file_storage();
 $files = $fs->get_directory_files($usercontext->id, 'user', 'draft', $itemid, '/', !empty($subdirs), false);
 $filenames = [];

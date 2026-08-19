@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\actions\popup_action;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -68,7 +73,7 @@ class core_role_permissions_table extends core_role_capability_table_base {
     protected function add_row_cells($capability) {
         global $OUTPUT, $PAGE;
         $renderer = $PAGE->get_renderer('core');
-        $adminurl = new moodle_url("/admin/");
+        $adminurl = new url("/admin/");
 
         $context = $this->context;
         $contextid = $this->context->id;
@@ -117,7 +122,7 @@ class core_role_permissions_table extends core_role_capability_table_base {
         $forbiddenroles = implode(' ', $forbiddenroles);
 
         if ($allowable and ($allowoverrides or ($allowsafeoverrides and is_safe_capability($capability)))) {
-            $allowurl = new moodle_url($PAGE->url, array('contextid' => $contextid,
+            $allowurl = new url($PAGE->url, array('contextid' => $contextid,
                                        'capability' => $capability->name, 'allow' => 1));
             $allowicon = $OUTPUT->action_icon($allowurl, new pix_icon('t/add', get_string('allow', 'core_role')), null,
                                             array('class' => 'allowlink', 'data-action' => 'allow'));
@@ -125,7 +130,7 @@ class core_role_permissions_table extends core_role_capability_table_base {
         }
 
         if ($forbitable and ($allowoverrides or ($allowsafeoverrides and is_safe_capability($capability)))) {
-            $prohibiturl = new moodle_url($PAGE->url, array('contextid' => $contextid,
+            $prohibiturl = new url($PAGE->url, array('contextid' => $contextid,
                                           'capability' => $capability->name, 'prohibit' => 1));
             $prohibiticon = $OUTPUT->action_icon($prohibiturl, new pix_icon('t/add', get_string('prohibit', 'core_role')), null,
                                                 array('class' => 'prohibitlink', 'data-action' => 'prohibit'));
@@ -144,7 +149,7 @@ class core_role_permissions_table extends core_role_capability_table_base {
         global $OUTPUT;
 
         $allrisks = get_all_risks();
-        $risksurl = new moodle_url(get_docs_url(s(get_string('risks', 'core_role'))));
+        $risksurl = new url(get_docs_url(s(get_string('risks', 'core_role'))));
 
         $return = '';
 

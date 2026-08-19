@@ -24,6 +24,10 @@
 
 namespace mod_glossary\search;
 
+use core\context;
+use core\context\module;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/glossary/lib.php');
@@ -49,7 +53,7 @@ class entry extends \core_search\base_mod {
      * @param \context|null $context Optional context to restrict scope of returned results
      * @return moodle_recordset|null Recordset (or null if no results)
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
 
         list ($contextjoin, $contextparams) = $this->get_context_restriction_sql(
@@ -84,7 +88,7 @@ class entry extends \core_search\base_mod {
 
         try {
             $cm = $this->get_cm('glossary', $entry->glossaryid, $entry->course);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
         } catch (\dml_missing_record_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving mod_glossary ' . $entry->id . ' document, not all required data is available: ' .
@@ -159,7 +163,7 @@ class entry extends \core_search\base_mod {
 
         // The post is already in static cache, we fetch it in self::search_access.
         $entry = $this->get_entry($doc->get('itemid'));
-        $contextmodule = \context::instance_by_id($doc->get('contextid'));
+        $contextmodule = context::instance_by_id($doc->get('contextid'));
 
         if ($entry->approved == false && $entry->userid != $USER->id) {
             // The URL should change when the entry is not approved and it was not created by the user.
@@ -168,7 +172,7 @@ class entry extends \core_search\base_mod {
             $docparams = array('id' => $contextmodule->instanceid, 'mode' => 'entry', 'hook' => $doc->get('itemid'));
 
         }
-        return new \moodle_url('/mod/glossary/view.php', $docparams);
+        return new url('/mod/glossary/view.php', $docparams);
     }
 
     /**
@@ -178,8 +182,8 @@ class entry extends \core_search\base_mod {
      * @return \moodle_url
      */
     public function get_context_url(\core_search\document $doc) {
-        $contextmodule = \context::instance_by_id($doc->get('contextid'));
-        return new \moodle_url('/mod/glossary/view.php', array('id' => $contextmodule->instanceid));
+        $contextmodule = context::instance_by_id($doc->get('contextid'));
+        return new url('/mod/glossary/view.php', array('id' => $contextmodule->instanceid));
     }
 
     /**

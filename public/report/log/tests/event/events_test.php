@@ -24,6 +24,9 @@
 
 namespace report_log\event;
 
+use core\context\course;
+use core\url;
+
 /**
  * Class report_log_events_testcase
  *
@@ -52,7 +55,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_report_viewed(): void {
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Trigger event for log report viewed.
         $event = \report_log\event\report_viewed::create(array('context' => $context,
@@ -68,7 +71,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\report_log\event\report_viewed', $event);
         $this->assertEquals($context, $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $url = new \moodle_url('/report/log/index.php', array('id' => $event->courseid));
+        $url = new url('/report/log/index.php', array('id' => $event->courseid));
         $this->assertEquals($url, $event->get_url());
     }
 
@@ -81,7 +84,7 @@ final class events_test extends \advanced_testcase {
     public function test_user_report_viewed(): void {
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Trigger event for user report viewed.
         $event = \report_log\event\user_report_viewed::create(array('context' => $context,
@@ -96,7 +99,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\report_log\event\user_report_viewed', $event);
         $this->assertEquals($context, $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $url = new \moodle_url('/report/log/user.php', array('course' => $course->id, 'id' => $user->id, 'mode' => 'today'));
+        $url = new url('/report/log/user.php', array('course' => $course->id, 'id' => $user->id, 'mode' => 'today'));
         $this->assertEquals($url, $event->get_url());
     }
 }

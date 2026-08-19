@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -29,16 +34,16 @@ $action = required_param('action', PARAM_ALPHANUMEXT);
 $type = required_param('type', PARAM_PLUGIN); // Must be provider or placement.
 $name = required_param('name', PARAM_PLUGIN); // Plugin name, e.g openai.
 
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 $PAGE->set_url('/admin/ai.php');
 $PAGE->set_context($syscontext);
 
 require_admin();
 require_sesskey();
 
-$return = new moodle_url('/admin/settings.php', ['section' => "aisettings$type"]);
+$return = new url('/admin/settings.php', ['section' => "aisettings$type"]);
 
-$plugins = core_plugin_manager::instance()->get_plugins_of_type("ai$type");
+$plugins = plugin_manager::instance()->get_plugins_of_type("ai$type");
 $sortorder = array_flip(array_keys($plugins));
 
 if (!isset($plugins[$name])) {
@@ -50,13 +55,13 @@ $plugintypename = $plugins[$name]->type . '_' . $plugins[$name]->name;
 switch ($action) {
     case 'disable':
         if ($plugins[$name]->is_enabled()) {
-            $class = core_plugin_manager::resolve_plugininfo_class("aisettings$type");
+            $class = plugin_manager::resolve_plugininfo_class("aisettings$type");
             $class::enable_plugin($name, false);
         }
         break;
     case 'enable':
         if (!$plugins[$name]->is_enabled()) {
-            $class = core_plugin_manager::resolve_plugininfo_class("aisettings$type");
+            $class = plugin_manager::resolve_plugininfo_class("aisettings$type");
             $class::enable_plugin($name, true);
         }
         break;

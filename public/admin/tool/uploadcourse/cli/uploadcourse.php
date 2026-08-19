@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../../config.php');
@@ -194,9 +196,9 @@ $cir = new csv_import_reader($importid, 'uploadcourse');
 $readcount = $cir->load_csv_content($content, $options['encoding'], $options['delimiter']);
 unset($content);
 if ($readcount === false) {
-    throw new \moodle_exception('csvfileerror', 'tool_uploadcourse', '', $cir->get_error());
+    throw new moodle_exception('csvfileerror', 'tool_uploadcourse', '', $cir->get_error());
 } else if ($readcount == 0) {
-    throw new \moodle_exception('csvemptyfile', 'error', '', $cir->get_error());
+    throw new moodle_exception('csvemptyfile', 'error', '', $cir->get_error());
 }
 $processor = new tool_uploadcourse_processor($cir, $processoroptions, $defaults);
 $processor->execute(new tool_uploadcourse_tracker(tool_uploadcourse_tracker::OUTPUT_PLAIN));

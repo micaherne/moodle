@@ -16,6 +16,7 @@
 
 namespace tool_policy\external;
 
+use core\context\system;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -24,8 +25,8 @@ use core_external\external_format_value;
 use core_external\external_value;
 use core_external\external_warnings;
 use tool_policy\api;
-use context_user;
-use core_user;
+use core\context\user as context_user;
+use core\user as core_user;
 use core_external\util;
 
 /**
@@ -73,7 +74,7 @@ class get_user_acceptances extends external_api {
             define('NO_SITEPOLICY_CHECK', true);
         }
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         external_api::validate_context($systemcontext);
 
         if (empty($params['userid']) || $params['userid'] == $USER->id) {

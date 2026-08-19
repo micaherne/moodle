@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/locallib.php');
 
@@ -35,7 +37,7 @@ $assign = new assign(\core\context\module::instance($cmid), $cm, $course);
 if ($assign->can_view_grades()) {
     // If a userid is provided (E.g. when performing grade analysis for a specific student), go to the grader pane.
     // Otherwise, show the submissions view.
-    redirect(new moodle_url(
+    redirect(new url(
         '/mod/assign/view.php',
         [
             'id' => $cmid,
@@ -45,7 +47,7 @@ if ($assign->can_view_grades()) {
     ));
 } else {
     // Students just see the submission view.
-    redirect(new moodle_url(
+    redirect(new url(
         '/mod/assign/view.php',
         [
             'id' => $cmid,

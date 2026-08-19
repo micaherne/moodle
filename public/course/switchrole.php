@@ -29,6 +29,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 
@@ -43,10 +46,10 @@ if ($switchrole >= 0) {
 }
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    redirect(new moodle_url('/'));
+    redirect(new url('/'));
 }
 
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 // Remove any switched roles before checking login.
 if ($switchrole == 0) {
@@ -90,16 +93,16 @@ if ($switchrole > 0 && has_capability('moodle/role:switchroles', $context)) {
     echo $OUTPUT->box(markdown_to_html(get_string('switchroleto_help')));
 
     foreach ($roles as $key => $role) {
-        $url = new moodle_url('/course/switchrole.php', array('id' => $id, 'switchrole' => $key, 'returnurl' => $returnurl));
+        $url = new url('/course/switchrole.php', array('id' => $id, 'switchrole' => $key, 'returnurl' => $returnurl));
         // Button encodes special characters, apply htmlspecialchars_decode() to avoid double escaping.
         echo $OUTPUT->container($OUTPUT->single_button($url, htmlspecialchars_decode($role, ENT_COMPAT)), 'mx-3 mb-1');
     }
 
-    $url = new moodle_url($returnurl);
+    $url = new url($returnurl);
     echo $OUTPUT->container($OUTPUT->action_link($url, get_string('cancel')), 'mx-3 mb-1');
 
     echo $OUTPUT->footer();
     exit;
 }
 
-redirect(new moodle_url($returnurl));
+redirect(new url($returnurl));

@@ -20,13 +20,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/badgeslib.php');
 
-use coding_exception;
-use context_course;
+use core\exception\coding_exception;
+use core\context\course;
 use stdClass;
-use renderable;
+use core\output\renderable;
 use core_badges\badge;
-use moodle_url;
-use renderer_base;
+use core\url;
+use core\output\renderer_base;
 
 /**
  * Page to display badge information, such as name, description or criteria. This information is unrelated to assertions.
@@ -72,7 +72,7 @@ class badgeclass implements renderable {
         global $DB, $SITE;
 
         $data = new stdClass();
-        if ($this->context instanceof context_course) {
+        if ($this->context instanceof course) {
             $data->coursefullname = format_string($DB->get_field('course', 'fullname', ['id' => $this->badge->courseid]),
                 true, ['context' => $this->context]);
         } else {
@@ -141,7 +141,7 @@ class badgeclass implements renderable {
             $data->relatedbadges = [];
             foreach ($relatedbadges as $related) {
                 if (isloggedin() && !is_guest($this->context)) {
-                    $related->url = (new moodle_url('/badges/overview.php', ['id' => $related->id]))->out(false);
+                    $related->url = (new url('/badges/overview.php', ['id' => $related->id]))->out(false);
                 }
                 $data->relatedbadges[] = (array)$related;
             }

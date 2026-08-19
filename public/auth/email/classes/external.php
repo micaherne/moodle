@@ -24,6 +24,11 @@
  * @since      Moodle 3.2
  */
 
+use core\context\system;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\url;
+use core\user;
 use core_external\external_api;
 use core_external\external_format_value;
 use core_external\external_function_parameters;
@@ -83,7 +88,7 @@ class auth_email_external extends external_api {
     public static function get_signup_settings() {
         global $CFG, $PAGE;
 
-        $context = context_system::instance();
+        $context = system::instance();
         // We need this to make work the format text functions.
         $PAGE->set_context($context);
 
@@ -198,13 +203,13 @@ class auth_email_external extends external_api {
     public static function signup_user_parameters() {
         return new external_function_parameters(
             array(
-                'username' => new external_value(core_user::get_property_type('username'), 'Username'),
-                'password' => new external_value(core_user::get_property_type('password'), 'Plain text password'),
-                'firstname' => new external_value(core_user::get_property_type('firstname'), 'The first name(s) of the user'),
-                'lastname' => new external_value(core_user::get_property_type('lastname'), 'The family name of the user'),
-                'email' => new external_value(core_user::get_property_type('email'), 'A valid and unique email address'),
-                'city' => new external_value(core_user::get_property_type('city'), 'Home city of the user', VALUE_DEFAULT, ''),
-                'country' => new external_value(core_user::get_property_type('country'), 'Home country code', VALUE_DEFAULT, ''),
+                'username' => new external_value(user::get_property_type('username'), 'Username'),
+                'password' => new external_value(user::get_property_type('password'), 'Plain text password'),
+                'firstname' => new external_value(user::get_property_type('firstname'), 'The first name(s) of the user'),
+                'lastname' => new external_value(user::get_property_type('lastname'), 'The family name of the user'),
+                'email' => new external_value(user::get_property_type('email'), 'A valid and unique email address'),
+                'city' => new external_value(user::get_property_type('city'), 'Home city of the user', VALUE_DEFAULT, ''),
+                'country' => new external_value(user::get_property_type('country'), 'Home country code', VALUE_DEFAULT, ''),
                 'recaptchachallengehash' => new external_value(PARAM_RAW, 'Recaptcha challenge hash', VALUE_DEFAULT, ''),
                 'recaptcharesponse' => new external_value(PARAM_NOTAGS, 'Recaptcha response', VALUE_DEFAULT, ''),
                 'customprofilefields' => new external_multiple_structure(
@@ -265,7 +270,7 @@ class auth_email_external extends external_api {
         );
 
         // We need this to make work the format text functions.
-        $context = context_system::instance();
+        $context = system::instance();
         $PAGE->set_context($context);
 
         self::check_signup_enabled();
@@ -352,9 +357,9 @@ class auth_email_external extends external_api {
             $confirmationurl = null;
             if (!empty($params['redirect'])) {
                 // Pass via moodle_url to fix thinks like admin links.
-                $redirect = new moodle_url($params['redirect']);
+                $redirect = new url($params['redirect']);
 
-                $confirmationurl = new moodle_url('/login/confirm.php', array('redirect' => $redirect->out()));
+                $confirmationurl = new url('/login/confirm.php', array('redirect' => $redirect->out()));
             }
             $authplugin->user_signup_with_confirmation($user, false, $confirmationurl);
 

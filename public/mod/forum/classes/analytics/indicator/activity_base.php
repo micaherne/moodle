@@ -24,6 +24,8 @@
 
 namespace mod_forum\analytics\indicator;
 
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -56,7 +58,7 @@ abstract class activity_base extends \core_analytics\local\indicator\community_o
      * @param int $after
      * @return bool
      */
-    protected function feedback_post_action(\cm_info $cm, $contextid, $userid, $eventnames, $after = false) {
+    protected function feedback_post_action(cm_info $cm, $contextid, $userid, $eventnames, $after = false) {
 
         if (empty($this->activitylogs[$contextid][$userid])) {
             return false;

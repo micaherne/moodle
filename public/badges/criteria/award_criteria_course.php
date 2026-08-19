@@ -24,6 +24,11 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use core\context\course;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/completionlib.php');
 require_once($CFG->dirroot . '/grade/querylib.php');
@@ -68,8 +73,8 @@ class award_criteria_course extends award_criteria {
     public function config_form_criteria($data) {
         global $OUTPUT;
 
-        $editurl = new moodle_url('/badges/criteria_settings.php', array('badgeid' => $this->badgeid, 'edit' => true, 'type' => $this->criteriatype, 'crit' => $this->id));
-        $deleteurl = new moodle_url('/badges/criteria_action.php', array('badgeid' => $this->badgeid, 'delete' => true, 'type' => $this->criteriatype));
+        $editurl = new url('/badges/criteria_settings.php', array('badgeid' => $this->badgeid, 'edit' => true, 'type' => $this->criteriatype, 'crit' => $this->id));
+        $deleteurl = new url('/badges/criteria_action.php', array('badgeid' => $this->badgeid, 'delete' => true, 'type' => $this->criteriatype));
         $editaction = $OUTPUT->action_icon($editurl, new pix_icon('t/edit', get_string('edit')), null, array('class' => 'criteria-action'));
         $deleteaction = $OUTPUT->action_icon($deleteurl, new pix_icon('t/delete', get_string('delete')), null, array('class' => 'criteria-action'));
 
@@ -82,7 +87,7 @@ class award_criteria_course extends award_criteria {
         if (!empty($this->description)) {
             echo $OUTPUT->box(
                 format_text($this->description, $this->descriptionformat,
-                        array('context' => context_course::instance($this->courseid))
+                        array('context' => course::instance($this->courseid))
                 ),
                 'criteria-description'
             );
@@ -107,7 +112,7 @@ class award_criteria_course extends award_criteria {
         if (!$course) {
             $str = $OUTPUT->error_text(get_string('error:nosuchcourse', 'badges'));
         } else {
-            $options = array('context' => context_course::instance($course->id));
+            $options = array('context' => course::instance($course->id));
             $str = html_writer::tag('b', '"' . format_string($course->fullname, true, $options) . '"');
             if (isset($param['bydate'])) {
                 $str .= get_string('criteria_descr_bydate', 'badges', userdate($param['bydate'], get_string('strftimedate', 'core_langconfig')));

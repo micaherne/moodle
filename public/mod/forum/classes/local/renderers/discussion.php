@@ -39,18 +39,18 @@ use mod_forum\local\managers\capability as capability_manager;
 use mod_forum\local\renderers\posts as posts_renderer;
 use forum_portfolio_caller;
 use core\output\notification;
-use context;
-use context_module;
-use html_writer;
-use moodle_exception;
+use core\context;
+use core\context\module;
+use core\output\html_writer;
+use core\exception\moodle_exception;
 use moodle_page;
-use moodle_url;
+use core\url;
 use rating_manager;
-use renderer_base;
-use single_button;
-use single_select;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\single_select;
 use stdClass;
-use url_select;
+use core\output\url_select;
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');
 require_once($CFG->dirroot . '/mod/forum/locallib.php');
@@ -137,7 +137,7 @@ class discussion {
         capability_manager $capabilitymanager,
         rating_manager $ratingmanager,
         sorter_entity $exportedpostsorter,
-        moodle_url $baseurl,
+        url $baseurl,
         array $notifications = [],
         ?callable $postprocessfortemplate = null
     ) {
@@ -332,7 +332,7 @@ class discussion {
             $forumcheck = $DB->get_records('forum', ['course' => $courseid], '', 'id, type');
             foreach ($modinfo->instances['forum'] as $forumcm) {
                 if (!$forumcm->uservisible || !has_capability('mod/forum:startdiscussion',
-                    context_module::instance($forumcm->id))) {
+                    module::instance($forumcm->id))) {
                     continue;
                 }
                 $section = $forumcm->sectionnum;
@@ -495,7 +495,7 @@ class discussion {
                 'disabled' => true,
             ];
             if ($neighbour) {
-                $url = new moodle_url('/mod/forum/discuss.php', ['d' => $neighbour->id]);
+                $url = new url('/mod/forum/discuss.php', ['d' => $neighbour->id]);
                 $name = format_string($neighbour->name);
                 $button['url'] = $url->out(false);
                 $button['title'] = get_string($key . 'discussiona', 'mod_forum', $name);

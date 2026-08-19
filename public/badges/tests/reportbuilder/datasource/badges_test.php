@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace core_badges\reportbuilder\datasource;
 
+use core\output\html_writer;
+use core\url;
 use core_badges_generator;
 use core_badges\reportbuilder\local\filters\criteria;
 use core_reportbuilder_generator;
@@ -146,7 +148,7 @@ final class badges_test extends core_reportbuilder_testcase {
         $content = $this->get_custom_report_content($report->get('id'));
         $this->assertCount(3, $content);
 
-        $expectedbadgeonelink = \html_writer::link(new \moodle_url('/badges/overview.php',
+        $expectedbadgeonelink = html_writer::link(new url('/badges/overview.php',
             ['id' => $badgeone->id]), ($badgeone->name));
 
         // First badge, issued to user one.
@@ -185,7 +187,7 @@ final class badges_test extends core_reportbuilder_testcase {
         $this->assertEquals('Yes', $visible);
         $this->assertEquals('PHPUnit test site', $coursename);
 
-        $expectedbadgetwolink = \html_writer::link(new \moodle_url('/badges/overview.php',
+        $expectedbadgetwolink = html_writer::link(new url('/badges/overview.php',
             ['id' => $badgetwo->id]), ($badgetwo->name));
 
         // Course badge, not issues to any users.

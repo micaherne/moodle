@@ -26,6 +26,9 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/question/editlib.php');
 
+use core\context;
+use core\exception\moodle_exception;
+use core\url;
 use core_question\output\qbank_action_menu;
 use core_question\output\qbank_actionbar;
 use core_question\category_manager;
@@ -40,7 +43,7 @@ core_question\local\bank\helper::require_plugin_enabled(helper::PLUGINNAME);
 
 // Since Moodle 5.0 any request with the courseid parameter is deprecated and will redirect to the banks management page.
 if ($courseid = optional_param('courseid', 0, PARAM_INT)) {
-    redirect(new moodle_url('/question/banks.php', ['courseid' => $courseid]));
+    redirect(new url('/question/banks.php', ['courseid' => $courseid]));
 }
 
 list($thispageurl, $contexts, $cmid, $cm, $module, $pagevars) =

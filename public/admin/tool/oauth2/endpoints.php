@@ -22,12 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
 
 $PAGE->set_url('/admin/tool/oauth2/endpoints.php', ['issuerid' => required_param('issuerid', PARAM_INT)]);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('admin');
 $strheading = get_string('pluginname', 'tool_oauth2');
 $PAGE->set_title($strheading);
@@ -45,9 +49,9 @@ $mform = null;
 
 $issuer = \core\oauth2\api::get_issuer($issuerid);
 if (!$issuer) {
-    throw new \moodle_exception('invaliddata');
+    throw new moodle_exception('invaliddata');
 }
-$PAGE->navbar->override_active_url(new moodle_url('/admin/tool/oauth2/issuers.php'), true);
+$PAGE->navbar->override_active_url(new url('/admin/tool/oauth2/issuers.php'), true);
 
 if (!empty($endpointid)) {
     $endpoint = \core\oauth2\api::get_endpoint($endpointid);
@@ -65,7 +69,7 @@ if ($action == 'edit') {
 }
 
 if ($mform && $mform->is_cancelled()) {
-    redirect(new moodle_url('/admin/tool/oauth2/endpoints.php', ['issuerid' => $issuerid]));
+    redirect(new url('/admin/tool/oauth2/endpoints.php', ['issuerid' => $issuerid]));
 } else if ($action == 'edit') {
 
     if ($data = $mform->get_data()) {
@@ -102,8 +106,8 @@ if ($mform && $mform->is_cancelled()) {
             'sesskey' => sesskey(),
             'confirm' => true
         ];
-        $continueurl = new moodle_url('/admin/tool/oauth2/endpoints.php', $continueparams);
-        $cancelurl = new moodle_url('/admin/tool/oauth2/endpoints.php');
+        $continueurl = new url('/admin/tool/oauth2/endpoints.php', $continueparams);
+        $cancelurl = new url('/admin/tool/oauth2/endpoints.php');
         echo $OUTPUT->header();
         $strparams = [ 'issuer' => s($issuer->get('name')), 'endpoint' => s($endpoint->get('name')) ];
         echo $OUTPUT->confirm(get_string('deleteendpointconfirm', 'tool_oauth2', $strparams), $continueurl, $cancelurl);
@@ -120,7 +124,7 @@ if ($mform && $mform->is_cancelled()) {
     $endpoints = core\oauth2\api::get_endpoints($issuer);
     echo $renderer->endpoints_table($endpoints, $issuerid);
 
-    $addurl = new moodle_url('/admin/tool/oauth2/endpoints.php', ['action' => 'edit', 'issuerid' => $issuerid]);
+    $addurl = new url('/admin/tool/oauth2/endpoints.php', ['action' => 'edit', 'issuerid' => $issuerid]);
     echo $renderer->single_button($addurl, get_string('createnewendpoint', 'tool_oauth2', s($issuer->get('name'))));
     echo $OUTPUT->footer();
 }

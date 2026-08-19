@@ -24,10 +24,11 @@
 
 namespace core_group\output;
 
-use context_course;
-use core_user;
+use core\context\course;
+use core\output\renderer_base;
+use core\user;
 use core_external;
-use coding_exception;
+use core\exception\coding_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -93,7 +94,7 @@ class user_groups_editable extends \core\output\inplace_editable {
      * @param \renderer_base $output
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $listofgroups = [];
         $groupids = json_decode($this->value);
         foreach ($groupids as $id) {
@@ -130,7 +131,7 @@ class user_groups_editable extends \core\output\inplace_editable {
         }
 
         // Check user is enrolled in the course.
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
         core_external::validate_context($context);
 
         if (!is_enrolled($context, $userid)) {
@@ -174,7 +175,7 @@ class user_groups_editable extends \core\output\inplace_editable {
         }
 
         $course = get_course($courseid);
-        $user = core_user::get_user($userid);
+        $user = user::get_user($userid);
         return new self($course, $context, $user, $coursegroups, array_values($groupids));
     }
 }

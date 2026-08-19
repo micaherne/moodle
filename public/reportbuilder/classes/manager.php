@@ -20,7 +20,7 @@ namespace core_reportbuilder;
 
 use core_collator;
 use core_component;
-use core_plugin_manager;
+use core\plugin_manager;
 use stdClass;
 use core_reportbuilder\local\models\report;
 use core_reportbuilder\local\report\base;
@@ -140,7 +140,7 @@ class manager {
 
                 // Group each report source by the component that it belongs to.
                 [$component] = explode('\\', $class);
-                if ($plugininfo = core_plugin_manager::instance()->get_plugin_info($component)) {
+                if ($plugininfo = plugin_manager::instance()->get_plugin_info($component)) {
                     $componentname = $plugininfo->displayname;
                 } else {
                     $componentname = get_string('site');

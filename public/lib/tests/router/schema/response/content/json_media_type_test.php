@@ -16,6 +16,7 @@
 
 namespace core\router\schema\response\content;
 
+use core\exception\coding_exception;
 use core\router\schema\example;
 use core\router\schema\objects\schema_object;
 use core\router\schema\referenced_object;
@@ -80,7 +81,7 @@ final class json_media_type_test extends \advanced_testcase {
     }
 
     public function test_example_or_examples(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
 
         new json_media_type(
             example: new example(name: 'example'),

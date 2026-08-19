@@ -72,7 +72,7 @@ final class restore_test extends \advanced_testcase {
     protected function create_qbank_with_questions(int $courseid): array {
         // Create a quiz with questions in the first course.
         $qbank = $this->getDataGenerator()->get_plugin_generator('mod_qbank')->create_instance(['course' => $courseid]);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
         $cat = question_get_default_category($context->id);

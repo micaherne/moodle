@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use \core_privacy\local\request\writer;
 
 /**
@@ -87,7 +88,7 @@ trait core_question_privacy_helper {
      * @param   \question_display_options   $options    The display options used for formatting.
      * @param   \stdClass   $user The user exported
      */
-    public function assert_question_attempt_exported(\context $context, array $subcontext, $quba, $options, $user) {
+    public function assert_question_attempt_exported(context $context, array $subcontext, $quba, $options, $user) {
         $usagecontext = array_merge(
             $subcontext,
             [get_string('questions', 'core_question')]

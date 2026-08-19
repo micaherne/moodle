@@ -16,6 +16,10 @@
 
 namespace core_privacy;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\user;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\approved_contextlist;
 
@@ -191,14 +195,14 @@ final class manager_test extends \advanced_testcase {
         $this->assertEquals('mock_path', $mockman->export_user_data($approvedcontextlistcollection));
 
         // Verify that a user preference was exported for 'mod_testcomponent4'.
-        $prefs = writer::with_context(\context_system::instance())->get_user_preferences('mod_testcomponent4');
+        $prefs = writer::with_context(system::instance())->get_user_preferences('mod_testcomponent4');
         $this->assertNotEmpty($prefs);
         $this->assertNotEmpty($prefs->mykey);
         $this->assertEquals('myvalue', $prefs->mykey->value);
         $this->assertEquals('mydescription', $prefs->mykey->description);
 
         // Verify an exception is thrown if trying to pass in a collection of non-approved_contextlist items.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $mockman->export_user_data($contextlistcollection);
     }
 
@@ -214,7 +218,7 @@ final class manager_test extends \advanced_testcase {
         $mockman = $this->get_mock_manager_with_core_components(['mod_testcomponent', 'mod_testcomponent2', 'mod_testcomponent3']);
 
         // Get the non-approved contextlists.
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $contextlistcollection = $mockman->get_contexts_for_userid($user->id);
 
         // Create an approved contextlist.
@@ -229,7 +233,7 @@ final class manager_test extends \advanced_testcase {
         $this->assertNull($mockman->delete_data_for_user($approvedcontextlistcollection));
 
         // Verify an exception is thrown if trying to pass in a collection of non-approved_contextlist items.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $mockman->delete_data_for_user($contextlistcollection);
     }
 
@@ -256,7 +260,7 @@ final class manager_test extends \advanced_testcase {
         // Null providers return the reason string.
         $this->assertEquals('testcomponent2 null provider reason', $manager->get_null_provider_reason('mod_testcomponent2'));
         // Throw an exception if the wrong type of provider is given.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $string = $manager->get_null_provider_reason('mod_testcomponent');
     }
 
@@ -338,7 +342,7 @@ final class manager_test extends \advanced_testcase {
         $observer->expects($this->once())
             ->method('handle_component_failure')
             ->with(
-                $this->isInstanceOf(\coding_exception::class),
+                $this->isInstanceOf(coding_exception::class),
                 $this->identicalTo('mod_component_broken'),
                 $this->identicalTo(\core_privacy\local\request\core_user_data_provider::class),
                 $this->identicalTo('get_contexts_for_userid'),
@@ -363,9 +367,9 @@ final class manager_test extends \advanced_testcase {
      * @covers ::export_user_data
      */
     public function test_export_user_data_with_failing(): void {
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $mockman = $this->get_mock_manager_with_core_components(['mod_component_broken', 'mod_component_a']);
-        $context = \context_system::instance();
+        $context = system::instance();
         $contextid = $context->id;
 
         $observer = $this->getMockBuilder(\core_privacy\manager_observer::class)
@@ -376,7 +380,7 @@ final class manager_test extends \advanced_testcase {
         $observer->expects($this->once())
             ->method('handle_component_failure')
             ->with(
-                $this->isInstanceOf(\coding_exception::class),
+                $this->isInstanceOf(coding_exception::class),
                 $this->identicalTo('mod_component_broken'),
                 $this->identicalTo(\core_privacy\local\request\core_user_data_provider::class),
                 $this->identicalTo('export_user_data'),
@@ -398,9 +402,9 @@ final class manager_test extends \advanced_testcase {
      * @covers ::delete_data_for_user
      */
     public function test_delete_data_for_user_with_failing(): void {
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $mockman = $this->get_mock_manager_with_core_components(['mod_component_broken', 'mod_component_a']);
-        $context = \context_system::instance();
+        $context = system::instance();
         $contextid = $context->id;
 
         $observer = $this->getMockBuilder(\core_privacy\manager_observer::class)
@@ -411,7 +415,7 @@ final class manager_test extends \advanced_testcase {
         $observer->expects($this->once())
             ->method('handle_component_failure')
             ->with(
-                $this->isInstanceOf(\coding_exception::class),
+                $this->isInstanceOf(coding_exception::class),
                 $this->identicalTo('mod_component_broken'),
                 $this->identicalTo(\core_privacy\local\request\core_user_data_provider::class),
                 $this->identicalTo('delete_data_for_user'),
@@ -433,9 +437,9 @@ final class manager_test extends \advanced_testcase {
      * @covers ::delete_data_for_all_users_in_context
      */
     public function test_delete_data_for_all_users_in_context_with_failing(): void {
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $mockman = $this->get_mock_manager_with_core_components(['mod_component_broken', 'mod_component_a']);
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $observer = $this->getMockBuilder(\core_privacy\manager_observer::class)
             ->onlyMethods(['handle_component_failure'])
@@ -445,7 +449,7 @@ final class manager_test extends \advanced_testcase {
         $observer->expects($this->once())
             ->method('handle_component_failure')
             ->with(
-                $this->isInstanceOf(\coding_exception::class),
+                $this->isInstanceOf(coding_exception::class),
                 $this->identicalTo('mod_component_broken'),
                 $this->identicalTo(\core_privacy\local\request\core_user_data_provider::class),
                 $this->identicalTo('delete_data_for_all_users_in_context'),
@@ -463,9 +467,9 @@ final class manager_test extends \advanced_testcase {
      * @covers ::get_metadata_for_components
      */
     public function test_get_metadata_for_components_with_failing(): void {
-        $user = \core_user::get_user_by_username('admin');
+        $user = user::get_user_by_username('admin');
         $mockman = $this->get_mock_manager_with_core_components(['mod_component_broken', 'mod_component_a']);
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $observer = $this->getMockBuilder(\core_privacy\manager_observer::class)
             ->onlyMethods(['handle_component_failure'])
@@ -475,7 +479,7 @@ final class manager_test extends \advanced_testcase {
         $observer->expects($this->once())
             ->method('handle_component_failure')
             ->with(
-                $this->isInstanceOf(\coding_exception::class),
+                $this->isInstanceOf(coding_exception::class),
                 $this->identicalTo('mod_component_broken'),
                 $this->identicalTo(\core_privacy\local\metadata\provider::class),
                 $this->identicalTo('get_metadata'),

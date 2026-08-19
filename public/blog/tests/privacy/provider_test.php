@@ -28,6 +28,10 @@ namespace core_blog\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\user;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\transform;
@@ -62,7 +66,7 @@ final class provider_test extends provider_testcase {
         $cm2a = $dg->create_module('page', ['course' => $c2]);
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
+        $u1ctx = user::instance($u1->id);
 
         // Blog share a table with notes, so throw data in there and make sure it doesn't get reported.
         $dg->get_plugin_generator('core_notes')->create_instance(['userid' => $u1->id, 'courseid' => $c3->id]);
@@ -80,22 +84,22 @@ final class provider_test extends provider_testcase {
         // Create a blog post associated with c1.
         $post = $this->create_post(['userid' => $u1->id, 'courseid' => $c1->id]);
         $entry = new \blog_entry($post->id);
-        $entry->add_association(\context_course::instance($c1->id)->id);
+        $entry->add_association(course::instance($c1->id)->id);
         $contextids = provider::get_contexts_for_userid($u1->id)->get_contextids();
         $this->assertCount(2, $contextids);
         $this->assertTrue(in_array($u1ctx->id, $contextids));
-        $this->assertTrue(in_array(\context_course::instance($c1->id)->id, $contextids));
+        $this->assertTrue(in_array(course::instance($c1->id)->id, $contextids));
         $this->assertEmpty(provider::get_contexts_for_userid($u2->id)->get_contextids());
 
         // Create a blog post associated with cm2a.
         $post = $this->create_post(['userid' => $u1->id, 'courseid' => $c2->id]);
         $entry = new \blog_entry($post->id);
-        $entry->add_association(\context_module::instance($cm2a->cmid)->id);
+        $entry->add_association(module::instance($cm2a->cmid)->id);
         $contextids = provider::get_contexts_for_userid($u1->id)->get_contextids();
         $this->assertCount(3, $contextids);
         $this->assertTrue(in_array($u1ctx->id, $contextids));
-        $this->assertTrue(in_array(\context_course::instance($c1->id)->id, $contextids));
-        $this->assertTrue(in_array(\context_module::instance($cm2a->cmid)->id, $contextids));
+        $this->assertTrue(in_array(course::instance($c1->id)->id, $contextids));
+        $this->assertTrue(in_array(module::instance($cm2a->cmid)->id, $contextids));
         $this->assertEmpty(provider::get_contexts_for_userid($u2->id)->get_contextids());
 
         // User 2 comments on u1's post.
@@ -105,8 +109,8 @@ final class provider_test extends provider_testcase {
         $contextids = provider::get_contexts_for_userid($u1->id)->get_contextids();
         $this->assertCount(3, $contextids);
         $this->assertTrue(in_array($u1ctx->id, $contextids));
-        $this->assertTrue(in_array(\context_course::instance($c1->id)->id, $contextids));
-        $this->assertTrue(in_array(\context_module::instance($cm2a->cmid)->id, $contextids));
+        $this->assertTrue(in_array(course::instance($c1->id)->id, $contextids));
+        $this->assertTrue(in_array(module::instance($cm2a->cmid)->id, $contextids));
         $contextids = provider::get_contexts_for_userid($u2->id)->get_contextids();
         $this->assertCount(1, $contextids);
         $this->assertTrue(in_array($u1ctx->id, $contextids));
@@ -116,18 +120,18 @@ final class provider_test extends provider_testcase {
         $dg = $this->getDataGenerator();
         $c1 = $dg->create_course();
         $u1 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
+        $u1ctx = user::instance($u1->id);
 
         $this->assertEmpty(provider::get_contexts_for_userid($u1->id)->get_contextids());
 
         // Create a blog post associated with c1. It should always return both the course and user context.
         $post = $this->create_post(['userid' => $u1->id, 'courseid' => $c1->id]);
         $entry = new \blog_entry($post->id);
-        $entry->add_association(\context_course::instance($c1->id)->id);
+        $entry->add_association(course::instance($c1->id)->id);
         $contextids = provider::get_contexts_for_userid($u1->id)->get_contextids();
         $this->assertCount(2, $contextids);
         $this->assertTrue(in_array($u1ctx->id, $contextids));
-        $this->assertTrue(in_array(\context_course::instance($c1->id)->id, $contextids));
+        $this->assertTrue(in_array(course::instance($c1->id)->id, $contextids));
     }
 
     /**
@@ -137,14 +141,14 @@ final class provider_test extends provider_testcase {
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $c1ctx = \context_course::instance($course->id);
+        $c1ctx = course::instance($course->id);
 
         $post = $this->create_post(['userid' => $user1->id, 'courseid' => $course->id]);
         $entry = new \blog_entry($post->id);
         $entry->add_association($c1ctx->id);
 
         // Add a comment from user 2.
-        $comment = $this->get_comment_object(\context_user::instance($user1->id), $entry->id);
+        $comment = $this->get_comment_object(user::instance($user1->id), $entry->id);
         $this->setUser($user2);
         $comment->add('Nice blog post');
 
@@ -155,7 +159,7 @@ final class provider_test extends provider_testcase {
 
         // Add an association for a module.
         $cm1a = $this->getDataGenerator()->create_module('page', ['course' => $course]);
-        $cm1ctx = \context_module::instance($cm1a->cmid);
+        $cm1ctx = module::instance($cm1a->cmid);
 
         $post2 = $this->create_post(['userid' => $user2->id, 'courseid' => $course->id]);
         $entry2 = new \blog_entry($post2->id);
@@ -173,7 +177,7 @@ final class provider_test extends provider_testcase {
     public function test_get_users_in_context_user_context(): void {
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $u1ctx = \context_user::instance($user1->id);
+        $u1ctx = user::instance($user1->id);
 
         $post = $this->create_post(['userid' => $user1->id]);
         $entry = new \blog_entry($post->id);
@@ -194,7 +198,7 @@ final class provider_test extends provider_testcase {
      */
     public function test_get_users_in_context_external_blog(): void {
         $user1 = $this->getDataGenerator()->create_user();
-        $u1ctx = \context_user::instance($user1->id);
+        $u1ctx = user::instance($user1->id);
         $extu1 = $this->create_external_blog(['userid' => $user1->id]);
 
         $userlist = new \core_privacy\local\request\userlist($u1ctx, 'core_blog');
@@ -216,13 +220,13 @@ final class provider_test extends provider_testcase {
         $u2 = $dg->create_user();
         $u3 = $dg->create_user();
 
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
-        $cm1actx = \context_module::instance($cm1a->cmid);
-        $cm1bctx = \context_module::instance($cm1b->cmid);
-        $cm2actx = \context_module::instance($cm2a->cmid);
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
+        $cm1actx = module::instance($cm1a->cmid);
+        $cm1bctx = module::instance($cm1b->cmid);
+        $cm2actx = module::instance($cm2a->cmid);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         // Blog share a table with notes, so throw data in there and make sure it doesn't get deleted.
         $this->assertFalse($DB->record_exists('post', ['courseid' => $c1->id, 'userid' => $u1->id, 'module' => 'notes']));
@@ -381,7 +385,7 @@ final class provider_test extends provider_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Create a blog entry for user, associated with course.
         $entry = new \blog_entry($this->create_post(['userid' => $user->id, 'courseid' => $course->id])->id);
@@ -414,12 +418,12 @@ final class provider_test extends provider_testcase {
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
 
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
-        $cm1actx = \context_module::instance($cm1a->cmid);
-        $cm1bctx = \context_module::instance($cm1b->cmid);
-        $cm2actx = \context_module::instance($cm2a->cmid);
-        $u1ctx = \context_user::instance($u1->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
+        $cm1actx = module::instance($cm1a->cmid);
+        $cm1bctx = module::instance($cm1b->cmid);
+        $cm2actx = module::instance($cm2a->cmid);
+        $u1ctx = user::instance($u1->id);
 
         // Create two external blogs.
         $extu1 = $this->create_external_blog(['userid' => $u1->id]);
@@ -548,11 +552,11 @@ final class provider_test extends provider_testcase {
         $cm1b = $dg->create_module('page', ['course' => $c1]);
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $c1ctx = \context_course::instance($c1->id);
-        $cm1actx = \context_module::instance($cm1a->cmid);
-        $cm1bctx = \context_module::instance($cm1b->cmid);
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $c1ctx = course::instance($c1->id);
+        $cm1actx = module::instance($cm1a->cmid);
+        $cm1bctx = module::instance($cm1b->cmid);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         // System entries.
         $e1 = new \blog_entry($this->create_post(['userid' => $u1->id, 'subject' => 'Hello world!',
@@ -746,7 +750,7 @@ final class provider_test extends provider_testcase {
         $u4 = $this->getDataGenerator()->create_user();
         $u5 = $this->getDataGenerator()->create_user();
 
-        $u1ctx = \context_user::instance($u1->id);
+        $u1ctx = user::instance($u1->id);
 
         $post = $this->create_post(['userid' => $u1->id]);
         $entry = new \blog_entry($post->id);
@@ -786,8 +790,8 @@ final class provider_test extends provider_testcase {
         $u1 = $this->getDataGenerator()->create_user();
         $u2 = $this->getDataGenerator()->create_user();
 
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
 
         $post = $this->create_external_blog(['userid' => $u1->id, 'url' => 'https://moodle.org', 'name' => 'Moodle RSS']);
         $post2 = $this->create_external_blog(['userid' => $u2->id, 'url' => 'https://moodle.com', 'name' => 'Some other thing']);
@@ -812,10 +816,10 @@ final class provider_test extends provider_testcase {
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('page', ['course' => $course]);
 
-        $u1ctx = \context_user::instance($u1->id);
-        $u3ctx = \context_user::instance($u3->id);
-        $c1ctx = \context_course::instance($course->id);
-        $cm1ctx = \context_module::instance($module->cmid);
+        $u1ctx = user::instance($u1->id);
+        $u3ctx = user::instance($u3->id);
+        $c1ctx = course::instance($course->id);
+        $cm1ctx = module::instance($module->cmid);
 
         // Blog with course association.
         $post1 = $this->create_post(['userid' => $u1->id, 'courseid' => $course->id]);
@@ -919,7 +923,7 @@ final class provider_test extends provider_testcase {
      * @param string $area The area.
      * @return \core_comment\manager
      */
-    protected function get_comment_object(\context $context, $itemid): \core_comment\manager {
+    protected function get_comment_object(context $context, $itemid): \core_comment\manager {
         $args = new \stdClass();
         $args->context = $context;
         $args->course = get_course(SITEID);

@@ -16,6 +16,7 @@
 
 namespace tool_dataprivacy\external;
 
+use core\context\system;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -50,7 +51,7 @@ class get_access_information extends external_api {
     public static function execute(): array {
         global $USER;
 
-        $system = \context_system::instance();
+        $system = system::instance();
         external_api::validate_context($system);
 
         return [

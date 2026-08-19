@@ -24,6 +24,8 @@
 
 namespace core_notes\privacy;
 
+use core\context;
+use core\context\course;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\contextlist;
@@ -132,7 +134,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -204,7 +206,7 @@ class provider implements
 
         $notes = $DB->get_recordset_sql($sql, $params);
         foreach ($notes as $note) {
-            $contextcourse = \context_course::instance($note->courseid);
+            $contextcourse = course::instance($note->courseid);
 
             // The exported notes will be organized in {Course Context}/Notes/{publishstate}/usernote-{userid}.json.
             $subcontext = [
@@ -233,7 +235,7 @@ class provider implements
      *
      * @param \context $context the context to delete in.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         if ($context->contextlevel != CONTEXT_COURSE) {

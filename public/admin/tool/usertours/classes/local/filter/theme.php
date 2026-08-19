@@ -16,8 +16,10 @@
 
 namespace tool_usertours\local\filter;
 
+use core\output\theme_config;
+use core\plugin_manager;
 use tool_usertours\tour;
-use context;
+use core\context;
 
 /**
  * Theme filter.
@@ -43,13 +45,13 @@ class theme extends base {
      *                                  And whose values are the values to display
      */
     public static function get_filter_options() {
-        $manager = \core_plugin_manager::instance();
+        $manager = plugin_manager::instance();
         $themes = $manager->get_installed_plugins('theme');
 
         $options = [];
         foreach (array_keys($themes) as $themename) {
             try {
-                $theme = \theme_config::load($themename);
+                $theme = theme_config::load($themename);
             } catch (Exception $e) {
                 // Bad theme, just skip it for now.
                 continue;

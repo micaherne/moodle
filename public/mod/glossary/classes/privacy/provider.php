@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_glossary\privacy;
+use core\context;
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -143,7 +145,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!is_a($context, \context_module::class)) {
+        if (!is_a($context, module::class)) {
             return;
         }
 
@@ -247,14 +249,14 @@ class provider implements
             if (!is_null($lastcmid)) {
                 if ($lastcmid != $record->cmid) {
                     if (!empty($glossarydata)) {
-                        $context = \context_module::instance($lastcmid);
+                        $context = module::instance($lastcmid);
                         self::export_glossary_data_for_user($glossarydata, $context, [], $user);
                         $glossarydata = [];
                     }
                 }
             }
             $lastcmid = $record->cmid;
-            $context = \context_module::instance($lastcmid);
+            $context = module::instance($lastcmid);
 
             // Export files added on the glossary entry definition field.
             $definition = format_text(writer::with_context($context)->rewrite_pluginfile_urls($path, 'mod_glossary',
@@ -292,7 +294,7 @@ class provider implements
 
         // The data for the last activity won't have been written yet, so make sure to write it now!
         if (!empty($glossarydata)) {
-            $context = \context_module::instance($lastcmid);
+            $context = module::instance($lastcmid);
             self::export_glossary_data_for_user($glossarydata, $context, [], $user);
         }
     }
@@ -305,7 +307,7 @@ class provider implements
      * @param array $subcontext The location within the current context that this data belongs.
      * @param \stdClass $user the user record
      */
-    protected static function export_glossary_data_for_user(array $glossarydata, \context_module $context,
+    protected static function export_glossary_data_for_user(array $glossarydata, module $context,
                                                             array $subcontext, \stdClass $user) {
         // Fetch the generic module data for the glossary.
         $contextdata = helper::get_context_data($context, $user);
@@ -321,7 +323,7 @@ class provider implements
      *
      * @param \context $context the context to delete in.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         if ($context->contextlevel != CONTEXT_MODULE) {

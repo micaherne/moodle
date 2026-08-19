@@ -23,6 +23,8 @@
  */
 
 
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -248,7 +250,7 @@ class qtype_essay_test_helper extends question_test_helper {
         global $USER;
 
         $fs = get_file_storage();
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
 
         // Create the file in the provided draft area.
         $fileinfo = array(
@@ -300,7 +302,7 @@ class qtype_essay_test_helper extends question_test_helper {
         global $CFG, $USER;
         $fromform = new stdClass();
 
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $questiontextdraftid = 1;
         file_prepare_draft_area($questiontextdraftid, $usercontext->id, null, null, null);
         $fs = get_file_storage();

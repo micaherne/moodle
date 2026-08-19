@@ -22,17 +22,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require('../config.php');
 
 require_login();
 
-$contextid    = optional_param('contextid', \context_system::instance()->id, PARAM_INT);
+$contextid    = optional_param('contextid', system::instance()->id, PARAM_INT);
 $search = optional_param('search', '', PARAM_CLEAN);
 $context = context::instance_by_id($contextid, MUST_EXIST);
 
 $cb = new \core_contentbank\contentbank();
 if (!$cb->is_context_allowed($context)) {
-    throw new \moodle_exception('contextnotallowed', 'core_contentbank');
+    throw new moodle_exception('contextnotallowed', 'core_contentbank');
 }
 
 require_capability('moodle/contentbank:access', $context);
@@ -49,8 +55,8 @@ if ($PAGE->course) {
     require_login($PAGE->course->id);
 }
 $PAGE->set_url('/contentbank/index.php', ['contextid' => $contextid]);
-if ($contextid == \context_system::instance()->id) {
-    $PAGE->set_context(context_course::instance($contextid));
+if ($contextid == system::instance()->id) {
+    $PAGE->set_context(course::instance($contextid));
 } else {
     $PAGE->set_context($context);
 }
@@ -102,7 +108,7 @@ if (has_capability('moodle/contentbank:useeditor', $context)) {
     $editabletypes = $cb->get_contenttypes_with_capability_feature(\core_contentbank\contenttype::CAN_EDIT, $context);
     if (!empty($editabletypes)) {
         // Editor base URL.
-        $editbaseurl = new moodle_url('/contentbank/edit.php', ['contextid' => $contextid]);
+        $editbaseurl = new url('/contentbank/edit.php', ['contextid' => $contextid]);
         $toolbar[] = [
             'name' => get_string('add'),
             'link' => $editbaseurl, 'dropdown' => true,
@@ -117,7 +123,7 @@ if (has_capability('moodle/contentbank:upload', $context)) {
     // Don' show upload button if there's no plugin to support any file extension.
     $accepted = $cb->get_supported_extensions_as_string($context);
     if (!empty($accepted)) {
-        $importurl = new moodle_url('/contentbank/index.php', ['contextid' => $contextid]);
+        $importurl = new url('/contentbank/index.php', ['contextid' => $contextid]);
         $toolbar[] = [
             'name' => get_string('upload', 'contentbank'),
             'link' => $importurl->out(false),

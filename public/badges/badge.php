@@ -24,6 +24,11 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use core\context\system;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 require_once($CFG->libdir . '/filelib.php');
@@ -31,7 +36,7 @@ require_once($CFG->libdir . '/filelib.php');
 $id = required_param('hash', PARAM_ALPHANUM);
 $bake = optional_param('bake', 0, PARAM_BOOL);
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $output = $PAGE->get_renderer('core', 'badges');
 
 $PAGE->set_url('/badges/badge.php', array('hash' => $id));
@@ -53,15 +58,15 @@ if (!empty($badge->recipient->id)) {
         $PAGE->set_heading($badge->badgeclass['name']);
         $PAGE->navbar->add($badge->badgeclass['name']);
         if ($badge->recipient->id == $USER->id) {
-            $url = new moodle_url('/badges/mybadges.php');
+            $url = new url('/badges/mybadges.php');
         } else {
-            $url = new moodle_url($CFG->wwwroot);
+            $url = new url($CFG->wwwroot);
         }
         navigation_node::override_active_url($url);
     } else {
         $PAGE->set_heading($badge->badgeclass['name']);
         $PAGE->navbar->add($badge->badgeclass['name']);
-        $url = new moodle_url($CFG->wwwroot);
+        $url = new url($CFG->wwwroot);
         navigation_node::override_active_url($url);
     }
 

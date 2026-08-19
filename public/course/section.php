@@ -22,6 +22,11 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context_helper;
+use core\output\single_button;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once($CFG->libdir.'/completionlib.php');
@@ -33,7 +38,7 @@ $sectionid = required_param('id', PARAM_INT);
 $edit = optional_param('edit', -1, PARAM_BOOL);
 
 if (!$section = $DB->get_record('course_sections', ['id' => $sectionid], '*')) {
-    $url = new moodle_url('/');
+    $url = new url('/');
     $PAGE->set_context(\core\context\system::instance());
     $PAGE->set_url($url);
     $PAGE->set_pagelayout('course');
@@ -72,14 +77,14 @@ $format->set_sectionid($section->id);
 
 // When the course format doesn't support sections, redirect to course page.
 if (!course_format_uses_sections($course->format)) {
-    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
+    redirect(new url('/course/view.php', ['id' => $course->id]));
 }
 
 // Prevent caching of this page to stop confusion when changing page after making AJAX changes.
 $PAGE->set_cacheable(false);
 
 context_helper::preload_course($course->id);
-$context = context_course::instance($course->id, MUST_EXIST);
+$context = course::instance($course->id, MUST_EXIST);
 
 require_login($course);
 
@@ -125,7 +130,7 @@ if (!isset($USER->editing)) {
 if ($PAGE->user_allowed_editing()) {
     if (($edit == 1) && confirm_sesskey()) {
         $USER->editing = 1;
-        $url = new moodle_url($PAGE->url, ['notifyeditingon' => 1]);
+        $url = new url($PAGE->url, ['notifyeditingon' => 1]);
         redirect($url);
     } else if (($edit == 0) && confirm_sesskey()) {
         $USER->editing = 0;

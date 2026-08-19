@@ -29,6 +29,8 @@
 /**
  * Structure step to restore one wiki activity
  */
+use core\context\module;
+
 class restore_wiki_activity_structure_step extends restore_activity_structure_step {
 
     protected function define_structure() {
@@ -165,7 +167,7 @@ class restore_wiki_activity_structure_step extends restore_activity_structure_st
         $itemid = $this->get_new_parentid('wiki_page');
         $wikiid = $this->get_new_parentid('wiki');
 
-        $context = context_module::instance($this->task->get_moduleid());
+        $context = module::instance($this->task->get_moduleid());
         core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $itemid, $context, $tag);
     }
 

@@ -17,9 +17,11 @@
 namespace core\output\action_menu;
 
 use core\output\action_link;
+use core\output\html_writer;
 use core\output\pix_icon;
 use core\output\renderable;
-use moodle_url;
+use core\output\renderer_base;
+use core\url;
 use stdClass;
 
 /**
@@ -55,12 +57,12 @@ class subpanel extends action_link implements renderable {
         renderable $subpanel,
         ?array $attributes = null,
         ?pix_icon $icon = null,
-        ?moodle_url $url = null,
+        ?url $url = null,
     ) {
         $this->text = $text;
         $this->subpanel = $subpanel;
         if (empty($attributes['id'])) {
-            $attributes['id'] = \html_writer::random_id('action_menu_submenu');
+            $attributes['id'] = html_writer::random_id('action_menu_submenu');
         }
         $this->attributes = (array) $attributes;
         $this->icon = $icon;
@@ -72,7 +74,7 @@ class subpanel extends action_link implements renderable {
      * @param \renderer_base $output the output renderer
      * @return stdClass
      */
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
         $data = parent::export_for_template($output);
         $data->instance = self::$instance++;
         $data->subpanelcontent = $output->render($this->subpanel);

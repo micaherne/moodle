@@ -16,6 +16,10 @@
 
 namespace enrol_lti;
 
+use core\context\system;
+use core\context\user;
+use core\output\user_picture;
+
 /**
  * Test the helper functionality.
  *
@@ -67,12 +71,12 @@ final class helper_test extends \advanced_testcase {
         // Set the page details.
         $page = new \moodle_page();
         $page->set_url('/user/profile.php');
-        $page->set_context(\context_system::instance());
+        $page->set_context(system::instance());
         $renderer = $page->get_renderer('core');
-        $usercontext = \context_user::instance($this->user1->id);
+        $usercontext = user::instance($this->user1->id);
 
         // Get the user's profile picture and make sure it is correct.
-        $userpicture = new \user_picture($this->user1);
+        $userpicture = new user_picture($this->user1);
         $this->assertSame($CFG->wwwroot . '/pluginfile.php/' . $usercontext->id . '/user/icon/boost/f2?rev=' .$this->user1->picture,
             $userpicture->get_url($page, $renderer)->out(false));
     }

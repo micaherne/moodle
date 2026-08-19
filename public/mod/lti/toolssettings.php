@@ -26,6 +26,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/mod/lti/edit_form.php');
@@ -37,7 +39,7 @@ $tab          = optional_param('tab', '', PARAM_ALPHAEXT);
 $returnto     = optional_param('returnto', '', PARAM_ALPHA);
 
 if ($returnto == 'toolconfigure') {
-    $returnurl = new moodle_url($CFG->wwwroot . '/mod/lti/toolconfigure.php');
+    $returnurl = new url($CFG->wwwroot . '/mod/lti/toolconfigure.php');
 }
 
 // No guest autologin.
@@ -56,11 +58,11 @@ if ($err) {
     if (!empty($returnto)) {
         $params['returnto'] = $returnto;
     }
-    $redirect = new moodle_url('/mod/lti/typessettings.php', $params);
+    $redirect = new url('/mod/lti/typessettings.php', $params);
     redirect($redirect);
 }
 
-$pageurl = new moodle_url('/mod/lti/toolssettings.php');
+$pageurl = new url('/mod/lti/toolssettings.php');
 if (!empty($id)) {
     $pageurl->param('id', $id);
 }

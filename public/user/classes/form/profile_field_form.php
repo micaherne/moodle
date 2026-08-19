@@ -16,9 +16,11 @@
 
 namespace core_user\form;
 
-use context;
+use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
 use core_form\dynamic_form;
-use moodle_url;
+use core\url;
 use profile_define_base;
 
 /**
@@ -96,7 +98,7 @@ class profile_field_form extends dynamic_form {
      * @return context
      */
     protected function get_context_for_dynamic_submission(): context {
-        return \context_system::instance();
+        return system::instance();
     }
 
     /**
@@ -142,10 +144,10 @@ class profile_field_form extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $id = $this->optional_param('id', 0, PARAM_INT);
         $datatype = $this->optional_param('datatype', 'text', PARAM_PLUGIN);
-        return new moodle_url('/user/profile/index.php',
+        return new url('/user/profile/index.php',
             ['action' => 'editfield', 'id' => $id, 'datatype' => $id ? null : $datatype]);
     }
 
@@ -172,7 +174,7 @@ class profile_field_form extends dynamic_form {
                 $this->fieldrecord->categoryid = $this->optional_param('categoryid', 0, PARAM_INT);
             }
             if (!\core_component::get_component_directory('profilefield_'.$this->fieldrecord->datatype)) {
-                throw new \moodle_exception('fieldnotfound', 'customfield');
+                throw new moodle_exception('fieldnotfound', 'customfield');
             }
         }
 

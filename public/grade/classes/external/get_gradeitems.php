@@ -18,7 +18,7 @@ namespace core_grades\external;
 
 defined('MOODLE_INTERNAL') || die;
 
-use context_course;
+use core\context\course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -70,7 +70,7 @@ class get_gradeitems extends external_api {
         );
 
         $warnings = [];
-        $context = context_course::instance($params['courseid']);
+        $context = course::instance($params['courseid']);
         parent::validate_context($context);
 
         $allgradeitems = grade_item::fetch_all(['courseid' => $params['courseid']]);

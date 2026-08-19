@@ -26,6 +26,7 @@
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
 use Behat\Mink\Element\NodeElement as NodeElement;
+use core\exception\coding_exception;
 
 require_once(__DIR__ . '/behat_form_textarea.php');
 

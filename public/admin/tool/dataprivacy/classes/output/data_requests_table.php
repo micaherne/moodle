@@ -26,14 +26,17 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/tablelib.php');
 
-use action_menu;
-use action_menu_link_secondary;
-use coding_exception;
+use core\context\system;
+use core\context\user;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\exception\coding_exception;
+use core\output\single_select;
 use dml_exception;
-use html_writer;
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 use stdClass;
-use table_sql;
+use core_table\sql_table;
 use tool_dataprivacy\api;
 use tool_dataprivacy\external\data_request_exporter;
 
@@ -45,7 +48,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2018 Jun Pataleta <jun@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class data_requests_table extends table_sql {
+class data_requests_table extends sql_table {
 
     /** @var int The user ID. */
     protected $userid = 0;
@@ -135,7 +138,7 @@ class data_requests_table extends table_sql {
                 'requesttype' => \core_text::strtolower($data->typenameshort)
             ];
 
-            return \html_writer::checkbox('requestids[]', $data->id, false, '',
+            return html_writer::checkbox('requestids[]', $data->id, false, '',
                     ['class' => 'selectrequests', 'title' => get_string('selectuserdatarequest',
                     'tool_dataprivacy', $stringdata)]);
         }
@@ -223,14 +226,14 @@ class data_requests_table extends table_sql {
         $actions = [];
 
         // View action.
-        $actionurl = new moodle_url('#');
+        $actionurl = new url('#');
         $actiondata = [
             'data-action' => 'view',
             'data-requestid' => $requestid,
-            'data-contextid' => \context_system::instance()->id,
+            'data-contextid' => system::instance()->id,
         ];
         $actiontext = get_string('viewrequest', 'tool_dataprivacy');
-        $actions[] = new action_menu_link_secondary($actionurl, null, $actiontext, $actiondata);
+        $actions[] = new link_secondary($actionurl, null, $actiontext, $actiondata);
 
         switch ($status) {
             case api::DATAREQUEST_STATUS_PENDING:
@@ -244,7 +247,7 @@ class data_requests_table extends table_sql {
                     $actiondata['data-requestid'] = $data->id;
                     $actiondata['data-replytoemail'] = get_string('nameemail', 'tool_dataprivacy', $nameemail);
                     $actiontext = get_string('markcomplete', 'tool_dataprivacy');
-                    $actions[] = new action_menu_link_secondary($actionurl, null, $actiontext, $actiondata);
+                    $actions[] = new link_secondary($actionurl, null, $actiontext, $actiondata);
                 }
                 break;
             case api::DATAREQUEST_STATUS_AWAITING_APPROVAL:
@@ -258,26 +261,26 @@ class data_requests_table extends table_sql {
 
                 if (get_config('tool_dataprivacy', 'allowfiltering') && $data->type == api::DATAREQUEST_TYPE_EXPORT) {
                     $actiontext = get_string('approverequestall', 'tool_dataprivacy');
-                    $actions[] = new action_menu_link_secondary($actionurl, null, $actiontext, $actiondata);
+                    $actions[] = new link_secondary($actionurl, null, $actiontext, $actiondata);
 
                     // Approve selected courses.
                     $actiontext = get_string('filterexportdata', 'tool_dataprivacy');
                     $actiondata = ['data-action' => 'approve-selected-courses', 'data-requestid' => $requestid,
-                        'data-contextid' => \context_system::instance()->id];
-                    $actions[] = new \action_menu_link_secondary($actionurl, null, $actiontext, $actiondata);
+                        'data-contextid' => system::instance()->id];
+                    $actions[] = new link_secondary($actionurl, null, $actiontext, $actiondata);
                 } else {
                     $actiontext = get_string('approverequest', 'tool_dataprivacy');
-                    $actions[] = new action_menu_link_secondary($actionurl, null, $actiontext, $actiondata);
+                    $actions[] = new link_secondary($actionurl, null, $actiontext, $actiondata);
                 }
 
                 // Deny.
                 $actiondata['data-action'] = 'deny';
                 $actiontext = get_string('denyrequest', 'tool_dataprivacy');
-                $actions[] = new action_menu_link_secondary($actionurl, null, $actiontext, $actiondata);
+                $actions[] = new link_secondary($actionurl, null, $actiontext, $actiondata);
                 break;
             case api::DATAREQUEST_STATUS_DOWNLOAD_READY:
                 $userid = $data->foruser->id;
-                $usercontext = \context_user::instance($userid, IGNORE_MISSING);
+                $usercontext = user::instance($userid, IGNORE_MISSING);
                 // If user has permission to view download link, show relevant action item.
                 if ($usercontext && api::can_download_data_request_for_user($userid, $data->requestedbyuser->id)) {
                     $actions[] = api::get_download_link($usercontext, $requestid);
@@ -292,12 +295,12 @@ class data_requests_table extends table_sql {
             $canreset = $canreset && ($persistent->get('type') != api::DATAREQUEST_TYPE_DELETE ||
                     api::can_create_data_deletion_request_for_other());
             if ($canreset) {
-                $reseturl = new moodle_url('/admin/tool/dataprivacy/resubmitrequest.php', [
+                $reseturl = new url('/admin/tool/dataprivacy/resubmitrequest.php', [
                         'requestid' => $requestid,
                     ]);
                 $actiondata = ['data-action' => 'reset', 'data-requestid' => $requestid];
                 $actiontext = get_string('resubmitrequestasnew', 'tool_dataprivacy');
-                $actions[] = new action_menu_link_secondary($reseturl, null, $actiontext, $actiondata);
+                $actions[] = new link_secondary($reseturl, null, $actiontext, $actiondata);
             }
         }
 
@@ -335,7 +338,7 @@ class data_requests_table extends table_sql {
         $this->pagesize($pagesize, $total);
 
         $this->rawdata = [];
-        $context = \context_system::instance();
+        $context = system::instance();
         $renderer = $PAGE->get_renderer('tool_dataprivacy');
 
         $forusers = [];
@@ -407,7 +410,7 @@ class data_requests_table extends table_sql {
         ];
 
         $perpageoptions = array_combine($this->perpageoptions, $this->perpageoptions);
-        $perpageselect = new \single_select(new moodle_url(''), 'perpage',
+        $perpageselect = new single_select(new url(''), 'perpage',
                 $perpageoptions, get_user_preferences('tool_dataprivacy_request-perpage'), null, 'selectgroup');
         $perpageselect->label = get_string('perpage', 'moodle');
         $data->perpage = $OUTPUT->render($perpageselect);

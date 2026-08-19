@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -45,7 +49,7 @@ function core_badges_myprofile_navigation(\core_user\output\myprofile\tree $tree
     // Add category. This node should appear after 'contact' so that administration block appears towards the end. Refer MDL-49928.
     $category = new core_user\output\myprofile\category('badges', get_string('badges', 'badges'), 'contact');
     $tree->add_category($category);
-    $context = context_user::instance($user->id);
+    $context = user::instance($user->id);
     $courseid = empty($course) ? 0 : $course->id;
 
     if ($USER->id == $user->id || has_capability('moodle/badges:viewotherbadges', $context)) {
@@ -100,7 +104,7 @@ function badge_get_tagged_badges(object $tag, bool $exclusivemode = false, null|
         $badges = $tag->get_tagged_items('core_badges', 'badge', $page * $perpage, $perpage);
         $tagfeed = new core_tag\output\tagfeed();
         foreach ($badges as $badge) {
-            $badgelink = new moodle_url('/badges/badgeclass.php', ['id' => $badge->id]);
+            $badgelink = new url('/badges/badgeclass.php', ['id' => $badge->id]);
             $fullname = html_writer::link($badgelink, $badge->name);
             $icon = html_writer::link($badgelink, html_writer::empty_tag('img',
                 ['src' => $OUTPUT->image_url('i/badge')]));

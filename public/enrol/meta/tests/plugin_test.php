@@ -17,7 +17,7 @@
 namespace enrol_meta;
 use core\plugininfo\enrol;
 
-use context_course;
+use core\context\course;
 use enrol_meta_plugin;
 
 /**
@@ -61,7 +61,7 @@ final class plugin_test extends \advanced_testcase {
     protected function has_role($user, $enrol, $role) {
         global $DB;
 
-        $context = \context_course::instance($enrol->courseid);
+        $context = course::instance($enrol->courseid);
 
         if ($role === false) {
             if ($DB->record_exists('role_assignments', array('contextid'=>$context->id, 'userid'=>$user->id, 'component'=>'enrol_meta', 'itemid'=>$enrol->id))) {
@@ -295,7 +295,7 @@ final class plugin_test extends \advanced_testcase {
         $this->assertEquals(10, $DB->count_records('user_enrolments', array('status'=>ENROL_USER_ACTIVE)));
         $this->assertFalse($this->is_meta_enrolled($user1, $enrol1, $student));
 
-        role_assign($teacher->id, $user1->id, \context_course::instance($course1->id)->id);
+        role_assign($teacher->id, $user1->id, course::instance($course1->id)->id);
         $this->assertEquals(11, $DB->count_records('user_enrolments'));
         $this->assertEquals(10, $DB->count_records('role_assignments'));
         $this->assertEquals(11, $DB->count_records('user_enrolments', array('status'=>ENROL_USER_ACTIVE)));
@@ -306,7 +306,7 @@ final class plugin_test extends \advanced_testcase {
         $this->assertEquals(11, $DB->count_records('user_enrolments', array('status'=>ENROL_USER_ACTIVE)));
         $this->assertTrue($this->is_meta_enrolled($user1, $enrol1, $teacher));
 
-        role_unassign($teacher->id, $user1->id, \context_course::instance($course1->id)->id);
+        role_unassign($teacher->id, $user1->id, course::instance($course1->id)->id);
         $this->assertEquals(10, $DB->count_records('user_enrolments'));
         $this->assertEquals(8, $DB->count_records('role_assignments'));
         $this->assertEquals(10, $DB->count_records('user_enrolments', array('status'=>ENROL_USER_ACTIVE)));
@@ -511,29 +511,29 @@ final class plugin_test extends \advanced_testcase {
         enrol_get_plugin('manual')->unenrol_user($manualenrol1, $user1->id);
         $this->assertFalse(groups_is_member($group31->id, $user1->id));
         $this->assertTrue(groups_is_member($group32->id, $user1->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course3->id), $user1, '', true)); // He still has active enrolment.
+        $this->assertTrue(is_enrolled(course::instance($course3->id), $user1, '', true)); // He still has active enrolment.
         // And the same after sync.
         enrol_meta_sync(null, false);
         $this->assertFalse(groups_is_member($group31->id, $user1->id));
         $this->assertTrue(groups_is_member($group32->id, $user1->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course3->id), $user1, '', true));
+        $this->assertTrue(is_enrolled(course::instance($course3->id), $user1, '', true));
 
         // Unenroll user1 from course2 and make sure he is completely unenrolled from course3.
         enrol_get_plugin('manual')->unenrol_user($manualenrol2, $user1->id);
         $this->assertFalse(groups_is_member($group32->id, $user1->id));
-        $this->assertFalse(is_enrolled(\context_course::instance($course3->id), $user1));
+        $this->assertFalse(is_enrolled(course::instance($course3->id), $user1));
 
         set_config('unenrolaction', ENROL_EXT_REMOVED_SUSPENDNOROLES, 'enrol_meta');
 
         // When user is unenrolled in this case, he is still a member of a group (but enrolment is suspended).
         enrol_get_plugin('manual')->unenrol_user($manualenrol1, $user4->id);
         $this->assertTrue(groups_is_member($group31->id, $user4->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course3->id), $user4));
-        $this->assertFalse(is_enrolled(\context_course::instance($course3->id), $user4, '', true));
+        $this->assertTrue(is_enrolled(course::instance($course3->id), $user4));
+        $this->assertFalse(is_enrolled(course::instance($course3->id), $user4, '', true));
         enrol_meta_sync(null, false);
         $this->assertTrue(groups_is_member($group31->id, $user4->id));
-        $this->assertTrue(is_enrolled(\context_course::instance($course3->id), $user4));
-        $this->assertFalse(is_enrolled(\context_course::instance($course3->id), $user4, '', true));
+        $this->assertTrue(is_enrolled(course::instance($course3->id), $user4));
+        $this->assertFalse(is_enrolled(course::instance($course3->id), $user4, '', true));
     }
 
     /**
@@ -627,7 +627,7 @@ final class plugin_test extends \advanced_testcase {
         $this->enable_plugin();
         enrol_meta_sync($coursetwo->id);
 
-        $coursetwocontext = context_course::instance($coursetwo->id);
+        $coursetwocontext = course::instance($coursetwo->id);
         $this->assertTrue(is_enrolled($coursetwocontext, $userone));
         $this->assertTrue(is_enrolled($coursetwocontext, $usertwo));
     }
@@ -960,7 +960,7 @@ final class plugin_test extends \advanced_testcase {
 
         // A course with meta enrolment.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Create a meta enrolment instance.
         $instance = (object)$metaplugin->get_instance_defaults();
@@ -1007,7 +1007,7 @@ final class plugin_test extends \advanced_testcase {
         $metacourse2record = new \stdClass();
         $metacourse2record->visible = 0;
         $metacourse2 = $this->getDataGenerator()->create_course($metacourse2record);
-        $metacourse2context = \context_course::instance($metacourse2->id);
+        $metacourse2context = course::instance($metacourse2->id);
 
         $user = $this->getDataGenerator()->create_user();
         $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
@@ -1028,7 +1028,7 @@ final class plugin_test extends \advanced_testcase {
         $metacourse2->visible = 1;
         $DB->update_record('course', $metacourse2);
         assign_capability('moodle/course:viewhiddencourses', CAP_ALLOW,
-            $teacherrole->id, \context_course::instance($metacourse2->id));
+            $teacherrole->id, course::instance($metacourse2->id));
 
         // Test with no 'enrol/meta:selectaslinked' capability.
         unassign_capability('enrol/meta:selectaslinked', $teacherrole->id);

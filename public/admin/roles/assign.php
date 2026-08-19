@@ -22,6 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\output\single_button;
+use core\output\single_select;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/' . $CFG->admin . '/roles/lib.php');
 
@@ -33,7 +41,7 @@ $returnurl = optional_param('returnurl', null, PARAM_LOCALURL);
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 
-$url = new moodle_url('/admin/roles/assign.php', array('contextid' => $contextid));
+$url = new url('/admin/roles/assign.php', array('contextid' => $contextid));
 
 if ($course) {
     $isfrontpage = ($course->id == SITEID);
@@ -55,7 +63,7 @@ require_login($course, false, $cm);
 require_capability('moodle/role:assign', $context);
 
 navigation_node::override_active_url($url);
-$pageurl = new moodle_url($url);
+$pageurl = new url($url);
 if ($returnurl) {
     $pageurl->param('returnurl', $returnurl);
 }
@@ -76,7 +84,7 @@ if ($roleid && !isset($assignableroles[$roleid])) {
     $a = new stdClass;
     $a->roleid = $roleid;
     $a->context = $contextname;
-    throw new \moodle_exception('cannotassignrolehere', '', $context->get_url(), $a);
+    throw new moodle_exception('cannotassignrolehere', '', $context->get_url(), $a);
 }
 
 // Work out an appropriate page title.
@@ -198,10 +206,10 @@ if ($roleid) {
     $backurl = $pageurl;
 } else if ($context->contextlevel == CONTEXT_COURSE && !$isfrontpage) {
     // Return to the intermediary page when within the course context.
-    $backurl = new moodle_url('/enrol/otherusers.php', ['id' => $course->id]);
+    $backurl = new url('/enrol/otherusers.php', ['id' => $course->id]);
 } else if ($returnurl) {
     // Factor in for $returnurl being passed.
-    $backurl = new moodle_url($returnurl);
+    $backurl = new url($returnurl);
 }
 
 if ($backurl) {
@@ -224,7 +232,7 @@ if ($roleid) {
     }
 
     // Print the form.
-    $assignurl = new moodle_url($PAGE->url, array('roleid'=>$roleid));
+    $assignurl = new url($PAGE->url, array('roleid'=>$roleid));
 ?>
 <form id="assignform" method="post" action="<?php echo $assignurl ?>"><div>
   <input type="hidden" name="sesskey" value="<?php echo sesskey() ?>" />
@@ -311,7 +319,7 @@ if ($roleid) {
                 $showroleholders = true;
             }
         } else if ($assigncounts[$roleid] > MAX_USERS_TO_LIST_PER_ROLE) {
-            $assignurl = new moodle_url($PAGE->url, array('roleid'=>$roleid));
+            $assignurl = new url($PAGE->url, array('roleid'=>$roleid));
             $roleholdernames[$roleid] = '<a href="'.$assignurl.'">'.$strmorethanmax.'</a>';
         } else {
             $roleholdernames[$roleid] = '';
@@ -331,7 +339,7 @@ if ($roleid) {
 
     foreach ($assignableroles as $roleid => $rolename) {
         $description = format_string($DB->get_field('role', 'description', array('id'=>$roleid)));
-        $assignurl = new moodle_url($PAGE->url, array('roleid'=>$roleid));
+        $assignurl = new url($PAGE->url, array('roleid'=>$roleid));
         $row = array('<a href="'.$assignurl.'">'.$rolename.'</a>',
                 $description, $assigncounts[$roleid]);
         if ($showroleholders) {

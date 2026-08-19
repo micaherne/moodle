@@ -16,6 +16,9 @@
 
 namespace mod_quiz;
 
+use core\context\course;
+use core\context\module;
+use core\user;
 use stdClass;
 
 /**
@@ -78,7 +81,7 @@ class notification_helper {
 
         // Get our users.
         $users = get_enrolled_users(
-            context: \context_module::instance($coursemodule->id),
+            context: module::instance($coursemodule->id),
             withcapability: 'mod/quiz:attempt',
             userfields: 'u.id, u.firstname, u.suspended, u.auth',
             onlyactive: true,
@@ -161,14 +164,14 @@ class notification_helper {
             'quizname' => format_string($quiz->name,
                 options: ['context' => $quizobj->get_context(), 'escape' => false]),
             'coursename' => format_string($quizobj->get_course()->fullname,
-                options: ['context' => \context_course::instance($quizobj->get_course()->id), 'escape' => false]),
+                options: ['context' => course::instance($quizobj->get_course()->id), 'escape' => false]),
             'timeopen' => userdate($user->timeopen),
             'timeclose' => !empty($user->timeclose) ? userdate($user->timeclose) : get_string('statusna'),
             'url' => $url,
         ];
 
         $messagedata = [
-            'user' => \core_user::get_user($user->id),
+            'user' => user::get_user($user->id),
             'url' => $url->out(false),
             'subject' => get_string('quizopendatesoonsubject', 'mod_quiz', $stringparams),
             'quizname' => $stringparams['quizname'],
@@ -179,7 +182,7 @@ class notification_helper {
         $message = new \core\message\message();
         $message->component = 'mod_quiz';
         $message->name = 'quiz_open_soon';
-        $message->userfrom = \core_user::get_noreply_user();
+        $message->userfrom = user::get_noreply_user();
         $message->userto = $messagedata['user'];
         $message->subject = $messagedata['subject'];
         $message->fullmessageformat = FORMAT_HTML;

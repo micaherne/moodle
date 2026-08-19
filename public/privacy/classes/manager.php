@@ -22,6 +22,12 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace core_privacy;
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\progress_trace\null_progress_trace;
+use core\output\progress_trace\text_progress_trace;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\metadata\null_provider;
 use core_privacy\local\request\context_aware_provider;
@@ -170,7 +176,7 @@ class manager {
             $reason = $this->handled_component_class_callback($component, null_provider::class, 'get_reason', []);
             return empty($reason) ? 'privacy:reason' : $reason;
         } else {
-            throw new \coding_exception('Call to undefined method', 'Please only call this method on a null provider.');
+            throw new coding_exception('Call to undefined method', 'Please only call this method on a null provider.');
         }
     }
 
@@ -262,7 +268,7 @@ class manager {
      * @param   \context    $context The context to search
      * @return  userlist_collection the collection of userlist items for the respective components.
      */
-    public function get_users_in_context(\context $context): \core_privacy\local\request\userlist_collection {
+    public function get_users_in_context(context $context): \core_privacy\local\request\userlist_collection {
         $progress = static::get_log_tracer();
 
         $components = $this->get_component_list();
@@ -321,7 +327,7 @@ class manager {
         foreach ($contextlistcollection as $approvedcontextlist) {
 
             if (!$approvedcontextlist instanceof \core_privacy\local\request\approved_contextlist) {
-                throw new \moodle_exception('Contextlist must be an approved_contextlist');
+                throw new moodle_exception('Contextlist must be an approved_contextlist');
             }
 
             $component = $approvedcontextlist->get_component();
@@ -368,7 +374,7 @@ class manager {
         $progress->output(get_string('trace:done', 'core_privacy'), 1);
 
         $progress->output(get_string('trace:finalisingexport', 'core_privacy'), 1);
-        $location = local\request\writer::with_context(\context_system::instance())->finalise_content();
+        $location = local\request\writer::with_context(system::instance())->finalise_content();
 
         $progress->output(get_string('trace:exportcomplete', 'core_privacy'), 1);
         return $location;
@@ -399,7 +405,7 @@ class manager {
         $progress->output(get_string('trace:deletingapproved', 'core_privacy', $a), 1);
         foreach ($contextlistcollection as $approvedcontextlist) {
             if (!$approvedcontextlist instanceof \core_privacy\local\request\approved_contextlist) {
-                throw new \moodle_exception('Contextlist must be an approved_contextlist');
+                throw new moodle_exception('Contextlist must be an approved_contextlist');
             }
 
             $component = $approvedcontextlist->get_component();
@@ -441,7 +447,7 @@ class manager {
         $progress->output(get_string('trace:deletingapprovedusers', 'core_privacy', $a), 1);
         foreach ($collection as $userlist) {
             if (!$userlist instanceof \core_privacy\local\request\approved_userlist) {
-                throw new \moodle_exception('The supplied userlist must be an approved_userlist');
+                throw new moodle_exception('The supplied userlist must be an approved_userlist');
             }
 
             $component = $userlist->get_component();
@@ -468,7 +474,7 @@ class manager {
      *
      * @param \context $context The specific context to delete data for.
      */
-    public function delete_data_for_all_users_in_context(\context $context) {
+    public function delete_data_for_all_users_in_context(context $context) {
         $progress = static::get_log_tracer();
 
         $components = $this->get_component_list();
@@ -590,10 +596,10 @@ class manager {
      */
     protected static function get_log_tracer() {
         if (PHPUNIT_TEST) {
-            return new \null_progress_trace();
+            return new null_progress_trace();
         }
 
-        return new \text_progress_trace();
+        return new text_progress_trace();
     }
 
     /**

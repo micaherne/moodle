@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/course/externallib.php');
 
+use core\context\course;
+use core\context\user;
 use core_course\external\course_summary_exporter;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -72,7 +74,7 @@ class block_starredcourses_external extends core_course_external {
         $limit = $params['limit'];
         $offset = $params['offset'];
 
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
 
         self::validate_context($usercontext);
         $PAGE->set_context($usercontext);
@@ -120,7 +122,7 @@ class block_starredcourses_external extends core_course_external {
         $formattedcourses = array();
         foreach ($filteredfavourites as $favourite) {
             $course = get_course($favourite->itemid);
-            $context = \context_course::instance($favourite->itemid);
+            $context = course::instance($favourite->itemid);
             $canviewhiddencourses = has_capability('moodle/course:viewhiddencourses', $context);
 
             if ($course->visible || $canviewhiddencourses) {

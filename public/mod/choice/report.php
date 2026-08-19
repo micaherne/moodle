@@ -1,6 +1,11 @@
 <?php
 
-    require_once("../../config.php");
+    use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
+require_once("../../config.php");
     require_once("lib.php");
 
     $id         = required_param('id', PARAM_INT);   //moduleid
@@ -9,7 +14,7 @@
     $attemptids = optional_param_array('attemptid', array(), PARAM_INT); // Get array of responses to delete or modify.
     $userids    = optional_param_array('userid', array(), PARAM_INT); // Get array of users whose choices need to be modified.
 
-    $url = new moodle_url('/mod/choice/report.php', array('id'=>$id));
+    $url = new url('/mod/choice/report.php', array('id'=>$id));
     if ($download !== '') {
         $url->param('download', $download);
     }
@@ -20,21 +25,21 @@
     $PAGE->set_show_navigation_footer(false);
 
     if (! $cm = get_coursemodule_from_id('choice', $id)) {
-        throw new \moodle_exception("invalidcoursemodule");
+        throw new moodle_exception("invalidcoursemodule");
     }
 
     if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
-        throw new \moodle_exception("coursemisconf");
+        throw new moodle_exception("coursemisconf");
     }
 
     require_login($course, false, $cm);
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     require_capability('mod/choice:readresponses', $context);
 
     if (!$choice = choice_get_choice($cm->instance)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
 
     $strchoice = get_string("modulename", "choice");
@@ -291,15 +296,15 @@
         $options = array();
         $options["id"] = "$cm->id";
         $options["download"] = "ods";
-        $button =  $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadods"));
+        $button =  $OUTPUT->single_button(new url("report.php", $options), get_string("downloadods"));
         $downloadoptions[] = html_writer::tag('li', $button, array('class' => 'reportoption list-inline-item'));
 
         $options["download"] = "xls";
-        $button = $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadexcel"));
+        $button = $OUTPUT->single_button(new url("report.php", $options), get_string("downloadexcel"));
         $downloadoptions[] = html_writer::tag('li', $button, array('class' => 'reportoption list-inline-item'));
 
         $options["download"] = "txt";
-        $button = $OUTPUT->single_button(new moodle_url("report.php", $options), get_string("downloadtext"));
+        $button = $OUTPUT->single_button(new url("report.php", $options), get_string("downloadtext"));
         $downloadoptions[] = html_writer::tag('li', $button, array('class' => 'reportoption list-inline-item'));
 
         $downloadlist = html_writer::tag('ul', implode('', $downloadoptions), array('class' => 'list-inline inline'));

@@ -24,6 +24,10 @@
  */
 
 
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -509,7 +513,7 @@ class qtype_essay_format_editorfilepicker_renderer extends qtype_essay_format_ed
     }
 
     protected function filepicker_html($inputname, $draftitemid) {
-        $nonjspickerurl = new moodle_url('/repository/draftfiles_manager.php', array(
+        $nonjspickerurl = new url('/repository/draftfiles_manager.php', array(
             'action' => 'browse',
             'env' => 'editor',
             'itemid' => $draftitemid,

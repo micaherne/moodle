@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\service;
 
+use core\context as core_context;
+use core\exception\moodle_exception;
+use core\url;
 use enrol_lti\helper;
 use enrol_lti\local\ltiadvantage\entity\context;
 use enrol_lti\local\ltiadvantage\entity\deployment;
@@ -167,8 +170,8 @@ class tool_launch_service {
         // See: http://www.imsglobal.org/spec/lti-ags/v2p0#assignment-and-grade-service-claim.
         if ($launchdata->ags && (!empty($launchdata->ags['lineitems']) || !empty($launchdata->ags['lineitem']))) {
             $resourcelink->add_grade_service(
-                !empty($launchdata->ags['lineitems']) ? new \moodle_url($launchdata->ags['lineitems']) : null,
-                !empty($launchdata->ags['lineitem']) ? new \moodle_url($launchdata->ags['lineitem']) : null,
+                !empty($launchdata->ags['lineitems']) ? new url($launchdata->ags['lineitems']) : null,
+                !empty($launchdata->ags['lineitem']) ? new url($launchdata->ags['lineitem']) : null,
                 $launchdata->ags['scope']
             );
         }
@@ -176,7 +179,7 @@ class tool_launch_service {
         // NRPS.
         if ($launchdata->nrps) {
             $resourcelink->add_names_and_roles_service(
-                new \moodle_url($launchdata->nrps['context_memberships_url']),
+                new url($launchdata->nrps['context_memberships_url']),
                 $launchdata->nrps['service_versions']
             );
         }
@@ -315,25 +318,25 @@ class tool_launch_service {
         $launchdata = $this->get_launch_data($launch);
 
         if (!$registration = $this->registrationrepo->find_by_platform($launchdata->platform, $launchdata->clientid)) {
-            throw new \moodle_exception('ltiadvlauncherror:invalidregistration', 'enrol_lti', '',
+            throw new moodle_exception('ltiadvlauncherror:invalidregistration', 'enrol_lti', '',
                 [$launchdata->platform, $launchdata->clientid]);
         }
 
         if (!$deployment = $this->deploymentrepo->find_by_registration($registration->get_id(),
             $launchdata->deploymentid)) {
-            throw new \moodle_exception('ltiadvlauncherror:invaliddeployment', 'enrol_lti', '',
+            throw new moodle_exception('ltiadvlauncherror:invaliddeployment', 'enrol_lti', '',
                 [$launchdata->deploymentid]);
         }
 
         $resourceuuid = $launchdata->custom['id'] ?? null;
         if (empty($resourceuuid)) {
-            throw new \moodle_exception('ltiadvlauncherror:missingid', 'enrol_lti');
+            throw new moodle_exception('ltiadvlauncherror:missingid', 'enrol_lti');
         }
 
         $resource = array_values(helper::get_lti_tools(['uuid' => $resourceuuid]));
         $resource = $resource[0] ?? null;
         if (empty($resource) || $resource->status != ENROL_INSTANCE_ENABLED) {
-            throw new \moodle_exception('ltiadvlauncherror:invalidid', 'enrol_lti', '', $resourceuuid);
+            throw new moodle_exception('ltiadvlauncherror:invalidid', 'enrol_lti', '', $resourceuuid);
         }
 
         // Update the deployment with the legacy consumer_key information, allowing migration of users to take place in future
@@ -360,7 +363,7 @@ class tool_launch_service {
 
         // Set the frame embedding mode, which controls the display of blocks and nav when launching.
         global $SESSION;
-        $context = \context::instance_by_id($resource->contextid);
+        $context = core_context::instance_by_id($resource->contextid);
         $isforceembed = $launchdata->custom['force_embed'] ?? false;
         $isinstructor = $this->user_is_staff($launchdata, true) || $this->user_is_admin($launchdata);
         $isforceembed = $isforceembed || ($context->contextlevel == CONTEXT_MODULE && !$isinstructor);
@@ -373,7 +376,7 @@ class tool_launch_service {
         // Enrol the user in the course with no role.
         $result = helper::enrol_user($resource, $ltiuser->get_localid());
         if ($result !== helper::ENROLMENT_SUCCESSFUL) {
-            throw new \moodle_exception($result, 'enrol_lti');
+            throw new moodle_exception($result, 'enrol_lti');
         }
 
         // Give the user the role in the given context.

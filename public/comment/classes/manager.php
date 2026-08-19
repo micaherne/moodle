@@ -16,12 +16,14 @@
 
 namespace core_comment;
 
-use coding_exception;
-use context;
+use core\exception\coding_exception;
+use core\context;
+use core\exception\moodle_exception;
 use core_component;
-use html_writer;
+use core\output\html_writer;
+use core_course\cm_info;
 use moodle_page;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -48,7 +50,7 @@ class manager {
     /** @var int The course id for comments */
     private int $courseid;
     /** @var \cm_info|stdClass|null course module object, only be used to help find pluginname automatically */
-    private \cm_info|stdClass|null $cm = null;
+    private cm_info|stdClass|null $cm = null;
     /**
      * The component that this comment is for.
      *
@@ -141,7 +143,7 @@ class manager {
             $this->contextid = $options->contextid;
             $this->context = context::instance_by_id($this->contextid);
         } else {
-            throw new \moodle_exception('invalidcontext');
+            throw new moodle_exception('invalidcontext');
         }
 
         if (!empty($options->component)) {
@@ -340,7 +342,7 @@ class manager {
             $page = $PAGE;
         }
 
-        $link = new moodle_url(
+        $link = new url(
             $page->url,
             [
                 'nonjscomment'    => true,
@@ -620,7 +622,7 @@ class manager {
             $c->format      = $u->cformat;
             $c->timecreated = $u->ctimecreated;
             $c->strftimeformat = get_string('strftimerecentfull', 'langconfig');
-            $url = new moodle_url('/user/view.php', ['id' => $u->id, 'course' => $this->courseid]);
+            $url = new url('/user/view.php', ['id' => $u->id, 'course' => $this->courseid]);
             $c->profileurl = $url->out(false); // URL should not be escaped just yet.
             $c->fullname = fullname($u);
             $c->time = userdate($c->timecreated, $c->strftimeformat);
@@ -760,7 +762,7 @@ class manager {
             $newcmt->id = $cmtid;
             $newcmt->strftimeformat = get_string('strftimerecentfull', 'langconfig');
             $newcmt->fullname = fullname($USER);
-            $url = new moodle_url('/user/view.php', ['id' => $USER->id, 'course' => $this->courseid]);
+            $url = new url('/user/view.php', ['id' => $USER->id, 'course' => $this->courseid]);
             $newcmt->profileurl = $url->out();
             $formatoptions = ['overflowdiv' => true, 'blanktarget' => true];
             $newcmt->content = format_text($newcmt->content, $newcmt->format, $formatoptions);
@@ -927,7 +929,7 @@ class manager {
         }
         if ($nonjs && $this->can_post()) {
             // Form to add comments.
-            $html .= html_writer::start_tag('form', ['method' => 'post', 'action' => new moodle_url('/comment/comment_post.php')]);
+            $html .= html_writer::start_tag('form', ['method' => 'post', 'action' => new url('/comment/comment_post.php')]);
             // Comment parameters.
             $html .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'contextid', 'value' => $this->contextid]);
             $html .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'add']);
@@ -1090,7 +1092,7 @@ class manager {
         stdClass $context,
         string $component,
         int $since,
-        ?\cm_info $cm = null
+        ?cm_info $cm = null
     ): array {
         global $DB;
 

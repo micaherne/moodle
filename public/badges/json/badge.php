@@ -27,6 +27,7 @@ define('NO_MOODLE_COOKIES', true); // No need for a session here.
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
+use core\exception\moodle_exception;
 use core_badges\local\backpack\helper;
 use core_badges\local\backpack\ob_factory;
 
@@ -36,7 +37,7 @@ $obversion = optional_param('obversion', $defaultobversion, PARAM_ALPHANUM);
 
 if (!helper::badge_available($badgeid)) {
     header("HTTP/1.0 410 Gone");
-    throw new \moodle_exception(get_string('error:relatedbadgedoesntexist', 'badges'));
+    throw new moodle_exception(get_string('error:relatedbadgedoesntexist', 'badges'));
 }
 
 $badge = ob_factory::create_badge_exporter_from_id($badgeid, $obversion);

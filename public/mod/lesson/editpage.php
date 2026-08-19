@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\context\module;
+use core\url;
+
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 require_once('editpage_form.php');
@@ -35,9 +38,9 @@ $edit   = optional_param('edit', false, PARAM_BOOL);
 $returnto = optional_param('returnto', null, PARAM_LOCALURL);
 
 if (!empty($returnto)) {
-    $returnto = new moodle_url($returnto);
+    $returnto = new url($returnto);
 } else {
-    $returnto = new moodle_url('/mod/lesson/edit.php', array('id' => $id));
+    $returnto = new url('/mod/lesson/edit.php', array('id' => $id));
     $returnto->set_anchor('lesson-' . $pageid);
 }
 
@@ -47,7 +50,7 @@ $lesson = new lesson($DB->get_record('lesson', array('id' => $cm->instance), '*'
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/lesson:edit', $context);
 
 $PAGE->set_url('/mod/lesson/editpage.php', array('pageid'=>$pageid, 'id'=>$id, 'qtype'=>$qtype));
@@ -147,7 +150,7 @@ if ($edit) {
     $data = $editpage->update_form_data($data);
 
     $mform->set_data($data);
-    $PAGE->navbar->add(get_string('edit'), new moodle_url('/mod/lesson/edit.php', array('id'=>$id)));
+    $PAGE->navbar->add(get_string('edit'), new url('/mod/lesson/edit.php', array('id'=>$id)));
     $PAGE->navbar->add(get_string('editingquestionpage', 'lesson', get_string($mform->qtypestring, 'lesson')));
 } else {
     // Give the page type being created a chance to override the creation process

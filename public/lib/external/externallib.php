@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -464,12 +466,12 @@ class core_external extends external_api {
         $params = self::validate_parameters(self::update_inplace_editable_parameters(),
                       array('component' => $component, 'itemtype' => $itemtype, 'itemid' => $itemid, 'value' => $value));
         if (!$functionname = component_callback_exists($component, 'inplace_editable')) {
-            throw new \moodle_exception('inplaceeditableerror');
+            throw new moodle_exception('inplaceeditableerror');
         }
         $tmpl = component_callback($params['component'], 'inplace_editable',
             array($params['itemtype'], $params['itemid'], $params['value']));
         if (!$tmpl || !($tmpl instanceof \core\output\inplace_editable)) {
-            throw new \moodle_exception('inplaceeditableerror');
+            throw new moodle_exception('inplaceeditableerror');
         }
         return $tmpl->export_for_template($PAGE->get_renderer('core'));
     }
@@ -550,7 +552,7 @@ class core_external extends external_api {
                 'contextid' => $contextid,
             ]);
 
-        $context = \context::instance_by_id($contextid);
+        $context = context::instance_by_id($contextid);
         self::validate_context($context);
 
         return \core\notification::fetch_as_array($PAGE->get_renderer('core'));

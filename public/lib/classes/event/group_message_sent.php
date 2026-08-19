@@ -24,6 +24,11 @@
 
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,14 +58,14 @@ class group_message_sent extends base {
         // We may be sending a message from the 'noreply' address, which means we are not actually sending a
         // message from a valid user. In this case, we will set the userid to 0.
         // Check if the userid is valid.
-        if (!\core_user::is_real_user($userfromid)) {
+        if (!user::is_real_user($userfromid)) {
             $userfromid = 0;
         }
 
         $event = self::create([
             'objectid' => $messageid,
             'userid' => $userfromid,
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'other' => [
                 'courseid' => $courseid,
                 'conversationid' => $conversationid
@@ -96,7 +101,7 @@ class group_message_sent extends base {
     public function get_url() {
         // There currently isn't a way to link back from a 'group message sent' event to a conversation.
         // So, just return the user to the index page.
-        return new \moodle_url('/message/index.php');
+        return new url('/message/index.php');
     }
 
     /**
@@ -108,7 +113,7 @@ class group_message_sent extends base {
         $conversationid = $this->other['conversationid'];
 
         // Check if we are sending from a valid user.
-        if (\core_user::is_real_user($this->userid)) {
+        if (user::is_real_user($this->userid)) {
 
             return "The user with id '$this->userid' sent a message with id '$this->objectid' to the conversation " .
                    "with id '$conversationid'.";
@@ -127,10 +132,10 @@ class group_message_sent extends base {
         parent::validate_data();
 
         if (!isset($this->other['courseid'])) {
-            throw new \coding_exception('The \'courseid\' value must be set in other.');
+            throw new coding_exception('The \'courseid\' value must be set in other.');
         }
         if (!isset($this->other['conversationid'])) {
-            throw new \coding_exception('The \'conversationid\' value must be set in other.');
+            throw new coding_exception('The \'conversationid\' value must be set in other.');
         }
     }
 

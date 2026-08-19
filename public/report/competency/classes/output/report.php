@@ -23,12 +23,12 @@
  */
 namespace report_competency\output;
 
-use context_course;
-use renderable;
-use core_user;
-use templatable;
-use renderer_base;
-use moodle_url;
+use core\context\course;
+use core\output\renderable;
+use core\user;
+use core\output\templatable;
+use core\output\renderer_base;
+use core\url as moodle_url;
 use stdClass;
 use core_competency\api;
 use core_competency\external\user_competency_course_exporter;
@@ -69,7 +69,7 @@ class report implements renderable, templatable {
         $this->courseid = $courseid;
         $this->userid = $userid;
         $this->moduleid = $moduleid;
-        $this->context = context_course::instance($courseid);
+        $this->context = course::instance($courseid);
     }
 
     /**
@@ -89,14 +89,14 @@ class report implements renderable, templatable {
         }
 
         $course = $DB->get_record('course', array('id' => $this->courseid));
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $exporter = new course_summary_exporter($course, array('context' => $coursecontext));
         $coursecompetencysettings = api::read_course_competency_settings($course->id);
         $data->pushratingstouserplans = $coursecompetencysettings->get('pushratingstouserplans');
         $data->course = $exporter->export($output);
 
         $data->usercompetencies = array();
-        $user = core_user::get_user($this->userid);
+        $user = user::get_user($this->userid);
 
         $exporter = new user_summary_exporter($user);
         $data->user = $exporter->export($output);

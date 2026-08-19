@@ -19,12 +19,12 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\helpers;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
 use core_reportbuilder_generator;
 use core_reportbuilder\reportbuilder\audience\manual;
 use core_reportbuilder\local\models\audience as audience_model;
 use core_user\reportbuilder\datasource\users;
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 
 /**
  * Unit tests for audience helper
@@ -251,8 +251,8 @@ final class audience_test extends advanced_testcase {
 
         // Manager role gives users one and two capability to create own reports.
         $managerrole = $DB->get_field('role', 'id', ['shortname' => 'manager']);
-        role_assign($managerrole, $userone->id, context_system::instance());
-        role_assign($managerrole, $usertwo->id, context_system::instance());
+        role_assign($managerrole, $userone->id, system::instance());
+        role_assign($managerrole, $usertwo->id, system::instance());
 
         // Admin creates a report, no audience.
         $this->setAdminUser();
@@ -326,7 +326,7 @@ final class audience_test extends advanced_testcase {
         $this->setUser($user);
 
         $userrole = $DB->get_field('role', 'id', ['shortname' => 'user']);
-        assign_capability($capability, CAP_ALLOW, $userrole, context_system::instance());
+        assign_capability($capability, CAP_ALLOW, $userrole, system::instance());
 
         [$where, $params] = audience::user_reports_list_access_sql('r');
         $reports = $DB->get_fieldset_sql("SELECT r.id FROM {reportbuilder_report} r WHERE {$where}", $params);

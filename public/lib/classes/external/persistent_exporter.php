@@ -23,7 +23,7 @@
  */
 namespace core\external;
 
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Abstract exporter based on the persistent model.

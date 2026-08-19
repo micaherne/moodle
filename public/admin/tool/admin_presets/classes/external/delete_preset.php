@@ -16,6 +16,7 @@
 
 namespace tool_admin_presets\external;
 
+use core\context\system;
 use core_adminpresets\manager;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -55,7 +56,7 @@ class delete_preset extends external_api {
         ]);
 
         // Validate context.
-        $context = \context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         require_capability('moodle/site:config', $context);

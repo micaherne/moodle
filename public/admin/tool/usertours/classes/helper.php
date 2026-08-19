@@ -16,8 +16,11 @@
 
 namespace tool_usertours;
 
-use coding_exception;
+use core\exception\coding_exception;
+use core\output\html_writer;
 use core\output\inplace_editable;
+use core\output\pix_icon;
+use core\url;
 
 /**
  * Tour helper.
@@ -59,7 +62,7 @@ class helper {
      * @return \moodle_url
      */
     public static function get_edit_step_link($tourid, $stepid = null, $targettype = null) {
-        $link = new \moodle_url('/admin/tool/usertours/configure.php');
+        $link = new url('/admin/tool/usertours/configure.php');
 
         if ($stepid) {
             $link->param('action', manager::ACTION_EDITSTEP);
@@ -81,7 +84,7 @@ class helper {
      * @return \moodle_url
      */
     public static function get_move_tour_link($tourid, $direction = self::MOVE_DOWN) {
-        $link = new \moodle_url('/admin/tool/usertours/configure.php');
+        $link = new url('/admin/tool/usertours/configure.php');
 
         $link->param('action', manager::ACTION_MOVETOUR);
         $link->param('id', $tourid);
@@ -100,7 +103,7 @@ class helper {
      * @return \moodle_url
      */
     public static function get_move_step_link($stepid, $direction = self::MOVE_DOWN) {
-        $link = new \moodle_url('/admin/tool/usertours/configure.php');
+        $link = new url('/admin/tool/usertours/configure.php');
 
         $link->param('action', manager::ACTION_MOVESTEP);
         $link->param('id', $stepid);
@@ -119,7 +122,7 @@ class helper {
      * @return  \moodle_url             The required URL.
      */
     public static function get_new_step_link($tourid, $targettype = null) {
-        $link = new \moodle_url('/admin/tool/usertours/configure.php');
+        $link = new url('/admin/tool/usertours/configure.php');
         $link->param('action', manager::ACTION_NEWSTEP);
         $link->param('tourid', $tourid);
         $link->param('targettype', $targettype);
@@ -134,7 +137,7 @@ class helper {
      * @return  \moodle_url             The URL.
      */
     public static function get_view_tour_link($tourid) {
-        return new \moodle_url('/admin/tool/usertours/configure.php', [
+        return new url('/admin/tool/usertours/configure.php', [
                 'id'        => $tourid,
                 'action'    => manager::ACTION_VIEWTOUR,
             ]);
@@ -147,7 +150,7 @@ class helper {
      * @return  \moodle_url             The URL.
      */
     public static function get_reset_tour_for_all_link($tourid) {
-        return new \moodle_url('/admin/tool/usertours/configure.php', [
+        return new url('/admin/tool/usertours/configure.php', [
             'id'        => $tourid,
             'action'    => manager::ACTION_RESETFORALL,
             'sesskey'   => sesskey(),
@@ -161,7 +164,7 @@ class helper {
      * @return  \moodle_url             The URL.
      */
     public static function get_edit_tour_link($tourid = null) {
-        $link = new \moodle_url('/admin/tool/usertours/configure.php');
+        $link = new url('/admin/tool/usertours/configure.php');
 
         if ($tourid) {
             $link->param('action', manager::ACTION_EDITTOUR);
@@ -179,7 +182,7 @@ class helper {
      * @return  \moodle_url             The URL.
      */
     public static function get_import_tour_link() {
-        $link = new \moodle_url('/admin/tool/usertours/configure.php', [
+        $link = new url('/admin/tool/usertours/configure.php', [
                 'action'    => manager::ACTION_IMPORTTOUR,
             ]);
 
@@ -193,7 +196,7 @@ class helper {
      * @return  \moodle_url             The URL.
      */
     public static function get_export_tour_link($tourid) {
-        $link = new \moodle_url('/admin/tool/usertours/configure.php', [
+        $link = new url('/admin/tool/usertours/configure.php', [
             'action'    => manager::ACTION_EXPORTTOUR,
             'id'        => $tourid,
         ]);
@@ -208,7 +211,7 @@ class helper {
      * @return  \moodle_url             The URL.
      */
     public static function get_duplicate_tour_link($tourid) {
-        return new \moodle_url('/admin/tool/usertours/configure.php', [
+        return new url('/admin/tool/usertours/configure.php', [
             'action'    => manager::ACTION_DUPLICATETOUR,
             'id'        => $tourid,
             'sesskey'   => sesskey(),
@@ -222,7 +225,7 @@ class helper {
      * @return  \moodle_url             The URL.
      */
     public static function get_delete_tour_link($tourid) {
-        return new \moodle_url('/admin/tool/usertours/configure.php', [
+        return new url('/admin/tool/usertours/configure.php', [
             'id'        => $tourid,
             'action'    => manager::ACTION_DELETETOUR,
             'sesskey'   => sesskey(),
@@ -235,7 +238,7 @@ class helper {
      * @return  \moodle_url             The URL.
      */
     public static function get_list_tour_link() {
-        $link = new \moodle_url('/admin/tool/usertours/configure.php');
+        $link = new url('/admin/tool/usertours/configure.php');
         $link->param('action', manager::ACTION_LISTTOURS);
 
         return $link;
@@ -256,7 +259,7 @@ class helper {
 
         return $OUTPUT->action_icon(
             $url,
-            new \pix_icon($icon, $alt, $iconcomponent, [
+            new pix_icon($icon, $alt, $iconcomponent, [
                 'title' => $alt,
             ]),
             null,
@@ -273,7 +276,7 @@ class helper {
     public static function get_filler_icon($options = []) {
         global $OUTPUT;
 
-        return \html_writer::span(
+        return html_writer::span(
             $OUTPUT->pix_icon('t/filler', '', 'tool_usertours', $options),
             'action-icon'
         );
@@ -286,7 +289,7 @@ class helper {
      * @return  \moodle_url             The URL.
      */
     public static function get_delete_step_link($stepid) {
-        return new \moodle_url('/admin/tool/usertours/configure.php', [
+        return new url('/admin/tool/usertours/configure.php', [
             'action'    => manager::ACTION_DELETESTEP,
             'id'        => $stepid,
             'sesskey'   => sesskey(),
@@ -306,7 +309,7 @@ class helper {
             'tourname',
             $tour->get_id(),
             true,
-            \html_writer::link(
+            html_writer::link(
                 $tour->get_view_link(),
                 $name
             ),
@@ -380,7 +383,7 @@ class helper {
             'stepname',
             $step->get_id(),
             true,
-            \html_writer::link(
+            html_writer::link(
                 $step->get_edit_link(),
                 $title
             ),
@@ -560,7 +563,7 @@ class helper {
                     $filter::get_filter_name(),
                 );
             } else {
-                throw new \coding_exception("Could not determine component for filter class {$filter}");
+                throw new coding_exception("Could not determine component for filter class {$filter}");
             }
         }
 

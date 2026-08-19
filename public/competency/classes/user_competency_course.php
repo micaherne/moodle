@@ -24,9 +24,9 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use context_course;
-use context_user;
-use lang_string;
+use core\context\course;
+use core\context\user;
+use core\lang_string;
 
 /**
  * Class for loading/storing user_competency_course from the DB.
@@ -83,7 +83,7 @@ class user_competency_course extends persistent {
      * @return context The context.
      */
     public function get_context() {
-        return context_user::instance($this->get('userid'));
+        return user::instance($this->get('userid'));
     }
 
     /**
@@ -144,7 +144,7 @@ class user_competency_course extends persistent {
      * @return true|lang_string
      */
     protected function validate_courseid($value) {
-        if (!context_course::instance($value, IGNORE_MISSING)) {
+        if (!course::instance($value, IGNORE_MISSING)) {
             return new lang_string('errorinvalidcourse', 'core_competency', $value);
         }
 

@@ -16,6 +16,10 @@
 
 namespace core_tag\external;
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
 use core_external\external_api;
 
 /**
@@ -33,7 +37,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_update_tags(): void {
         global $DB;
         $this->resetAfterTest();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $originaltag = array(
             'isstandard' => 0,
@@ -158,7 +162,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             \core_external::update_inplace_editable('core_tag', 'tagname', $tag->id, 'new tag name');
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('Sorry, but you do not currently have permissions to do that (Manage all tags).',
                     $e->getMessage());
         }
@@ -187,15 +191,15 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Create tags for two user profiles and one course.
         $this->setAdminUser();
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         \core_tag_tag::set_item_tags('core', 'user', $USER->id, $context, array('test'));
 
         $this->setUser($this->getDataGenerator()->create_user());
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         \core_tag_tag::set_item_tags('core', 'user', $USER->id, $context, array('test'));
 
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         \core_tag_tag::set_item_tags('core', 'course', $course->id, $context, array('test'));
 
         $tag = \core_tag_tag::get_by_name(0, 'test');
@@ -281,22 +285,22 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Create tags for two user profiles, a post and one course.
         $this->setAdminUser();
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         \core_tag_tag::set_item_tags('core', 'user', $USER->id, $context, array('Cats', 'Dogs'));
 
         $this->setUser($this->getDataGenerator()->create_user());
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
         \core_tag_tag::set_item_tags('core', 'user', $USER->id, $context, array('Mice'));
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         \core_tag_tag::set_item_tags('core', 'course', $course->id, $coursecontext, array('Cats'));
 
         $post = new \stdClass();
         $post->userid = $USER->id;
         $post->content = 'test post content text';
         $post->id = $DB->insert_record('post', $post);
-        $context = \context_system::instance();
+        $context = system::instance();
         \core_tag_tag::set_item_tags('core', 'post', $post->id, $context, array('Horses', 'Cats'));
 
         // First, retrieve complete cloud.
@@ -357,13 +361,13 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $this->assertEquals('Cats', $result['tags'][0]['name']);
 
         // Complete system context.
-        $result = \core_tag_external::get_tag_cloud(0, false, 150, 'name', '', 0, \context_system::instance()->id);
+        $result = \core_tag_external::get_tag_cloud(0, false, 150, 'name', '', 0, system::instance()->id);
         $result = external_api::clean_returnvalue(\core_tag_external::get_tag_cloud_returns(), $result);
         $this->assertCount(4, $result['tags']);
         $this->assertEquals(4, $result['tagscount']);
 
         // Just system context - avoid children.
-        $result = \core_tag_external::get_tag_cloud(0, false, 150, 'name', '', 0, \context_system::instance()->id, 0);
+        $result = \core_tag_external::get_tag_cloud(0, false, 150, 'name', '', 0, system::instance()->id, 0);
         $result = external_api::clean_returnvalue(\core_tag_external::get_tag_cloud_returns(), $result);
         $this->assertCount(2, $result['tags']);
         $this->assertEquals(2, $result['tagscount']); // Horses and Cats.

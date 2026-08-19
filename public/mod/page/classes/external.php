@@ -24,6 +24,7 @@
  * @since      Moodle 3.0
  */
 
+use core\context\module;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_files;
@@ -82,7 +83,7 @@ class mod_page_external extends external_api {
         $page = $DB->get_record('page', array('id' => $params['pageid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($page, 'page');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         require_capability('mod/page:view', $context);
@@ -162,7 +163,7 @@ class mod_page_external extends external_api {
             foreach ($pages as $page) {
                 helper_for_get_mods_by_courses::format_name_and_intro($page, 'mod_page');
 
-                $context = context_module::instance($page->coursemodule);
+                $context = module::instance($page->coursemodule);
                 list($page->content, $page->contentformat) = \core_external\util::format_text(
                         $page->content, $page->contentformat,
                         $context, 'mod_page', 'content', $page->revision, ['noclean' => true]);

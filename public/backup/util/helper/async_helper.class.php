@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\lang_string;
+use core\url;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/user/lib.php');
@@ -91,7 +98,7 @@ class async_helper  {
      */
     private function get_user() {
         $userid = $this->backuprec->userid;
-        $user = core_user::get_user($userid, '*', MUST_EXIST);
+        $user = user::get_user($userid, '*', MUST_EXIST);
 
         return $user;
     }
@@ -142,15 +149,15 @@ class async_helper  {
     private function get_resource_link() {
         // Get activity context only for backups.
         if ($this->backuprec->type == 'activity' && $this->type == 'backup') {
-            $context = context_module::instance($this->backuprec->itemid);
+            $context = module::instance($this->backuprec->itemid);
         } else { // Course or Section which have the same context getter.
-            $context = context_course::instance($this->backuprec->itemid);
+            $context = course::instance($this->backuprec->itemid);
         }
 
         // Generate link based on operation type.
         if ($this->type == 'backup') {
             // For backups simply generate link to restore file area UI.
-            $url = new moodle_url('/backup/restorefile.php', array('contextid' => $context->id));
+            $url = new url('/backup/restorefile.php', array('contextid' => $context->id));
         } else {
             // For restore generate link to the item itself.
             $url = $context->get_url();
@@ -261,7 +268,7 @@ class async_helper  {
         $fs = get_file_storage();
         $file = $fs->get_file($contextid, 'backup', $filearea, 0, '/', $filename);
         $filesize = display_size ($file->get_filesize());
-        $fileurl = moodle_url::make_pluginfile_url(
+        $fileurl = url::make_pluginfile_url(
             $file->get_contextid(),
             $file->get_component(),
             $file->get_filearea(),
@@ -280,7 +287,7 @@ class async_helper  {
         $params['filecontextid'] = $file->get_contextid();
         $params['contextid'] = $contextid;
         $params['itemid'] = $file->get_itemid();
-        $restoreurl = new moodle_url('/backup/restorefile.php', $params);
+        $restoreurl = new url('/backup/restorefile.php', $params);
         $filesize = display_size ($file->get_filesize());
 
         $results = array(
@@ -301,7 +308,7 @@ class async_helper  {
         global $DB;
 
         $backupitemid = $DB->get_field('backup_controllers', 'itemid', array('backupid' => $backupid), MUST_EXIST);
-        $newcontext = context_course::instance($backupitemid);
+        $newcontext = course::instance($backupitemid);
 
         $restoreurl = $newcontext->get_url()->out();
         $urlarray = array('restoreurl' => $restoreurl);
@@ -397,7 +404,7 @@ class async_helper  {
      * @param \context $context The Moodle context for the restores.
      * @return string $coursename The full name of the course.
      */
-    public static function get_restore_name(\context $context) {
+    public static function get_restore_name(context $context) {
         global $DB;
         $instanceid = $context->instanceid;
 

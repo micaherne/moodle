@@ -24,7 +24,10 @@
  */
 namespace mod_bigbluebuttonbn\test;
 
-use context_module;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\user;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\config;
 use mod_bigbluebuttonbn\local\proxy\recording_proxy;
@@ -50,7 +53,7 @@ trait testcase_helper_trait {
      */
     protected function create_instance(?stdClass $course = null, array $params = [], array $options = []): array {
         // Prior to creating the instance, make sure that the BigBlueButton module is enabled.
-        $modules = \core_plugin_manager::instance()->get_plugins_of_type('mod');
+        $modules = plugin_manager::instance()->get_plugins_of_type('mod');
         if (!$modules['bigbluebuttonbn']->is_enabled()) {
             mod::enable_plugin('bigbluebuttonbn', true);
         }
@@ -62,7 +65,7 @@ trait testcase_helper_trait {
         $options['visible'] = 1;
         $instance = $this->getDataGenerator()->create_module('bigbluebuttonbn', $params, $options);
         list($course, $cm) = get_course_and_cm_from_instance($instance, 'bigbluebuttonbn');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         return [$context, $cm, $instance];
     }
@@ -161,7 +164,7 @@ trait testcase_helper_trait {
             $this->getDataGenerator()->get_plugin_generator('mod_bigbluebuttonbn')->reset_mock();
             // Mock server expects a value. By default this field is empty.
             set_config('bigbluebuttonbn_shared_secret', config::DEFAULT_SHARED_SECRET);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->markTestSkipped(
                 'Cannot connect to the mock server for this test. Make sure that TEST_MOD_BIGBLUEBUTTONBN_MOCK_SERVER points
                 to an active Mock server'
@@ -251,7 +254,7 @@ trait testcase_helper_trait {
             foreach ($groups as $groupname => $students) {
                 $group = $this->getDataGenerator()->create_group(['name' => $groupname, 'courseid' => $this->course->id]);
                 foreach ($students as $username) {
-                    $user = \core_user::get_user_by_username($username);
+                    $user = user::get_user_by_username($username);
                     $this->getDataGenerator()->create_group_member(['userid' => $user->id, 'groupid' => $group->id]);
                 }
             }

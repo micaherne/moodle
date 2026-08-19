@@ -24,6 +24,8 @@
 
 declare(strict_types=1);
 
+use core\context\system;
+use core\exception\coding_exception;
 use core\output\inplace_editable;
 
 /**
@@ -36,7 +38,7 @@ use core\output\inplace_editable;
  */
 function tool_admin_presets_inplace_editable(string $itemtype, int $itemid, string $newvalue): inplace_editable {
     global $DB;
-    $context = \context_system::instance();
+    $context = system::instance();
     \core_external\external_api::validate_context($context);
 
     require_capability('moodle/site:config', $context);
@@ -45,7 +47,7 @@ function tool_admin_presets_inplace_editable(string $itemtype, int $itemid, stri
         case 'presetname':
             $newvalue = clean_param($newvalue, PARAM_TEXT);
             $edithint = get_string('editadminpresetname', 'tool_admin_presets');
-            $displayvalue = format_string($newvalue, true, ['context' => \context_system::instance(), 'escape' => false]);
+            $displayvalue = format_string($newvalue, true, ['context' => system::instance(), 'escape' => false]);
             $editlabel = get_string('newvaluefor', 'form', $displayvalue);
 
             // Update value in database.
@@ -56,7 +58,7 @@ function tool_admin_presets_inplace_editable(string $itemtype, int $itemid, stri
 
             break;
         default:
-            throw new \coding_exception('Unexpected admin preset inplace editable item type');
+            throw new coding_exception('Unexpected admin preset inplace editable item type');
     }
 
     return new inplace_editable('tool_admin_presets', $itemtype, $itemid, true, $displayvalue, $newvalue, $edithint, $editlabel);

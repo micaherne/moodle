@@ -24,6 +24,8 @@
  **/
 
 /** Require the specific libraries */
+use core\url;
+
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 
@@ -43,7 +45,7 @@ $context = $lesson->context;
 $canmanage = $lesson->can_manage();
 $lessonoutput = $PAGE->get_renderer('mod_lesson');
 
-$url = new moodle_url('/mod/lesson/continue.php', array('id'=>$cm->id));
+$url = new url('/mod/lesson/continue.php', array('id'=>$cm->id));
 $PAGE->set_url($url);
 $PAGE->set_pagetype('mod-lesson-view');
 $PAGE->navbar->add(get_string('continue', 'lesson'));
@@ -54,7 +56,7 @@ if (!$canmanage) {
     $lesson->displayleft = lesson_displayleftif($lesson);
     $timer = $lesson->update_timer();
     if (!$lesson->check_time($timer)) {
-        redirect(new moodle_url('/mod/lesson/view.php', array('id' => $cm->id, 'pageid' => LESSON_EOL, 'outoftime' => 'normal')));
+        redirect(new url('/mod/lesson/view.php', array('id' => $cm->id, 'pageid' => LESSON_EOL, 'outoftime' => 'normal')));
         die; // Shouldn't be reached, but make sure.
     }
 } else {
@@ -71,7 +73,7 @@ $result = $lesson->process_page_responses($page);
 
 if ($result->nodefaultresponse || $result->inmediatejump) {
     // Don't display feedback or force a redirecto to newpageid.
-    redirect(new moodle_url('/mod/lesson/view.php', array('id'=>$cm->id,'pageid'=>$result->newpageid)));
+    redirect(new url('/mod/lesson/view.php', array('id'=>$cm->id,'pageid'=>$result->newpageid)));
 }
 
 // Set Messages.
@@ -103,17 +105,17 @@ if (isset($USER->modattempts[$lesson->id])) {
     $content = $OUTPUT->box(get_string("gotoendoflesson", "lesson"), 'center');
     $content .= $OUTPUT->box(get_string("or", "lesson"), 'center');
     $content .= $OUTPUT->box(get_string("continuetonextpage", "lesson"), 'center');
-    $url = new moodle_url('/mod/lesson/view.php', array('id' => $cm->id, 'pageid' => LESSON_EOL));
+    $url = new url('/mod/lesson/view.php', array('id' => $cm->id, 'pageid' => LESSON_EOL));
     echo $content . $OUTPUT->single_button($url, get_string('finish', 'lesson'));
 }
 
 // Review button back
 if (!$result->correctanswer && !$result->noanswer && !$result->isessayquestion && !$reviewmode && $lesson->review && !$result->maxattemptsreached) {
-    $url = new moodle_url('/mod/lesson/view.php', array('id' => $cm->id, 'pageid' => $page->id));
+    $url = new url('/mod/lesson/view.php', array('id' => $cm->id, 'pageid' => $page->id));
     echo $OUTPUT->single_button($url, get_string('reviewquestionback', 'lesson'));
 }
 
-$url = new moodle_url('/mod/lesson/view.php', array('id'=>$cm->id, 'pageid'=>$result->newpageid));
+$url = new url('/mod/lesson/view.php', array('id'=>$cm->id, 'pageid'=>$result->newpageid));
 
 if ($lesson->review && !$result->correctanswer && !$result->noanswer && !$result->isessayquestion && !$result->maxattemptsreached) {
     // If both the "Yes, I'd like to try again" and "No, I just want to go on  to the next question" point to the same

@@ -23,6 +23,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\block;
+use core\context\module;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,7 +57,7 @@ abstract class backup_block_task extends backup_task {
 
         $this->blockid    = $blockid;
         $this->blockname  = clean_param($block->blockname, PARAM_PLUGIN);
-        $this->contextid  = context_block::instance($this->blockid)->id;
+        $this->contextid  = block::instance($this->blockid)->id;
         $this->moduleid   = $moduleid;
         $this->modulename = null;
         $this->parentcontextid = null;
@@ -71,7 +75,7 @@ abstract class backup_block_task extends backup_task {
 
             $this->moduleid   = $moduleid;
             $this->modulename = $coursemodule->modname;
-            $this->parentcontextid  = context_module::instance($this->moduleid)->id;
+            $this->parentcontextid  = module::instance($this->moduleid)->id;
         }
 
         parent::__construct($name, $plan);

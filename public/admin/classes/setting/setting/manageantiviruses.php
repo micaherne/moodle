@@ -16,7 +16,12 @@
 
 namespace core_admin\setting\setting;
 
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 
 /**
  * Antivirus plugin administration.
@@ -122,7 +127,7 @@ class manageantiviruses extends \core_admin\setting {
         $return = $OUTPUT->heading(get_string('actantivirushdr', 'antivirus'), 3, 'main', true);
         $return .= $OUTPUT->box_start('generalbox antivirusesui');
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [$txt->name, $txt->enable, $txt->updown, $txt->settings, $struninstall];
         $table->colclasses = ['leftalign', 'centeralign', 'centeralign', 'centeralign', 'centeralign'];
         $table->id = 'antivirusmanagement';
@@ -132,7 +137,7 @@ class manageantiviruses extends \core_admin\setting {
         // Iterate through auth plugins and add to the display table.
         $updowncount = 1;
         $antiviruscount = count($activeantiviruses);
-        $baseurl = new \moodle_url('/admin/antiviruses.php', ['sesskey' => sesskey()]);
+        $baseurl = new url('/admin/antiviruses.php', ['sesskey' => sesskey()]);
         foreach ($antivirusesavailable as $antivirus => $name) {
             // Hide/show link.
             $class = '';
@@ -140,14 +145,14 @@ class manageantiviruses extends \core_admin\setting {
                 $hideshowurl = $baseurl;
                 $hideshowurl->params(['action' => 'disable', 'antivirus' => $antivirus]);
                 $hideshowimg = $OUTPUT->pix_icon('t/hide', get_string('disable'));
-                $hideshow = \html_writer::link($hideshowurl, $hideshowimg);
+                $hideshow = html_writer::link($hideshowurl, $hideshowimg);
                 $enabled = true;
                 $displayname = $name;
             } else {
                 $hideshowurl = $baseurl;
                 $hideshowurl->params(['action' => 'enable', 'antivirus' => $antivirus]);
                 $hideshowimg = $OUTPUT->pix_icon('t/show', get_string('enable'));
-                $hideshow = \html_writer::link($hideshowurl, $hideshowimg);
+                $hideshow = html_writer::link($hideshowurl, $hideshowimg);
                 $enabled = false;
                 $displayname = $name;
                 $class = 'dimmed_text';
@@ -160,7 +165,7 @@ class manageantiviruses extends \core_admin\setting {
                     $updownurl = $baseurl;
                     $updownurl->params(['action' => 'up', 'antivirus' => $antivirus]);
                     $updownimg = $OUTPUT->pix_icon('t/up', get_string('moveup'));
-                    $updown = \html_writer::link($updownurl, $updownimg);
+                    $updown = html_writer::link($updownurl, $updownimg);
                 } else {
                     $updownimg = $OUTPUT->spacer();
                 }
@@ -168,7 +173,7 @@ class manageantiviruses extends \core_admin\setting {
                     $updownurl = $baseurl;
                     $updownurl->params(['action' => 'down', 'antivirus' => $antivirus]);
                     $updownimg = $OUTPUT->pix_icon('t/down', get_string('movedown'));
-                    $updown = \html_writer::link($updownurl, $updownimg);
+                    $updown = html_writer::link($updownurl, $updownimg);
                 } else {
                     $updownimg = $OUTPUT->spacer();
                 }
@@ -177,27 +182,27 @@ class manageantiviruses extends \core_admin\setting {
 
             // Settings link.
             if (file_exists($CFG->dirroot . '/lib/antivirus/' . $antivirus . '/settings.php')) {
-                $eurl = new \moodle_url('/admin/settings.php', ['section' => 'antivirussettings' . $antivirus]);
-                $settings = \html_writer::link($eurl, $txt->settings);
+                $eurl = new url('/admin/settings.php', ['section' => 'antivirussettings' . $antivirus]);
+                $settings = html_writer::link($eurl, $txt->settings);
             } else {
                 $settings = '';
             }
 
             $uninstall = '';
-            if ($uninstallurl = \core_plugin_manager::instance()->get_uninstall_url('antivirus_' . $antivirus, 'manage')) {
-                $uninstall = \html_writer::link($uninstallurl, $struninstall);
+            if ($uninstallurl = plugin_manager::instance()->get_uninstall_url('antivirus_' . $antivirus, 'manage')) {
+                $uninstall = html_writer::link($uninstallurl, $struninstall);
             }
 
             // Add a row to the table.
-            $row = new \html_table_row([$displayname, $hideshow, $updown, $settings, $uninstall]);
+            $row = new html_table_row([$displayname, $hideshow, $updown, $settings, $uninstall]);
             if ($class) {
                 $row->attributes['class'] = $class;
             }
             $table->data[] = $row;
         }
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
         $return .= get_string('configantivirusplugins', 'antivirus');
-        $return .= \html_writer::empty_tag('br');
+        $return .= html_writer::empty_tag('br');
         $return .= get_string('tablenosave', 'admin');
         $return .= $OUTPUT->box_end();
         return highlight($query, $return);

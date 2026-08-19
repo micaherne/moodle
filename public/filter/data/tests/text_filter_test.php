@@ -25,6 +25,9 @@
 
 namespace filter_data;
 
+use core\context\course;
+use core_filters\filter_manager;
+
 /**
  * Tests for filter_data.
  *
@@ -40,17 +43,17 @@ final class text_filter_test extends \advanced_testcase {
     public function test_filter(): void {
         $this->resetAfterTest(true);
         $this->setAdminUser();
-        \filter_manager::reset_caches();
+        filter_manager::reset_caches();
 
         filter_set_global_state('data', TEXTFILTER_ON);
 
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         $course2 = $this->getDataGenerator()->create_course();
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext2 = course::instance($course2->id);
 
-        $sitecontext = \context_course::instance(SITEID);
+        $sitecontext = course::instance(SITEID);
 
         $site = get_site();
         $this->add_simple_database_instance($site, array('SiteEntry'));

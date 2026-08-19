@@ -27,6 +27,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -50,11 +52,11 @@ if ('verify' == $step) {
     if ($live_users = $mnet_peer->count_live_sessions() > 0) {
         echo $OUTPUT->notification(get_string('usersareonline', 'mnet', $live_users));
     }
-    $yesurl = new moodle_url('/admin/mnet/delete.php', array('hostid' => $mnet_peer->id, 'step' => 'delete'));
-    $nourl = new moodle_url('/admin/mnet/peers.php');
+    $yesurl = new url('/admin/mnet/delete.php', array('hostid' => $mnet_peer->id, 'step' => 'delete'));
+    $nourl = new url('/admin/mnet/peers.php');
     echo $OUTPUT->confirm(get_string('reallydeleteserver', 'mnet')  . ': ' .  $mnet_peer->name, $yesurl, $nourl);
     echo $OUTPUT->footer();
 } elseif ('delete' == $step) {
     $mnet_peer->delete();
-    redirect(new moodle_url('/admin/mnet/peers.php'), get_string('hostdeleted', 'mnet'), 5);
+    redirect(new url('/admin/mnet/peers.php'), get_string('hostdeleted', 'mnet'), 5);
 }

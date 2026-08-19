@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context_helper;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -33,7 +40,7 @@ defined('MOODLE_INTERNAL') || die;
  */
 function tool_monitor_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('tool/monitor:managerules', $context) && get_config('tool_monitor', 'enablemonitor')) {
-        $url = new moodle_url('/admin/tool/monitor/managerules.php', array('courseid' => $course->id));
+        $url = new url('/admin/tool/monitor/managerules.php', array('courseid' => $course->id));
         $settingsnode = navigation_node::create(get_string('managerules', 'tool_monitor'), $url, navigation_node::TYPE_SETTING,
                 null, null, new pix_icon('i/settings', ''));
         $reportnode = $navigation->get('coursereports');
@@ -54,7 +61,7 @@ function tool_monitor_extend_navigation_course($navigation, $course, $context) {
 function tool_monitor_extend_navigation_frontpage($navigation, $course, $context) {
 
     if (has_capability('tool/monitor:managerules', $context)) {
-        $url = new moodle_url('/admin/tool/monitor/managerules.php', array('courseid' => $course->id));
+        $url = new url('/admin/tool/monitor/managerules.php', array('courseid' => $course->id));
         $settingsnode = navigation_node::create(get_string('managerules', 'tool_monitor'), $url, navigation_node::TYPE_SETTING,
                 null, null, new pix_icon('i/settings', ''));
         $reportnode = $navigation->get('coursereports');
@@ -78,8 +85,8 @@ function tool_monitor_extend_navigation_user_settings($navigation, $user, $userc
     global $USER, $PAGE;
 
     // Don't bother doing needless calculations unless we are on the relevant pages.
-    $onpreferencepage = $PAGE->url->compare(new moodle_url('/user/preferences.php'), URL_MATCH_BASE);
-    $onmonitorpage = $PAGE->url->compare(new moodle_url('/admin/tool/monitor/index.php'), URL_MATCH_BASE);
+    $onpreferencepage = $PAGE->url->compare(new url('/user/preferences.php'), URL_MATCH_BASE);
+    $onmonitorpage = $PAGE->url->compare(new url('/admin/tool/monitor/index.php'), URL_MATCH_BASE);
     if (!$onpreferencepage && !$onmonitorpage) {
         return null;
     }
@@ -89,7 +96,7 @@ function tool_monitor_extend_navigation_user_settings($navigation, $user, $userc
         // Now let's check to see if the user has any courses / site rules that they can subscribe to.
         // We skip doing a check here if we are on the event monitor page as the check is done internally on that page.
         if ($onmonitorpage || tool_monitor_can_subscribe()) {
-            $url = new moodle_url('/admin/tool/monitor/index.php');
+            $url = new url('/admin/tool/monitor/index.php');
             $subsnode = navigation_node::create(get_string('managesubscriptions', 'tool_monitor'), $url,
                     navigation_node::TYPE_SETTING, null, 'monitor', new pix_icon('i/settings', ''));
 
@@ -106,7 +113,7 @@ function tool_monitor_extend_navigation_user_settings($navigation, $user, $userc
  * @return bool True if a capability in a course is found. False otherwise.
  */
 function tool_monitor_can_subscribe() {
-    if (has_capability('tool/monitor:subscribe', context_system::instance())) {
+    if (has_capability('tool/monitor:subscribe', system::instance())) {
         return true;
     }
     $courses = get_user_capability_course('tool/monitor:subscribe', null, true, '', '', 1);
@@ -123,7 +130,7 @@ function tool_monitor_get_user_courses() {
     $sort = enrol_get_courses_sortingsql();
 
     $options = array();
-    if (has_capability('tool/monitor:subscribe', context_system::instance())) {
+    if (has_capability('tool/monitor:subscribe', system::instance())) {
         $options[0] = get_string('site');
     }
 
@@ -139,7 +146,7 @@ function tool_monitor_get_user_courses() {
     if ($courses = get_user_capability_course('tool/monitor:subscribe', null, true, $fields, $sort)) {
         foreach ($courses as $course) {
             context_helper::preload_from_record($course);
-            $coursectx = context_course::instance($course->id);
+            $coursectx = course::instance($course->id);
             if ($course->visible || has_capability('moodle/course:viewhiddencourses', $coursectx)) {
                 $options[$course->id] = format_string($course->fullname, true, array('context' => $coursectx));
             }

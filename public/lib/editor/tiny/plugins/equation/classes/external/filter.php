@@ -16,12 +16,12 @@
 
 namespace tiny_equation\external;
 
-use context;
+use core\context;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
-use filter_manager;
+use core_filters\filter_manager;
 
 /**
  * TinyMCE Equation external API for filtering the equation.

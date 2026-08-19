@@ -99,9 +99,9 @@ final class course_request_test extends \advanced_testcase {
             'moodle/course:request',
             CAP_ALLOW,
             $roleid,
-            \context_system::instance()->id
+            context_system::instance()->id
         );
-        role_assign($roleid, $requester->id, \context_system::instance()->id);
+        role_assign($roleid, $requester->id, context_system::instance()->id);
         accesslib_clear_all_caches_for_unit_testing();
 
         $data = new \stdClass();
@@ -202,9 +202,9 @@ final class course_request_test extends \advanced_testcase {
             'moodle/course:request',
             CAP_ALLOW,
             $roleid,
-            \context_system::instance()->id
+            context_system::instance()->id
         );
-        role_assign($roleid, $requester->id, \context_system::instance()->id);
+        role_assign($roleid, $requester->id, context_system::instance()->id);
         accesslib_clear_all_caches_for_unit_testing();
 
         $data = new \stdClass();

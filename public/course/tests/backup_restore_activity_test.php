@@ -16,6 +16,7 @@
 
 namespace core_course;
 use backup;
+use core\context\system;
 
 /**
  * Restore date tests.
@@ -77,7 +78,7 @@ final class backup_restore_activity_test extends \advanced_testcase {
         $manager = $generator->create_user();
         $generator->role_assign('manager', $manager->id);
         role_change_permission($DB->get_field('role', 'id', ['shortname' => 'manager'], MUST_EXIST),
-                \context_system::instance(), 'moodle/course:setforcedlanguage', CAP_INHERIT);
+                system::instance(), 'moodle/course:setforcedlanguage', CAP_INHERIT);
         $this->setUser($manager);
 
         // Restore the course.

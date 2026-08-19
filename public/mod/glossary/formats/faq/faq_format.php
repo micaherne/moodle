@@ -1,5 +1,6 @@
 <?php
 
+use core\output\html_writer;
 use mod_glossary\output\renderer;
 
 /**

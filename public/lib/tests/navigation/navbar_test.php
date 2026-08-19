@@ -16,6 +16,8 @@
 
 namespace core\navigation;
 
+use core\url;
+
 /**
  * Tests for navbar.
  *
@@ -43,7 +45,7 @@ final class navbar_test extends \advanced_testcase {
 
         $page = new \moodle_page();
         $page->set_course($course);
-        $page->set_url(new \moodle_url('/course/view.php', ['id' => $course->id]));
+        $page->set_url(new url('/course/view.php', ['id' => $course->id]));
         $page->navbar->prepend('test 1');
         $page->navbar->prepend('test 2');
         $page->navbar->add('test 3');

@@ -16,11 +16,13 @@
 
 namespace theme_boost;
 
+use core\navigation\breadcrumb_navigation_node;
 use core\navigation\views\view;
-use navigation_node;
-use moodle_url;
-use action_link;
-use lang_string;
+use core\navigation\navigation_node;
+use core\output\renderable;
+use core\url;
+use core\output\action_link;
+use core\lang_string;
 
 /**
  * Creates a navbar for boost that allows easy control of the navbar items.
@@ -29,7 +31,7 @@ use lang_string;
  * @copyright  2021 Adrian Greeve <adrian@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class boostnavbar implements \renderable {
+class boostnavbar implements renderable {
 
     /** @var array The individual items of the navbar. */
     protected $items = [];
@@ -77,11 +79,11 @@ class boostnavbar implements \renderable {
             // Remove the course category breadcrumb nodes.
             foreach ($this->items as $key => $item) {
                 // Remove if it is a course category breadcrumb node.
-                $this->remove($item->key, \breadcrumb_navigation_node::TYPE_CATEGORY);
+                $this->remove($item->key, breadcrumb_navigation_node::TYPE_CATEGORY);
             }
             // Remove the course breadcrumb node.
             if (!str_starts_with($this->page->pagetype, 'course-view-section-')) {
-                $this->remove($this->page->course->id, \breadcrumb_navigation_node::TYPE_COURSE);
+                $this->remove($this->page->course->id, breadcrumb_navigation_node::TYPE_COURSE);
             }
             // Remove the navbar nodes that already exist in the secondary navigation menu.
             $this->remove_items_that_exist_in_navigation($PAGE->secondarynav);
@@ -112,11 +114,11 @@ class boostnavbar implements \renderable {
             // Remove the course category breadcrumb nodes.
             foreach ($this->items as $key => $item) {
                 // Remove if it is a course category breadcrumb node.
-                $this->remove($item->key, \breadcrumb_navigation_node::TYPE_CATEGORY);
+                $this->remove($item->key, breadcrumb_navigation_node::TYPE_CATEGORY);
 
                 // Module types not visible on the course main page cannot have a section breadcrumb.
                 if (!$this->page->cm->is_of_type_that_can_display() && $item->type === navigation_node::TYPE_SECTION) {
-                    $this->remove($item->key, \breadcrumb_navigation_node::TYPE_SECTION);
+                    $this->remove($item->key, breadcrumb_navigation_node::TYPE_SECTION);
                 }
             }
             $courseformat = course_get_format($this->page->course);
@@ -138,7 +140,7 @@ class boostnavbar implements \renderable {
         // Set the designated one path for courses.
         $mycoursesnode = $this->get_item('mycourses');
         if (!is_null($mycoursesnode)) {
-            $url = new \moodle_url('/my/courses.php');
+            $url = new url('/my/courses.php');
             $mycoursesnode->action = $url;
             $mycoursesnode->text = get_string('mycourses');
         }
@@ -177,7 +179,7 @@ class boostnavbar implements \renderable {
      * @param  string|int $key The identifier of the navbar item to return.
      * @return \breadcrumb_navigation_node|null The navbar item.
      */
-    protected function get_item($key): ?\breadcrumb_navigation_node {
+    protected function get_item($key): ?breadcrumb_navigation_node {
         foreach ($this->items as $item) {
             if ($key === $item->key) {
                 return $item;
@@ -248,7 +250,7 @@ class boostnavbar implements \renderable {
      *
      * @return breakcrumb_navigation_node|null The second last navigation node.
      */
-    public function get_penultimate_item(): ?\breadcrumb_navigation_node {
+    public function get_penultimate_item(): ?breadcrumb_navigation_node {
         $number = $this->item_count() - 2;
         return ($number >= 0) ? $this->items[$number] : null;
     }
@@ -263,7 +265,7 @@ class boostnavbar implements \renderable {
     protected function remove_no_link_items(bool $removesections = true): void {
         foreach ($this->items as $key => $value) {
             if (!$value->is_last() &&
-                    (!$value->has_action() || ($value->type == \navigation_node::TYPE_SECTION && $removesections))) {
+                    (!$value->has_action() || ($value->type == navigation_node::TYPE_SECTION && $removesections))) {
                 unset($this->items[$key]);
             }
         }
@@ -334,7 +336,7 @@ class boostnavbar implements \renderable {
         $text = $node->text instanceof lang_string ? $node->text->out() : $node->text;
         $action = null;
         if ($node->has_action()) {
-            if ($node->action instanceof moodle_url) {
+            if ($node->action instanceof url) {
                 $action = $node->action->out();
             } else if ($node->action instanceof action_link) {
                 $action = $node->action->url->out();

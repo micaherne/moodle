@@ -25,6 +25,8 @@ namespace tool_mobile\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\approved_contextlist;
@@ -56,7 +58,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $expectedtime = time();
         set_user_preference('tool_mobile_autologin_request_last', time(), $user);
         provider::export_user_preferences($user->id);
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $prefs = $writer->get_user_preferences('tool_mobile');
         $time = transform::datetime($expectedtime);
         $this->assertEquals($time, $prefs->tool_mobile_autologin_request_last->value);
@@ -70,7 +72,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
     public function test_get_contexts_for_userid(): void {
         // Create user and Mobile user keys.
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $key = get_user_key('tool_mobile', $user->id);
         $contextlist = provider::get_contexts_for_userid($user->id);
         $this->assertEquals($context->id, $contextlist->current()->id);
@@ -85,8 +87,8 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Create users and Mobile user keys.
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $context1 = \context_user::instance($user1->id);
-        $context2 = \context_user::instance($user2->id);
+        $context1 = user::instance($user1->id);
+        $context2 = user::instance($user2->id);
         $key1 = get_user_key('tool_mobile', $user1->id);
         $key2 = get_user_key('tool_mobile/qrlogin', $user1->id);
         $key3 = get_user_key('tool_mobile', $user2->id);
@@ -108,7 +110,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $DB;
         // Create user and Mobile user keys.
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $keyvalue = get_user_key('tool_mobile', $user->id);
         $key = $DB->get_record('user_private_key', ['value' => $keyvalue]);
         // Validate exported data.
@@ -129,7 +131,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $DB;
         // Create user and Mobile user keys.
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $keyvalue = get_user_key('tool_mobile', $user->id);
         $key = $DB->get_record('user_private_key', ['value' => $keyvalue]);
         // Before deletion, we should have 1 user_private_key.
@@ -149,7 +151,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $DB;
         // Create user and Mobile user keys.
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $keyvalue = get_user_key('tool_mobile', $user->id);
         $key = $DB->get_record('user_private_key', ['value' => $keyvalue]);
         // Before deletion, we should have 1 user_private_key.
@@ -174,8 +176,8 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Create users and Mobile user keys.
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $context1 = \context_user::instance($user1->id);
-        $context2 = \context_user::instance($user2->id);
+        $context1 = user::instance($user1->id);
+        $context2 = user::instance($user2->id);
         $keyvalue1 = get_user_key('tool_mobile', $user1->id);
         $keyvalue2 = get_user_key('tool_mobile/qrlogin', $user1->id);
         $keyvalue3 = get_user_key('tool_mobile', $user2->id);

@@ -27,6 +27,8 @@
  */
 
 use core_cache\definition;
+use core_cache\key_aware_cache_interface;
+use core_cache\searchable_cache_interface;
 use core_cache\store;
 
 defined('MOODLE_INTERNAL') || die();
@@ -88,7 +90,7 @@ abstract class static_data_store extends store {
  * @copyright  2012 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cachestore_static extends static_data_store implements cache_is_key_aware, cache_is_searchable {
+class cachestore_static extends static_data_store implements key_aware_cache_interface, searchable_cache_interface {
 
     /**
      * The name of the store

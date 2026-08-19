@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\url;
+use core_admin\setting\setting\configstoredfile;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\configtextarea;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
@@ -31,12 +38,12 @@ if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/auth/shibboleth/classes/admin_setting_special_convert_data_configfile.php');
 
     // Introductory explanation.
-    $readmeurl = (new moodle_url('/auth/shibboleth/README.txt'))->out();
-    $settings->add(new admin_setting_heading('auth_shibboleth/pluginname', '',
+    $readmeurl = (new url('/auth/shibboleth/README.txt'))->out();
+    $settings->add(new heading('auth_shibboleth/pluginname', '',
             new lang_string('auth_shibbolethdescription', 'auth_shibboleth', $readmeurl)));
 
     // Username.
-    $settings->add(new admin_setting_configtext('auth_shibboleth/user_attribute', get_string('username'),
+    $settings->add(new configtext('auth_shibboleth/user_attribute', get_string('username'),
             get_string('auth_shib_username_description', 'auth_shibboleth'), '', PARAM_RAW));
 
     // Convert Data configuration file.
@@ -51,33 +58,33 @@ if ($ADMIN->fulltree) {
     $settings->add(new auth_shibboleth_admin_setting_special_idp_configtextarea());
 
     // Logout handler.
-    $settings->add(new admin_setting_configtext('auth_shibboleth/logout_handler',
+    $settings->add(new configtext('auth_shibboleth/logout_handler',
             get_string('auth_shib_logout_url', 'auth_shibboleth'),
             get_string('auth_shib_logout_url_description', 'auth_shibboleth'), '', PARAM_URL));
 
     // Logout return URL.
-    $settings->add(new admin_setting_configtext('auth_shibboleth/logout_return_url',
+    $settings->add(new configtext('auth_shibboleth/logout_return_url',
             get_string('auth_shib_logout_return_url', 'auth_shibboleth'),
             get_string('auth_shib_logout_return_url_description', 'auth_shibboleth'), '', PARAM_URL));
 
     // Authentication method name.
-    $settings->add(new admin_setting_configtext('auth_shibboleth/login_name',
+    $settings->add(new configtext('auth_shibboleth/login_name',
             get_string('auth_shib_auth_method', 'auth_shibboleth'),
             get_string('auth_shib_auth_method_description', 'auth_shibboleth'), 'Shibboleth Login', PARAM_TEXT));
 
     // Authentication method logo.
-    $settings->add(new admin_setting_configstoredfile('auth_shibboleth/auth_logo',
+    $settings->add(new configstoredfile('auth_shibboleth/auth_logo',
                 get_string('auth_shib_auth_logo', 'auth_shibboleth'),
                 get_string('auth_shib_auth_logo_description', 'auth_shibboleth'), 'logo', 0, ['accepted_types' => ['image']]));
 
     // Login directions.
-    $settings->add(new admin_setting_configtextarea('auth_shibboleth/auth_instructions',
+    $settings->add(new configtextarea('auth_shibboleth/auth_instructions',
             get_string('auth_shib_instructions_key', 'auth_shibboleth'),
             get_string('auth_shib_instructions_help', 'auth_shibboleth', $CFG->wwwroot.'/auth/shibboleth/index.php'),
             get_string('auth_shib_instructions', 'auth_shibboleth', $CFG->wwwroot.'/auth/shibboleth/index.php'), PARAM_RAW_TRIMMED));
 
     // Password change URL.
-    $settings->add(new admin_setting_configtext('auth_shibboleth/changepasswordurl',
+    $settings->add(new configtext('auth_shibboleth/changepasswordurl',
             get_string('auth_shib_changepasswordurl', 'auth_shibboleth'),
             get_string('changepasswordhelp', 'auth'), '', PARAM_URL));
 

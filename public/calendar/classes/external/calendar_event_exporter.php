@@ -26,8 +26,11 @@ namespace core_calendar\external;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\context\system;
+use core\url;
 use \core_calendar\local\event\container;
-use \renderer_base;
+use core\output\renderer_base;
 require_once($CFG->dirroot . '/course/lib.php');
 /**
  * Class for displaying a calendar event.
@@ -99,11 +102,11 @@ class calendar_event_exporter extends event_exporter_base {
         if ($moduleproxy = $event->get_course_module()) {
             $modulename = $moduleproxy->get('modname');
             $moduleid = $moduleproxy->get('id');
-            $url = new \moodle_url(sprintf('/mod/%s/view.php', $modulename), ['id' => $moduleid]);
+            $url = new url(sprintf('/mod/%s/view.php', $modulename), ['id' => $moduleid]);
 
             // Build edit event url for action events.
             $params = array('update' => $moduleid, 'return' => true, 'sesskey' => sesskey());
-            $editurl = new \moodle_url('/course/mod.php', $params);
+            $editurl = new url('/course/mod.php', $params);
             $values['editurl'] = $editurl->out(false);
         } else if ($event->get_type() == 'category') {
             $url = $event->get_category()->get_proxied_instance()->get_view_link();
@@ -118,11 +121,11 @@ class calendar_event_exporter extends event_exporter_base {
         if ($hascourse) {
             $values['popupname'] = \core_external\util::format_string(
                 $this->event->get_name(),
-                \context_course::instance($course->id),
+                course::instance($course->id),
                 true
             );
         } else {
-            $values['popupname'] = \core_external\util::format_string($this->event->get_name(), \context_system::instance(), true);
+            $values['popupname'] = \core_external\util::format_string($this->event->get_name(), system::instance(), true);
         }
 
         $times = $this->event->get_times();
@@ -192,7 +195,7 @@ class calendar_event_exporter extends event_exporter_base {
      */
     protected static function define_related() {
         $related = parent::define_related();
-        $related['daylink'] = \moodle_url::class;
+        $related['daylink'] = url::class;
         $related['type'] = '\core_calendar\type_base';
         $related['today'] = 'int';
         $related['moduleinstance'] = 'stdClass?';

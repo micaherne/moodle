@@ -23,6 +23,10 @@
  */
 namespace core_privacy\local\request;
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -75,7 +79,7 @@ class writer {
      */
     public static function setup_real_writer_instance() {
         if (!PHPUNIT_TEST) {
-            throw new \coding_exception('setup_real_writer_instance() is only for use with PHPUnit tests.');
+            throw new coding_exception('setup_real_writer_instance() is only for use with PHPUnit tests.');
         }
 
         $instance = static::instance();
@@ -109,7 +113,7 @@ class writer {
      * @param   \context        $context    The context to apply
      * @return  content_writer              The content_writer
      */
-    public static function with_context(\context $context): content_writer {
+    public static function with_context(context $context): content_writer {
         return static::instance()
             ->get_writer_instance()
             ->set_context($context);
@@ -130,7 +134,7 @@ class writer {
         string $value,
         string $description
     ): content_writer {
-        return static::with_context(\context_system::instance())
+        return static::with_context(system::instance())
             ->export_user_preference($component, $key, $value, $description);
     }
 }

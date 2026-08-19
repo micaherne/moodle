@@ -16,6 +16,7 @@
 
 namespace mod_bigbluebuttonbn\external;
 
+use core\exception\moodle_exception;
 use core\notification;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -75,7 +76,7 @@ class end_meeting extends external_api {
         // Fetch the session, features, and profile.
         $instance = instance::get_from_instanceid($bigbluebuttonbnid);
         if (empty($instance)) {
-            throw new \moodle_exception('Unknown Instance');
+            throw new moodle_exception('Unknown Instance');
         }
         if (!groups_group_visible($groupid, $instance->get_course(), $instance->get_cm())) {
             throw new restricted_context_exception();

@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -38,7 +41,7 @@ function tool_mobile_create_app_download_url() {
         return;
     }
 
-    $downloadurl = new moodle_url($mobilesettings->setuplink);
+    $downloadurl = new url($mobilesettings->setuplink);
 
     // Do not update the URL if it is a custom one (we may break it completely).
     if ($mobilesettings->setuplink != 'https://download.moodle.org/mobile') {
@@ -162,7 +165,7 @@ function tool_mobile_myprofile_navigation(\core_user\output\myprofile\tree $tree
                 // Logout link.
                 $validtoken = empty($usertoken->validuntil) || time() < $usertoken->validuntil;
                 if ($iscurrentuser && $validtoken) {
-                    $url = new moodle_url('/'.$CFG->admin.'/tool/mobile/logout.php', ['sesskey' => sesskey()]);
+                    $url = new url('/'.$CFG->admin.'/tool/mobile/logout.php', ['sesskey' => sesskey()]);
                     $logoutlink = html_writer::link($url, get_string('logout'));
                     $mobilelastaccess .= "&nbsp; ($logoutlink)";
                 }

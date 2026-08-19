@@ -16,6 +16,8 @@
 
 namespace mod_forum\backup;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -63,7 +65,7 @@ final class restore_date_test extends \restore_date_testcase {
 
         // Ratings.
         $ratingoptions = new \stdClass;
-        $ratingoptions->context = \context_module::instance($forum->cmid);
+        $ratingoptions->context = module::instance($forum->cmid);
         $ratingoptions->ratingarea = 'post';
         $ratingoptions->component = 'mod_forum';
         $ratingoptions->itemid  = $post->id;
@@ -97,7 +99,7 @@ final class restore_date_test extends \restore_date_testcase {
         }
 
         // Rating test.
-        $newrating = $DB->get_record('rating', ['contextid' => \context_module::instance($newcm->id)->id]);
+        $newrating = $DB->get_record('rating', ['contextid' => module::instance($newcm->id)->id]);
         $this->assertEquals($rating->timecreated, $newrating->timecreated);
         $this->assertEquals($rating->timemodified, $newrating->timemodified);
     }

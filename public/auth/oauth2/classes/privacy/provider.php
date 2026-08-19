@@ -24,6 +24,8 @@ namespace auth_oauth2\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
@@ -109,7 +111,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_user) {
+        if (!$context instanceof user) {
             return;
         }
 
@@ -129,7 +131,7 @@ class provider implements
         global $DB;
 
         // Export oauth2 linked accounts.
-        $context = \context_user::instance($contextlist->get_user()->id);
+        $context = user::instance($contextlist->get_user()->id);
         $sql = "SELECT ll.id, ll.username, ll.email, ll.timecreated, ll.timemodified, oi.name as issuername
                 FROM {auth_oauth2_linked_login} ll JOIN {oauth2_issuer} oi ON oi.id = ll.issuerid
                 WHERE ll.userid = :userid";
@@ -155,7 +157,7 @@ class provider implements
      *
      * @param  \context $context The context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         if ($context->contextlevel != CONTEXT_USER) {
             return;
         }
@@ -170,7 +172,7 @@ class provider implements
     public static function delete_data_for_users(approved_userlist $userlist) {
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_user) {
+        if ($context instanceof user) {
             static::delete_user_data($context->instanceid);
         }
     }

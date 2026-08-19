@@ -24,6 +24,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\theme_config;
+
 defined('MOODLE_INTERNAL') || die();
 
 if (!defined('THEME_DESIGNER_CACHE_LIFETIME')) {

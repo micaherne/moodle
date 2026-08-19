@@ -26,6 +26,21 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+use core\context;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\context\user as context_user;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\user_picture;
+use core\url;
+use core\user as core_user;
+use core_course\cm_info;
 use core_course\external\course_summary_exporter;
 use core_courseformat\formatactions;
 use core_external\external_api;
@@ -150,7 +165,7 @@ class core_course_external extends external_api {
         }
 
         // now security checks
-        $context = context_course::instance($course->id, IGNORE_MISSING);
+        $context = course::instance($course->id, IGNORE_MISSING);
         try {
             self::validate_context($context);
         } catch (Exception $e) {
@@ -268,7 +283,7 @@ class core_course_external extends external_api {
 
                         $module = array();
 
-                        $modcontext = context_module::instance($cm->id);
+                        $modcontext = module::instance($cm->id);
 
                         $isbranded = component_callback('mod_' . $cm->modname, 'is_branded', [], false);
 
@@ -320,7 +335,7 @@ class core_course_external extends external_api {
                         }
 
                         $canviewhidden = has_capability('moodle/course:viewhiddenactivities',
-                                            context_module::instance($cm->id));
+                                            module::instance($cm->id));
                         //user that can view hidden module should know about the visibility
                         $module['visible'] = $cm->visible;
                         $module['visibleoncoursepage'] = $cm->visibleoncoursepage;
@@ -721,7 +736,7 @@ class core_course_external extends external_api {
         foreach ($courses as $course) {
 
             // now security checks
-            $context = context_course::instance($course->id, IGNORE_MISSING);
+            $context = course::instance($course->id, IGNORE_MISSING);
             $courseformatoptions = course_get_format($course)->get_format_options();
             try {
                 self::validate_context($context);
@@ -904,7 +919,7 @@ class core_course_external extends external_api {
      * @param int $courseid
      * @return \core_customfield\field_controller[]
      */
-    public static function get_editable_customfields(\context $context, int $courseid = 0): array {
+    public static function get_editable_customfields(context $context, int $courseid = 0): array {
         $result = [];
 
         $handler = \core_course\customfield\course_handler::create();
@@ -1027,7 +1042,7 @@ class core_course_external extends external_api {
         foreach ($params['courses'] as $course) {
 
             // Ensure the current user is allowed to run this function
-            $context = context_coursecat::instance($course['categoryid'], IGNORE_MISSING);
+            $context = coursecat::instance($course['categoryid'], IGNORE_MISSING);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -1232,7 +1247,7 @@ class core_course_external extends external_api {
             // Catch any exception while updating course and return as warning to user.
             try {
                 // Ensure the current user is allowed to run this function.
-                $context = context_course::instance($course['id'], MUST_EXIST);
+                $context = course::instance($course['id'], MUST_EXIST);
                 self::validate_context($context);
 
                 $oldcourse = course_get_format($course['id'])->get_course();
@@ -1414,7 +1429,7 @@ class core_course_external extends external_api {
             }
 
             // Check if the context is valid.
-            $coursecontext = context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
             self::validate_context($coursecontext);
 
             // Check if the current user has permission.
@@ -1533,11 +1548,11 @@ class core_course_external extends external_api {
         }
 
         // Category where duplicated course is going to be created.
-        $categorycontext = context_coursecat::instance($params['categoryid']);
+        $categorycontext = coursecat::instance($params['categoryid']);
         self::validate_context($categorycontext);
 
         // Course to be duplicated.
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         self::validate_context($coursecontext);
 
         $backupdefaults = array(
@@ -1763,10 +1778,10 @@ class core_course_external extends external_api {
             throw new moodle_exception('invalidcourseid', 'error');
         }
 
-        $importfromcontext = context_course::instance($importfrom->id);
+        $importfromcontext = course::instance($importfrom->id);
         self::validate_context($importfromcontext);
 
-        $importtocontext = context_course::instance($importto->id);
+        $importtocontext = course::instance($importto->id);
         self::validate_context($importtocontext);
 
         $backupdefaults = array(
@@ -1940,7 +1955,7 @@ class core_course_external extends external_api {
                 // Trying to avoid duplicate keys.
                 if (!isset($conditions[$key])) {
 
-                    $context = context_system::instance();
+                    $context = system::instance();
                     $value = null;
                     switch ($key) {
                         case 'id':
@@ -2075,7 +2090,7 @@ class core_course_external extends external_api {
             }
 
             // Check the user can use the category context.
-            $context = context_coursecat::instance($category->id);
+            $context = coursecat::instance($category->id);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
@@ -2238,9 +2253,9 @@ class core_course_external extends external_api {
                 if (!$DB->record_exists('course_categories', array('id' => $category['parent']))) {
                     throw new moodle_exception('unknowcategory');
                 }
-                $context = context_coursecat::instance($category['parent']);
+                $context = coursecat::instance($category['parent']);
             } else {
-                $context = context_system::instance();
+                $context = system::instance();
             }
             self::validate_context($context);
             require_capability('moodle/category:manage', $context);
@@ -2249,7 +2264,7 @@ class core_course_external extends external_api {
             util::validate_format($category['descriptionformat']);
 
             $newcategory = core_course_category::create($category);
-            $context = context_coursecat::instance($newcategory->id);
+            $context = coursecat::instance($newcategory->id);
 
             $createdcategories[] = array(
                 'id' => $newcategory->id,
@@ -2324,7 +2339,7 @@ class core_course_external extends external_api {
         foreach ($params['categories'] as $cat) {
             $category = core_course_category::get($cat['id']);
 
-            $categorycontext = context_coursecat::instance($cat['id']);
+            $categorycontext = coursecat::instance($cat['id']);
             self::validate_context($categorycontext);
             require_capability('moodle/category:manage', $categorycontext);
 
@@ -2332,10 +2347,10 @@ class core_course_external extends external_api {
             if (isset($cat['parent']) && ($cat['parent'] !== $category->parent)) {
                 if ($cat['parent'] == 0) {
                     // Creating a top level category requires capability in the system context
-                    $parentcontext = context_system::instance();
+                    $parentcontext = system::instance();
                 } else {
                     // Category context
-                    $parentcontext = context_coursecat::instance($cat['parent']);
+                    $parentcontext = coursecat::instance($cat['parent']);
                 }
                 self::validate_context($parentcontext);
                 require_capability('moodle/category:manage', $parentcontext);
@@ -2402,7 +2417,7 @@ class core_course_external extends external_api {
 
         foreach ($params['categories'] as $category) {
             $deletecat = core_course_category::get($category['id'], MUST_EXIST);
-            $context = context_coursecat::instance($deletecat->id);
+            $context = coursecat::instance($deletecat->id);
             require_capability('moodle/category:manage', $context);
             self::validate_context($context);
             self::validate_context(get_category_or_system_context($deletecat->parent));
@@ -2429,7 +2444,7 @@ class core_course_external extends external_api {
                     throw new moodle_exception('movecatcontentstoroot');
                 }
 
-                self::validate_context(context_coursecat::instance($newparentcat->id));
+                self::validate_context(coursecat::instance($newparentcat->id));
                 if ($deletecat->can_move_content_to($newparentcat->id)) {
                     $deletecat->delete_move($newparentcat->id, false);
                 } else {
@@ -2491,14 +2506,14 @@ class core_course_external extends external_api {
             // Check if we have not yet confirmed they have permission in this course.
             if (!in_array($cm->course, $arrcourseschecked)) {
                 // Ensure the current user has required permission in this course.
-                $context = context_course::instance($cm->course);
+                $context = course::instance($cm->course);
                 self::validate_context($context);
                 // Add to the array.
                 $arrcourseschecked[] = $cm->course;
             }
 
             // Ensure they can delete this module.
-            $modcontext = context_module::instance($cm->id);
+            $modcontext = module::instance($cm->id);
             require_capability('moodle/course:manageactivities', $modcontext);
 
             // Delete the module.
@@ -2553,7 +2568,7 @@ class core_course_external extends external_api {
         $warnings = array();
 
         $course = get_course($params['courseid']);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         self::validate_context($context);
 
         if (!empty($params['sectionnumber'])) {
@@ -2638,7 +2653,7 @@ class core_course_external extends external_api {
         // Retrieve course overview used files.
         $files = array();
         foreach ($course->get_course_overviewfiles() as $file) {
-            $fileurl = moodle_url::make_webservice_pluginfile_url($file->get_contextid(), $file->get_component(),
+            $fileurl = url::make_webservice_pluginfile_url($file->get_contextid(), $file->get_component(),
                                                                     $file->get_filearea(), null, $file->get_filepath(),
                                                                     $file->get_filename())->out(false);
             $files[] = array(
@@ -2758,7 +2773,7 @@ class core_course_external extends external_api {
             'onlywithcompletion' => $onlywithcompletion
         );
         $params = self::validate_parameters(self::search_courses_parameters(), $parameters);
-        self::validate_context(context_system::instance());
+        self::validate_context(system::instance());
 
         $allowedcriterianames = array('search', 'modulelist', 'blocklist', 'tagid');
         if (!in_array($params['criterianame'], $allowedcriterianames)) {
@@ -2767,7 +2782,7 @@ class core_course_external extends external_api {
         }
 
         if ($params['criterianame'] == 'modulelist' or $params['criterianame'] == 'blocklist') {
-            require_capability('moodle/site:config', context_system::instance());
+            require_capability('moodle/site:config', system::instance());
         }
 
         $paramtype = array(
@@ -2802,7 +2817,7 @@ class core_course_external extends external_api {
         $categoriescache = array();
 
         foreach ($courses as $course) {
-            $coursecontext = context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
 
             $finalcourses[] = self::get_course_public_information($course, $coursecontext);
         }
@@ -2962,7 +2977,7 @@ class core_course_external extends external_api {
         $warnings = array();
 
         $cm = get_coursemodule_from_id(null, $params['cmid'], 0, true, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // If the user has permissions to manage the activity, return all the information.
@@ -3185,7 +3200,7 @@ class core_course_external extends external_api {
             foreach ($courses as $course) {
                 // Fix the context for the frontpage.
                 if ($course->id == SITEID) {
-                    $course->context = context_system::instance();
+                    $course->context = system::instance();
                 }
                 $navoptions = course_get_user_navigation_options($course->context, $course);
                 $options = array();
@@ -3399,7 +3414,7 @@ class core_course_external extends external_api {
 
         $coursesdata = array();
         foreach ($courses as $course) {
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             $canupdatecourse = has_capability('moodle/course:update', $context);
             $canviewhiddencourses = has_capability('moodle/course:viewhiddencourses', $context);
 
@@ -3553,7 +3568,7 @@ class core_course_external extends external_api {
         );
 
         $course = get_course($params['courseid']);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         self::validate_context($context);
 
         list($instances, $warnings) = course_check_updates($course, $params['tocheck'], $filter);
@@ -3764,8 +3779,8 @@ class core_course_external extends external_api {
         $PAGE->set_other_editing_capability($contextarray);
 
         list($course, $cm) = get_course_and_cm_from_cmid($id);
-        $modcontext = context_module::instance($cm->id);
-        $coursecontext = context_course::instance($course->id);
+        $modcontext = module::instance($cm->id);
+        $coursecontext = course::instance($course->id);
         self::validate_context($modcontext);
         $format = course_get_format($course);
         if (!is_null($sectionreturn)) {
@@ -3905,7 +3920,7 @@ class core_course_external extends external_api {
 
         // Validate access to the course (note, this is html for the course view page, we don't validate access to the module).
         list($course, $cm) = get_course_and_cm_from_cmid($id);
-        self::validate_context(context_course::instance($course->id));
+        self::validate_context(course::instance($course->id));
 
         $format = course_get_format($course);
         if (!is_null($sectionreturn)) {
@@ -3974,7 +3989,7 @@ class core_course_external extends external_api {
         $sr = $params['sectionreturn'];
 
         $section = $DB->get_record('course_sections', array('id' => $id), '*', MUST_EXIST);
-        $coursecontext = context_course::instance($section->course);
+        $coursecontext = course::instance($section->course);
         self::validate_context($coursecontext);
 
         $rv = course_get_format($section->course)->section_action($section, $action, $sectionreturn);
@@ -4144,7 +4159,7 @@ class core_course_external extends external_api {
         }
 
         $favouritecourseids = [];
-        $ufservice = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($USER->id));
+        $ufservice = \core_favourites\service_factory::get_service_for_user_context(context_user::instance($USER->id));
         $favourites = $ufservice->find_favourites_by_type('core_course', 'courses');
 
         if ($favourites) {
@@ -4181,7 +4196,7 @@ class core_course_external extends external_api {
                 return;
             }
             context_helper::preload_from_record($course);
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             $isfavourite = false;
             if (in_array($course->id, $favouritecourseids)) {
                 $isfavourite = true;
@@ -4255,20 +4270,20 @@ class core_course_external extends external_api {
 
         $warnings = [];
 
-        $ufservice = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($USER->id));
+        $ufservice = \core_favourites\service_factory::get_service_for_user_context(context_user::instance($USER->id));
 
         foreach ($params['courses'] as $course) {
 
             $warning = [];
 
             $favouriteexists = $ufservice->favourite_exists('core_course', 'courses', $course['id'],
-                    \context_course::instance($course['id']));
+                    course::instance($course['id']));
 
             if ($course['favourite']) {
                 if (!$favouriteexists) {
                     try {
                         $ufservice->create_favourite('core_course', 'courses', $course['id'],
-                                \context_course::instance($course['id']));
+                                course::instance($course['id']));
                     } catch (Exception $e) {
                         $warning['courseid'] = $course['id'];
                         if ($e instanceof moodle_exception) {
@@ -4290,7 +4305,7 @@ class core_course_external extends external_api {
                 if ($favouriteexists) {
                     try {
                         $ufservice->delete_favourite('core_course', 'courses', $course['id'],
-                                \context_course::instance($course['id']));
+                                course::instance($course['id']));
                     } catch (Exception $e) {
                         $warning['courseid'] = $course['id'];
                         if ($e instanceof moodle_exception) {
@@ -4391,7 +4406,7 @@ class core_course_external extends external_api {
 
         $recentcourses = array_map(function($course) use ($renderer) {
             context_helper::preload_from_record($course);
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             $isfavourite = !empty($course->component);
             $exporter = new course_summary_exporter($course, ['context' => $context, 'isfavourite' => $isfavourite]);
             return $exporter->export($renderer);
@@ -4448,7 +4463,7 @@ class core_course_external extends external_api {
         ]);
 
         list($course, $cm) = get_course_and_cm_from_cmid($cmid);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         self::validate_context($coursecontext);
 
         course_require_view_participants($coursecontext);
@@ -4651,7 +4666,7 @@ class core_course_external extends external_api {
             'sectionnum' => $sectionnum,
         ]);
 
-        $coursecontext = context_course::instance($courseid);
+        $coursecontext = course::instance($courseid);
         self::validate_context($coursecontext);
         $course = get_course($courseid);
         // Get section_info object with all delegation information.
@@ -4696,7 +4711,7 @@ class core_course_external extends external_api {
         ['area' => $area, 'id' => $id] = self::validate_parameters(self::toggle_activity_recommendation_parameters(),
                 ['area' => $area, 'id' => $id]);
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         require_capability('moodle/course:recommendactivity', $context);
@@ -4750,7 +4765,7 @@ class core_course_external extends external_api {
             'sectionid' => $sectionid,
         ]);
 
-        $coursecontext = context_course::instance($courseid);
+        $coursecontext = course::instance($courseid);
         self::validate_context($coursecontext);
 
         // The active plugin must be set, and be present on the site.

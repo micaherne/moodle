@@ -24,6 +24,7 @@
  */
 global $CFG;
 require_once($CFG->dirroot . '/webservice/lib.php');
+use core\url;
 use webservice_soap\wsdl;
 
 /**
@@ -89,11 +90,11 @@ class webservice_soap_server extends webservice_base_server {
                     list($this->username, $this->password) = $authdata;
                 }
             }
-            $this->serverurl = new moodle_url('/webservice/soap/simpleserver.php/' . $this->username . '/' . $this->password);
+            $this->serverurl = new url('/webservice/soap/simpleserver.php/' . $this->username . '/' . $this->password);
         } else {
             $this->token = optional_param('wstoken', null, PARAM_RAW);
 
-            $this->serverurl = new moodle_url('/webservice/soap/server.php');
+            $this->serverurl = new url('/webservice/soap/server.php');
             $this->serverurl->param('wstoken', $this->token);
         }
 

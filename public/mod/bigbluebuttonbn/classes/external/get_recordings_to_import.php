@@ -16,6 +16,7 @@
 
 namespace mod_bigbluebuttonbn\external;
 
+use core\exception\invalid_parameter_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -115,7 +116,7 @@ class get_recordings_to_import extends external_api {
         if (!empty($sourcebigbluebuttonbnid)) {
             $sourceinstance = instance::get_from_instanceid($sourcebigbluebuttonbnid);
             if (!$sourceinstance) {
-                throw new \invalid_parameter_exception('Source Bigbluebutton Id is invalid');
+                throw new invalid_parameter_exception('Source Bigbluebutton Id is invalid');
             }
             $sourcecourse = $sourceinstance->get_course();
             // Validate that the user has access to this activity.
@@ -125,7 +126,7 @@ class get_recordings_to_import extends external_api {
         // Validate that the user has access to this activity.
         self::validate_context($destinstance->get_context());
         if (!$destinstance->user_has_group_access($USER, $groupid)) {
-            throw new \invalid_parameter_exception('Invalid group for this user ' . $groupid);
+            throw new invalid_parameter_exception('Invalid group for this user ' . $groupid);
         }
         if ($groupid) {
             $destinstance->set_group_id($groupid);

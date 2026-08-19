@@ -12,13 +12,18 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package mnet
  */
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require(__DIR__.'/../../config.php');
 require_once $CFG->dirroot.'/mnet/xmlrpc/client.php';
 require_once($CFG->libdir.'/adminlib.php');
 include_once($CFG->dirroot.'/mnet/lib.php');
 
 if ($CFG->mnet_dispatcher_mode === 'off') {
-    throw new \moodle_exception('mnetdisabled', 'mnet');
+    throw new moodle_exception('mnetdisabled', 'mnet');
 }
 
 admin_externalpage_setup('mnettestclient');
@@ -27,7 +32,7 @@ error_reporting(DEBUG_ALL);
 
 echo $OUTPUT->header();
 if (!extension_loaded('openssl')) {
-    throw new \moodle_exception('requiresopenssl', 'mnet', '', null, true);
+    throw new moodle_exception('requiresopenssl', 'mnet', '', null, true);
 }
 
 // optional drilling down parameters
@@ -38,7 +43,7 @@ $methodid = optional_param('method', 0, PARAM_INT);
 $hosts = $DB->get_records('mnet_host');
 $moodleapplicationid = $DB->get_field('mnet_application', 'id', array('name' => 'moodle'));
 
-$url = new moodle_url('/admin/mnet/testclient.php');
+$url = new url('/admin/mnet/testclient.php');
 $PAGE->set_url($url);
 
 echo $OUTPUT->heading(get_string('hostlist', 'mnet'));
@@ -46,7 +51,7 @@ foreach ($hosts as $id => $host) {
     if (empty($host->wwwroot) || $host->wwwroot == $CFG->wwwroot) {
         continue;
     }
-    $newurl = new moodle_url($url, array('hostid' => $host->id));
+    $newurl = new url($url, array('hostid' => $host->id));
     echo '<p>' . html_writer::link($newurl, $host->wwwroot) . '</p>';
 }
 
@@ -117,7 +122,7 @@ if (!empty($hostid) && array_key_exists($hostid, $hosts)) {
         } else {
             $servicedata['humanname'] = get_string('unknown', 'mnet');
         }
-        $newurl = new moodle_url($url, array('hostid' => $host->id, 'servicename' => $servicedata['name']));
+        $newurl = new url($url, array('hostid' => $host->id, 'servicename' => $servicedata['name']));
         $table->data[] = array(
             $servicedata['name'],
             $servicedata['humanname'],
@@ -162,7 +167,7 @@ if (!empty($hostid) && array_key_exists($hostid, $hosts)) {
         if (isset($servicename)) {
             $params['servicename'] = $servicename;
         }
-        $newurl = new moodle_url($url, $params);
+        $newurl = new url($url, $params);
         $table->data[] = array(
             $method,
             html_writer::link($newurl, get_string('inspect', 'mnet'))

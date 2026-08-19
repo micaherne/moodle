@@ -16,6 +16,8 @@
 
 namespace core_question\local\bank;
 
+use core\output\action_menu\link;
+
 /**
  * Base class to implement actions that can be performed on any column.
  *
@@ -42,5 +44,5 @@ abstract class column_action_base extends view_component {
      * @param column_base $column The column we are providing the action for.
      * @return ?\action_menu_link The action to display in the column header.
      */
-    abstract public function get_action_menu_link(column_base $column): ?\action_menu_link;
+    abstract public function get_action_menu_link(column_base $column): ?link;
 }

@@ -16,6 +16,7 @@
 
 namespace gradereport_singleview\local\screen;
 
+use core\url;
 use gradereport_singleview;
 
 /**
@@ -36,8 +37,8 @@ class user_select extends screen {
     public function html(): string {
         global $OUTPUT, $COURSE, $USER;
 
-        $userlink = new \moodle_url('/grade/report/singleview/index.php', ['id' => $COURSE->id, 'item' => 'user_select']);
-        $gradelink = new \moodle_url('/grade/report/singleview/index.php', ['id' => $COURSE->id, 'item' => 'grade_select']);
+        $userlink = new url('/grade/report/singleview/index.php', ['id' => $COURSE->id, 'item' => 'user_select']);
+        $gradelink = new url('/grade/report/singleview/index.php', ['id' => $COURSE->id, 'item' => 'grade_select']);
         $gpr = new \grade_plugin_return(['type' => 'report', 'plugin' => 'singleview', 'courseid' => $COURSE->id,
             'userid' => $USER->id]);
         $context = [

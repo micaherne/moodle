@@ -18,6 +18,7 @@
 namespace mod_h5pactivity;
 
 use advanced_testcase;
+use core\context\module;
 use mod_h5pactivity\local\manager;
 
 /**
@@ -75,7 +76,7 @@ final class lib_test extends advanced_testcase {
 
         // Add also a xAPI state to the H5P activity.
         $filerecord = [
-            'contextid' => \context_module::instance($activity->cmid)->id,
+            'contextid' => module::instance($activity->cmid)->id,
             'component' => 'mod_h5pactivity',
             'filearea' => 'package',
             'itemid' => 0,
@@ -257,7 +258,7 @@ final class lib_test extends advanced_testcase {
                 'groupmode' => SEPARATEGROUPS]);
 
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'));
-        $cmcontext = \context_module::instance($activity->cmid);
+        $cmcontext = module::instance($activity->cmid);
         assign_capability('moodle/site:accessallgroups', CAP_PROHIBIT, $teacherrole->id, $cmcontext, true);
 
         $manager = manager::create_from_instance($activity);
@@ -368,7 +369,7 @@ final class lib_test extends advanced_testcase {
 
         // Add also a xAPI state to the H5P activity.
         $filerecord = [
-            'contextid' => \context_module::instance($activity->cmid)->id,
+            'contextid' => module::instance($activity->cmid)->id,
             'component' => 'mod_h5pactivity',
             'filearea' => 'package',
             'itemid' => 0,

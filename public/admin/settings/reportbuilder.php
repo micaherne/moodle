@@ -24,14 +24,21 @@
 
 declare(strict_types=1);
 
+use core\context\system;
+use core\lang_string;
+use core\url;
 use core_admin\local\externalpage\accesscallback;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
 use core_reportbuilder\permission;
 
 defined('MOODLE_INTERNAL') || die;
 
 /** @var admin_root $ADMIN */
 $ADMIN->add(
-    'reports', new admin_category(
+    'reports', new category(
         'reportbuilder',
         new lang_string('reportbuilder', 'core_reportbuilder'),
         empty($CFG->enablecustomreports)
@@ -42,7 +49,7 @@ $ADMIN->add(
     'reportbuilder', new accesscallback(
         'customreports',
         get_string('customreports', 'core_reportbuilder'),
-        (new moodle_url('/reportbuilder/index.php'))->out(),
+        (new url('/reportbuilder/index.php'))->out(),
         static function(accesscallback $accesscallback): bool {
             return permission::can_view_reports_list();
         },
@@ -50,15 +57,15 @@ $ADMIN->add(
     )
 );
 
-$settings = new admin_settingpage('reportbuildersettings', get_string('customreportssettings', 'core_reportbuilder'),
+$settings = new settingpage('reportbuildersettings', get_string('customreportssettings', 'core_reportbuilder'),
     'moodle/site:config', empty($CFG->enablecustomreports));
 
-$settings->add(new admin_setting_configtext(
+$settings->add(new configtext(
     'customreportslimit',
     new lang_string('customreportslimit', 'core_reportbuilder'),
     new lang_string('customreportslimit_desc', 'core_reportbuilder'), 0, PARAM_INT));
 
-$settings->add(new admin_setting_configcheckbox(
+$settings->add(new configcheckbox(
     'customreportsliveediting',
     new lang_string('customreportsliveediting', 'core_reportbuilder'),
     new lang_string('customreportsliveediting_desc', 'core_reportbuilder'), 1));
@@ -69,9 +76,9 @@ $ADMIN->add(
     'reportbuilder', new accesscallback(
         'reportbuildercustomfields',
         get_string('reportbuildercustomfields', 'core_reportbuilder'),
-        (new moodle_url('/reportbuilder/customfield.php'))->out(),
+        (new url('/reportbuilder/customfield.php'))->out(),
         static function(): bool {
-            return has_capability('moodle/reportbuilder:configurecustomfields', context_system::instance());
+            return has_capability('moodle/reportbuilder:configurecustomfields', system::instance());
         },
         empty($CFG->enablecustomreports)
     )

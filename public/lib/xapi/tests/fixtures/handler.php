@@ -28,7 +28,7 @@ namespace fake_component\xapi;
 use core_xapi\local\statement;
 use core_xapi\handler as handler_base;
 use core_xapi\event\xapi_test_statement_post;
-use context_system;
+use core\context\system;
 use core\event\base;
 use core_xapi\local\state;
 
@@ -89,7 +89,7 @@ class handler extends handler_base {
         $minstatement = $statement->minify();
         $params = array(
             'other' => $minstatement,
-            'context' => context_system::instance(),
+            'context' => system::instance(),
             'userid' => $user->id,
         );
         return xapi_test_statement_post::create($params);

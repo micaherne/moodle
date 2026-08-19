@@ -23,6 +23,8 @@
  */
 namespace search_simpledb\privacy;
 
+use core\context\course;
+use core\context\user;
 use search_simpledb\privacy\provider;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
@@ -95,8 +97,8 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->c1 = $this->getDataGenerator()->create_course();
         $this->c2 = $this->getDataGenerator()->create_course();
 
-        $this->c1context = \context_course::instance($this->c1->id);
-        $this->c2context = \context_course::instance($this->c2->id);
+        $this->c1context = course::instance($this->c1->id);
+        $this->c2context = course::instance($this->c2->id);
 
         $this->u1 = $this->getDataGenerator()->create_user();
         $this->u2 = $this->getDataGenerator()->create_user();
@@ -235,7 +237,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals(0, $DB->count_records('search_simpledb_index', ['contextid' => $this->c1context->id]));
         $this->assertEquals(4, $DB->count_records('search_simpledb_index'));
 
-        $u2context = \context_user::instance($this->u2->id);
+        $u2context = user::instance($this->u2->id);
         provider::delete_data_for_all_users_in_context($u2context);
         $this->assertEquals(0, $DB->count_records('search_simpledb_index', ['contextid' => $u2context->id]));
         $this->assertEquals(2, $DB->count_records('search_simpledb_index'));

@@ -25,6 +25,8 @@
 
 namespace core_payment\privacy;
 
+use core\context;
+use core\context\system;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -128,7 +130,7 @@ class provider implements
 
         // Orphaned payments.
         $context = $userlist->get_context();
-        if ($context instanceof \context_system) {
+        if ($context instanceof system) {
             [$notinsql, $notinparams] = $DB->get_in_or_equal($providers, SQL_PARAMS_NAMED, 'param', false);
             $sql = "SELECT p.userid
                       FROM {payments} p
@@ -165,7 +167,7 @@ class provider implements
 
             foreach ($orphanedpayments as $payment) {
                 static::export_payment_data_for_user_in_context(
-                    \context_system::instance(),
+                    system::instance(),
                     [''],
                     $payment->userid,
                     $payment->component,
@@ -181,7 +183,7 @@ class provider implements
      *
      * @param context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         $providers = static::get_consumer_providers();
@@ -191,7 +193,7 @@ class provider implements
         }
 
         // Orphaned payments.
-        if ($context instanceof \context_system) {
+        if ($context instanceof system) {
             [$notinsql, $params] = $DB->get_in_or_equal($providers, SQL_PARAMS_NAMED, 'param', false);
             $paymentsql = "SELECT id FROM {payments} WHERE component $notinsql";
 
@@ -240,7 +242,7 @@ class provider implements
         }
 
         // Orphaned payments.
-        if ($userlist->get_context() instanceof \context_system) {
+        if ($userlist->get_context() instanceof system) {
             [$notinsql, $notinparams] = $DB->get_in_or_equal($providers, SQL_PARAMS_NAMED, 'param', false);
             [$usersql, $userparams] = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
 
@@ -281,7 +283,7 @@ class provider implements
      * @param string $paymentarea Payment area
      * @param int $itemid An internal identifier that is used by the component
      */
-    public static function export_payment_data_for_user_in_context(\context $context, array $subpath, int $userid,
+    public static function export_payment_data_for_user_in_context(context $context, array $subpath, int $userid,
             string $component, string $paymentarea, int $itemid) {
         global $DB;
 

@@ -24,6 +24,9 @@
  */
 namespace core_privacy\local\request;
 
+use core\context;
+use core\context\block;
+use core\context\module;
 use \core_privacy\local\request\writer;
 
 defined('MOODLE_INTERNAL') || die();
@@ -101,7 +104,7 @@ class helper {
      * @param   string          $component The component being deleted for.
      * @param   context         $context   The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(string $component, \context $context) {
+    public static function delete_data_for_all_users_in_context(string $component, context $context) {
         // Activity modules support data stored by core about them - for example, activity completion.
         static::delete_data_for_all_users_in_context_course_module($component, $context);
     }
@@ -127,14 +130,14 @@ class helper {
      * @param   \stdClass       $user The user being written.
      * @return  \stdClass
      */
-    public static function get_context_data(\context $context, \stdClass $user): \stdClass {
+    public static function get_context_data(context $context, \stdClass $user): \stdClass {
         global $DB;
 
         $basedata = (object) [];
-        if ($context instanceof \context_module) {
+        if ($context instanceof module) {
             return static::get_context_module_data($context, $user);
         }
-        if ($context instanceof \context_block) {
+        if ($context instanceof block) {
             return static::get_context_block_data($context, $user);
         }
 
@@ -148,8 +151,8 @@ class helper {
      * @param   \stdClass       $user The user being written.
      * @return  \stdClass
      */
-    public static function export_context_files(\context $context, \stdClass $user) {
-        if ($context instanceof \context_module) {
+    public static function export_context_files(context $context, \stdClass $user) {
+        if ($context instanceof module) {
             return static::export_context_module_files($context, $user);
         }
     }
@@ -193,7 +196,7 @@ class helper {
      * @param   \stdClass       $user The user being written.
      * @return  \stdClass
      */
-    protected static function get_context_module_data(\context_module $context, \stdClass $user): \stdClass {
+    protected static function get_context_module_data(module $context, \stdClass $user): \stdClass {
         global $DB;
 
         $coursecontext = $context->get_course_context();
@@ -240,7 +243,7 @@ class helper {
      * @param   \stdClass $user The user being written.
      * @return  \stdClass General data about this block instance.
      */
-    protected static function get_context_block_data(\context_block $context, \stdClass $user): \stdClass {
+    protected static function get_context_block_data(block $context, \stdClass $user): \stdClass {
         global $DB;
 
         $block = $DB->get_record('block_instances', ['id' => $context->instanceid]);
@@ -259,7 +262,7 @@ class helper {
      * @param   \stdClass       $user The user being written.
      * @return  \stdClass
      */
-    protected static function export_context_module_files(\context_module $context, \stdClass $user) {
+    protected static function export_context_module_files(module $context, \stdClass $user) {
         $coursecontext = $context->get_course_context();
         $modinfo = get_fast_modinfo($coursecontext->instanceid);
         $cm = $modinfo->cms[$context->instanceid];
@@ -278,10 +281,10 @@ class helper {
      * @param   string              $component The component being deleted for.
      * @param   \context            $context The context to delete all data for.
      */
-    public static function delete_data_for_all_users_in_context_course_module(string $component, \context $context) {
+    public static function delete_data_for_all_users_in_context_course_module(string $component, context $context) {
         global $DB;
 
-        if ($context instanceof \context_module) {
+        if ($context instanceof module) {
             // Delete course completion data for this context.
             \core_completion\privacy\provider::delete_completion(null, null, $context->instanceid);
         }
@@ -298,7 +301,7 @@ class helper {
         global $DB;
 
         foreach ($contextlist as $context) {
-            if ($context instanceof \context_module) {
+            if ($context instanceof module) {
                 // Delete course completion data for this context.
                 \core_completion\privacy\provider::delete_completion($contextlist->get_user(), null, $context->instanceid);
             }

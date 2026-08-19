@@ -25,11 +25,13 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use context;
-use context_user;
-use lang_string;
-use moodle_exception;
+use core\exception\coding_exception;
+use core\context;
+use core\context\user;
+use core\lang_string;
+use core\exception\moodle_exception;
+use core\url;
+use core\user as core_user;
 use stdClass;
 
 /**
@@ -163,7 +165,7 @@ class evidence extends persistent {
      * @param null|string|moodle_url $url The URL.
      */
     protected function set_url($url) {
-        if ($url instanceof \moodle_url) {
+        if ($url instanceof url) {
             $url = $url->out(false);
         }
         $this->raw_set('url', $url);
@@ -176,7 +178,7 @@ class evidence extends persistent {
      * @return true|lang_string
      */
     protected function validate_actionuserid($value) {
-        if ($value !== null && !\core_user::is_real_user($value)) {
+        if ($value !== null && !core_user::is_real_user($value)) {
             return new lang_string('invaliddata', 'error');
         }
         return true;
@@ -290,7 +292,7 @@ class evidence extends persistent {
      * @return bool
      */
     public static function can_delete_user($userid) {
-        return has_capability('moodle/competency:evidencedelete', context_user::instance($userid));
+        return has_capability('moodle/competency:evidencedelete', user::instance($userid));
     }
 
     /**
@@ -306,7 +308,7 @@ class evidence extends persistent {
      * @return \core_competency\persistent[]
      */
     public static function get_records_for_usercompetency($usercompetencyid,
-                                                          \context $context,
+                                                          context $context,
                                                           $sort = '',
                                                           $order = 'ASC',
                                                           $skip = 0,

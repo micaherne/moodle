@@ -29,9 +29,10 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/tablelib.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
-use html_writer;
-use moodle_url;
-use table_sql;
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+use core_table\sql_table;
 
 /**
  * Backpacks table class.
@@ -40,7 +41,7 @@ use table_sql;
  * @copyright  2019 Damyon Wiese
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class external_backpacks_table extends table_sql {
+class external_backpacks_table extends sql_table {
 
     /**
      * Sets up the table.
@@ -48,7 +49,7 @@ class external_backpacks_table extends table_sql {
     public function __construct() {
         parent::__construct('backpacks');
 
-        $context = \context_system::instance();
+        $context = system::instance();
         // This object should not be used without the right permissions.
         require_capability('moodle/badges:manageglobalsettings', $context);
 

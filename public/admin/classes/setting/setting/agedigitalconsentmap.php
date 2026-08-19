@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\exception\moodle_exception;
+
 /**
  * Used to validate the content and format of the age of digital consent map and ensuring it is parsable.
  *
@@ -62,7 +64,7 @@ class agedigitalconsentmap extends \core_admin\setting\setting\configtextarea {
 
         try {
             \core_auth\digital_consent::parse_age_digital_consent_map($data);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             return get_string('invalidagedigitalconsent', 'admin', $e->getMessage());
         }
 

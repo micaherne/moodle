@@ -16,13 +16,14 @@
 
 namespace core_badges\external;
 
+use core\user;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_multiple_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -82,7 +83,7 @@ class get_user_badge_by_hash extends external_api {
 
         if (!empty($badge)) {
             // Get the user that issued the badge.
-            $user     = \core_user::get_user($badge->userid, '*', MUST_EXIST);
+            $user     = user::get_user($badge->userid, '*', MUST_EXIST);
             $result[] = badges_prepare_badge_for_external($badge, $user);
         } else {
             $warnings[] = [

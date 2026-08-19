@@ -22,6 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\output\actions\confirm_action;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_table\flexible_table;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/tablelib.php');
 
@@ -70,12 +79,12 @@ switch ($context->contextlevel) {
     break;
 
     default:
-        throw new \moodle_exception('invalidcontext', 'tool_recyclebin');
+        throw new moodle_exception('invalidcontext', 'tool_recyclebin');
     break;
 }
 
 if (!$recyclebin::is_enabled()) {
-    throw new \moodle_exception('notenabled', 'tool_recyclebin');
+    throw new moodle_exception('notenabled', 'tool_recyclebin');
 }
 
 $PAGE->set_url('/admin/tool/recyclebin/index.php', array(
@@ -102,7 +111,7 @@ if (!empty($action)) {
                 $recyclebin->restore_item($item);
                 redirect($PAGE->url, get_string('alertrestored', 'tool_recyclebin', $item), 2);
             } else {
-                throw new \moodle_exception('nopermissions', 'error');
+                throw new moodle_exception('nopermissions', 'error');
             }
         break;
 
@@ -112,7 +121,7 @@ if (!empty($action)) {
                 $recyclebin->delete_item($item);
                 redirect($PAGE->url, get_string('alertdeleted', 'tool_recyclebin', $item), 2);
             } else {
-                throw new \moodle_exception('nopermissions', 'error');
+                throw new moodle_exception('nopermissions', 'error');
             }
         break;
 
@@ -197,7 +206,7 @@ foreach ($items as $item) {
 
     // Build restore link.
     if ($canrestore && ($context->contextlevel == CONTEXT_COURSECAT || isset($modules[$item->module]))) {
-        $restoreurl = new moodle_url($PAGE->url, array(
+        $restoreurl = new url($PAGE->url, array(
             'contextid' => $contextid,
             'itemid' => $item->id,
             'action' => 'restore',
@@ -214,7 +223,7 @@ foreach ($items as $item) {
     // Build delete link.
     if ($recyclebin->can_delete()) {
         $showempty = true;
-        $delete = new moodle_url($PAGE->url, array(
+        $delete = new url($PAGE->url, array(
             'contextid' => $contextid,
             'itemid' => $item->id,
             'action' => 'delete',
@@ -237,7 +246,7 @@ $table->finish_output();
 
 // Empty recyclebin link.
 if ($showempty) {
-    $emptylink = new moodle_url($PAGE->url, array(
+    $emptylink = new url($PAGE->url, array(
         'contextid' => $contextid,
         'action' => 'empty',
         'sesskey' => sesskey()

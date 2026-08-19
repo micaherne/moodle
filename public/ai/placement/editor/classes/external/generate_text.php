@@ -17,6 +17,7 @@
 namespace aiplacement_editor\external;
 
 use aiplacement_editor\utils;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -78,7 +79,7 @@ class generate_text extends external_api {
         // Check the user has permission to use the AI service.
         self::validate_context($context);
         if (!utils::is_html_editor_placement_action_available($context, 'generate_text', \core_ai\aiactions\generate_text::class)) {
-            throw new \moodle_exception('noeditor', 'aiplacement_editor');
+            throw new moodle_exception('noeditor', 'aiplacement_editor');
         }
 
         // Prepare the action.

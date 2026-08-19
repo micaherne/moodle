@@ -31,6 +31,8 @@ use Behat\Gherkin\Node\TableNode as TableNode,
     Behat\Mink\Exception\ExpectationException as ExpectationException,
     Behat\Mink\Exception\DriverException as DriverException,
     Behat\Mink\Exception\ElementNotFoundException as ElementNotFoundException;
+use core\url;
+use core_course\section_info;
 
 /**
  * Course-related steps definitions.
@@ -180,7 +182,7 @@ class behat_course extends behat_base {
      * @param string $identifier
      * @return moodle_url
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
         $type = strtolower($type);
 
         // Some selectors can have a sub selector divided by >.
@@ -212,13 +214,13 @@ class behat_course extends behat_base {
                 if (!$section) {
                     throw new Exception("The specified section $identifier does not exist.");
                 }
-                return new moodle_url('/course/' . $sectionpage, ['id' => $section->id]);
+                return new url('/course/' . $sectionpage, ['id' => $section->id]);
             case 'activities':
                 $params = ['id' => $this->get_course_id($identifier)];
                 if ($subtype !== null) {
                     $params['expand[]'] = $subtype;
                 }
-                return new moodle_url('/course/overview.php', $params);
+                return new url('/course/overview.php', $params);
         }
         throw new Exception('Unrecognised core page type "' . $type . '."');
     }
@@ -264,7 +266,7 @@ class behat_course extends behat_base {
      * @param string $sectionnum The section number.
      */
     public function i_add_to_course_section(string $activity, string $coursefullname, string $sectionnum): void {
-        $addurl = new moodle_url('/course/modedit.php', [
+        $addurl = new url('/course/modedit.php', [
             'add' => $activity,
             'course' => $this->get_course_id($coursefullname),
             'section' => intval($sectionnum),

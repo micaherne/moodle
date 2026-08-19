@@ -26,34 +26,39 @@
 // We also assume that $user, $course, $currenttab have been set
 
 
-    if (empty($currenttab) or empty($data) or empty($course)) {
-        throw new \moodle_exception('cannotcallscript');
+    use core\context\module;
+use core\exception\moodle_exception;
+use core\output\tabobject;
+use core\url;
+
+if (empty($currenttab) or empty($data) or empty($course)) {
+        throw new moodle_exception('cannotcallscript');
     }
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $row = array();
 
-    $row[] = new tabobject('list', new moodle_url('/mod/data/view.php', array('d' => $data->id)), get_string('list','data'));
+    $row[] = new tabobject('list', new url('/mod/data/view.php', array('d' => $data->id)), get_string('list','data'));
 
     if (isset($record)) {
-        $row[] = new tabobject('single', new moodle_url('/mod/data/view.php', array('d' => $data->id, 'rid' => $record->id)), get_string('single','data'));
+        $row[] = new tabobject('single', new url('/mod/data/view.php', array('d' => $data->id, 'rid' => $record->id)), get_string('single','data'));
     } else {
-        $row[] = new tabobject('single', new moodle_url('/mod/data/view.php', array('d' => $data->id, 'mode' => 'single')), get_string('single','data'));
+        $row[] = new tabobject('single', new url('/mod/data/view.php', array('d' => $data->id, 'mode' => 'single')), get_string('single','data'));
     }
 
     // Add an advanced search tab.
-    $row[] = new tabobject('asearch', new moodle_url('/mod/data/view.php', array('d' => $data->id, 'mode' => 'asearch')), get_string('search', 'data'));
+    $row[] = new tabobject('asearch', new url('/mod/data/view.php', array('d' => $data->id, 'mode' => 'asearch')), get_string('search', 'data'));
 
     if (isloggedin()) { // just a perf shortcut
         if (data_user_can_add_entry($data, $currentgroup, $groupmode, $context)) { // took out participation list here!
             $addstring = empty($editentry) ? get_string('add', 'data') : get_string('editentry', 'data');
-            $row[] = new tabobject('add', new moodle_url('/mod/data/edit.php', array('d' => $data->id)), $addstring);
+            $row[] = new tabobject('add', new url('/mod/data/edit.php', array('d' => $data->id)), $addstring);
         }
         if (has_capability(DATA_CAP_EXPORT, $context)) {
             // The capability required to Export database records is centrally defined in 'lib.php'
             // and should be weaker than those required to edit Templates, Fields and Presets.
-            $row[] = new tabobject('export', new moodle_url('/mod/data/export.php', array('d' => $data->id)),
+            $row[] = new tabobject('export', new url('/mod/data/export.php', array('d' => $data->id)),
                          get_string('export', 'data'));
         }
         if (has_capability('mod/data:managetemplates', $context)) {
@@ -67,12 +72,12 @@
                 $defaultemplate = 'singletemplate';
             }
 
-            $templatestab = new tabobject('templates', new moodle_url('/mod/data/templates.php', array('d' => $data->id, 'mode' => $defaultemplate)),
+            $templatestab = new tabobject('templates', new url('/mod/data/templates.php', array('d' => $data->id, 'mode' => $defaultemplate)),
                          get_string('templates','data'));
             $row[] = $templatestab;
-            $row[] = new tabobject('fields', new moodle_url('/mod/data/field.php', array('d' => $data->id)),
+            $row[] = new tabobject('fields', new url('/mod/data/field.php', array('d' => $data->id)),
                          get_string('fields','data'));
-            $row[] = new tabobject('presets', new moodle_url('/mod/data/preset.php', array('d' => $data->id)),
+            $row[] = new tabobject('presets', new url('/mod/data/preset.php', array('d' => $data->id)),
                          get_string('presets', 'data'));
         }
     }
@@ -83,7 +88,7 @@
 
         $currenttab ='';
         foreach ($templatelist as $template) {
-            $templatestab->subtree[] = new tabobject($template, new moodle_url('/mod/data/templates.php', array('d' => $data->id, 'mode' => $template)), get_string($template, 'data'));
+            $templatestab->subtree[] = new tabobject($template, new url('/mod/data/templates.php', array('d' => $data->id, 'mode' => $template)), get_string($template, 'data'));
             if ($template == $mode) {
                 $currenttab = $template;
             }

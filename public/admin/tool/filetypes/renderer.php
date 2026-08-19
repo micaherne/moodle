@@ -22,6 +22,13 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -87,7 +94,7 @@ class tool_filetypes_renderer extends plugin_renderer_base {
                 $row->cells[] = $iconcell;
 
                 // Reset URL and button if needed.
-                $reverturl = new \moodle_url('/admin/tool/filetypes/revert.php',
+                $reverturl = new url('/admin/tool/filetypes/revert.php',
                         array('extension' => $extension));
                 $revertbutton = html_writer::link($reverturl, $this->pix_icon('t/restore',
                         get_string('revert', 'tool_filetypes', s($extension))));
@@ -115,11 +122,11 @@ class tool_filetypes_renderer extends plugin_renderer_base {
                     if (!$restricted) {
                         // Edit icons. For accessibility, the name of these links should
                         // be different for each row, so we have to include the extension.
-                        $editurl = new \moodle_url('/admin/tool/filetypes/edit.php',
+                        $editurl = new url('/admin/tool/filetypes/edit.php',
                                 array('oldextension' => $extension));
                         $editbutton = html_writer::link($editurl, $this->pix_icon('t/edit',
                                 get_string('edita', 'moodle', s($extension))));
-                        $deleteurl = new \moodle_url('/admin/tool/filetypes/delete.php',
+                        $deleteurl = new url('/admin/tool/filetypes/delete.php',
                                 array('extension' => $extension));
                         $deletebutton = html_writer::link($deleteurl, $this->pix_icon('t/delete',
                                 get_string('deletea', 'tool_filetypes', s($extension))));
@@ -173,7 +180,7 @@ class tool_filetypes_renderer extends plugin_renderer_base {
         }
         // Displaying the 'Add' button.
         if (!$restricted) {
-            $out .= $this->single_button(new moodle_url('/admin/tool/filetypes/edit.php',
+            $out .= $this->single_button(new url('/admin/tool/filetypes/edit.php',
                     array('name' => 'add')), get_string('addfiletypes', 'tool_filetypes'), 'get');
         }
         return $out;

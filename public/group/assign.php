@@ -23,6 +23,12 @@
  * @package   core_group
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+use core_cache\helper;
+
 require_once('../config.php');
 require_once('lib.php');
 
@@ -31,16 +37,16 @@ $groupingid = required_param('id', PARAM_INT);
 $PAGE->set_url('/group/assign.php', array('id'=>$groupingid));
 
 if (!$grouping = $DB->get_record('groupings', array('id'=>$groupingid))) {
-    throw new \moodle_exception('invalidgroupid');
+    throw new moodle_exception('invalidgroupid');
 }
 
 if (!$course = $DB->get_record('course', array('id'=>$grouping->courseid))) {
-    throw new \moodle_exception('invalidcourse');
+    throw new moodle_exception('invalidcourse');
 }
 $courseid = $course->id;
 
 require_login($course);
-$context = context_course::instance($courseid);
+$context = course::instance($courseid);
 require_capability('moodle/course:managegroups', $context);
 
 $returnurl = $CFG->wwwroot.'/group/groupings.php?id='.$courseid;
@@ -57,20 +63,20 @@ if ($frm = data_submitted() and confirm_sesskey()) {
             groups_assign_grouping($grouping->id, (int)$groupid, null, false);
         }
         // Invalidate the course groups cache seeing as we've changed it.
-        cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
+        helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
 
         // Invalidate the user_group_groupings cache, too.
-        cache_helper::purge_by_definition('core', 'user_group_groupings');
+        helper::purge_by_definition('core', 'user_group_groupings');
     } else if (isset($frm->remove) and !empty($frm->removeselect)) {
         foreach ($frm->removeselect as $groupid) {
             // Ask this method not to purge the cache, we'll do it ourselves afterwards.
             groups_unassign_grouping($grouping->id, (int)$groupid, false);
         }
         // Invalidate the course groups cache seeing as we've changed it.
-        cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
+        helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
 
         // Invalidate the user_group_groupings cache, too.
-        cache_helper::purge_by_definition('core', 'user_group_groupings');
+        helper::purge_by_definition('core', 'user_group_groupings');
     }
 }
 
@@ -128,12 +134,12 @@ $straddgroupstogroupings = get_string('addgroupstogroupings', 'group');
 
 $groupingname = format_string($grouping->name);
 
-navigation_node::override_active_url(new moodle_url('/group/index.php', array('id'=>$course->id)));
+navigation_node::override_active_url(new url('/group/index.php', array('id'=>$course->id)));
 $PAGE->set_pagelayout('admin');
 
-$PAGE->navbar->add($strparticipants, new moodle_url('/user/index.php', array('id'=>$courseid)));
+$PAGE->navbar->add($strparticipants, new url('/user/index.php', array('id'=>$courseid)));
 $PAGE->navbar->add(get_string('groupings', 'group'),
-    new moodle_url('/group/groupings.php', ['id' => $courseid]));
+    new url('/group/groupings.php', ['id' => $courseid]));
 $PAGE->navbar->add($straddgroupstogroupings);
 
 /// Print header

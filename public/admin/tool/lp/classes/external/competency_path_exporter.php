@@ -24,8 +24,8 @@
 namespace tool_lp\external;
 defined('MOODLE_INTERNAL') || die();
 
-use renderer_base;
-use moodle_url;
+use core\output\renderer_base;
+use core\url;
 
 /**
  * Class for exporting competency_path data.
@@ -121,7 +121,7 @@ class competency_path_exporter extends \core\external\exporter {
             ]
         );
         $result->framework = $exporter->export($output);
-        $result->pluginbaseurl = (new moodle_url('/admin/tool/lp'))->out(true);
+        $result->pluginbaseurl = (new url('/admin/tool/lp'))->out(true);
         $result->pagecontextid = $this->related['context']->id;
         return (array) $result;
     }

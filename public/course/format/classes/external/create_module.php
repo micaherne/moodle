@@ -19,9 +19,9 @@ namespace core_courseformat\external;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
-use moodle_exception;
-use coding_exception;
-use context_course;
+use core\exception\moodle_exception;
+use core\exception\coding_exception;
+use core\context\course;
 use core_courseformat\base as course_format;
 
 /**
@@ -92,7 +92,7 @@ class create_module extends external_api {
             'targetcmid' => $targetcmid,
         ]);
 
-        self::validate_context(context_course::instance($courseid));
+        self::validate_context(course::instance($courseid));
 
         // Plugin needs to support quick creation and the course format needs to support components.
         // Formats using YUI modules should not be able to quick-create because the front end cannot react to the change.

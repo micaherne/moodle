@@ -16,6 +16,7 @@
 
 namespace enrol_lti\local\ltiadvantage\task;
 
+use core\context;
 use core\http_client;
 use core\task\adhoc_task;
 use enrol_lti\local\ltiadvantage\lib\issuer_database;
@@ -74,7 +75,7 @@ class sync_tool_grades extends adhoc_task {
                         continue;
                     }
 
-                    if (!$context = \context::instance_by_id($resource->contextid, IGNORE_MISSING)) {
+                    if (!$context = context::instance_by_id($resource->contextid, IGNORE_MISSING)) {
                         mtrace("Failed - Invalid contextid '$resource->contextid' for the resource '$resource->id'.");
                         continue;
                     }
@@ -214,7 +215,7 @@ class sync_tool_grades extends adhoc_task {
      * @param \context $context the context of the resource - either course or module.
      * @return string the label to use in the line item.
      */
-    protected function get_line_item_label(\stdClass $resource, \context $context): string {
+    protected function get_line_item_label(\stdClass $resource, context $context): string {
         $resourcename = 'default';
         if ($context->contextlevel == CONTEXT_COURSE) {
             global $DB;

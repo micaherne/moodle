@@ -16,6 +16,7 @@
 
 namespace qtype_truefalse;
 
+use core\context\system;
 use qtype_truefalse;
 use qtype_truefalse_edit_form;
 use question_bank;
@@ -64,7 +65,7 @@ final class question_type_test extends \advanced_testcase {
     public function test_load_question(): void {
         $this->resetAfterTest();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         /** @var core_question_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $generator->create_question_category(['contextid' => $syscontext->id]);

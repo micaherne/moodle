@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context;
+use core\context\block;
 use core_external\util as external_util;
 
 /**
@@ -153,7 +155,7 @@ class block_html extends block_base {
      * @return boolean
      */
     public function instance_copy($fromid) {
-        $fromcontext = context_block::instance($fromid);
+        $fromcontext = block::instance($fromid);
         $fs = get_file_storage();
         // Do not use draft files hacks outside of forms.
         $files = $fs->get_area_files($fromcontext->id, 'block_html', 'content', 0, 'id ASC', false);

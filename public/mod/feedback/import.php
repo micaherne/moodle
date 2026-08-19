@@ -22,6 +22,11 @@
  * @package mod_feedback
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 require_once('import_form.php');
@@ -31,7 +36,7 @@ $id = required_param('id', PARAM_INT);
 $choosefile = optional_param('choosefile', false, PARAM_PATH);
 $action = optional_param('action', false, PARAM_ALPHA);
 
-$url = new moodle_url('/mod/feedback/import.php', ['id' => $id]);
+$url = new url('/mod/feedback/import.php', ['id' => $id]);
 if ($choosefile !== false) {
     $url->param('choosefile', $choosefile);
 }
@@ -40,21 +45,21 @@ if ($action !== false) {
 }
 $PAGE->set_url($url);
 $PAGE->set_show_navigation_footer(false);
-navigation_node::override_active_url(new moodle_url('/mod/feedback/edit.php'));
+navigation_node::override_active_url(new url('/mod/feedback/edit.php'));
 
 if (! $cm = get_coursemodule_from_id('feedback', $id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 if (! $course = $DB->get_record("course", ["id" => $cm->course])) {
-    throw new \moodle_exception('coursemisconf');
+    throw new moodle_exception('coursemisconf');
 }
 
 if (! $feedback = $DB->get_record("feedback", ["id" => $cm->instance])) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 require_login($course, true, $cm);
 
@@ -80,7 +85,7 @@ if ($choosefile) {
     $xmlcontent = $mform->get_file_content('choosefile');
 
     if (!$xmldata = feedback_load_xml_data($xmlcontent)) {
-        throw new \moodle_exception('cannotloadxml', 'feedback', 'edit.php?id='.$id);
+        throw new moodle_exception('cannotloadxml', 'feedback', 'edit.php?id='.$id);
     }
 
     $importerror = feedback_import_loaded_data($xmldata, $feedback->id);

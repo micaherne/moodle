@@ -15,7 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace tool_generator\output;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use tool_generator\local\testscenario\runner;
 
 /**
@@ -25,7 +27,7 @@ use tool_generator\local\testscenario\runner;
  * @copyright  2024 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class stepsinformation implements templatable, \renderable {
+class stepsinformation implements templatable, renderable {
 
     /**
      * Constructor.
@@ -44,7 +46,7 @@ class stepsinformation implements templatable, \renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return \stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): \stdClass {
+    public function export_for_template(renderer_base $output): \stdClass {
         $steps = [];
         $validsteps = $this->runner->get_valid_steps();
         foreach ($validsteps as $step) {

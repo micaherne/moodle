@@ -23,9 +23,10 @@
  */
 namespace tool_lp\output;
 
-use renderable;
-use renderer_base;
-use templatable;
+use core\exception\invalid_parameter_exception;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use core_competency\api;
 use core_competency\user_competency;
 use tool_lp\external\user_competency_summary_in_course_exporter;
@@ -73,7 +74,7 @@ class user_competency_summary_in_course implements renderable, templatable {
         $usercompetencycourse = api::get_user_competency_in_course($this->courseid, $this->userid, $this->competencyid);
         $competency = $usercompetencycourse->get_competency();
         if (empty($usercompetencycourse) || empty($competency)) {
-            throw new \invalid_parameter_exception('Invalid params. The competency does not belong to the course.');
+            throw new invalid_parameter_exception('Invalid params. The competency does not belong to the course.');
         }
 
         $relatedcompetencies = api::list_related_competencies($competency->get('id'));

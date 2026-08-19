@@ -25,6 +25,7 @@
 
 namespace mod_lesson\event;
 
+use core\context\module;
 use lesson;
 
 defined('MOODLE_INTERNAL') || die();
@@ -151,7 +152,7 @@ final class events_test extends \advanced_testcase {
 
         // Trigger an event: page updated.
         $eventparams = array(
-            'context' => \context_module::instance($this->lesson->properties()->cmid),
+            'context' => module::instance($this->lesson->properties()->cmid),
             'objectid' => 25,
             'other' => array(
                 'pagetype' => 'True/false'
@@ -185,7 +186,7 @@ final class events_test extends \advanced_testcase {
         $event = \mod_lesson\event\essay_attempt_viewed::create(array(
             'objectid' => $this->lesson->id,
             'relateduserid' => 3,
-            'context' => \context_module::instance($this->lesson->properties()->cmid),
+            'context' => module::instance($this->lesson->properties()->cmid),
             'courseid' => $this->course->id
         ));
 
@@ -197,7 +198,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\essay_attempt_viewed', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -213,7 +214,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\lesson_started', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -232,7 +233,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\lesson_restarted', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $expected = array($this->course->id, 'lesson', 'start', 'view.php?id=' . $this->lesson->properties()->cmid,
             $this->lesson->properties()->id, $this->lesson->properties()->cmid);
         $this->assertEventContextNotUsed($event);
@@ -255,7 +256,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\lesson_resumed', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $expected = array($this->course->id, 'lesson', 'start', 'view.php?id=' . $this->lesson->properties()->cmid,
             $this->lesson->properties()->id, $this->lesson->properties()->cmid);
         $this->assertEventContextNotUsed($event);
@@ -284,7 +285,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\lesson_ended', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -301,7 +302,7 @@ final class events_test extends \advanced_testcase {
         $event = \mod_lesson\event\essay_assessed::create(array(
             'objectid' => $gradeid,
             'relateduserid' => 3,
-            'context' => \context_module::instance($this->lesson->properties()->cmid),
+            'context' => module::instance($this->lesson->properties()->cmid),
             'courseid' => $this->course->id,
             'other' => array(
                 'lessonid' => $this->lesson->id,
@@ -317,7 +318,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\essay_assessed', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -400,7 +401,7 @@ final class events_test extends \advanced_testcase {
 
         // Trigger an event: truefalse question answered.
         $eventparams = array(
-            'context' => \context_module::instance($this->lesson->properties()->cmid),
+            'context' => module::instance($this->lesson->properties()->cmid),
             'objectid' => 25,
             'other' => array(
                 'pagetype' => 'True/false'
@@ -434,7 +435,7 @@ final class events_test extends \advanced_testcase {
         $params = array(
             'objectid' => 1,
             'relateduserid' => 2,
-            'context' => \context_module::instance($this->lesson->properties()->cmid),
+            'context' => module::instance($this->lesson->properties()->cmid),
             'other' => array(
                 'lessonid' => $this->lesson->id
             )
@@ -449,7 +450,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\user_override_created', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -463,7 +464,7 @@ final class events_test extends \advanced_testcase {
 
         $params = array(
             'objectid' => 1,
-            'context' => \context_module::instance($this->lesson->properties()->cmid),
+            'context' => module::instance($this->lesson->properties()->cmid),
             'other' => array(
                 'lessonid' => $this->lesson->id,
                 'groupid' => 2
@@ -479,7 +480,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\group_override_created', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -494,7 +495,7 @@ final class events_test extends \advanced_testcase {
         $params = array(
             'objectid' => 1,
             'relateduserid' => 2,
-            'context' => \context_module::instance($this->lesson->properties()->cmid),
+            'context' => module::instance($this->lesson->properties()->cmid),
             'other' => array(
                 'lessonid' => $this->lesson->id
             )
@@ -509,7 +510,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\user_override_updated', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -523,7 +524,7 @@ final class events_test extends \advanced_testcase {
 
         $params = array(
             'objectid' => 1,
-            'context' => \context_module::instance($this->lesson->properties()->cmid),
+            'context' => module::instance($this->lesson->properties()->cmid),
             'other' => array(
                 'lessonid' => $this->lesson->id,
                 'groupid' => 2
@@ -539,7 +540,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\group_override_updated', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -563,7 +564,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\user_override_deleted', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -587,7 +588,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_lesson\event\group_override_deleted', $event);
-        $this->assertEquals(\context_module::instance($this->lesson->properties()->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->lesson->properties()->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 }

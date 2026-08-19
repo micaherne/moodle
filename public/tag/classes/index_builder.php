@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context_helper;
+use core\exception\coding_exception;
+use core_cache\cache;
+use core_cache\helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -368,6 +373,6 @@ class core_tag_index_builder {
      * Resets all course/items session caches - useful in unittests when we change users and enrolments.
      */
     public static function reset_caches() {
-        cache_helper::purge_by_event('resettagindexbuilder');
+        helper::purge_by_event('resettagindexbuilder');
     }
 }

@@ -16,7 +16,7 @@
 
 namespace core_course\external;
 
-use context_module;
+use core\context\module;
 use core_external\external_description;
 use core_external\external_files;
 use core_external\external_format_value;
@@ -50,7 +50,7 @@ abstract class helper_for_get_mods_by_courses {
     public static function standard_coursemodule_element_values(\stdClass $modinstance, string $component,
             string $capabilityforgroups = 'moodle/course:manageactivities', ?string $capabilityforintro = null): array {
         self::format_name_and_intro($modinstance, $component);
-        $context = context_module::instance($modinstance->coursemodule);
+        $context = module::instance($modinstance->coursemodule);
 
         // First, we return information that any user can see in the web interface.
         $moddetails['id'] = $modinstance->id;
@@ -86,7 +86,7 @@ abstract class helper_for_get_mods_by_courses {
      * @param string $component the plugin name, e.g. 'mod_book'.
      */
     public static function format_name_and_intro(\stdClass $modinstance, string $component) {
-        $context = context_module::instance($modinstance->coursemodule);
+        $context = module::instance($modinstance->coursemodule);
 
         $modinstance->name = \core_external\util::format_string($modinstance->name, $context);
 

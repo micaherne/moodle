@@ -24,6 +24,10 @@
 
 namespace core_customfield;
 
+use core\context;
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -146,7 +150,7 @@ class field_config_form extends \core_form\dynamic_form {
                 $type = clean_param($this->_ajaxformdata['type'], PARAM_PLUGIN);
                 $this->field = \core_customfield\field_controller::create(0, (object)['type' => $type], $category);
             } else {
-                throw new \moodle_exception('fieldnotfound', 'core_customfield');
+                throw new moodle_exception('fieldnotfound', 'core_customfield');
             }
         }
         return $this->field;
@@ -162,7 +166,7 @@ class field_config_form extends \core_form\dynamic_form {
         $field = $this->get_field();
         $handler = $field->get_handler();
         if (!$handler->can_configure()) {
-            throw new \moodle_exception('nopermissionconfigure', 'core_customfield');
+            throw new moodle_exception('nopermissionconfigure', 'core_customfield');
         }
     }
 
@@ -198,7 +202,7 @@ class field_config_form extends \core_form\dynamic_form {
      * Form context
      * @return \context
      */
-    protected function get_context_for_dynamic_submission(): \context {
+    protected function get_context_for_dynamic_submission(): context {
         return $this->get_field()->get_handler()->get_configuration_context();
     }
 
@@ -206,13 +210,13 @@ class field_config_form extends \core_form\dynamic_form {
      * Page url
      * @return \moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): \moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $field = $this->get_field();
         if ($field->get('id')) {
             $params = ['action' => 'editfield', 'id' => $field->get('id')];
         } else {
             $params = ['action' => 'addfield', 'categoryid' => $field->get('categoryid'), 'type' => $field->get('type')];
         }
-        return new \moodle_url($field->get_handler()->get_configuration_url(), $params);
+        return new url($field->get_handler()->get_configuration_url(), $params);
     }
 }

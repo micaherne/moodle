@@ -16,10 +16,10 @@
 
 namespace core\navigation\output;
 
-use renderable;
-use renderer_base;
-use templatable;
-use custom_menu;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\custom_menu;
 
 /**
  * more menu navigation renderable

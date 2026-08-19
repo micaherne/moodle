@@ -24,7 +24,9 @@
 
 declare(strict_types=1);
 
+use core\navigation\navigation_node;
 use core\output\dynamic_tabs;
+use core\url;
 use core_reportbuilder\manager;
 use core_reportbuilder\permission;
 use core_reportbuilder\output\dynamictabs\access;
@@ -37,8 +39,8 @@ require_once("{$CFG->libdir}/adminlib.php");
 
 $reportid = required_param('id', PARAM_INT);
 
-admin_externalpage_setup('customreports', null, ['id' => $reportid], new moodle_url('/reportbuilder/edit.php'));
-navigation_node::override_active_url(new moodle_url('/reportbuilder/index.php'));
+admin_externalpage_setup('customreports', null, ['id' => $reportid], new url('/reportbuilder/edit.php'));
+navigation_node::override_active_url(new url('/reportbuilder/index.php'));
 
 $report = manager::get_report_from_id($reportid);
 permission::require_can_edit_report($report->get_report_persistent());

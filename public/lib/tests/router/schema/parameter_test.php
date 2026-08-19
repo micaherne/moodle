@@ -16,6 +16,7 @@
 
 namespace core\router\schema;
 
+use core\exception\coding_exception;
 use core\param;
 use core\router\route;
 use core\router\schema\objects\array_of_strings;
@@ -52,7 +53,7 @@ final class parameter_test extends route_testcase {
      * @param array $params
      */
     public function test_required_default(array $params): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         new parameter(...$params);
     }
 
@@ -151,7 +152,7 @@ final class parameter_test extends route_testcase {
 
     public function test_example_and_examples(): void {
         $example = new example('examplevalue');
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         new parameter(
             name: 'example',
             in: 'header',

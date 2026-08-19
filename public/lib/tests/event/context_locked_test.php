@@ -16,6 +16,11 @@
 
 namespace core\event;
 
+use core\context;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+
 /**
  * Unit tests for the context_locked  and context_unlocked events.
  *
@@ -31,7 +36,7 @@ final class context_locked_test extends \advanced_testcase {
      *
      * @param \context $context
      */
-    protected function lock_context(\context $context) {
+    protected function lock_context(context $context) {
         self::assertFalse($context->is_locked());
 
         $locksink = $this->redirectEvents();
@@ -55,13 +60,13 @@ final class context_locked_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $category = self::getDataGenerator()->create_category();
-        $catcontext = \context_coursecat::instance($category->id);
+        $catcontext = coursecat::instance($category->id);
         $course = self::getDataGenerator()->create_course(['category' => $category->id]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         /** @var \mod_forum_generator $activitygenerator */
         $activitygenerator = self::getDataGenerator()->get_plugin_generator('mod_forum');
         $activity = $activitygenerator->create_instance(['course' => $course->id]);
-        $activitycontext = \context_module::instance($activity->cmid);
+        $activitycontext = module::instance($activity->cmid);
 
         $this->lock_context($catcontext);
         $this->unlock_context($catcontext);
@@ -78,7 +83,7 @@ final class context_locked_test extends \advanced_testcase {
      *
      * @param \context $context
      */
-    protected function unlock_context(\context $context) {
+    protected function unlock_context(context $context) {
         self::assertTrue($context->is_locked());
 
         $unlocksink = $this->redirectEvents();

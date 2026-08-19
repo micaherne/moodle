@@ -16,6 +16,7 @@
 
 namespace tool_uploadcourse;
 
+use core\exception\moodle_exception;
 use tool_uploadcourse_processor;
 
 defined('MOODLE_INTERNAL') || die();
@@ -169,7 +170,7 @@ final class processor_test extends \advanced_testcase {
         $cir->init();
 
         $options = array('mode' => tool_uploadcourse_processor::MODE_CREATE_NEW);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $p = new tool_uploadcourse_processor($cir, $options, array());
     }
 
@@ -187,7 +188,7 @@ final class processor_test extends \advanced_testcase {
         $cir->init();
 
         $options = array('mode' => tool_uploadcourse_processor::MODE_CREATE_NEW);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $p = new tool_uploadcourse_processor($cir, $options, array());
     }
 

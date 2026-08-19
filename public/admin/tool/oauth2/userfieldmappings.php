@@ -22,12 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
 
 $PAGE->set_url('/admin/tool/oauth2/userfieldmappings.php', ['issuerid' => required_param('issuerid', PARAM_INT)]);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('admin');
 $strheading = get_string('pluginname', 'tool_oauth2');
 $PAGE->set_title($strheading);
@@ -45,9 +49,9 @@ $mform = null;
 
 $issuer = \core\oauth2\api::get_issuer($issuerid);
 if (!$issuer) {
-    throw new \moodle_exception('invaliddata');
+    throw new moodle_exception('invaliddata');
 }
-$PAGE->navbar->override_active_url(new moodle_url('/admin/tool/oauth2/issuers.php'), true);
+$PAGE->navbar->override_active_url(new url('/admin/tool/oauth2/issuers.php'), true);
 
 if (!empty($userfieldmappingid)) {
     $userfieldmapping = \core\oauth2\api::get_user_field_mapping($userfieldmappingid);
@@ -64,7 +68,7 @@ if ($action == 'edit') {
 }
 
 if ($mform && $mform->is_cancelled()) {
-    redirect(new moodle_url('/admin/tool/oauth2/userfieldmappings.php', ['issuerid' => $issuerid]));
+    redirect(new url('/admin/tool/oauth2/userfieldmappings.php', ['issuerid' => $issuerid]));
 } else if ($action == 'edit') {
 
     if ($data = $mform->get_data()) {
@@ -100,8 +104,8 @@ if ($mform && $mform->is_cancelled()) {
             'sesskey' => sesskey(),
             'confirm' => true
         ];
-        $continueurl = new moodle_url('/admin/tool/oauth2/userfieldmappings.php', $continueparams);
-        $cancelurl = new moodle_url('/admin/tool/oauth2/userfieldmappings.php');
+        $continueurl = new url('/admin/tool/oauth2/userfieldmappings.php', $continueparams);
+        $cancelurl = new url('/admin/tool/oauth2/userfieldmappings.php');
         echo $OUTPUT->header();
         $str = get_string('deleteuserfieldmappingconfirm', 'tool_oauth2', s($issuer->get('name')));
         echo $OUTPUT->confirm($str, $continueurl, $cancelurl);
@@ -118,7 +122,7 @@ if ($mform && $mform->is_cancelled()) {
     $userfieldmappings = core\oauth2\api::get_user_field_mappings($issuer);
     echo $renderer->user_field_mappings_table($userfieldmappings, $issuerid);
 
-    $addurl = new moodle_url('/admin/tool/oauth2/userfieldmappings.php', ['action' => 'edit', 'issuerid' => $issuerid]);
+    $addurl = new url('/admin/tool/oauth2/userfieldmappings.php', ['action' => 'edit', 'issuerid' => $issuerid]);
     echo $renderer->single_button($addurl, get_string('createnewuserfieldmapping', 'tool_oauth2', s($issuer->get('name'))));
     echo $OUTPUT->footer();
 }
