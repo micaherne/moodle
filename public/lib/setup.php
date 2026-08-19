@@ -49,7 +49,7 @@ global $CFG; // this should be done much earlier in config.php before creating n
 
 if (!isset($CFG)) {
     if (defined('PHPUNIT_TEST') and PHPUNIT_TEST) {
-        echo('There is a missing "global $CFG;" at the beginning of the config.php file.'."\n");
+        echo 'There is a missing "global $CFG;" at the beginning of the config.php file.' . "\n";
         exit(1);
     } else {
         // this should never happen, maybe somebody is accessing this file directly...
@@ -59,30 +59,34 @@ if (!isset($CFG)) {
 
 // We can detect real dirroot path reliably since PHP 4.0.2,
 // it can not be anything else, there is no point in having this in config.php
-$CFG->dirroot = dirname(__DIR__);
+$CFG->dirroot = new class() {
+    public function __toString()
+    {
+        return dirname(__DIR__);
+    }
+};
 $CFG->root = dirname($CFG->dirroot);
 
 // File permissions on created directories in the $CFG->dataroot
 if (!isset($CFG->directorypermissions)) {
-    $CFG->directorypermissions = 02777;      // Must be octal (that's why it's here)
+    $CFG->directorypermissions = 02777; // Must be octal (that's why it's here)
 }
 if (!isset($CFG->filepermissions)) {
-    $CFG->filepermissions = ($CFG->directorypermissions & 0666); // strip execute flags
+    $CFG->filepermissions = $CFG->directorypermissions & 0666; // strip execute flags
 }
 // Better also set default umask because developers often forget to include directory
 // permissions in mkdir() and chmod() after creating new files.
 if (!isset($CFG->umaskpermissions)) {
-    $CFG->umaskpermissions = (($CFG->directorypermissions & 0777) ^ 0777);
+    $CFG->umaskpermissions = ($CFG->directorypermissions & 0777) ^ 0777;
 }
 umask($CFG->umaskpermissions);
 
 if (defined('BEHAT_SITE_RUNNING')) {
     // We already switched to behat test site previously.
-
 } else if (!empty($CFG->behat_wwwroot) or !empty($CFG->behat_dataroot) or !empty($CFG->behat_prefix)) {
     // The behat is configured on this server, we need to find out if this is the behat test
     // site based on the URL used for access.
-    require_once(__DIR__ . '/../lib/behat/lib.php');
+    require_once __DIR__ . '/../lib/behat/lib.php';
 
     // Update config variables for parallel behat runs.
     behat_update_vars_for_process();
@@ -99,11 +103,17 @@ if (defined('BEHAT_SITE_RUNNING')) {
         if (!file_exists("$CFG->behat_dataroot/behattestdir.txt")) {
             if ($dh = opendir($CFG->behat_dataroot)) {
                 while (($file = readdir($dh)) !== false) {
-                    if ($file === 'behat' or $file === '.' or $file === '..' or $file === '.DS_Store' or is_numeric($file)) {
+                    if (
+                        $file === 'behat' or $file === '.' or $file === '..' or $file === '.DS_Store'
+                        or is_numeric($file)
+                    ) {
                         continue;
                     }
-                    behat_error(BEHAT_EXITCODE_CONFIG, "$CFG->behat_dataroot directory is not empty, ensure this is the " .
-                        "directory where you want to install behat test dataroot");
+                    behat_error(
+                        BEHAT_EXITCODE_CONFIG,
+                        "$CFG->behat_dataroot directory is not empty, ensure this is the "
+                        . 'directory where you want to install behat test dataroot',
+                    );
                 }
                 closedir($dh);
                 unset($dh);
@@ -170,7 +180,7 @@ if (!isset($CFG->dataroot)) {
     if (isset($_SERVER['REMOTE_ADDR'])) {
         header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error ');
     }
-    echo('Fatal error: $CFG->dataroot is not specified in config.php! Exiting.'."\n");
+    echo 'Fatal error: $CFG->dataroot is not specified in config.php! Exiting.' . "\n";
     exit(1);
 }
 $CFG->dataroot = realpath($CFG->dataroot);
@@ -178,13 +188,16 @@ if ($CFG->dataroot === false) {
     if (isset($_SERVER['REMOTE_ADDR'])) {
         header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error ');
     }
-    echo('Fatal error: $CFG->dataroot is not configured properly, directory does not exist or is not accessible! Exiting.'."\n");
+    echo
+        'Fatal error: $CFG->dataroot is not configured properly, directory does not exist or is not accessible! Exiting.'
+            . "\n"
+    ;
     exit(1);
 } else if (!is_writable($CFG->dataroot)) {
     if (isset($_SERVER['REMOTE_ADDR'])) {
         header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error ');
     }
-    echo('Fatal error: $CFG->dataroot is not writable, admin has to fix directory permissions! Exiting.'."\n");
+    echo 'Fatal error: $CFG->dataroot is not writable, admin has to fix directory permissions! Exiting.' . "\n";
     exit(1);
 }
 
@@ -193,7 +206,7 @@ if (!isset($CFG->wwwroot) or $CFG->wwwroot === 'http://example.com/moodle') {
     if (isset($_SERVER['REMOTE_ADDR'])) {
         header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error ');
     }
-    echo('Fatal error: $CFG->wwwroot is not configured! Exiting.'."\n");
+    echo 'Fatal error: $CFG->wwwroot is not configured! Exiting.' . "\n";
     exit(1);
 }
 
@@ -206,16 +219,22 @@ if (!isset($CFG->prefix)) {
 }
 
 // Define admin directory
-if (!isset($CFG->admin)) {   // Just in case it isn't defined in config.php
-    $CFG->admin = 'admin';   // This is relative to the wwwroot and dirroot
+if (!isset($CFG->admin)) { // Just in case it isn't defined in config.php
+    $CFG->admin = 'admin'; // This is relative to the wwwroot and dirroot
 }
 
 // Set up some paths.
-$CFG->libdir = $CFG->dirroot .'/lib';
+$CFG->libdir = new class() {
+    public function __toString()
+    {
+        global $CFG;
+        return $CFG->dirroot . '/lib';
+    }
+};
 
 // Allow overriding of tempdir but be backwards compatible
 if (!isset($CFG->tempdir)) {
-    $CFG->tempdir = $CFG->dataroot . DIRECTORY_SEPARATOR . "temp";
+    $CFG->tempdir = $CFG->dataroot . DIRECTORY_SEPARATOR . 'temp';
 }
 
 // Allow overriding of backuptempdir but be backwards compatible
@@ -240,12 +259,12 @@ if (!isset($CFG->localrequestdir)) {
 
 // Location of all languages except core English pack.
 if (!isset($CFG->langotherroot)) {
-    $CFG->langotherroot = $CFG->dataroot.'/lang';
+    $CFG->langotherroot = $CFG->dataroot . '/lang';
 }
 
 // Location of local lang pack customisations (dirs with _local suffix).
 if (!isset($CFG->langlocalroot)) {
-    $CFG->langlocalroot = $CFG->dataroot.'/lang';
+    $CFG->langlocalroot = $CFG->dataroot . '/lang';
 }
 
 // The current directory in PHP version 4.3.0 and above isn't necessarily the
@@ -332,17 +351,17 @@ if (!defined('CLI_SCRIPT')) {
 }
 if (defined('WEB_CRON_EMULATED_CLI')) {
     if (!isset($_SERVER['REMOTE_ADDR'])) {
-        echo('Web cron can not be executed as CLI script any more, please use admin/cli/cron.php instead'."\n");
+        echo 'Web cron can not be executed as CLI script any more, please use admin/cli/cron.php instead' . "\n";
         exit(1);
     }
 } else if (isset($_SERVER['REMOTE_ADDR'])) {
     if (CLI_SCRIPT) {
-        echo('Command line scripts can not be executed from the web interface');
+        echo 'Command line scripts can not be executed from the web interface';
         exit(1);
     }
 } else {
     if (!CLI_SCRIPT) {
-        echo('Command line scripts must define CLI_SCRIPT before requiring config.php'."\n");
+        echo 'Command line scripts must define CLI_SCRIPT before requiring config.php' . "\n";
         exit(1);
     }
 }
@@ -368,7 +387,7 @@ if (file_exists("$CFG->dataroot/climaintenance.html")) {
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
         header('Accept-Ranges: none');
         readfile("$CFG->dataroot/climaintenance.html");
-        die;
+        die();
     } else {
         if (!defined('CLI_MAINTENANCE')) {
             define('CLI_MAINTENANCE', true);
@@ -408,8 +427,7 @@ $CFG->yui3version = '3.18.1';
 // incremented here. The module will also need to be listed in the yuipatchedmodules.
 // When upgrading to a subsequent version of YUI, these should be reset back to 0 and an empty array.
 $CFG->yuipatchlevel = 0;
-$CFG->yuipatchedmodules = array(
-);
+$CFG->yuipatchedmodules = array();
 
 if (!empty($CFG->disableonclickaddoninstall)) {
     // This config.php flag has been merged into another one.
@@ -418,7 +436,7 @@ if (!empty($CFG->disableonclickaddoninstall)) {
 
 // Store settings from config.php in array in $CFG - we can use it later to detect problems and overrides.
 if (!isset($CFG->config_php_settings)) {
-    $CFG->config_php_settings = (array)$CFG;
+    $CFG->config_php_settings = (array) $CFG;
     // Forced plugin settings override values from config_plugins table.
     unset($CFG->config_php_settings['forced_plugin_settings']);
     if (!isset($CFG->forced_plugin_settings)) {
@@ -427,11 +445,11 @@ if (!isset($CFG->config_php_settings)) {
 }
 
 if (isset($CFG->debug)) {
-    $CFG->debug = (int)$CFG->debug;
+    $CFG->debug = (int) $CFG->debug;
 } else {
     $CFG->debug = 0;
 }
-$CFG->debugdeveloper = (($CFG->debug & E_ALL) === E_ALL); // DEBUG_DEVELOPER is not available yet.
+$CFG->debugdeveloper = ($CFG->debug & E_ALL) === E_ALL; // DEBUG_DEVELOPER is not available yet.
 
 if (!defined('MOODLE_INTERNAL')) { // Necessary because cli installer has to define it earlier.
     /** Used by library scripts to check they are being called by Moodle. */
@@ -439,7 +457,7 @@ if (!defined('MOODLE_INTERNAL')) { // Necessary because cli installer has to def
 }
 
 // The core_component class can be used in any scripts, it does not need anything else.
-require_once($CFG->libdir .'/classes/component.php');
+require_once $CFG->libdir . '/classes/component.php';
 
 /**
  * Database connection. Used for all access to the database.
@@ -556,7 +574,7 @@ if (NO_OUTPUT_BUFFERING) {
 
     // Disable compression, it would prevent closing of buffers.
     if ($outputcompression = ini_get('zlib.output_compression')) {
-        switch(strtolower($outputcompression)) {
+        switch (strtolower($outputcompression)) {
             case 'on':
             case '1':
                 ini_set('zlib.output_compression', 'Off');
@@ -599,7 +617,7 @@ if (\core\shutdown_manager::is_initialized() === false) {
 
 // Early profiling start, based exclusively on config.php $CFG settings.
 if (!empty($CFG->earlyprofilingenabled) && !defined('ABORT_AFTER_CONFIG_CANCEL')) {
-    require_once($CFG->libdir . '/xhprof/xhprof_moodle.php');
+    require_once $CFG->libdir . '/xhprof/xhprof_moodle.php';
     profiling_start();
 }
 
@@ -618,30 +636,30 @@ if (defined('ABORT_AFTER_CONFIG')) {
         } else {
             ini_set('display_errors', '1');
         }
-        require_once("$CFG->dirroot/lib/configonlylib.php");
+        require_once "$CFG->dirroot/lib/configonlylib.php";
         return;
     }
 }
 
-require_once($CFG->libdir .'/setuplib.php');        // Functions that MUST be loaded first.
+require_once $CFG->libdir . '/setuplib.php'; // Functions that MUST be loaded first.
 
 // Load up standard libraries.
-require_once($CFG->libdir .'/filterlib.php');       // Functions for filtering test as it is output.
-require_once($CFG->libdir .'/weblib.php');          // Functions relating to HTTP and content.
-require_once($CFG->libdir .'/outputlib.php');       // Functions for generating output.
-require_once($CFG->libdir .'/dmllib.php');          // Database access.
-require_once($CFG->libdir .'/datalib.php');         // Legacy lib with a big-mix of functions..
-require_once($CFG->libdir .'/accesslib.php');       // Access control functions.
-require_once($CFG->libdir .'/deprecatedlib.php');   // Deprecated functions included for backward compatibility.
-require_once($CFG->libdir .'/moodlelib.php');       // Other general-purpose functions.
-require_once($CFG->libdir .'/enrollib.php');        // Enrolment related functions.
-require_once($CFG->libdir .'/pagelib.php');         // Library that defines the moodle_page class, used for $PAGE.
-require_once($CFG->libdir .'/blocklib.php');        // Library for controlling blocks.
-require_once($CFG->libdir .'/grouplib.php');        // Groups functions.
-require_once($CFG->libdir .'/sessionlib.php');      // All session and cookie related stuff.
-require_once($CFG->libdir .'/editorlib.php');       // All text editor related functions and classes.
-require_once($CFG->libdir .'/messagelib.php');      // Messagelib functions.
-require_once($CFG->libdir .'/modinfolib.php');      // Cached information on course-module instances.
+require_once $CFG->libdir . '/filterlib.php'; // Functions for filtering test as it is output.
+require_once $CFG->libdir . '/weblib.php'; // Functions relating to HTTP and content.
+require_once $CFG->libdir . '/outputlib.php'; // Functions for generating output.
+require_once $CFG->libdir . '/dmllib.php'; // Database access.
+require_once $CFG->libdir . '/datalib.php'; // Legacy lib with a big-mix of functions..
+require_once $CFG->libdir . '/accesslib.php'; // Access control functions.
+require_once $CFG->libdir . '/deprecatedlib.php'; // Deprecated functions included for backward compatibility.
+require_once $CFG->libdir . '/moodlelib.php'; // Other general-purpose functions.
+require_once $CFG->libdir . '/enrollib.php'; // Enrolment related functions.
+require_once $CFG->libdir . '/pagelib.php'; // Library that defines the moodle_page class, used for $PAGE.
+require_once $CFG->libdir . '/blocklib.php'; // Library for controlling blocks.
+require_once $CFG->libdir . '/grouplib.php'; // Groups functions.
+require_once $CFG->libdir . '/sessionlib.php'; // All session and cookie related stuff.
+require_once $CFG->libdir . '/editorlib.php'; // All text editor related functions and classes.
+require_once $CFG->libdir . '/messagelib.php'; // Messagelib functions.
+require_once $CFG->libdir . '/modinfolib.php'; // Cached information on course-module instances.
 
 // Increase memory limits if possible.
 raise_memory_limit(MEMORY_STANDARD);
@@ -661,12 +679,12 @@ if (!PHPUNIT_TEST or PHPUNIT_UTIL) {
 // Acceptance tests needs special output to capture the errors,
 // but not necessary for behat CLI command and init script.
 if (defined('BEHAT_SITE_RUNNING') && !defined('BEHAT_TEST') && !defined('BEHAT_UTIL')) {
-    require_once(__DIR__ . '/behat/lib.php');
+    require_once __DIR__ . '/behat/lib.php';
     set_error_handler('behat_error_handler', E_ALL);
 }
 
 if (defined('WS_SERVER') && WS_SERVER) {
-    require_once($CFG->dirroot . '/webservice/lib.php');
+    require_once $CFG->dirroot . '/webservice/lib.php';
     set_exception_handler('early_ws_exception_handler');
 }
 
@@ -675,9 +693,9 @@ error_reporting(E_ALL);
 
 // Just say no to link prefetching (Moz prefetching, Google Web Accelerator, others)
 // http://www.google.com/webmasters/faq.html#prefetchblock
-if (!empty($_SERVER['HTTP_X_moz']) && $_SERVER['HTTP_X_moz'] === 'prefetch'){
+if (!empty($_SERVER['HTTP_X_moz']) && $_SERVER['HTTP_X_moz'] === 'prefetch') {
     header($_SERVER['SERVER_PROTOCOL'] . ' 404 Prefetch Forbidden');
-    echo('Prefetch request forbidden.');
+    echo 'Prefetch request forbidden.';
     exit(1);
 }
 
@@ -699,14 +717,14 @@ if (PHPUNIT_TEST and !PHPUNIT_UTIL) {
     test_lock::acquire('phpunit', $suffix);
     $dbhash = null;
     try {
-        if ($dbhash = $DB->get_field('config', 'value', array('name'=>'phpunittest'))) {
+        if ($dbhash = $DB->get_field('config', 'value', array('name' => 'phpunittest'))) {
             // reset DB tables
             \core\test\phpunit\phpunit_util::reset_database();
         }
     } catch (Exception $e) {
         if ($dbhash) {
             // we ned to reinit if reset fails
-            $DB->set_field('config', 'value', 'na', array('name'=>'phpunittest'));
+            $DB->set_field('config', 'value', 'na', array('name' => 'phpunittest'));
         }
     }
     unset($dbhash);
@@ -724,7 +742,7 @@ if (!is_readable($bootstraplocalfile) && is_readable($bootstrapsharedfile)) {
 }
 if (is_readable($bootstraplocalfile)) {
     try {
-        require_once($bootstraplocalfile);
+        require_once $bootstraplocalfile;
         // Verify the file is not stale.
         if (!isset($CFG->bootstraphash) || $CFG->bootstraphash !== hash_local_config_cache()) {
             // Something has changed, the bootstrap.php file is stale.
@@ -747,17 +765,16 @@ if (PHPUNIT_TEST) {
 }
 
 if (isset($CFG->debug)) {
-    $CFG->debug = (int)$CFG->debug;
+    $CFG->debug = (int) $CFG->debug;
     error_reporting($CFG->debug);
-}  else {
+} else {
     $CFG->debug = 0;
 }
-$CFG->debugdeveloper = (($CFG->debug & DEBUG_DEVELOPER) === DEBUG_DEVELOPER);
+$CFG->debugdeveloper = ($CFG->debug & DEBUG_DEVELOPER) === DEBUG_DEVELOPER;
 
 // Set a default value for whether to show exceptions in a pretty format.
 if (!property_exists($CFG, 'debug_developer_use_pretty_exceptions')) {
     $CFG->debug_developer_use_pretty_exceptions = true;
-
 }
 
 // Find out if PHP configured to display warnings,
@@ -801,7 +818,7 @@ if (function_exists('gc_enable')) {
 // detect unsupported upgrade jump as soon as possible - do not change anything, do not use system functions
 if (!empty($CFG->version) and $CFG->version < 2007101509) {
     throw new \moodle_exception('upgraderequires19', 'error');
-    die;
+    die();
 }
 
 // Calculate and set $CFG->ostype to be used everywhere. Possible values are:
@@ -816,20 +833,20 @@ if (stristr(PHP_OS, 'win') && !stristr(PHP_OS, 'darwin')) {
 $CFG->os = PHP_OS;
 
 // Work around for a PHP bug   see MDL-11237
-ini_set('pcre.backtrack_limit', 20971520);  // 20 MB
+ini_set('pcre.backtrack_limit', 20971520); // 20 MB
 
 // Set PHP default timezone to server timezone.
 core_date::set_default_server_timezone();
 
 // Location of standard files
-$CFG->wordlist = $CFG->libdir .'/wordlist.txt';
-$CFG->moddata  = 'moddata';
+$CFG->wordlist = $CFG->libdir . '/wordlist.txt';
+$CFG->moddata = 'moddata';
 
 // neutralise nasty chars in PHP_SELF
 if (isset($_SERVER['PHP_SELF'])) {
     $phppos = strpos($_SERVER['PHP_SELF'], '.php');
     if ($phppos !== false) {
-        $_SERVER['PHP_SELF'] = substr($_SERVER['PHP_SELF'], 0, $phppos+4);
+        $_SERVER['PHP_SELF'] = substr($_SERVER['PHP_SELF'], 0, $phppos + 4);
     }
     unset($phppos);
 }
@@ -856,7 +873,7 @@ try {
     }
 }
 // And the 'default' course - this will usually get reset later in require_login() etc.
-$COURSE = clone($SITE);
+$COURSE = clone $SITE;
 // Id of the frontpage course.
 define('SITEID', $SITE->id);
 
@@ -864,11 +881,9 @@ define('SITEID', $SITE->id);
 if (CLI_SCRIPT) {
     // no sessions in CLI scripts possible
     define('NO_MOODLE_COOKIES', true);
-
 } else if (WS_SERVER) {
     // No sessions possible in web services.
     define('NO_MOODLE_COOKIES', true);
-
 } else if (!defined('NO_MOODLE_COOKIES')) {
     if (empty($CFG->version) or $CFG->version < 2009011900) {
         // no session before sessions table gets created
@@ -908,14 +923,14 @@ unset($USER->ignoresesskey);
 
 if (!empty($CFG->proxylogunsafe) || !empty($CFG->proxyfixunsafe)) {
     if (!empty($CFG->proxyfixunsafe)) {
-        require_once($CFG->libdir.'/filelib.php');
+        require_once $CFG->libdir . '/filelib.php';
 
         $proxyurl = get_moodle_proxy_url();
         // This fixes stream handlers inside php.
         $defaults = stream_context_set_default([
             'http' => [
                 'user_agent' => \core_useragent::get_moodlebot_useragent(),
-                'proxy' => $proxyurl
+                'proxy' => $proxyurl,
             ],
         ]);
 
@@ -932,7 +947,6 @@ if (!empty($CFG->proxylogunsafe) || !empty($CFG->proxyfixunsafe)) {
     if (!empty($CFG->proxylogunsafe)) {
         stream_context_set_params($defaults, ['notification' => 'proxy_log_callback']);
     }
-
 }
 
 // Set default content type and encoding, developers are still required to use
@@ -955,12 +969,12 @@ if (AJAX_SCRIPT) {
 
 // Initialise some variables that are supposed to be set in config.php only.
 if (!isset($CFG->filelifetime)) {
-    $CFG->filelifetime = 60*60*6;
+    $CFG->filelifetime = 60 * 60 * 6;
 }
 
 // Late profiling, only happening if early one wasn't started
 if (!empty($CFG->profilingenabled)) {
-    require_once($CFG->libdir . '/xhprof/xhprof_moodle.php');
+    require_once $CFG->libdir . '/xhprof/xhprof_moodle.php';
     profiling_start();
 }
 
@@ -1012,9 +1026,11 @@ unset($lang);
 // which would make it necessary to log out to undo the forcelang setting.
 // With PARAM_SAFEDIR, it's possible to specify ?forcelang=none to drop the forcelang effect.
 if ($forcelang = optional_param('forcelang', '', PARAM_SAFEDIR)) {
-    if (isloggedin()
+    if (
+        isloggedin()
         && get_string_manager()->translation_exists($forcelang, false)
-        && has_capability('moodle/site:forcelanguage', context_system::instance())) {
+        && has_capability('moodle/site:forcelanguage', context_system::instance())
+    ) {
         $SESSION->forcelang = $forcelang;
     } else if (isset($SESSION->forcelang)) {
         unset($SESSION->forcelang);
@@ -1040,7 +1056,7 @@ moodle_setlocale();
 // Create the $PAGE global - this marks the PAGE and OUTPUT fully initialised, this MUST be done at the end of setup!
 if (!empty($CFG->moodlepageclass)) {
     if (!empty($CFG->moodlepageclassfile)) {
-        require_once($CFG->moodlepageclassfile);
+        require_once $CFG->moodlepageclassfile;
     }
     $classname = $CFG->moodlepageclass;
 } else {
@@ -1049,13 +1065,14 @@ if (!empty($CFG->moodlepageclass)) {
 $PAGE = new $classname();
 unset($classname);
 
-
 if (!empty($CFG->debugvalidators) and !empty($CFG->guestloginbutton)) {
-    if ($CFG->theme == 'standard') {    // Temporary measure to help with XHTML validation
-        if (isset($_SERVER['HTTP_USER_AGENT']) and empty($USER->id)) {      // Allow W3CValidator in as user called w3cvalidator (or guest)
-            if ((strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') !== false) or
-                (strpos($_SERVER['HTTP_USER_AGENT'], 'Cynthia') !== false )) {
-                if ($user = get_complete_user_data("username", "w3cvalidator")) {
+    if ($CFG->theme == 'standard') { // Temporary measure to help with XHTML validation
+        if (isset($_SERVER['HTTP_USER_AGENT']) and empty($USER->id)) { // Allow W3CValidator in as user called w3cvalidator (or guest)
+            if (
+                strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') !== false
+                or strpos($_SERVER['HTTP_USER_AGENT'], 'Cynthia') !== false
+            ) {
+                if ($user = get_complete_user_data('username', 'w3cvalidator')) {
                     $user->ignoresesskey = true;
                 } else {
                     $user = guest_user();
@@ -1074,7 +1091,7 @@ set_access_log_user();
 
 if (CLI_SCRIPT && !empty($CFG->version)) {
     // Allow auth plugins to optionally authenticate users on the CLI.
-    require_once($CFG->libdir. '/authlib.php');
+    require_once $CFG->libdir . '/authlib.php';
     auth_plugin_base::login_cli_admin_user();
 }
 
@@ -1092,7 +1109,7 @@ if (isset($CFG->urlrewriteclass)) {
 // Use a custom script replacement if one exists
 if (!empty($CFG->customscripts)) {
     if (($customscript = custom_script_path()) !== false) {
-        require ($customscript);
+        require $customscript;
     }
 }
 
@@ -1119,7 +1136,6 @@ if (PHPUNIT_TEST) {
             die(get_string('ipblocked', 'admin'));
         }
     }
-
 } else {
     // in this case, IPs in blocked list will be performed first
     // for example, client IP is 192.168.1.1
@@ -1142,12 +1158,11 @@ if (PHPUNIT_TEST) {
     }
     // if blocked list is null
     // allowed list should be tested
-    if(!empty($CFG->allowedip)) {
+    if (!empty($CFG->allowedip)) {
         if (!remoteip_in_list($CFG->allowedip)) {
             die(get_string('ipblocked', 'admin'));
         }
     }
-
 }
 
 // // try to detect IE6 and prevent gzip because it is extremely buggy browser
@@ -1160,7 +1175,6 @@ if (!empty($_SERVER['HTTP_USER_AGENT']) and strpos($_SERVER['HTTP_USER_AGENT'], 
 
 // Switch to CLI maintenance mode if required, we need to do it here after all the settings are initialised.
 if (isset($CFG->maintenance_later) and $CFG->maintenance_later <= time()) {
-
     // Because maintenance_later is triggered by any potentially real non admin user
     // who just happened to be the first to load a page after the time is due, we do
     // this simple workaround so add_to_config_log doesn't log it as them.
@@ -1168,7 +1182,7 @@ if (isset($CFG->maintenance_later) and $CFG->maintenance_later <= time()) {
     $USER->id = 0;
 
     if (!file_exists("$CFG->dataroot/climaintenance.html")) {
-        require_once("$CFG->libdir/adminlib.php");
+        require_once "$CFG->libdir/adminlib.php";
         set_config('maintenance_enabled', 'cli mode', null, true);
         enable_cli_maintenance_mode();
     }
@@ -1176,7 +1190,7 @@ if (isset($CFG->maintenance_later) and $CFG->maintenance_later <= time()) {
         unset_config('maintenance_later', null, true);
     }
     if (AJAX_SCRIPT) {
-        die;
+        die();
     } else if (!CLI_SCRIPT) {
         // We redirect to ourselves to reload the page to get a fresh bootstrap
         // so that we get the maintenance page which is earlier in setup.
@@ -1192,8 +1206,6 @@ if (defined('BEHAT_SITE_RUNNING') && !defined('BEHAT_TEST')) {
 
 // note: we can not block non utf-8 installations here, because empty mysql database
 // might be converted to utf-8 in admin/index.php during installation
-
-
 
 // this is a funny trick to make Eclipse believe that $OUTPUT and other globals
 // contains an instance of core_renderer, etc. which in turn fixes autocompletion ;-)
