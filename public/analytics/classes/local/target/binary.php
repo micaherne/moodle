@@ -24,6 +24,8 @@
 
 namespace core_analytics\local\target;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -75,7 +77,7 @@ abstract class binary extends discrete {
     public function get_calculation_outcome($value, $ignoredsubtype = false) {
 
         if (!self::is_a_class($value)) {
-            throw new \moodle_exception('errorpredictionformat', 'analytics');
+            throw new moodle_exception('errorpredictionformat', 'analytics');
         }
 
         if (in_array($value, $this->ignored_predicted_classes(), false)) {

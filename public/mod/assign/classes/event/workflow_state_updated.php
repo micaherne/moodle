@@ -24,6 +24,8 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -112,17 +114,17 @@ class workflow_state_updated extends base {
      */
     protected function validate_data() {
         if (self::$preventcreatecall) {
-            throw new \coding_exception('cannot call workflow_state_updated::create() directly, use workflow_state_updated::create_from_user() instead.');
+            throw new coding_exception('cannot call workflow_state_updated::create() directly, use workflow_state_updated::create_from_user() instead.');
         }
 
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['newstate'])) {
-            throw new \coding_exception('The \'newstate\' value must be set in other.');
+            throw new coding_exception('The \'newstate\' value must be set in other.');
         }
     }
 

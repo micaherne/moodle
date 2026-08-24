@@ -26,6 +26,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\lang_string;
+use core\output\html_writer;
+use core\output\renderer_base;
+use core\url;
+use core\user;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -105,7 +116,7 @@ class auth_plugin_base {
      * The fields we can lock and update from/to external authentication backends
      * @var array
      */
-    var $userfields = \core_user::AUTHSYNCFIELDS;
+    var $userfields = user::AUTHSYNCFIELDS;
 
     /**
      * Moodle custom fields to sync with.
@@ -139,7 +150,7 @@ class auth_plugin_base {
      * @return bool Authentication success or failure.
      */
     function user_login($username, $password) {
-        throw new \moodle_exception('mustbeoveride', 'debug', '', 'user_login()' );
+        throw new moodle_exception('mustbeoveride', 'debug', '', 'user_login()' );
     }
 
     /**
@@ -308,7 +319,7 @@ class auth_plugin_base {
      */
     function user_signup($user, $notify=true) {
         //override when can signup
-        throw new \moodle_exception('mustbeoveride', 'debug', '', 'user_signup()' );
+        throw new moodle_exception('mustbeoveride', 'debug', '', 'user_signup()' );
     }
 
     /**
@@ -341,7 +352,7 @@ class auth_plugin_base {
      */
     function user_confirm($username, $confirmsecret) {
         //override when can confirm
-        throw new \moodle_exception('mustbeoveride', 'debug', '', 'user_confirm()' );
+        throw new moodle_exception('mustbeoveride', 'debug', '', 'user_confirm()' );
     }
 
     /**
@@ -657,7 +668,7 @@ class auth_plugin_base {
         $user = $DB->get_record('user', array('username' => $username, 'mnethostid' => $CFG->mnet_localhost_id));
         if (empty($user)) { // Trouble.
             error_log($this->errorlogtag . get_string('auth_usernotexist', 'auth', $username));
-            throw new \moodle_exception('auth_usernotexist', 'auth', '', $username);
+            throw new moodle_exception('auth_usernotexist', 'auth', '', $username);
             die;
         }
 
@@ -756,11 +767,11 @@ class auth_plugin_base {
                 // Pre-3.3 auth plugins provide icon as a pix_icon instance. New auth plugins (since 3.3) provide iconurl.
                 $idp['iconurl'] = $output->image_url($idp['icon']->pix, $idp['icon']->component);
             }
-            if ($idp['iconurl'] instanceof moodle_url) {
+            if ($idp['iconurl'] instanceof url) {
                 $idp['iconurl'] = $idp['iconurl']->out(false);
             }
             unset($idp['icon']);
-            if ($idp['url'] instanceof moodle_url) {
+            if ($idp['url'] instanceof url) {
                 $idp['url'] = $idp['url']->out(false);
             }
             $data[] = $idp;
@@ -779,7 +790,7 @@ class auth_plugin_base {
         global $USER;
 
         $site = get_site();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $data = new stdClass();
         $data->firstname = $user->firstname;
@@ -1057,7 +1068,7 @@ function login_lock_account($user) {
         $oldforcelang = force_current_language($user->lang);
 
         $site = get_site();
-        $supportuser = core_user::get_support_user();
+        $supportuser = user::get_support_user();
 
         $data = new stdClass();
         $data->firstname = $user->firstname;
@@ -1173,7 +1184,7 @@ function signup_validate_data($data, $files) {
         if ($data['username'] !== core_text::strtolower($data['username'])) {
             $errors['username'] = get_string('usernamelowercase');
         } else {
-            if ($data['username'] !== core_user::clean_field($data['username'], 'username')) {
+            if ($data['username'] !== user::clean_field($data['username'], 'username')) {
                 $errors['username'] = get_string('invalidusername');
             }
 
@@ -1209,7 +1220,7 @@ function signup_validate_data($data, $files) {
 
         // If there are other user(s) that already have the same email, show an error.
         if ($DB->record_exists_sql($sql, $params)) {
-            $forgotpasswordurl = new moodle_url('/login/forgot_password.php');
+            $forgotpasswordurl = new url('/login/forgot_password.php');
             $forgotpasswordlink = html_writer::link($forgotpasswordurl, get_string('emailexistshintlink'));
             $errors['email'] = get_string('emailexists') . ' ' . get_string('emailexistssignuphint', 'moodle', $forgotpasswordlink);
         }
@@ -1331,9 +1342,9 @@ function display_auth_lock_options($settings, $auth, $userfields, $helptext, $ma
 
     // Introductory explanation and help text.
     if ($mapremotefields) {
-        $settings->add(new admin_setting_heading($auth.'/data_mapping', new lang_string('auth_data_mapping', 'auth'), $helptext));
+        $settings->add(new heading($auth.'/data_mapping', new lang_string('auth_data_mapping', 'auth'), $helptext));
     } else {
-        $settings->add(new admin_setting_heading($auth.'/auth_fieldlocks', new lang_string('auth_fieldlocks', 'auth'), $helptext));
+        $settings->add(new heading($auth.'/auth_fieldlocks', new lang_string('auth_fieldlocks', 'auth'), $helptext));
     }
 
     // Generate the list of options.
@@ -1376,33 +1387,33 @@ function display_auth_lock_options($settings, $auth, $userfields, $helptext, $ma
         // Generate the list of fields / mappings.
         if ($fieldnametoolong) {
             // Display a message that the field can not be mapped because it's too long.
-            $url = new moodle_url('/user/profile/index.php');
+            $url = new url('/user/profile/index.php');
             $a = (object)['fieldname' => s($fieldname), 'shortname' => s($field), 'charlimit' => 67, 'link' => $url->out()];
-            $settings->add(new admin_setting_heading($auth.'/field_not_mapped_'.sha1($field), '',
+            $settings->add(new heading($auth.'/field_not_mapped_'.sha1($field), '',
                 get_string('cannotmapfield', 'auth', $a)));
         } else if ($mapremotefields) {
             // We are mapping to a remote field here.
             // Mapping.
-            $settings->add(new admin_setting_configtext("auth_{$auth}/field_map_{$field}",
+            $settings->add(new configtext("auth_{$auth}/field_map_{$field}",
                     get_string('auth_fieldmapping', 'auth', $fieldname), '', '', PARAM_RAW, 30));
 
             // Update local.
-            $settings->add(new admin_setting_configselect("auth_{$auth}/field_updatelocal_{$field}",
+            $settings->add(new configselect("auth_{$auth}/field_updatelocal_{$field}",
                     get_string('auth_updatelocalfield', 'auth', $fieldname), '', 'oncreate', $updatelocaloptions));
 
             // Update remote.
             if ($updateremotefields) {
-                    $settings->add(new admin_setting_configselect("auth_{$auth}/field_updateremote_{$field}",
+                    $settings->add(new configselect("auth_{$auth}/field_updateremote_{$field}",
                         get_string('auth_updateremotefield', 'auth', $fieldname), '', 0, $updateextoptions));
             }
 
             // Lock fields.
-            $settings->add(new admin_setting_configselect("auth_{$auth}/field_lock_{$field}",
+            $settings->add(new configselect("auth_{$auth}/field_lock_{$field}",
                     get_string('auth_fieldlockfield', 'auth', $fieldname), '', 'unlocked', $lockoptions));
 
         } else {
             // Lock fields Only.
-            $settings->add(new admin_setting_configselect("auth_{$auth}/field_lock_{$field}",
+            $settings->add(new configselect("auth_{$auth}/field_lock_{$field}",
                     get_string('auth_fieldlockfield', 'auth', $fieldname), '', 'unlocked', $lockoptions));
         }
     }

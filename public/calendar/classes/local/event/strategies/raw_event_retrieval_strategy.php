@@ -24,6 +24,8 @@
 
 namespace core_calendar\local\event\strategies;
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -227,7 +229,7 @@ class raw_event_retrieval_strategy implements raw_event_retrieval_strategy_inter
                     $subqueryparams = array_merge($subqueryparams, $inuserparams);
 
                     foreach ($filteredcourses as $courseid) {
-                        if (has_capability('moodle/site:accessallgroups', \context_course::instance($courseid), $userrecord)) {
+                        if (has_capability('moodle/site:accessallgroups', course::instance($courseid), $userrecord)) {
                             $usergroupmembership = groups_get_all_groups($courseid, $user, 0, 'g.id');
                             if (count($usergroupmembership) == 0) {
                                 $viewgroupsonly = true;

@@ -24,6 +24,8 @@
 
 namespace mod_forum\grade;
 
+use core\context\course;
+use core\test\testing_util;
 use core_grades\component_gradeitem;
 use mod_forum\grades\forum_gradeitem as gradeitem;
 use mod_forum\local\entities\forum as forum_entity;
@@ -122,7 +124,7 @@ final class forum_gradeitem_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $gradinggenerator = $generator->get_plugin_generator('core_grading');
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
@@ -206,7 +208,7 @@ final class forum_gradeitem_test extends \advanced_testcase {
 
         // Set the 'moodle/course:viewsuspendedusers' user capability.
         assign_capability('moodle/course:viewsuspendedusers', $viewsuspendeduserscapability ?
-            CAP_ALLOW : CAP_PROHIBIT, $editingteacherroleid, \context_course::instance($course->id));
+            CAP_ALLOW : CAP_PROHIBIT, $editingteacherroleid, course::instance($course->id));
 
         $this->assertEquals($expected, $gradeitem->should_grade_only_active_users());
     }

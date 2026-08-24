@@ -21,14 +21,14 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/course/renderer.php');
 
-use cm_info;
-use coding_exception;
+use core_course\cm_info;
+use core\exception\coding_exception;
 use core_course_renderer;
 use core_courseformat\base as course_format;
-use html_writer;
+use core\output\html_writer;
 use moodle_page;
-use renderable;
-use section_info;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 
 /**

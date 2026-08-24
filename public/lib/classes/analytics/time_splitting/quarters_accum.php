@@ -24,6 +24,8 @@
 
 namespace core\analytics\time_splitting;
 
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -44,8 +46,8 @@ class quarters_accum extends \core_analytics\local\time_splitting\accumulative_p
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('timesplitting:quartersaccum');
+    public static function get_name(): lang_string {
+        return new lang_string('timesplitting:quartersaccum');
     }
 
     /**

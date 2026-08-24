@@ -27,6 +27,8 @@
 /**
  * Class representing one path to be restored from XML file
  */
+use core\exception\moodle_exception;
+
 class restore_path_element {
 
     /** @var string name of the element */

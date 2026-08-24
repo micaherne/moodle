@@ -25,6 +25,9 @@
 
 namespace core\output;
 
+use core\output\action_menu\link_secondary;
+use core\url;
+
 /**
  * Class for creating the language menu
  *
@@ -83,7 +86,7 @@ class language_menu implements renderable, templatable {
      * @param \renderer_base $output
      * @return array with the title for the menu and an array of items.
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         // Early return if a lang menu does not exists.
         if (!$this->show_language_menu()) {
             return [];
@@ -108,7 +111,7 @@ class language_menu implements renderable, templatable {
                 'text' => $langname,
                 'link' => true,
                 'isactive' => $isactive,
-                'url' => $isactive ? new \moodle_url('#') : new \moodle_url($this->page->url, ['lang' => $langtype]),
+                'url' => $isactive ? new url('#') : new url($this->page->url, ['lang' => $langtype]),
             ];
             if (!empty($attributes)) {
                 $node['attributes'] = $attributes;
@@ -133,12 +136,12 @@ class language_menu implements renderable, templatable {
      * @param \renderer_base $output
      * @return \stdClass action_menu data export.
      */
-    public function export_for_action_menu(\renderer_base $output): ?\stdClass {
+    public function export_for_action_menu(renderer_base $output): ?\stdClass {
         $languagedata = $this->export_for_template($output);
         if (empty($languagedata)) {
             return null;
         }
-        $langmenu = new \action_menu();
+        $langmenu = new action_menu();
         $menuname = \get_string('language');
         if (!empty($languagedata['title'])) {
             $menuname = $languagedata['title'];
@@ -153,7 +156,7 @@ class language_menu implements renderable, templatable {
                     'lang' => get_html_lang_attribute_value($langparam),
                 ];
             }
-            $lang = new \action_menu_link_secondary($node['url'], null, $node['title'], $attributes);
+            $lang = new link_secondary($node['url'], null, $node['title'], $attributes);
             $langmenu->add($lang);
         }
         return $langmenu->export_for_template($output);
@@ -165,11 +168,11 @@ class language_menu implements renderable, templatable {
      * @param \renderer_base $output
      * @return \stdClass single_select data export.
      */
-    public function export_for_single_select(\renderer_base $output): ?\stdClass {
+    public function export_for_single_select(renderer_base $output): ?\stdClass {
         if (!$this->show_language_menu()) {
             return null;
         }
-        $singleselect = new \single_select($this->page->url, 'lang', $this->langs, $this->currentlang, null);
+        $singleselect = new single_select($this->page->url, 'lang', $this->langs, $this->currentlang, null);
         $singleselect->label = get_accesshide(\get_string('language'));
         $singleselect->class = 'langmenu';
         return $singleselect->export_for_template($output);

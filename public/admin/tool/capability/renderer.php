@@ -28,6 +28,16 @@
  * @copyright  2013 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context;
+use core\context\system;
+use core\lang_string;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 class tool_capability_renderer extends plugin_renderer_base {
 
     /**
@@ -81,7 +91,7 @@ class tool_capability_renderer extends plugin_renderer_base {
         $strpermissions = $this->get_permission_strings();
         $permissionclasses = $this->get_permission_classes();
 
-        if ($contextid === context_system::instance()->id) {
+        if ($contextid === system::instance()->id) {
             $strpermissions[CAP_INHERIT] = new lang_string('notset', 'role');
         }
 
@@ -89,7 +99,7 @@ class tool_capability_renderer extends plugin_renderer_base {
         $table->attributes['class'] = 'comparisontable table-reboot';
         $table->head = array('&nbsp;');
         foreach ($roles as $role) {
-            $url = new moodle_url('/admin/roles/define.php', array('action' => 'view', 'roleid' => $role->id));
+            $url = new url('/admin/roles/define.php', array('action' => 'view', 'roleid' => $role->id));
             $table->head[] = html_writer::div(html_writer::link($url, $role->localname));
         }
         $table->data = array();
@@ -132,10 +142,10 @@ class tool_capability_renderer extends plugin_renderer_base {
         // Start the list item, and print the context name as a link to the place to make changes.
         $context = context::instance_by_id($contextid);
 
-        if ($context instanceof context_system) {
-            $url = new moodle_url('/admin/roles/manage.php');
+        if ($context instanceof system) {
+            $url = new url('/admin/roles/manage.php');
         } else {
-            $url = new moodle_url('/admin/roles/permissions.php', ['contextid' => $contextid]);
+            $url = new url('/admin/roles/permissions.php', ['contextid' => $contextid]);
         }
 
         $title = get_string('permissionsincontext', 'core_role', $context->get_context_name());

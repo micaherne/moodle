@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -62,7 +64,7 @@ abstract class assessable_submitted extends base {
     protected function validate_data() {
         parent::validate_data();
         if ($this->contextlevel != CONTEXT_MODULE) {
-            throw new \coding_exception('Context passed must be module context.');
+            throw new coding_exception('Context passed must be module context.');
         }
     }
 

@@ -16,6 +16,7 @@
 
 namespace qtype_ordering\output;
 
+use core\output\renderer_base;
 use qtype_ordering_question;
 
 /**
@@ -26,7 +27,7 @@ use qtype_ordering_question;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class specific_grade_detail_feedback extends renderable_base {
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
 
         $data = [];
         $question = $this->qa->get_question();

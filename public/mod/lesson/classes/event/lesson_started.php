@@ -24,6 +24,8 @@
 
 namespace mod_lesson\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -60,7 +62,7 @@ class lesson_started extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/lesson/view.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/lesson/view.php', array('id' => $this->contextinstanceid));
     }
 
     /**

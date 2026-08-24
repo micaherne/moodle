@@ -16,11 +16,13 @@
 
 namespace core_grades\external;
 
+use core\context\course;
+use core\user;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -71,7 +73,7 @@ class get_feedback extends external_api {
             ]
         );
 
-        $context = \context_course::instance($courseid);
+        $context = course::instance($courseid);
         parent::validate_context($context);
 
         require_capability('gradereport/grader:view', $context);
@@ -85,7 +87,7 @@ class get_feedback extends external_api {
         }
 
         $grade = $gradeitem->get_grade($params['userid'], false);
-        $user = \core_user::get_user($params['userid']);
+        $user = user::get_user($params['userid']);
         $extrafields = \core_user\fields::get_identity_fields($context);
 
         return [

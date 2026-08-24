@@ -16,7 +16,9 @@
 
 namespace core\oauth2\discovery;
 
+use core\exception\moodle_exception;
 use core\http_client;
+use core\url;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -68,7 +70,7 @@ final class auth_server_config_reader_test extends \advanced_testcase {
             $this->expectException($expected['exception']);
         }
         $configreader = new auth_server_config_reader(...$args);
-        $config = $configreader->read_configuration(new \moodle_url($issuerurl));
+        $config = $configreader->read_configuration(new url($issuerurl));
 
         if (!empty($expected['request'])) {
             // Verify the request goes to the correct URL (i.e. the well known suffix is correctly positioned).
@@ -349,7 +351,7 @@ final class auth_server_config_reader_test extends \advanced_testcase {
                 ),
                 'altwellknownsuffix' => null,
                 'expected' => [
-                    'exception' => \moodle_exception::class
+                    'exception' => moodle_exception::class
                 ]
             ],
             'Invalid, query string in issuer URL' => [
@@ -391,7 +393,7 @@ final class auth_server_config_reader_test extends \advanced_testcase {
                 ),
                 'altwellknownsuffix' => null,
                 'expected' => [
-                    'exception' => \moodle_exception::class
+                    'exception' => moodle_exception::class
                 ]
             ],
             'Invalid, fragment in issuer URL' => [
@@ -433,7 +435,7 @@ final class auth_server_config_reader_test extends \advanced_testcase {
                 ),
                 'altwellknownsuffix' => null,
                 'expected' => [
-                    'exception' => \moodle_exception::class
+                    'exception' => moodle_exception::class
                 ]
             ],
             'Valid, port in issuer URL' => [

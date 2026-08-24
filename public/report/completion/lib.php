@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -40,7 +46,7 @@ function report_completion_extend_navigation_course($navigation, $course, $conte
     if (has_capability('report/completion:view', $context)) {
         $completion = new completion_info($course);
         if ($completion->is_enabled() && $completion->has_criteria()) {
-            $url = new moodle_url('/report/completion/index.php', array('course'=>$course->id));
+            $url = new url('/report/completion/index.php', array('course'=>$course->id));
             $navigation->add(get_string('pluginname','report_completion'), $url, navigation_node::TYPE_SETTING, null, null, new pix_icon('i/report', ''));
         }
     }
@@ -58,7 +64,7 @@ function report_completion_extend_navigation_user($navigation, $user, $course) {
     return; //TODO: this plugin was not linked from navigation in 2.0, let's keep it that way for now --skodak
 
     if (report_completion_can_access_user_report($user, $course)) {
-        $url = new moodle_url('/report/completion/user.php', array('id'=>$user->id, 'course'=>$course->id));
+        $url = new url('/report/completion/user.php', array('id'=>$user->id, 'course'=>$course->id));
         $navigation->add(get_string('coursecompletion'), $url);
     }
 }
@@ -83,8 +89,8 @@ function report_completion_can_access_user_report($user, $course) {
         return false;
     }
 
-    $coursecontext = context_course::instance($course->id);
-    $personalcontext = context_user::instance($user->id);
+    $coursecontext = course::instance($course->id);
+    $personalcontext = user::instance($user->id);
 
     if ($user->id == $USER->id) {
         if ($course->showreports and (is_viewing($coursecontext, $USER) or is_enrolled($coursecontext, $USER))) {

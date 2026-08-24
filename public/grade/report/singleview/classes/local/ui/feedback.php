@@ -24,7 +24,7 @@
 
 namespace gradereport_singleview\local\ui;
 
-use context_course;
+use core\context\course;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -107,7 +107,7 @@ class feedback extends grade_attribute_format implements unique_value, be_disabl
      */
     public function determine_format(): element {
         if (($this->grade->is_hidden() || $this->grade->grade_item->is_hidden()) &&
-            !has_capability('moodle/grade:viewhidden', context_course::instance($this->grade->grade_item->courseid))) {
+            !has_capability('moodle/grade:viewhidden', course::instance($this->grade->grade_item->courseid))) {
             return new empty_element();
         }
         return new text_attribute(

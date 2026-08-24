@@ -16,6 +16,7 @@
 
 namespace mod_data\courseformat;
 
+use core\output\action_link;
 use core_courseformat\local\overview\overviewfactory;
 use mod_data\manager;
 
@@ -85,7 +86,7 @@ final class overview_test extends \advanced_testcase {
         $this->assertEquals($expected['value'], $item->get_value());
 
         $content = $item->get_content();
-        $this->assertInstanceOf(\action_link::class, $content);
+        $this->assertInstanceOf(action_link::class, $content);
         $this->assertStringContainsString($expected['link'], $content->text);
     }
 

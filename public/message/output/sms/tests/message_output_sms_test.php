@@ -16,6 +16,7 @@
 
 namespace message_sms;
 
+use core\user;
 use core_sms\message;
 use core_sms\message_status;
 use core_sms\task\send_sms_task;
@@ -70,7 +71,7 @@ final class message_output_sms_test extends \advanced_testcase {
         $message = new \core\message\message();
         $message->component = 'mod_assign';
         $message->name = notification_helper::TYPE_DUE_DIGEST;
-        $message->userfrom = \core_user::get_noreply_user();
+        $message->userfrom = user::get_noreply_user();
         $message->userto = $user;
         $message->subject = 'Hello';
         $message->fullmessageformat = FORMAT_PLAIN;

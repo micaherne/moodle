@@ -18,7 +18,7 @@ namespace core\task;
 
 use core\hook\task\after_failed_task_max_delay;
 use core\url;
-use core_user;
+use core\user;
 use stdClass;
 
 /**
@@ -53,7 +53,7 @@ class failed_task_callbacks {
             $message = new \core\message\message();
             $message->component = 'moodle';
             $message->name = 'failedtaskmaxdelay';
-            $message->userfrom = core_user::get_noreply_user();
+            $message->userfrom = user::get_noreply_user();
             $message->userto = $admin;
             $message->subject = get_string('failedtasksubject', 'moodle', $task->get_name());
             $message->fullmessage = html_to_text($messagetxt);

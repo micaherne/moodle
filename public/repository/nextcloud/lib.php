@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or
  */
 
+use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\actions\popup_action;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
 use repository_nextcloud\issuer_management;
 use repository_nextcloud\ocs_client;
 
@@ -161,7 +168,7 @@ class repository_nextcloud extends repository {
         if ($this->systemoauthclient === false) {
             try {
                 $this->systemoauthclient = \core\oauth2\api::get_system_oauth_client($this->issuer);
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 $this->systemoauthclient = false;
             }
         }
@@ -181,7 +188,7 @@ class repository_nextcloud extends repository {
                     return null;
                 }
                 $this->systemocsclient = new ocs_client($systemoauth);
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 $this->systemocsclient = null;
             }
         }
@@ -590,7 +597,7 @@ class repository_nextcloud extends repository {
         if ($overrideurl) {
             $returnurl = $overrideurl;
         } else {
-            $returnurl = new moodle_url('/repository/repository_callback.php');
+            $returnurl = new url('/repository/repository_callback.php');
             $returnurl->param('callback', 'yes');
             $returnurl->param('repo_id', $this->id);
             $returnurl->param('sesskey', sesskey());
@@ -720,7 +727,7 @@ class repository_nextcloud extends repository {
      * @throws required_capability_exception
      */
     public static function create($type, $userid, $context, $params, $readonly=0) {
-        require_capability('moodle/site:config', context_system::instance());
+        require_capability('moodle/site:config', system::instance());
         return parent::create($type, $userid, $context, $params, $readonly);
     }
 
@@ -733,7 +740,7 @@ class repository_nextcloud extends repository {
      * @throws dml_exception
      */
     public static function instance_config_form($mform) {
-        if (!has_capability('moodle/site:config', context_system::instance())) {
+        if (!has_capability('moodle/site:config', system::instance())) {
             $mform->addElement('static', null, '',  get_string('nopermissions', 'error', get_string('configplugin',
                 'repository_nextcloud')));
             return false;
@@ -753,7 +760,7 @@ class repository_nextcloud extends repository {
         }
 
         // Render the form.
-        $url = new \moodle_url('/admin/tool/oauth2/issuers.php');
+        $url = new url('/admin/tool/oauth2/issuers.php');
         $mform->addElement('static', null, '', get_string('oauth2serviceslink', 'repository_nextcloud', $url->out()));
 
         $mform->addElement('select', 'issuerid', get_string('chooseissuer', 'repository_nextcloud'), $types);
@@ -916,7 +923,7 @@ class repository_nextcloud extends repository {
         }
 
         $this->client = $this->get_user_oauth_client();
-        $url = new moodle_url($this->client->get_login_url());
+        $url = new url($this->client->get_login_url());
         $state = $url->get_param('state') . '&reloadparent=true';
         $url->param('state', $state);
 

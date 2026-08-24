@@ -25,6 +25,8 @@
 
 namespace core_search;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -231,7 +233,7 @@ class test_counting_iterator implements \Iterator {
      */
     #[\ReturnTypeWillChange]
     public function key() {
-        throw new \coding_exception('Unsupported');
+        throw new coding_exception('Unsupported');
     }
 
     /**

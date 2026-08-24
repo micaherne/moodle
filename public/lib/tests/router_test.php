@@ -149,7 +149,7 @@ final class router_test extends route_testcase {
      * Test that the basepath is correctly guessed when accessed via r.php.
      */
     public function test_basepath_guessed_rphp(): void {
-        $wwwroot = new \moodle_url('/r.php');
+        $wwwroot = new url('/r.php');
         $_SERVER['SCRIPT_FILENAME'] = 'r.php';
         $_SERVER['REQUEST_URI'] = $wwwroot->get_path();
 

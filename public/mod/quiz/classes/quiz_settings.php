@@ -16,16 +16,16 @@
 
 namespace mod_quiz;
 
-use cm_info;
-use coding_exception;
-use context;
-use context_module;
+use core_course\cm_info;
+use core\exception\coding_exception;
+use core\context;
+use core\context\module;
 use core_question\local\bank\question_version_status;
 use core_question\local\bank\random_question_loader;
 use mod_quiz\question\bank\qbank_helper;
 use mod_quiz\question\display_options;
-use moodle_exception;
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
 use question_bank;
 use stdClass;
 
@@ -85,7 +85,7 @@ class quiz_settings {
         $this->quiz->cmid = $this->cm->id;
         $this->course = $course;
         if ($getcontext && !empty($cm->id)) {
-            $this->context = context_module::instance($cm->id);
+            $this->context = module::instance($cm->id);
         }
     }
 
@@ -435,7 +435,7 @@ class quiz_settings {
      * @return moodle_url the URL of this quiz's view page.
      */
     public function view_url() {
-        return new moodle_url('/mod/quiz/view.php', ['id' => $this->cm->id]);
+        return new url('/mod/quiz/view.php', ['id' => $this->cm->id]);
     }
 
     /**
@@ -444,7 +444,7 @@ class quiz_settings {
      * @return moodle_url the URL of this quiz's edit page.
      */
     public function edit_url() {
-        return new moodle_url('/mod/quiz/edit.php', ['cmid' => $this->cm->id]);
+        return new url('/mod/quiz/edit.php', ['cmid' => $this->cm->id]);
     }
 
     /**
@@ -459,7 +459,7 @@ class quiz_settings {
         if ($page) {
             $params['page'] = $page;
         }
-        return new moodle_url('/mod/quiz/attempt.php', $params);
+        return new url('/mod/quiz/attempt.php', $params);
     }
 
     /**
@@ -473,7 +473,7 @@ class quiz_settings {
         if ($page) {
             $params['page'] = $page;
         }
-        return new moodle_url('/mod/quiz/startattempt.php', $params);
+        return new url('/mod/quiz/startattempt.php', $params);
     }
 
     /**
@@ -483,7 +483,7 @@ class quiz_settings {
      * @return string the URL of the review of that attempt.
      */
     public function review_url($attemptid) {
-        return new moodle_url('/mod/quiz/review.php', ['attempt' => $attemptid, 'cmid' => $this->get_cmid()]);
+        return new url('/mod/quiz/review.php', ['attempt' => $attemptid, 'cmid' => $this->get_cmid()]);
     }
 
     /**
@@ -493,7 +493,7 @@ class quiz_settings {
      * @return string the URL of the review of that attempt.
      */
     public function summary_url($attemptid) {
-        return new moodle_url('/mod/quiz/summary.php', ['attempt' => $attemptid, 'cmid' => $this->get_cmid()]);
+        return new url('/mod/quiz/summary.php', ['attempt' => $attemptid, 'cmid' => $this->get_cmid()]);
     }
 
     // Bits of content =========================================================.

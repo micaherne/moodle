@@ -16,6 +16,7 @@
 
 namespace qbank_usage;
 
+use core\output\help_icon;
 use core_question\local\bank\column_base;
 
 /**
@@ -36,8 +37,8 @@ class question_last_used_column extends column_base {
         return get_string('questionlastused', 'qbank_usage');
     }
 
-    public function help_icon(): ?\help_icon {
-        return new \help_icon('questionlastused', 'qbank_usage');
+    public function help_icon(): ?help_icon {
+        return new help_icon('questionlastused', 'qbank_usage');
     }
 
     protected function display_content($question, $rowclasses): void {

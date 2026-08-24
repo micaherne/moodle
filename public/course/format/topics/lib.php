@@ -26,8 +26,13 @@
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot. '/course/format/lib.php');
 
+use core\context\course;
 use core\lang_string;
+use core\navigation\navigation_node;
 use core\output\inplace_editable;
+use core\url;
+use core_course\modinfo;
+use core_course\section_info;
 use core_courseformat\local\linearnavigationsettings;
 
 /**
@@ -68,7 +73,7 @@ class format_topics extends core_courseformat\base {
         $section = $this->get_section($section);
         if ((string)$section->name !== '') {
             return format_string($section->name, true,
-                ['context' => context_course::instance($this->courseid)]);
+                ['context' => course::instance($this->courseid)]);
         } else {
             return $this->get_default_section_name($section);
         }
@@ -136,9 +141,9 @@ class format_topics extends core_courseformat\base {
 
         // Base URL.
         if (is_null($pagesection)) {
-            $url = new moodle_url('/course/view.php', ['id' => $course->id]);
+            $url = new url('/course/view.php', ['id' => $course->id]);
         } else {
-            $url = new moodle_url('/course/section.php', ['id' => $pagesection->id]);
+            $url = new url('/course/section.php', ['id' => $pagesection->id]);
         }
 
         // Add details.
@@ -180,7 +185,7 @@ class format_topics extends core_courseformat\base {
         if ($navigation->includesectionnum === false) {
             $selectedsection = optional_param('section', null, PARAM_INT);
             if ($selectedsection !== null && (!defined('AJAX_SCRIPT') || AJAX_SCRIPT == '0') &&
-                    $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)) {
+                    $PAGE->url->compare(new url('/course/view.php'), URL_MATCH_BASE)) {
                 $navigation->includesectionnum = $selectedsection;
             }
         }
@@ -421,7 +426,7 @@ class format_topics extends core_courseformat\base {
 
         if ($section->section && ($action === 'setmarker' || $action === 'removemarker')) {
             // Format 'topics' allows to set and remove markers in addition to common section actions.
-            require_capability('moodle/course:setcurrentsection', context_course::instance($this->courseid));
+            require_capability('moodle/course:setcurrentsection', course::instance($this->courseid));
             if ($action === 'setmarker') {
                 $sectioninfo = get_fast_modinfo($this->courseid)->get_section_info($section->section);
                 \core_courseformat\formatactions::section($this->courseid)->set_marker($sectioninfo, true);
@@ -436,7 +441,7 @@ class format_topics extends core_courseformat\base {
         $renderer = $PAGE->get_renderer('format_topics');
 
         if (!($section instanceof section_info)) {
-            $modinfo = course_modinfo::instance($this->courseid);
+            $modinfo = modinfo::instance($this->courseid);
             $section = $modinfo->get_section_info($section->section);
         }
         $elementclass = $this->get_output_classname('content\\section\\availability');

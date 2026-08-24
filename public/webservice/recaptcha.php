@@ -30,6 +30,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+
 define('NO_MOODLE_COOKIES', true);
 
 require_once(__DIR__ . '/../config.php');
@@ -73,7 +76,7 @@ if (!empty($CFG->recaptchapublickey) && !empty($CFG->recaptchaprivatekey)) {
     // To use reCAPTCHA you must have an API key.
     require_once($CFG->libdir . '/filelib.php');
     send_header_404();
-    throw new \moodle_exception('cannotusepage2');
+    throw new moodle_exception('cannotusepage2');
 }
 
 $output = <<<OET

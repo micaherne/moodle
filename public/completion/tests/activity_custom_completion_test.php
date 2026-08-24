@@ -19,8 +19,8 @@ declare(strict_types = 1);
 namespace core_completion;
 
 use advanced_testcase;
-use coding_exception;
-use moodle_exception;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**

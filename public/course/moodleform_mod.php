@@ -20,6 +20,10 @@ require_once($CFG->libdir.'/formslib.php');
 require_once($CFG->libdir.'/gradelib.php');
 require_once($CFG->libdir.'/plagiarismlib.php');
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
 use core_grades\component_gradeitems;
 
 /**
@@ -105,9 +109,9 @@ abstract class moodleform_mod extends moodleform {
         $this->_cm       = $cm;
         $this->_course   = $course;
         if ($this->_cm) {
-            $this->context = context_module::instance($this->_cm->id);
+            $this->context = module::instance($this->_cm->id);
         } else {
-            $this->context = context_course::instance($course->id);
+            $this->context = course::instance($course->id);
         }
 
         // Set the course format.
@@ -119,7 +123,7 @@ abstract class moodleform_mod extends moodleform {
             $matches = array();
             if (!preg_match('/^mod_([^_]+)_mod_form$/', get_class($this), $matches)) {
                 debugging('Rename form to mod_xx_mod_form, where xx is name of your module');
-                throw new \moodle_exception('unknownmodulename');
+                throw new moodle_exception('unknownmodulename');
             }
             $this->_modname = $matches[1];
         }

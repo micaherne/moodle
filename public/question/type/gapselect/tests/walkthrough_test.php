@@ -16,6 +16,7 @@
 
 namespace qtype_gapselect;
 
+use core_filters\filter_manager;
 use question_hint_with_parts;
 use question_state;
 
@@ -153,7 +154,7 @@ final class walkthrough_test extends \qbehaviour_walkthrough_test_base {
         // Enable multilang filter to on content and heading.
         filter_set_global_state('multilang', TEXTFILTER_ON);
         filter_set_applies_to_strings('multilang', 1);
-        $filtermanager = \filter_manager::instance();
+        $filtermanager = filter_manager::instance();
         $filtermanager->reset_caches();
 
         // Create a multilang gapselect question.

@@ -16,6 +16,9 @@
 
 namespace tool_lpmigrate;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
 use core_competency\course_competency;
 use core_competency\course_module_competency;
 
@@ -419,13 +422,13 @@ final class processor_test extends \advanced_testcase {
         $dg = $this->getDataGenerator();
         $u = $dg->create_user();
         $role = $dg->create_role();
-        $sysctx = \context_system::instance();
+        $sysctx = system::instance();
 
         $dg->enrol_user($u->id, $this->c1->id, 'editingteacher');
         $dg->enrol_user($u->id, $this->c2->id, 'editingteacher');
         assign_capability('moodle/competency:coursecompetencymanage', CAP_PROHIBIT, $role, $sysctx->id);
-        role_assign($role, $u->id, \context_course::instance($this->c1->id)->id);
-        role_assign($role, $u->id, \context_module::instance($this->cms[$this->c2->id]['F1']->cmid)->id);
+        role_assign($role, $u->id, course::instance($this->c1->id)->id);
+        role_assign($role, $u->id, module::instance($this->cms[$this->c2->id]['F1']->cmid)->id);
 
         accesslib_clear_all_caches_for_unit_testing();
         $this->setUser($u);

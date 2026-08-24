@@ -23,6 +23,7 @@
  */
 namespace quiz_responses\privacy;
 
+use core\context\system;
 use core_privacy\local\metadata\collection;
 use quiz_responses\privacy\provider;
 use core_privacy\local\request\writer;
@@ -52,7 +53,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         provider::export_user_preferences($USER->id);
 
-        $this->assertFalse(writer::with_context(\context_system::instance())->has_any_data());
+        $this->assertFalse(writer::with_context(system::instance())->has_any_data());
     }
 
     /**
@@ -70,7 +71,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         provider::export_user_preferences($USER->id);
 
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertTrue($writer->has_any_data());
 
         $preferences = $writer->get_user_preferences('quiz_responses');
@@ -100,7 +101,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         provider::export_user_preferences($USER->id);
 
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertTrue($writer->has_any_data());
 
         $preferences = $writer->get_user_preferences('quiz_responses');
@@ -128,7 +129,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         provider::export_user_preferences($USER->id);
 
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertTrue($writer->has_any_data());
 
         $preferences = $writer->get_user_preferences('quiz_responses');

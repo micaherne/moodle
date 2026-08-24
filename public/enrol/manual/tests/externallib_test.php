@@ -16,6 +16,10 @@
 
 namespace enrol_manual;
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\exception\require_login_exception;
+use core\exception\required_capability_exception;
 use enrol_manual_external;
 
 defined('MOODLE_INTERNAL') || die();
@@ -51,8 +55,8 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $user1 = self::getDataGenerator()->create_user();
         $user2 = self::getDataGenerator()->create_user();
 
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
         $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'manual'), '*', MUST_EXIST);
 
@@ -85,7 +89,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 array('roleid' => 3, 'userid' => $user1->id, 'courseid' => $course1->id),
             ));
             $this->fail('Exception expected if not having capability to enrol');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('required_capability_exception', $e);
             $this->assertSame('nopermissions', $e->errorcode);
         }
@@ -98,7 +102,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 ['roleid' => 1, 'userid' => 654321, 'courseid' => $course1->id],
             ]);
             $this->fail('Exception expected for invalid user.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertSame('invaliduser', $e->errorcode);
         }
 
@@ -108,7 +112,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 array('roleid' => 1, 'userid' => $user1->id, 'courseid' => $course1->id),
             ));
             $this->fail('Exception expected if not allowed to assign role.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertSame('wsusercannotassign', $e->errorcode);
         }
         $this->assertEquals(0, $DB->count_records('user_enrolments'));
@@ -122,7 +126,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 array('roleid' => 3, 'userid' => $user1->id, 'courseid' => $course2->id),
             ));
             $this->fail('Exception expected if course does not have manual instance');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertSame('wsnoinstance', $e->errorcode);
             $this->assertSame(
                 "Manual enrolment plugin instance doesn't exist or is disabled for the course (id = {$course2->id})",
@@ -147,7 +151,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $enrol = enrol_get_plugin('manual');
         // Create a course.
         $course = self::getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $enrolinstance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         // Set the capability for the user.
         $roleid = $this->assignUserCapability('enrol/manual:enrol', $coursecontext);
@@ -180,7 +184,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($user); // Log this user in.
         // Create a course.
         $course = self::getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $enrolinstance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         // Set the capability for the user.
         $roleid = $this->assignUserCapability('enrol/manual:enrol', $coursecontext);
@@ -219,7 +223,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($user); // Log this user in.
         // Create a course.
         $course = self::getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $enrolinstance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $enrol = enrol_get_plugin('manual');
         // Create a student and enrol them into the course.
@@ -233,7 +237,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
             ));
             $this->fail('Exception expected: User cannot log in to the course');
         } catch (\Exception $ex) {
-            $this->assertTrue($ex instanceof \require_login_exception);
+            $this->assertTrue($ex instanceof require_login_exception);
         }
         // Set the capability for the course, then try again.
         $roleid = $this->assignUserCapability('moodle/course:view', $coursecontext);
@@ -243,7 +247,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
             ));
             $this->fail('Exception expected: User cannot log in to the course');
         } catch (\Exception $ex) {
-            $this->assertTrue($ex instanceof \required_capability_exception);
+            $this->assertTrue($ex instanceof required_capability_exception);
         }
         // Assign unenrol capability.
         $this->assignUserCapability('enrol/manual:unenrol', $coursecontext, $roleid);
@@ -267,7 +271,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $enrol = enrol_get_plugin('manual');
         // Create a course.
         $course = self::getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $enrolinstance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         // Set the capability for the user.
         $roleid = $this->assignUserCapability('enrol/manual:enrol', $coursecontext);
@@ -295,7 +299,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 array('userid' => $student->id + 1, 'courseid' => $course->id),
             ));
             $this->fail('Exception expected if course does not have manual instance');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertSame('wsnoinstance', $e->errorcode);
             $this->assertSame(
                 "Manual enrolment plugin instance doesn't exist or is disabled for the course (id = {$course->id})",

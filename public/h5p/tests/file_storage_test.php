@@ -16,11 +16,14 @@
 
 namespace core_h5p;
 
+use core\context\system;
+use core\context\user;
+use core\test\testing_util;
 use core_h5p\file_storage;
 use core_h5p\local\library\autoloader;
 use core_h5p\helper;
 use file_archive;
-use moodle_exception;
+use core\exception\moodle_exception;
 use ReflectionMethod;
 use stored_file;
 use zip_archive;
@@ -59,7 +62,7 @@ final class file_storage_test extends \advanced_testcase {
         autoloader::register();
 
         // Fetch generator.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $this->h5p_generator = $generator->get_plugin_generator('core_h5p');
 
         // Create file_storage_instance and create H5P temp directory.
@@ -447,7 +450,7 @@ final class file_storage_test extends \advanced_testcase {
         $filepath = '/' . "{$machinename}-{$majorversion}.{$minorversion}" . '/';
         $fs = get_file_storage();
         $filerecord = [
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => file_storage::COMPONENT,
             'filearea' => file_storage::LIBRARY_FILEAREA,
             'itemid' => 15,
@@ -682,7 +685,7 @@ final class file_storage_test extends \advanced_testcase {
     public function test_cloneContentFile(): void {
 
         $admin = get_admin();
-        $usercontext = \context_user::instance($admin->id);
+        $usercontext = user::instance($admin->id);
         $this->setUser($admin);
         // Upload a file to the editor.
         $file = 'images/fake.jpg';
@@ -858,7 +861,7 @@ final class file_storage_test extends \advanced_testcase {
         file_storage::generate_custom_styles();
 
         $this->assertTrue($this->h5p_fs_fs->file_exists(
-            \context_system::instance()->id,
+            system::instance()->id,
             file_storage::COMPONENT,
             file_storage::CSS_FILEAREA,
             0,
@@ -867,7 +870,7 @@ final class file_storage_test extends \advanced_testcase {
         );
 
         $cssfile = $this->h5p_fs_fs->get_file(
-            \context_system::instance()->id,
+            system::instance()->id,
             file_storage::COMPONENT,
             file_storage::CSS_FILEAREA,
             0,
@@ -883,7 +886,7 @@ final class file_storage_test extends \advanced_testcase {
         \set_config('h5pcustomcss', '', 'core_h5p');
         file_storage::generate_custom_styles();
         $this->assertFalse($this->h5p_fs_fs->file_exists(
-            \context_system::instance()->id,
+            system::instance()->id,
             file_storage::COMPONENT,
             file_storage::CSS_FILEAREA,
             0,
@@ -923,7 +926,7 @@ final class file_storage_test extends \advanced_testcase {
         try {
             $style = file_storage::get_custom_styles();
             $this->fail('moodle_exception for when there is no CSS and yet there is a file, was not thrown');
-        } catch (\moodle_exception $me) {
+        } catch (moodle_exception $me) {
             $this->assertEquals(
                 'The H5P \'h5pcustomcss\' setting is empty and yet the custom CSS file \''.$customcssfilename.'\' exists.',
                 $me->errorcode
@@ -933,7 +936,7 @@ final class file_storage_test extends \advanced_testcase {
 
         // No CSS file when there is CSS.
         $cssfile = $this->h5p_fs_fs->get_file(
-            \context_system::instance()->id,
+            system::instance()->id,
             file_storage::COMPONENT,
             file_storage::CSS_FILEAREA,
             0,
@@ -944,7 +947,7 @@ final class file_storage_test extends \advanced_testcase {
         try {
             $style = file_storage::get_custom_styles();
             $this->fail('moodle_exception for when there is CSS and yet there is a file, was not thrown');
-        } catch (\moodle_exception $me) {
+        } catch (moodle_exception $me) {
             $this->assertEquals(
                 'The H5P custom CSS file \''.$customcssfilename.
                 '\' does not exist and yet there is CSS in the \'h5pcustomcss\' setting.',

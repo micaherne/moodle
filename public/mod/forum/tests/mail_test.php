@@ -16,6 +16,8 @@
 
 namespace mod_forum;
 
+use core\context\course;
+use core\context\module;
 use mod_forum_tests_generator_trait;
 use mod_forum_tests_cron_trait;
 
@@ -250,7 +252,7 @@ final class mail_test extends \advanced_testcase {
 
         // A user with the manageactivities capability within the course can subscribe.
         $roleids = $DB->get_records_menu('role', null, '', 'shortname, id');
-        assign_capability('moodle/course:manageactivities', CAP_ALLOW, $roleids['student'], \context_course::instance($course->id));
+        assign_capability('moodle/course:manageactivities', CAP_ALLOW, $roleids['student'], course::instance($course->id));
 
         // Suscribe the recipient only.
         \mod_forum\subscriptions::subscribe_user($recipient->id, $forum);
@@ -299,7 +301,7 @@ final class mail_test extends \advanced_testcase {
 
         // A user with the manageactivities capability within the course can subscribe.
         $roleids = $DB->get_records_menu('role', null, '', 'shortname, id');
-        assign_capability('moodle/course:manageactivities', CAP_ALLOW, $roleids['student'], \context_course::instance($course->id));
+        assign_capability('moodle/course:manageactivities', CAP_ALLOW, $roleids['student'], course::instance($course->id));
 
         // Run cron and check that the expected number of users received the notification.
         list($discussion, $post) = $this->helper_post_to_forum($forum, $author);
@@ -1139,7 +1141,7 @@ final class mail_test extends \advanced_testcase {
                     $fs = get_file_storage();
                     foreach ($attachments as $attachment) {
                         $filerecord = array(
-                            'contextid' => \context_module::instance($forum->cmid)->id,
+                            'contextid' => module::instance($forum->cmid)->id,
                             'component' => 'mod_forum',
                             'filearea'  => 'attachment',
                             'itemid'    => $post->id,

@@ -25,6 +25,8 @@
 
 namespace gradereport_history;
 
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir.'/formslib.php');
@@ -51,7 +53,7 @@ class filter_form extends \moodleform {
         $graders  = $this->_customdata['graders'];
         $userbutton = $this->_customdata['userbutton'];
         $userfullnames = $this->_customdata['userfullnames'];
-        $names = \html_writer::span($userfullnames, 'selectednames');
+        $names = html_writer::span($userfullnames, 'selectednames');
 
         $mform->addElement('static', 'userselect', get_string('selectusers', 'gradereport_history'), $userbutton);
         $mform->addElement('static', 'selectednames', get_string('selectedusers', 'gradereport_history'), $names);

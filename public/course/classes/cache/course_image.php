@@ -18,7 +18,7 @@ namespace core_course\cache;
 
 use core_cache\data_source_interface;
 use core_cache\definition;
-use moodle_url;
+use core\url;
 use core_course_list_element;
 
 /**
@@ -70,11 +70,11 @@ class course_image implements data_source_interface {
      * @param \stdClass $course Course object.
      * @return null|moodle_url Image URL or null if the image does not exist.
      */
-    protected function get_image_url_from_overview_files(\stdClass $course): moodle_url|null {
+    protected function get_image_url_from_overview_files(\stdClass $course): url|null {
         $courseinlist = new core_course_list_element($course);
         foreach ($courseinlist->get_course_overviewfiles() as $file) {
             if ($file->is_valid_image()) {
-                return moodle_url::make_pluginfile_url(
+                return url::make_pluginfile_url(
                     $file->get_contextid(),
                     $file->get_component(),
                     $file->get_filearea(),

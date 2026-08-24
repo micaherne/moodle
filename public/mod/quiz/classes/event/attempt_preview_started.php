@@ -24,6 +24,9 @@
 
 namespace mod_quiz\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,7 +79,7 @@ class attempt_preview_started extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/view.php', ['id' => $this->contextinstanceid]);
+        return new url('/mod/quiz/view.php', ['id' => $this->contextinstanceid]);
     }
 
     /**
@@ -89,11 +92,11 @@ class attempt_preview_started extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+            throw new coding_exception('The \'quizid\' value must be set in other.');
         }
     }
 

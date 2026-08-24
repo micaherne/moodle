@@ -24,6 +24,10 @@
 
 namespace core_availability;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core_course\section_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -46,7 +50,7 @@ class mock_info_section extends info_section {
      * @param int $userid Userid for modinfo (if used)
      * @param \section_info $section Section object
      */
-    public function __construct($userid = 0, ?\section_info $section = null) {
+    public function __construct($userid = 0, ?section_info $section = null) {
         parent::__construct($section);
         $this->userid = $userid;
         $this->section = $section;
@@ -67,7 +71,7 @@ class mock_info_section extends info_section {
      * @return \context Context for this item
      */
     public function get_context() {
-        return \context_course::instance($this->get_course()->id);
+        return course::instance($this->get_course()->id);
     }
 
     /**
@@ -100,7 +104,7 @@ class mock_info_section extends info_section {
         // Allow modinfo usage outside is_available etc., so we can use this
         // to directly call into condition is_available.
         if (!$this->userid) {
-            throw new \coding_exception('Need to set mock_info userid');
+            throw new coding_exception('Need to set mock_info userid');
         }
         return get_fast_modinfo($this->course, $this->userid);
     }
@@ -110,7 +114,7 @@ class mock_info_section extends info_section {
      *
      * @param \section_info $section
      */
-    public function set_section(\section_info $section) {
+    public function set_section(section_info $section) {
         $this->section = $section;
     }
 }

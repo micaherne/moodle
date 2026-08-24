@@ -25,6 +25,8 @@
 
 namespace enrol_paypal\task;
 
+use core\output\progress_trace\text_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -51,7 +53,7 @@ class process_expirations extends \core\task\scheduled_task {
      */
     public function execute() {
         $enrol = enrol_get_plugin('paypal');
-        $trace = new \text_progress_trace();
+        $trace = new text_progress_trace();
         $enrol->process_expirations($trace);
     }
 

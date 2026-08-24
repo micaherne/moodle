@@ -23,6 +23,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_comment\comment_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /*
@@ -40,7 +50,7 @@ require_once($CFG->dirroot .'/blog/rsslib.php');
 function blog_user_can_edit_entry($blogentry) {
     global $USER;
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
 
     if (has_capability('moodle/blog:manageentries', $sitecontext)) {
         return true; // Can edit any blog entry.
@@ -70,7 +80,7 @@ function blog_user_can_view_user_entry($targetuserid, $blogentry=null) {
         return true; // Can view own entries in any case.
     }
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
     if (has_capability('moodle/blog:manageentries', $sitecontext)) {
         return true; // Can manage all entries.
     }
@@ -101,7 +111,7 @@ function blog_user_can_view_user_entry($targetuserid, $blogentry=null) {
         case BLOG_USER_LEVEL:
         default:
             // If user is viewing other user blog, then user should have user:readuserblogs capability.
-            $personalcontext = context_user::instance($targetuserid);
+            $personalcontext = user::instance($targetuserid);
             return has_capability('moodle/user:readuserblogs', $personalcontext);
         break;
 
@@ -114,7 +124,7 @@ function blog_user_can_view_user_entry($targetuserid, $blogentry=null) {
  */
 function blog_remove_associations_for_course($courseid) {
     global $DB;
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
     $DB->delete_records('blog_association', array('contextid' => $context->id));
 }
 
@@ -256,7 +266,7 @@ function blog_sync_external_entries($externalblog) {
 
             // Set tags.
             if ($tags = core_tag_tag::get_item_tags_array('core', 'blog_external', $externalblog->id)) {
-                core_tag_tag::set_item_tags('core', 'post', $id, context_user::instance($externalblog->userid), $tags);
+                core_tag_tag::set_item_tags('core', 'post', $id, user::instance($externalblog->userid), $tags);
             }
         } else {
             $newentry->id = $postid;
@@ -292,7 +302,7 @@ function blog_sync_external_entries($externalblog) {
  */
 function blog_delete_external_entries($externalblog) {
     global $DB;
-    require_capability('moodle/blog:manageexternal', context_system::instance());
+    require_capability('moodle/blog:manageexternal', system::instance());
     $DB->delete_records_select('post',
                                "module='blog_external' AND " . $DB->sql_compare_text('content') . " = ?",
                                array($externalblog->id));
@@ -362,11 +372,11 @@ function blog_get_all_options(moodle_page $page, ?stdClass $userid = null) {
     // If blog level is global then display a link to view all site entries.
     if (!empty($CFG->enableblogs)
         && $CFG->bloglevel >= BLOG_GLOBAL_LEVEL
-        && has_capability('moodle/blog:view', context_system::instance())) {
+        && has_capability('moodle/blog:view', system::instance())) {
 
         $options[CONTEXT_SYSTEM] = array('viewsite' => array(
             'string' => get_string('viewsiteentries', 'blog'),
-            'link' => new moodle_url('/blog/index.php')
+            'link' => new url('/blog/index.php')
         ));
     }
 
@@ -407,14 +417,14 @@ function blog_get_options_for_user(?stdClass $user=null) {
         return $useroptions[$user->id];
     }
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
     $canview = has_capability('moodle/blog:view', $sitecontext);
 
     if (!$iscurrentuser && $canview && ($CFG->bloglevel >= BLOG_SITE_LEVEL)) {
         // Not the current user, but we can view and its blogs are enabled for SITE or GLOBAL.
         $options['userentries'] = array(
             'string' => get_string('viewuserentries', 'blog', fullname($user)),
-            'link' => new moodle_url('/blog/index.php', array('userid' => $user->id))
+            'link' => new url('/blog/index.php', array('userid' => $user->id))
         );
     } else {
         // It's the current user.
@@ -422,21 +432,21 @@ function blog_get_options_for_user(?stdClass $user=null) {
             // We can view our own blogs .... BIG surprise.
             $options['view'] = array(
                 'string' => get_string('blogentries', 'blog'),
-                'link' => new moodle_url('/blog/index.php', array('userid' => $USER->id))
+                'link' => new url('/blog/index.php', array('userid' => $USER->id))
             );
         }
         if (has_capability('moodle/blog:create', $sitecontext)) {
             // We can add to our own blog.
             $options['add'] = array(
                 'string' => get_string('addnewentry', 'blog'),
-                'link' => new moodle_url('/blog/edit.php', array('action' => 'add'))
+                'link' => new url('/blog/edit.php', array('action' => 'add'))
             );
         }
     }
     if ($canview && $CFG->enablerssfeeds) {
         $options['rss'] = array(
             'string' => get_string('rssfeed', 'blog'),
-            'link' => new moodle_url(rss_get_url($sitecontext->id, $USER->id, 'blog', 'user/'.$user->id))
+            'link' => new url(rss_get_url($sitecontext->id, $USER->id, 'blog', 'user/'.$user->id))
         );
     }
 
@@ -467,7 +477,7 @@ function blog_get_options_for_course(stdClass $course, ?stdClass $user=null) {
     }
 
     // Check that the user can associate with the course.
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
     // Generate the cache key.
     $key = $course->id.':';
     if (!empty($user)) {
@@ -486,19 +496,19 @@ function blog_get_options_for_course(stdClass $course, ?stdClass $user=null) {
             // View entries about this course.
             $options['courseview'] = array(
                 'string' => get_string('viewcourseblogs', 'blog'),
-                'link' => new moodle_url('/blog/index.php', array('courseid' => $course->id))
+                'link' => new url('/blog/index.php', array('courseid' => $course->id))
             );
         }
         // View MY entries about this course.
         $options['courseviewmine'] = array(
             'string' => get_string('viewmyentriesaboutcourse', 'blog'),
-            'link' => new moodle_url('/blog/index.php', array('courseid' => $course->id, 'userid' => $USER->id))
+            'link' => new url('/blog/index.php', array('courseid' => $course->id, 'userid' => $USER->id))
         );
         if (!empty($user) && ($CFG->bloglevel >= BLOG_SITE_LEVEL)) {
             // View the provided users entries about this course.
             $options['courseviewuser'] = array(
                 'string' => get_string('viewentriesbyuseraboutcourse', 'blog', fullname($user)),
-                'link' => new moodle_url('/blog/index.php', array('courseid' => $course->id, 'userid' => $user->id))
+                'link' => new url('/blog/index.php', array('courseid' => $course->id, 'userid' => $user->id))
             );
         }
     }
@@ -507,7 +517,7 @@ function blog_get_options_for_course(stdClass $course, ?stdClass $user=null) {
         // We can blog about this course.
         $options['courseadd'] = array(
             'string' => get_string('blogaboutthiscourse', 'blog'),
-            'link' => new moodle_url('/blog/edit.php', array('action' => 'add', 'courseid' => $course->id))
+            'link' => new url('/blog/edit.php', array('action' => 'add', 'courseid' => $course->id))
         );
     }
 
@@ -536,7 +546,7 @@ function blog_get_options_for_module($module, $user=null) {
         return $options;
     }
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
 
     // Generate the cache key.
     $key = $module->id.':';
@@ -561,13 +571,13 @@ function blog_get_options_for_module($module, $user=null) {
             $a->type = $modulename;
             $options['moduleview'] = array(
                 'string' => get_string('viewallmodentries', 'blog', $a),
-                'link' => new moodle_url('/blog/index.php', array('modid' => $module->id))
+                'link' => new url('/blog/index.php', array('modid' => $module->id))
             );
         }
         // View MY entries about this module.
         $options['moduleviewmine'] = array(
             'string' => get_string('viewmyentriesaboutmodule', 'blog', $modulename),
-            'link' => new moodle_url('/blog/index.php', array('modid' => $module->id, 'userid' => $USER->id))
+            'link' => new url('/blog/index.php', array('modid' => $module->id, 'userid' => $USER->id))
         );
         if (!empty($user) && ($CFG->bloglevel >= BLOG_SITE_LEVEL)) {
             // View the given users entries about this module.
@@ -576,7 +586,7 @@ function blog_get_options_for_module($module, $user=null) {
             $a->user = fullname($user);
             $options['moduleviewuser'] = array(
                 'string' => get_string('blogentriesbyuseraboutmodule', 'blog', $a),
-                'link' => new moodle_url('/blog/index.php', array('modid' => $module->id, 'userid' => $user->id))
+                'link' => new url('/blog/index.php', array('modid' => $module->id, 'userid' => $user->id))
             );
         }
     }
@@ -585,7 +595,7 @@ function blog_get_options_for_module($module, $user=null) {
         // The user can blog about this module.
         $options['moduleadd'] = array(
             'string' => get_string('blogaboutthismodule', 'blog', $modulename),
-            'link' => new moodle_url('/blog/edit.php', array('action' => 'add', 'modid' => $module->id))
+            'link' => new url('/blog/edit.php', array('action' => 'add', 'modid' => $module->id))
         );
     }
     // Cache the options.
@@ -648,13 +658,13 @@ function blog_get_headers($courseid=null, $groupid=null, $userid=null, $tagid=nu
 
     $headers = array('title' => '', 'heading' => '', 'cm' => null, 'filters' => array());
 
-    $blogurl = new moodle_url('/blog/index.php');
+    $blogurl = new url('/blog/index.php');
 
     $headers['stradd'] = get_string('addnewentry', 'blog');
     $headers['strview'] = null;
 
     $site = $DB->get_record('course', array('id' => SITEID));
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
     // Common Lang strings.
     $strparticipants = get_string("participants");
     $strblogentries  = get_string("blogentries", 'blog');
@@ -720,7 +730,7 @@ function blog_get_headers($courseid=null, $groupid=null, $userid=null, $tagid=nu
         } else {
             $mycourseid = $site->id;
         }
-        $shortname = format_string($site->shortname, true, array('context' => context_course::instance(SITEID)));
+        $shortname = format_string($site->shortname, true, array('context' => course::instance(SITEID)));
 
         $PAGE->navbar->add($strblogentries, $blogurl);
 
@@ -741,7 +751,7 @@ function blog_get_headers($courseid=null, $groupid=null, $userid=null, $tagid=nu
     if (!empty($userid) && empty($entryid) && ((empty($courseid) && empty($modid)) || !$CFG->useblogassociations)) {
         // Case 3: A user's blog entries.
 
-        $shortname = format_string($site->shortname, true, array('context' => context_course::instance(SITEID)));
+        $shortname = format_string($site->shortname, true, array('context' => course::instance(SITEID)));
         $blogurl->param('userid', $userid);
         $PAGE->set_title(fullname($user) . ": " . get_string('blog', 'blog'));
         $PAGE->set_heading("$shortname: " . fullname($user) . ": " . get_string('blog', 'blog'));
@@ -758,7 +768,7 @@ function blog_get_headers($courseid=null, $groupid=null, $userid=null, $tagid=nu
     } else if (!empty($userid) && !empty($modid) && empty($entryid)) {
         // Case 5: Blog entries associated with an activity by a specific user (courseid ignored).
 
-        $shortname = format_string($site->shortname, true, array('context' => context_course::instance(SITEID)));
+        $shortname = format_string($site->shortname, true, array('context' => course::instance(SITEID)));
         $blogurl->param('userid', $userid);
         $blogurl->param('modid', $modid);
 
@@ -788,7 +798,7 @@ function blog_get_headers($courseid=null, $groupid=null, $userid=null, $tagid=nu
 
         $a = new stdClass();
         $a->user = fullname($user);
-        $a->course = format_string($course->fullname, true, array('context' => context_course::instance($course->id)));
+        $a->course = format_string($course->fullname, true, array('context' => course::instance($course->id)));
         $a->type = get_string('course');
         $headers['heading'] = get_string('blogentriesbyuseraboutcourse', 'blog', $a);
         $headers['stradd'] = get_string('blogaboutthis', 'blog', $a);
@@ -811,7 +821,7 @@ function blog_get_headers($courseid=null, $groupid=null, $userid=null, $tagid=nu
 
         $a = new stdClass();
         $a->group = $group->name;
-        $a->course = format_string($course->fullname, true, array('context' => context_course::instance($course->id)));
+        $a->course = format_string($course->fullname, true, array('context' => course::instance($course->id)));
         $a->type = get_string('course');
         $headers['heading'] = get_string('blogentriesbygroupaboutcourse', 'blog', $a);
         $headers['stradd'] = get_string('blogaboutthis', 'blog', $a);
@@ -863,7 +873,7 @@ function blog_get_headers($courseid=null, $groupid=null, $userid=null, $tagid=nu
                                          'blog',
                                          format_string($course->fullname,
                                                        true,
-                                                       array('context' => context_course::instance($course->id))));
+                                                       array('context' => course::instance($course->id))));
         $headers['stradd'] = get_string('blogaboutthis', 'blog', $a);
         $headers['strview'] = get_string('viewblogentries', 'blog', $a);
         $blogurl->remove_params(array('userid'));
@@ -914,9 +924,9 @@ function blog_get_headers($courseid=null, $groupid=null, $userid=null, $tagid=nu
  */
 function blog_get_associated_count($courseid, $cmid=null) {
     global $DB;
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
     if ($cmid) {
-        $context = context_module::instance($cmid);
+        $context = module::instance($cmid);
     }
     return $DB->count_records('blog_association', array('contextid' => $context->id));
 }
@@ -1005,7 +1015,7 @@ function blog_comment_validate($commentparam) {
     }
 
     // Validate if user has blog view permission.
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
     return has_capability('moodle/blog:view', $sitecontext) &&
             blog_user_can_view_user_entry($blogentry->userid, $blogentry);
 }
@@ -1044,12 +1054,12 @@ function core_blog_myprofile_navigation(core_user\output\myprofile\tree $tree, $
         return true;
     }
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
     $personalblogadded = false;
 
     // Personal blog link is only shown when the viewer can see the profile owner's entries.
     if (blog_user_can_view_user_entry($user->id)) {
-        $userurl = new moodle_url('/blog/index.php', ['userid' => $user->id]);
+        $userurl = new url('/blog/index.php', ['userid' => $user->id]);
         if (!empty($course)) {
             $userurl->param('courseid', $course->id);
         }
@@ -1074,7 +1084,7 @@ function core_blog_myprofile_navigation(core_user\output\myprofile\tree $tree, $
             'siteblogs',
             get_string('myprofilesiteblogs', 'core_blog'),
             $personalblogadded ? 'blogs' : null,
-            new moodle_url('/blog/index.php')
+            new url('/blog/index.php')
         );
         $tree->add_node($siteblognode);
     }
@@ -1099,9 +1109,9 @@ function blog_get_tagged_posts($tag, $exclusivemode = false, $fromctx = 0, $ctx 
     global $CFG, $OUTPUT;
     require_once($CFG->dirroot.'/user/lib.php');
 
-    $systemcontext = context_system::instance();
+    $systemcontext = system::instance();
     $perpage = $exclusivemode ? 20 : 5;
-    $context = $ctx ? context::instance_by_id($ctx) : context_system::instance();
+    $context = $ctx ? context::instance_by_id($ctx) : system::instance();
 
     $content = '';
     if (empty($CFG->enableblogs) || !has_capability('moodle/blog:view', $systemcontext)) {
@@ -1145,12 +1155,12 @@ function blog_get_tagged_posts($tag, $exclusivemode = false, $fromctx = 0, $ctx 
                     $class = '';
                 }
 
-                $url = new moodle_url('/blog/index.php', array('entryid' => $blog->id));
+                $url = new url('/blog/index.php', array('entryid' => $blog->id));
                 $subject = html_writer::link($url, $subject, array('class' => $class));
 
                 $fullname = fullname($user);
                 if (\core\user::can_view_profile($user)) {
-                    $profilelink = new moodle_url('/user/view.php', array('id' => $blog->userid));
+                    $profilelink = new url('/user/view.php', array('id' => $blog->userid));
                     $fullname = html_writer::link($profilelink, $fullname);
                 }
                 $details = $fullname . ', ' . userdate($blog->created);
@@ -1167,7 +1177,7 @@ function blog_get_tagged_posts($tag, $exclusivemode = false, $fromctx = 0, $ctx 
             } else if ($context->contextlevel == CONTEXT_MODULE) {
                 $urlparams['modid'] = $context->instanceid;
             }
-            $allblogsurl = new moodle_url('/blog/index.php', $urlparams);
+            $allblogsurl = new url('/blog/index.php', $urlparams);
 
             $rv = new core_tag\output\tagindex($tag, 'core', 'post',
                     $content,
@@ -1198,7 +1208,7 @@ function blog_get_tagged_posts($tag, $exclusivemode = false, $fromctx = 0, $ctx 
 function blog_validate_access($courseid, $modid, $groupid, $entryid, $userid) {
     global $CFG, $DB, $USER, $COURSE;
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
 
     // Add courseid if modid or groupid is specified: This is used for navigation and title.
     if (!empty($modid) && empty($courseid)) {
@@ -1212,7 +1222,7 @@ function blog_validate_access($courseid, $modid, $groupid, $entryid, $userid) {
     if (!$userid && has_capability('moodle/blog:view', $sitecontext) && $CFG->bloglevel > BLOG_USER_LEVEL) {
         if ($entryid) {
             if (!$entryobject = $DB->get_record('post', array('id' => $entryid))) {
-                throw new \moodle_exception('nosuchentry', 'blog');
+                throw new moodle_exception('nosuchentry', 'blog');
             }
             $userid = $entryobject->userid;
         }
@@ -1222,20 +1232,20 @@ function blog_validate_access($courseid, $modid, $groupid, $entryid, $userid) {
 
     if (!empty($modid)) {
         if ($CFG->bloglevel < BLOG_SITE_LEVEL) {
-            throw new \moodle_exception('courseblogdisable', 'blog');
+            throw new moodle_exception('courseblogdisable', 'blog');
         }
         if (!$mod = $DB->get_record('course_modules', array('id' => $modid))) {
-            throw new \moodle_exception('invalidmoduleid', 'error', '', $modid);
+            throw new moodle_exception('invalidmoduleid', 'error', '', $modid);
         }
         $courseid = $mod->course;
     }
 
     if ((empty($courseid) ? true : $courseid == SITEID) && empty($userid)) {
         if ($CFG->bloglevel < BLOG_SITE_LEVEL) {
-            throw new \moodle_exception('siteblogdisable', 'blog');
+            throw new moodle_exception('siteblogdisable', 'blog');
         }
         if (!has_capability('moodle/blog:view', $sitecontext)) {
-            throw new \moodle_exception('cannotviewsiteblog', 'blog');
+            throw new moodle_exception('cannotviewsiteblog', 'blog');
         }
 
         $COURSE = $DB->get_record('course', array('format' => 'site'));
@@ -1244,68 +1254,68 @@ function blog_validate_access($courseid, $modid, $groupid, $entryid, $userid) {
 
     if (!empty($courseid)) {
         if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-            throw new \moodle_exception('invalidcourseid');
+            throw new moodle_exception('invalidcourseid');
         }
 
         $courseid = $course->id;
 
         if (!has_capability('moodle/blog:view', $sitecontext)) {
-            throw new \moodle_exception('cannotviewcourseblog', 'blog');
+            throw new moodle_exception('cannotviewcourseblog', 'blog');
         }
     } else {
-        $coursecontext = context_course::instance(SITEID);
+        $coursecontext = course::instance(SITEID);
     }
 
     if (!empty($groupid)) {
         if ($CFG->bloglevel < BLOG_SITE_LEVEL) {
-            throw new \moodle_exception('groupblogdisable', 'blog');
+            throw new moodle_exception('groupblogdisable', 'blog');
         }
 
         if (! $group = groups_get_group($groupid)) {
-            throw new \moodle_exception('invalidgroupid', 'blog');
+            throw new moodle_exception('invalidgroupid', 'blog');
         }
 
         if (!$course = $DB->get_record('course', array('id' => $group->courseid))) {
-            throw new \moodle_exception('invalidcourseid');
+            throw new moodle_exception('invalidcourseid');
         }
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $courseid = $course->id;
 
         if (!has_capability('moodle/blog:view', $sitecontext)) {
-            throw new \moodle_exception('cannotviewcourseorgroupblog', 'blog');
+            throw new moodle_exception('cannotviewcourseorgroupblog', 'blog');
         }
 
         if (groups_get_course_groupmode($course) == SEPARATEGROUPS &&
                 !has_capability('moodle/site:accessallgroups', $coursecontext)) {
 
             if (!groups_is_member($groupid)) {
-                throw new \moodle_exception('notmemberofgroup');
+                throw new moodle_exception('notmemberofgroup');
             }
         }
     }
 
     if (!empty($userid)) {
         if ($CFG->bloglevel < BLOG_USER_LEVEL) {
-            throw new \moodle_exception('blogdisable', 'blog');
+            throw new moodle_exception('blogdisable', 'blog');
         }
 
         if (!$user = $DB->get_record('user', array('id' => $userid))) {
-            throw new \moodle_exception('invaliduserid');
+            throw new moodle_exception('invaliduserid');
         }
 
         if ($user->deleted) {
-            throw new \moodle_exception('userdeleted');
+            throw new moodle_exception('userdeleted');
         }
 
         if ($USER->id == $userid) {
             if (!has_capability('moodle/blog:create', $sitecontext)
               && !has_capability('moodle/blog:view', $sitecontext)) {
-                throw new \moodle_exception('donothaveblog', 'blog');
+                throw new moodle_exception('donothaveblog', 'blog');
             }
         } else {
             if (!has_capability('moodle/blog:view', $sitecontext) || !blog_user_can_view_user_entry($userid)) {
-                throw new \moodle_exception('cannotviewcourseblog', 'blog');
+                throw new moodle_exception('cannotviewcourseblog', 'blog');
             }
         }
     }
@@ -1326,7 +1336,7 @@ function blog_get_editor_options(mixed $entry = null): array {
         $entry->id = null;
     }
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
 
     $summaryoptions = ['maxfiles' => 99, 'maxbytes' => $CFG->maxbytes, 'trusttext' => true, 'context' => $sitecontext,
         'subdirs' => file_area_contains_subdirs($sitecontext, 'blog', 'post', $entry->id)];

@@ -18,13 +18,13 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\helpers;
 
-use context_user;
+use core\context\user as context_user;
 use core\{component, clock, di};
 use core\exception\{coding_exception, invalid_parameter_exception};
-use core_user;
+use core\user as core_user;
 use stdClass;
 use stored_file;
-use table_dataformat_export_format;
+use core_table\dataformat_export_format;
 use core\message\message;
 use core\plugininfo\dataformat;
 use core_reportbuilder\local\models\audience as audience_model;
@@ -191,7 +191,7 @@ class schedule {
         // cleaned in order to instantiate export class without exception).
         ob_start();
         $table->download = $schedule->get('format');
-        $exportclass = new table_dataformat_export_format($table, $table->download);
+        $exportclass = new dataformat_export_format($table, $table->download);
         ob_end_clean();
 
         // Create our schedule report stored file temporarily in user draft.

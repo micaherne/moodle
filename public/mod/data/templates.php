@@ -23,6 +23,7 @@
  * @package mod_data
  */
 
+use core\url;
 use mod_data\manager;
 
 require_once('../../config.php');
@@ -34,7 +35,7 @@ $mode  = optional_param('mode', 'addtemplate', PARAM_ALPHA);
 $action  = optional_param('action', '', PARAM_ALPHA);
 $useeditor = optional_param('useeditor', null, PARAM_BOOL);
 
-$url = new moodle_url('/mod/data/templates.php');
+$url = new url('/mod/data/templates.php');
 
 if ($id) {
     list($course, $cm) = get_course_and_cm_from_cmid($id, manager::MODULE);

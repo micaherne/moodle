@@ -24,6 +24,8 @@
 
 namespace block_mockblock\search;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -35,6 +37,6 @@ defined('MOODLE_INTERNAL') || die;
  */
 class area extends \core_search\base_block {
     public function get_document($record, $options = array()) {
-        throw new \coding_exception('Not implemented');
+        throw new coding_exception('Not implemented');
     }
 }

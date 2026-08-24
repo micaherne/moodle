@@ -26,6 +26,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require('../../../config.php');
@@ -45,14 +48,14 @@ $strmultilangupgrade = get_String('multilangupgradeinfo', 'tool_multilangupgrade
 
 if (!$go or !data_submitted() or !confirm_sesskey()) {   /// Print a form
     $optionsyes = array('go'=>1, 'sesskey'=>sesskey());
-    echo $OUTPUT->confirm($strmultilangupgrade, new moodle_url('/admin/tool/multilangupgrade/index.php', $optionsyes), new moodle_url('/admin/'));
+    echo $OUTPUT->confirm($strmultilangupgrade, new url('/admin/tool/multilangupgrade/index.php', $optionsyes), new url('/admin/'));
     echo $OUTPUT->footer();
     die;
 }
 
 
 if (!$tables = $DB->get_tables() ) {    // No tables yet at all.
-    throw new \moodle_exception('notables', 'debug');
+    throw new moodle_exception('notables', 'debug');
 }
 
 echo $OUTPUT->box_start();
@@ -124,7 +127,7 @@ echo $OUTPUT->notification('Rebuilding course cache...', 'notifysuccess');
 rebuild_course_cache(0, true);
 echo $OUTPUT->notification('...finished', 'notifysuccess');
 
-echo $OUTPUT->continue_button(new moodle_url('/admin/'));
+echo $OUTPUT->continue_button(new url('/admin/'));
 
 echo $OUTPUT->footer();
 die;

@@ -16,6 +16,8 @@
 
 namespace tool_mobile;
 
+use core_cache\cache;
+
 /**
  * Moodle Mobile admin tool api tests.
  *
@@ -47,7 +49,7 @@ final class api_test extends \core_external\tests\externallib_testcase {
         ], false));
         $this->assertNull(api::get_normalized_plan(null, false));
 
-        $cache = \cache::make('tool_mobile', 'subscriptioninfo');
+        $cache = cache::make('tool_mobile', 'subscriptioninfo');
         $cache->set(0, [
             'subscription' => ['plan' => ' Premium '],
         ]);
@@ -78,7 +80,7 @@ final class api_test extends \core_external\tests\externallib_testcase {
         $this->assertFalse(api::is_premium_or_bma_plan(null));
 
         // If the provided data is void or invalid, the function should request cached API data.
-        $cache = \cache::make('tool_mobile', 'subscriptioninfo');
+        $cache = cache::make('tool_mobile', 'subscriptioninfo');
         $cache->set(0, [
             'subscription' => ['plan' => ' Premium '],
         ]);

@@ -16,6 +16,7 @@
 
 namespace core_files\tests\redactor\services;
 
+use core_admin\setting\settingpage\settingpage;
 use core_files\redactor\services\file_redactor_service_interface;
 use core_files\redactor\services\service;
 
@@ -66,7 +67,7 @@ class dummy_file_service extends service implements file_redactor_service_interf
      *
      * @param \admin_settingpage $settings The admin settings page to which settings are added.
      */
-    public static function add_settings(\admin_settingpage $settings): void {
+    public static function add_settings(settingpage $settings): void {
         // The function body.
     }
 }

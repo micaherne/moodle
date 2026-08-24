@@ -16,8 +16,8 @@
 
 namespace mod_quiz\local\reports;
 
-use context;
-use context_module;
+use core\context;
+use core\context\module;
 use stdClass;
 
 /**
@@ -64,7 +64,7 @@ abstract class report_base {
         $PAGE->set_title($quiz->name);
         $PAGE->set_heading($course->fullname);
         echo $OUTPUT->header();
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         if (!$PAGE->has_secondary_navigation()) {
             echo $OUTPUT->heading(format_string($quiz->name, true, ['context' => $context]));
         }

@@ -24,12 +24,13 @@
 
 namespace core_courseformat\output\local\content\cm;
 
-use cm_info;
+use core\output\renderer_base;
+use core_course\cm_info;
 use core\output\named_templatable;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use renderable;
-use section_info;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -97,7 +98,7 @@ class cmname implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $mod = $this->mod;
         $displayoptions = $this->displayoptions;
 
@@ -123,7 +124,7 @@ class cmname implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    protected function get_title_data(\renderer_base $output): array {
+    protected function get_title_data(renderer_base $output): array {
         $title = new $this->titleclass(
             $this->format,
             $this->section,
@@ -139,7 +140,7 @@ class cmname implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    protected function get_icon_data(\renderer_base $output): array {
+    protected function get_icon_data(renderer_base $output): array {
         $icon = new $this->iconclass(
             $this->format,
             $this->mod,

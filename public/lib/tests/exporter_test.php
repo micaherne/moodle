@@ -24,12 +24,17 @@
 
 namespace core;
 
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+use core\output\renderer_base;
 use core_external\external_format_value;
 use core_external\external_multiple_structure;
 use core_external\external_settings;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\util;
+use core_filters\filter_manager;
 
 /**
  * Exporter testcase.
@@ -111,13 +116,13 @@ final class exporter_test extends \advanced_testcase {
         $output = $PAGE->get_renderer('core');
 
         // The exception message is a bit misleading, it actually indicates an expected property wasn't found.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Unexpected property stringAformat');
         $result = $exporter->export($output);
     }
 
     public function test_invalid_related(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Exporter class is missing required related data: (core\core_testable_exporter) ' .
             'simplestdClass => stdClass');
         $exporter = new core_testable_exporter($this->validdata, $this->invalidrelated);
@@ -134,7 +139,7 @@ final class exporter_test extends \advanced_testcase {
                 $exporter = new core_testable_exporter($this->validdata, $data);
                 $output = $PAGE->get_renderer('core');
                 $result = $exporter->export($output);
-            } catch (\coding_exception $e) {
+            } catch (coding_exception $e) {
                 $this->assertNotFalse(strpos($e->getMessage(), $key));
             }
         }
@@ -154,14 +159,14 @@ final class exporter_test extends \advanced_testcase {
 
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
-        $syscontext = \context_system::instance();
-        $coursecontext = \context_course::instance($course->id);
+        $syscontext = system::instance();
+        $coursecontext = course::instance($course->id);
 
         external_settings::get_instance()->set_filter(true);
         filter_set_global_state('urltolink', TEXTFILTER_OFF);
         filter_set_local_state('urltolink', $coursecontext->id, TEXTFILTER_ON);
         set_config('formats', FORMAT_MARKDOWN, 'filter_urltolink');
-        \filter_manager::reset_caches();
+        filter_manager::reset_caches();
 
         $data = [
             'stringA' => '__Watch out:__ https://moodle.org @@PLUGINFILE@@/test.pdf',
@@ -175,7 +180,7 @@ final class exporter_test extends \advanced_testcase {
         $result = $exporter->export($output);
 
         $youtube = 'https://moodle.org';
-        $fileurl = (new \moodle_url('/webservice/pluginfile.php/' . $syscontext->id . '/test/area/9/test.pdf'))->out(false);
+        $fileurl = (new url('/webservice/pluginfile.php/' . $syscontext->id . '/test/area/9/test.pdf'))->out(false);
         $expected = "<p><strong>Watch out:</strong> $youtube $fileurl</p>\n";
         $this->assertEquals($expected, $result->stringA);
         $this->assertEquals(FORMAT_HTML, $result->stringAformat);
@@ -184,7 +189,7 @@ final class exporter_test extends \advanced_testcase {
         $exporter = new core_testable_exporter($data, ['context' => $coursecontext] + $this->validrelated);
         $result = $exporter->export($output);
         $youtube = '<a href="https://moodle.org" class="_blanktarget">https://moodle.org</a>';
-        $fileurl = (new \moodle_url('/webservice/pluginfile.php/' . $coursecontext->id . '/test/area/9/test.pdf'))->out(false);
+        $fileurl = (new url('/webservice/pluginfile.php/' . $coursecontext->id . '/test/area/9/test.pdf'))->out(false);
         $expected = "<p><strong>Watch out:</strong> $youtube <a href=\"$fileurl\" class=\"_blanktarget\">$fileurl</a></p>\n";
         $this->assertEquals($expected, $result->stringA);
         $this->assertEquals(FORMAT_HTML, $result->stringAformat);
@@ -214,7 +219,7 @@ final class exporter_test extends \advanced_testcase {
     public function test_export_format_no_default(): void {
         global $PAGE;
         $output = $PAGE->get_renderer('core');
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $related = [
             'context' => $syscontext,
         ] + $this->validrelated;
@@ -244,7 +249,7 @@ final class exporter_test extends \advanced_testcase {
 
         // Passing data to an exporter with a required property format will throw an exception.
         $exporter = new core_testable_exporter($data, $related);
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $exporter->export($output);
     }
 
@@ -358,7 +363,7 @@ class core_testable_exporter extends \core\external\exporter {
             'astring' => 'string', 'abool' => 'bool', 'aint' => 'int', 'ints' => 'int[]');
     }
 
-    protected function get_other_values(\renderer_base $output) {
+    protected function get_other_values(renderer_base $output) {
         return array(
             'otherstring' => '>Another <strong>string</strong>',
             'otherstrings' => array('String >a', 'String <strong>b</strong>')
@@ -403,7 +408,7 @@ class core_testable_exporter extends \core\external\exporter {
     protected function get_format_parameters_for_stringA() {
         return [
             // For testing use the passed context if any.
-            'context' => isset($this->related['context']) ? $this->related['context'] : \context_system::instance(),
+            'context' => isset($this->related['context']) ? $this->related['context'] : system::instance(),
             'component' => 'test',
             'filearea' => 'area',
             'itemid' => 9,
@@ -412,14 +417,14 @@ class core_testable_exporter extends \core\external\exporter {
 
     protected function get_format_parameters_for_otherstring() {
         return [
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'options' => ['escape' => false]
         ];
     }
 
     protected function get_format_parameters_for_otherstrings() {
         return [
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
         ];
     }
 }

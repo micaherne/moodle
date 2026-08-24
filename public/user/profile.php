@@ -32,6 +32,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/my/lib.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
@@ -49,7 +56,7 @@ $PAGE->set_url('/user/profile.php', ['id' => $userid]);
 if (!empty($CFG->forceloginforprofiles)) {
     require_login();
     if (isguestuser()) {
-        $PAGE->set_context(context_system::instance());
+        $PAGE->set_context(system::instance());
         $PAGE->set_title(get_string('loginrequired'));
         echo $OUTPUT->header();
         echo $OUTPUT->confirm(
@@ -69,7 +76,7 @@ if (!empty($CFG->forceloginforprofiles)) {
 }
 
 if ((!$user = $DB->get_record('user', array('id' => $userid))) || ($user->deleted)) {
-    $PAGE->set_context(context_system::instance());
+    $PAGE->set_context(system::instance());
     $PAGE->set_title(get_string('user'));
     echo $OUTPUT->header();
     if (!$user) {
@@ -82,12 +89,12 @@ if ((!$user = $DB->get_record('user', array('id' => $userid))) || ($user->delete
 }
 
 $currentuser = ($user->id == $USER->id);
-$context = $usercontext = context_user::instance($userid, MUST_EXIST);
+$context = $usercontext = user::instance($userid, MUST_EXIST);
 
 if (!\core\user::can_view_profile($user, null, $context)) {
     // Course managers can be browsed at site level. If not forceloginforprofiles, allow access (bug #4366).
     $struser = get_string('user');
-    $PAGE->set_context(context_system::instance());
+    $PAGE->set_context(system::instance());
     $PAGE->set_title($struser);  // Do not leak the name.
     $PAGE->set_heading($struser);
     $PAGE->set_pagelayout('mypublic');
@@ -102,7 +109,7 @@ if (!\core\user::can_view_profile($user, null, $context)) {
 
 // Get the profile page.  Should always return something unless the database is broken.
 if (!$currentpage = my_get_page($userid, MY_PAGE_PUBLIC)) {
-    throw new \moodle_exception('mymoodlesetup');
+    throw new moodle_exception('mymoodlesetup');
 }
 
 $PAGE->set_context($context);
@@ -149,9 +156,9 @@ if ($PAGE->user_allowed_editing()) {
         require_sesskey();
         if (!is_null($userid)) {
             if (!$currentpage = my_reset_page($userid, MY_PAGE_PUBLIC, 'user-profile')) {
-                throw new \moodle_exception('reseterror', 'my');
+                throw new moodle_exception('reseterror', 'my');
             }
-            redirect(new moodle_url('/user/profile.php', array('id' => $userid)));
+            redirect(new url('/user/profile.php', array('id' => $userid)));
         }
     } else if ($edit !== null) {             // Editing state was specified.
         $USER->editing = $edit;       // Change editing state.
@@ -166,7 +173,7 @@ if ($PAGE->user_allowed_editing()) {
             // For the page to display properly with the user context header the page blocks need to
             // be copied over to the user context.
             if (!$currentpage = my_copy_page($userid, MY_PAGE_PUBLIC, 'user-profile')) {
-                throw new \moodle_exception('mymoodlesetup');
+                throw new moodle_exception('mymoodlesetup');
             }
             $PAGE->set_context($usercontext);
             $PAGE->set_subpage($currentpage->id);
@@ -180,7 +187,7 @@ if ($PAGE->user_allowed_editing()) {
 
     $resetbutton = '';
     $resetstring = get_string('resetpage', 'my');
-    $reseturl = new moodle_url("$CFG->wwwroot/user/profile.php", array('edit' => 1, 'reset' => 1, 'id' => $userid));
+    $reseturl = new url("$CFG->wwwroot/user/profile.php", array('edit' => 1, 'reset' => 1, 'id' => $userid));
 
     if (!$currentpage->userid) {
         // Viewing a system page -- let the user customise it.
@@ -208,7 +215,7 @@ if ($PAGE->user_allowed_editing()) {
         );
     }
 
-    $url = new moodle_url("$CFG->wwwroot/user/profile.php", $params);
+    $url = new url("$CFG->wwwroot/user/profile.php", $params);
     $button = '';
     if (!$PAGE->theme->haseditswitch) {
         $button = $OUTPUT->single_button($url, $editstring);

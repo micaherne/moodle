@@ -26,7 +26,7 @@
 namespace mod_bigbluebuttonbn\test;
 
 use core_component;
-use core_plugin_manager;
+use core\plugin_manager;
 use mod_bigbluebuttonbn\extension;
 use ReflectionClass;
 
@@ -153,7 +153,7 @@ trait subplugins_test_helper_trait {
         $fillclassmap->invoke(null);
 
         // Now uninstall the plugin and clean everything up for other tests.
-        $pluginman = core_plugin_manager::instance();
+        $pluginman = plugin_manager::instance();
         $plugininfo = $pluginman->get_plugins();
         foreach ($plugininfo as $type => $plugins) {
             foreach ($plugins as $name => $plugin) {

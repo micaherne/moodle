@@ -16,6 +16,9 @@
 
 namespace core;
 
+use core\exception\coding_exception;
+use core\output\requirements\page_requirements_manager;
+
 /**
  * Unit tests for lib/outputrequirementslibphp.
  *
@@ -142,14 +145,14 @@ final class outputrequirementslib_test extends \advanced_testcase {
      * @covers \page_requirements_manager::js_fix_url
      * @dataProvider js_fix_url_moodle_url_provider
      */
-    public function test_js_fix_url_moodle_url(\moodle_url $moodleurl, int $cfgslashargs, string $expected): void {
+    public function test_js_fix_url_moodle_url(url $moodleurl, int $cfgslashargs, string $expected): void {
         global $CFG;
         $defaultslashargs = $CFG->slasharguments;
 
         $CFG->slasharguments = $cfgslashargs;
-        $rc = new \ReflectionClass(\page_requirements_manager::class);
+        $rc = new \ReflectionClass(page_requirements_manager::class);
         $rcm = $rc->getMethod('js_fix_url');
-        $requires = new \page_requirements_manager();
+        $requires = new page_requirements_manager();
         $actualmoodleurl = $rcm->invokeArgs($requires, [$moodleurl]);
         $this->assertEquals($expected, $actualmoodleurl->out(false));
 
@@ -172,42 +175,42 @@ final class outputrequirementslib_test extends \advanced_testcase {
         // Note: $CFG->slasharguments is enabled by default; it will be a forced setting one day (MDL-62640).
         return [
             'Environment XML file' => [
-                new \moodle_url('/admin/environment.xml'),
+                new url('/admin/environment.xml'),
                 0,
                 $wwwroot . $admin . 'environment.xml'
             ],
             'Google Maps CDN (HTTPS)' => [
-                new \moodle_url('https://maps.googleapis.com/maps/api/js', ['key' => 'googlemapkey3', 'sensor' => 'false']),
+                new url('https://maps.googleapis.com/maps/api/js', ['key' => 'googlemapkey3', 'sensor' => 'false']),
                 1,
                 'https://maps.googleapis.com/maps/api/js?key=googlemapkey3&sensor=false'
             ],
             'Google Maps CDN (HTTP)' => [
-                new \moodle_url('http://maps.googleapis.com/maps/api/js', ['key' => 'googlemapkey3', 'sensor' => 'false']),
+                new url('http://maps.googleapis.com/maps/api/js', ['key' => 'googlemapkey3', 'sensor' => 'false']),
                 0,
                 'http://maps.googleapis.com/maps/api/js?key=googlemapkey3&sensor=false'
             ],
             'H5P JS internal resource (slasharguments on)' => [
-                new \moodle_url('/h5p/js/embed.js'),
+                new url('/h5p/js/embed.js'),
                 1,
                 $wwwroot . '/lib/javascript.php/1/h5p/js/embed.js'
             ],
             'H5P JS internal resource (slasharguments off)' => [
-                new \moodle_url('/h5p/js/embed.js'),
+                new url('/h5p/js/embed.js'),
                 0,
                 $wwwroot . '/lib/javascript.php?rev=1&jsfile=%2Fh5p%2Fjs%2Fembed.js'
             ],
             'A custom Moodle CSS Handler' => [
-                new \moodle_url('/mod/data/css.php?d=1234567890'),
+                new url('/mod/data/css.php?d=1234567890'),
                 1,
                 $wwwroot . '/mod/data/css.php?d=1234567890'
             ],
             'A custom Moodle JS Handler (slasharguments on)' => [
-                new \moodle_url('/mod/data/js.php?d=1234567890'),
+                new url('/mod/data/js.php?d=1234567890'),
                 1,
                 $wwwroot . '/mod/data/js.php?d=1234567890'
             ],
             'A custom Moodle JS Handler (slasharguments off)' => [
-                new \moodle_url('/mod/data/js.php?d=1234567890'),
+                new url('/mod/data/js.php?d=1234567890'),
                 0,
                 $wwwroot . '/mod/data/js.php?d=1234567890'
             ],
@@ -230,9 +233,9 @@ final class outputrequirementslib_test extends \advanced_testcase {
         $defaultslashargs = $CFG->slasharguments;
 
         $CFG->slasharguments = $cfgslashargs;
-        $rc = new \ReflectionClass(\page_requirements_manager::class);
+        $rc = new \ReflectionClass(page_requirements_manager::class);
         $rcm = $rc->getMethod('js_fix_url');
-        $requires = new \page_requirements_manager();
+        $requires = new page_requirements_manager();
         $actualmoodleurl = $rcm->invokeArgs($requires, [$url]);
         $this->assertEquals($expected, $actualmoodleurl->out(false));
 
@@ -306,10 +309,10 @@ final class outputrequirementslib_test extends \advanced_testcase {
      * @dataProvider js_fix_url_coding_exception_provider
      */
     public function test_js_fix_url_coding_exception($url, string $exmessage): void {
-        $rc = new \ReflectionClass(\page_requirements_manager::class);
+        $rc = new \ReflectionClass(page_requirements_manager::class);
         $rcm = $rc->getMethod('js_fix_url');
-        $requires = new \page_requirements_manager();
-        $this->expectException(\coding_exception::class);
+        $requires = new page_requirements_manager();
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage($exmessage);
         $actualmoodleurl = $rcm->invokeArgs($requires, [$url]);
     }
@@ -360,7 +363,7 @@ final class outputrequirementslib_test extends \advanced_testcase {
                     . 'Attempt to require a JavaScript file that does not exist. (/path/to/file1.ext)'
             ],
             'A non-existant internal resource using moodle_url. WARN the developer!' => [
-                new \moodle_url('/path/to/file2.ext'),
+                new url('/path/to/file2.ext'),
                 'Coding error detected, it must be fixed by a programmer: '
                     . 'Attempt to require a JavaScript file that does not exist. (/path/to/file2.ext)'
             ],

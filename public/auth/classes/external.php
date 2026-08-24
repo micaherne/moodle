@@ -24,6 +24,11 @@
  * @since      Moodle 3.2
  */
 
+use core\context\system;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\url;
+use core\user;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -54,8 +59,8 @@ class core_auth_external extends external_api {
     public static function confirm_user_parameters() {
         return new external_function_parameters(
             array(
-                'username' => new external_value(core_user::get_property_type('username'), 'User name'),
-                'secret' => new external_value(core_user::get_property_type('secret'), 'Confirmation secret'),
+                'username' => new external_value(user::get_property_type('username'), 'User name'),
+                'secret' => new external_value(user::get_property_type('secret'), 'Confirmation secret'),
             )
         );
     }
@@ -81,7 +86,7 @@ class core_auth_external extends external_api {
             )
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         $PAGE->set_context($context);
 
         if (!$authplugin = signup_get_user_confirmation_authplugin()) {
@@ -136,8 +141,8 @@ class core_auth_external extends external_api {
     public static function request_password_reset_parameters() {
         return new external_function_parameters(
             array(
-                'username' => new external_value(core_user::get_property_type('username'), 'User name', VALUE_DEFAULT, ''),
-                'email' => new external_value(core_user::get_property_type('email'), 'User email', VALUE_DEFAULT, ''),
+                'username' => new external_value(user::get_property_type('username'), 'User name', VALUE_DEFAULT, ''),
+                'email' => new external_value(user::get_property_type('email'), 'User email', VALUE_DEFAULT, ''),
             )
         );
     }
@@ -164,7 +169,7 @@ class core_auth_external extends external_api {
             )
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         $PAGE->set_context($context);   // Needed by format_string calls.
 
         // Check if an alternate forgotten password method is set.
@@ -262,7 +267,7 @@ class core_auth_external extends external_api {
                 $params['country'] .')');
         }
 
-        $context = context_system::instance();
+        $context = system::instance();
         $PAGE->set_context($context);
 
         // Check if verification of age and location (minor check) is enabled.
@@ -313,7 +318,7 @@ class core_auth_external extends external_api {
     public static function is_age_digital_consent_verification_enabled() {
         global $PAGE;
 
-        $context = context_system::instance();
+        $context = system::instance();
         $PAGE->set_context($context);
 
         $status = false;
@@ -351,8 +356,8 @@ class core_auth_external extends external_api {
     public static function resend_confirmation_email_parameters() {
         return new external_function_parameters(
             array(
-                'username' => new external_value(core_user::get_property_type('username'), 'Username.'),
-                'password' => new external_value(core_user::get_property_type('password'), 'Plain text password.'),
+                'username' => new external_value(user::get_property_type('username'), 'Username.'),
+                'password' => new external_value(user::get_property_type('password'), 'Plain text password.'),
                 'redirect' => new external_value(PARAM_LOCALURL, 'Redirect the user to this site url after confirmation.',
                     VALUE_DEFAULT, ''),
             )
@@ -382,12 +387,12 @@ class core_auth_external extends external_api {
             )
         );
 
-        $context = context_system::instance();
+        $context = system::instance();
         $PAGE->set_context($context);   // Need by internal APIs.
         $username = trim(core_text::strtolower($params['username']));
         $password = $params['password'];
 
-        $user = core_user::get_user_by_username($username);
+        $user = user::get_user_by_username($username);
 
         if (!empty($user) && $user->confirmed) {
             if (!empty($CFG->protectusernames)) {
@@ -412,9 +417,9 @@ class core_auth_external extends external_api {
         $confirmationurl = null;
         if (!empty($params['redirect'])) {
             // Pass via moodle_url to fix thinks like admin links.
-            $redirect = new moodle_url($params['redirect']);
+            $redirect = new url($params['redirect']);
 
-            $confirmationurl = new moodle_url('/login/confirm.php', array('redirect' => $redirect->out()));
+            $confirmationurl = new url('/login/confirm.php', array('redirect' => $redirect->out()));
         }
         $status = send_confirmation_email($user, $confirmationurl);
 

@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core_cache\cache;
+
 /**
  * Roles to display on the course description page.
  *
@@ -35,7 +37,7 @@ class special_coursecontact extends \core_admin\setting\setting\pickroles {
             ['editingteacher']
         );
         $this->set_updatedcallback(function () {
-            \cache::make('core', 'coursecontacts')->purge();
+            cache::make('core', 'coursecontacts')->purge();
         });
     }
 }

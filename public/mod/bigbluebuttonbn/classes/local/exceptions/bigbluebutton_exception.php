@@ -16,6 +16,7 @@
 
 namespace mod_bigbluebuttonbn\local\exceptions;
 
+use core\exception\moodle_exception;
 use mod_bigbluebuttonbn\plugin;
 
 /**
@@ -26,7 +27,7 @@ use mod_bigbluebuttonbn\plugin;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author    Laurent David  (laurent [at] call-learning [dt] fr)
  */
-class bigbluebutton_exception extends \moodle_exception {
+class bigbluebutton_exception extends moodle_exception {
     /**
      * Constructor
      *

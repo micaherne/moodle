@@ -16,6 +16,9 @@
 
 namespace core_calendar;
 
+use core\context\course;
+use core\context\user;
+use core\url;
 use core_calendar\external\calendar_event_exporter;
 use core_calendar\local\event\container;
 
@@ -154,7 +157,7 @@ final class calendar_event_exporter_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $now = time();
         $mapper = container::get_event_mapper();
         $legacyevent = create_event([
@@ -168,7 +171,7 @@ final class calendar_event_exporter_test extends \advanced_testcase {
             'context' => $context,
             'course' => $course,
             'moduleinstance' => null,
-            'daylink' => new \moodle_url(''),
+            'daylink' => new url(''),
             'type' => type_factory::get_calendar_instance(),
             'today' => $now
         ]);
@@ -193,7 +196,7 @@ final class calendar_event_exporter_test extends \advanced_testcase {
         $this->setAdminUser();
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $now = time();
         $mapper = container::get_event_mapper();
         $legacyevent = create_event([
@@ -207,7 +210,7 @@ final class calendar_event_exporter_test extends \advanced_testcase {
             'context' => $context,
             'course' => null,
             'moduleinstance' => null,
-            'daylink' => new \moodle_url(''),
+            'daylink' => new url(''),
             'type' => type_factory::get_calendar_instance(),
             'today' => $now
         ]);
@@ -234,7 +237,7 @@ final class calendar_event_exporter_test extends \advanced_testcase {
         $rawshortname = 'Shortname <a href="#">link</a>';
         $nolinkshortname = strip_links($rawshortname);
         $course = $generator->create_course(['shortname' => $rawshortname]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $now = time();
         $mapper = container::get_event_mapper();
         $renderer = $PAGE->get_renderer('core_calendar');
@@ -249,7 +252,7 @@ final class calendar_event_exporter_test extends \advanced_testcase {
             'context' => $coursecontext,
             'course' => $course,
             'moduleinstance' => null,
-            'daylink' => new \moodle_url(''),
+            'daylink' => new url(''),
             'type' => type_factory::get_calendar_instance(),
             'today' => $now
         ]);
@@ -272,7 +275,7 @@ final class calendar_event_exporter_test extends \advanced_testcase {
         $rawshortname = 'Shortname <a href="#">link</a>';
         $nolinkshortname = strip_links($rawshortname);
         $course = $generator->create_course(['shortname' => $rawshortname]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $now = time();
         $mapper = container::get_event_mapper();
         $renderer = $PAGE->get_renderer('core_calendar');
@@ -287,7 +290,7 @@ final class calendar_event_exporter_test extends \advanced_testcase {
             'context' => $coursecontext,
             'course' => $course,
             'moduleinstance' => null,
-            'daylink' => new \moodle_url(''),
+            'daylink' => new url(''),
             'type' => type_factory::get_calendar_instance(),
             'today' => $now
         ]);

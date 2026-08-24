@@ -24,6 +24,8 @@
  * @author     Tung Thai <Tung.ThaiDuc@nashtechglobal.com>
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 
 $badgeid = required_param('id', PARAM_INT);
@@ -31,8 +33,8 @@ $action = optional_param('action', null, PARAM_INT); // Generates badge class if
 
 if ($action == 0) {
     // Display only the Issuer.
-    redirect(new moodle_url('/badges/json/issuer.php', ['id' => $badgeid]));
+    redirect(new url('/badges/json/issuer.php', ['id' => $badgeid]));
 }
 
 // Display the Badge.
-redirect(new moodle_url('/badges/json/badge.php', ['id' => $badgeid]));
+redirect(new url('/badges/json/badge.php', ['id' => $badgeid]));

@@ -17,7 +17,7 @@
 namespace core_files\external;
 
 use advanced_testcase;
-use context_user;
+use core\context\user;
 
 /**
  * Unit tests for stored file exporter
@@ -38,7 +38,7 @@ final class stored_file_exporter_test extends advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $contextuser = context_user::instance($USER->id);
+        $contextuser = user::instance($USER->id);
 
         $file = get_file_storage()->create_file_from_string([
             'contextid' => $contextuser->id,
@@ -106,7 +106,7 @@ final class stored_file_exporter_test extends advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $contextuser = context_user::instance($USER->id);
+        $contextuser = user::instance($USER->id);
 
         $file = get_file_storage()->create_file_from_string([
             'contextid' => $contextuser->id,

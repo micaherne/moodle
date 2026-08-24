@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\output\pix_icon;
+
 /**
  * Colour picker setting.
  *
@@ -142,7 +144,7 @@ class configcolourpicker extends \core_admin\setting {
     public function output_html($data, $query = '') {
         global $PAGE, $OUTPUT;
 
-        $icon = new \pix_icon('i/loading', get_string('loading', 'admin'), 'moodle', ['class' => 'loadingicon']);
+        $icon = new pix_icon('i/loading', get_string('loading', 'admin'), 'moodle', ['class' => 'loadingicon']);
         $context = (object) [
             'id' => $this->get_id(),
             'name' => $this->get_full_name(),

@@ -23,6 +23,8 @@
  */
 
 namespace mod_wiki\event;
+
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,7 +78,7 @@ class page_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/wiki/view.php', array('pageid' => $this->objectid));
+        return new url('/mod/wiki/view.php', array('pageid' => $this->objectid));
     }
 
     public static function get_objectid_mapping() {

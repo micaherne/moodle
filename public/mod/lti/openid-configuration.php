@@ -25,6 +25,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
 use mod_lti\local\ltiopenid\registration_helper;
 
 define('NO_DEBUG_DISPLAY', true);
@@ -37,12 +38,12 @@ $scopes = registration_helper::get()->lti_get_service_scopes();
 $scopes[] = 'openid';
 $conf = [
     'issuer' => $CFG->wwwroot,
-    'token_endpoint' => (new moodle_url('/mod/lti/token.php'))->out(false),
+    'token_endpoint' => (new url('/mod/lti/token.php'))->out(false),
     'token_endpoint_auth_methods_supported' => ['private_key_jwt'],
     'token_endpoint_auth_signing_alg_values_supported' => ['RS256'],
-    'jwks_uri' => (new moodle_url('/mod/lti/certs.php'))->out(false),
-    'authorization_endpoint' => (new moodle_url('/mod/lti/auth.php'))->out(false),
-    'registration_endpoint' => (new moodle_url('/mod/lti/openid-registration.php'))->out(false),
+    'jwks_uri' => (new url('/mod/lti/certs.php'))->out(false),
+    'authorization_endpoint' => (new url('/mod/lti/auth.php'))->out(false),
+    'registration_endpoint' => (new url('/mod/lti/openid-registration.php'))->out(false),
     'scopes_supported' => $scopes,
     'response_types_supported' => ['id_token'],
     'subject_types_supported' => ['public', 'pairwise'],

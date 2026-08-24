@@ -16,10 +16,12 @@
 
 namespace mod_bigbluebuttonbn\task;
 
+use core\exception\coding_exception;
 use core\message\message;
 use core\task\adhoc_task;
+use core\user;
 use mod_bigbluebuttonbn\instance;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 
 /**
@@ -74,7 +76,7 @@ abstract class base_send_notification extends adhoc_task {
     protected function get_instance(): ?instance {
         // This means the customdata is broken, and needs to be fixed.
         if (empty($this->get_custom_data()->instanceid)) {
-            throw new \coding_exception("Task custom data was missing instanceid");
+            throw new coding_exception("Task custom data was missing instanceid");
         }
 
         if ($this->instance === null) {
@@ -108,7 +110,7 @@ abstract class base_send_notification extends adhoc_task {
             }
 
             if ($this->coursecontact === null) {
-                $this->coursecontact = \core_user::get_noreply_user();
+                $this->coursecontact = user::get_noreply_user();
             }
         }
 
@@ -194,7 +196,7 @@ abstract class base_send_notification extends adhoc_task {
 
         foreach ($this->get_recipients() as $recipient) {
             try {
-                \core_user::require_active_user($recipient, true, true);
+                user::require_active_user($recipient, true, true);
                 \core\cron::setup_user($recipient);
             } catch (moodle_exception $e) {
                 // Skip sending.

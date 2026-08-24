@@ -16,7 +16,7 @@
 
 namespace mod_data;
 
-use context_module;
+use core\context\module;
 use rating_manager;
 use stdClass;
 
@@ -82,7 +82,7 @@ final class template_test extends \advanced_testcase {
         $params['course'] = $course;
         $activity = $this->getDataGenerator()->create_module('data', $params);
         $cm = get_coursemodule_from_id('data', $activity->cmid, 0, false, MUST_EXIST);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         $user = $this->getDataGenerator()->create_user();
         $roleids = $DB->get_records_menu('role', null, '', 'shortname, id');
@@ -821,7 +821,7 @@ final class template_test extends \advanced_testcase {
      * @param stdClass $user the current user record
      * @return stdClass the entries with the rating attribute
      */
-    protected function enable_ratings(context_module $context, stdClass $activity, array $entries, stdClass $user) {
+    protected function enable_ratings(module $context, stdClass $activity, array $entries, stdClass $user) {
         global $CFG;
         $ratingoptions = (object)[
             'context' => $context,

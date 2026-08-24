@@ -25,7 +25,7 @@
 namespace mod_quiz;
 
 use advanced_testcase;
-use context_module;
+use core\context\module;
 use core\context;
 use mod_quiz\task\quiz_notify_attempt_manual_grading_completed;
 use question_engine;
@@ -92,7 +92,7 @@ final class quiz_notify_attempt_manual_grading_completed_test extends advanced_t
         $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
         $this->quiz = $quizgenerator->create_instance(['course' => $this->course->id, 'questionsperpage' => 0,
             'grade' => 100.0, 'sumgrades' => 2]);
-        $this->context = context_module::instance($this->quiz->cmid);
+        $this->context = module::instance($this->quiz->cmid);
         $this->cm = get_coursemodule_from_instance('quiz', $this->quiz->id);
 
         // Create a truefalse question and an essay question.

@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/adminlib.php");
@@ -30,7 +32,7 @@ require_once("$CFG->libdir/adminlib.php");
 /**
  * Setting class that stores only non-empty values.
  */
-class enrol_flatfile_role_setting extends admin_setting_configtext {
+class enrol_flatfile_role_setting extends configtext {
 
     public function __construct($role) {
         parent::__construct('enrol_flatfile/map_'.$role->id, $role->localname, '', $role->shortname);

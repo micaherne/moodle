@@ -16,6 +16,8 @@
 
 namespace core_sms;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_sms\task\send_sms_task;
 
 /**
@@ -86,7 +88,7 @@ final class manager_test extends \advanced_testcase {
     public function test_create_gateway_instance_unknown_class(): void {
         $manager = \core\di::get(\core_sms\manager::class);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $manager->create_gateway_instance(
             classname: \no\class\name\here::class,
             name: 'dummy',
@@ -100,7 +102,7 @@ final class manager_test extends \advanced_testcase {
     public function test_create_gateway_instance_valid_but_wrong_class(): void {
         $manager = \core\di::get(\core_sms\manager::class);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $manager->create_gateway_instance(
             classname: self::class,
             name: 'dummy',
@@ -410,7 +412,7 @@ final class manager_test extends \advanced_testcase {
 
         $manager = \core\di::get(\core_sms\manager::class);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Sensitive messages cannot be sent asynchronously');
         $manager->send(
             recipientnumber: '+447123456789',
@@ -581,7 +583,7 @@ final class manager_test extends \advanced_testcase {
             $this->expectOutputRegex('/SMS failed status: gateway_not_available - task will retry/');
             $this->run_all_adhoc_tasks();
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $message = $manager->get_message(['id' => $message->id]);
             $this->assertEquals(message_status::GATEWAY_NOT_AVAILABLE, $message->status);
 

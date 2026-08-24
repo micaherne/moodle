@@ -23,7 +23,9 @@
  */
 namespace core\plugininfo;
 
-use moodle_url;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
 
 /**
  * Class for portfolios
@@ -63,7 +65,7 @@ class portfolio extends base {
             $instance = portfolio_instance($plugin->id);
             $oldvalue = $instance->get('visible');
             if (empty($oldvalue) && $instance->instance_sanity_check()) {
-                throw new \moodle_exception('cannotsetvisible', 'portfolio');
+                throw new moodle_exception('cannotsetvisible', 'portfolio');
             }
 
             // Only set visibility if it's different from the current value.
@@ -80,7 +82,7 @@ class portfolio extends base {
         if ($haschanged) {
             // Include this information into config changes table.
             add_to_config_log('portfolio_visibility', $oldvalue, $enabled, $pluginname);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -91,7 +93,7 @@ class portfolio extends base {
      * @return moodle_url
      */
     public static function get_manage_url() {
-        return new moodle_url('/admin/portfolio.php');
+        return new url('/admin/portfolio.php');
     }
 
     /**

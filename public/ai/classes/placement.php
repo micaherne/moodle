@@ -16,6 +16,8 @@
 
 namespace core_ai;
 
+use core\context;
+
 /**
  * Class placement.
  *
@@ -43,7 +45,7 @@ abstract class placement {
      * @param \context $context The context to check.
      * @return bool Whether the placement is available in the context.
      */
-    public static function is_available_in_context(\context $context): bool {
+    public static function is_available_in_context(context $context): bool {
         return false;
     }
 
@@ -54,7 +56,7 @@ abstract class placement {
      * @param bool $checkcontext Whether to check the action is enabled in the context.
      * @return array The available actions.
      */
-    public static function get_actions_available(\context $context, bool $checkcontext = true): array {
+    public static function get_actions_available(context $context, bool $checkcontext = true): array {
         return [];
     }
 

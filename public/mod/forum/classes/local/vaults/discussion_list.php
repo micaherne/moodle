@@ -26,6 +26,7 @@ namespace mod_forum\local\vaults;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\user;
 use core_group\output\group_details;
 use mod_forum\local\vaults\preprocessors\extract_record as extract_record_preprocessor;
 use mod_forum\local\vaults\preprocessors\extract_user as extract_user_preprocessor;
@@ -553,7 +554,7 @@ class discussion_list extends db_table_vault {
      */
     private function get_favourite_sql(int $userid): array {
 
-        $usercontext = \context_user::instance($userid);
+        $usercontext = user::instance($userid);
         $alias = $this->get_table_alias();
         $ufservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
         list($favsql, $favparams) = $ufservice->get_join_sql_by_type('mod_forum', 'discussions',

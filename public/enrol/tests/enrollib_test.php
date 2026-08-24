@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context_helper;
 use core\plugininfo\enrol;
 
 defined('MOODLE_INTERNAL') || die();
@@ -252,7 +255,7 @@ final class enrollib_test extends advanced_testcase {
         $user2 = $this->getDataGenerator()->create_user();
         // Create a course.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
 
@@ -315,7 +318,7 @@ final class enrollib_test extends advanced_testcase {
         $user3 = $this->getDataGenerator()->create_user();
         // Create a course.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
@@ -665,7 +668,7 @@ final class enrollib_test extends advanced_testcase {
         $dbuserenrolled = $DB->get_record('user_enrolments', array('userid' => $admin->id));
         $this->assertInstanceOf('\core\event\user_enrolment_created', $event);
         $this->assertEquals($dbuserenrolled->id, $event->objectid);
-        $this->assertEquals(context_course::instance($course1->id), $event->get_context());
+        $this->assertEquals(course::instance($course1->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -699,7 +702,7 @@ final class enrollib_test extends advanced_testcase {
 
         // Validate the event.
         $this->assertInstanceOf('\core\event\user_enrolment_deleted', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -728,7 +731,7 @@ final class enrollib_test extends advanced_testcase {
         $this->assertCount(1, $events);
         $event = array_pop($events);
         $this->assertInstanceOf('\core\event\enrol_instance_created', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals('self', $event->other['enrol']);
         $this->assertEventContextNotUsed($event);
 
@@ -743,7 +746,7 @@ final class enrollib_test extends advanced_testcase {
         $this->assertCount(1, $events);
         $event = array_pop($events);
         $this->assertInstanceOf('\core\event\enrol_instance_updated', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals('self', $event->other['enrol']);
         $this->assertEventContextNotUsed($event);
 
@@ -758,7 +761,7 @@ final class enrollib_test extends advanced_testcase {
         $this->assertCount(1, $events);
         $event = array_pop($events);
         $this->assertInstanceOf('\core\event\enrol_instance_deleted', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals('self', $event->other['enrol']);
         $this->assertEventContextNotUsed($event);
     }
@@ -957,7 +960,7 @@ final class enrollib_test extends advanced_testcase {
         $this->assertEquals([$course1->id, $course2->id], array_keys($courses));
 
         // Log in as guest to third course.
-        load_temp_course_role(context_course::instance($course3->id), $CFG->guestroleid);
+        load_temp_course_role(course::instance($course3->id), $CFG->guestroleid);
         $courses = enrol_get_my_courses(null, 'id', 0, [], true);
         $this->assertEquals([$course1->id, $course2->id, $course3->id], array_keys($courses));
 
@@ -1007,7 +1010,7 @@ final class enrollib_test extends advanced_testcase {
         // Now try access for a different user who has manager role at system level.
         $manager = $this->getDataGenerator()->create_user();
         $managerroleid = $DB->get_field('role', 'id', ['shortname' => 'manager']);
-        role_assign($managerroleid, $manager->id, \context_system::instance()->id);
+        role_assign($managerroleid, $manager->id, system::instance()->id);
         $this->setUser($manager);
 
         // With default get enrolled, they don't have any courses.
@@ -1021,7 +1024,7 @@ final class enrollib_test extends advanced_testcase {
 
         // If we prohibit manager from course:view on course 1 though...
         assign_capability('moodle/course:view', CAP_PROHIBIT, $managerroleid,
-                \context_course::instance($course1->id));
+                course::instance($course1->id));
         $courses = enrol_get_my_courses(null, 'id', 0, [], true);
         $this->assertEquals([$course2->id, $course3->id, $course4->id], array_keys($courses));
 
@@ -1165,7 +1168,7 @@ final class enrollib_test extends advanced_testcase {
         $this->resetAfterTest(true);
 
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -1390,7 +1393,7 @@ final class enrollib_test extends advanced_testcase {
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $roles = array();
         $roles['student'] = $DB->get_field('role', 'id', array('shortname' => 'student'), MUST_EXIST);
@@ -1468,7 +1471,7 @@ final class enrollib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $roleid = $CFG->defaultuserroleid;
 

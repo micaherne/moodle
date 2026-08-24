@@ -16,13 +16,15 @@
 
 namespace core_course\output;
 
-use action_menu;
-use action_menu_link_secondary;
-use context_coursecat;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\context\coursecat;
+use core\output\renderer_base;
+use core\output\url_select;
 use core_course_category;
 use core_course\course_request;
 use moodle_page;
-use moodle_url;
+use core\url;
 
 /**
  * Class responsible for generating the action bar (tertiary nav) elements in an individual category page
@@ -55,16 +57,16 @@ class category_action_bar extends manage_categories_action_bar {
      * @param \renderer_base $output
      * @return object|null The content required to render the url_select
      */
-    protected function get_category_select(\renderer_base $output): ?object {
+    protected function get_category_select(renderer_base $output): ?object {
         if (!$this->searchvalue && !core_course_category::is_simple_site()) {
             $categories = core_course_category::make_categories_list();
             if (count($categories) > 1) {
                 foreach ($categories as $id => $cat) {
-                    $url = new moodle_url($this->page->url, ['categoryid' => $id]);
+                    $url = new url($this->page->url, ['categoryid' => $id]);
                     $options[$url->out()] = $cat;
                 }
-                $currenturl = new moodle_url($this->page->url, ['categoryid' => $this->category->id]);
-                $select = new \url_select($options, $currenturl, null);
+                $currenturl = new url($this->page->url, ['categoryid' => $this->category->id]);
+                $select = new url_select($options, $currenturl, null);
                 $select->set_label(get_string('categories'), ['class' => 'visually-hidden']);
                 $select->class .= ' text-truncate w-100';
                 return $select->export_for_template($output);
@@ -96,7 +98,7 @@ class category_action_bar extends manage_categories_action_bar {
                 ];
 
                 $options[0] = [
-                    'url' => new moodle_url('/course/edit.php', $params),
+                    'url' => new url('/course/edit.php', $params),
                     'string' => get_string('addnewcourse')
                 ];
             }
@@ -105,12 +107,12 @@ class category_action_bar extends manage_categories_action_bar {
                 // Display an option to request a new course.
                 if (course_request::can_request($context)) {
                     $params = [];
-                    if ($context instanceof context_coursecat) {
+                    if ($context instanceof coursecat) {
                         $params['category'] = $context->instanceid;
                     }
 
                     $options[3] = [
-                        'url' => new moodle_url('/course/request.php', $params),
+                        'url' => new url('/course/request.php', $params),
                         'string' => get_string('requestcourse')
                     ];
                 }
@@ -120,7 +122,7 @@ class category_action_bar extends manage_categories_action_bar {
                     $disabled = !$DB->record_exists('course_request', array());
                     if (!$disabled) {
                         $options[4] = [
-                            'url' => new moodle_url('/course/pending.php'),
+                            'url' => new url('/course/pending.php'),
                             'string' => get_string('coursespending')
                         ];
                     }
@@ -131,12 +133,12 @@ class category_action_bar extends manage_categories_action_bar {
         if ($this->category->can_create_course() || $this->category->has_manage_capability()) {
             // Add 'Manage' button if user has permissions to edit this category.
             $options[2] = [
-                'url' => new moodle_url('/course/management.php', ['categoryid' => $this->category->id]),
+                'url' => new url('/course/management.php', ['categoryid' => $this->category->id]),
                 'string' => get_string('managecourses')
             ];
 
             if ($this->category->has_manage_capability()) {
-                $addsubcaturl = new moodle_url('/course/editcategory.php', array('parent' => $this->category->id));
+                $addsubcaturl = new url('/course/editcategory.php', array('parent' => $this->category->id));
                 $options[1] = [
                     'url' => $addsubcaturl,
                     'string' => get_string('addsubcategory')
@@ -162,7 +164,7 @@ class category_action_bar extends manage_categories_action_bar {
      *              - search The course search form
      *              - additionaloptions Additional actions that can be performed in a category
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $additionaloptions = $this->get_additional_category_options();
         // Generate the action menu if there are additional options.
         if (!empty($additionaloptions)) {
@@ -170,7 +172,7 @@ class category_action_bar extends manage_categories_action_bar {
             $actionmenu->set_kebab_trigger(get_string('moreactions'));
             $actionmenu->set_additional_classes('ms-auto');
             foreach ($additionaloptions['options'] as $option) {
-                $actionmenu->add(new action_menu_link_secondary(
+                $actionmenu->add(new link_secondary(
                     $option['url'],
                     null,
                     $option['string']

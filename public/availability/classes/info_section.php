@@ -24,6 +24,9 @@
 
 namespace core_availability;
 
+use core\context\course;
+use core_course\section_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -42,7 +45,7 @@ class info_section extends info {
      *
      * @param \section_info $section Section object
      */
-    public function __construct(\section_info $section) {
+    public function __construct(section_info $section) {
         parent::__construct($section->modinfo->get_course(), $section->visible,
                 $section->availability);
         $this->section = $section;
@@ -53,7 +56,7 @@ class info_section extends info {
     }
 
     public function get_context() {
-        return \context_course::instance($this->get_course()->id);
+        return course::instance($this->get_course()->id);
     }
 
     protected function get_view_hidden_capability() {

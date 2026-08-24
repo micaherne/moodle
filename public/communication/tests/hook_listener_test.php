@@ -17,6 +17,7 @@
 namespace core_communication;
 
 use communication_matrix\matrix_test_helper_trait;
+use core\context\course;
 use core_communication\task\add_members_to_room_task;
 use core_communication\task\create_and_configure_room_task;
 use core_communication\task\delete_room_task;
@@ -59,7 +60,7 @@ final class hook_listener_test extends \advanced_testcase {
             roomname: 'Test room name',
             extrafields: ['groupmode' => SEPARATEGROUPS],
         );
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
 
@@ -91,7 +92,7 @@ final class hook_listener_test extends \advanced_testcase {
         );
 
         $group = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $groupcommunication = helper::load_by_group(
             groupid: $group->id,
@@ -205,7 +206,7 @@ final class hook_listener_test extends \advanced_testcase {
         // Load the communication instance and check that only the 2 active users are returned.
         $communication = helper::load_by_course(
             courseid: $course->id,
-            context: \context_course::instance($course->id),
+            context: course::instance($course->id),
         );
 
         $userids = $communication->get_processor()->get_all_userids_for_instance();
@@ -299,7 +300,7 @@ final class hook_listener_test extends \advanced_testcase {
         // Load the communication instance and check that only the 2 active users are returned.
         $communication = helper::load_by_group(
             groupid: $group->id,
-            context: \context_course::instance($course->id),
+            context: course::instance($course->id),
         );
 
         $userids = $communication->get_processor()->get_all_userids_for_instance();
@@ -329,7 +330,7 @@ final class hook_listener_test extends \advanced_testcase {
         $course = $this->get_course(
             extrafields: ['groupmode' => SEPARATEGROUPS],
         );
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
 
@@ -363,7 +364,7 @@ final class hook_listener_test extends \advanced_testcase {
         $group = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
 
         // Now check if the teacher is added to the group room as the teacher has access to all groups.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $groupcommunication = helper::load_by_group(
             groupid: $group->id,
             context: $context,
@@ -401,7 +402,7 @@ final class hook_listener_test extends \advanced_testcase {
 
         // Test that the default communication is created for course mode.
         $course = $this->get_course();
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         $coursecommunication = helper::load_by_course(
             courseid: $course->id,
             context: $coursecontext,
@@ -430,7 +431,7 @@ final class hook_listener_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $course = $this->get_course();
         $group = $this->getDataGenerator()->create_group(record: ['courseid' => $course->id]);
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         $teacherrole = $DB->get_record(
             table: 'role',
             conditions: ['shortname' => 'teacher'],
@@ -527,7 +528,7 @@ final class hook_listener_test extends \advanced_testcase {
      */
     public function test_create_course_communication_instance(): void {
         $course = $this->get_course();
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         $coursecommunication = helper::load_by_course(
             courseid: $course->id,
             context: $coursecontext,
@@ -566,7 +567,7 @@ final class hook_listener_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->get_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
         role_assign($teacherrole->id, $user->id, $coursecontext->id);
@@ -593,7 +594,7 @@ final class hook_listener_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->get_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
         role_assign($teacherrole->id, $user->id, $coursecontext->id);
@@ -612,7 +613,7 @@ final class hook_listener_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $course = $this->get_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
 

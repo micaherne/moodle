@@ -16,7 +16,8 @@
 
 namespace core_courseformat\local\overview;
 
-use cm_info;
+use core\exception\coding_exception;
+use core_course\cm_info;
 use core_courseformat\activityoverviewbase;
 
 /**
@@ -41,7 +42,7 @@ class overviewfactory {
 
         $result = \core\di::get_container()->make($classname, ['cm' => $cm]);
         if (!($result instanceof activityoverviewbase)) {
-            throw new \coding_exception("Class $classname must extend " . activityoverviewbase::class);
+            throw new coding_exception("Class $classname must extend " . activityoverviewbase::class);
         }
 
         return $result;

@@ -16,6 +16,9 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
+use core\exception\coding_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
 
 /**
@@ -64,7 +67,7 @@ class behat_grades extends behat_base {
      * @param string $identifier identifies the particular page - for example "Course name"
      * @return moodle_url the corresponding URL.
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
         $type = strtolower($type);
         if (strpos($type, '>') !== false) {
             [$pluginname, $type] = explode('>', $type);
@@ -85,7 +88,7 @@ class behat_grades extends behat_base {
                 $names = array_map(fn($name) => strtolower(get_string('pluginname', "gradereport_{$name}")), $plugins);
                 $result = array_search($pluginname, $names);
                 if ($result === false) {
-                    throw new \coding_exception("Unknown plugin '{$pluginname}'");
+                    throw new coding_exception("Unknown plugin '{$pluginname}'");
                 }
                 $plugin = $result;
             }
@@ -94,32 +97,32 @@ class behat_grades extends behat_base {
 
         switch ($type) {
             case 'view':
-                return new moodle_url(
+                return new url(
                     "/grade/report/{$plugin}/index.php",
                     ['id' => $this->get_course_id($identifier)]
                 );
             case 'gradebook setup':
-                return new moodle_url(
+                return new url(
                     "/grade/edit/tree/index.php",
                     ['id' => $this->get_course_id($identifier)]
                 );
             case 'course grade settings':
-                return new moodle_url(
+                return new url(
                     "/grade/edit/settings/index.php",
                     ['id' => $this->get_course_id($identifier)]
                 );
             case 'outcomes':
-                return new moodle_url(
+                return new url(
                     "/grade/edit/outcome/course.php",
                     ['id' => $this->get_course_id($identifier)]
                 );
             case 'scales':
-                return new moodle_url(
+                return new url(
                     "/grade/edit/scale/index.php",
                     ['id' => $this->get_course_id($identifier)]
                 );
             default:
-                throw new \coding_exception(
+                throw new coding_exception(
                     "Unknown page type '$type' for page identifier '$identifier'"
                 );
         }

@@ -24,6 +24,9 @@
  */
 
 namespace mod_workshop\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +80,7 @@ class assessment_evaluations_reset extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/workshop/view.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/workshop/view.php', array('id' => $this->contextinstanceid));
     }
 
     /**
@@ -90,7 +93,7 @@ class assessment_evaluations_reset extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['workshopid'])) {
-            throw new \coding_exception('The \'workshopid\' value must be set in other.');
+            throw new coding_exception('The \'workshopid\' value must be set in other.');
         }
     }
 

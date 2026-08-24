@@ -23,6 +23,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+use core_cache\helper;
+use core_table\output\html_table;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once('autogroup_form.php');
@@ -35,13 +43,13 @@ $courseid = required_param('courseid', PARAM_INT);
 $PAGE->set_url('/group/autogroup.php', array('courseid' => $courseid));
 
 if (!$course = $DB->get_record('course', array('id'=>$courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 // Make sure that the user has permissions to manage groups.
 require_login($course);
 
-$context       = context_course::instance($courseid);
+$context       = course::instance($courseid);
 require_capability('moodle/course:managegroups', $context);
 
 $returnurl = $CFG->wwwroot.'/group/index.php?id='.$course->id;
@@ -53,7 +61,7 @@ $strautocreategroups = get_string('autocreategroups', 'group');
 $PAGE->set_title($strgroups);
 $PAGE->set_heading($course->fullname. ': '.$strgroups);
 $PAGE->set_pagelayout('admin');
-navigation_node::override_active_url(new moodle_url('/group/index.php', array('id' => $courseid)));
+navigation_node::override_active_url(new url('/group/index.php', array('id' => $courseid)));
 
 // Print the page and form
 $preview = '';
@@ -83,7 +91,7 @@ if ($editform->is_cancelled()) {
         case 'idnumber':
             $orderby = 'idnumber'; break;
         default:
-            throw new \moodle_exception('unknoworder');
+            throw new moodle_exception('unknoworder');
     }
     $source = array();
     if ($data->cohortid) {
@@ -247,7 +255,7 @@ if ($editform->is_cancelled()) {
         }
 
         // Invalidate the course groups cache seeing as we've changed it.
-        cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
+        helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
 
         if ($failed) {
             foreach ($createdgroups as $groupid) {
@@ -262,8 +270,8 @@ if ($editform->is_cancelled()) {
     }
 }
 
-$PAGE->navbar->add($strparticipants, new moodle_url('/user/index.php', array('id'=>$courseid)));
-$PAGE->navbar->add($strgroups, new moodle_url('/group/index.php', array('id'=>$courseid)));
+$PAGE->navbar->add($strparticipants, new url('/user/index.php', array('id'=>$courseid)));
+$PAGE->navbar->add($strgroups, new url('/group/index.php', array('id'=>$courseid)));
 $PAGE->navbar->add($strautocreategroups);
 
 echo $OUTPUT->header();

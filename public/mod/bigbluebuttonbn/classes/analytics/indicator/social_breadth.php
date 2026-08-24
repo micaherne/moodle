@@ -25,8 +25,8 @@
 
 namespace mod_bigbluebuttonbn\analytics\indicator;
 
-use cm_info;
-use lang_string;
+use core_course\cm_info;
+use core\lang_string;
 
 /**
  * Social breadth indicator - BigBlueButtonBN.

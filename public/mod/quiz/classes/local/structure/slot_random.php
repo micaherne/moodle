@@ -91,7 +91,7 @@ class slot_random {
 
         if (empty($this->quiz)) {
             if (empty($this->record->quizid)) {
-                throw new \coding_exception('quizid is not set.');
+                throw new coding_exception('quizid is not set.');
             }
             $this->quiz = $DB->get_record('quiz', ['id' => $this->record->quizid]);
         }

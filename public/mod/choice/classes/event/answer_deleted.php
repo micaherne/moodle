@@ -24,6 +24,10 @@
 
 namespace mod_choice\event;
 
+use core\context\module;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -56,7 +60,7 @@ class answer_deleted extends \core\event\base {
         global $USER;
         $eventdata = array();
         $eventdata['objectid'] = $choiceanswer->id;
-        $eventdata['context'] = \context_module::instance($cm->id);
+        $eventdata['context'] = module::instance($cm->id);
         $eventdata['userid'] = $USER->id;
         $eventdata['courseid'] = $course->id;
         $eventdata['relateduserid'] = $choiceanswer->userid;
@@ -96,7 +100,7 @@ class answer_deleted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/choice/view.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/choice/view.php', array('id' => $this->contextinstanceid));
     }
 
     /**
@@ -120,11 +124,11 @@ class answer_deleted extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['choiceid'])) {
-            throw new \coding_exception('The \'choiceid\' value must be set in other.');
+            throw new coding_exception('The \'choiceid\' value must be set in other.');
         }
 
         if (!isset($this->other['optionid'])) {
-            throw new \coding_exception('The \'optionid\' value must be set in other.');
+            throw new coding_exception('The \'optionid\' value must be set in other.');
         }
     }
 

@@ -52,7 +52,7 @@ use core\exception\moodle_exception;
 use core\output\notification;
 use core\output\single_button;
 use core\url;
-use html_writer;
+use core\output\html_writer;
 use stdClass;
 
 /**

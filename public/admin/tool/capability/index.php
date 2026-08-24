@@ -22,12 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/capability/locallib.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 // Get URL parameters.
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 $contextid = optional_param('context', $systemcontext->id, PARAM_INT);
 
 // Check permissions.
@@ -127,7 +130,7 @@ function print_report_tree($contextid, $contexts, $allroles) {
 
     // Start the list item, and print the context name as a link to the place to
     // make changes.
-    if ($contextid == context_system::instance()->id) {
+    if ($contextid == system::instance()->id) {
         $url = "$CFG->wwwroot/$CFG->admin/roles/manage.php";
         $title = get_string('changeroles', 'tool_capability');
     } else {

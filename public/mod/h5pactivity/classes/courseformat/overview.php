@@ -16,7 +16,7 @@
 
 namespace mod_h5pactivity\courseformat;
 
-use cm_info;
+use core_course\cm_info;
 use core_courseformat\local\overview\overviewitem;
 use core\output\action_link;
 use core\output\local\properties\text_align;

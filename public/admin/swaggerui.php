@@ -25,6 +25,7 @@
 require('../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
+use core\output\html_writer;
 use core\url;
 
 $swaggerversion = '5.32.5';

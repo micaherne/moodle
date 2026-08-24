@@ -24,7 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\output\html_writer;
 use core\report_helper;
+use core\url;
 
 require('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
@@ -40,14 +44,14 @@ if (!empty($id)) {
     $course = $DB->get_record('course', ['id' => $id], '*');
     if ($course) {
         require_login($course);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $coursename = format_string($course->fullname, true, ['context' => $context]);
     }
 }
 
 if (empty($course)) {
     admin_externalpage_setup('reportloglive', '', null, '', ['pagelayout' => 'report']);
-    $context = context_system::instance();
+    $context = system::instance();
     $coursename = format_string($SITE->fullname, true, ['context' => $context]);
 }
 require_capability('report/loglive:view', $context);
@@ -62,7 +66,7 @@ if ($page != 0) {
 if ($logreader !== '') {
     $params['logreader'] = $logreader;
 }
-$url = new moodle_url("/report/loglive/index.php", $params);
+$url = new url("/report/loglive/index.php", $params);
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');

@@ -25,6 +25,7 @@
 
 namespace mod_h5pactivity\local;
 
+use core\context\module;
 use core_xapi\handler;
 use stdClass;
 use core_xapi\local\statement;
@@ -84,7 +85,7 @@ class attempt {
             return null;
         }
         // Remove any xAPI State associated to this attempt.
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $xapihandler = handler::create('mod_h5pactivity');
         $xapihandler->wipe_states($context->id, $user->id);
 

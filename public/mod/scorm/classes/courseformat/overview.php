@@ -16,7 +16,7 @@
 
 namespace mod_scorm\courseformat;
 
-use cm_info;
+use core_course\cm_info;
 use core_calendar\output\humandate;
 use core_courseformat\local\overview\overviewitem;
 use core_courseformat\output\local\overview\overviewdialog;

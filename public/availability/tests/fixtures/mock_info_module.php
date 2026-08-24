@@ -24,6 +24,10 @@
 
 namespace core_availability;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -46,7 +50,7 @@ class mock_info_module extends info_module {
      * @param int $userid Userid for modinfo (if used)
      * @param \cm_info $cm Course-module object
      */
-    public function __construct($userid = 0, ?\cm_info $cm = null) {
+    public function __construct($userid = 0, ?cm_info $cm = null) {
         parent::__construct($cm);
         $this->userid = $userid;
         $this->cm = $cm;
@@ -67,7 +71,7 @@ class mock_info_module extends info_module {
      * @return \context Context for this item
      */
     public function get_context() {
-        return \context_course::instance($this->get_course()->id);
+        return course::instance($this->get_course()->id);
     }
 
     /**
@@ -100,7 +104,7 @@ class mock_info_module extends info_module {
         // Allow modinfo usage outside is_available etc., so we can use this
         // to directly call into condition is_available.
         if (!$this->userid) {
-            throw new \coding_exception('Need to set mock_info userid');
+            throw new coding_exception('Need to set mock_info userid');
         }
         return get_fast_modinfo($this->course, $this->userid);
     }
@@ -109,7 +113,7 @@ class mock_info_module extends info_module {
      * Override course-module info.
      * @param \cm_info $cm
      */
-    public function set_cm(\cm_info $cm) {
+    public function set_cm(cm_info $cm) {
         $this->cm = $cm;
     }
 }

@@ -18,7 +18,7 @@ namespace core\output;
 
 use core\exception\coding_exception;
 use moodle_page;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -137,7 +137,7 @@ class paging_bar implements renderable, templatable {
 
             if ($this->page > 0) {
                 $this->previouslink = html_writer::link(
-                    new moodle_url($this->baseurl, [$this->pagevar => $pagenum]),
+                    new url($this->baseurl, [$this->pagevar => $pagenum]),
                     get_string('previous'),
                     ['class' => 'previous'],
                 );
@@ -153,7 +153,7 @@ class paging_bar implements renderable, templatable {
                 $currpage = $this->page - round($this->maxdisplay / 3);
 
                 $this->firstlink = html_writer::link(
-                    new moodle_url($this->baseurl, [$this->pagevar => 0]),
+                    new url($this->baseurl, [$this->pagevar => 0]),
                     '1',
                     ['class' => 'first'],
                 );
@@ -169,7 +169,7 @@ class paging_bar implements renderable, templatable {
                 if ($this->page == $currpage) {
                     $this->pagelinks[] = html_writer::span($displaypage, 'current-page');
                 } else {
-                    $pagelink = html_writer::link(new moodle_url($this->baseurl, [$this->pagevar => $currpage]), $displaypage);
+                    $pagelink = html_writer::link(new url($this->baseurl, [$this->pagevar => $currpage]), $displaypage);
                     $this->pagelinks[] = $pagelink;
                 }
 
@@ -180,7 +180,7 @@ class paging_bar implements renderable, templatable {
             if ($currpage < $lastpage) {
                 $lastpageactual = $lastpage - 1;
                 $this->lastlink = html_writer::link(
-                    new moodle_url($this->baseurl, [$this->pagevar => $lastpageactual]),
+                    new url($this->baseurl, [$this->pagevar => $lastpageactual]),
                     $lastpage,
                     ['class' => 'last'],
                 );
@@ -190,7 +190,7 @@ class paging_bar implements renderable, templatable {
 
             if ($pagenum != $lastpage) {
                 $this->nextlink = html_writer::link(
-                    new moodle_url($this->baseurl, [$this->pagevar => $pagenum]),
+                    new url($this->baseurl, [$this->pagevar => $pagenum]),
                     get_string('next'),
                     ['class' => 'next'],
                 );
@@ -222,7 +222,7 @@ class paging_bar implements renderable, templatable {
         if ($this->page > 0) {
             $data->previous = [
                 'page' => $this->page,
-                'url' => (new moodle_url($this->baseurl, [$this->pagevar => $this->page - 1]))->out(false),
+                'url' => (new url($this->baseurl, [$this->pagevar => $this->page - 1]))->out(false),
             ];
         }
 
@@ -231,7 +231,7 @@ class paging_bar implements renderable, templatable {
             $currpage = $this->page - round($this->maxdisplay / 3);
             $data->first = [
                 'page' => 1,
-                'url' => (new moodle_url($this->baseurl, [$this->pagevar => 0]))->out(false),
+                'url' => (new url($this->baseurl, [$this->pagevar => 0]))->out(false),
             ];
         }
 
@@ -246,7 +246,7 @@ class paging_bar implements renderable, templatable {
             $displaypage = $currpage + 1;
 
             $iscurrent = $this->page == $currpage;
-            $link = new moodle_url($this->baseurl, [$this->pagevar => $currpage]);
+            $link = new url($this->baseurl, [$this->pagevar => $currpage]);
 
             $data->pages[] = [
                 'page' => $displaypage,
@@ -261,14 +261,14 @@ class paging_bar implements renderable, templatable {
         if ($currpage < $lastpage) {
             $data->last = [
                 'page' => $lastpage,
-                'url' => (new moodle_url($this->baseurl, [$this->pagevar => $lastpage - 1]))->out(false),
+                'url' => (new url($this->baseurl, [$this->pagevar => $lastpage - 1]))->out(false),
             ];
         }
 
         if ($this->page + 1 != $lastpage) {
             $data->next = [
                 'page' => $this->page + 2,
-                'url' => (new moodle_url($this->baseurl, [$this->pagevar => $this->page + 1]))->out(false),
+                'url' => (new url($this->baseurl, [$this->pagevar => $this->page + 1]))->out(false),
             ];
         }
 

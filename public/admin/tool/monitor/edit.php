@@ -21,6 +21,10 @@
  * @copyright  2014 onwards Simey Lameze <simey@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\course;
+use core\context\system;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -30,7 +34,7 @@ $courseid = optional_param('courseid', 0, PARAM_INT);
 // Validate course id.
 if (empty($courseid)) {
     require_login(null, false);
-    $context = context_system::instance();
+    $context = system::instance();
     $coursename = format_string($SITE->fullname, true, array('context' => $context));
     $PAGE->set_context($context);
     $PAGE->set_primary_active_tab('siteadminnode');
@@ -38,7 +42,7 @@ if (empty($courseid)) {
 } else {
     $course = get_course($courseid);
     require_login($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     $coursename = format_string($course->fullname, true, array('context' => $context));
 }
 
@@ -46,8 +50,8 @@ if (empty($courseid)) {
 require_capability('tool/monitor:managerules', $context);
 
 // Set up the page.
-$url = new moodle_url("/admin/tool/monitor/edit.php", array('courseid' => $courseid, 'ruleid' => $ruleid));
-$manageurl = new moodle_url("/admin/tool/monitor/managerules.php", array('courseid' => $courseid));
+$url = new url("/admin/tool/monitor/edit.php", array('courseid' => $courseid, 'ruleid' => $ruleid));
+$manageurl = new url("/admin/tool/monitor/managerules.php", array('courseid' => $courseid));
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');
 $PAGE->set_title($coursename);
@@ -95,7 +99,7 @@ $mform = new tool_monitor\rule_form(null, array('eventlist' => $eventlist, 'plug
         'courseid' => $courseid, 'subscriptioncount' => $subscriptioncount));
 
 if ($mform->is_cancelled()) {
-    redirect(new moodle_url('/admin/tool/monitor/managerules.php', array('courseid' => $courseid)));
+    redirect(new url('/admin/tool/monitor/managerules.php', array('courseid' => $courseid)));
     exit();
 }
 

@@ -22,11 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     // Display Course Categories on the recently accessed courses block items.
-    $settings->add(new admin_setting_configcheckbox(
+    $settings->add(new configcheckbox(
         'block_recentlyaccessedcourses/displaycategories',
         get_string('displaycategories', 'block_recentlyaccessedcourses'),
         get_string('displaycategories_help', 'block_recentlyaccessedcourses'),

@@ -22,6 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once '../../../config.php';
 require_once $CFG->dirroot.'/grade/lib.php';
 require_once $CFG->dirroot.'/grade/report/lib.php';
@@ -32,30 +38,30 @@ $id       = optional_param('id', 0, PARAM_INT);
 
 $PAGE->set_url('/grade/edit/scale/edit.php', array('id' => $id, 'courseid' => $courseid));
 $PAGE->set_pagelayout('admin');
-navigation_node::override_active_url(new moodle_url('/grade/edit/scale/index.php',
+navigation_node::override_active_url(new url('/grade/edit/scale/index.php',
     array('id' => $courseid)));
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 
 // a bit complex access control :-O
 if ($id) {
     /// editing existing scale
     if (!$scale_rec = $DB->get_record('scale', array('id' => $id))) {
-        throw new \moodle_exception('invalidscaleid');
+        throw new moodle_exception('invalidscaleid');
     }
     if ($scale_rec->courseid) {
         $scale_rec->standard = 0;
         if (!$course = $DB->get_record('course', array('id' => $scale_rec->courseid))) {
-            throw new \moodle_exception('invalidcourseid');
+            throw new moodle_exception('invalidcourseid');
         }
         require_login($course);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         require_capability('moodle/course:managescales', $context);
         $courseid = $course->id;
     } else {
         if ($courseid) {
             if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-                throw new \moodle_exception('invalidcourseid');
+                throw new moodle_exception('invalidcourseid');
             }
         }
         $scale_rec->standard = 1;
@@ -67,13 +73,13 @@ if ($id) {
 } else if ($courseid){
     /// adding new scale from course
     if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
     $scale_rec = new stdClass();
     $scale_rec->standard = 0;
     $scale_rec->courseid = $courseid;
     require_login($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     require_capability('moodle/course:managescales', $context);
 
 } else {

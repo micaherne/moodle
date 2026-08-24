@@ -24,6 +24,8 @@
 
 namespace assignfeedback_editpdf;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 defined('MOODLE_INTERNAL') || die();
@@ -601,7 +603,7 @@ class pdf extends Fpdi {
                 $fullerror .= htmlspecialchars($result, ENT_COMPAT) . "\n\n";
                 $fullerror .= get_string('output', 'assignfeedback_editpdf')."\n";
                 $fullerror .= htmlspecialchars(implode("\n", $output), ENT_COMPAT) . '</pre>';
-                throw new \moodle_exception('errorgenerateimage', 'assignfeedback_editpdf', '', $fullerror);
+                throw new moodle_exception('errorgenerateimage', 'assignfeedback_editpdf', '', $fullerror);
             }
         }
 
@@ -614,15 +616,15 @@ class pdf extends Fpdi {
      */
     protected function precheck_generate_image() {
         if (!$this->filename) {
-            throw new \coding_exception('Attempting to generate a page image without first setting the PDF filename');
+            throw new coding_exception('Attempting to generate a page image without first setting the PDF filename');
         }
 
         if (!$this->imagefolder) {
-            throw new \coding_exception('Attempting to generate a page image without first specifying the image output folder');
+            throw new coding_exception('Attempting to generate a page image without first specifying the image output folder');
         }
 
         if (!is_dir($this->imagefolder)) {
-            throw new \coding_exception('The specified image output folder is not a valid folder');
+            throw new coding_exception('The specified image output folder is not a valid folder');
         }
         return true;
     }
@@ -777,7 +779,7 @@ class pdf extends Fpdi {
 
         $errorfile = $CFG->dirroot . self::BLANK_PDF;
         if (!file_exists($errorfile)) {
-            throw new \coding_exception("Blank PDF not found", "File path" . $errorfile);
+            throw new coding_exception("Blank PDF not found", "File path" . $errorfile);
         }
 
         $tmperrorimagefolder = make_request_directory();
@@ -852,7 +854,7 @@ class pdf extends Fpdi {
         $pdf->set_image_folder($testimagefolder);
         try {
             $pdf->get_image(0);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $ret->status = self::GSPATH_ERROR;
             $ret->message = $e->getMessage();
         }

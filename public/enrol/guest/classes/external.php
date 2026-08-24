@@ -24,6 +24,8 @@
  * @since      Moodle 3.1
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_description;
 use core_external\external_function_parameters;
@@ -77,7 +79,7 @@ class enrol_guest_external extends external_api {
             throw new moodle_exception('invaliddata', 'error');
         }
 
-        self::validate_context(context_system::instance());
+        self::validate_context(system::instance());
         $enrolinstance = $DB->get_record('enrol', array('id' => $params['instanceid']), '*', MUST_EXIST);
 
         $course = $DB->get_record('course', array('id' => $enrolinstance->courseid), '*', MUST_EXIST);

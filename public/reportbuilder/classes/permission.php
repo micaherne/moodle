@@ -18,8 +18,8 @@ declare(strict_types=1);
 
 namespace core_reportbuilder;
 
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 use core_reportbuilder\exception\report_access_exception;
 use core_reportbuilder\local\helpers\audience;
 use core_reportbuilder\local\models\report;
@@ -58,7 +58,7 @@ class permission {
         global $CFG;
 
         if ($context === null) {
-            $context = context_system::instance();
+            $context = system::instance();
         }
 
         return !empty($CFG->enablecustomreports) && has_any_capability([
@@ -162,7 +162,7 @@ class permission {
         global $CFG;
 
         if ($context === null) {
-            $context = context_system::instance();
+            $context = system::instance();
         }
 
         return !empty($CFG->enablecustomreports) && has_any_capability([

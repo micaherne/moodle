@@ -16,6 +16,9 @@
 
 namespace qbank_comment;
 
+use core\context\system;
+use core\output\html_writer;
+use core_comment\manager;
 use core_question\local\bank\column_base;
 use question_bank;
 
@@ -85,7 +88,7 @@ class comment_count_column extends column_base {
     protected function display_content($question, $rowclasses): void {
         global $DB;
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $args = new \stdClass;
         $args->contextid = $syscontext->id;
@@ -104,7 +107,7 @@ class comment_count_column extends column_base {
         $attributes = [];
 
         // Build up the comment object to see if we have correct permissions to post.
-        $comment = new \comment($args);
+        $comment = new manager($args);
         if (question_has_capability_on($question, 'comment') && $comment->can_post()) {
             $tag = 'a';
             $target = 'questioncommentpreview_' . $question->id;
@@ -118,7 +121,7 @@ class comment_count_column extends column_base {
         } else {
             $tag = 'span';
         }
-        echo \html_writer::tag($tag, $commentcount, $attributes);
+        echo html_writer::tag($tag, $commentcount, $attributes);
     }
 
     public function get_extra_classes(): array {

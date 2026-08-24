@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once('edit_form.php');
@@ -34,29 +41,29 @@ $returnurl = optional_param('returnurl', '', PARAM_LOCALURL); // A return URL. r
 if ($returnto === 'url' && confirm_sesskey() && $returnurl) {
     // If returnto is 'url' then $returnurl may be used as the destination to return to after saving or cancelling.
     // Sesskey must be specified, and would be set by the form anyway.
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 } else {
     if (!empty($id)) {
-        $returnurl = new moodle_url($CFG->wwwroot . '/course/view.php', array('id' => $id));
+        $returnurl = new url($CFG->wwwroot . '/course/view.php', array('id' => $id));
     } else {
-        $returnurl = new moodle_url($CFG->wwwroot . '/course/');
+        $returnurl = new url($CFG->wwwroot . '/course/');
     }
     if ($returnto !== 0) {
         switch ($returnto) {
             case 'category':
-                $returnurl = new moodle_url($CFG->wwwroot . '/course/index.php', array('categoryid' => $categoryid));
+                $returnurl = new url($CFG->wwwroot . '/course/index.php', array('categoryid' => $categoryid));
                 break;
             case 'catmanage':
-                $returnurl = new moodle_url($CFG->wwwroot . '/course/management.php', array('categoryid' => $categoryid));
+                $returnurl = new url($CFG->wwwroot . '/course/management.php', array('categoryid' => $categoryid));
                 break;
             case 'topcatmanage':
-                $returnurl = new moodle_url($CFG->wwwroot . '/course/management.php');
+                $returnurl = new url($CFG->wwwroot . '/course/management.php');
                 break;
             case 'topcat':
-                $returnurl = new moodle_url($CFG->wwwroot . '/course/');
+                $returnurl = new url($CFG->wwwroot . '/course/');
                 break;
             case 'pending':
-                $returnurl = new moodle_url($CFG->wwwroot . '/course/pending.php');
+                $returnurl = new url($CFG->wwwroot . '/course/pending.php');
                 break;
         }
     }
@@ -81,7 +88,7 @@ if ($id) {
     // Editing course.
     if ($id == SITEID){
         // Don't allow editing of  'site course' using this from.
-        throw new \moodle_exception('cannoteditsiteform');
+        throw new moodle_exception('cannoteditsiteform');
     }
 
     // Login to the course and retrieve also all fields defined by course format.
@@ -90,7 +97,7 @@ if ($id) {
     $course = course_get_format($course)->get_course();
 
     $category = $DB->get_record('course_categories', array('id'=>$course->category), '*', MUST_EXIST);
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
     require_capability('moodle/course:update', $coursecontext);
 
 } else if ($categoryid) {
@@ -98,7 +105,7 @@ if ($id) {
     $course = null;
     require_login();
     $category = $DB->get_record('course_categories', array('id'=>$categoryid), '*', MUST_EXIST);
-    $catcontext = context_coursecat::instance($category->id);
+    $catcontext = coursecat::instance($category->id);
     require_capability('moodle/course:create', $catcontext);
     $PAGE->set_context($catcontext);
 
@@ -107,7 +114,7 @@ if ($id) {
     $course = null;
     require_login();
     $category = core_course_category::get_default();
-    $catcontext = context_coursecat::instance($category->id);
+    $catcontext = coursecat::instance($category->id);
     require_capability('moodle/course:create', $catcontext);
     $PAGE->set_context($catcontext);
 }
@@ -161,7 +168,7 @@ if ($editform->is_cancelled()) {
         $course = create_course($data, $editoroptions);
 
         // Get the context of the newly created course.
-        $context = context_course::instance($course->id, MUST_EXIST);
+        $context = course::instance($course->id, MUST_EXIST);
 
         // Admins have all capabilities, so is_viewing is returning true for admins.
         // We are checking 'enroladminnewcourse' setting to decide to enrol them or not.
@@ -179,12 +186,12 @@ if ($editform->is_cancelled()) {
         }
 
         // The URL to take them to if they chose save and display.
-        $courseurl = new moodle_url('/course/view.php', array('id' => $course->id));
+        $courseurl = new url('/course/view.php', array('id' => $course->id));
     } else {
         // Save any changes to the files used in the editor.
         update_course($data, $editoroptions);
         // Set the URL to take them too if they choose save and display.
-        $courseurl = new moodle_url('/course/view.php', array('id' => $course->id));
+        $courseurl = new url('/course/view.php', array('id' => $course->id));
     }
 
     if (isset($data->saveanddisplay)) {
@@ -215,16 +222,16 @@ if (!empty($course->id)) {
     // The user is adding a course, this page isn't presented in the site navigation/admin.
     // Adding a new course is part of course category management territory.
     // We'd prefer to use the management interface URL without args.
-    $managementurl = new moodle_url('/course/management.php');
+    $managementurl = new url('/course/management.php');
     // These are the caps required in order to see the management interface.
     $managementcaps = array('moodle/category:manage', 'moodle/course:create');
-    if ($categoryid && !has_any_capability($managementcaps, context_system::instance())) {
+    if ($categoryid && !has_any_capability($managementcaps, system::instance())) {
         // If the user doesn't have either manage caps then they can only manage within the given category.
         $managementurl->param('categoryid', $categoryid);
     }
     // Because the course category interfaces are buried in the admin tree and that is loaded by ajax
     // we need to manually tell the navigation we need it loaded. The second arg does this.
-    navigation_node::override_active_url(new moodle_url('/course/index.php', ['categoryid' => $category->id]), true);
+    navigation_node::override_active_url(new url('/course/index.php', ['categoryid' => $category->id]), true);
     $PAGE->set_primary_active_tab('home');
     $PAGE->navbar->add(get_string('coursemgmt', 'admin'), $managementurl);
 

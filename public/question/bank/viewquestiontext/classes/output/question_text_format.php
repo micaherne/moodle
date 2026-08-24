@@ -16,9 +16,12 @@
 
 namespace qbank_viewquestiontext\output;
 
+use core\output\renderable;
+use core\output\templatable;
+use core\url;
 use core_question\local\bank\view;
 use qbank_viewquestiontext\question_text_row;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Question text format selector.
@@ -28,7 +31,7 @@ use renderer_base;
  * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class question_text_format implements \renderable, \templatable {
+class question_text_format implements renderable, templatable {
     /**
      * @var int Question text is off.
      */
@@ -50,7 +53,7 @@ class question_text_format implements \renderable, \templatable {
     /**
      * @var \moodle_url The return URL for redirecting back to the current question bank page.
      */
-    protected \moodle_url $returnurl;
+    protected url $returnurl;
 
     /**
      * Store the returnurl and the current preference value.
@@ -60,13 +63,13 @@ class question_text_format implements \renderable, \templatable {
      */
     public function __construct(view $qbank) {
         $row = new question_text_row($qbank);
-        $this->returnurl = new \moodle_url($qbank->returnurl);
-        $this->preference = question_get_display_preference($row->get_preference_key(), 0, PARAM_INT, new \moodle_url(''));
+        $this->returnurl = new url($qbank->returnurl);
+        $this->preference = question_get_display_preference($row->get_preference_key(), 0, PARAM_INT, new url(''));
     }
 
     public function export_for_template(renderer_base $output): array {
         return [
-            'formaction' => new \moodle_url('/question/bank/viewquestiontext/save.php'),
+            'formaction' => new url('/question/bank/viewquestiontext/save.php'),
             'sesskey' => sesskey(),
             'returnurl' => $this->returnurl->out(false),
             'options' => [

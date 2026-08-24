@@ -18,11 +18,12 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\table;
 
-use action_menu;
-use action_menu_filler;
+use core\output\action_menu;
+use core\output\action_menu\filler;
+use core\url;
 use core_table\local\filter\filterset;
-use html_writer;
-use moodle_exception;
+use core\output\html_writer;
+use core\exception\moodle_exception;
 use stdClass;
 use core_reportbuilder\{manager, system_report};
 use core_reportbuilder\local\models\report;
@@ -261,17 +262,17 @@ class system_report_table extends base_report_table {
 
         $actions = array_filter($this->report->get_actions(), function($action) use ($row) {
             // Only return dividers and action items who can be displayed for current users.
-            return $action instanceof action_menu_filler || $action->get_action_link($row);
+            return $action instanceof filler || $action->get_action_link($row);
         });
 
         $totalactions = count($actions);
         $actionvalues = array_values($actions);
         foreach ($actionvalues as $position => $action) {
-            if ($action instanceof action_menu_filler) {
+            if ($action instanceof filler) {
                 $ispreviousdivider = array_key_exists($position - 1, $actionvalues) &&
-                    ($actionvalues[$position - 1] instanceof action_menu_filler);
+                    ($actionvalues[$position - 1] instanceof filler);
                 $isnextdivider = array_key_exists($position + 1, $actionvalues) &&
-                    ($actionvalues[$position + 1] instanceof action_menu_filler);
+                    ($actionvalues[$position + 1] instanceof filler);
                 $isfirstdivider = ($position === 0);
                 $islastdivider = ($position === $totalactions - 1);
 
@@ -303,7 +304,7 @@ class system_report_table extends base_report_table {
         if ($this->report->can_be_downloaded() && !$this->is_downloading()) {
             return $OUTPUT->download_dataformat_selector(
                 get_string('downloadas', 'table'),
-                new \moodle_url('/reportbuilder/download.php'),
+                new url('/reportbuilder/download.php'),
                 'download',
                 [
                     'id' => $this->persistent->get('id'),

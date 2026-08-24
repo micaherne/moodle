@@ -24,6 +24,11 @@
 
 namespace core_analytics;
 
+use core\context;
+use core\context\course as context_course;
+use core_cache\cache;
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/lib.php');
@@ -139,7 +144,7 @@ class course implements \core_analytics\analysable {
      * @param \context|null $context
      * @return void
      */
-    public function __construct($course, ?\context $context = null) {
+    public function __construct($course, ?context $context = null) {
 
         if (is_scalar($course)) {
             $this->course = new \stdClass();
@@ -162,7 +167,7 @@ class course implements \core_analytics\analysable {
      * @param \context|null $context
      * @return \core_analytics\course
      */
-    public static function instance($course, ?\context $context = null) {
+    public static function instance($course, ?context $context = null) {
 
         $courseid = $course;
         if (!is_scalar($courseid)) {
@@ -206,7 +211,7 @@ class course implements \core_analytics\analysable {
         $this->now = time();
 
         // Get the course users, including users assigned to student and teacher roles at an higher context.
-        $cache = \cache::make_from_params(\cache_store::MODE_REQUEST, 'core_analytics', 'rolearchetypes');
+        $cache = cache::make_from_params(store::MODE_REQUEST, 'core_analytics', 'rolearchetypes');
 
         // Flag the instance as loaded.
         $this->loaded = true;
@@ -240,7 +245,7 @@ class course implements \core_analytics\analysable {
      */
     public function get_context() {
         if ($this->coursecontext === null) {
-            $this->coursecontext = \context_course::instance($this->course->id);
+            $this->coursecontext = context_course::instance($this->course->id);
         }
         return $this->coursecontext;
     }

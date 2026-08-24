@@ -24,6 +24,9 @@
  */
 namespace core\task;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -110,7 +113,7 @@ class logmanager {
 
         if (self::is_current_output_buffer()) {
             // We cannot capture when we are already capturing.
-            throw new \coding_exception('Logging is already in progress for task "' . get_class(self::$task) . '". ' .
+            throw new coding_exception('Logging is already in progress for task "' . get_class(self::$task) . '". ' .
                 'Nested logging is not supported.');
         }
 
@@ -211,7 +214,7 @@ class logmanager {
      * @param   string      $classname The task class to fetch for
      * @return  \moodle_url
      */
-    public static function get_url_for_task_class(string $classname): \moodle_url {
+    public static function get_url_for_task_class(string $classname): url {
         $loggerclass = self::get_logger_classname();
 
         return $loggerclass::get_url_for_task_class($classname);

@@ -16,6 +16,7 @@
 
 namespace aiprovider_ollama;
 
+use core\exception\coding_exception;
 use core_ai\aimodel\base;
 
 /**
@@ -37,7 +38,7 @@ class helper {
         $modelclasses = \core_component::get_component_classes_in_namespace('aiprovider_ollama', 'aimodel');
         foreach ($modelclasses as $class => $path) {
             if (!class_exists($class) || !is_a($class, base::class, true)) {
-                throw new \coding_exception("Model class not valid: {$class}");
+                throw new coding_exception("Model class not valid: {$class}");
             }
             $models[] = $class;
         }

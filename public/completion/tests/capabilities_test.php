@@ -16,6 +16,8 @@
 
 namespace core_completion;
 
+use core\context\course;
+
 /**
  * Tests that completion works without requiring unnecessary capabilities.
  *
@@ -31,7 +33,7 @@ final class capabilities_test extends \advanced_testcase {
     public function test_creation_with_no_calendar_capabilities(): void {
         $this->resetAfterTest();
         $course = self::getDataGenerator()->create_course(['enablecompletion' => 1]);
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = self::getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $roleid = self::getDataGenerator()->create_role();
         self::getDataGenerator()->role_assign($roleid, $user->id, $context->id);

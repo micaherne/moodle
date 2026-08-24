@@ -23,6 +23,11 @@
  * @package mod_data
  */
 
+use core\context\module;
+use core\exception\coding_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once('../../config.php');
 require_once('lib.php');
 require_once($CFG->libdir.'/csvlib.class.php');
@@ -35,7 +40,7 @@ $fielddelimiter  = optional_param('fielddelimiter', ',', PARAM_CLEANHTML); // ch
 $fieldenclosure = optional_param('fieldenclosure', '', PARAM_CLEANHTML);   // characters used as record delimiters for csv file import
 $redirectbackto = optional_param('backto', '', PARAM_LOCALURL); // The location to redirect back to.
 
-$url = new moodle_url('/mod/data/import.php');
+$url = new url('/mod/data/import.php');
 if ($rid !== 0) {
     $url->param('rid', $rid);
 }
@@ -63,15 +68,15 @@ if ($id) {
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/data:manageentries', $context);
 
-$form = new mod_data_import_form(new moodle_url('/mod/data/import.php'), ['dataid' => $data->id,
+$form = new mod_data_import_form(new url('/mod/data/import.php'), ['dataid' => $data->id,
     'backtourl' => $redirectbackto]);
 
 if ($form->is_cancelled()) {
     $redirectbackto = !empty($redirectbackto) ? $redirectbackto :
-        new \moodle_url('/mod/data/view.php', ['d' => $data->id]);
+        new url('/mod/data/view.php', ['d' => $data->id]);
     redirect($redirectbackto);
 }
 

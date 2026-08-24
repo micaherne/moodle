@@ -24,6 +24,8 @@
  * @since      Moodle 3.0
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -87,7 +89,7 @@ class mod_book_external extends external_api {
         $book = $DB->get_record('book', array('id' => $bookid), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($book, 'book');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         require_capability('mod/book:read', $context);
@@ -203,7 +205,7 @@ class mod_book_external extends external_api {
                 $bookdetails['navstyle']          = $book->navstyle;
                 $bookdetails['customtitles']      = $book->customtitles;
 
-                if (has_capability('moodle/course:manageactivities', context_module::instance($book->coursemodule))) {
+                if (has_capability('moodle/course:manageactivities', module::instance($book->coursemodule))) {
                     $bookdetails['revision']      = $book->revision;
                     $bookdetails['timecreated']   = $book->timecreated;
                     $bookdetails['timemodified']  = $book->timemodified;

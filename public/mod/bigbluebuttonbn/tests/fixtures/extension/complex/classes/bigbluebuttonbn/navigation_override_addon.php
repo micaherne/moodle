@@ -16,6 +16,9 @@
 
 namespace bbbext_complex\bigbluebuttonbn;
 
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\url;
 use mod_bigbluebuttonbn\local\extension\navigation_override_addon as navigation_override_addon_interface;
 
 /**
@@ -34,11 +37,11 @@ class navigation_override_addon implements navigation_override_addon_interface {
      * @param \navigation_node $nodenav The current navigation node.
      * @return void
      */
-    public function override_settings_navigation(\settings_navigation $settingsnav, \navigation_node $nodenav): void {
+    public function override_settings_navigation(settings_navigation $settingsnav, navigation_node $nodenav): void {
         $nodenav->add(
             get_string('settings_navigation_override', 'bbbext_complex'),
-            new \moodle_url('#'),
-            \navigation_node::TYPE_SETTING,
+            new url('#'),
+            navigation_node::TYPE_SETTING,
             null,
             'settings_navigation_override'
         );

@@ -24,6 +24,10 @@
 
 namespace core\antivirus;
 
+use core\exception\coding_exception;
+use core\url;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/iplookup/lib.php');
 
@@ -74,7 +78,7 @@ abstract class scanner {
         if (property_exists($this->config, $property)) {
             return $this->config->$property;
         }
-        throw new \coding_exception('Config property "' . $property . '" doesn\'t exist');
+        throw new coding_exception('Config property "' . $property . '" doesn\'t exist');
     }
 
     /**
@@ -212,14 +216,14 @@ abstract class scanner {
             $content->contenttype = $unknown;
         }
 
-        $content->author = \core_user::is_real_user($USER->id) ? fullname($USER) . " ($USER->username)" : $unknown;
+        $content->author = user::is_real_user($USER->id) ? fullname($USER) . " ($USER->username)" : $unknown;
         $content->ipaddress = getremoteaddr();
         $geoinfo = iplookup_find_location(getremoteaddr());
         $content->geoinfo = $geoinfo['city'] . ', ' . $geoinfo['country'];
         $content->date = userdate(time(), get_string('strftimedatetimeshort'));
         $content->referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $unknown;
         $content->notice = $notice;
-        $report = new \moodle_url('/report/infectedfiles/index.php');
+        $report = new url('/report/infectedfiles/index.php');
         $content->report = $report->out();
 
         // If this is not due to a virus, we need to change the header line.

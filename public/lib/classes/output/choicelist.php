@@ -280,7 +280,7 @@ class choicelist implements named_templatable, renderable {
 
             $option['optionnumber'] = count($options) + 1;
             $option['first'] = count($options) === 0;
-            $option['optionuniqid'] = \html_writer::random_id('choice_option_');
+            $option['optionuniqid'] = html_writer::random_id('choice_option_');
 
             $options[] = $option;
         }

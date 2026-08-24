@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\navigation\navigation_node;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -35,16 +40,16 @@ defined('MOODLE_INTERNAL') || die();
  */
 function auth_oauth2_extend_navigation_user_settings(navigation_node $useraccount,
                                                      stdClass $user,
-                                                     context_user $context,
+                                                     user $context,
                                                      stdClass $course,
-                                                     context_course $coursecontext) {
+                                                     course $coursecontext) {
     global $USER;
 
     if (\auth_oauth2\api::is_enabled() && !\core\session\manager::is_loggedinas()) {
         if (has_capability('auth/oauth2:managelinkedlogins', $context) && $user->id == $USER->id) {
 
             $parent = $useraccount->parent->find('useraccount', navigation_node::TYPE_CONTAINER);
-            $parent->add(get_string('linkedlogins', 'auth_oauth2'), new moodle_url('/auth/oauth2/linkedlogins.php'));
+            $parent->add(get_string('linkedlogins', 'auth_oauth2'), new url('/auth/oauth2/linkedlogins.php'));
         }
     }
 }

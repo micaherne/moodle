@@ -16,7 +16,7 @@
 
 namespace mod_quiz\local;
 
-use cache;
+use core_cache\cache;
 
 /**
  * Manages cache operations for quiz overrides.

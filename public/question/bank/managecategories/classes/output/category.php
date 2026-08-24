@@ -16,18 +16,18 @@
 
 namespace qbank_managecategories\output;
 
-use action_menu;
-use action_menu_link;
-use context;
+use core\output\action_menu;
+use core\output\action_menu\link;
+use core\context;
 use core\plugininfo\qbank;
 use core_question\category_manager;
-use moodle_url;
-use pix_icon;
+use core\url;
+use core\output\pix_icon;
 use qbank_managecategories\helper;
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Output component for a single category
@@ -88,7 +88,7 @@ class category implements renderable, templatable {
         $courseid = $params['courseid'] ?? $this->courseid;
 
         // Each section adds html to be displayed as part of this list item.
-        $questionbankurl = new moodle_url('/question/edit.php', $params);
+        $questionbankurl = new url('/question/edit.php', $params);
         $questionbankurl->param('cat', helper::combine_id_context($this->category));
         $categoryname = format_string($this->category->name, true, ['context' => $this->context, 'escape' => false]);
         $categorylink = new category_link(
@@ -119,8 +119,8 @@ class category implements renderable, templatable {
         if ($canmanagecategory) {
             // This item display a modal for moving a category.
             // Move category modal.
-            $menu->add(new action_menu_link(
-                new \moodle_url('#'),
+            $menu->add(new link(
+                new url('#'),
                 new pix_icon(
                     't/move',
                     get_string('move'),
@@ -142,8 +142,8 @@ class category implements renderable, templatable {
             ));
 
             $thiscontext = (int) $this->category->contextid;
-            $editurl = new moodle_url('#');
-            $menu->add(new action_menu_link(
+            $editurl = new url('#');
+            $menu->add(new link(
                 $editurl,
                 new pix_icon('t/edit', 'edit'),
                 get_string('editsettings'),
@@ -162,7 +162,7 @@ class category implements renderable, templatable {
 
         // Sets up export to XML link.
         if (qbank::is_plugin_enabled('qbank_exportquestions')) {
-            $exporturl = new moodle_url(
+            $exporturl = new url(
                 '/question/bank/exportquestions/export.php',
                 ['cat' => helper::combine_id_context($this->category)]
             );
@@ -172,7 +172,7 @@ class category implements renderable, templatable {
                 $exporturl->param('cmid', $cmid);
             }
 
-            $menu->add(new action_menu_link(
+            $menu->add(new link(
                 $exporturl,
                 new pix_icon('t/download', 'download'),
                 get_string('exportasxml', 'question'),
@@ -183,7 +183,7 @@ class category implements renderable, templatable {
         // The delete action which should be last.
         if ($canmanagecategory) {
             // Sets up delete link.
-            $deleteurl = new moodle_url(
+            $deleteurl = new url(
                 '/question/bank/managecategories/category.php',
                 ['delete' => $this->category->id, 'sesskey' => sesskey()]
             );
@@ -192,7 +192,7 @@ class category implements renderable, templatable {
             } else {
                 $deleteurl->param('cmid', $cmid);
             }
-            $menu->add(new action_menu_link(
+            $menu->add(new link(
                 $deleteurl,
                 new pix_icon('t/delete', 'delete'),
                 get_string('delete'),

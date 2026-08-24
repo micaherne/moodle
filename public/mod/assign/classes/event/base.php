@@ -24,6 +24,9 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -55,10 +58,10 @@ abstract class base extends \core\event\base {
      */
     public function set_assign(\assign $assign) {
         if ($this->is_triggered()) {
-            throw new \coding_exception('set_assign() must be done before triggerring of event');
+            throw new coding_exception('set_assign() must be done before triggerring of event');
         }
         if ($assign->get_context()->id != $this->get_context()->id) {
-            throw new \coding_exception('Invalid assign isntance supplied!');
+            throw new coding_exception('Invalid assign isntance supplied!');
         }
         if ($assign->is_blind_marking()) {
             $this->data['anonymous'] = 1;
@@ -76,7 +79,7 @@ abstract class base extends \core\event\base {
      */
     public function get_assign() {
         if ($this->is_restored()) {
-            throw new \coding_exception('get_assign() is intended for event observers only');
+            throw new coding_exception('get_assign() is intended for event observers only');
         }
         if (!isset($this->assign)) {
             debugging('assign property should be initialised in each event', DEBUG_DEVELOPER);
@@ -96,7 +99,7 @@ abstract class base extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/assign/view.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/assign/view.php', array('id' => $this->contextinstanceid));
     }
 
     /**
@@ -108,7 +111,7 @@ abstract class base extends \core\event\base {
         parent::validate_data();
 
         if ($this->contextlevel != CONTEXT_MODULE) {
-            throw new \coding_exception('Context level must be CONTEXT_MODULE.');
+            throw new coding_exception('Context level must be CONTEXT_MODULE.');
         }
     }
 }

@@ -28,6 +28,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context_helper;
+use core\plugin_manager;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -337,7 +342,7 @@ function upgrade_course_letter_boundary($courseid = null) {
     }
 
     // Check to see if the system letter boundaries are borked.
-    $systemcontext = context_system::instance();
+    $systemcontext = system::instance();
     $systemneedsfreeze = upgrade_letter_boundary_needs_freeze($systemcontext);
 
     // Check the setting for showing the letter grade in a column (default is false).
@@ -413,7 +418,7 @@ function upgrade_course_letter_boundary($courseid = null) {
         if (!property_exists($CFG, $gradebookfreeze)) {
             // Check for 57 letter grade issue.
             context_helper::preload_from_record($value);
-            $coursecontext = context_course::instance($value->courseid);
+            $coursecontext = course::instance($value->courseid);
             if (upgrade_letter_boundary_needs_freeze($coursecontext)) {
                 // We have a course with a possible score standardisation problem. Flag for freeze.
                 // Flag this course as being frozen.
@@ -685,7 +690,7 @@ function upgrade_calendar_events_status(bool $output = true): array {
     global $DB;
 
     // Calculate the list of standard (core) activity plugins.
-    $plugins = core_plugin_manager::standard_plugins_list('mod');
+    $plugins = plugin_manager::standard_plugins_list('mod');
     $coremodules = "modulename IN ('" . implode("', '", $plugins) . "')";
 
     // Some query parts go here.
@@ -909,7 +914,7 @@ function upgrade_calendar_events_mtrace(string $string, bool $output): void {
  */
 function upgrade_calendar_events_get_teacherid(int $courseid): int {
 
-    if ($context = context_course::instance($courseid, IGNORE_MISSING)) {
+    if ($context = course::instance($courseid, IGNORE_MISSING)) {
         if ($havemanage = get_users_by_capability($context, 'moodle/course:manageactivities', 'u.id')) {
             return array_keys($havemanage)[0];
         }
@@ -1254,7 +1259,7 @@ function upgrade_block_set_defaultregion(
     ]);
 
     // Note: This can be time consuming!
-    \context_helper::create_instances(CONTEXT_BLOCK);
+    context_helper::create_instances(CONTEXT_BLOCK);
 }
 
 /**
@@ -2157,7 +2162,7 @@ function upgrade_migrate_classic_theme_to_boost(): void {
         'loginbackgroundimage' => 'loginbackgroundimage',
     ];
 
-    $systemcontext = \context_system::instance();
+    $systemcontext = system::instance();
     $fs = get_file_storage();
     foreach ($fileareasettings as $filearea => $setting) {
         $sourcefiles = $fs->get_area_files($systemcontext->id, 'theme_classic', $filearea, 0, 'id', false);

@@ -27,7 +27,8 @@ namespace tool_policy;
 defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
-use renderer_base;
+use core\output\renderer_base;
+use core\url;
 use tool_policy\api;
 
 /**
@@ -126,7 +127,7 @@ class policy_version_exporter extends exporter {
         ];
 
         $othervalues['acceptancescounttext'] = get_string('useracceptancecount', 'tool_policy', $a);
-        $acceptancesurl = new \moodle_url('/admin/tool/policy/acceptances.php', ['policyid' => $this->data->policyid]);
+        $acceptancesurl = new url('/admin/tool/policy/acceptances.php', ['policyid' => $this->data->policyid]);
         if ($this->data->status != policy_version::STATUS_ACTIVE) {
             $acceptancesurl->param('versionid', $this->data->id);
         }

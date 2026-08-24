@@ -27,6 +27,7 @@ namespace core_backup;
 use backup;
 use base_logger;
 use base_logger_exception;
+use core\exception\moodle_exception;
 use database_logger;
 use error_log_logger;
 use file_logger;
@@ -258,7 +259,7 @@ final class logger_test extends \basic_testcase {
         @remove_dir(dirname($file));
         // Recreate test dir
         if (!check_dir_exists(dirname($file), true, true)) {
-            throw new \moodle_exception('error_creating_temp_dir', 'error', dirname($file));
+            throw new moodle_exception('error_creating_temp_dir', 'error', dirname($file));
         }
 
         // Instantiate with date and level output, and also use the depth option

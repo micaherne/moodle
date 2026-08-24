@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,7 +78,7 @@ class grade_letter_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        $url = new \moodle_url('/grade/edit/letter/index.php');
+        $url = new url('/grade/edit/letter/index.php');
         if ($this->courseid) {
             $url->param('id', $this->contextid);
         }

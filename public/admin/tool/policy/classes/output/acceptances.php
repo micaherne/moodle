@@ -25,15 +25,18 @@
 
 namespace tool_policy\output;
 
+use core\context\system;
+use core\context\user;
+use core\output\html_writer;
 use tool_policy\api;
 
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_url;
-use renderable;
-use renderer_base;
-use single_button;
-use templatable;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\templatable;
 use tool_policy\policy_version;
 
 /**
@@ -58,7 +61,7 @@ class acceptances implements renderable, templatable {
      */
     public function __construct($userid, $returnurl = null) {
         $this->userid = $userid;
-        $this->returnurl = $returnurl ? (new moodle_url($returnurl))->out(false) : null;
+        $this->returnurl = $returnurl ? (new url($returnurl))->out(false) : null;
     }
 
     /**
@@ -70,7 +73,7 @@ class acceptances implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         $data = (object)[];
         $data->hasonbehalfagreements = false;
-        $data->pluginbaseurl = (new moodle_url('/admin/tool/policy'))->out(false);
+        $data->pluginbaseurl = (new url('/admin/tool/policy'))->out(false);
         $data->returnurl = $this->returnurl;
 
         // Get the list of policies and versions that current user is able to see
@@ -78,7 +81,7 @@ class acceptances implements renderable, templatable {
         $policies = api::get_policies_with_acceptances($this->userid);
         $versionids = [];
 
-        $canviewfullnames = has_capability('moodle/site:viewfullnames', \context_system::instance());
+        $canviewfullnames = has_capability('moodle/site:viewfullnames', system::instance());
         foreach ($policies as $policy) {
             foreach ($policy->versions as $version) {
                 $versionids[$version->id] = $version->id;
@@ -88,8 +91,8 @@ class acceptances implements renderable, templatable {
                 $version->isoptional = ($version->optional == policy_version::AGREEMENT_OPTIONAL);
                 $version->name = $version->name;
                 $version->revision = $version->revision;
-                $returnurl = new moodle_url('/admin/tool/policy/user.php', ['userid' => $this->userid]);
-                $version->viewurl = (new moodle_url('/admin/tool/policy/view.php', [
+                $returnurl = new url('/admin/tool/policy/user.php', ['userid' => $this->userid]);
+                $version->viewurl = (new url('/admin/tool/policy/view.php', [
                     'policyid' => $policy->id,
                     'versionid' => $version->id,
                     'returnurl' => $returnurl->out(false),
@@ -109,9 +112,9 @@ class acceptances implements renderable, templatable {
                     if ($onbehalf) {
                         $usermodified = (object)['id' => $acceptance->usermodified];
                         username_load_fields_from_object($usermodified, $acceptance, 'mod');
-                        $profileurl = new \moodle_url('/user/profile.php', array('id' => $usermodified->id));
-                        $version->acceptedby = \html_writer::link($profileurl, fullname($usermodified, $canviewfullnames ||
-                            has_capability('moodle/site:viewfullnames', \context_user::instance($acceptance->usermodified))));
+                        $profileurl = new url('/user/profile.php', array('id' => $usermodified->id));
+                        $version->acceptedby = html_writer::link($profileurl, fullname($usermodified, $canviewfullnames ||
+                            has_capability('moodle/site:viewfullnames', user::instance($acceptance->usermodified))));
                         $data->hasonbehalfagreements = true;
                     }
                     $version->note = format_text($acceptance->note);

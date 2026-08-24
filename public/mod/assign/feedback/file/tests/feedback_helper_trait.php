@@ -16,6 +16,8 @@
 
 namespace assignfeedback_file;
 
+use core\context\user;
+
 /**
  * Helper trait for assignfeedback_file tests.
  *
@@ -62,7 +64,7 @@ trait feedback_helper_trait {
             $grade->grader = $teacher->id;
         }
 
-        $context = \context_user::instance($teacher->id);
+        $context = user::instance($teacher->id);
 
         $draftitemid = file_get_unused_draft_itemid();
         file_prepare_draft_area($draftitemid, $context->id, 'assignfeedback_file', 'feedback_files', 1);

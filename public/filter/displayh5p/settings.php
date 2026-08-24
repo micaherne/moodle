@@ -22,10 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configtextarea;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtextarea(
+    $settings->add(new configtextarea(
         'filter_displayh5p/allowedsources',
             get_string('allowedsourceslist',
             'filter_displayh5p'),

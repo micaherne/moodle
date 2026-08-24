@@ -15,6 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\module;
+use core\context\user as context_user;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\user as core_user;
 use mod_forum\local\exporters\post as post_exporter;
 use mod_forum\local\exporters\discussion as discussion_exporter;
 use core_external\external_api;
@@ -88,7 +94,7 @@ class mod_forum_external extends external_api {
 
                 $course = $courses[$forum->course];
                 $cm = get_coursemodule_from_instance('forum', $forum->id, $course->id);
-                $context = context_module::instance($cm->id);
+                $context = module::instance($cm->id);
 
                 // Skip forums we are not allowed to see discussions.
                 if (!has_capability('mod/forum:viewdiscussion', $context)) {
@@ -398,7 +404,7 @@ class mod_forum_external extends external_api {
         $forumvault = $vaultfactory->get_forum_vault();
         $forum = $forumvault->get_from_id($forumid);
         if (!$forum) {
-            throw new \moodle_exception("Unable to find forum with id {$forumid}");
+            throw new moodle_exception("Unable to find forum with id {$forumid}");
         }
         $forumdatamapper = $legacydatamapperfactory->get_forum_data_mapper();
         $forumrecord = $forumdatamapper->to_legacy_object($forum);
@@ -409,7 +415,7 @@ class mod_forum_external extends external_api {
         $cm = get_coursemodule_from_instance('forum', $forum->get_id(), $course->id, false, MUST_EXIST);
 
         // Validate the module context. It checks everything that affects the module visibility (including groupings, etc..).
-        $modcontext = context_module::instance($cm->id);
+        $modcontext = module::instance($cm->id);
         self::validate_context($modcontext);
 
         $canseeanyprivatereply = $capabilitymanager->can_view_any_private_reply($USER);
@@ -640,7 +646,7 @@ class mod_forum_external extends external_api {
         $forum = $DB->get_record('forum', array('id' => $params['forumid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         require_capability('mod/forum:viewdiscussion', $context, null, true, 'noviewdiscussionspermission', 'forum');
@@ -706,7 +712,7 @@ class mod_forum_external extends external_api {
         list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
 
         // Validate the module context. It checks everything that affects the module visibility (including groupings, etc..).
-        $modcontext = context_module::instance($cm->id);
+        $modcontext = module::instance($cm->id);
         self::validate_context($modcontext);
 
         require_capability('mod/forum:viewdiscussion', $modcontext, null, true, 'noviewdiscussionspermission', 'forum');
@@ -828,10 +834,10 @@ class mod_forum_external extends external_api {
 
         $discussionrecord = $discussiondatamapper->to_legacy_object($discussion);
         $forumrecord = $forumdatamapper->to_legacy_object($forum);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
-        $coursecontext = \context_course::instance($forum->get_course_id());
+        $coursecontext = course::instance($forum->get_course_id());
         $discussionsubscribe = \mod_forum\subscriptions::get_user_default_subscription($forumrecord, $coursecontext,
             $cm, null);
 
@@ -1121,7 +1127,7 @@ class mod_forum_external extends external_api {
         $forum = $DB->get_record('forum', array('id' => $params['forumid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Validate options.
@@ -1292,7 +1298,7 @@ class mod_forum_external extends external_api {
         $forum = $DB->get_record('forum', array('id' => $params['forumid']), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         $status = forum_user_can_post_discussion($forum, $params['groupid'], -1, $cm, $context);
@@ -1355,7 +1361,7 @@ class mod_forum_external extends external_api {
         $forum = $DB->get_record('forum', array('id' => $params['forumid']), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance('forum', $forum->id);
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         $result = array();
@@ -1428,7 +1434,7 @@ class mod_forum_external extends external_api {
 
         if (!\mod_forum\subscriptions::is_subscribable($forumrecord)) {
             // Nothing to do. We won't actually output any content here though.
-            throw new \moodle_exception('cannotsubscribe', 'mod_forum');
+            throw new moodle_exception('cannotsubscribe', 'mod_forum');
         }
 
         $issubscribed = \mod_forum\subscriptions::is_subscribed(
@@ -1589,7 +1595,7 @@ class mod_forum_external extends external_api {
         $legacydatamapperfactory = mod_forum\local\container::get_legacy_data_mapper_factory();
         if (!$capabilitymanager->can_pin_discussions($USER)) {
             // Nothing to do. We won't actually output any content here though.
-            throw new \moodle_exception('cannotpindiscussions', 'mod_forum');
+            throw new moodle_exception('cannotpindiscussions', 'mod_forum');
         }
 
         $discussion->set_pinned($targetstate);
@@ -2387,7 +2393,7 @@ class mod_forum_external extends external_api {
         // Check permissions.
         $discussion = $DB->get_record('forum_discussions', ['id' => $discussionid], '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance('forum', $discussion->forum, $discussion->course, false, MUST_EXIST);
-        $modcontext = context_module::instance($cm->id);
+        $modcontext = module::instance($cm->id);
         self::validate_context($modcontext);
 
         require_capability('mod/forum:viewdiscussion', $modcontext, null, true, 'noviewdiscussionspermission', 'forum');

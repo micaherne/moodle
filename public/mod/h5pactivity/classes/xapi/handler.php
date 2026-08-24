@@ -16,6 +16,8 @@
 
 namespace mod_h5pactivity\xapi;
 
+use core\context;
+use core\context\module;
 use mod_h5pactivity\local\attempt;
 use mod_h5pactivity\local\manager;
 use mod_h5pactivity\event\statement_received;
@@ -23,7 +25,7 @@ use core_xapi\local\statement;
 use core_xapi\handler as handler_base;
 use core\event\base as event_base;
 use core_xapi\local\state;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -80,8 +82,8 @@ class handler extends handler_base {
         if (empty($contextid) || !is_numeric($contextid)) {
             return null;
         }
-        $context = \context::instance_by_id($contextid);
-        if (!$context instanceof \context_module) {
+        $context = context::instance_by_id($contextid);
+        if (!$context instanceof module) {
             return null;
         }
 
@@ -161,8 +163,8 @@ class handler extends handler_base {
         }
 
         try {
-            $context = \context::instance_by_id($contextid);
-            if (!$context instanceof \context_module) {
+            $context = context::instance_by_id($contextid);
+            if (!$context instanceof module) {
                 return false;
             }
         } catch (moodle_exception $exception) {

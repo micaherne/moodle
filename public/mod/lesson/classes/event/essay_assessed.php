@@ -24,6 +24,9 @@
 
 namespace mod_lesson\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -79,7 +82,7 @@ class essay_assessed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/lesson/essay.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/lesson/essay.php', array('id' => $this->contextinstanceid));
     }
 
     /**
@@ -91,13 +94,13 @@ class essay_assessed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
         if (!isset($this->other['lessonid'])) {
-            throw new \coding_exception('The \'lessonid\' value must be set in other.');
+            throw new coding_exception('The \'lessonid\' value must be set in other.');
         }
         if (!isset($this->other['attemptid'])) {
-            throw new \coding_exception('The \'attemptid\' value must be set in other.');
+            throw new coding_exception('The \'attemptid\' value must be set in other.');
         }
     }
 

@@ -24,17 +24,18 @@
 
 namespace core_courseformat\output\local\content\cm;
 
-use action_menu_link_secondary;
-use core\output\local\action_menu\subpanel as action_menu_subpanel;
-use cm_info;
+use core\output\action_menu\link_secondary;
+use core\output\action_menu\subpanel as action_menu_subpanel;
+use core\output\renderer_base;
+use core_course\cm_info;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
 use core\output\choicelist;
 use core\output\local\dropdown\status;
 use core\output\named_templatable;
-use pix_icon;
-use renderable;
-use section_info;
+use core\output\pix_icon;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -74,7 +75,7 @@ class visibility implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass|null data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): ?stdClass {
+    public function export_for_template(renderer_base $output): ?stdClass {
         if (!$this->show_visibility()) {
             return null;
         }
@@ -119,7 +120,7 @@ class visibility implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass|null data context for a mustache template
      */
-    public function build_editor_data(\renderer_base $output): ?stdClass {
+    public function build_editor_data(renderer_base $output): ?stdClass {
         $choice = $this->get_choice_list();
         return $this->get_dropdown_data($output, $choice);
     }
@@ -131,7 +132,7 @@ class visibility implements named_templatable, renderable {
      * @return stdClass
      */
     protected function get_dropdown_data(
-        \renderer_base $output,
+        renderer_base $output,
         choicelist $choice,
     ): stdClass {
         $badgetext = $output->visually_hidden_text(get_string('availability'));
@@ -176,7 +177,7 @@ class visibility implements named_templatable, renderable {
      *
      * @return action_menu_link_secondary|action_menu_subpanel|null
      */
-    public function get_menu_item(): action_menu_link_secondary|action_menu_subpanel|null {
+    public function get_menu_item(): link_secondary|action_menu_subpanel|null {
         $choice = $this->get_choice_list();
         $selectableoptions = $choice->get_selectable_options();
 
@@ -188,7 +189,7 @@ class visibility implements named_templatable, renderable {
         if ($this->section->visible && count($selectableoptions) === 1) {
             $option = reset($selectableoptions);
             $actionlabel = $option->value === 'show' ? 'modshow' : 'modhide';
-            return new action_menu_link_secondary(
+            return new link_secondary(
                 $option->url,
                 $option->icon,
                 get_string($actionlabel, 'moodle'),
@@ -288,7 +289,7 @@ class visibility implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass|null data context for a mustache template
      */
-    public function build_static_data(\renderer_base $output): ?stdClass {
+    public function build_static_data(renderer_base $output): ?stdClass {
         $data = (object) [
             'isInteractive' => false,
         ];

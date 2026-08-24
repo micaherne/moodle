@@ -25,6 +25,8 @@
 
 namespace core;
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/fixtures/read_replica_moodle_database_table_names.php');
@@ -467,7 +469,7 @@ final class dml_read_replica_test extends \database_driver_testcase {
             // are adjusted properly.
             sleep(1);
             $event = \core_tests\event\unittest_executed::create([
-                'context' => \context_system::instance(),
+                'context' => system::instance(),
                 'other' => ['sample' => 1]
             ]);
             $event->trigger();

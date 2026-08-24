@@ -16,6 +16,8 @@
 
 namespace mod_glossary\backup;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -50,7 +52,7 @@ final class restore_date_test extends \restore_date_testcase {
         $DB->set_field('glossary_entries', 'timecreated', $timestamp);
         $DB->set_field('glossary_entries', 'timemodified', $timestamp);
         $ratingoptions = new \stdClass;
-        $ratingoptions->context = \context_module::instance($glossary->cmid);
+        $ratingoptions->context = module::instance($glossary->cmid);
         $ratingoptions->ratingarea = 'entry';
         $ratingoptions->component = 'mod_glossary';
         $ratingoptions->itemid  = $entry1->id;
@@ -78,7 +80,7 @@ final class restore_date_test extends \restore_date_testcase {
         }
 
         // Rating test.
-        $newrating = $DB->get_record('rating', ['contextid' => \context_module::instance($newcm->id)->id]);
+        $newrating = $DB->get_record('rating', ['contextid' => module::instance($newcm->id)->id]);
         $this->assertEquals($rating->timecreated, $newrating->timecreated);
         $this->assertEquals($rating->timemodified, $newrating->timemodified);
     }

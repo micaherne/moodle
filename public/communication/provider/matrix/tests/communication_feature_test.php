@@ -17,6 +17,7 @@
 namespace communication_matrix;
 
 use core\context;
+use core\context\course;
 use core_communication\api;
 use core_communication\communication_test_helper_trait;
 use core_communication\processor;
@@ -417,7 +418,7 @@ final class communication_feature_test extends \advanced_testcase {
 
         // Create a new room.
         $course = $this->get_course('Sampleroom', 'none');
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $user = $this->get_user();
 
         $communication = $this->create_room(
@@ -473,7 +474,7 @@ final class communication_feature_test extends \advanced_testcase {
         $user2 = $this->getDataGenerator()->create_user();
 
         $course = $this->get_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->getDataGenerator()->enrol_user($user1->id, $course->id);

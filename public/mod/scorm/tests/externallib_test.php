@@ -16,6 +16,10 @@
 
 namespace mod_scorm;
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\url;
 use core_external\external_api;
 use mod_scorm_external;
 
@@ -73,7 +77,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
         $this->scorm = $this->getDataGenerator()->create_module('scorm', array('course' => $this->course->id),
             array('completion' => 2, 'completionview' => 1));
-        $this->context = \context_module::instance($this->scorm->cmid);
+        $this->context = module::instance($this->scorm->cmid);
         $this->cm = get_coursemodule_from_instance('scorm', $this->scorm->id);
 
         // Create users.
@@ -97,7 +101,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_scorm_external::view_scorm(0);
             $this->fail('Exception expected due to invalid mod_scorm instance id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidrecord', $e->errorcode);
         }
 
@@ -107,7 +111,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_scorm_external::view_scorm($this->scorm->id);
             $this->fail('Exception expected due to not enrolled user.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -128,7 +132,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_scorm\event\course_module_viewed', $event);
         $this->assertEquals($this->context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/scorm/view.php', array('id' => $this->cm->id));
+        $moodleurl = new url('/mod/scorm/view.php', array('id' => $this->cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -201,7 +205,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         self::setUser($student2);
 
         // I should not be able to view the attempts of another student.
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         mod_scorm_external::get_scorm_attempt_count($this->scorm->id, $this->student->id);
     }
 
@@ -210,7 +214,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         self::setUser($this->student);
 
         // Test invalid instance id.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         mod_scorm_external::get_scorm_attempt_count(0, $this->student->id);
     }
 
@@ -218,7 +222,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // As student.
         self::setUser($this->student);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         mod_scorm_external::get_scorm_attempt_count($this->scorm->id, -1);
     }
 
@@ -257,7 +261,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
              mod_scorm_external::get_scorm_scoes($scorm->id);
             $this->fail('Exception expected due to invalid dates.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('notopenyet', $e->errorcode);
         }
 
@@ -268,7 +272,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
              mod_scorm_external::get_scorm_scoes($scorm->id);
             $this->fail('Exception expected due to invalid dates.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('expired', $e->errorcode);
         }
 
@@ -316,7 +320,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
              mod_scorm_external::get_scorm_scoes(0);
             $this->fail('Exception expected due to invalid instance id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidrecord', $e->errorcode);
         }
 
@@ -419,7 +423,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
              mod_scorm_external::get_scorm_user_data(0, 1);
             $this->fail('Exception expected due to invalid instance id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidrecord', $e->errorcode);
         }
     }
@@ -471,7 +475,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_scorm_external::insert_scorm_tracks($sco->id, 1, $tracks);
             $this->fail('Exception expected due to dates');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('notopenyet', $e->errorcode);
         }
 
@@ -482,7 +486,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_scorm_external::insert_scorm_tracks($sco->id, 1, $tracks);
             $this->fail('Exception expected due to dates');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('expired', $e->errorcode);
         }
 
@@ -490,7 +494,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
              mod_scorm_external::insert_scorm_tracks(0, 1, $tracks);
             $this->fail('Exception expected due to invalid sco id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('cannotfindsco', $e->errorcode);
         }
 
@@ -580,7 +584,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
              mod_scorm_external::get_scorm_sco_tracks($sco->id, $otherstudent->id);
             $this->fail('Exception expected due to invalid instance id.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -596,14 +600,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
              mod_scorm_external::get_scorm_sco_tracks(0, 1);
             $this->fail('Exception expected due to invalid instance id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('cannotfindsco', $e->errorcode);
         }
         // Invalid user.
         try {
              mod_scorm_external::get_scorm_sco_tracks($sco->id, 0);
             $this->fail('Exception expected due to invalid instance id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invaliduser', $e->errorcode);
         }
     }
@@ -736,15 +740,15 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $scorm2->enabledaiactions = null;
 
         // SCORM size. The same package is used in both SCORMs.
-        $scormcontext1 = \context_module::instance($scorm1->cmid);
-        $scormcontext2 = \context_module::instance($scorm2->cmid);
+        $scormcontext1 = module::instance($scorm1->cmid);
+        $scormcontext2 = module::instance($scorm2->cmid);
         $fs = get_file_storage();
         $packagefile = $fs->get_file($scormcontext1->id, 'mod_scorm', 'package', 0, '/', $scorm1->reference);
         $packagesize = $packagefile->get_filesize();
 
-        $packageurl1 = \moodle_url::make_webservice_pluginfile_url(
+        $packageurl1 = url::make_webservice_pluginfile_url(
                             $scormcontext1->id, 'mod_scorm', 'package', 0, '/', $scorm1->reference)->out(false);
-        $packageurl2 = \moodle_url::make_webservice_pluginfile_url(
+        $packageurl2 = url::make_webservice_pluginfile_url(
                             $scormcontext2->id, 'mod_scorm', 'package', 0, '/', $scorm2->reference)->out(false);
 
         $scorm1->packagesize = $packagesize;
@@ -857,7 +861,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_scorm_external::launch_sco(0);
             $this->fail('Exception expected due to invalid mod_scorm instance id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidrecord', $e->errorcode);
         }
 
@@ -867,7 +871,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_scorm_external::launch_sco($this->scorm->id);
             $this->fail('Exception expected due to not enrolled user.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -895,7 +899,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_scorm\event\sco_launched', $event);
         $this->assertEquals($this->context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/scorm/player.php', array('cm' => $this->cm->id, 'scoid' => $sco->id));
+        $moodleurl = new url('/mod/scorm/player.php', array('cm' => $this->cm->id, 'scoid' => $sco->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -912,7 +916,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_scorm_external::launch_sco($this->scorm->id, -1);
             $this->fail('Exception expected due to invalid SCO id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('cannotfindsco', $e->errorcode);
         }
     }
@@ -931,7 +935,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $record = new \stdClass();
         $record->course = $course->id;
         $scorm = self::getDataGenerator()->create_module('scorm', $record);
-        $context = \context_module::instance($scorm->cmid);
+        $context = module::instance($scorm->cmid);
 
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
         $this->getDataGenerator()->enrol_user($student->id, $course->id, $studentrole->id, 'manual');

@@ -26,14 +26,14 @@ namespace core_h5p\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
-use renderer_base;
+use core\output\renderable;
+use core\output\templatable;
+use core\output\renderer_base;
 use stdClass;
-use moodle_url;
-use action_menu;
-use action_menu_link;
-use pix_icon;
+use core\url;
+use core\output\action_menu;
+use core\output\action_menu\link;
+use core\output\pix_icon;
 
 /**
  * Class to help display H5P library management table.
@@ -82,20 +82,20 @@ class libraries implements renderable, templatable {
                 $actionmenu = new action_menu();
                 $actionmenu->set_menu_trigger(get_string('actions', 'core_h5p'));
                 $actionmenu->prioritise = true;
-                $actionmenu->add_primary_action(new action_menu_link(
-                    new moodle_url('/h5p/libraries.php', ['deletelibrary' => $version->id]),
+                $actionmenu->add_primary_action(new link(
+                    new url('/h5p/libraries.php', ['deletelibrary' => $version->id]),
                     new pix_icon('t/delete', get_string('deletelibraryversion', 'core_h5p')),
                     get_string('deletelibraryversion', 'core_h5p')
                 ));
                 $version->actionmenu = $actionmenu->export_for_template($output);
                 if ($version->enabled) {
-                    $version->toggleenabledurl = new moodle_url('/h5p/libraries.php', [
+                    $version->toggleenabledurl = new url('/h5p/libraries.php', [
                         'id' => $version->id,
                         'action' => 'disable',
                         'sesskey' => sesskey(),
                     ]);
                 } else {
-                    $version->toggleenabledurl = new moodle_url('/h5p/libraries.php', [
+                    $version->toggleenabledurl = new url('/h5p/libraries.php', [
                         'id' => $version->id,
                         'action' => 'enable',
                         'sesskey' => sesskey(),

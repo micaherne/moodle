@@ -27,6 +27,8 @@
  */
 
 
+use core\exception\moodle_exception;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/environmentlib.php');
@@ -55,11 +57,11 @@ if ($action == 'updatecomponent' && confirm_sesskey()) {
                     $a = new stdClass();
                     $a->url  = 'https://download.moodle.org/environment/environment.zip';
                     $a->dest = $CFG->dataroot . '/';
-                    throw new \moodle_exception($cd->get_error(), 'error', $PAGE->url, $a);
+                    throw new moodle_exception($cd->get_error(), 'error', $PAGE->url, $a);
                     die();
 
                 } else {
-                    throw new \moodle_exception($cd->get_error(), 'error', $PAGE->url);
+                    throw new moodle_exception($cd->get_error(), 'error', $PAGE->url);
                     die();
                 }
 

@@ -19,7 +19,7 @@ namespace mod_bigbluebuttonbn\external;
 use core_external\external_api;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\test\testcase_helper_trait;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Tests for the get_bigbluebuttons_by_courses class.

@@ -16,6 +16,7 @@
 
 namespace mod_quiz\question\bank\filter;
 
+use core\context;
 use core_question\local\bank\question_version_status;
 
 /**
@@ -56,7 +57,7 @@ class custom_category_condition_helper extends \qbank_managecategories\helper {
         // Sort cats out into different contexts.
         $categoriesarray = [];
         foreach ($pcontexts as $contextid) {
-            $context = \context::instance_by_id($contextid);
+            $context = context::instance_by_id($contextid);
             $contextstring = $context->get_context_name(true, true, $escapecontextnames);
             foreach ($categories as $category) {
                 if ($category->contextid == $contextid) {

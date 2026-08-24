@@ -16,6 +16,12 @@
 
 namespace core;
 
+use core\context\block;
+use core\context\coursecat;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -41,7 +47,7 @@ final class blocklib_test extends \advanced_testcase {
     protected function setUp(): void {
         parent::setUp();
         $this->testpage = new \moodle_page();
-        $this->testpage->set_context(\context_system::instance());
+        $this->testpage->set_context(system::instance());
         $this->testpage->set_pagetype('phpunit-block-test');
         $this->blockmanager = new \testable_block_manager($this->testpage);
     }
@@ -112,7 +118,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $this->blockmanager->mark_loaded();
         // Exercise SUT.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->blockmanager->add_region('too-late', false);
     }
 
@@ -167,7 +173,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $this->blockmanager->mark_loaded();
         // Exercise SUT.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->blockmanager->add_region('too-late');
     }
 
@@ -182,7 +188,7 @@ final class blocklib_test extends \advanced_testcase {
 
     public function test_cannot_set_unknown_region_as_default(): void {
         // Exercise SUT.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->blockmanager->set_default_region('a-region-name');
     }
 
@@ -190,7 +196,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $this->blockmanager->mark_loaded();
         // Exercise SUT.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->blockmanager->set_default_region('too-late');
     }
 
@@ -213,7 +219,7 @@ final class blocklib_test extends \advanced_testcase {
         $page->set_context($context);
         $page->set_pagetype($pagetype);
         $page->set_subpage($subpage);
-        $page->set_url(new \moodle_url('/'));
+        $page->set_url(new url('/'));
 
         $blockmanager = new \testable_block_manager($page);
         $blockmanager->add_regions($regions, false);
@@ -248,7 +254,7 @@ final class blocklib_test extends \advanced_testcase {
 
         // Set up fixture.
         list($page, $blockmanager) = $this->get_a_page_and_block_manager(array('a-region'),
-            \context_system::instance(), 'page-type');
+            system::instance(), 'page-type');
         // Exercise SUT.
         $blockmanager->load_blocks();
         // Validate.
@@ -262,7 +268,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         list($page, $blockmanager) = $this->get_a_page_and_block_manager(array($regionname),
             $context, 'page-type');
@@ -281,7 +287,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         list($page, $blockmanager) = $this->get_a_page_and_block_manager(array($regionname),
             $context, 'page-type');
@@ -301,7 +307,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         list($page, $blockmanager) = $this->get_a_page_and_block_manager(array($regionname),
             $context, 'page-type');
@@ -326,7 +332,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         list($page, $blockmanager) = $this->get_a_page_and_block_manager(array($regionname),
             $context, 'page-type');
@@ -344,9 +350,9 @@ final class blocklib_test extends \advanced_testcase {
         $this->purge_blocks();
 
         // Set up fixture.
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $cat = $this->getDataGenerator()->create_category(array('name' => 'testcategory'));
-        $fakecontext = \context_coursecat::instance($cat->id);
+        $fakecontext = coursecat::instance($cat->id);
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
 
@@ -366,8 +372,8 @@ final class blocklib_test extends \advanced_testcase {
         $this->purge_blocks();
 
         // Set up fixture.
-        $syscontext = \context_system::instance();
-        $childcontext = \context_coursecat::instance(1);
+        $syscontext = system::instance();
+        $childcontext = coursecat::instance(1);
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
 
@@ -387,7 +393,7 @@ final class blocklib_test extends \advanced_testcase {
         $this->purge_blocks();
 
         // Set up fixture.
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
 
@@ -409,7 +415,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         list($page, $blockmanager) = $this->get_a_page_and_block_manager(array($regionname),
             $syscontext, 'page-type', 'sub-page');
@@ -429,7 +435,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         list($page, $blockmanager) = $this->get_a_page_and_block_manager(array($regionname),
             $syscontext, 'page-type', 'sub-page');
@@ -449,7 +455,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         list($page, $blockmanager) = $this->get_a_page_and_block_manager(array($regionname),
             $syscontext, 'page-type', 'sub-page');
@@ -520,7 +526,7 @@ final class blocklib_test extends \advanced_testcase {
 
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
-        $context = \context_system::instance();
+        $context = system::instance();
 
         list($page, $blockmanager) = $this->get_a_page_and_block_manager(array($regionname),
             $context, 'page-type');
@@ -571,9 +577,9 @@ final class blocklib_test extends \advanced_testcase {
         list($insql, $inparams) = $DB->get_in_or_equal($preferences);
         $this->assertEquals(2, $DB->count_records_select('user_preferences', "name $insql", $inparams));
 
-        $this->assertFalse(\context_block::instance($blockids[0], IGNORE_MISSING));
-        $this->assertFalse(\context_block::instance($blockids[1], IGNORE_MISSING));
-        \context_block::instance($tokeep);   // Would throw an exception if it was deleted.
+        $this->assertFalse(block::instance($blockids[0], IGNORE_MISSING));
+        $this->assertFalse(block::instance($blockids[1], IGNORE_MISSING));
+        block::instance($tokeep);   // Would throw an exception if it was deleted.
     }
 
     public function test_create_all_block_instances(): void {
@@ -582,7 +588,7 @@ final class blocklib_test extends \advanced_testcase {
         $this->setAdminUser();
         $this->resetAfterTest();
         $regionname = 'side-pre';
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $PAGE->reset_theme_and_output();
         $CFG->theme = 'boost';
@@ -670,7 +676,7 @@ final class blocklib_test extends \advanced_testcase {
         // Set up fixture.
         $regionname = 'a-region';
         $blockname = 'html';
-        $context = \context_system::instance();
+        $context = system::instance();
 
         list($page, $blockmanager) = $this->get_a_page_and_block_manager(array($regionname),
                 $context, 'page-type');
@@ -737,8 +743,8 @@ final class blocklib_test extends \advanced_testcase {
         $regionname = 'a-region';
         $blockname = $this->get_a_known_block_type();
         $user = self::getDataGenerator()->create_user();
-        $syscontext = \context_system::instance();
-        $usercontext = \context_user::instance($user->id);
+        $syscontext = system::instance();
+        $usercontext = user::instance($user->id);
         // Add sitewide 'sticky' blocks. The page is not setup exactly as a site page would be...
         // but it does seem to mean that the bloacks are added correctly.
         list($sitepage, $sitebm) = $this->get_a_page_and_block_manager(array($regionname), $syscontext, 'site-index');
@@ -774,7 +780,7 @@ final class blocklib_test extends \advanced_testcase {
         $mybm->load_blocks();
         $mybm->reposition_block($sitestickyblock2->id, $regionname, -1);
         // Reload the blocks in the managers.
-        \context_helper::reset_caches();
+        context_helper::reset_caches();
         $defaultmybm->reset_caches();
         $this->assertNull($defaultmybm->get_loaded_blocks());
         $defaultmybm->load_blocks();
@@ -840,7 +846,7 @@ final class blocklib_test extends \advanced_testcase {
         $this->setAdminUser();
         $this->resetAfterTest();
         $regionname = 'side-pre';
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $PAGE->reset_theme_and_output();
         $CFG->theme = 'boost';

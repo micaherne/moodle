@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/filelib.php");
 
+use core\context\system;
+use core\output\renderable;
+use core\output\renderer_base;
 use tool_usertours\helper;
 use tool_usertours\step as stepsource;
 
@@ -37,7 +40,7 @@ use tool_usertours\step as stepsource;
  * @copyright  2016 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class step implements \renderable {
+class step implements renderable {
     /**
      * @var The step instance.
      */
@@ -58,12 +61,12 @@ class step implements \renderable {
      * @param   renderer_base   $output     The renderer.
      * @return  object
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         global $PAGE;
         $step = $this->step;
 
         $content = $step->get_content();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $content = file_rewrite_pluginfile_urls(
             $content,
             'pluginfile.php',

@@ -16,6 +16,9 @@
 
 namespace core_h5p;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
 use core_collator;
 use Moodle\H5PCore;
 use Moodle\H5PDisplayOptionBehaviour;
@@ -788,7 +791,7 @@ final class framework_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         // Create some users.
-        $contextsys = \context_system::instance();
+        $contextsys = system::instance();
         $user = $this->getDataGenerator()->create_user();
         $admin = get_admin();
         $managerrole = $DB->get_record('role', ['shortname' => 'manager'], '*', MUST_EXIST);
@@ -800,7 +803,7 @@ final class framework_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $label = $this->getDataGenerator()->create_module('label', ['course' => $course->id]);
         list(, $labelcm) = get_course_and_cm_from_instance($label->id, 'label');
-        $contextlabel = \context_module::instance($labelcm->id);
+        $contextlabel = module::instance($labelcm->id);
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'student');
 
         // Create the .h5p file.
@@ -857,7 +860,7 @@ final class framework_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         // Create some users.
-        $contextsys = \context_system::instance();
+        $contextsys = system::instance();
         $user = $this->getDataGenerator()->create_user();
 
         // The H5P file.
@@ -877,7 +880,7 @@ final class framework_test extends \advanced_testcase {
 
         // Check the value when also the context is set.
         $course = $this->getDataGenerator()->create_course();
-        $contextcourse = \context_course::instance($course->id);
+        $contextcourse = course::instance($course->id);
         $file = helper::create_fake_stored_file_from_path($path, $user->id, $contextcourse);
         $this->framework->set_file($file);
         $file = $this->framework->get_file();
@@ -1202,7 +1205,7 @@ final class framework_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $this->setUser($user);
         $activity = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $course]);
-        $activitycontext = \context_module::instance($activity->cmid);
+        $activitycontext = module::instance($activity->cmid);
         $filerecord = [
             'contextid' => $activitycontext->id,
             'component' => 'mod_h5pactivity',
@@ -1256,7 +1259,7 @@ final class framework_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $this->setUser($user);
         $activity = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $course]);
-        $activitycontext = \context_module::instance($activity->cmid);
+        $activitycontext = module::instance($activity->cmid);
         $filerecord = [
             'contextid' => $activitycontext->id,
             'component' => 'mod_h5pactivity',

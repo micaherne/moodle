@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/badgeslib.php');
 
+use core\output\renderable;
+use core\output\renderer_base;
+use core\url;
 use core_badges\external\backpack_exporter;
 
 /**
@@ -37,7 +40,7 @@ use core_badges\external\backpack_exporter;
  * @copyright  2019 Damyon Wiese
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class external_backpacks_page implements \renderable {
+class external_backpacks_page implements renderable {
 
     /** @var \moodle_url Badges backpacks URL. */
     protected $url;
@@ -49,7 +52,7 @@ class external_backpacks_page implements \renderable {
      * Constructor.
      * @param \moodle_url $url
      */
-    public function __construct(\moodle_url $url) {
+    public function __construct(url $url) {
         $this->url = $url;
 
         $this->backpacks = badges_get_site_backpacks();
@@ -61,7 +64,7 @@ class external_backpacks_page implements \renderable {
      * @param renderer_base $output Renderer base.
      * @return stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         global $PAGE;
 
         $rownumber = 0;

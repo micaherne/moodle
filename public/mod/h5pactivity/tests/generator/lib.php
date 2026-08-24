@@ -22,6 +22,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\user as core_user;
 use mod_h5pactivity\local\manager;
 
 defined('MOODLE_INTERNAL') || die();

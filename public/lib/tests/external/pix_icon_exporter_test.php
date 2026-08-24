@@ -16,6 +16,8 @@
 
 namespace core\external;
 
+use core\context\system;
+
 /**
  * Tests for pix_icon_exporter.
  *
@@ -38,7 +40,7 @@ final class pix_icon_exporter_test extends \advanced_testcase {
         $attributes = ['class' => 'me-0 pb-1'];
 
         $icon = new \core\output\pix_icon($pix, $alt, $component, $attributes);
-        $exporter = new pix_icon_exporter($icon, ['context' => \context_system::instance()]);
+        $exporter = new pix_icon_exporter($icon, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('pix', $data);
@@ -76,7 +78,7 @@ final class pix_icon_exporter_test extends \advanced_testcase {
         $component = 'moodle';
 
         $icon = new \core\output\pix_icon($pix, '', $component);
-        $exporter = new pix_icon_exporter($icon, ['context' => \context_system::instance()]);
+        $exporter = new pix_icon_exporter($icon, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('pix', $data);

@@ -16,12 +16,12 @@
 
 namespace core;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core_text;
 use core\attribute\deprecated;
 use core\ip_utils;
-use invalid_parameter_exception;
-use moodle_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
 
 // phpcs:disable Generic.CodeAnalysis.EmptyStatement.DetectedIf
 
@@ -366,7 +366,7 @@ enum param: string {
             return $from;
         }
 
-        throw new \coding_exception("Unknown parameter type '{$paramname}'");
+        throw new coding_exception("Unknown parameter type '{$paramname}'");
     }
 
     /**
@@ -481,7 +481,7 @@ enum param: string {
         $param = $this->get_request_parameter($paramname, true);
 
         if (!is_array($param)) {
-            throw new \moodle_exception('missingparam', '', '', $paramname);
+            throw new moodle_exception('missingparam', '', '', $paramname);
         }
 
         $result = [];
@@ -581,7 +581,7 @@ enum param: string {
         } else if (isset($_GET[$paramname])) {
             return $_GET[$paramname];
         } else if ($require) {
-            throw new \moodle_exception('missingparam', '', '', $paramname);
+            throw new moodle_exception('missingparam', '', '', $paramname);
         }
 
         return null;

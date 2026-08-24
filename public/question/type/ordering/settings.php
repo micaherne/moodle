@@ -22,9 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configselect;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configselect('qtype_ordering/defaultanswerformat',
+    $settings->add(new configselect('qtype_ordering/defaultanswerformat',
         get_string('defaultanswerformat', 'qtype_ordering'), '', FORMAT_MOODLE, format_text_menu()));
 }

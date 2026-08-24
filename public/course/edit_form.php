@@ -1,7 +1,11 @@
 <?php
 
+use core\context\course;
+use core\context\coursecat;
 use core\di;
 use core\hook;
+use core\output\html_writer;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -29,12 +33,12 @@ class course_edit_form extends moodleform {
         $category      = $this->_customdata['category'];
         $editoroptions = $this->_customdata['editoroptions'];
         $returnto = $this->_customdata['returnto'];
-        $returnurl = new moodle_url($this->_customdata['returnurl']);
+        $returnurl = new url($this->_customdata['returnurl']);
 
-        $categorycontext = context_coursecat::instance($category->id);
+        $categorycontext = coursecat::instance($category->id);
 
         if (!empty($course->id)) {
-            $coursecontext = context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
             $context = $coursecontext;
         } else {
             $coursecontext = null;

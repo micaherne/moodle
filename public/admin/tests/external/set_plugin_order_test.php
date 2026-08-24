@@ -18,6 +18,10 @@ declare(strict_types=1);
 
 namespace core_admin\external;
 
+use core\exception\require_login_exception;
+use core\exception\required_capability_exception;
+use core\plugin_manager;
+
 /**
  * Unit tests to configure the plugin order.
  *
@@ -68,7 +72,7 @@ final class set_plugin_order_test extends \core_external\tests\externallib_testc
      * @return array
      */
     public static function execute_editor_provider(): array {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $allplugins = array_keys($pluginmanager->get_plugins_of_type('editor'));
 
         // Disabled editors are listed alphabetically at the end.
@@ -170,7 +174,7 @@ final class set_plugin_order_test extends \core_external\tests\externallib_testc
      * Test execute method with no login.
      */
     public function test_execute_no_login(): void {
-        $this->expectException(\require_login_exception::class);
+        $this->expectException(require_login_exception::class);
         set_plugin_order::execute('editor_tiny', 1);
     }
 
@@ -181,7 +185,7 @@ final class set_plugin_order_test extends \core_external\tests\externallib_testc
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         set_plugin_order::execute('editor_tiny', 1);
     }
 }

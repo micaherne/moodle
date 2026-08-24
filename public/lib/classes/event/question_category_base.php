@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -52,7 +54,7 @@ abstract class question_category_base extends base {
     public function get_url() {
         $cat = $this->objectid . ',' . $this->contextid;
 
-        return new \moodle_url('/question/edit.php', ['cmid' => $this->contextinstanceid, 'cat' => $cat]);
+        return new url('/question/edit.php', ['cmid' => $this->contextinstanceid, 'cat' => $cat]);
     }
 
     /**

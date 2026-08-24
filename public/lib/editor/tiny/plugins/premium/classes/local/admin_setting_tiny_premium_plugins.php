@@ -16,6 +16,11 @@
 
 namespace tiny_premium\local;
 
+use core\lang_string;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 use tiny_premium\manager;
 
 /**
@@ -33,8 +38,8 @@ class admin_setting_tiny_premium_plugins extends \core_admin\setting {
         $this->nosave = true;
         parent::__construct(
             name: 'tiny_premium/premiumplugins',
-            visiblename: new \lang_string('premiumplugins', 'tiny_premium'),
-            description: new \lang_string('premiumplugins_desc', 'tiny_premium'),
+            visiblename: new lang_string('premiumplugins', 'tiny_premium'),
+            description: new lang_string('premiumplugins_desc', 'tiny_premium'),
             defaultsetting: '',
         );
     }
@@ -80,7 +85,7 @@ class admin_setting_tiny_premium_plugins extends \core_admin\setting {
 
         $return .= $OUTPUT->box_start('generalbox');
         $return .= $OUTPUT->heading(get_string('premiumplugins', 'tiny_premium'), 3);
-        $return .= \html_writer::tag('p', get_string('premiumplugins_desc', 'tiny_premium'));
+        $return .= html_writer::tag('p', get_string('premiumplugins_desc', 'tiny_premium'));
         $return .= $this->define_manage_tiny_premium_plugins_table();
         $return .= $OUTPUT->box_end();
 
@@ -97,7 +102,7 @@ class admin_setting_tiny_premium_plugins extends \core_admin\setting {
         $sesskey = sesskey();
 
         // Set up table.
-        $table = new \html_table();
+        $table = new html_table();
         $table->id = 'managetinypremiumpluginstable';
         $table->attributes['class'] = 'admintable table generaltable table-hover';
         $table->head  = [
@@ -133,23 +138,23 @@ class admin_setting_tiny_premium_plugins extends \core_admin\setting {
             }
 
             // Prepare a link to perform the action.
-            $hideshowurl = new \moodle_url('/lib/editor/tiny/plugins/premium/pluginsettings.php', [
+            $hideshowurl = new url('/lib/editor/tiny/plugins/premium/pluginsettings.php', [
                 'action' => $action,
                 'plugin' => $plugin,
                 'sesskey' => $sesskey,
             ]);
-            $hideshowlink = \html_writer::link($hideshowurl, $icon);
+            $hideshowlink = html_writer::link($hideshowurl, $icon);
 
             $settinglink = '';
             // Setting link for server-side plugins.
             if (array_key_exists($plugin, $serversideplugins)) {
-                $settinglink = \html_writer::link(new \moodle_url('/lib/editor/tiny/plugins/premium/extrasettings.php', [
+                $settinglink = html_writer::link(new url('/lib/editor/tiny/plugins/premium/extrasettings.php', [
                     'plugin' => $plugin,
                 ]), get_string('settings'));
             }
 
             // Populate table row.
-            $row = new \html_table_row([
+            $row = new html_table_row([
                 $pluginname,
                 $hideshowlink,
                 $settinglink,
@@ -158,6 +163,6 @@ class admin_setting_tiny_premium_plugins extends \core_admin\setting {
             $table->data[] = $row;
         }
 
-        return \html_writer::table($table);
+        return html_writer::table($table);
     }
 }

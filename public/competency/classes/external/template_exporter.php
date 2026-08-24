@@ -24,8 +24,8 @@
 namespace core_competency\external;
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_url;
-use renderer_base;
+use core\url;
+use core\output\renderer_base;
 use core_competency\plan;
 use core_competency\template_cohort;
 

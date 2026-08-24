@@ -1,5 +1,10 @@
 <?php
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 global $CFG;
 
 require_once("../../config.php");
@@ -16,7 +21,7 @@ $hook    = optional_param('hook','ALL', PARAM_CLEAN);       // what to show
 $sortkey = optional_param('sortkey','UPDATE', PARAM_ALPHA); // Sorting key
 $fullsearch = optional_param('fullsearch', 0, PARAM_INT); // Search concept and definition.
 
-$url = new moodle_url('/mod/glossary/print.php', array('id'=>$id));
+$url = new url('/mod/glossary/print.php', array('id'=>$id));
 if ($sortorder !== 'asc') {
     $url->param('sortorder', $sortorder);
 }
@@ -38,15 +43,15 @@ if ($hook !== 'ALL') {
 $PAGE->set_url($url);
 
 if (! $cm = get_coursemodule_from_id('glossary', $id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 if (! $course = $DB->get_record("course", array("id"=>$cm->course))) {
-    throw new \moodle_exception('coursemisconf');
+    throw new moodle_exception('coursemisconf');
 }
 
 if (! $glossary = $DB->get_record("glossary", array("id"=>$cm->instance))) {
-    throw new \moodle_exception('invalidid', 'glossary');
+    throw new moodle_exception('invalidid', 'glossary');
 }
 
 if ($pagelimit < 0) {
@@ -54,7 +59,7 @@ if ($pagelimit < 0) {
 }
 
 require_course_login($course, true, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 // Prepare format_string/text options
 $fmtoptions = array(

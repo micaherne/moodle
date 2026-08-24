@@ -16,7 +16,7 @@
 
 namespace qtype_ordering\output;
 
-use renderer_base;
+use core\output\renderer_base;
 use question_attempt;
 use question_display_options;
 

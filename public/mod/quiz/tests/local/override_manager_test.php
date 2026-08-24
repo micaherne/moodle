@@ -16,6 +16,12 @@
 
 namespace mod_quiz\local;
 
+use core\context\module;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\required_capability_exception;
+use core\user;
 use mod_quiz\event\group_override_created;
 use mod_quiz\event\group_override_updated;
 use mod_quiz\event\user_override_created;
@@ -175,7 +181,7 @@ final class override_manager_test extends \advanced_testcase {
         $studenttwo = $this->getDataGenerator()->create_and_enrol($course);
         $this->getDataGenerator()->create_group_member(['groupid' => $grouptwo->id, 'userid' => $studenttwo->id]);
 
-        $user = \core_user::get_user_by_username($currentuser);
+        $user = user::get_user_by_username($currentuser);
         $this->setUser($user);
 
         /** @var override_manager $manager */
@@ -560,7 +566,7 @@ final class override_manager_test extends \advanced_testcase {
         $manager = $quizobj->get_override_manager();
 
         // Submit empty (bad data).
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $this->expectExceptionMessage(get_string('nooverridedata', 'quiz'));
         $manager->save_override([]);
     }
@@ -1101,11 +1107,11 @@ final class override_manager_test extends \advanced_testcase {
         // Setup the role and permissions.
         $roleid = $this->getDataGenerator()->create_role();
         foreach ($capabilities as $capname => $permission) {
-            role_change_permission($roleid, \context_system::instance(), $capname, $permission);
+            role_change_permission($roleid, system::instance(), $capname, $permission);
         }
 
         $user = $this->getDataGenerator()->create_user();
-        role_assign($roleid, $userid, \context_system::instance()->id);
+        role_assign($roleid, $userid, system::instance()->id);
     }
 
     /**
@@ -1171,7 +1177,7 @@ final class override_manager_test extends \advanced_testcase {
         $this->setUser($user);
 
         if (!$expectedallowed) {
-            $this->expectException(\required_capability_exception::class);
+            $this->expectException(required_capability_exception::class);
         }
         $functionbeingtested($quizobj->get_override_manager());
     }
@@ -1239,7 +1245,7 @@ final class override_manager_test extends \advanced_testcase {
         $this->resetAfterTest();
         [$quizobj] = $this->create_quiz_and_course();
 
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $this->expectExceptionMessage(get_string('overridemissingdelete', 'quiz', '0,1'));
 
         // These ids do not exist, so this should throw an error.
@@ -1254,13 +1260,13 @@ final class override_manager_test extends \advanced_testcase {
 
         // Create one quiz for context, but make the quiz given have an incorrect cmid.
         [$quizobj] = $this->create_quiz_and_course();
-        $context = \context_module::instance($quizobj->get_cmid());
+        $context = module::instance($quizobj->get_cmid());
 
         $quiz = (object)[
             'cmid' => $context->instanceid + 1,
         ];
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage("Given context does not match the quiz object");
         new override_manager($quiz, $context);
     }

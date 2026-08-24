@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
@@ -41,7 +43,7 @@ final class portfoliolib_test extends advanced_testcase {
         $this->resetAfterTest();
 
         // File info.
-        $context = context_system::instance();
+        $context = system::instance();
         $component = 'core_test';
         $filearea = 'fixture';
         $filepath = '/';

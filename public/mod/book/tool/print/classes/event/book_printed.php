@@ -23,6 +23,9 @@
  */
 
 namespace booktool_print\event;
+
+use core\context\module;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -43,7 +46,7 @@ class book_printed extends \core\event\base {
      * @param \context_module $context
      * @return book_printed
      */
-    public static function create_from_book(\stdClass $book, \context_module $context) {
+    public static function create_from_book(\stdClass $book, module $context) {
         $data = array(
             'context' => $context,
             'objectid' => $book->id
@@ -78,7 +81,7 @@ class book_printed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/book/tool/print/index.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/book/tool/print/index.php', array('id' => $this->contextinstanceid));
     }
 
     /**

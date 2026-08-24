@@ -18,6 +18,7 @@ namespace mod_quiz\task;
 
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
+use mod_quiz\tests\question_helper_test_trait;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -34,7 +35,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  * @covers \mod_quiz\task\precreate_attempts
  */
 final class precreate_attempts_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /**
      * Generate the various possible combinations precreation settings and the corresponding task output.

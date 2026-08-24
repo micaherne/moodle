@@ -28,6 +28,11 @@ namespace core_grades\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context\user;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\transform;
@@ -73,9 +78,9 @@ final class provider_test extends provider_testcase {
         $u10 = $dg->create_user();
         $u11 = $dg->create_user();
 
-        $sysctx = \context_system::instance();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $sysctx = system::instance();
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         // Create some stuff.
         $gi1a = new \grade_item($dg->create_grade_item(['courseid' => $c1->id]), false);
@@ -193,9 +198,9 @@ final class provider_test extends provider_testcase {
         $u5 = $dg->create_user();
         $u6 = $dg->create_user();
 
-        $sysctx = \context_system::instance();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $sysctx = system::instance();
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         // Create some stuff.
         $gi1a = new \grade_item($dg->create_grade_item(['courseid' => $c1->id]), false);
@@ -235,7 +240,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(3, $contexts);
         $this->assertArrayHasKey($c1ctx->id, $contexts);
         $this->assertArrayHasKey($c2ctx->id, $contexts);
-        $this->assertArrayHasKey(\context_user::instance($u2->id)->id, $contexts);
+        $this->assertArrayHasKey(user::instance($u2->id)->id, $contexts);
         $contexts = array_flip(provider::get_contexts_for_userid($u3->id)->get_contextids());
         $this->assertCount(1, $contexts);
         $this->assertArrayHasKey($c1ctx->id, $contexts);
@@ -245,10 +250,10 @@ final class provider_test extends provider_testcase {
         $contexts = array_flip(provider::get_contexts_for_userid($u5->id)->get_contextids());
         $this->assertCount(2, $contexts);
         $this->assertArrayHasKey($c2ctx->id, $contexts);
-        $this->assertArrayHasKey(\context_user::instance($u2->id)->id, $contexts);
+        $this->assertArrayHasKey(user::instance($u2->id)->id, $contexts);
         $contexts = array_flip(provider::get_contexts_for_userid($u6->id)->get_contextids());
         $this->assertCount(1, $contexts);
-        $this->assertArrayHasKey(\context_user::instance($u2->id)->id, $contexts);
+        $this->assertArrayHasKey(user::instance($u2->id)->id, $contexts);
     }
 
     /**
@@ -272,9 +277,9 @@ final class provider_test extends provider_testcase {
         $u10 = $dg->create_user();
         $u11 = $dg->create_user();
 
-        $sysctx = \context_system::instance();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $sysctx = system::instance();
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         // Create some stuff.
         $gi1a = new \grade_item($dg->create_grade_item(['courseid' => $c1->id]), false);
@@ -362,9 +367,9 @@ final class provider_test extends provider_testcase {
         $u5 = $dg->create_user();
         $u6 = $dg->create_user();
 
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
-        $u2ctx = \context_user::instance($u2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
+        $u2ctx = user::instance($u2->id);
 
         // Create some stuff.
         $gi1a = new \grade_item($dg->create_grade_item(['courseid' => $c1->id]), false);
@@ -416,19 +421,19 @@ final class provider_test extends provider_testcase {
         $c2 = $dg->create_course();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $u1ctx = user::instance($u1->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         $a1 = $dg->create_module('assign', ['course' => $c1->id]);
         $a2 = $dg->create_module('assign', ['course' => $c1->id]);
         $a3 = $dg->create_module('assign', ['course' => $c2->id]);
         $a4 = $dg->create_module('assign', ['course' => $c2->id]);
 
-        $a1context = \context_module::instance($a1->cmid);
-        $a2context = \context_module::instance($a2->cmid);
-        $a3context = \context_module::instance($a3->cmid);
-        $a4context = \context_module::instance($a4->cmid);
+        $a1context = module::instance($a1->cmid);
+        $a2context = module::instance($a2->cmid);
+        $a3context = module::instance($a3->cmid);
+        $a4context = module::instance($a4->cmid);
 
         // Create some stuff.
         $gi1a = new \grade_item($dg->create_grade_item(
@@ -656,20 +661,20 @@ final class provider_test extends provider_testcase {
         $c2 = $dg->create_course();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         $a1 = $dg->create_module('assign', ['course' => $c1->id]);
         $a2 = $dg->create_module('assign', ['course' => $c1->id]);
         $a3 = $dg->create_module('assign', ['course' => $c2->id]);
         $a4 = $dg->create_module('assign', ['course' => $c2->id]);
 
-        $a1context = \context_module::instance($a1->cmid);
-        $a2context = \context_module::instance($a2->cmid);
-        $a3context = \context_module::instance($a3->cmid);
-        $a4context = \context_module::instance($a4->cmid);
+        $a1context = module::instance($a1->cmid);
+        $a2context = module::instance($a2->cmid);
+        $a3context = module::instance($a3->cmid);
+        $a4context = module::instance($a4->cmid);
 
         // Create some stuff.
         $gi1a = new \grade_item($dg->create_grade_item(
@@ -906,10 +911,10 @@ final class provider_test extends provider_testcase {
         $u2 = $dg->create_user();
         $u3 = $dg->create_user();
         $u4 = $dg->create_user();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         // Create some stuff.
         $gi1a = new \grade_item($dg->create_grade_item(['courseid' => $c1->id]), false);
@@ -982,10 +987,10 @@ final class provider_test extends provider_testcase {
         $ua2 = $dg->create_user();
         $ua3 = $dg->create_user();
 
-        $ug1ctx = \context_user::instance($ug1->id);
-        $ug2ctx = \context_user::instance($ug2->id);
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $ug1ctx = user::instance($ug1->id);
+        $ug2ctx = user::instance($ug2->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         $rootpath = [get_string('grades', 'core_grades')];
         $relatedtomepath = array_merge($rootpath, [get_string('privacy:path:relatedtome', 'core_grades')]);
@@ -1292,8 +1297,8 @@ final class provider_test extends provider_testcase {
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
 
-        $u1ctx = \context_user::instance($u1->id);
-        $c1ctx = \context_course::instance($c1->id);
+        $u1ctx = user::instance($u1->id);
+        $c1ctx = course::instance($c1->id);
 
         $rootpath = [get_string('grades', 'core_grades')];
 
@@ -1333,15 +1338,15 @@ final class provider_test extends provider_testcase {
         $u9 = $dg->create_user();
         $u10 = $dg->create_user();
 
-        $sysctx = \context_system::instance();
-        $u1ctx = \context_user::instance($u1->id);
-        $u2ctx = \context_user::instance($u2->id);
-        $u3ctx = \context_user::instance($u3->id);
-        $u4ctx = \context_user::instance($u4->id);
-        $u5ctx = \context_user::instance($u5->id);
-        $u6ctx = \context_user::instance($u6->id);
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $sysctx = system::instance();
+        $u1ctx = user::instance($u1->id);
+        $u2ctx = user::instance($u2->id);
+        $u3ctx = user::instance($u3->id);
+        $u4ctx = user::instance($u4->id);
+        $u5ctx = user::instance($u5->id);
+        $u6ctx = user::instance($u6->id);
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         $rootpath = [get_string('grades', 'core_grades')];
         $relatedtomepath = array_merge($rootpath, [get_string('privacy:path:relatedtome', 'core_grades')]);
@@ -1571,7 +1576,7 @@ final class provider_test extends provider_testcase {
      * @param context $context The context.
      * @return void
      */
-    protected function assert_context_has_no_data(\context $context) {
+    protected function assert_context_has_no_data(context $context) {
         $rootpath = [get_string('grades', 'core_grades')];
         $relatedtomepath = array_merge($rootpath, [get_string('privacy:path:relatedtome', 'core_grades')]);
 

@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core_admin\setting\setting\configselect;
 use tool_brickfield\local\tool\tool as base_tool;
 
 if ($ADMIN->fulltree) {
@@ -34,7 +35,7 @@ if ($ADMIN->fulltree) {
         'showbackground' => get_string('showbackground', 'block_accessreview'),
         'showicons' => get_string('showicons', 'block_accessreview'),
     ];
-    $settings->add(new admin_setting_configselect('block_accessreview/whattoshow',
+    $settings->add(new configselect('block_accessreview/whattoshow',
         get_string('whattoshow', 'block_accessreview'),
         '',
         'showboth',
@@ -47,7 +48,7 @@ if ($ADMIN->fulltree) {
         'showpercent' => get_string('showpercent', 'block_accessreview'),
         'showicon' => get_string('showicon', 'block_accessreview'),
     ];
-    $settings->add(new admin_setting_configselect('block_accessreview/errordisplay',
+    $settings->add(new configselect('block_accessreview/errordisplay',
         get_string('errordisplay', 'block_accessreview'),
         '',
         'showint',
@@ -56,7 +57,7 @@ if ($ADMIN->fulltree) {
 
     // Tool page to display by default.
     $options = base_tool::get_tool_names();
-    $settings->add(new admin_setting_configselect(
+    $settings->add(new configselect(
         'block_accessreview/toolpage',
         get_string('toolpage', 'block_accessreview'),
         '',

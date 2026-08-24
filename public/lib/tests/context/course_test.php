@@ -17,6 +17,7 @@
 namespace core\context;
 
 use core\context, core\context_helper;
+use core\url;
 
 /**
  * Unit tests for course context class.
@@ -36,9 +37,9 @@ final class course_test extends \advanced_testcase {
     public function test_legacy_classname(): void {
         global $SITE;
         $course = $SITE;
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $this->assertInstanceOf(course::class, $context);
-        $this->assertInstanceOf(\context_course::class, $context);
+        $this->assertInstanceOf(course::class, $context);
     }
 
     /**
@@ -110,9 +111,9 @@ final class course_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $context = course::instance($course->id);
 
-        $expected = new \moodle_url('/course/view.php', ['id' => $course->id]);
+        $expected = new url('/course/view.php', ['id' => $course->id]);
         $url = $context->get_url();
-        $this->assertInstanceOf(\moodle_url::class, $url);
+        $this->assertInstanceOf(url::class, $url);
         $this->assertSame($expected->out(), $url->out());
     }
 

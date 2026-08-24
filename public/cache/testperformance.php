@@ -23,6 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\output\html_writer;
+use core\url;
+use core_cache\definition;
+use core_cache\store;
+use core_table\output\html_table;
+
 require_once('../config.php');
 require_once($CFG->dirroot . '/lib/adminlib.php');
 
@@ -46,9 +53,9 @@ $sessiontable = clone($applicationtable);
 $requesttable = clone($applicationtable);
 
 
-$application = cache_definition::load_adhoc(cache_store::MODE_APPLICATION, 'cache', 'applicationtest');
-$session = cache_definition::load_adhoc(cache_store::MODE_SESSION, 'cache', 'sessiontest');
-$request = cache_definition::load_adhoc(cache_store::MODE_REQUEST, 'cache', 'requesttest');
+$application = definition::load_adhoc(store::MODE_APPLICATION, 'cache', 'applicationtest');
+$session = definition::load_adhoc(store::MODE_SESSION, 'cache', 'sessiontest');
+$request = definition::load_adhoc(store::MODE_REQUEST, 'cache', 'requesttest');
 
 $strinvalidplugin = new lang_string('invalidplugin', 'cache');
 $strunsupportedmode = new lang_string('unsupportedmode', 'cache');
@@ -67,7 +74,7 @@ foreach (core_component::get_plugin_list_with_file('cachestore', 'lib.php', true
         continue;
     }
 
-    if (!$class::is_supported_mode(cache_store::MODE_APPLICATION)) {
+    if (!$class::is_supported_mode(store::MODE_APPLICATION)) {
         $applicationtable->data[] = [$plugin, $strunsupportedmode, '-', '-', '-', '-'];
     } else {
         $store = $class::initialise_test_instance($application);
@@ -105,7 +112,7 @@ foreach (core_component::get_plugin_list_with_file('cachestore', 'lib.php', true
         }
     }
 
-    if (!$class::is_supported_mode(cache_store::MODE_SESSION)) {
+    if (!$class::is_supported_mode(store::MODE_SESSION)) {
         $sessiontable->data[] = [$plugin, $strunsupportedmode, '-', '-', '-', '-'];
     } else {
         $store = $class::initialise_test_instance($session);
@@ -143,7 +150,7 @@ foreach (core_component::get_plugin_list_with_file('cachestore', 'lib.php', true
         }
     }
 
-    if (!$class::is_supported_mode(cache_store::MODE_REQUEST)) {
+    if (!$class::is_supported_mode(store::MODE_REQUEST)) {
         $requesttable->data[] = [$plugin, $strunsupportedmode, '-', '-', '-', '-'];
     } else {
         $store = $class::initialise_test_instance($request);
@@ -188,7 +195,7 @@ echo $OUTPUT->heading(get_string('storeperformance', 'cache', $count));
 $possiblecounts = [1, 10, 100, 500, 1000, 5000, 10000, 50000, 100000];
 $links = [];
 foreach ($possiblecounts as $pcount) {
-    $links[] = html_writer::link(new moodle_url($PAGE->url, ['count' => $pcount]), $pcount);
+    $links[] = html_writer::link(new url($PAGE->url, ['count' => $pcount]), $pcount);
 }
 echo $OUTPUT->box_start('generalbox performance-test-counts');
 echo get_string('requestcount', 'cache', join(', ', $links));

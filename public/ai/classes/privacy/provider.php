@@ -16,6 +16,7 @@
 
 namespace core_ai\privacy;
 
+use core\context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -190,7 +191,7 @@ class provider implements
                 'contextid' => $policydetail->contextid,
                 'timeaccepted' => transform::datetime($policydetail->timeaccepted),
             ];
-            $context = \context::instance_by_id($policydetail->contextid);
+            $context = context::instance_by_id($policydetail->contextid);
             writer::with_context($context)->export_related_data($subcontexts, $name, $details);
         }
         $policydetails->close();
@@ -234,7 +235,7 @@ class provider implements
                 'timecompleted' => transform::datetime($textgeneratedetail->timecompleted),
             ];
             $name = 'action_generate_text';
-            $context = \context::instance_by_id($textgeneratedetail->contextid);
+            $context = context::instance_by_id($textgeneratedetail->contextid);
             writer::with_context($context)->export_related_data($subcontexts, $name, $details);
         }
         $textgeneratedetails->close();
@@ -279,7 +280,7 @@ class provider implements
                 'timecompleted' => transform::datetime($imagegeneratedetail->timecompleted),
             ];
             $name = 'action_generate_image';
-            $context = \context::instance_by_id($imagegeneratedetail->contextid);
+            $context = context::instance_by_id($imagegeneratedetail->contextid);
             writer::with_context($context)->export_related_data($subcontexts, $name, $details);
         }
         $imagegeneratedetails->close();
@@ -323,7 +324,7 @@ class provider implements
                 'timecompleted' => transform::datetime($textsummarisedetail->timecompleted),
             ];
             $name = 'action_summarise_text';
-            $context = \context::instance_by_id($textsummarisedetail->contextid);
+            $context = context::instance_by_id($textsummarisedetail->contextid);
             writer::with_context($context)->export_related_data($subcontexts, $name, $details);
         }
         $textsummarisedetails->close();
@@ -367,7 +368,7 @@ class provider implements
                 'timecompleted' => transform::datetime($textexplaindetail->timecompleted),
             ];
             $name = 'action_explain_text';
-            $context = \context::instance_by_id($textexplaindetail->contextid);
+            $context = context::instance_by_id($textexplaindetail->contextid);
             writer::with_context($context)->export_related_data($subcontexts, $name, $details);
         }
         $textexplaindetails->close();
@@ -378,7 +379,7 @@ class provider implements
      *
      * @param \context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context): void {
+    public static function delete_data_for_all_users_in_context(context $context): void {
         global $DB;
 
         // Policy.

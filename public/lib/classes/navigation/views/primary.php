@@ -16,7 +16,9 @@
 
 namespace core\navigation\views;
 
-use navigation_node;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
 
 /**
  * Class primary.
@@ -45,8 +47,8 @@ class primary extends view {
         // We do not need to change the text for the home/dashboard depending on the set homepage.
         $sitehome = null;
         if ($showhomenode && !empty($CFG->enablemyhome)) {
-            $sitehome = $this->add(get_string('home'), new \moodle_url('/'), self::TYPE_SYSTEM,
-                null, 'home', new \pix_icon('i/home', ''));
+            $sitehome = $this->add(get_string('home'), new url('/'), self::TYPE_SYSTEM,
+                null, 'home', new pix_icon('i/home', ''));
         }
         if (isloggedin() && !isguestuser()) {
             $homepage = get_home_page();
@@ -61,8 +63,8 @@ class primary extends view {
             $showmyhomenode = !empty($CFG->enabledashboard) && (empty($this->page->theme->removedprimarynavitems) ||
                 !in_array('myhome', $this->page->theme->removedprimarynavitems));
             if ($showmyhomenode) {
-                $this->add(get_string('myhome'), new \moodle_url('/my/'),
-                    self::TYPE_SETTING, null, 'myhome', new \pix_icon('i/dashboard', ''));
+                $this->add(get_string('myhome'), new url('/my/'),
+                    self::TYPE_SETTING, null, 'myhome', new pix_icon('i/dashboard', ''));
             }
 
             // Add the mycourses link.
@@ -70,13 +72,13 @@ class primary extends view {
                 (empty($this->page->theme->removedprimarynavitems) ||
                 !in_array('courses', $this->page->theme->removedprimarynavitems));
             if ($showcoursesnode) {
-                $this->add(get_string('mycourses'), new \moodle_url('/my/courses.php'), self::TYPE_ROOTNODE, null, 'mycourses');
+                $this->add(get_string('mycourses'), new url('/my/courses.php'), self::TYPE_ROOTNODE, null, 'mycourses');
             }
         }
 
         // Add the calendar link only for guest users.
         if (isguestuser()) {
-            $this->add(get_string('calendar', 'calendar'), new \moodle_url('/calendar/view.php?view=month'), self::TYPE_ROOTNODE,
+            $this->add(get_string('calendar', 'calendar'), new url('/calendar/view.php?view=month'), self::TYPE_ROOTNODE,
                 null, 'calendar');
         }
 

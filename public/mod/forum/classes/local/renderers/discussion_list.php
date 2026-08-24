@@ -26,6 +26,11 @@ namespace mod_forum\local\renderers;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\context\module;
+use core\output\paging_bar;
+use core\url;
+use core_course\cm_info;
 use mod_forum\grades\forum_gradeitem;
 use mod_forum\local\entities\forum as forum_entity;
 use mod_forum\local\factories\legacy_data_mapper as legacy_data_mapper_factory;
@@ -34,7 +39,7 @@ use mod_forum\local\factories\vault as vault_factory;
 use mod_forum\local\factories\url as url_factory;
 use mod_forum\local\managers\capability as capability_manager;
 use mod_forum\local\vaults\discussion_list as discussion_list_vault;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 use core\output\notification;
 use mod_forum\local\data_mappers\legacy\forum;
@@ -151,7 +156,7 @@ class discussion_list {
      */
     public function render(
         stdClass $user,
-        \cm_info $cm,
+        cm_info $cm,
         ?int $groupid,
         ?int $sortorder,
         ?int $pageno,
@@ -230,12 +235,12 @@ class discussion_list {
             $exportedposts = ($this->postprocessfortemplate) ($discussions, $user, $forum);
         }
 
-        $baseurl = new \moodle_url($PAGE->url, ['o' => $sortorder, 's' => $pagesize]);
+        $baseurl = new url($PAGE->url, ['o' => $sortorder, 's' => $pagesize]);
 
         $forumview = array_merge(
             $forumview,
             [
-                'pagination' => $this->renderer->render(new \paging_bar($alldiscussionscount, $pageno, $pagesize, $baseurl, 'p')),
+                'pagination' => $this->renderer->render(new paging_bar($alldiscussionscount, $pageno, $pagesize, $baseurl, 'p')),
             ],
             $exportedposts
         );
@@ -276,11 +281,11 @@ class discussion_list {
      *
      * @return string The rendered html
      */
-    private function get_discussion_form(stdClass $user, \cm_info $cm, ?int $groupid) {
+    private function get_discussion_form(stdClass $user, cm_info $cm, ?int $groupid) {
         $forum = $this->forum;
         $forumrecord = $this->legacydatamapperfactory->get_forum_data_mapper()->to_legacy_object($forum);
-        $modcontext = \context_module::instance($cm->id);
-        $coursecontext = \context_course::instance($forum->get_course_id());
+        $modcontext = module::instance($cm->id);
+        $coursecontext = course::instance($forum->get_course_id());
         $post = (object) [
             'course' => $forum->get_course_id(),
             'forum' => $forum->get_id(),
@@ -308,7 +313,7 @@ class discussion_list {
             'inpagereply' => true,
             'edit' => 0
         );
-        $posturl = new \moodle_url('/mod/forum/post.php');
+        $posturl = new url('/mod/forum/post.php');
         $mformpost = new \mod_forum_post_form($posturl, $formparams, 'post', '', array('id' => 'mformforum'));
         $discussionsubscribe = \mod_forum\subscriptions::get_user_default_subscription($forumrecord, $coursecontext, $cm, null);
 

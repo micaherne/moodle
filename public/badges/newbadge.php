@@ -25,11 +25,13 @@
  * @todo       MDL-82383 This file will be deleted in Moodle 6.0.
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 
 $courseid = optional_param('id', 0, PARAM_INT);
 
 require_login();
 
-$newpageurl = new moodle_url('/badges/edit.php', ['courseid' => $courseid, 'action' => 'new']);
+$newpageurl = new url('/badges/edit.php', ['courseid' => $courseid, 'action' => 'new']);
 redirect($newpageurl, get_string('newbadgedeprecated', 'core_badges'));

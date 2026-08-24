@@ -17,8 +17,8 @@
 namespace mod_glossary\output;
 
 use core\output\html_writer;
-use moodle_url;
-use plugin_renderer_base;
+use core\url;
+use core\output\plugin_renderer_base;
 use stdClass;
 
 /**
@@ -72,7 +72,7 @@ class renderer extends plugin_renderer_base {
             ]);
 
             $fullname = fullname($user);
-            $userurl = new moodle_url('/user/view.php', [
+            $userurl = new url('/user/view.php', [
                 'id' => $user->id,
                 'course' => $courseid,
             ]);

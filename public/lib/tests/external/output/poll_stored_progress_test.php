@@ -16,6 +16,8 @@
 
 namespace core\external\output;
 
+use core\exception\invalid_parameter_exception;
+
 /**
  * Unit tests for poll_stored_progress
  *
@@ -32,7 +34,7 @@ final class poll_stored_progress_test extends \advanced_testcase {
     public function test_execute_invalid_id(): void {
         $debuginfo = 'Invalid external api parameter: the value is "foo", the server was expecting "int" type';
         $pollstoredprogress = new poll_stored_progress();
-        $this->expectExceptionObject(new \invalid_parameter_exception($debuginfo));
+        $this->expectExceptionObject(new invalid_parameter_exception($debuginfo));
         $pollstoredprogress->execute(['foo']);
     }
 

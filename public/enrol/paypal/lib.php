@@ -24,7 +24,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\lang_string;
+use core\output\pix_icon;
+use core\output\progress_trace;
 use core\output\single_button;
+use core\url;
 use core_enrol\output\enrol_page;
 
 /**
@@ -103,7 +108,7 @@ class enrol_paypal_plugin extends enrol_plugin {
      * @return boolean
      */
     public function can_add_instance($courseid) {
-        $context = context_course::instance($courseid, MUST_EXIST);
+        $context = course::instance($courseid, MUST_EXIST);
 
         if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/paypal:config', $context)) {
             return false;
@@ -165,7 +170,7 @@ class enrol_paypal_plugin extends enrol_plugin {
         }
 
         $course = $DB->get_record('course', ['id' => $instance->courseid]);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         if ( (float) $instance->cost <= 0 ) {
             $cost = (float) $this->get_config('cost');
@@ -193,7 +198,7 @@ class enrol_paypal_plugin extends enrol_plugin {
             $body = $OUTPUT->render_from_template('enrol_paypal/enrol_page',
                 ['currency' => $instance->currency, 'cost' => $localisedcost]);
             if (isguestuser() || !isloggedin()) {
-                $button = new single_button(new moodle_url(get_login_url()), get_string('loginsite'), 'get',
+                $button = new single_button(new url(get_login_url()), get_string('loginsite'), 'get',
                     single_button::BUTTON_PRIMARY);
             } else {
                 // Sanitise some fields before building the PayPal form.
@@ -204,7 +209,7 @@ class enrol_paypal_plugin extends enrol_plugin {
                 $userlastname    = $USER->lastname;
                 $useraddress     = $USER->address;
                 $usercity        = $USER->city;
-                $buttonurl = new moodle_url(empty($CFG->usepaypalsandbox) ?
+                $buttonurl = new url(empty($CFG->usepaypalsandbox) ?
                         'https://www.paypal.com/cgi-bin/webscr' :
                         'https://www.sandbox.paypal.com/cgi-bin/webscr',
                     [
@@ -427,7 +432,7 @@ class enrol_paypal_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/paypal:config', $context);
     }
 
@@ -438,7 +443,7 @@ class enrol_paypal_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/paypal:config', $context);
     }
 }

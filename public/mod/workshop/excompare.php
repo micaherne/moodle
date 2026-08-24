@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 
@@ -34,7 +37,7 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 
 require_login($course, false, $cm);
 if (isguestuser()) {
-    throw new \moodle_exception('guestsarenotallowed');
+    throw new moodle_exception('guestsarenotallowed');
 }
 
 $workshop = $DB->get_record('workshop', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -46,7 +49,7 @@ $PAGE->set_url($workshop->excompare_url($sid, $aid));
 $example    = $workshop->get_example_by_id($sid);
 $assessment = $workshop->get_assessment_by_id($aid);
 if ($assessment->submissionid != $example->id) {
-    throw new \moodle_exception('invalidarguments');
+    throw new moodle_exception('invalidarguments');
 }
 $mformassessment = $strategy->get_assessment_form($PAGE->url, 'assessment', $assessment, false);
 if ($refasid = $DB->get_field('workshop_assessments', 'id', array('submissionid' => $example->id, 'weight' => 1))) {
@@ -62,7 +65,7 @@ if ($canmanage) {
 } elseif ($isreviewer and $workshop->assessing_examples_allowed()) {
     // ok you can go
 } else {
-    throw new \moodle_exception('nopermissions', 'error', $workshop->view_url(), 'compare example assessment');
+    throw new moodle_exception('nopermissions', 'error', $workshop->view_url(), 'compare example assessment');
 }
 
 $PAGE->set_title($workshop->name);
@@ -107,7 +110,7 @@ if ($isreviewer) {
     $assessment->title = get_string('assessmentbyyourself', 'workshop');
     if ($workshop->assessing_examples_allowed()) {
         $assessment->add_action(
-            new moodle_url($workshop->exsubmission_url($example->id), array('assess' => 'on', 'sesskey' => sesskey())),
+            new url($workshop->exsubmission_url($example->id), array('assess' => 'on', 'sesskey' => sesskey())),
             get_string('reassess', 'workshop')
         );
     }

@@ -23,7 +23,7 @@
  */
 namespace core\plugininfo;
 
-use moodle_url, part_of_admin_tree, admin_externalpage;
+use core\url, core_admin\setting\tree\part_of_admin_tree, core_admin\setting\tree\externalpage;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -47,8 +47,8 @@ class plagiarism extends base {
 
         // No redirects here!!!
         $section = $this->get_settings_section_name();
-        $settingsurl = new moodle_url($this->get_dir().'/settings.php');
-        $settings = new admin_externalpage($section, $this->displayname, $settingsurl,
+        $settingsurl = new url($this->get_dir().'/settings.php');
+        $settings = new externalpage($section, $this->displayname, $settingsurl,
             'moodle/site:config', $this->is_enabled() === false);
         $adminroot->add($parentnodename, $settings);
     }
@@ -63,6 +63,6 @@ class plagiarism extends base {
      */
     public static function get_manage_url() {
         global $CFG;
-        return !empty($CFG->enableplagiarism) ? new moodle_url('/admin/plagiarism.php') : null;
+        return !empty($CFG->enableplagiarism) ? new url('/admin/plagiarism.php') : null;
     }
 }

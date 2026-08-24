@@ -18,8 +18,9 @@ declare(strict_types=1);
 
 namespace core_webservice\reportbuilder\local\entities;
 
+use core\output\html_writer;
 use core_collator;
-use lang_string;
+use core\lang_string;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\autocomplete;
 use core_reportbuilder\local\report\column;
@@ -73,7 +74,7 @@ class service extends base {
             ->set_is_sortable(true)
             ->add_callback(static function(?string $value, \stdClass $row): string {
                 $output = $value;
-                $output .= \html_writer::tag('div', format_text($row->shortname), [
+                $output .= html_writer::tag('div', format_text($row->shortname), [
                     'class' => 'small text-muted',
                 ]);
                 return $output;

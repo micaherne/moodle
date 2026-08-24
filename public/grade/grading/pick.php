@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/grade/grading/lib.php');
 require_once($CFG->dirroot.'/grade/grading/pick_form.php');
@@ -45,7 +52,7 @@ $targetcontrollerclass = get_class($targetcontroller);
 
 // make sure there is no such form defined in the target area
 if ($targetcontroller->is_form_defined()) {
-    redirect(new moodle_url('/grade/grading/manage.php', array('areaid' => $targetid)));
+    redirect(new url('/grade/grading/manage.php', array('areaid' => $targetid)));
 }
 
 list($context, $course, $cm) = get_context_info_array($targetmanager->get_context()->id);
@@ -54,12 +61,12 @@ require_login($course, true, $cm);
 require_capability('moodle/grade:managegradingforms', $context);
 
 // user's capability in the templates bank
-$canshare   = has_capability('moodle/grade:sharegradingforms', context_system::instance());
-$canmanage  = has_capability('moodle/grade:managesharedforms', context_system::instance());
+$canshare   = has_capability('moodle/grade:sharegradingforms', system::instance());
+$canmanage  = has_capability('moodle/grade:managesharedforms', system::instance());
 
 // setup the page
 $PAGE->set_show_navigation_footer(false);
-$PAGE->set_url(new moodle_url('/grade/grading/pick.php', array('targetid' => $targetid)));
+$PAGE->set_url(new url('/grade/grading/pick.php', array('targetid' => $targetid)));
 navigation_node::override_active_url($targetmanager->get_management_url());
 $PAGE->set_title(get_string('gradingmanagement', 'core_grading'));
 $PAGE->set_heading(get_string('gradingmanagement', 'core_grading'));
@@ -87,7 +94,7 @@ if ($pick) {
             'formname'  => s($definition->name),
             'component' => $targetmanager->get_component_title(),
             'area'      => $targetmanager->get_area_title())),
-            new moodle_url($PAGE->url, array('pick' => $pick, 'confirmed' => 1)),
+            new url($PAGE->url, array('pick' => $pick, 'confirmed' => 1)),
             $PAGE->url);
         echo $output->box($sourcecontroller->render_preview($PAGE), 'template-preview-confirm');
         echo $output->footer();
@@ -96,7 +103,7 @@ if ($pick) {
         require_sesskey();
         $targetcontroller->update_definition($sourcecontroller->get_definition_copy($targetcontroller));
         $DB->set_field('grading_definitions', 'timecopied', time(), array('id' => $definition->id));
-        redirect(new moodle_url('/grade/grading/manage.php', array('areaid' => $targetid)));
+        redirect(new url('/grade/grading/manage.php', array('areaid' => $targetid)));
     }
 }
 
@@ -120,7 +127,7 @@ if ($remove) {
     if (!$confirmed) {
         echo $output->header();
         echo $output->confirm(get_string('templatedeleteconfirm', 'core_grading', s($definition->name)),
-            new moodle_url($PAGE->url, array('remove' => $remove, 'confirmed' => 1)),
+            new url($PAGE->url, array('remove' => $remove, 'confirmed' => 1)),
             $PAGE->url);
         echo $output->box($sourcecontroller->render_preview($PAGE), 'template-preview-confirm');
         echo $output->footer();
@@ -157,13 +164,13 @@ $params = array($method);
 if (!$includeownforms) {
     // search for public templates only
     $sql .= " AND ga.contextid = ? AND ga.component = 'core_grading'";
-    $params[] = context_system::instance()->id;
+    $params[] = system::instance()->id;
 
 } else {
     // search both templates and own forms in other areas
     $sql .= " AND ((ga.contextid = ? AND ga.component = 'core_grading')
                    OR (gd.usercreated = ? AND gd.status = ?))";
-    $params = array_merge($params,  array(context_system::instance()->id, $USER->id,
+    $params = array_merge($params,  array(system::instance()->id, $USER->id,
         gradingform_controller::DEFINITION_STATUS_READY));
 }
 
@@ -223,16 +230,16 @@ foreach ($rs as $template) {
     $out .= $output->box($controller->render_preview($PAGE), 'template-preview');
     $actions = array();
     if ($controller->is_shared_template()) {
-        $actions[] = $output->pick_action_icon(new moodle_url($PAGE->url, array('pick' => $template->id)),
+        $actions[] = $output->pick_action_icon(new url($PAGE->url, array('pick' => $template->id)),
             get_string('templatepick', 'core_grading'), 'i/valid', 'pick template');
         if ($canmanage or ($canshare and ($template->usercreated == $USER->id))) {
             //$actions[] = $output->pick_action_icon(new moodle_url($PAGE->url, array('edit' => $template->id)),
             //    get_string('templateedit', 'core_grading'), 'i/edit', 'edit');
-            $actions[] = $output->pick_action_icon(new moodle_url($PAGE->url, array('remove' => $template->id)),
+            $actions[] = $output->pick_action_icon(new url($PAGE->url, array('remove' => $template->id)),
                 get_string('templatedelete', 'core_grading'), 't/delete', 'remove');
         }
     } else if ($controller->is_own_form()) {
-        $actions[] = $output->pick_action_icon(new moodle_url($PAGE->url, array('pick' => $template->id)),
+        $actions[] = $output->pick_action_icon(new url($PAGE->url, array('pick' => $template->id)),
             get_string('templatepickownform', 'core_grading'), 'i/valid', 'pick ownform');
     }
     $out .= $output->box(join(' ', $actions), 'template-actions');
@@ -251,7 +258,7 @@ if (!$found) {
 }
 
 echo $output->single_button(
-    new moodle_url('/grade/grading/manage.php', array('areaid' => $targetid)),
+    new url('/grade/grading/manage.php', array('areaid' => $targetid)),
     get_string('back'), 'get');
 
 echo $output->footer();

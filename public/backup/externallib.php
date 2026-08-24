@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -238,7 +241,7 @@ class core_backup_external extends external_api {
         // Context validation.
         if ($contextid == 0) {
             $copyrec = \async_helper::get_backup_record($backupid);
-            $context = context_course::instance($copyrec->itemid);
+            $context = course::instance($copyrec->itemid);
         } else {
             $context = context::instance_by_id($contextid);
         }
@@ -314,7 +317,7 @@ class core_backup_external extends external_api {
             }
 
             $copyrec = \async_helper::get_backup_record($copyid);
-            $context = context_course::instance($copyrec->itemid);
+            $context = course::instance($copyrec->itemid);
             self::validate_context($context);
 
             $copycaps = \core_course\management\helper::get_course_copy_capabilities();
@@ -388,7 +391,7 @@ class core_backup_external extends external_api {
         $data = array();
         parse_str($formdata, $data);
 
-        $context = context_course::instance($data['courseid']);
+        $context = course::instance($data['courseid']);
         self::validate_context($context);
         $copycaps = \core_course\management\helper::get_course_copy_capabilities();
         require_all_capabilities($copycaps, $context);

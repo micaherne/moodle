@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require_once($CFG->dirroot.'/user/filters/lib.php');
 
 /**
@@ -68,7 +70,7 @@ class user_filter_profilefield extends user_filter_type {
 
         $fieldrecords = profile_get_custom_fields();
         foreach ($fieldrecords as $key => $fieldrecord) {
-            $fieldrecords[$key]->name = format_string($fieldrecords[$key]->name, false, ['context' => context_system::instance()]);
+            $fieldrecords[$key]->name = format_string($fieldrecords[$key]->name, false, ['context' => system::instance()]);
         }
         $fields = array_combine(array_keys($fieldrecords), array_column($fieldrecords, 'name'));
         core_collator::asort($fields);

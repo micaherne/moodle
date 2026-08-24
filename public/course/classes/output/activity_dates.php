@@ -16,10 +16,10 @@
 
 namespace core_course\output;
 
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * The activity dates renderable class.

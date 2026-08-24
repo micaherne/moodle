@@ -22,6 +22,9 @@
  * @copyright 2009 Moodle Pty Ltd (http://moodle.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/webservice/lib.php');
@@ -39,11 +42,11 @@ if ($node) {
     $node->make_active();
 }
 
-$returnurl = new moodle_url('/admin/webservice/service_users.php', ['id' => $serviceid]);
+$returnurl = new url('/admin/webservice/service_users.php', ['id' => $serviceid]);
 $PAGE->navbar->add(get_string('serviceusers', 'webservice'), $returnurl);
 $PAGE->navbar->add(get_string('serviceusersettings', 'webservice'));
 
-$formaction = new moodle_url('', array('id' => $serviceid, 'userid' => $userid));
+$formaction = new url('', array('id' => $serviceid, 'userid' => $userid));
 
 $webservicemanager = new webservice();
 $serviceuser = $webservicemanager->get_ws_authorised_user($serviceid, $userid);

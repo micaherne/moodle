@@ -23,9 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
-$ADMIN->add('reports', new admin_externalpage('reportinfectedfiles',
+$ADMIN->add('reports', new externalpage('reportinfectedfiles',
     get_string('infectedfiles', 'report_infectedfiles'),
     "$CFG->wwwroot/report/infectedfiles/index.php"));
 

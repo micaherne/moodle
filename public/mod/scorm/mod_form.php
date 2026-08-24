@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
+use core\context\user;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    //  It must be included from a Moodle page.
 }
@@ -378,7 +381,7 @@ class mod_scorm_mod_form extends moodleform_mod {
                     array('subdirs' => 0, 'maxfiles' => 1));
 
                 // Get file from users draft area.
-                $usercontext = context_user::instance($USER->id);
+                $usercontext = user::instance($USER->id);
                 $fs = get_file_storage();
                 $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $draftitemid, 'id', false);
 
@@ -395,7 +398,7 @@ class mod_scorm_mod_form extends moodleform_mod {
                     if (!$file->is_external_file()) {
                         $errors['packagefile'] = get_string('aliasonly', 'mod_scorm');
                     } else {
-                        $repository = repository::get_repository_by_id($file->get_repository_id(), context_system::instance());
+                        $repository = repository::get_repository_by_id($file->get_repository_id(), system::instance());
                         if (!$repository->supports_relative_file()) {
                             $errors['packagefile'] = get_string('repositorynotsupported', 'mod_scorm');
                         }

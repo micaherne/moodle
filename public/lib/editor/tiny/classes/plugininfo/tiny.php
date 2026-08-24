@@ -16,7 +16,10 @@
 
 namespace editor_tiny\plugininfo;
 
-use moodle_url;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
 
 /**
  * Subplugin info class.
@@ -45,8 +48,8 @@ class tiny extends \core\plugininfo\base {
      *
      * @return moodle_url
      */
-    public static function get_manage_url(): moodle_url {
-        return new moodle_url('/admin/settings.php', [
+    public static function get_manage_url(): url {
+        return new url('/admin/settings.php', [
             'section' => 'editorsettingstiny',
         ]);
     }
@@ -60,7 +63,7 @@ class tiny extends \core\plugininfo\base {
      * @param string $parentnodename
      * @param bool $hassiteconfig whether the current user has moodle/site:config capability
      */
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig): void {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig): void {
         // In case settings.php wants to refer to them.
         global $CFG, $USER, $DB, $OUTPUT, $PAGE;
 
@@ -77,7 +80,7 @@ class tiny extends \core\plugininfo\base {
         }
 
         $section = $this->get_settings_section_name();
-        $settings = new \admin_settingpage(
+        $settings = new settingpage(
             $section,
             $this->displayname,
             'moodle/site:config',
@@ -107,7 +110,7 @@ class tiny extends \core\plugininfo\base {
     }
 
     public static function get_enabled_plugins(): array {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugins = $pluginmanager->get_installed_plugins('tiny');
 
         if (!$plugins) {
@@ -143,7 +146,7 @@ class tiny extends \core\plugininfo\base {
 
         if ($haschanged) {
             add_to_config_log('disabled', $oldvalue, $disabled, $pluginname);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;

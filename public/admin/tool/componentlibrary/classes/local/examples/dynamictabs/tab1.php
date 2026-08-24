@@ -29,7 +29,7 @@ declare(strict_types=1);
 namespace tool_componentlibrary\local\examples\dynamictabs;
 
 use core\output\dynamic_tabs\base;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 /**

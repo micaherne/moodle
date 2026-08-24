@@ -24,7 +24,7 @@
 
 namespace core_privacy\local\sitepolicy;
 
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -67,7 +67,7 @@ class default_handler extends handler {
      * @return moodle_url|null (returns null if site policy is not defined)
      */
     public static function get_redirect_url($forguests = false) {
-        return static::is_defined($forguests) ? new moodle_url('/user/policy.php') : null;
+        return static::is_defined($forguests) ? new url('/user/policy.php') : null;
     }
 
     /**
@@ -87,9 +87,9 @@ class default_handler extends handler {
             return null;
         }
         if ($forguests && !empty($CFG->sitepolicyguest)) {
-            return new moodle_url($CFG->sitepolicyguest);
+            return new url($CFG->sitepolicyguest);
         } else if (!$forguests && !empty($CFG->sitepolicy)) {
-            return new moodle_url($CFG->sitepolicy);
+            return new url($CFG->sitepolicy);
         }
         return null;
     }

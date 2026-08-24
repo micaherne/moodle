@@ -26,6 +26,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\exception\moodle_exception;
+use core\output\single_button;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/repository/lib.php');
 
@@ -36,8 +41,8 @@ $sure    = optional_param('sure', '', PARAM_ALPHA);
 $contextid = optional_param('contextid', 0, PARAM_INT);
 $usercourseid = optional_param('usercourseid', SITEID, PARAM_INT);  // Extra: used for user context only
 
-$url = new moodle_url('/repository/manage_instances.php');
-$baseurl = new moodle_url('/repository/manage_instances.php');
+$url = new url('/repository/manage_instances.php');
+$baseurl = new url('/repository/manage_instances.php');
 
 if ($edit){
     $url->param('edit', $edit);
@@ -74,7 +79,7 @@ if ($context->contextlevel == CONTEXT_COURSE) {
     $pagename = get_string("repositorycourse",'repository');
 
     if ( !$course = $DB->get_record('course', array('id'=>$context->instanceid))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
     require_login($course, false);
     // If the user is allowed to edit this course, he's allowed to edit list of repository instances
@@ -86,11 +91,11 @@ if ($context->contextlevel == CONTEXT_COURSE) {
     $pagename = get_string('manageinstances', 'repository');
     //is the user looking at its own repository instances
     if ($USER->id != $context->instanceid){
-        throw new \moodle_exception('notyourinstances', 'repository');
+        throw new moodle_exception('notyourinstances', 'repository');
     }
     $user = $USER;
 } else {
-    throw new \moodle_exception('invalidcontext');
+    throw new moodle_exception('invalidcontext');
 }
 
 /// Security: we cannot perform any action if the type is not visible or if the context has been disabled
@@ -106,13 +111,13 @@ if (!empty($new) && empty($edit)){
 
 if (isset($type)) {
     if (!$type->get_visible()) {
-        throw new \moodle_exception('typenotvisible', 'repository', $baseurl);
+        throw new moodle_exception('typenotvisible', 'repository', $baseurl);
     }
     // Prevents the user from creating/editing an instance if the repository is not visible in
     // this context OR if the user does not have the capability to view this repository in this context.
     $canviewrepository = has_capability('repository/'.$type->get_typename().':view', $context);
     if (!$type->get_contextvisibility($context) || !$canviewrepository) {
-        throw new \moodle_exception('usercontextrepositorydisabled', 'repository', $baseurl);
+        throw new moodle_exception('usercontextrepositorydisabled', 'repository', $baseurl);
     }
 }
 
@@ -121,7 +126,7 @@ if (!empty($instance)) {
     // The context passed MUST match the context of the repository. And as both have to be
     // similar, this also ensures that the context is either a user one, or a course one.
     if ($instance->instance->contextid != $context->id) {
-        throw new \moodle_exception('invalidcontext');
+        throw new moodle_exception('invalidcontext');
     }
     if ($instance->readonly) {
         // Cannot edit, or delete a readonly instance.
@@ -181,7 +186,7 @@ if (!empty($edit) || !empty($new)) {
             $savedstr = get_string('configsaved', 'repository');
             redirect($baseurl);
         } else {
-            throw new \moodle_exception('instancenotsaved', 'repository', $baseurl);
+            throw new moodle_exception('instancenotsaved', 'repository', $baseurl);
         }
         exit;
     } else {     // Display the form
@@ -199,12 +204,12 @@ if (!empty($edit) || !empty($new)) {
             $deletedstr = get_string('instancedeleted', 'repository');
             redirect($baseurl, $deletedstr, 3);
         } else {
-            throw new \moodle_exception('instancenotdeleted', 'repository', $baseurl);
+            throw new moodle_exception('instancenotdeleted', 'repository', $baseurl);
         }
         exit;
     }
     echo $OUTPUT->header();
-    $formcontinue = new single_button(new moodle_url($baseurl, array('delete' => $delete, 'sure' => 'yes')), get_string('yes'));
+    $formcontinue = new single_button(new url($baseurl, array('delete' => $delete, 'sure' => 'yes')), get_string('yes'));
     $formcancel = new single_button($baseurl, get_string('no'));
     echo $OUTPUT->confirm(get_string('confirmdelete', 'repository', $instance->name), $formcontinue, $formcancel);
     $return = false;

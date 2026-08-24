@@ -24,6 +24,9 @@
 
 namespace search_solr;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/lib/filelib.php');
@@ -66,11 +69,11 @@ class schema {
      */
     public function __construct(?engine $engine = null) {
         if (!$this->config = get_config('search_solr')) {
-            throw new \moodle_exception('missingconfig', 'search_solr');
+            throw new moodle_exception('missingconfig', 'search_solr');
         }
 
         if (empty($this->config->server_hostname) || empty($this->config->indexname)) {
-            throw new \moodle_exception('missingconfig', 'search_solr');
+            throw new moodle_exception('missingconfig', 'search_solr');
         }
 
         $this->engine = $engine ?? new engine();
@@ -153,10 +156,10 @@ class schema {
         $url = $this->engine->get_connection_url('/select?wt=json');
         $result = $this->curl->get($url);
         if ($this->curl->error) {
-            throw new \moodle_exception('connectionerror', 'search_solr');
+            throw new moodle_exception('connectionerror', 'search_solr');
         }
         if ($this->curl->info['http_code'] === 404) {
-            throw new \moodle_exception('connectionerror', 'search_solr');
+            throw new moodle_exception('connectionerror', 'search_solr');
         }
     }
 
@@ -185,7 +188,7 @@ class schema {
         foreach ($fields as $fieldname => $data) {
 
             if (!isset($data['type']) || !isset($data['stored']) || !isset($data['indexed'])) {
-                throw new \coding_exception($fieldname . ' does not define all required field params: type, stored and indexed.');
+                throw new coding_exception($fieldname . ' does not define all required field params: type, stored and indexed.');
             }
             $type = $this->doc_field_to_solr_field($data['type']);
 
@@ -204,7 +207,7 @@ class schema {
             // We only validate if we are interested on it.
             if ($checkexisting) {
                 if ($this->curl->error) {
-                    throw new \moodle_exception('errorcreatingschema', 'search_solr', '', $this->curl->error);
+                    throw new moodle_exception('errorcreatingschema', 'search_solr', '', $this->curl->error);
                 }
                 $this->validate_add_field_result($results);
             }
@@ -229,11 +232,11 @@ class schema {
             $results = $this->curl->get($url);
 
             if ($this->curl->error) {
-                throw new \moodle_exception('errorcreatingschema', 'search_solr', '', $this->curl->error);
+                throw new moodle_exception('errorcreatingschema', 'search_solr', '', $this->curl->error);
             }
 
             if (!$results) {
-                throw new \moodle_exception('errorcreatingschema', 'search_solr', '', get_string('nodatafromserver', 'search_solr'));
+                throw new moodle_exception('errorcreatingschema', 'search_solr', '', get_string('nodatafromserver', 'search_solr'));
             }
             $results = json_decode($results);
 
@@ -241,13 +244,13 @@ class schema {
                 $a = new \stdClass();
                 $a->fieldname = $fieldname;
                 $a->setupurl = $CFG->wwwroot . '/search/engine/solr/setup_schema.php';
-                throw new \moodle_exception('errorvalidatingschema', 'search_solr', '', $a);
+                throw new moodle_exception('errorvalidatingschema', 'search_solr', '', $a);
             }
 
             // The field should not exist so we only accept 404 errors.
             if (empty($results->error) || (!empty($results->error) && $results->error->code !== 404)) {
                 if (!empty($results->error)) {
-                    throw new \moodle_exception('errorcreatingschema', 'search_solr', '', $results->error->msg);
+                    throw new moodle_exception('errorcreatingschema', 'search_solr', '', $results->error->msg);
                 } else {
                     // All these field attributes are set when fields are added through this script and should
                     // be returned and match the defined field's values.
@@ -257,7 +260,7 @@ class schema {
                             !isset($results->field->multiValued) || !isset($results->field->indexed) ||
                             !isset($results->field->stored)) {
 
-                        throw new \moodle_exception('errorcreatingschema', 'search_solr', '',
+                        throw new moodle_exception('errorcreatingschema', 'search_solr', '',
                             get_string('schemafieldautocreated', 'search_solr', $fieldname));
 
                     } else if ($results->field->type !== $expectedsolrfield ||
@@ -265,7 +268,7 @@ class schema {
                             $results->field->indexed !== $data['indexed'] ||
                             $results->field->stored !== $data['stored']) {
 
-                        throw new \moodle_exception('errorcreatingschema', 'search_solr', '',
+                        throw new moodle_exception('errorcreatingschema', 'search_solr', '',
                             get_string('schemafieldautocreated', 'search_solr', $fieldname));
                     } else {
                         // The field already exists and it is properly defined, no need to create it.
@@ -286,7 +289,7 @@ class schema {
     protected function validate_add_field_result($result) {
 
         if (!$result) {
-            throw new \moodle_exception('errorcreatingschema', 'search_solr', '', get_string('nodatafromserver', 'search_solr'));
+            throw new moodle_exception('errorcreatingschema', 'search_solr', '', get_string('nodatafromserver', 'search_solr'));
         }
 
         $results = json_decode($result);
@@ -296,12 +299,12 @@ class schema {
             } else {
                 $errormsg = json_encode($result);
             }
-            throw new \moodle_exception('errorcreatingschema', 'search_solr', '', $errormsg);
+            throw new moodle_exception('errorcreatingschema', 'search_solr', '', $errormsg);
         }
 
         // It comes as error when fetching fields data.
         if (!empty($results->error)) {
-            throw new \moodle_exception('errorcreatingschema', 'search_solr', '', $results->error);
+            throw new moodle_exception('errorcreatingschema', 'search_solr', '', $results->error);
         }
 
         // It comes as errors when adding fields.
@@ -312,7 +315,7 @@ class schema {
             foreach ($results->errors as $error) {
                 $errorstr .= implode(', ', $error->errorMessages);
             }
-            throw new \moodle_exception('errorcreatingschema', 'search_solr', '', $errorstr);
+            throw new moodle_exception('errorcreatingschema', 'search_solr', '', $errorstr);
         }
 
     }

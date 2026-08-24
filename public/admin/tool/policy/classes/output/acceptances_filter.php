@@ -25,6 +25,12 @@
 
 namespace tool_policy\output;
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
 use tool_policy\api;
 use tool_policy\policy_version;
 
@@ -36,7 +42,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2018 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class acceptances_filter implements \templatable, \renderable {
+class acceptances_filter implements templatable, renderable {
 
     /** @var array $filtersapplied The list of selected filter options. */
     protected $filtersapplied;
@@ -80,7 +86,7 @@ class acceptances_filter implements \templatable, \renderable {
      */
     public function __construct($policyid, $versionid, $filtersapplied) {
         $this->filtersapplied = [];
-        $this->roles = get_assignable_roles(\context_system::instance());
+        $this->roles = get_assignable_roles(system::instance());
         if ($policyid) {
             $this->add_filter(self::FILTER_POLICYID, $policyid);
         }
@@ -285,7 +291,7 @@ class acceptances_filter implements \templatable, \renderable {
             });
             if (!$found) {
                 // Throw exception that policy/version is not found.
-                throw new \moodle_exception('errorpolicyversionnotfound', 'tool_policy');
+                throw new moodle_exception('errorpolicyversionnotfound', 'tool_policy');
             }
         }
     }
@@ -332,7 +338,7 @@ class acceptances_filter implements \templatable, \renderable {
                 }
             }
         }
-        return new \moodle_url('/admin/tool/policy/acceptances.php', $urlparams);
+        return new url('/admin/tool/policy/acceptances.php', $urlparams);
     }
 
     /**
@@ -441,9 +447,9 @@ class acceptances_filter implements \templatable, \renderable {
      * @param renderer_base $output Used to do a final render of any components that need to be rendered for export.
      * @return \stdClass|array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $data = new \stdClass();
-        $data->action = (new \moodle_url('/admin/tool/policy/acceptances.php'))->out(false);
+        $data->action = (new url('/admin/tool/policy/acceptances.php'))->out(false);
 
         $data->filteroptions = [];
         $originalfilteroptions = [];

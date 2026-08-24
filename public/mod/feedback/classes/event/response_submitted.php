@@ -23,6 +23,10 @@
  */
 
 namespace mod_feedback\event;
+
+use core\context\module;
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -68,7 +72,7 @@ class response_submitted extends \core\event\base {
         $event = self::create(array(
             'relateduserid' => $completed->userid,
             'objectid' => $completed->id,
-            'context' => \context_module::instance($cm->id),
+            'context' => module::instance($cm->id),
             'anonymous' => ($completed->anonymous_response == FEEDBACK_ANONYMOUS_YES),
             'other' => array(
                 'cmid' => $cm->id,
@@ -105,10 +109,10 @@ class response_submitted extends \core\event\base {
      */
     public function get_url() {
         if ($this->anonymous) {
-            return new \moodle_url('/mod/feedback/show_entries.php', array('id' => $this->other['cmid'],
+            return new url('/mod/feedback/show_entries.php', array('id' => $this->other['cmid'],
                     'showcompleted' => $this->objectid));
         } else {
-            return new \moodle_url('/mod/feedback/show_entries.php' , array('id' => $this->other['cmid'],
+            return new url('/mod/feedback/show_entries.php' , array('id' => $this->other['cmid'],
                     'userid' => $this->userid, 'showcompleted' => $this->objectid));
         }
     }
@@ -144,16 +148,16 @@ class response_submitted extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
         if (!isset($this->other['anonymous'])) {
-            throw new \coding_exception('The \'anonymous\' value must be set in other.');
+            throw new coding_exception('The \'anonymous\' value must be set in other.');
         }
         if (!isset($this->other['cmid'])) {
-            throw new \coding_exception('The \'cmid\' value must be set in other.');
+            throw new coding_exception('The \'cmid\' value must be set in other.');
         }
         if (!isset($this->other['instanceid'])) {
-            throw new \coding_exception('The \'instanceid\' value must be set in other.');
+            throw new coding_exception('The \'instanceid\' value must be set in other.');
         }
     }
 

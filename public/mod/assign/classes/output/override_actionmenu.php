@@ -24,12 +24,14 @@
 
 namespace mod_assign\output;
 
+use core\output\renderer_base;
 use core_availability\info_module;
-use moodle_url;
-use templatable;
-use renderable;
-use url_select;
-use single_button;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
+use core\output\url_select;
+use core\output\single_button;
+use core_course\cm_info;
 
 /**
  * Output the override actionbar for this activity.
@@ -55,7 +57,7 @@ class override_actionmenu implements templatable, renderable {
      * @param moodle_url $currenturl The current url for this page.
      * @param \cm_info $cm course module information.
      */
-    public function __construct(moodle_url $currenturl, \cm_info $cm) {
+    public function __construct(url $currenturl, cm_info $cm) {
         $this->currenturl = $currenturl;
         $this->cm = $cm;
         $groupmode = groups_get_activity_groupmode($this->cm);
@@ -71,8 +73,8 @@ class override_actionmenu implements templatable, renderable {
      * @return url_select A url select object.
      */
     protected function get_select_menu(): url_select {
-        $userlink = new moodle_url('/mod/assign/overrides.php', ['cmid' => $this->cm->id, 'mode' => 'user']);
-        $grouplink = new moodle_url('/mod/assign/overrides.php', ['cmid' => $this->cm->id, 'mode' => 'group']);
+        $userlink = new url('/mod/assign/overrides.php', ['cmid' => $this->cm->id, 'mode' => 'user']);
+        $grouplink = new url('/mod/assign/overrides.php', ['cmid' => $this->cm->id, 'mode' => 'group']);
         $menu = [
             $userlink->out(false) => get_string('useroverrides', 'mod_assign'),
             $grouplink->out(false) => get_string('groupoverrides', 'mod_assign'),
@@ -131,7 +133,7 @@ class override_actionmenu implements templatable, renderable {
      * @param \renderer_base $output renderer base output.
      * @return array The data to be used in a template.
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
 
         $type = $this->currenturl->get_param('mode');
         if ($type == 'user') {
@@ -142,7 +144,7 @@ class override_actionmenu implements templatable, renderable {
         $action = ($type == 'user') ? 'adduser' : 'addgroup';
 
         $params = ['cmid' => $this->currenturl->get_param('cmid'), 'action' => $action];
-        $url = new moodle_url('/mod/assign/overrideedit.php', $params);
+        $url = new url('/mod/assign/overrideedit.php', $params);
 
         $options = [];
         if ($action == 'addgroup' && !$this->show_groups()) {

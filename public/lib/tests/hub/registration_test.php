@@ -16,6 +16,9 @@
 
 namespace core\hub;
 
+use core\context\system;
+use core\plugin_manager;
+
 /**
  * Class containing unit tests for the site registration class.
  *
@@ -43,7 +46,7 @@ final class registration_test extends \advanced_testcase {
         // Upload a file to ensure 'diskusage' contains a value > 0.
         $fs = get_file_storage();
         $fs->create_file_from_string([
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea'  => 'unittest',
             'itemid'    => 0,
@@ -88,7 +91,7 @@ final class registration_test extends \advanced_testcase {
 
         // Disabled a plugin.
         $DB->set_field('modules', 'visible', 0, ['name' => 'feedback']);
-        \core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
 
         // Check our plugin usage counts and enabled states are correct.
         $pluginusage = registration::get_plugin_usage_data();
@@ -264,7 +267,7 @@ final class registration_test extends \advanced_testcase {
 
         $fs = get_file_storage();
         $content = str_repeat('a', 1048576);
-        $context = \context_system::instance();
+        $context = system::instance();
         $record = [
             'contextid' => $context->id,
             'component' => 'core',

@@ -24,6 +24,7 @@
 
 namespace core_rating\privacy;
 
+use core\context;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\userlist;
 
@@ -88,7 +89,7 @@ class provider implements
      */
     public static function export_area_ratings(
         int $userid,
-        \context $context,
+        context $context,
         array $subcontext,
         string $component,
         string $ratingarea,
@@ -192,7 +193,7 @@ class provider implements
      * @param  string $ratingarea Rating area to delete.
      * @param  int $itemid The item ID for use with deletion.
      */
-    public static function delete_ratings(\context $context, ?string $component = null,
+    public static function delete_ratings(context $context, ?string $component = null,
             ?string $ratingarea = null, ?int $itemid = null) {
         global $DB;
 
@@ -224,7 +225,7 @@ class provider implements
      *      and may not use named parameters called contextid, component or ratingarea.
      * @param array $params any query params used by $itemidstest.
      */
-    public static function delete_ratings_select(\context $context, string $component,
+    public static function delete_ratings_select(context $context, string $component,
              string $ratingarea, $itemidstest, $params = []) {
         global $DB;
         $params += ['contextid' => $context->id, 'component' => $component, 'ratingarea' => $ratingarea];

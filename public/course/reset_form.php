@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
@@ -51,7 +53,7 @@ class course_reset_form extends moodleform {
         $mform->addElement('checkbox', 'reset_competency_ratings', get_string('deletecompetencyratings', 'core_competency'));
 
         $mform->addElement('header', 'rolesheader', get_string('roles'));
-        $roles = get_assignable_roles(context_course::instance($COURSE->id));
+        $roles = get_assignable_roles(course::instance($COURSE->id));
         $roles[0] = get_string('noroles', 'role');
         $roles = array_reverse($roles, true);
         $attributes = [

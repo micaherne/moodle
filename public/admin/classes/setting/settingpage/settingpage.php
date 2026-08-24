@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\settingpage;
 
+use core\exception\coding_exception;
+use core\url;
 use core_admin\admin_search;
 
 // phpcs:disable moodle.NamingConventions.ValidVariableName.VariableNameUnderscore
@@ -87,8 +89,8 @@ class settingpage implements
      *
      * @return \moodle_url
      */
-    public function get_settings_page_url(): \moodle_url {
-        return new \moodle_url(
+    public function get_settings_page_url(): url {
+        return new url(
             '/admin/settings.php',
             [
                 'section' => $this->name,
@@ -222,7 +224,7 @@ class settingpage implements
         }
 
         if (trim($beforesibling) === '') {
-            throw new \coding_exception('Unexpected value of the beforesibling parameter');
+            throw new coding_exception('Unexpected value of the beforesibling parameter');
         }
 
         if (!property_exists($this->settings, $beforesibling)) {

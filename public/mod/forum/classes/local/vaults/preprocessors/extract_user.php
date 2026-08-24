@@ -26,7 +26,7 @@ namespace mod_forum\local\vaults\preprocessors;
 
 defined('MOODLE_INTERNAL') || die();
 
-use user_picture;
+use core\output\user_picture;
 
 /**
  * Extract user vault preprocessor.

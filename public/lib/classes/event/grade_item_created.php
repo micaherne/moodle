@@ -24,6 +24,10 @@
 
 namespace core\event;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,7 +73,7 @@ class grade_item_created extends base {
         $event = self::create([
             'objectid' => $gradeitem->id,
             'courseid' => $gradeitem->courseid,
-            'context' => \context_course::instance($gradeitem->courseid),
+            'context' => course::instance($gradeitem->courseid),
             'other' => [
                 'itemname' => $gradeitem->itemname,
                 'itemtype' => $gradeitem->itemtype,
@@ -90,7 +94,7 @@ class grade_item_created extends base {
      */
     public function get_grade_item() {
         if ($this->is_restored()) {
-            throw new \coding_exception('get_grade_item() is intended for event observers only');
+            throw new coding_exception('get_grade_item() is intended for event observers only');
         }
 
         if (!isset($this->gradeitem)) {
@@ -116,7 +120,7 @@ class grade_item_created extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        $url = new \moodle_url('/grade/edit/tree/index.php');
+        $url = new url('/grade/edit/tree/index.php');
         $url->param('id', $this->courseid);
 
         return $url;
@@ -131,15 +135,15 @@ class grade_item_created extends base {
         parent::validate_data();
 
         if (!array_key_exists('itemname', $this->other)) {
-            throw new \coding_exception('The \'itemname\' value must be set in other.');
+            throw new coding_exception('The \'itemname\' value must be set in other.');
         }
 
         if (!array_key_exists('itemtype', $this->other)) {
-                throw new \coding_exception('The \'itemtype\' value must be set in other.');
+                throw new coding_exception('The \'itemtype\' value must be set in other.');
         }
 
         if (!array_key_exists('itemmodule', $this->other)) {
-            throw new \coding_exception('The \'itemmodule\' value must be set in other.');
+            throw new coding_exception('The \'itemmodule\' value must be set in other.');
         }
     }
 

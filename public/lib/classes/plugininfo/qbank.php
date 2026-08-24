@@ -25,6 +25,11 @@
 
 namespace core\plugininfo;
 
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
+
 /**
  * Base class for qbank plugins.
  *
@@ -40,14 +45,14 @@ class qbank extends base {
     }
 
     public function is_uninstall_allowed(): bool {
-        if (in_array($this->name, \core_plugin_manager::standard_plugins_list('qbank'))) {
+        if (in_array($this->name, plugin_manager::standard_plugins_list('qbank'))) {
             return false;
         }
         return true;
     }
 
-    public static function get_manage_url(): \moodle_url {
-        return new \moodle_url('/admin/settings.php', ['section' => 'manageqbanks']);
+    public static function get_manage_url(): url {
+        return new url('/admin/settings.php', ['section' => 'manageqbanks']);
     }
 
     public function get_settings_section_name() {
@@ -68,7 +73,7 @@ class qbank extends base {
 
     public static function get_enabled_plugins(): ?array {
         global $CFG;
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugins = $pluginmanager->get_installed_plugins('qbank');
 
         if (!$plugins) {
@@ -82,7 +87,7 @@ class qbank extends base {
         foreach ($plugins as $plugin) {
             $qbankinfo = $pluginmanager->get_plugin_info('qbank_'.$plugin);
             $qbankavailable = $qbankinfo->get_status();
-            if ($qbankavailable === \core_plugin_manager::PLUGIN_STATUS_MISSING) {
+            if ($qbankavailable === plugin_manager::PLUGIN_STATUS_MISSING) {
                 continue;
             }
             $disabled = get_config('qbank_' . $plugin, 'disabled');
@@ -110,7 +115,7 @@ class qbank extends base {
 
         if ($haschanged) {
             add_to_config_log('disabled', $oldvalue, $disabled, $plugin);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -124,20 +129,20 @@ class qbank extends base {
      * @return bool
      */
     public static function is_plugin_enabled($fullpluginname): bool {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $qbankinfo = $pluginmanager->get_plugin_info($fullpluginname);
         if (empty($qbankinfo)) {
             return false;
         }
         $qbankavailable = $qbankinfo->get_status();
-        if ($qbankavailable === \core_plugin_manager::PLUGIN_STATUS_MISSING ||
+        if ($qbankavailable === plugin_manager::PLUGIN_STATUS_MISSING ||
                 !empty(get_config($fullpluginname, 'disabled'))) {
             return false;
         }
         return true;
     }
 
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig): void {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig): void {
         global $CFG, $USER, $DB, $OUTPUT, $PAGE; // In case settings.php wants to refer to them.
         /** @var \admin_root $ADMIN */
         $ADMIN = $adminroot; // May be used in settings.php.
@@ -156,7 +161,7 @@ class qbank extends base {
         $settings = null;
         if (file_exists($this->full_path('settings.php'))) {
             if ($this->name !== 'columnsortorder') {
-                $settings = new \admin_settingpage($section, $this->displayname,
+                $settings = new settingpage($section, $this->displayname,
                                     'moodle/site:config', $this->is_enabled() === false);
             }
             include($this->full_path('settings.php')); // This may also set $settings to null.

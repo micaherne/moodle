@@ -16,11 +16,13 @@
 
 namespace mod_data\local\importer;
 
+use core\exception\moodle_exception;
 use core\notification;
+use core\url;
 use mod_data\manager;
 use mod_data\preset;
 use stdClass;
-use html_writer;
+use core\output\html_writer;
 
 /**
  * Abstract class used for data preset importers
@@ -151,7 +153,7 @@ abstract class preset_importer {
             }
 
             if (empty($fileobj)) {
-                throw new \moodle_exception('invalidpreset', 'data', '', $this->directory);
+                throw new moodle_exception('invalidpreset', 'data', '', $this->directory);
             }
         }
 
@@ -348,7 +350,7 @@ abstract class preset_importer {
                 $preservedfieldid = optional_param("field_$newid", -1, PARAM_INT);
 
                 if (array_key_exists($preservedfieldid, $preservedfields)) {
-                    throw new \moodle_exception('notinjectivemap', 'data');
+                    throw new moodle_exception('notinjectivemap', 'data');
                 }
 
                 if ($preservedfieldid == -1) {
@@ -428,7 +430,7 @@ abstract class preset_importer {
         } else {
             notification::error(get_string('cannotapplypreset', 'mod_data'));
         }
-        $backurl = new \moodle_url('/mod/data/field.php', ['d' => $instance->id]);
+        $backurl = new url('/mod/data/field.php', ['d' => $instance->id]);
         redirect($backurl);
     }
 
@@ -460,7 +462,7 @@ abstract class preset_importer {
         global $CFG;
 
         if (!$pluginordirectory) {
-            throw new \moodle_exception('emptypresetname', 'mod_data');
+            throw new moodle_exception('emptypresetname', 'mod_data');
         }
         try {
             $presetdir = $CFG->tempdir . '/forms/' . $pluginordirectory;
@@ -469,8 +471,8 @@ abstract class preset_importer {
             } else {
                 return new preset_existing_importer($manager, $pluginordirectory);
             }
-        } catch (\moodle_exception $e) {
-            throw new \moodle_exception('errorpresetnotfound', 'mod_data', '', $pluginordirectory);
+        } catch (moodle_exception $e) {
+            throw new moodle_exception('errorpresetnotfound', 'mod_data', '', $pluginordirectory);
         }
     }
 

@@ -35,6 +35,7 @@ use CFPropertyList\CFPropertyList;
 use CFPropertyList\CFString;
 use CFPropertyList\CFType;
 use \Collator;
+use core\exception\invalid_parameter_exception;
 use \DateTime;
 
 
@@ -112,7 +113,7 @@ class property_list {
      */
     public function update_element_value(string $key, $value) {
         if (is_array($value)) {
-            throw new \invalid_parameter_exception('Use update_element_array to update a collection.');
+            throw new invalid_parameter_exception('Use update_element_array to update a collection.');
         }
         $this->plist_map( function($elvalue, $elkey, $parent) use ($key, $value) {
             // Set new value.
@@ -124,7 +125,7 @@ class property_list {
                         || ($element instanceof CFBoolean && is_bool($value))) {
                     $element->setValue($value);
                 } else {
-                    throw new \invalid_parameter_exception(
+                    throw new invalid_parameter_exception(
                             'Only string, number and boolean elements can be updated, or value type does not match element type: '
                             . get_class($element));
                 }
@@ -145,7 +146,7 @@ class property_list {
         foreach ($value as $element) {
             // If any element is not a CFType instance, then throw exception.
             if (!($element instanceof CFType)) {
-                throw new \invalid_parameter_exception('New array must only contain CFType objects.');
+                throw new invalid_parameter_exception('New array must only contain CFType objects.');
             }
         }
         $this->plist_map( function($elvalue, $elkey, $parent) use ($key, $value) {

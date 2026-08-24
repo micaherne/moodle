@@ -25,6 +25,10 @@
  * @author    Darko Miletic  (darko.miletic [at] gmail [dt] com)
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
 use mod_bigbluebuttonbn\extension;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\config;
@@ -108,11 +112,11 @@ echo $OUTPUT->header();
 
 // Valid credentials have not been setup, then we output a message to teachers and admin.
 if (config::server_credentials_invalid()) {
-    if (has_capability('moodle/site:config', context_system::instance())) {
-        $settingslink = new moodle_url('/admin/settings.php', ['section' => 'modsettingbigbluebuttonbn']);
+    if (has_capability('moodle/site:config', system::instance())) {
+        $settingslink = new url('/admin/settings.php', ['section' => 'modsettingbigbluebuttonbn']);
         echo $OUTPUT->notification(get_string('settings_credential_warning', 'bigbluebuttonbn',
             ['settingslink' => $settingslink->out()]), 'notifywarning');
-    } else if (has_capability('moodle/course:manageactivities', context_course::instance($course->id))) {
+    } else if (has_capability('moodle/course:manageactivities', course::instance($course->id))) {
         echo $OUTPUT->notification(get_string('settings_credential_warning_no_capability', 'bigbluebuttonbn'), 'notifywarning');
     }
 }
@@ -124,7 +128,7 @@ if (!$instance->can_join() && $instance->get_type() != instance::TYPE_RECORDING_
     } else {
         notice(
             get_string('view_nojoin', plugin::COMPONENT),
-            new moodle_url('/course/view.php', ['id' => $course->id])
+            new url('/course/view.php', ['id' => $course->id])
         );
     }
 }

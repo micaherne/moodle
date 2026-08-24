@@ -38,6 +38,11 @@
  * @copyright 2010 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context;
+use core\context\course;
+use core\output\html_writer;
+use core\url;
+
 abstract class restore_ui_stage extends base_ui_stage {
     /**
      * Constructor
@@ -361,8 +366,8 @@ class restore_ui_stage_confirm extends restore_ui_independent_stage implements f
      */
     public function display(core_backup_renderer $renderer) {
 
-        $prevstageurl = new moodle_url('/backup/restorefile.php', array('contextid' => $this->contextid));
-        $nextstageurl = new moodle_url('/backup/restore.php', array(
+        $prevstageurl = new url('/backup/restorefile.php', array('contextid' => $this->contextid));
+        $nextstageurl = new url('/backup/restore.php', array(
             'contextid' => $this->contextid,
             'filepath'  => $this->filepath,
             'stage'     => restore_ui::STAGE_DESTINATION));
@@ -459,7 +464,7 @@ class restore_ui_stage_destination extends restore_ui_independent_stage {
         global $PAGE;
         $this->contextid = $contextid;
         $this->filepath = required_param('filepath', PARAM_ALPHANUM);
-        $url = new moodle_url($PAGE->url, array(
+        $url = new url($PAGE->url, array(
             'filepath' => $this->filepath,
             'contextid' => $this->contextid,
             'stage' => restore_ui::STAGE_DESTINATION));
@@ -527,7 +532,7 @@ class restore_ui_stage_destination extends restore_ui_independent_stage {
             $wholecourse = true;
         }
 
-        $nextstageurl = new moodle_url('/backup/restore.php', array(
+        $nextstageurl = new url('/backup/restore.php', array(
             'contextid' => $this->contextid,
             'filepath'  => $this->filepath,
             'stage'     => restore_ui::STAGE_SETTINGS));
@@ -984,7 +989,7 @@ class restore_ui_stage_process extends restore_ui_stage {
      */
     public function process(?base_moodleform $form = null) {
         if (optional_param('cancel', false, PARAM_BOOL)) {
-            redirect(new moodle_url('/course/view.php', array('id' => $this->get_ui()->get_controller()->get_courseid())));
+            redirect(new url('/course/view.php', array('id' => $this->get_ui()->get_controller()->get_courseid())));
         }
 
         // First decide whether a substage is needed.
@@ -1041,7 +1046,7 @@ class restore_ui_stage_process extends restore_ui_stage {
 
         $html = '';
         $haserrors = false;
-        $url = new moodle_url($PAGE->url, array(
+        $url = new url($PAGE->url, array(
             'restore'   => $this->get_uniqueid(),
             'stage'     => restore_ui::STAGE_PROCESS,
             'substage'  => $this->substage,
@@ -1064,7 +1069,7 @@ class restore_ui_stage_process extends restore_ui_stage {
                 $haserrors = (!empty($results['errors']));
                 $html .= $renderer->precheck_notices($results);
                 if (!empty($info->role_mappings->mappings)) {
-                    $context = context_course::instance($this->ui->get_controller()->get_courseid());
+                    $context = course::instance($this->ui->get_controller()->get_courseid());
                     $assignableroles = get_assignable_roles($context, ROLENAME_ALIAS, false);
 
                     // Get current role mappings.

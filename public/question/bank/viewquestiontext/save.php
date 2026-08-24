@@ -25,6 +25,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\invalid_parameter_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/question/editlib.php');
 
@@ -40,9 +43,9 @@ $validformats = [
     \qbank_viewquestiontext\output\question_text_format::FULL,
 ];
 if (!in_array($format, $validformats)) {
-    throw new \invalid_parameter_exception('$format must be one of question_text_format::OFF, ::PLAIN or ::FULL.');
+    throw new invalid_parameter_exception('$format must be one of question_text_format::OFF, ::PLAIN or ::FULL.');
 }
 
-question_set_or_get_user_preference('qbshowtext', $format, 0, new \moodle_url('/'));
+question_set_or_get_user_preference('qbshowtext', $format, 0, new url('/'));
 
-redirect(new moodle_url($returnurl));
+redirect(new url($returnurl));

@@ -16,6 +16,8 @@
 
 namespace communication_matrix;
 
+use core\exception\moodle_exception;
+
 /**
  * class matrix_user_manager to handle specific actions.
  *
@@ -112,7 +114,7 @@ class matrix_user_manager {
     public static function get_formatted_matrix_home_server(): string {
         $homeserver = get_config('communication_matrix', 'matrixhomeserverurl');
         if ($homeserver === false) {
-            throw new \moodle_exception('Unknown matrix homeserver url');
+            throw new moodle_exception('Unknown matrix homeserver url');
         }
 
         $homeserver = parse_url($homeserver)['host'];

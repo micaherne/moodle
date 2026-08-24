@@ -16,8 +16,8 @@
 
 namespace mod_data\local\exporter;
 
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 
 /**
  * Utility class for exporting data from a mod_data instance.
@@ -52,7 +52,7 @@ class utils {
         global $DB;
 
         if (is_null($context)) {
-            $context = context_system::instance();
+            $context = system::instance();
         }
         // Exporting user data needs special permission.
         $userdetails = $userdetails && has_capability('mod/data:exportuserinfo', $context);

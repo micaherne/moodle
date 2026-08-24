@@ -27,6 +27,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
 use core_question\local\bank\random_question_loader;
 use core_question\question_reference_manager;
 
@@ -863,7 +866,7 @@ class backup_final_scales_structure_step extends backup_structure_step {
                                    AND bi.itemname = 'scalefinal'", array(backup::VAR_BACKUPID));
 
         // Annotate scale files (they store files in system context, so pass it instead of default one)
-        $scale->annotate_files('grade', 'scale', 'id', context_system::instance()->id);
+        $scale->annotate_files('grade', 'scale', 'id', system::instance()->id);
 
         // Return main element (scalesdef)
         return $scalesdef;
@@ -900,7 +903,7 @@ class backup_final_outcomes_structure_step extends backup_structure_step {
                                      AND bi.itemname = 'outcomefinal'", array(backup::VAR_BACKUPID));
 
         // Annotate outcome files (they store files in system context, so pass it instead of default one)
-        $outcome->annotate_files('grade', 'outcome', 'id', context_system::instance()->id);
+        $outcome->annotate_files('grade', 'outcome', 'id', system::instance()->id);
 
         // Return main element (outcomesdef)
         return $outcomesdef;
@@ -2194,8 +2197,8 @@ class backup_main_structure_step extends backup_structure_step {
         $info['original_course_shortname'] = $originalcourseinfo->shortname;
         $info['original_course_startdate'] = $originalcourseinfo->startdate;
         $info['original_course_enddate']   = $originalcourseinfo->enddate;
-        $info['original_course_contextid'] = context_course::instance($this->get_courseid())->id;
-        $info['original_system_contextid'] = context_system::instance()->id;
+        $info['original_course_contextid'] = course::instance($this->get_courseid())->id;
+        $info['original_system_contextid'] = system::instance()->id;
 
         // Get more information from controller
         list($dinfo, $cinfo, $sinfo) = backup_controller_dbops::get_moodle_backup_information(
@@ -2810,7 +2813,7 @@ class backup_annotate_all_user_files extends backup_execution_step {
         $progress->start_progress($this->get_name());
         foreach ($rs as $record) {
             $userid = $record->itemid;
-            $userctx = context_user::instance($userid, IGNORE_MISSING);
+            $userctx = user::instance($userid, IGNORE_MISSING);
             if (!$userctx) {
                 continue; // User has not context, sure it's a deleted user, so cannot have files
             }

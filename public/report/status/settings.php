@@ -22,9 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die();
 
-$ADMIN->add('reports', new admin_externalpage('reportstatus', get_string('pluginname', 'report_status'),
+$ADMIN->add('reports', new externalpage('reportstatus', get_string('pluginname', 'report_status'),
     "$CFG->wwwroot/report/status/index.php", 'report/status:view'));
 
 $settings = null;

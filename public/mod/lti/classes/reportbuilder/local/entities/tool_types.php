@@ -16,9 +16,10 @@
 
 namespace mod_lti\reportbuilder\local\entities;
 
+use core\output\html_writer;
 use core_reportbuilder\local\filters\select;
 use core_reportbuilder\local\filters\text;
-use lang_string;
+use core\lang_string;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\report\column;
 use core_reportbuilder\local\report\filter;
@@ -79,10 +80,10 @@ class tool_types extends base {
                 $iconclass = $data->icon ? ' nofilter' : '';
                 $iconcontainerclass = 'activityiconcontainer smaller';
                 $name = $data->name;
-                $img = \html_writer::img($iconurl, get_string('courseexternaltooliconalt', 'mod_lti', $name),
+                $img = html_writer::img($iconurl, get_string('courseexternaltooliconalt', 'mod_lti', $name),
                     ['class' => 'activityicon' . $iconclass]);
-                $name = \html_writer::span($name, 'align-self-center');
-                return \html_writer::div(\html_writer::div($img, 'me-2 '.$iconcontainerclass) . $name, 'd-flex');
+                $name = html_writer::span($name, 'align-self-center');
+                return html_writer::div(html_writer::div($img, 'me-2 '.$iconcontainerclass) . $name, 'd-flex');
             });
 
         // Description column.

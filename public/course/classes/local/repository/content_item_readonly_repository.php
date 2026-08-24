@@ -26,9 +26,13 @@ namespace core_course\local\repository;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_component;
 use core_course\local\entity\content_item;
 use core_course\local\entity\lang_string_title;
+use core_course\modinfo;
 
 /**
  * The class content_item_repository, for reading content_items.
@@ -54,7 +58,7 @@ class content_item_readonly_repository implements content_item_readonly_reposito
                 $tipcontent = get_string('modulename_tip', $modname);
                 $tipicon = $OUTPUT->pix_icon('i/tip', '');
                 $tip = $tipicon . get_string('tip', '', $tipcontent);
-                $help .= \html_writer::tag('div', $tip, ['class' => 'helpdoctip alert alert-secondary']);
+                $help .= html_writer::tag('div', $tip, ['class' => 'helpdoctip alert alert-secondary']);
             }
             if ($sm->string_exists('modulename_link', $modname)) { // Link to further info in Moodle docs.
                 // The link is stored in a language file but should not be translated, use value for English.
@@ -63,7 +67,7 @@ class content_item_readonly_repository implements content_item_readonly_reposito
                 $linktext = get_string('morehelp');
                 $arialabel = get_string('morehelpaboutmodule', '', get_string('modulename', $modname));
                 $doclink = $OUTPUT->doc_link($link, $linktext, true, ['aria-label' => $arialabel]);
-                $help .= \html_writer::tag('div', $doclink, ['class' => 'helpdoclink opacity-75 pt-3']);
+                $help .= html_writer::tag('div', $doclink, ['class' => 'helpdoclink opacity-75 pt-3']);
             }
         }
         return $help;
@@ -96,7 +100,7 @@ class content_item_readonly_repository implements content_item_readonly_reposito
             \stdClass $user): array {
 
         $contentitems = [];
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         foreach ($pluginmanager->get_subplugins_of_plugin($parentpluginname) as $subpluginname => $subplugin) {
             // Call the hook, but with a copy of the module content item data.
             $spcontentitems = component_callback($subpluginname, 'get_course_content_items', [$modulecontentitem, $user], null);
@@ -118,7 +122,7 @@ class content_item_readonly_repository implements content_item_readonly_reposito
      */
     private function get_subplugin_all_content_items(string $parentpluginname, content_item $modulecontentitem): array {
         $contentitems = [];
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         foreach ($pluginmanager->get_subplugins_of_plugin($parentpluginname) as $subpluginname => $subplugin) {
             // Call the hook, but with a copy of the module content item data.
             $spcontentitems = component_callback($subpluginname, 'get_all_content_items', [$modulecontentitem], null);
@@ -140,7 +144,7 @@ class content_item_readonly_repository implements content_item_readonly_reposito
     private static function filter_out_items_not_to_be_displayed(array $contentitems): array {
         return array_filter($contentitems, static function ($module) {
             [, $name] = core_component::normalize_component($module->get_component_name());
-            return \course_modinfo::is_mod_type_visible_on_course($name);
+            return modinfo::is_mod_type_visible_on_course($name);
         });
     }
 
@@ -177,7 +181,7 @@ class content_item_readonly_repository implements content_item_readonly_reposito
                 id: $mod->id,
                 name: $mod->name,
                 title: new lang_string_title("modulename", $mod->name),
-                link: new \moodle_url(''), // No course scope, so just an empty link.
+                link: new url(''), // No course scope, so just an empty link.
                 icon: $OUTPUT->pix_icon('monologo', '', $mod->name, ['class' => 'icon activityicon']),
                 help: $help,
                 archetype: $archetype,
@@ -257,7 +261,7 @@ class content_item_readonly_repository implements content_item_readonly_reposito
                 id: $mod->id,
                 name: $mod->name,
                 title: new lang_string_title("modulename", $mod->name),
-                link: new \moodle_url('/course/mod.php', ['id' => $course->id, 'add' => $mod->name]),
+                link: new url('/course/mod.php', ['id' => $course->id, 'add' => $mod->name]),
                 icon: $OUTPUT->pix_icon($icon, '', $mod->name, ['class' => "activityicon $iconclass"]),
                 help: $help,
                 archetype: $archetype,

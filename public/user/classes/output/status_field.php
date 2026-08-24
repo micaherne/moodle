@@ -26,10 +26,10 @@ namespace core_user\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 use user_enrolment_action;
 
 /**

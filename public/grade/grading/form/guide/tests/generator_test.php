@@ -25,7 +25,8 @@
 
 namespace gradingform_guide;
 
-use context_module;
+use core\context\module;
+use core\test\testing_util;
 use gradingform_controller;
 use gradingform_guide_controller;
 
@@ -47,14 +48,14 @@ final class generator_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $guidegenerator = $generator->get_plugin_generator('gradingform_guide');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         // Data for testing.
         $name = 'myfirstguide';
@@ -119,14 +120,14 @@ final class generator_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $guidegenerator = $generator->get_plugin_generator('gradingform_guide');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         // Data for testing.
         $name = 'myfirstguide';
@@ -167,14 +168,14 @@ final class generator_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $guidegenerator = $generator->get_plugin_generator('gradingform_guide');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         $this->setUser($user);
         $guide = $guidegenerator->get_test_guide($context, 'assign', 'submissions');
@@ -196,14 +197,14 @@ final class generator_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $guidegenerator = $generator->get_plugin_generator('gradingform_guide');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         $this->setUser($user);
         $controller = $guidegenerator->get_test_guide($context, 'assign', 'submissions');
@@ -244,14 +245,14 @@ final class generator_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $guidegenerator = $generator->get_plugin_generator('gradingform_guide');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         $this->setUser($user);
         $controller = $guidegenerator->get_test_guide($context, 'assign', 'submissions');

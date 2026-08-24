@@ -24,6 +24,8 @@
  */
 
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/question/type/questiontypebase.php');
@@ -488,7 +490,7 @@ function qtype_multianswer_extract_question($text) {
             $wrapped->shuffleanswers = 1;
             $wrapped->layout = qtype_multichoice_base::LAYOUT_HORIZONTAL;
         } else {
-            throw new \moodle_exception('unknownquestiontype', 'question', '', $answerregs[2]);
+            throw new moodle_exception('unknownquestiontype', 'question', '', $answerregs[2]);
             return false;
         }
 

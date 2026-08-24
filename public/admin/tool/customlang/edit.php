@@ -21,24 +21,28 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/customlang/locallib.php');
 require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/customlang/filter_form.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 require_login(SITEID, false);
-require_capability('tool/customlang:edit', context_system::instance());
+require_capability('tool/customlang:edit', system::instance());
 
 $lng                    = required_param('lng', PARAM_LANG);
 $currentpage            = optional_param('p', 0, PARAM_INT);
 $translatorsubmitted    = optional_param('translatorsubmitted', 0, PARAM_BOOL);
 
 admin_externalpage_setup('toolcustomlang', '', null,
-    new moodle_url('/admin/tool/customlang/edit.php', array('lng' => $lng)),
+    new url('/admin/tool/customlang/edit.php', array('lng' => $lng)),
     array('pagelayout' => 'report')); // Hack: allows for wide page contents.
 
 $PAGE->requires->js_init_call('M.tool_customlang.init_editor', array(), true);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_secondary_active_tab('siteadminnode');
 $PAGE->set_primary_active_tab('siteadminnode');
 $PAGE->navbar->add(get_string('editlangpack', 'tool_customlang'), $PAGE->url);
@@ -46,7 +50,7 @@ $PAGE->navbar->add(get_string('editlangpack', 'tool_customlang'), $PAGE->url);
 
 if (empty($lng)) {
     // PARAM_LANG validation failed
-    throw new \moodle_exception('missingparameter');
+    throw new moodle_exception('missingparameter');
 }
 
 // pre-output processing
@@ -59,7 +63,7 @@ if ($filter->is_cancelled()) {
 
 } elseif ($submitted = $filter->get_data()) {
     tool_customlang_utils::save_filter($submitted, $USER);
-    redirect(new moodle_url($PAGE->url, array('p'=>0)));
+    redirect(new url($PAGE->url, array('p'=>0)));
 }
 
 if ($translatorsubmitted) {
@@ -68,9 +72,9 @@ if ($translatorsubmitted) {
     $checkin = optional_param('savecheckin', false, PARAM_RAW);
 
     if ($checkin === false) {
-        $nexturl = new moodle_url($PAGE->url, array('p' => $currentpage));
+        $nexturl = new url($PAGE->url, array('p' => $currentpage));
     } else {
-        $nexturl = new moodle_url('/admin/tool/customlang/index.php', array('action'=>'checkin', 'lng' => $lng, 'sesskey'=>sesskey()));
+        $nexturl = new url('/admin/tool/customlang/index.php', array('action'=>'checkin', 'lng' => $lng, 'sesskey'=>sesskey()));
     }
 
     if (!is_array($strings)) {

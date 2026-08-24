@@ -29,6 +29,8 @@
  * @param object $question
  * @return string
  */
+use core\url;
+
 function qbank_viewcreator_edit_form_display($question): string {
     global $DB, $PAGE, $OUTPUT;
     $question = question_bank::load_question($question->id);
@@ -51,7 +53,7 @@ function qbank_viewcreator_edit_form_display($question): string {
     // Set params filter to returnurl so that when we use the move feature  It will not cause any error.
     $returnurl = $PAGE->url;
     $returnurl->param('filter', $filterparam);
-    $versiondata['historyurl'] = new moodle_url('/question/bank/history/history.php', [
+    $versiondata['historyurl'] = new url('/question/bank/history/history.php', [
         'entryid' => $question->questionbankentryid,
         'returnurl' => $returnurl,
         'courseid' => $PAGE->course->id,

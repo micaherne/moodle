@@ -1,7 +1,9 @@
 <?php
     // Allows the admin to configure services for remote hosts
 
-    require(__DIR__.'/../../config.php');
+    use core\exception\moodle_exception;
+
+require(__DIR__.'/../../config.php');
     require_once($CFG->libdir.'/adminlib.php');
     include_once($CFG->dirroot.'/mnet/lib.php');
 
@@ -10,7 +12,7 @@
 
     if (!extension_loaded('openssl')) {
         echo $OUTPUT->header();
-        throw new \moodle_exception('requiresopenssl', 'mnet', '', null, true);
+        throw new moodle_exception('requiresopenssl', 'mnet', '', null, true);
     }
 
     $site = get_site();

@@ -16,6 +16,8 @@
 
 namespace core_completion\hook;
 
+use core_course\cm_info;
+
 /**
  * Hook after course module creation.
  *
@@ -36,7 +38,7 @@ class after_cm_completion_updated {
      */
     public function __construct(
         /** @var \cm_info The course module info */
-        public readonly \cm_info $cm,
+        public readonly cm_info $cm,
         /** @var \stdClass completion data */
         public readonly \stdClass $data
     ) {

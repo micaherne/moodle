@@ -24,6 +24,8 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -113,17 +115,17 @@ class marker_updated extends base {
      */
     protected function validate_data() {
         if (self::$preventcreatecall) {
-            throw new \coding_exception('cannot call marker_updated::create() directly, use marker_updated::create_from_marker() instead.');
+            throw new coding_exception('cannot call marker_updated::create() directly, use marker_updated::create_from_marker() instead.');
         }
 
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['markerid'])) {
-            throw new \coding_exception('The \'markerid\' value must be set in other.');
+            throw new coding_exception('The \'markerid\' value must be set in other.');
         }
     }
 

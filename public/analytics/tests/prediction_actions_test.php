@@ -16,6 +16,8 @@
 
 namespace core_analytics;
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/fixtures/test_indicator_max.php');
@@ -76,7 +78,7 @@ final class prediction_actions_test extends \advanced_testcase {
 
         $this->course1 = $this->getDataGenerator()->create_course();
         $this->course2 = $this->getDataGenerator()->create_course();
-        $this->context = \context_course::instance($this->course1->id);
+        $this->context = course::instance($this->course1->id);
 
         $this->teacher1 = $this->getDataGenerator()->create_user();
         $this->teacher2 = $this->getDataGenerator()->create_user();

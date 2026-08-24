@@ -16,6 +16,8 @@
 
 namespace gradeexport_xls\event;
 
+use core\context\course;
+
 /**
  * XLS grade export events test cases.
  *
@@ -41,7 +43,7 @@ final class events_test extends \advanced_testcase {
         // doing here is simply making sure that the events returns the right information.
         $course = $this->getDataGenerator()->create_course();
         $params = array(
-            'context' => \context_course::instance($course->id)
+            'context' => course::instance($course->id)
         );
         $event = \gradeexport_xls\event\grade_exported::create($params);
         // Triggering and capturing the event.
@@ -52,7 +54,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\gradeexport_xls\event\grade_exported', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals('xls', $event->get_export_type());
     }
 }

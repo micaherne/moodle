@@ -16,6 +16,10 @@
 
 namespace qbank_columnsortorder\local\bank;
 
+use core\output\action_menu\link;
+use core\output\action_menu\link_secondary;
+use core\output\pix_icon;
+use core\url;
 use core_question\local\bank\column_action_base;
 use core_question\local\bank\column_base;
 
@@ -38,10 +42,10 @@ class column_action_move extends column_action_base {
         $this->move = get_string('move');
     }
 
-    public function get_action_menu_link(column_base $column): ?\action_menu_link {
-        return new \action_menu_link_secondary(
-            new \moodle_url('/question/edit.php'),
-            new \pix_icon('i/dragdrop', ''),
+    public function get_action_menu_link(column_base $column): ?link {
+        return new link_secondary(
+            new url('/question/edit.php'),
+            new pix_icon('i/dragdrop', ''),
             $this->move,
             [
                 'title' => get_string('movecolumn', 'qbank_columnsortorder', $column->get_title()),

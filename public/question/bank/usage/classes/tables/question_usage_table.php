@@ -19,11 +19,11 @@ namespace qbank_usage\tables;
 global $CFG;
 require_once($CFG->libdir.'/tablelib.php');
 
-use context_course;
-use html_writer;
-use moodle_url;
+use core\context\course;
+use core\output\html_writer;
+use core\url;
 use qbank_usage\helper;
-use table_sql;
+use core_table\sql_table;
 
 /**
  * Class question_usage_table.
@@ -34,7 +34,7 @@ use table_sql;
  * @author     Safat Shahin <safatshahin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class question_usage_table extends table_sql {
+class question_usage_table extends sql_table {
 
     /**
      * Search string.
@@ -106,12 +106,12 @@ class question_usage_table extends table_sql {
     public function col_modulename(\stdClass $values): string {
         $cm = get_fast_modinfo($values->courseid)->instances['quiz'][$values->quizid];
 
-        return html_writer::link(new moodle_url('/mod/quiz/view.php', ['q' => $values->quizid]), $cm->get_formatted_name());
+        return html_writer::link(new url('/mod/quiz/view.php', ['q' => $values->quizid]), $cm->get_formatted_name());
     }
 
     public function col_coursename(\stdClass $values): string {
         $course = get_course($values->courseid);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         return html_writer::link(course_get_url($course), format_string($course->fullname, true, [
             'context' => $context,

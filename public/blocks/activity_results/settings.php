@@ -22,30 +22,35 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\flag;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
     // Default high scores.
-    $setting = new admin_setting_configtext('block_activity_results/config_showbest',
+    $setting = new configtext('block_activity_results/config_showbest',
         new lang_string('defaulthighestgrades', 'block_activity_results'),
         new lang_string('defaulthighestgrades_desc', 'block_activity_results'), 3, PARAM_INT);
-    $setting->set_locked_flag_options(admin_setting_flag::ENABLED, false);
+    $setting->set_locked_flag_options(flag::ENABLED, false);
     $settings->add($setting);
 
     // Default low scores.
-    $setting = new admin_setting_configtext('block_activity_results/config_showworst',
+    $setting = new configtext('block_activity_results/config_showworst',
         new lang_string('defaultlowestgrades', 'block_activity_results'),
         new lang_string('defaultlowestgrades_desc', 'block_activity_results'), 0, PARAM_INT);
-    $setting->set_locked_flag_options(admin_setting_flag::ENABLED, false);
+    $setting->set_locked_flag_options(flag::ENABLED, false);
     $settings->add($setting);
 
     // Default group display.
     $yesno = array(0 => get_string('no'), 1 => get_string('yes'));
-    $setting = new admin_setting_configselect('block_activity_results/config_usegroups',
+    $setting = new configselect('block_activity_results/config_usegroups',
         new lang_string('defaultshowgroups', 'block_activity_results'),
         new lang_string('defaultshowgroups_desc', 'block_activity_results'), 0, $yesno);
-    $setting->set_locked_flag_options(admin_setting_flag::ENABLED, false);
+    $setting->set_locked_flag_options(flag::ENABLED, false);
     $settings->add($setting);
 
     // Default privacy settings.
@@ -54,10 +59,10 @@ if ($ADMIN->fulltree) {
         B_ACTIVITYRESULTS_NAME_FORMAT_ID => get_string('config_names_id', 'block_activity_results'),
         B_ACTIVITYRESULTS_NAME_FORMAT_ANON => get_string('config_names_anon', 'block_activity_results')
     );
-    $setting = new admin_setting_configselect('block_activity_results/config_nameformat',
+    $setting = new configselect('block_activity_results/config_nameformat',
         new lang_string('defaultnameoptions', 'block_activity_results'),
         new lang_string('defaultnameoptions_desc', 'block_activity_results'), B_ACTIVITYRESULTS_NAME_FORMAT_FULL, $nameoptions);
-    $setting->set_locked_flag_options(admin_setting_flag::ENABLED, false);
+    $setting->set_locked_flag_options(flag::ENABLED, false);
     $settings->add($setting);
 
     // Default grade display settings.
@@ -66,10 +71,10 @@ if ($ADMIN->fulltree) {
         B_ACTIVITYRESULTS_GRADE_FORMAT_FRA => get_string('config_format_fraction', 'block_activity_results'),
         B_ACTIVITYRESULTS_GRADE_FORMAT_ABS => get_string('config_format_absolute', 'block_activity_results')
     );
-    $setting = new admin_setting_configselect('block_activity_results/config_gradeformat',
+    $setting = new configselect('block_activity_results/config_gradeformat',
         new lang_string('defaultgradedisplay', 'block_activity_results'),
         new lang_string('defaultgradedisplay_desc', 'block_activity_results'), B_ACTIVITYRESULTS_GRADE_FORMAT_PCT, $gradeoptions);
-    $setting->set_locked_flag_options(admin_setting_flag::ENABLED, false);
+    $setting->set_locked_flag_options(flag::ENABLED, false);
     $settings->add($setting);
 
     // Default decimal places.
@@ -77,10 +82,10 @@ if ($ADMIN->fulltree) {
     for ($i = 0; $i <= 5; $i++) {
         $places[$i] = $i;
     }
-    $setting = new admin_setting_configselect('block_activity_results/config_decimalpoints',
+    $setting = new configselect('block_activity_results/config_decimalpoints',
         new lang_string('defaultdecimalplaces', 'block_activity_results'),
         new lang_string('defaultdecimalplaces_desc', 'block_activity_results'), 2, $places);
-    $setting->set_locked_flag_options(admin_setting_flag::ENABLED, false);
+    $setting->set_locked_flag_options(flag::ENABLED, false);
     $settings->add($setting);
 
 }

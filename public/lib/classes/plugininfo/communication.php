@@ -16,7 +16,7 @@
 
 namespace core\plugininfo;
 
-use core_plugin_manager;
+use core\plugin_manager;
 
 /**
  * Class for communication provider.
@@ -58,7 +58,7 @@ class communication extends base {
 
         if ($haschanged) {
             add_to_config_log('disabled', $oldvalue, $disabled, $plugin);
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -66,7 +66,7 @@ class communication extends base {
 
     #[\Override]
     public static function get_enabled_plugins(): ?array {
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugins = $pluginmanager->get_installed_plugins('communication');
 
         if (!$plugins) {
@@ -122,7 +122,7 @@ class communication extends base {
 
     #[\Override]
     public function is_uninstall_allowed(): bool {
-        if (in_array($this->name, \core_plugin_manager::standard_plugins_list('communication'))) {
+        if (in_array($this->name, plugin_manager::standard_plugins_list('communication'))) {
             return false;
         }
         return true;
@@ -136,13 +136,13 @@ class communication extends base {
      * @return bool
      */
     public static function is_plugin_enabled($fullpluginname): bool {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $communicationinfo = $pluginmanager->get_plugin_info($fullpluginname);
         if (empty($communicationinfo)) {
             return false;
         }
         $communicationavailable = $communicationinfo->get_status();
-        return !($communicationavailable === \core_plugin_manager::PLUGIN_STATUS_MISSING ||
+        return !($communicationavailable === plugin_manager::PLUGIN_STATUS_MISSING ||
             !empty(get_config($fullpluginname, 'disabled')));
     }
 }

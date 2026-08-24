@@ -18,8 +18,8 @@ namespace core\output;
 
 use core\context\course as context_course;
 use moodle_page;
-use navigation_node;
-use moodle_url;
+use core\navigation\navigation_node;
+use core\url;
 
 /**
  * Class responsible for generating the action bar (tertiary nav) elements in the participants page and related pages.
@@ -106,7 +106,7 @@ class participants_action_bar implements renderable {
             $coursecontext = context_course::instance($this->course->id);
             $canviewparticipants = course_can_view_participants($coursecontext);
             if ($canviewparticipants) {
-                $participantsurl = (new moodle_url('/user/index.php', ['id' => $this->course->id]))->out();
+                $participantsurl = (new url('/user/index.php', ['id' => $this->course->id]))->out();
                 $formattedcontent[] = [
                     $enrolmentsheading => [
                         $participantsurl => get_string('enrolledusers', 'enrol'),
@@ -130,8 +130,8 @@ class participants_action_bar implements renderable {
                     if ($key === 'groups') {
                         $params = ['id' => $this->course->id];
                         $items += [
-                            (new moodle_url('/group/groupings.php', $params))->out() => get_string('groupings', 'group'),
-                            (new moodle_url('/group/overview.php', $params))->out() => get_string('overview', 'group'),
+                            (new url('/group/groupings.php', $params))->out() => get_string('groupings', 'group'),
+                            (new url('/group/overview.php', $params))->out() => get_string('overview', 'group'),
                         ];
                     }
                 }
@@ -187,7 +187,7 @@ class participants_action_bar implements renderable {
         foreach ($urlcontent as $key => $value) {
             if (is_array($value) && $activeitem = $this->find_active_page($value, $strictness)) {
                 return $activeitem;
-            } else if ($this->page->url->compare(new moodle_url($key), $strictness)) {
+            } else if ($this->page->url->compare(new url($key), $strictness)) {
                 return $key;
             }
         }
@@ -201,7 +201,7 @@ class participants_action_bar implements renderable {
      * @param \renderer_base $output
      * @return object|null The content required to render the tertiary navigation
      */
-    public function get_dropdown(\renderer_base $output): ?object {
+    public function get_dropdown(renderer_base $output): ?object {
         if ($urlselectcontent = $this->get_content_for_select()) {
             $activeurl = $this->find_active_page($urlselectcontent);
             $activeurl = $activeurl ?: $this->find_active_page($urlselectcontent, URL_MATCH_BASE);
@@ -223,7 +223,7 @@ class participants_action_bar implements renderable {
      *              - navigation A stdclass representing the standard navigation options to be fed into a urlselect
      *              - renderedcontent Rendered content to be displayed in line with the tertiary nav
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         return [
             'navigation' => $this->get_dropdown($output),
             'renderedcontent' => $this->renderedcontent,

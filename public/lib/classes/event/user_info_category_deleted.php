@@ -23,6 +23,9 @@
  */
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -60,7 +63,7 @@ class user_info_category_deleted extends base {
     public static function create_from_category($category) {
         $event = self::create(array(
             'objectid' => $category->id,
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'other' => array(
                 'name' => $category->name,
             )
@@ -100,7 +103,7 @@ class user_info_category_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
     }
 

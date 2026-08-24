@@ -25,10 +25,11 @@
 namespace mod_lesson\output;
 
 use core\output\notification;
-use moodle_url;
-use templatable;
-use renderable;
-use single_button;
+use core\output\renderer_base;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
+use core\output\single_button;
 
 /**
  * Output the action buttons for this activity.
@@ -70,7 +71,7 @@ class edit_action_buttons implements templatable, renderable {
      * @param \renderer_base $output Renderer information.
      * @return array Said data.
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         global $PAGE;
 
         $data = [];
@@ -78,7 +79,7 @@ class edit_action_buttons implements templatable, renderable {
         // A shortcut to edit the lesson's question page.
         if (has_capability('mod/lesson:edit', $this->lesson->context) &&
                 !empty($this->currentpage) && $this->currentpage != LESSON_EOL) {
-            $url = new moodle_url('/mod/lesson/editpage.php', [
+            $url = new url('/mod/lesson/editpage.php', [
                 'id'       => $this->lesson->get_cm()->id,
                 'pageid'   => $this->currentpage,
                 'edit'     => 1,
@@ -89,9 +90,9 @@ class edit_action_buttons implements templatable, renderable {
         }
 
         if ($this->lesson->can_manage()) {
-            $url = new moodle_url('/mod/lesson/edit.php', ['id' => $this->lesson->get_cm()->id]);
+            $url = new url('/mod/lesson/edit.php', ['id' => $this->lesson->get_cm()->id]);
             $editbutton = new single_button($url, get_string('editlesson', 'mod_lesson'), 'get', single_button::BUTTON_PRIMARY);
-            $url = new moodle_url('/mod/lesson/essay.php', ['id' => $this->lesson->get_cm()->id]);
+            $url = new url('/mod/lesson/essay.php', ['id' => $this->lesson->get_cm()->id]);
             $essaybutton = new single_button($url, get_string('manualgrading', 'mod_lesson'), 'get');
             $data += [
                 'edit' => [

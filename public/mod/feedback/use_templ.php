@@ -22,6 +22,9 @@
  * @package mod_feedback
  */
 
+use core\context\module;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -33,11 +36,11 @@ if (!$templateid) {
 }
 $template = $DB->get_record('feedback_template', ['id' => $templateid], '*', MUST_EXIST);
 
-$url = new moodle_url('/mod/feedback/use_templ.php', array('id'=>$id, 'templateid'=>$templateid));
+$url = new url('/mod/feedback/use_templ.php', array('id'=>$id, 'templateid'=>$templateid));
 $PAGE->set_url($url);
 
 list($course, $cm) = get_course_and_cm_from_cmid($id, 'feedback');
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 require_login($course, true, $cm);
 
@@ -51,7 +54,7 @@ $strfeedbacks = get_string("modulenameplural", "feedback");
 $strfeedback  = get_string("modulename", "feedback");
 
 $params = ['id' => $id];
-$activeurl = new moodle_url('/mod/feedback/manage_templates.php', $params);
+$activeurl = new url('/mod/feedback/manage_templates.php', $params);
 $PAGE->set_url($activeurl);
 $PAGE->set_show_navigation_footer(false);
 

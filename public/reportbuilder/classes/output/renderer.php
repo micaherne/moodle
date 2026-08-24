@@ -18,9 +18,9 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\output;
 
-use html_writer;
-use moodle_url;
-use plugin_renderer_base;
+use core\output\html_writer;
+use core\url;
+use core\output\plugin_renderer_base;
 use core_reportbuilder\table\custom_report_table;
 use core_reportbuilder\table\custom_report_table_view;
 use core_reportbuilder\table\system_report_table;
@@ -134,7 +134,7 @@ class renderer extends plugin_renderer_base {
             'data-action' => 'report-edit',
             'data-report-id' => $report->get('id')
         ]);
-        $closebutton = html_writer::link(new moodle_url('/reportbuilder/index.php'), get_string('close', 'core_reportbuilder'), [
+        $closebutton = html_writer::link(new url('/reportbuilder/index.php'), get_string('close', 'core_reportbuilder'), [
             'class' => 'btn btn-secondary',
             'title' => get_string('closeeditor', 'core_reportbuilder', $reportname),
             'role' => 'button'

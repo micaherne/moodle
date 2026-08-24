@@ -16,6 +16,9 @@
 
 namespace core_ai\external;
 
+use core\context\system;
+use core_cache\cache;
+
 /**
  * Test policy external api calls.
  *
@@ -97,7 +100,7 @@ final class policy_test extends \advanced_testcase {
         $this->setUser($user->id);
 
         // Get system context.
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $_POST['sesskey'] = sesskey();
         $params = [
@@ -139,7 +142,7 @@ final class policy_test extends \advanced_testcase {
             $record2,
         ]);
 
-        $policycache = \cache::make('core', 'ai_policy');
+        $policycache = cache::make('core', 'ai_policy');
         $this->assertNotEmpty($policycache->get_many([$user1->id, $user2->id]));
     }
 

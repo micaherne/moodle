@@ -33,6 +33,8 @@
  *
  * @return string XML with any encryption envolope removed
  */
+use core\exception\moodle_exception;
+
 function mnet_server_strip_encryption($rawpostdata) {
     $remoteclient = get_mnet_remote_client();
     $crypt_parser = new mnet_encxml_parser();

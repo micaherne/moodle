@@ -16,10 +16,10 @@
 
 namespace mod_quiz\external;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core_question_generator;
 use mod_quiz\quiz_settings;
-use required_capability_exception;
+use core\exception\required_capability_exception;
 
 /**
  * Test for the grade_items CRUD service.

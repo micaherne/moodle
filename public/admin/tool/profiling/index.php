@@ -26,6 +26,8 @@
 
 // TODO: it is wrong when core lib references ANY plugin lang strings, maybe more login could be moved here (skodak)
 
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir . '/xhprof/xhprof_moodle.php');
@@ -47,7 +49,7 @@ admin_externalpage_setup('toolprofiling');
 
 // Always add listurl if available
 if ($listurl) {
-    $listurlnav = new moodle_url('/admin/tool/profiling/index.php', array('listurl' => $listurl));
+    $listurlnav = new url('/admin/tool/profiling/index.php', array('listurl' => $listurl));
     $PAGE->navbar->add($listurl, $listurlnav);
 }
 

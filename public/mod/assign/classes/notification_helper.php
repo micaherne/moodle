@@ -16,6 +16,9 @@
 
 namespace mod_assign;
 
+use core\context\module;
+use core\url;
+use core\user;
 use DateTime;
 use core\output\html_writer;
 
@@ -392,7 +395,7 @@ class notification_helper {
             'id' => $assignmentobj->get_course_module()->id,
             'action' => 'view',
         ];
-        $url = new \moodle_url('/mod/assign/view.php', $urlparams);
+        $url = new url('/mod/assign/view.php', $urlparams);
 
         // Shortlink for SMS.
         $shortlink = \core_sms\manager::create_shortlink_for_users(
@@ -418,7 +421,7 @@ class notification_helper {
         ];
 
         $messagedata = [
-            'user' => \core_user::get_user($user->id),
+            'user' => user::get_user($user->id),
             'url' => $url->out(false),
             'subject' => get_string('assignmentduesoonsubject', 'mod_assign', $stringparams),
             'assignmentname' => $stringparams['assignmentname'],
@@ -433,7 +436,7 @@ class notification_helper {
         $message = new \core\message\message();
         $message->component = 'mod_assign';
         $message->name = self::TYPE_DUE_SOON;
-        $message->userfrom = \core_user::get_noreply_user();
+        $message->userfrom = user::get_noreply_user();
         $message->userto = $messagedata['user'];
         $message->subject = $messagedata['subject'];
         $message->fullmessageformat = FORMAT_HTML;
@@ -505,7 +508,7 @@ class notification_helper {
             'id' => $assignmentobj->get_course_module()->id,
             'action' => 'view',
         ];
-        $url = new \moodle_url('/mod/assign/view.php', $urlparams);
+        $url = new url('/mod/assign/view.php', $urlparams);
 
         // Shortlink for SMS.
         $shortlink = \core_sms\manager::create_shortlink_for_users(
@@ -538,7 +541,7 @@ class notification_helper {
         ];
 
         $messagedata = [
-            'user' => \core_user::get_user($user->id),
+            'user' => user::get_user($user->id),
             'url' => $url->out(false),
             'subject' => get_string('assignmentoverduesubject', 'mod_assign', $stringparams),
             'assignmentname' => $stringparams['assignmentname'],
@@ -549,7 +552,7 @@ class notification_helper {
         $message = new \core\message\message();
         $message->component = 'mod_assign';
         $message->name = self::TYPE_OVERDUE;
-        $message->userfrom = \core_user::get_noreply_user();
+        $message->userfrom = user::get_noreply_user();
         $message->userto = $messagedata['user'];
         $message->subject = $messagedata['subject'];
         $message->fullmessageformat = FORMAT_HTML;
@@ -613,7 +616,7 @@ class notification_helper {
                 'id' => $assignmentobj->get_course_module()->id,
                 'action' => 'view',
             ];
-            $url = new \moodle_url('/mod/assign/view.php', $urlparams);
+            $url = new url('/mod/assign/view.php', $urlparams);
 
             // Shortlink for SMS.
             $shortlink = \core_sms\manager::create_shortlink_for_users(
@@ -654,7 +657,7 @@ class notification_helper {
         $digest = html_writer::alist($digestarray);
 
         // Get user's object.
-        $userobject = \core_user::get_user($userid);
+        $userobject = user::get_user($userid);
 
         $stringparams = [
             'firstname' => $userobject->firstname,
@@ -672,7 +675,7 @@ class notification_helper {
         $message = new \core\message\message();
         $message->component = 'mod_assign';
         $message->name = self::TYPE_DUE_DIGEST;
-        $message->userfrom = \core_user::get_noreply_user();
+        $message->userfrom = user::get_noreply_user();
         $message->userto = $messagedata['user'];
         $message->subject = $messagedata['subject'];
         $message->fullmessageformat = FORMAT_HTML;
@@ -766,7 +769,7 @@ class notification_helper {
      */
     protected static function get_assignment_data(int $assignmentid): \assign {
         [$course, $assigncm] = get_course_and_cm_from_instance($assignmentid, 'assign');
-        $cmcontext = \context_module::instance($assigncm->id);
+        $cmcontext = module::instance($assigncm->id);
         return new \assign($cmcontext, $assigncm, $course);
     }
 }

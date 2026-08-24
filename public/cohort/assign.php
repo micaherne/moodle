@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\navigation\navigation_node;
+use core\url;
+
 require('../config.php');
 require_once($CFG->dirroot.'/cohort/locallib.php');
 
@@ -40,9 +44,9 @@ $PAGE->set_url('/cohort/assign.php', array('id'=>$id));
 $PAGE->set_pagelayout('admin');
 
 if ($returnurl) {
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 } else {
-    $returnurl = new moodle_url('/cohort/index.php', array('contextid' => $cohort->contextid));
+    $returnurl = new url('/cohort/index.php', array('contextid' => $cohort->contextid));
 }
 
 if (!empty($cohort->component)) {
@@ -56,9 +60,9 @@ if (optional_param('cancel', false, PARAM_BOOL)) {
 
 if ($context->contextlevel == CONTEXT_COURSECAT) {
     $category = $DB->get_record('course_categories', array('id'=>$context->instanceid), '*', MUST_EXIST);
-    navigation_node::override_active_url(new moodle_url('/cohort/index.php', array('contextid'=>$cohort->contextid)));
+    navigation_node::override_active_url(new url('/cohort/index.php', array('contextid'=>$cohort->contextid)));
 } else {
-    navigation_node::override_active_url(new moodle_url('/cohort/index.php', array()));
+    navigation_node::override_active_url(new url('/cohort/index.php', array()));
 }
 $PAGE->navbar->add(get_string('assign', 'cohort'));
 

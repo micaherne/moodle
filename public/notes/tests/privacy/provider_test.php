@@ -29,6 +29,8 @@ global $CFG;
 
 require_once($CFG->dirroot . "/notes/lib.php");
 
+use core\context\course;
+use core\context\system;
 use core_notes\privacy\provider;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\approved_contextlist;
@@ -67,7 +69,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $coursecontextids = [];
         for ($c = 1; $c <= $nocourses; $c++) {
             $course = $this->getDataGenerator()->create_course();
-            $coursecontext = \context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
 
             role_assign($teacherrole->id, $teacher1->id, $coursecontext->id);
             role_assign($studentrole->id, $student->id, $coursecontext->id);
@@ -169,7 +171,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         for ($c = 1; $c <= $nocourses; $c++) {
             // Create a Course, then enrol a teacher and enrol 2 students.
             $course = $this->getDataGenerator()->create_course();
-            $coursecontext = \context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
 
             role_assign($teacherrole->id, $teacher1->id, $coursecontext->id);
 
@@ -206,7 +208,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
             "Test site-wide user note about the teacher in Course 4 by another teacher"
         );
         // Store the Course context for those which have test notes added for verification.
-        $coursecontextids[] = \context_course::instance($course->id)->id;
+        $coursecontextids[] = course::instance($course->id)->id;
 
         // Add a private user note for Teacher 1 by another Teacher 2 in Course 5.
         $course = $courses[5];
@@ -260,7 +262,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         for ($c = 0; $c < $nocourses; $c++) {
             // Create a Course, then enrol a teacher and enrol 2 students.
             $course = $this->getDataGenerator()->create_course();
-            $coursecontext = \context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
 
             role_assign($teacherrole->id, $teacher->id, $coursecontext->id);
 
@@ -323,7 +325,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         for ($c = 0; $c < $nocourses; $c++) {
             // Create a Course, then enrol a teacher and enrol 2 students.
             $course = $this->getDataGenerator()->create_course();
-            $coursecontext = \context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
 
             role_assign($teacherrole->id, $teacher->id, $coursecontext->id);
 
@@ -387,7 +389,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $nocourses = 3;
         for ($c = 1; $c <= $nocourses; $c++) {
             ${'course' . $c} = $this->getDataGenerator()->create_course();
-            ${'coursecontext' . $c} = \context_course::instance(${'course' . $c}->id);
+            ${'coursecontext' . $c} = course::instance(${'course' . $c}->id);
 
             role_assign($teacherrole->id, $teacher1->id, ${'coursecontext' . $c}->id);
             role_assign($studentrole->id, $student->id, ${'coursecontext' . $c}->id);
@@ -447,7 +449,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertTrue(in_array($student2->id, $userlist3->get_userids()));
 
         // The list of users should not return any users in a different context than course context.
-        $contextsystem = \context_system::instance();
+        $contextsystem = system::instance();
         $userlist4 = new \core_privacy\local\request\userlist($contextsystem, $component);
         provider::get_users_in_context($userlist4);
         $this->assertCount(0, $userlist4);
@@ -477,7 +479,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $nocourses = 3;
         for ($c = 1; $c <= $nocourses; $c++) {
             ${'course' . $c} = $this->getDataGenerator()->create_course();
-            ${'coursecontext' . $c} = \context_course::instance(${'course' . $c}->id);
+            ${'coursecontext' . $c} = course::instance(${'course' . $c}->id);
 
             role_assign($teacherrole->id, $teacher1->id, ${'coursecontext' . $c}->id);
             role_assign($studentrole->id, $student->id, ${'coursecontext' . $c}->id);
@@ -559,7 +561,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // The list of users should not return any users for contexts different than course context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist4 = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist4);
         $this->assertCount(0, $userlist4);

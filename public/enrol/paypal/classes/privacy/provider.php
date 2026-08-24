@@ -27,6 +27,8 @@ namespace enrol_paypal\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\course;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -135,7 +137,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -195,7 +197,7 @@ class provider implements
         foreach ($paypalrecords as $paypalrecord) {
             if ($lastcourseid != $paypalrecord->courseid) {
                 if (!empty($transactions)) {
-                    $coursecontext = \context_course::instance($paypalrecord->courseid);
+                    $coursecontext = course::instance($paypalrecord->courseid);
                     writer::with_context($coursecontext)->export_data(
                             [$strtransactions],
                             (object) ['transactions' => $transactions]
@@ -240,7 +242,7 @@ class provider implements
 
         // The data for the last activity won't have been written yet, so make sure to write it now!
         if (!empty($transactions)) {
-            $coursecontext = \context_course::instance($paypalrecord->courseid);
+            $coursecontext = course::instance($paypalrecord->courseid);
             writer::with_context($coursecontext)->export_data(
                     [$strtransactions],
                     (object) ['transactions' => $transactions]
@@ -253,10 +255,10 @@ class provider implements
      *
      * @param \context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -280,7 +282,7 @@ class provider implements
         $contexts = $contextlist->get_contexts();
         $courseids = [];
         foreach ($contexts as $context) {
-            if ($context instanceof \context_course) {
+            if ($context instanceof course) {
                 $courseids[] = $context->instanceid;
             }
         }

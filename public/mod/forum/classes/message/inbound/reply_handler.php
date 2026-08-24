@@ -25,6 +25,10 @@
 
 namespace mod_forum\message\inbound;
 
+use core\context\module;
+use core\context\user;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');
@@ -87,8 +91,8 @@ class reply_handler extends \core\message\inbound\handler {
         $forum = $DB->get_record('forum', array('id' => $discussion->forum));
         $course = $DB->get_record('course', array('id' => $forum->course));
         $cm = get_fast_modinfo($course->id)->instances['forum'][$forum->id];
-        $modcontext = \context_module::instance($cm->id);
-        $usercontext = \context_user::instance($USER->id);
+        $modcontext = module::instance($cm->id);
+        $usercontext = user::instance($USER->id);
 
         // Make sure user can post in this discussion.
         $canpost = true;
@@ -226,7 +230,7 @@ class reply_handler extends \core\message\inbound\handler {
                 $this->process_attachment('*', $usercontext, $addpost->itemid, $attachment);
 
                 // Convert the contentid link in the message.
-                $draftfile = \moodle_url::make_draftfile_url($addpost->itemid, '/', $attachment->filename);
+                $draftfile = url::make_draftfile_url($addpost->itemid, '/', $attachment->filename);
                 $addpost->message = preg_replace('/cid:' . $attachment->contentid . '/', $draftfile, $addpost->message);
             }
         }
@@ -270,7 +274,7 @@ class reply_handler extends \core\message\inbound\handler {
      * @param \stdClass $attachment stdClass The Attachment data to store.
      * @return \stored_file
      */
-    protected function process_attachment($acceptedtypes, \context_user $context, $itemid, \stdClass $attachment) {
+    protected function process_attachment($acceptedtypes, user $context, $itemid, \stdClass $attachment) {
         global $USER, $CFG;
 
         // Create the file record.
@@ -308,7 +312,7 @@ class reply_handler extends \core\message\inbound\handler {
     public function get_success_message(\stdClass $messagedata, $handlerresult) {
         $a = new \stdClass();
         $a->subject = $handlerresult->subject;
-        $discussionurl = new \moodle_url('/mod/forum/discuss.php', array('d' => $handlerresult->discussion));
+        $discussionurl = new url('/mod/forum/discuss.php', array('d' => $handlerresult->discussion));
         $discussionurl->set_anchor('p' . $handlerresult->id);
         $a->discussionurl = $discussionurl->out();
 

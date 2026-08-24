@@ -28,8 +28,8 @@ use core_reportbuilder\local\report\column;
 use core_reportbuilder\local\report\filter;
 use completion_criteria_completion;
 use completion_info;
-use html_writer;
-use lang_string;
+use core\output\html_writer;
+use core\lang_string;
 use stdClass;
 
 /**

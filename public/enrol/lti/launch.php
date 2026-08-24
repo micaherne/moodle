@@ -29,7 +29,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core\http_client;
+use core\output\html_writer;
+use core\url;
 use enrol_lti\local\ltiadvantage\lib\lti_cookie;
 use enrol_lti\local\ltiadvantage\lib\issuer_database;
 use enrol_lti\local\ltiadvantage\lib\launch_cache_session;
@@ -89,13 +95,13 @@ if (!empty($launchdata['https://purl.imsglobal.org/spec/lti/claim/lti1p1']['oaut
 
 // To authenticate, we need the resource's account provisioning mode for the given LTI role.
 if (empty($launchdata['https://purl.imsglobal.org/spec/lti/claim/custom']['id'])) {
-    throw new \moodle_exception('ltiadvlauncherror:missingid', 'enrol_lti');
+    throw new moodle_exception('ltiadvlauncherror:missingid', 'enrol_lti');
 }
 $resourceuuid = $launchdata['https://purl.imsglobal.org/spec/lti/claim/custom']['id'];
 $resource = array_values(\enrol_lti\helper::get_lti_tools(['uuid' => $resourceuuid]));
 $resource = $resource[0] ?? null;
 if (empty($resource) || $resource->status != ENROL_INSTANCE_ENABLED) {
-    throw new \moodle_exception('ltiadvlauncherror:invalidid', 'enrol_lti', '', $resourceuuid);
+    throw new moodle_exception('ltiadvlauncherror:invalidid', 'enrol_lti', '', $resourceuuid);
 }
 
 $provisioningmode = message_helper::is_instructor_launch($launchdata) ? $resource->provisioningmodeinstructor
@@ -103,17 +109,17 @@ $provisioningmode = message_helper::is_instructor_launch($launchdata) ? $resourc
 $auth = \core\di::get(\core\authentication::class)->get_plugin('lti');
 $auth->complete_login(
     $messagelaunch->getLaunchData(),
-    new moodle_url('/enrol/lti/launch.php', ['launchid' => $messagelaunch->getLaunchId()]),
+    new url('/enrol/lti/launch.php', ['launchid' => $messagelaunch->getLaunchId()]),
     $provisioningmode,
     $legacyconsumersecrets ?? []
 );
 
 global $USER, $CFG, $PAGE;
 // Page URL must be set before the require_login check, so that things like policies can redirect back with the launchid.
-$PAGE->set_url(new moodle_url('/enrol/lti/launch.php'), ['launchid' => $messagelaunch->getLaunchId()]);
+$PAGE->set_url(new url('/enrol/lti/launch.php'), ['launchid' => $messagelaunch->getLaunchId()]);
 
 require_login(null, false);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('popup'); // Same layout as the tool.php page in Legacy 1.1/2.0 launches.
 $PAGE->set_title(get_string('opentool', 'enrol_lti'));
 
@@ -129,10 +135,10 @@ $toollaunchservice = new tool_launch_service(
 $context = context::instance_by_id($resource->contextid);
 if ($context->contextlevel == CONTEXT_COURSE) {
     $courseid = $context->instanceid;
-    $redirecturl = new moodle_url('/course/view.php', ['id' => $courseid]);
+    $redirecturl = new url('/course/view.php', ['id' => $courseid]);
 } else if ($context->contextlevel == CONTEXT_MODULE) {
     $cm = get_coursemodule_from_id(false, $context->instanceid, 0, false, MUST_EXIST);
-    $redirecturl = new moodle_url('/mod/' . $cm->modname . '/view.php', ['id' => $cm->id]);
+    $redirecturl = new url('/mod/' . $cm->modname . '/view.php', ['id' => $cm->id]);
 } else {
     throw new moodle_exception('invalidcontext');
 }

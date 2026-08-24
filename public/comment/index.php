@@ -25,6 +25,9 @@
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
+use core\context\system;
+use core\output\single_button;
+use core\url;
 use core_reportbuilder\system_report_factory;
 use core_comment\reportbuilder\local\systemreports\comments;
 
@@ -35,7 +38,7 @@ $PAGE->requires->js_call_amd('core_comment/admin', 'init');
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('comments'));
 
-$report = system_report_factory::create(comments::class, context_system::instance());
+$report = system_report_factory::create(comments::class, system::instance());
 $report->set_default_per_page($CFG->commentsperpage);
 
 echo $report->output();
@@ -43,7 +46,7 @@ echo $report->output();
 // Render delete selected button.
 if ($DB->record_exists('comments', [])) {
     echo $OUTPUT->render(new single_button(
-        new moodle_url('#'),
+        new url('#'),
         get_string('deleteselected'),
         'post',
         single_button::BUTTON_PRIMARY,

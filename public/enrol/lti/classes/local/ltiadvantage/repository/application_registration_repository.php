@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace enrol_lti\local\ltiadvantage\repository;
+use core\url;
 use enrol_lti\local\ltiadvantage\entity\application_registration;
 
 /**
@@ -44,29 +45,29 @@ class application_registration_repository {
                 $record->id
             );
             if (!empty($record->platformid)) {
-                $appreg->set_platformid(new \moodle_url($record->platformid));
+                $appreg->set_platformid(new url($record->platformid));
             }
             if (!empty($record->clientid)) {
                 $appreg->set_clientid($record->clientid);
             }
             if (!empty($record->authenticationrequesturl)) {
-                $appreg->set_authenticationrequesturl(new \moodle_url($record->authenticationrequesturl));
+                $appreg->set_authenticationrequesturl(new url($record->authenticationrequesturl));
             }
             if (!empty($record->jwksurl)) {
-                $appreg->set_jwksurl(new \moodle_url($record->jwksurl));
+                $appreg->set_jwksurl(new url($record->jwksurl));
             }
             if (!empty($record->accesstokenurl)) {
-                $appreg->set_accesstokenurl(new \moodle_url($record->accesstokenurl));
+                $appreg->set_accesstokenurl(new url($record->accesstokenurl));
             }
         } else if ($record->status == application_registration::REGISTRATION_STATUS_COMPLETE) {
             $appreg = application_registration::create(
                 $record->name,
                 $record->uniqueid,
-                new \moodle_url($record->platformid),
+                new url($record->platformid),
                 $record->clientid,
-                new \moodle_url($record->authenticationrequesturl),
-                new \moodle_url($record->jwksurl),
-                new \moodle_url($record->accesstokenurl),
+                new url($record->authenticationrequesturl),
+                new url($record->jwksurl),
+                new url($record->accesstokenurl),
                 $record->id
             );
         }

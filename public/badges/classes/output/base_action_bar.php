@@ -16,11 +16,12 @@
 
 namespace core_badges\output;
 
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\url_select;
 use moodle_page;
-use navigation_node;
-use templatable;
+use core\navigation\navigation_node;
+use core\output\templatable;
 
 /**
  * Abstract class for the badges tertiary navigation. The class initialises the page and type class variables.
@@ -83,7 +84,7 @@ abstract class base_action_bar implements renderable, templatable {
                 $data['thirdpartynodes'] = ['link' => $link, 'text' => $text];
             } else {
                 // Return a url_select.
-                $selectobject = new \url_select($result, $this->page->url, get_string('othernavigation', 'badges'));
+                $selectobject = new url_select($result, $this->page->url, get_string('othernavigation', 'badges'));
                 $data['thirdpartynodes'] = $selectobject->export_for_template($output);
                 $data['thirdpartybutton'] = false;
             }

@@ -15,8 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_bigbluebuttonbn;
 
-use cache;
-use cm_info;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core_cache\cache;
+use core_course\cm_info;
 use mod_bigbluebuttonbn\local\extension\action_url_addons;
 use mod_bigbluebuttonbn\local\extension\broker_meeting_events_addons;
 use mod_bigbluebuttonbn\local\extension\custom_completion_addons;
@@ -26,7 +28,7 @@ use mod_bigbluebuttonbn\local\extension\navigation_append_addon;
 use mod_bigbluebuttonbn\local\extension\navigation_override_addon;
 use mod_bigbluebuttonbn\local\extension\view_page_addons;
 use stdClass;
-use core_plugin_manager;
+use core\plugin_manager;
 use core_component;
 
 /**
@@ -101,7 +103,7 @@ class extension {
         // Get the class basename without Reflection API.
         $classnamecomponents = explode("\\", $classname);
         $classbasename = end($classnamecomponents);
-        $allsubs = core_plugin_manager::instance()->get_plugins_of_type(self::BBB_EXTENSION_PLUGIN_NAME);
+        $allsubs = plugin_manager::instance()->get_plugins_of_type(self::BBB_EXTENSION_PLUGIN_NAME);
         $extensionclasses = [];
         $names = core_component::get_plugin_list(self::BBB_EXTENSION_PLUGIN_NAME);
         $sortedlist = self::get_sorted_plugins_list($names); // Make sure to use the most updated list.
@@ -269,7 +271,7 @@ class extension {
      * @param \settings_navigation $settingsnav
      * @param \navigation_node $nodenav
      */
-    public static function append_settings_navigation(\settings_navigation $settingsnav, \navigation_node $nodenav) {
+    public static function append_settings_navigation(settings_navigation $settingsnav, navigation_node $nodenav) {
         $appends = self::get_instances_implementing(navigation_append_addon::class);
         foreach ($appends as $addon) {
             $addon->append_settings_navigation($settingsnav, $nodenav);
@@ -283,7 +285,7 @@ class extension {
      * @param \navigation_node $nodenav
      * @return bool true if the settings navigation was overridden, false otherwise.
      */
-    public static function override_settings_navigation(\settings_navigation $settingsnav, \navigation_node $nodenav) {
+    public static function override_settings_navigation(settings_navigation $settingsnav, navigation_node $nodenav) {
         $overrides = self::get_instances_implementing(navigation_override_addon::class);
         if (!empty($overrides)) {
             $firstoverride = reset($overrides);

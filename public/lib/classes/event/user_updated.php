@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\context\user;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,7 +72,7 @@ class user_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/user/view.php', array('id' => $this->objectid));
+        return new url('/user/view.php', array('id' => $this->objectid));
     }
 
     /**
@@ -99,7 +102,7 @@ class user_updated extends base {
         $data = array(
             'objectid' => $userid,
             'relateduserid' => $userid,
-            'context' => \context_user::instance($userid)
+            'context' => user::instance($userid)
         );
 
         // Create user_updated event.

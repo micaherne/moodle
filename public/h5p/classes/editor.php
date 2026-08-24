@@ -24,12 +24,15 @@
 
 namespace core_h5p;
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
 use core_h5p\local\library\autoloader;
 use core_h5p\output\h5peditor as editor_renderer;
 use Moodle\H5PCore;
 use Moodle\H5peditor;
 use stdClass;
-use coding_exception;
+use core\exception\coding_exception;
 use MoodleQuickForm;
 
 defined('MOODLE_INTERNAL') || die();
@@ -104,7 +107,7 @@ class editor {
         // Load the present content.
         $this->oldcontent = $this->core->loadContent($id);
         if ($this->oldcontent === null) {
-            throw new \moodle_exception('invalidelementid');
+            throw new moodle_exception('invalidelementid');
         }
 
         // Identify the content type library.
@@ -115,7 +118,7 @@ class editor {
         $fs = get_file_storage();
         $oldfile = $fs->get_file_by_hash($pathnamehash);
         if (!$oldfile) {
-            throw new \moodle_exception('invalidelementid');
+            throw new moodle_exception('invalidelementid');
         }
         $this->set_filearea(
             $oldfile->get_contextid(),
@@ -341,7 +344,7 @@ class editor {
             throw new coding_exception('H5P assets cannot be added when header is already printed.');
         }
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $settings = helper::get_core_assets();
 
@@ -382,7 +385,7 @@ class editor {
 
         // Add JavaScript settings.
         $root = $CFG->wwwroot;
-        $filespathbase = \moodle_url::make_draftfile_url(0, '', '');
+        $filespathbase = url::make_draftfile_url(0, '', '');
 
         $factory = new factory();
         $contentvalidator = $factory->get_content_validator();

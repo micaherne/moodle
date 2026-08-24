@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/message/output/lib.php');
@@ -194,7 +197,7 @@ class message_output_email extends message_output {
         if (isset($form->mailformat) && isset($form->userid)) {
             require_once($CFG->dirroot.'/user/lib.php');
 
-            $user = core_user::get_user($form->userid, '*', MUST_EXIST);
+            $user = user::get_user($form->userid, '*', MUST_EXIST);
             $user->mailformat = clean_param($form->mailformat, PARAM_INT);
             \core\user::update_user($user, false, false);
         }

@@ -16,6 +16,10 @@
 
 namespace core_analytics;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\exception\coding_exception;
 use core_analytics\tests\mlbackend_helper_trait;
 
 defined('MOODLE_INTERNAL') || die();
@@ -134,16 +138,16 @@ final class prediction_test extends \advanced_testcase {
         $this->setAdminuser();
 
         $misc = $DB->get_record('course_categories', ['name' => get_string('defaultcategoryname')]);
-        $miscctx = \context_coursecat::instance($misc->id);
+        $miscctx = coursecat::instance($misc->id);
 
         $category = $this->getDataGenerator()->create_category();
-        $categoryctx = \context_coursecat::instance($category->id);
+        $categoryctx = coursecat::instance($category->id);
 
         // One course per category.
         $courseparams = array('shortname' => 'aaaaaa', 'fullname' => 'aaaaaa', 'visible' => 0,
             'category' => $category->id);
         $course1 = $this->getDataGenerator()->create_course($courseparams);
-        $course1ctx = \context_course::instance($course1->id);
+        $course1ctx = course::instance($course1->id);
         $courseparams = array('shortname' => 'bbbbbb', 'fullname' => 'bbbbbb', 'visible' => 0,
             'category' => $misc->id);
         $course2 = $this->getDataGenerator()->create_course($courseparams);
@@ -226,9 +230,9 @@ final class prediction_test extends \advanced_testcase {
             array('modelid' => $model->get_id(), 'action' => 'trained')));
         // Check that analysable files for training are stored under labelled filearea.
         $fs = get_file_storage();
-        $this->assertCount(1, $fs->get_directory_files(\context_system::instance()->id, 'analytics',
+        $this->assertCount(1, $fs->get_directory_files(system::instance()->id, 'analytics',
             \core_analytics\dataset_manager::LABELLED_FILEAREA, $model->get_id(), '/analysable/', true, false));
-        $this->assertEmpty($fs->get_directory_files(\context_system::instance()->id, 'analytics',
+        $this->assertEmpty($fs->get_directory_files(system::instance()->id, 'analytics',
             \core_analytics\dataset_manager::UNLABELLED_FILEAREA, $model->get_id(), '/analysable/', true, false));
 
         $params = [
@@ -269,9 +273,9 @@ final class prediction_test extends \advanced_testcase {
             array('modelid' => $model->get_id())));
 
         // Check that analysable files to get predictions are stored under unlabelled filearea.
-        $this->assertCount(1, $fs->get_directory_files(\context_system::instance()->id, 'analytics',
+        $this->assertCount(1, $fs->get_directory_files(system::instance()->id, 'analytics',
             \core_analytics\dataset_manager::LABELLED_FILEAREA, $model->get_id(), '/analysable/', true, false));
-        $this->assertCount(1, $fs->get_directory_files(\context_system::instance()->id, 'analytics',
+        $this->assertCount(1, $fs->get_directory_files(system::instance()->id, 'analytics',
             \core_analytics\dataset_manager::UNLABELLED_FILEAREA, $model->get_id(), '/analysable/', true, false));
 
         // No new generated files nor records as there are no new courses available.
@@ -309,9 +313,9 @@ final class prediction_test extends \advanced_testcase {
             array('modelid' => $model->get_id(), 'action' => 'predicted')));
         $this->assertEquals(4, $DB->count_records('analytics_predictions',
             array('modelid' => $model->get_id())));
-        $this->assertCount(1, $fs->get_directory_files(\context_system::instance()->id, 'analytics',
+        $this->assertCount(1, $fs->get_directory_files(system::instance()->id, 'analytics',
             \core_analytics\dataset_manager::LABELLED_FILEAREA, $model->get_id(), '/analysable/', true, false));
-        $this->assertCount(2, $fs->get_directory_files(\context_system::instance()->id, 'analytics',
+        $this->assertCount(2, $fs->get_directory_files(system::instance()->id, 'analytics',
             \core_analytics\dataset_manager::UNLABELLED_FILEAREA, $model->get_id(), '/analysable/', true, false));
 
         // New visible course (for training).
@@ -320,9 +324,9 @@ final class prediction_test extends \advanced_testcase {
         $result = $model->train();
         $this->assertEquals(2, $DB->count_records('analytics_used_files',
             array('modelid' => $model->get_id(), 'action' => 'trained')));
-        $this->assertCount(2, $fs->get_directory_files(\context_system::instance()->id, 'analytics',
+        $this->assertCount(2, $fs->get_directory_files(system::instance()->id, 'analytics',
             \core_analytics\dataset_manager::LABELLED_FILEAREA, $model->get_id(), '/analysable/', true, false));
-        $this->assertCount(2, $fs->get_directory_files(\context_system::instance()->id, 'analytics',
+        $this->assertCount(2, $fs->get_directory_files(system::instance()->id, 'analytics',
             \core_analytics\dataset_manager::UNLABELLED_FILEAREA, $model->get_id(), '/analysable/', true, false));
 
         // Confirm that the files associated to the model are deleted on clear and on delete. The ML backend deletion
@@ -330,9 +334,9 @@ final class prediction_test extends \advanced_testcase {
         $model->clear();
         $this->assertEquals(0, $DB->count_records('analytics_used_files',
             array('modelid' => $model->get_id(), 'action' => 'trained')));
-        $this->assertCount(0, $fs->get_directory_files(\context_system::instance()->id, 'analytics',
+        $this->assertCount(0, $fs->get_directory_files(system::instance()->id, 'analytics',
             \core_analytics\dataset_manager::LABELLED_FILEAREA, $model->get_id(), '/analysable/', true, false));
-        $this->assertCount(0, $fs->get_directory_files(\context_system::instance()->id, 'analytics',
+        $this->assertCount(0, $fs->get_directory_files(system::instance()->id, 'analytics',
             \core_analytics\dataset_manager::UNLABELLED_FILEAREA, $model->get_id(), '/analysable/', true, false));
         $model->delete();
 
@@ -450,7 +454,7 @@ final class prediction_test extends \advanced_testcase {
         $predictionsprocessor = $this->is_predictions_processor_ready($predictionsprocessorclass);
 
         if ($nsamples % count($classes) != 0) {
-            throw new \coding_exception('The number of samples should be divisible by the number of classes');
+            throw new coding_exception('The number of samples should be divisible by the number of classes');
         }
         $samplesperclass = $nsamples / count($classes);
 
@@ -468,7 +472,7 @@ final class prediction_test extends \advanced_testcase {
         }
 
         $trainingfile = array(
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'analytics',
             'filearea' => 'labelled',
             'itemid' => 123,
@@ -625,7 +629,7 @@ final class prediction_test extends \advanced_testcase {
         } else if ($modelquality === 'random') {
             $model = $this->add_random_model();
         } else {
-            throw new \coding_exception('Only perfect and random accepted as $modelquality values');
+            throw new coding_exception('Only perfect and random accepted as $modelquality values');
         }
 
         // Generate training data.

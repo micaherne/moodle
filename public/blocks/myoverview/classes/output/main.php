@@ -24,10 +24,12 @@
 namespace block_myoverview\output;
 defined('MOODLE_INTERNAL') || die();
 
+use core\output\single_button;
+use core\url as moodle_url;
 use core_competency\url;
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use stdClass;
 
 require_once($CFG->dirroot . '/blocks/myoverview/lib.php');
@@ -424,7 +426,7 @@ class main implements renderable, templatable {
         $newcourseurl = '';
         $coursecat = \core_course_category::user_top();
         if ($coursecat && ($category = \core_course_category::get_nearest_editable_subcategory($coursecat, ['create']))) {
-            $newcourseurl = new \moodle_url('/course/edit.php', ['category' => $category->id]);
+            $newcourseurl = new moodle_url('/course/edit.php', ['category' => $category->id]);
         }
 
         $courseactionurls = [];
@@ -432,7 +434,7 @@ class main implements renderable, templatable {
             $categorytomanage = \core_course_category::get_nearest_editable_subcategory($coursecat, ['manage']);
             if ($categorytomanage) {
                 $courseactionurls[] = [
-                    'url' => new \moodle_url('/course/management.php', ['categoryid' => $categorytomanage->id]),
+                    'url' => new moodle_url('/course/management.php', ['categoryid' => $categorytomanage->id]),
                     'label' => get_string('managecourses'),
                     'class' => 'btn btn-outline-primary',
                 ];
@@ -450,7 +452,7 @@ class main implements renderable, templatable {
             );
             if ($categorytorequest && $categorytorequest->can_request_course()) {
                 $courseactionurls[] = [
-                    'url' => new \moodle_url('/course/request.php', ['categoryid' => $categorytorequest->id]),
+                    'url' => new moodle_url('/course/request.php', ['categoryid' => $categorytorequest->id]),
                     'label' => get_string('requestcourse'),
                     'class' => 'btn btn-primary',
                 ];
@@ -552,11 +554,11 @@ class main implements renderable, templatable {
             // Request a course button.
             $category = \core_course_category::get_nearest_editable_subcategory($coursecat, ['moodle/course:request']);
             if ($category && $category->can_request_course()) {
-                $requestbutton = new \single_button(
-                    new \moodle_url('/course/request.php', ['category' => $category->id]),
+                $requestbutton = new single_button(
+                    new moodle_url('/course/request.php', ['category' => $category->id]),
                     get_string('requestcourse'),
                     'post',
-                    \single_button::BUTTON_PRIMARY
+                    single_button::BUTTON_PRIMARY
                 );
                 $buttons[] = $requestbutton->export_for_template($output);
                 return $this->generate_zero_state_data(
@@ -577,8 +579,8 @@ class main implements renderable, templatable {
                     $managebuttonname = get_string('managecourses');
                 }
                 if ($categorytomanage = \core_course_category::get_nearest_editable_subcategory($coursecat, ['manage'])) {
-                    $managebutton = new \single_button(
-                        new \moodle_url('/course/management.php', ['category' => $categorytomanage->id]),
+                    $managebutton = new single_button(
+                        new moodle_url('/course/management.php', ['category' => $categorytomanage->id]),
                         $managebuttonname,
                     );
                     $buttons[] = $managebutton->export_for_template($output);
@@ -587,11 +589,11 @@ class main implements renderable, templatable {
 
             // Create course button.
             if ($category = \core_course_category::get_nearest_editable_subcategory($coursecat, ['create'])) {
-                $createbutton = new \single_button(
-                    new \moodle_url('/course/edit.php', ['category' => $category->id]),
+                $createbutton = new single_button(
+                    new moodle_url('/course/edit.php', ['category' => $category->id]),
                     get_string('createcourse', 'block_myoverview'),
                     'post',
-                    \single_button::BUTTON_PRIMARY,
+                    single_button::BUTTON_PRIMARY,
                 );
                 $buttons[] = $createbutton->export_for_template($output);
 
@@ -622,10 +624,10 @@ class main implements renderable, templatable {
      * @param array $strings Title and intro strings for the zero state if needed.
      * @return array Context variables for the template
      */
-    private function generate_zero_state_data(\moodle_url $imageurl, array $buttons, array $strings) {
+    private function generate_zero_state_data(moodle_url $imageurl, array $buttons, array $strings) {
         global $CFG;
         // Documentation data.
-        $dochref = new \moodle_url($CFG->docroot, ['lang' => current_language()]);
+        $dochref = new moodle_url($CFG->docroot, ['lang' => current_language()]);
         $docparams = [
             'dochref' => $dochref->out(),
             'doctitle' => get_string('documentation'),
@@ -633,7 +635,7 @@ class main implements renderable, templatable {
         ];
         if ($CFG->coursecreationguide) {
             // Add quickstart guide link.
-            $quickstart = new \moodle_url($CFG->coursecreationguide, ['lang' => current_language()]);
+            $quickstart = new moodle_url($CFG->coursecreationguide, ['lang' => current_language()]);
             $docparams += [
                 'quickhref' => $quickstart->out(),
                 'quicktitle' => get_string('viewquickstart', 'block_myoverview'),

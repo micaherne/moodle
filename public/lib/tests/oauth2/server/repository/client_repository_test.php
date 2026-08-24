@@ -16,6 +16,7 @@
 
 namespace core\oauth2\server\repository;
 
+use core\context\system;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use core\oauth2\server\entity\client_entity;
@@ -53,7 +54,7 @@ final class client_repository_test extends \advanced_testcase {
 
         if (!empty($clientdata)) {
             // Ensure valid system context is set.
-            $clientdata['ownercontext'] = \context_system::instance()->id;
+            $clientdata['ownercontext'] = system::instance()->id;
             $DB->insert_record('oauth2_server_clients', (object) $clientdata);
 
             foreach ($clientdata['redirecturis'] as $uri) {
@@ -168,7 +169,7 @@ final class client_repository_test extends \advanced_testcase {
         $repository = new client_repository();
 
         if (!empty($clientdata)) {
-            $clientdata['ownercontext'] = \context_system::instance()->id;
+            $clientdata['ownercontext'] = system::instance()->id;
             $DB->insert_record('oauth2_server_clients', (object) $clientdata);
 
             if ($plaintextsecret !== null) {

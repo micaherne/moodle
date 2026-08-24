@@ -16,6 +16,7 @@
 
 namespace core;
 
+use core\exception\coding_exception;
 use GuzzleHttp\Psr7\Uri;
 
 /**
@@ -120,7 +121,7 @@ final class url_test extends \advanced_testcase {
      */
     public function test_set_bad_scheme(): void {
         $url = new url('http://moodle.org/foo/bar');
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $url->set_scheme('not a valid $ scheme');
     }
 
@@ -177,7 +178,7 @@ final class url_test extends \advanced_testcase {
 
     public function test_out_as_local_url_error(): void {
         $url2 = new url('http://www.google.com/lib/tests/weblib_test.php');
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $url2->out_as_local_url();
     }
 
@@ -189,7 +190,7 @@ final class url_test extends \advanced_testcase {
 
         $modifiedurl = $CFG->wwwroot . '1';
         $url3 = new url($modifiedurl . '/login/profile.php');
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $url3->out_as_local_url();
     }
 
@@ -198,7 +199,7 @@ final class url_test extends \advanced_testcase {
      */
     public function test_https_out_as_local_url_error(): void {
         $url4 = new url('https://www.google.com/lib/tests/weblib_test.php');
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $url4->out_as_local_url();
     }
 
@@ -521,7 +522,7 @@ final class url_test extends \advanced_testcase {
      * @dataProvider out_as_local_url_coding_exception_provider
      */
     public function test_out_as_local_url_coding_exception(url $url, string $exmessage): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage($exmessage);
         $localurl = $url->out_as_local_url();
     }

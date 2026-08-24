@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -88,7 +90,7 @@ class restore_book_activity_structure_step extends restore_activity_structure_st
             return;
         }
 
-        $context = context_module::instance($this->task->get_moduleid());
+        $context = module::instance($this->task->get_moduleid());
         core_tag_tag::add_item_tag('mod_book', 'book_chapters', $itemid, $context, $tag);
     }
 

@@ -25,12 +25,17 @@
 namespace mod_assign\output;
 
 use assign;
-use context_module;
+use core\context\module;
+use core\output\action_menu;
+use core\output\action_menu\filler;
+use core\output\action_menu\link_secondary;
+use core\output\renderer_base;
+use core\user;
 use core_course\output\actionbar\group_selector;
 use core_course\output\actionbar\user_selector;
-use templatable;
-use renderable;
-use moodle_url;
+use core\output\templatable;
+use core\output\renderable;
+use core\url;
 use core\output\local\dropdown\dialog;
 
 /**
@@ -78,7 +83,7 @@ class grading_actionmenu implements templatable, renderable {
     ) {
         $this->cmid = $cmid;
         if (!$assign) {
-            $context = context_module::instance($cmid);
+            $context = module::instance($cmid);
             $assign = new assign($context, null, null);
         }
         $this->assign = $assign;
@@ -95,7 +100,7 @@ class grading_actionmenu implements templatable, renderable {
      * @param \renderer_base $output renderer base output.
      * @return array Data to render.
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $PAGE, $USER;
 
         $course = $this->assign->get_course();
@@ -105,14 +110,14 @@ class grading_actionmenu implements templatable, renderable {
         $userid = optional_param('userid', null, PARAM_INT);
         // If the user ID is set, it indicates that a user has been selected. In this case, override the user search
         // string with the full name of the selected user.
-        $usersearch = $userid ? fullname(\core_user::get_user($userid)) : optional_param('search', '', PARAM_NOTAGS);
+        $usersearch = $userid ? fullname(user::get_user($userid)) : optional_param('search', '', PARAM_NOTAGS);
 
         $isblind = $this->assign->is_blind_marking() && !$this->hasviewblind;
         if ($isblind) {
             $usersearch = $userid ? get_string('hiddenuser', 'assign') . $this->assign->get_uniqueid_for_user($userid) : $usersearch;
         }
 
-        $resetlink = new moodle_url('/mod/assign/view.php', ['id' => $this->cmid, 'action' => 'grading']);
+        $resetlink = new url('/mod/assign/view.php', ['id' => $this->cmid, 'action' => 'grading']);
         $groupid = groups_get_course_group($course, true);
         $userselector = new user_selector(
             course: $course,
@@ -159,7 +164,7 @@ class grading_actionmenu implements templatable, renderable {
         $hasuserfilter = get_user_preferences('assign_filter');
         $hasextrafilters = $this->get_applied_extra_filters_count() > 0;
         if ($activitygroup || $hasuserfilter || $hasextrafilters || $hasinitials) {
-            $url = new moodle_url('/mod/assign/view.php', [
+            $url = new url('/mod/assign/view.php', [
                 'id' => $this->cmid,
                 'action' => 'grading',
                 'group' => 0,
@@ -181,7 +186,7 @@ class grading_actionmenu implements templatable, renderable {
         }
 
         if ($this->assign->can_grade()) {
-            $url = new moodle_url('/mod/assign/view.php', [
+            $url = new url('/mod/assign/view.php', [
                 'id' => $this->assign->get_course_module()->id,
                 'action' => 'grader',
             ]);
@@ -193,7 +198,7 @@ class grading_actionmenu implements templatable, renderable {
             $this->assign->is_user_allocated_marker($USER->id);
 
         if ($markingworkflow) {
-            $url = new moodle_url('/mod/assign/view.php', [
+            $url = new url('/mod/assign/view.php', [
                 'id' => $this->assign->get_course_module()->id,
                 'action' => 'marker',
             ]);
@@ -204,7 +209,7 @@ class grading_actionmenu implements templatable, renderable {
         $controller = $gradingmanager->get_active_controller();
         $showquickgrading = empty($controller) && $this->assign->can_grade();
         if ($showquickgrading) {
-            $quickgradingbaseurl = new moodle_url('/mod/assign/view.php', [
+            $quickgradingbaseurl = new url('/mod/assign/view.php', [
                 'id' => $this->assign->get_course_module()->id,
                 'action' => 'grading',
             ]);
@@ -221,7 +226,7 @@ class grading_actionmenu implements templatable, renderable {
         }
 
         if ($this->showdownload) {
-            $downloadasfoldersbaseurl = new moodle_url('/mod/assign/view.php', [
+            $downloadasfoldersbaseurl = new url('/mod/assign/view.php', [
                 'id' => $this->assign->get_course_module()->id,
                 'action' => 'grading',
             ]);
@@ -239,14 +244,14 @@ class grading_actionmenu implements templatable, renderable {
 
         $actions = $this->get_actions();
         if ($actions) {
-            $menu = new \action_menu();
+            $menu = new action_menu();
             $menu->set_menu_trigger(get_string('actions'), 'btn btn-outline-primary');
             foreach ($actions as $groupkey => $actiongroup) {
                 foreach ($actiongroup as $label => $url) {
-                    $menu->add(new \action_menu_link_secondary(new \moodle_url($url), null, $label));
+                    $menu->add(new link_secondary(new url($url), null, $label));
                 }
                 if ($groupkey !== array_key_last($actions)) {
-                    $divider = new \action_menu_filler();
+                    $divider = new filler();
                     $divider->primary = false;
                     $menu->add($divider);
                 }
@@ -270,11 +275,11 @@ class grading_actionmenu implements templatable, renderable {
             has_capability('gradereport/grader:view', $this->assign->get_course_context())
             && has_capability('moodle/grade:viewall', $this->assign->get_course_context())
         ) {
-            $url = new moodle_url('/grade/report/grader/index.php', ['id' => $this->assign->get_course()->id]);
+            $url = new url('/grade/report/grader/index.php', ['id' => $this->assign->get_course()->id]);
             $actions['gradebook'][get_string('viewgradebook', 'assign')] = $url->out(false);
         }
         if ($this->assign->is_blind_marking() && has_capability('mod/assign:revealidentities', $this->assign->get_context())) {
-            $url = new moodle_url('/mod/assign/view.php', [
+            $url = new url('/mod/assign/view.php', [
                 'id' => $this->assign->get_course_module()->id,
                 'action' => 'revealidentities',
             ]);
@@ -283,7 +288,7 @@ class grading_actionmenu implements templatable, renderable {
         foreach ($this->assign->get_feedback_plugins() as $plugin) {
             if ($plugin->is_enabled() && $plugin->is_visible()) {
                 foreach ($plugin->get_grading_actions() as $action => $description) {
-                    $url = new moodle_url('/mod/assign/view.php', [
+                    $url = new url('/mod/assign/view.php', [
                         'id' => $this->assign->get_course_module()->id,
                         'plugin' => $plugin->get_type(),
                         'pluginsubtype' => 'assignfeedback',
@@ -295,7 +300,7 @@ class grading_actionmenu implements templatable, renderable {
             }
         }
         if ($this->showdownload) {
-            $url = new moodle_url('/mod/assign/view.php', [
+            $url = new url('/mod/assign/view.php', [
                 'id' => $this->assign->get_course_module()->id,
                 'action' => 'downloadall',
             ]);
@@ -321,7 +326,7 @@ class grading_actionmenu implements templatable, renderable {
                     // The 'none' filter is not a real filter.
                     $filter['key'] = '';
                 }
-                $url = new moodle_url('/mod/assign/view.php', [
+                $url = new url('/mod/assign/view.php', [
                     'id' => $this->assign->get_course_module()->id,
                     'action' => 'grading',
                     'status' => $filter['key'],
@@ -352,7 +357,7 @@ class grading_actionmenu implements templatable, renderable {
         global $OUTPUT;
 
         $dropdowncontentdata = [
-            'actionurl' => (new moodle_url('/mod/assign/view.php'))->out(false),
+            'actionurl' => (new url('/mod/assign/view.php'))->out(false),
             'id' => $this->assign->get_course_module()->id,
             'action' => 'grading',
             'filters' => [],

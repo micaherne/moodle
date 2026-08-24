@@ -16,6 +16,8 @@
 
 namespace core_availability;
 
+use core\context\course;
+use core\context\module;
 use core_courseformat\formatactions;
 
 /**
@@ -484,7 +486,7 @@ final class info_test extends \advanced_testcase {
 
         // If the students have viewhiddenactivities, they get past the module
         // restriction.
-        role_change_permission($studentroleid, \context_module::instance($page2->cmid),
+        role_change_permission($studentroleid, module::instance($page2->cmid),
                 'moodle/course:ignoreavailabilityrestrictions', CAP_ALLOW);
         $expected = array($u1->id, $u2->id);
         $this->assertEquals($expected, array_keys($info->filter_user_list($allusers)));
@@ -495,7 +497,7 @@ final class info_test extends \advanced_testcase {
 
         // If they have viewhiddensections, they also get past the section
         // restriction.
-        role_change_permission($studentroleid, \context_course::instance($course->id),
+        role_change_permission($studentroleid, course::instance($course->id),
                 'moodle/course:ignoreavailabilityrestrictions', CAP_ALLOW);
         $expected = array($u1->id, $u2->id, $u3->id);
         $this->assertEquals($expected, array_keys($info->filter_user_list($allusers)));

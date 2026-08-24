@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once("$CFG->libdir/filelib.php");
@@ -215,10 +221,10 @@ function url_display_frame($url, $cm, $course) {
 
     } else {
         $config = get_config('url');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $exteurl = url_get_full_url($url, $cm, $course, $config);
         $navurl = "$CFG->wwwroot/mod/url/view.php?id=$cm->id&amp;frameset=top";
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $courseshortname = format_string($course->shortname, true, array('context' => $coursecontext));
         $title = strip_tags($courseshortname.': '.format_string($url->name));
         $framesize = $config->framesize;
@@ -258,7 +264,7 @@ function url_print_workaround($url, $cm, $course) {
     $PAGE->activityheader->set_description(url_get_intro($url, $cm));
     url_print_header($url, $cm, $course);
 
-    $fullurl = new moodle_url(url_get_full_url($url, $cm, $course));
+    $fullurl = new url(url_get_full_url($url, $cm, $course));
 
     $display = url_get_final_display_type($url);
     if ($display == RESOURCELIB_DISPLAY_POPUP) {
@@ -297,7 +303,7 @@ function url_display_embed($url, $cm, $course) {
     $fullurl  = url_get_full_url($url, $cm, $course);
     $title    = $url->name;
 
-    $moodleurl = new moodle_url($fullurl);
+    $moodleurl = new url($fullurl);
     $link = html_writer::link($moodleurl, format_string($cm->name));
     $clicktoopen = get_string('clicktoopen', 'url', $link);
 
@@ -451,7 +457,7 @@ function url_get_variable_values($url, $cm, $course, $config) {
 
     $site = get_site();
 
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
 
     $values = array (
         'courseid'        => $course->id,
@@ -497,7 +503,7 @@ function url_get_variable_values($url, $cm, $course, $config) {
 
     //hmm, this is pretty fragile and slow, why do we need it here??
     if ($config->rolesinparams) {
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $roles = role_fix_names(get_all_roles($coursecontext), $coursecontext, ROLENAME_ALIAS);
         foreach ($roles as $role) {
             $values['course'.$role->shortname] = $role->localname;
@@ -548,9 +554,9 @@ function url_guess_icon($fullurl, $unused = null) {
     try {
         // There can be some cases where the url is invalid making parse_url() to return false.
         // That will make moodle_url class to throw an exception, so we need to catch the exception to prevent errors.
-        $moodleurl = new moodle_url($fullurl);
+        $moodleurl = new url($fullurl);
         $fullurl = $moodleurl->out_omit_querystring();
-    } catch (\moodle_exception $e) {
+    } catch (moodle_exception $e) {
         // If an exception is thrown, means the url is invalid. No need to log exception.
         return null;
     }

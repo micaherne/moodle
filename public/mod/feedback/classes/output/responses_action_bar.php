@@ -16,8 +16,8 @@
 
 namespace mod_feedback\output;
 
-use moodle_url;
-use url_select;
+use core\url;
+use core\output\url_select;
 
 /**
  * Class responses_action_bar. The tertiary nav for the responses page
@@ -36,7 +36,7 @@ class responses_action_bar extends base_action_bar {
      * @param int $cmid The cmid for the module we are operating on
      * @param moodle_url $pageurl The current page url
      */
-    public function __construct(int $cmid, moodle_url $pageurl) {
+    public function __construct(int $cmid, url $pageurl) {
         parent::__construct($cmid);
         $this->currenturl = $pageurl;
         $this->urlparams['courseid'] = $this->course->id;
@@ -50,12 +50,12 @@ class responses_action_bar extends base_action_bar {
     public function get_items(): array {
         $items = [];
         if (has_capability('mod/feedback:viewreports', $this->context)) {
-            $reporturl = new moodle_url('/mod/feedback/show_entries.php', $this->urlparams);
+            $reporturl = new url('/mod/feedback/show_entries.php', $this->urlparams);
             $options[$reporturl->out(false)] = get_string('show_entries', 'feedback');
             $selected = $this->currenturl->compare($reporturl, URL_MATCH_BASE) ? $reporturl : $this->currenturl;
 
             if ($this->feedback->anonymous == FEEDBACK_ANONYMOUS_NO && $this->course->id != SITEID) {
-                $nonrespondenturl = new moodle_url('/mod/feedback/show_nonrespondents.php', $this->urlparams);
+                $nonrespondenturl = new url('/mod/feedback/show_nonrespondents.php', $this->urlparams);
                 $options[$nonrespondenturl->out(false)] = get_string('show_nonrespondents', 'feedback');
                 $selected = $this->currenturl->compare($nonrespondenturl, URL_MATCH_BASE) ? $nonrespondenturl : $this->currenturl;;
             }

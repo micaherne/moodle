@@ -24,6 +24,8 @@
  */
 namespace booktool_importhtml;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
@@ -52,7 +54,7 @@ final class locallib_test extends \advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $this->book = $this->getDataGenerator()->create_module('book', ['course' => $course->id]);
-        $this->context = \context_module::instance($this->book->cmid);
+        $this->context = module::instance($this->book->cmid);
         $this->record = (object) [
             'contextid' => $this->context->id,
             'component' => 'phpunit',

@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_tag\reportbuilder\local\entities;
 
 use core_tag_collection;
-use lang_string;
+use core\lang_string;
 use stdClass;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\{boolean_select, select};

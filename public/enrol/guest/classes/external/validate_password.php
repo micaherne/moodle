@@ -21,8 +21,8 @@ use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_system;
-use moodle_exception;
+use core\context\system;
+use core\exception\moodle_exception;
 use core_text;
 use stdClass;
 
@@ -79,7 +79,7 @@ class validate_password extends external_api {
             throw new moodle_exception('invaliddata', 'error');
         }
 
-        self::validate_context(context_system::instance());
+        self::validate_context(system::instance());
         $enrolinstance = $DB->get_record('enrol',
             ['id' => $params['instanceid'], 'status' => ENROL_INSTANCE_ENABLED], '*', MUST_EXIST);
         $course = $DB->get_record('course', ['id' => $enrolinstance->courseid], '*', MUST_EXIST);

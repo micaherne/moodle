@@ -2,6 +2,10 @@
 
 // searches for admin settings
 
+use core\context\system;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -9,7 +13,7 @@ redirect_if_major_upgrade_required();
 
 $query = trim(optional_param('query', '', PARAM_NOTAGS));  // Search string
 
-$context = context_system::instance();
+$context = system::instance();
 $PAGE->set_context($context);
 
 // If we are performing a search we need to display the secondary navigation with links as opposed to just anchors.
@@ -19,7 +23,7 @@ $PAGE->set_secondary_navigation(true, !$query);
 $hassiteconfig = has_capability('moodle/site:config', $context);
 
 if ($hassiteconfig && moodle_needs_upgrading()) {
-    redirect(new moodle_url('/admin/index.php'));
+    redirect(new url('/admin/index.php'));
 }
 
 // If site registration needs updating, redirect.

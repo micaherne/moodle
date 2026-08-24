@@ -23,6 +23,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 require_once('grade_object.php');
 
@@ -528,7 +532,7 @@ class grade_item extends grade_object {
         global $CFG, $DB;
 
         if (empty($this->courseid)) {
-            throw new \moodle_exception('cannotinsertgrade');
+            throw new moodle_exception('cannotinsertgrade');
         }
 
         // load scale if needed
@@ -1535,7 +1539,7 @@ class grade_item extends grade_object {
             $deletionpending = course_module_instance_pending_deletion($this->courseid, $this->itemmodule, $this->iteminstance);
             $deletionnotice = get_string('gradesmoduledeletionprefix', 'grades');
 
-            $options = ['context' => context_course::instance($this->courseid), 'escape' => $escape];
+            $options = ['context' => course::instance($this->courseid), 'escape' => $escape];
             return $deletionpending ?
                 format_string($deletionnotice . ' ' . $this->itemname, true, $options) :
                 format_string($this->itemname, true, $options);
@@ -1582,7 +1586,7 @@ class grade_item extends grade_object {
      */
     public function set_parent($parentid, $updateaggregationfields = true) {
         if ($this->is_course_item() or $this->is_category_item()) {
-            throw new \moodle_exception('cannotsetparentforcatoritem');
+            throw new moodle_exception('cannotsetparentforcatoritem');
         }
 
         if ($this->categoryid == $parentid) {
@@ -2665,17 +2669,17 @@ class grade_item extends grade_object {
             if (!isset($modinfo->instances[$this->itemmodule][$this->iteminstance])) {
                 if ($cm = get_coursemodule_from_instance($this->itemmodule, $this->iteminstance)) {
                     // Cache does not contain module plugins that are disabled.
-                    $context = \context_module::instance($cm->id);
+                    $context = module::instance($cm->id);
                 } else {
                     debugging(get_string('moduleinstancedoesnotexist', 'error'));
-                    $context = \context_course::instance($this->courseid);
+                    $context = course::instance($this->courseid);
                 }
             } else {
                 $cm = $modinfo->instances[$this->itemmodule][$this->iteminstance];
-                $context = \context_module::instance($cm->id);
+                $context = module::instance($cm->id);
             }
         } else {
-            $context = \context_course::instance($this->courseid);
+            $context = course::instance($this->courseid);
         }
         return $context;
     }

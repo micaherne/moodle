@@ -16,6 +16,11 @@
 
 namespace core_course\customfield;
 
+use core\context;
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\url;
 use core_customfield\field_controller;
 
 /**
@@ -96,7 +101,7 @@ class course_handler extends \core_customfield\handler {
      *
      * @param \context $context
      */
-    public function set_parent_context(\context $context) {
+    public function set_parent_context(context $context) {
         $this->parentcontext = $context;
     }
 
@@ -105,14 +110,14 @@ class course_handler extends \core_customfield\handler {
      *
      * @return \context
      */
-    protected function get_parent_context(): \context {
+    protected function get_parent_context(): context {
         global $PAGE;
         if ($this->parentcontext) {
             return $this->parentcontext;
-        } else if ($PAGE->context && $PAGE->context instanceof \context_coursecat) {
+        } else if ($PAGE->context && $PAGE->context instanceof coursecat) {
             return $PAGE->context;
         }
-        return \context_system::instance();
+        return system::instance();
     }
 
     /**
@@ -120,8 +125,8 @@ class course_handler extends \core_customfield\handler {
      *
      * @return \context the context for configuration
      */
-    public function get_configuration_context(): \context {
-        return \context_system::instance();
+    public function get_configuration_context(): context {
+        return system::instance();
     }
 
     /**
@@ -129,8 +134,8 @@ class course_handler extends \core_customfield\handler {
      *
      * @return \moodle_url The URL to configure custom fields for this component
      */
-    public function get_configuration_url(): \moodle_url {
-        return new \moodle_url('/course/customfield.php');
+    public function get_configuration_url(): url {
+        return new url('/course/customfield.php');
     }
 
     /**
@@ -139,11 +144,11 @@ class course_handler extends \core_customfield\handler {
      * @param int $instanceid id of the record to get the context for
      * @return \context the context for the given record
      */
-    public function get_instance_context(int $instanceid = 0): \context {
+    public function get_instance_context(int $instanceid = 0): context {
         if ($instanceid > 0) {
-            return \context_course::instance($instanceid);
+            return course::instance($instanceid);
         } else {
-            return \context_system::instance();
+            return system::instance();
         }
     }
 

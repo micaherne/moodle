@@ -22,6 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\coursecat;
+use core\context\system;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\output\tabobject;
+use core\output\tabtree;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 define('COHORT_ALL', 0);
@@ -165,14 +174,14 @@ function cohort_delete_category($category) {
     global $DB;
     // TODO: make sure that cohorts are really, really not used anywhere and delete, for now just move to parent or system context
 
-    $oldcontext = context_coursecat::instance($category->id);
+    $oldcontext = coursecat::instance($category->id);
 
     if ($category->parent and $parent = $DB->get_record('course_categories', array('id'=>$category->parent))) {
-        $parentcontext = context_coursecat::instance($parent->id);
+        $parentcontext = coursecat::instance($parent->id);
         $sql = "UPDATE {cohort} SET contextid = :newcontext WHERE contextid = :oldcontext";
         $params = array('oldcontext'=>$oldcontext->id, 'newcontext'=>$parentcontext->id);
     } else {
-        $syscontext = context_system::instance();
+        $syscontext = system::instance();
         $sql = "UPDATE {cohort} SET contextid = :newcontext WHERE contextid = :oldcontext";
         $params = array('oldcontext'=>$oldcontext->id, 'newcontext'=>$syscontext->id);
     }
@@ -623,7 +632,7 @@ function cohort_get_invisible_contexts() {
     $excludedcontexts = array();
     foreach ($records as $ctx) {
         context_helper::preload_from_record($ctx);
-        if (context::instance_by_id($ctx->id) == context_system::instance()) {
+        if (context::instance_by_id($ctx->id) == system::instance()) {
             continue; // System context cohorts should be available and permissions already checked.
         }
         if (!has_any_capability(array('moodle/cohort:manage', 'moodle/cohort:view'), context::instance_by_id($ctx->id))) {
@@ -641,16 +650,16 @@ function cohort_get_invisible_contexts() {
  * @param moodle_url $currenturl
  * @return null|renderable
  */
-function cohort_edit_controls(context $context, moodle_url $currenturl) {
+function cohort_edit_controls(context $context, url $currenturl) {
     $tabs = array();
     $currenttab = 'view';
-    $viewurl = new moodle_url('/cohort/index.php', array('contextid' => $context->id));
+    $viewurl = new url('/cohort/index.php', array('contextid' => $context->id));
     if (($searchquery = $currenturl->get_param('search'))) {
         $viewurl->param('search', $searchquery);
     }
     if ($context->contextlevel == CONTEXT_SYSTEM) {
-        $tabs[] = new tabobject('view', new moodle_url($viewurl, array('showall' => 0)), get_string('systemcohorts', 'cohort'));
-        $tabs[] = new tabobject('viewall', new moodle_url($viewurl, array('showall' => 1)), get_string('allcohorts', 'cohort'));
+        $tabs[] = new tabobject('view', new url($viewurl, array('showall' => 0)), get_string('systemcohorts', 'cohort'));
+        $tabs[] = new tabobject('viewall', new url($viewurl, array('showall' => 1)), get_string('allcohorts', 'cohort'));
         if ($currenturl->get_param('showall')) {
             $currenttab = 'viewall';
         }
@@ -658,13 +667,13 @@ function cohort_edit_controls(context $context, moodle_url $currenturl) {
         $tabs[] = new tabobject('view', $viewurl, get_string('cohorts', 'cohort'));
     }
     if (has_capability('moodle/cohort:manage', $context)) {
-        $addurl = new moodle_url('/cohort/edit.php', array('contextid' => $context->id));
+        $addurl = new url('/cohort/edit.php', array('contextid' => $context->id));
         $tabs[] = new tabobject('addcohort', $addurl, get_string('addcohort', 'cohort'));
         if ($currenturl->get_path() === $addurl->get_path() && !$currenturl->param('id')) {
             $currenttab = 'addcohort';
         }
 
-        $uploadurl = new moodle_url('/cohort/upload.php', array('contextid' => $context->id));
+        $uploadurl = new url('/cohort/upload.php', array('contextid' => $context->id));
         $tabs[] = new tabobject('uploadcohorts', $uploadurl, get_string('uploadcohorts', 'cohort'));
         if ($currenturl->get_path() === $uploadurl->get_path()) {
             $currenttab = 'uploadcohorts';

@@ -17,6 +17,10 @@
 
 // A lot of this initial stuff is copied from mod/data/view.php
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../../../config.php');
 require_once('../../lib.php');
 
@@ -26,7 +30,7 @@ $d       = required_param('d', PARAM_INT);   // database id
 $fieldid = required_param('fieldid', PARAM_INT);   // field id
 $rid     = optional_param('rid', 0, PARAM_INT);    //record id
 
-$url = new moodle_url('/mod/data/field/latlong/kml.php', array('d'=>$d, 'fieldid'=>$fieldid));
+$url = new url('/mod/data/field/latlong/kml.php', array('d'=>$d, 'fieldid'=>$fieldid));
 if ($rid !== 0) {
     $url->param('rid', $rid);
 }
@@ -34,48 +38,48 @@ $PAGE->set_url($url);
 
 if ($rid) {
     if (! $record = $DB->get_record('data_records', array('id'=>$rid))) {
-        throw new \moodle_exception('invalidrecord', 'data');
+        throw new moodle_exception('invalidrecord', 'data');
     }
     if (! $data = $DB->get_record('data', array('id'=>$record->dataid))) {
-        throw new \moodle_exception('invalidid', 'data');
+        throw new moodle_exception('invalidid', 'data');
     }
     if (! $course = $DB->get_record('course', array('id'=>$data->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $cm = get_coursemodule_from_instance('data', $data->id, $course->id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     if (! $field = $DB->get_record('data_fields', array('id'=>$fieldid))) {
-        throw new \moodle_exception('invalidfieldid', 'data');
+        throw new moodle_exception('invalidfieldid', 'data');
     }
     if (! $field->type == 'latlong') { // Make sure we're looking at a latlong data type!
-        throw new \moodle_exception('invalidfieldtype', 'data');
+        throw new moodle_exception('invalidfieldtype', 'data');
     }
     if (! $content = $DB->get_record('data_content', array('fieldid'=>$fieldid, 'recordid'=>$rid))) {
-        throw new \moodle_exception('nofieldcontent', 'data');
+        throw new moodle_exception('nofieldcontent', 'data');
     }
 } else {   // We must have $d
     if (! $data = $DB->get_record('data', array('id'=>$d))) {
-        throw new \moodle_exception('invalidid', 'data');
+        throw new moodle_exception('invalidid', 'data');
     }
     if (! $course = $DB->get_record('course', array('id'=>$data->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $cm = get_coursemodule_from_instance('data', $data->id, $course->id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     if (! $field = $DB->get_record('data_fields', array('id'=>$fieldid))) {
-        throw new \moodle_exception('invalidfieldid', 'data');
+        throw new moodle_exception('invalidfieldid', 'data');
     }
     if (! $field->type == 'latlong') { // Make sure we're looking at a latlong data type!
-        throw new \moodle_exception('invalidfieldtype', 'data');
+        throw new moodle_exception('invalidfieldtype', 'data');
     }
     $record = NULL;
 }
 
 require_course_login($course, true, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 // If we have an empty Database then redirect because this page is useless without data.
 if (has_capability('mod/data:managetemplates', $context)) {
     if (!$DB->record_exists('data_fields', array('dataid'=>$data->id))) {      // Brand new database!

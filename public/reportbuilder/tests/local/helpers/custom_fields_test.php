@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\helpers;
 
+use core\context\system;
 use core_customfield_generator;
 use core_reportbuilder_generator;
 use core_reportbuilder\local\entities\course;
@@ -49,7 +50,7 @@ final class custom_fields_test extends core_reportbuilder_testcase {
             'component' => 'core_course',
             'area' => 'course',
             'itemid' => 0,
-            'contextid' => \context_system::instance()->id
+            'contextid' => system::instance()->id
         ]);
 
         $generator->create_field(

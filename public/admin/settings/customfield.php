@@ -24,12 +24,17 @@
 
 declare(strict_types=1);
 
+use core\lang_string;
+use core\url;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 /** @var admin_root $ADMIN */
 $ADMIN->add(
     'root',
-    new admin_category(
+    new category(
         'customfield',
         new lang_string('customfields', 'core_customfield')
     )
@@ -37,9 +42,9 @@ $ADMIN->add(
 
 $ADMIN->add(
     'customfield',
-    new admin_externalpage(
+    new externalpage(
         'sharedcustomfields',
         new lang_string('sharedcustomfields', 'core_customfield'),
-        new moodle_url("/customfield/customfield.php")
+        new url("/customfield/customfield.php")
     )
 );

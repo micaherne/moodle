@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Tests for resource_link.
  *
@@ -104,7 +107,7 @@ final class resource_link_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => 'Error: resourcelinkid cannot be an empty string'
                 ]
 
@@ -144,8 +147,8 @@ final class resource_link_test extends \advanced_testcase {
         return [
             'Valid, both URLs, some scopes' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scope' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
                         'https://purl.imsglobal.org/spec/lti-ags/scope/score'
@@ -158,7 +161,7 @@ final class resource_link_test extends \advanced_testcase {
             'Valid, only coupled line item URL, some scopes' => [
                 'args' => [
                     'lineitemsurl' => null,
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scope' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/score'
                     ]
@@ -169,7 +172,7 @@ final class resource_link_test extends \advanced_testcase {
             ],
             'Valid, only decoupled line items URL, some scopes' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
                     'lineitemurl' => null,
                     'scope' => [
                         'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
@@ -183,8 +186,8 @@ final class resource_link_test extends \advanced_testcase {
             ],
             'Valid, URLs without any scopes' => [
                 'args' => [
-                    'lineitemsurl' => new \moodle_url('https://platform.example.org/10/lineitems'),
-                    'lineitemurl' => new \moodle_url('https://platform.example.org/10/lineitems/4/lineitem'),
+                    'lineitemsurl' => new url('https://platform.example.org/10/lineitems'),
+                    'lineitemurl' => new url('https://platform.example.org/10/lineitems/4/lineitem'),
                     'scope' => []
                 ],
                 'expected' => [
@@ -201,7 +204,7 @@ final class resource_link_test extends \advanced_testcase {
                 ],
                 'expected' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class
+                    'exception' => coding_exception::class
                 ]
             ],
         ];
@@ -215,10 +218,10 @@ final class resource_link_test extends \advanced_testcase {
     public function test_add_names_and_roles_service(): void {
         $reslink = resource_link::create('res-link-id-123', 24, 44);
         $this->assertNull($reslink->get_names_and_roles_service());
-        $reslink->add_names_and_roles_service(new \moodle_url('https://lms.example.com/10/memberships'), ['2.0']);
+        $reslink->add_names_and_roles_service(new url('https://lms.example.com/10/memberships'), ['2.0']);
         $nrps = $reslink->get_names_and_roles_service();
         $this->assertInstanceOf(nrps_info::class, $nrps);
-        $this->assertEquals(new \moodle_url('https://lms.example.com/10/memberships'),
+        $this->assertEquals(new url('https://lms.example.com/10/memberships'),
             $nrps->get_context_memberships_url());
         $this->assertEquals(['2.0'], $nrps->get_service_versions());
     }
@@ -236,7 +239,7 @@ final class resource_link_test extends \advanced_testcase {
         $this->assertEquals(33, $user->get_resourcelinkid());
 
         $reslinkwithoutid = resource_link::create('res-link-id-123', 24, 44);
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage("Can't add user to a resource_link that hasn't first been saved");
         $reslinkwithoutid->add_user(2, 'platform-user-id-123', $CFG->lang, 'Sydney', 'Australia', 'Test university', '99');
     }
@@ -251,7 +254,7 @@ final class resource_link_test extends \advanced_testcase {
         $this->assertEquals(44, $reslink->get_resourceid());
         $reslink->set_resourceid(333);
         $this->assertEquals(333, $reslink->get_resourceid());
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Resource id must be a positive int');
         $reslink->set_resourceid(0);
     }
@@ -266,7 +269,7 @@ final class resource_link_test extends \advanced_testcase {
         $this->assertEquals(null, $reslink->get_contextid());
         $reslink->set_contextid(333);
         $this->assertEquals(333, $reslink->get_contextid());
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Context id must be a positive int');
         $reslink->set_contextid(0);
     }

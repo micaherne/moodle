@@ -22,9 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
-$ADMIN->add('roles', new admin_externalpage(
+$ADMIN->add('roles', new externalpage(
     'toolcapability',
     get_string('pluginname', 'tool_capability'),
     "$CFG->wwwroot/$CFG->admin/tool/capability/index.php",

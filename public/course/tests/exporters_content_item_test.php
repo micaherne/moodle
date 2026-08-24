@@ -26,6 +26,8 @@ namespace core_course;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\url;
 use core_course\local\exporters\course_content_item_exporter;
 use core_course\local\repository\content_item_readonly_repository;
 
@@ -51,7 +53,7 @@ final class exporters_content_item_test extends \advanced_testcase {
         $contentitems = $cir->find_all_for_course($course, $user);
         $contentitem = array_shift($contentitems);
 
-        $ciexporter = new course_content_item_exporter($contentitem, ['context' => \context_course::instance($course->id)]);
+        $ciexporter = new course_content_item_exporter($contentitem, ['context' => course::instance($course->id)]);
         $renderer = $PAGE->get_renderer('core');
         $exporteditem = $ciexporter->export($renderer);
 
@@ -90,7 +92,7 @@ final class exporters_content_item_test extends \advanced_testcase {
             id: -1,
             name: 'test_name',
             title: new \core_course\local\entity\string_title('test_title'),
-            link: new \moodle_url(''),
+            link: new url(''),
             icon: '',
             help: '* First point
             * Another point',
@@ -102,7 +104,7 @@ final class exporters_content_item_test extends \advanced_testcase {
             otherpurpose: MOD_PURPOSE_INTERACTIVECONTENT,
         );
 
-        $ciexporter = new course_content_item_exporter($contentitem, ['context' => \context_course::instance($course->id)]);
+        $ciexporter = new course_content_item_exporter($contentitem, ['context' => course::instance($course->id)]);
         $renderer = $PAGE->get_renderer('core');
         $exporteditem = $ciexporter->export($renderer);
 
@@ -146,7 +148,7 @@ final class exporters_content_item_test extends \advanced_testcase {
             id: 22,
             name: 'test_name',
             title: new \core_course\local\entity\string_title('test_title'),
-            link: new \moodle_url('/course/mod.php', ['id' => $course->id, 'add' => 'test_name']),
+            link: new url('/course/mod.php', ['id' => $course->id, 'add' => 'test_name']),
             icon: '',
             help: '',
             archetype: MOD_ARCHETYPE_OTHER,
@@ -156,7 +158,7 @@ final class exporters_content_item_test extends \advanced_testcase {
             disabledreason: 'Server not configured.',
         );
 
-        $ciexporter = new course_content_item_exporter($contentitem, ['context' => \context_course::instance($course->id)]);
+        $ciexporter = new course_content_item_exporter($contentitem, ['context' => course::instance($course->id)]);
         $renderer = $PAGE->get_renderer('core');
         $exporteditem = $ciexporter->export($renderer);
 
@@ -189,7 +191,7 @@ final class exporters_content_item_test extends \advanced_testcase {
         }
         $this->assertNotNull($contentitem);
 
-        $ciexporter = new course_content_item_exporter($contentitem, ['context' => \context_course::instance($course->id)]);
+        $ciexporter = new course_content_item_exporter($contentitem, ['context' => course::instance($course->id)]);
         $renderer = $PAGE->get_renderer('core');
         $exporteditem = $ciexporter->export($renderer);
 

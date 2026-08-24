@@ -22,6 +22,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\context\user;
+use core\url;
 use mod_h5pactivity\local\manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -76,11 +80,11 @@ class mod_h5pactivity_mod_form extends moodleform_mod {
 
         // Add a link to the Content Bank if the user can access.
         $course = $this->get_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         if (has_capability('moodle/contentbank:access', $coursecontext)) {
             $msg = null;
             $context = $this->get_context();
-            if ($context instanceof \context_module) {
+            if ($context instanceof module) {
                 // This is an existing activity. If the H5P file it's a referenced file from the content bank, a link for
                 // displaying this specific content will be used instead of the generic link to the main page of the content bank.
                 $fs = get_file_storage();
@@ -91,14 +95,14 @@ class mod_h5pactivity_mod_form extends moodleform_mod {
                     $referencedfile = \repository::get_moodle_file($file->get_reference());
                     if ($referencedfile->get_component() == 'contentbank') {
                         // If the attached file is a referencedfile in the content bank, display a link to open this content.
-                        $url = new moodle_url('/contentbank/view.php', ['id' => $referencedfile->get_itemid()]);
+                        $url = new url('/contentbank/view.php', ['id' => $referencedfile->get_itemid()]);
                         $msg = get_string('opencontentbank', 'mod_h5pactivity', $url->out());
                         $msg .= ' '.$OUTPUT->help_icon('contentbank', 'mod_h5pactivity');
                     }
                 }
             }
             if (!isset($msg)) {
-                $url = new moodle_url('/contentbank/index.php', ['contextid' => $coursecontext->id]);
+                $url = new url('/contentbank/index.php', ['contextid' => $coursecontext->id]);
                 $msg = get_string('usecontentbank', 'mod_h5pactivity', $url->out());
                 $msg .= ' '.$OUTPUT->help_icon('contentbank', 'mod_h5pactivity');
             }
@@ -170,7 +174,7 @@ class mod_h5pactivity_mod_form extends moodleform_mod {
                 ['subdirs' => 0, 'maxfiles' => 1]);
 
             // Get file from users draft area.
-            $usercontext = context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             $fs = get_file_storage();
             $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $draftitemid, 'id', false);
 

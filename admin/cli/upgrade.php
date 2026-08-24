@@ -31,6 +31,9 @@
 
 // Force OPcache reset if used, we do not want any stale caches
 // when detecting if upgrade necessary or when running upgrade.
+use core\plugin_manager;
+use core_cache\helper;
+
 if (function_exists('opcache_reset') and !isset($_SERVER['REMOTE_ADDR'])) {
     opcache_reset();
 }
@@ -212,7 +215,7 @@ if (upgrade_stale_php_files_present()) {
 
 // Test plugin dependencies.
 $failed = array();
-if (!core_plugin_manager::instance()->all_plugins_ok($version, $failed, $CFG->branch)) {
+if (!plugin_manager::instance()->all_plugins_ok($version, $failed, $CFG->branch)) {
     cli_problem(get_string('pluginscheckfailed', 'admin', array('pluginslist' => implode(', ', array_unique($failed)))));
     cli_error(get_string('pluginschecktodo', 'admin'));
 }
@@ -262,7 +265,7 @@ if ($version > $CFG->version) {
         // This ensures a real config object is loaded and the stores will be purged.
         // This is the only way we can purge custom caches such as memcache or APC.
         // Note: all other calls to caches will still used the disabled API.
-        cache_helper::purge_all(true);
+        helper::purge_all(true);
     }
 
     upgrade_core($version, true);

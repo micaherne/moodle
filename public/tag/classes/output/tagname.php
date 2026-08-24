@@ -24,9 +24,9 @@
 
 namespace core_tag\output;
 
-use context_system;
-use lang_string;
-use html_writer;
+use core\context\system;
+use core\lang_string;
+use core\output\html_writer;
 use core_tag_tag;
 
 /**
@@ -44,7 +44,7 @@ class tagname extends \core\output\inplace_editable {
      * @param \stdClass|core_tag_tag $tag
      */
     public function __construct($tag) {
-        $editable = has_capability('moodle/tag:manage', context_system::instance());
+        $editable = has_capability('moodle/tag:manage', system::instance());
         $edithint = new lang_string('editname', 'core_tag');
         $editlabel = new lang_string('newnamefor', 'core_tag', $tag->rawname);
         $value = $tag->rawname;
@@ -61,7 +61,7 @@ class tagname extends \core\output\inplace_editable {
      * @return \self
      */
     public static function update($itemid, $newvalue) {
-        require_capability('moodle/tag:manage', context_system::instance());
+        require_capability('moodle/tag:manage', system::instance());
         $tag = core_tag_tag::get($itemid, '*', MUST_EXIST);
         $tag->update(array('rawname' => $newvalue));
         return new self($tag);

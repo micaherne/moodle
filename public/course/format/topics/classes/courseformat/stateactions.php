@@ -19,13 +19,13 @@ namespace format_topics\courseformat;
 use core_courseformat\stateupdates;
 use core_courseformat\stateactions as stateactions_base;
 use core\event\course_module_updated;
-use cm_info;
-use section_info;
+use core_course\cm_info;
+use core_course\section_info;
 use stdClass;
-use course_modinfo;
-use moodle_exception;
-use context_module;
-use context_course;
+use core_course\modinfo;
+use core\exception\moodle_exception;
+use core\context\module;
+use core\context\course;
 
 /**
  * Contains the core course state actions specific to topics format.
@@ -55,7 +55,7 @@ class stateactions extends stateactions_base {
         global $DB;
 
         $this->validate_sections($course, $ids, __FUNCTION__);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         require_capability('moodle/course:setcurrentsection', $coursecontext);
 
         // Get the previous marked section.
@@ -96,7 +96,7 @@ class stateactions extends stateactions_base {
         global $DB;
 
         $this->validate_sections($course, $ids, __FUNCTION__);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         require_capability('moodle/course:setcurrentsection', $coursecontext);
 
         $affectedsections = [];

@@ -24,7 +24,7 @@
 
 namespace tool_langimport;
 
-use coding_exception;
+use core\exception\coding_exception;
 
 defined('MOODLE_INTERNAL') || die;
 

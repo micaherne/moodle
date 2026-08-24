@@ -21,6 +21,10 @@
  * @copyright  2005 Martin Dougiamas
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\user;
+use core\output\html_writer;
+use core\url;
+
 class data_field_file extends data_field_base {
     var $type = 'file';
 
@@ -166,7 +170,7 @@ class data_field_file extends data_field_base {
             if (!$file) {
                 return '';
             }
-            $fileurl = moodle_url::make_pluginfile_url(
+            $fileurl = url::make_pluginfile_url(
                 $file->get_contextid(),
                 $file->get_component(),
                 $file->get_filearea(),
@@ -202,7 +206,7 @@ class data_field_file extends data_field_base {
 
         file_save_draft_area_files($value, $this->context->id, 'mod_data', 'content', $content->id);
 
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $files = $fs->get_area_files($this->context->id, 'mod_data', 'content', $content->id, 'itemid, filepath, filename', false);
 
         // We expect no or just one file (maxfiles = 1 option is set for the form_filemanager).
@@ -294,7 +298,7 @@ class data_field_file extends data_field_base {
 
         $names = explode('_', $name);
         if ($names[2] == 'file') {
-            $usercontext = context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             $fs = get_file_storage();
             $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $value);
             return count($files) >= 2;

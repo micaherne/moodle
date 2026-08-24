@@ -24,8 +24,9 @@
 namespace core_course\external;
 defined('MOODLE_INTERNAL') || die();
 
-use renderer_base;
-use moodle_url;
+use core\output\renderer_base;
+use core\url;
+use core_cache\cache;
 
 /**
  * Class for exporting a course summary from an stdClass.
@@ -68,7 +69,7 @@ class course_summary_exporter extends \core\external\exporter {
         $coursecategory = \core_course_category::get($this->data->category, MUST_EXIST, true);
         return array(
             'fullnamedisplay' => get_course_display_name_for_list($this->data),
-            'viewurl' => (new moodle_url('/course/view.php', array('id' => $this->data->id)))->out(false),
+            'viewurl' => (new url('/course/view.php', array('id' => $this->data->id)))->out(false),
             'courseimage' => $courseimage,
             'progress' => $progress,
             'hasprogress' => $hasprogress,
@@ -183,13 +184,13 @@ class course_summary_exporter extends \core\external\exporter {
      * @return string|false url of course image or false if it's not exist.
      */
     public static function get_course_image($course) {
-        $image = \cache::make('core', 'course_image')->get($course->id);
+        $image = cache::make('core', 'course_image')->get($course->id);
 
         if (is_null($image)) {
             return false;
         }
 
-        $url = new moodle_url($image);
+        $url = new url($image);
         return $url->out();
     }
 

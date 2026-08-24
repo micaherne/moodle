@@ -16,14 +16,15 @@
 
 namespace tool_dataprivacy\external;
 
+use core\context\system;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
 use tool_dataprivacy\api;
-use core_user;
-use moodle_exception;
+use core\user;
+use core\exception\moodle_exception;
 
 /**
  * External function for creating a data request.
@@ -69,7 +70,7 @@ class create_data_request extends external_api {
             'foruserid' => $foruserid,
         ]);
 
-        $system = \context_system::instance();
+        $system = system::instance();
         external_api::validate_context($system);
 
         $cancontactdpo = api::can_contact_dpo();
@@ -78,8 +79,8 @@ class create_data_request extends external_api {
         if (empty($params['foruserid']) || $params['foruserid'] == $USER->id) {
             $user = $USER;
         } else {
-            $user = core_user::get_user($params['foruserid'], '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($params['foruserid'], '*', MUST_EXIST);
+            user::require_active_user($user);
 
             if (!$canmanage = api::can_manage_data_requests($user->id)) {
                 api::require_can_create_data_request_for_user($user->id);

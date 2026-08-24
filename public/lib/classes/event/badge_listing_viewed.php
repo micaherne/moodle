@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/badgeslib.php');
 /**
@@ -84,7 +87,7 @@ class badge_listing_viewed extends base {
         } else {
             $params = array('id' => $this->other['courseid'], 'type' => $this->other['badgetype']);
         }
-        return new \moodle_url('/badges/index.php', $params );
+        return new url('/badges/index.php', $params );
     }
 
     /**
@@ -97,11 +100,11 @@ class badge_listing_viewed extends base {
         parent::validate_data();
 
         if (!isset($this->other['badgetype'])) {
-            throw new \coding_exception('The \'badgetype\' must be set in other.');
+            throw new coding_exception('The \'badgetype\' must be set in other.');
         }
         if ($this->other['badgetype'] == BADGE_TYPE_COURSE) {
             if (!isset($this->other['courseid'])) {
-                throw new \coding_exception('The \'courseid\' must be set in other.');
+                throw new coding_exception('The \'courseid\' must be set in other.');
             }
         }
     }

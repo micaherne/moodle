@@ -25,18 +25,19 @@
 
 namespace tool_policy\output;
 
+use core\context\user as context_user;
 use core\session\manager;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
-use context_system;
-use core_user;
-use html_writer;
-use moodle_url;
-use renderable;
-use renderer_base;
-use templatable;
+use core\context\system;
+use core\user;
+use core\output\html_writer;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use tool_policy\api;
 use tool_policy\policy_version;
 
@@ -74,7 +75,7 @@ class page_nopermission implements renderable, templatable {
         $behalfid = $behalfid ?: $USER->id;
         $realuser = manager::get_realuser();
         if ($realuser->id != $behalfid) {
-            $this->behalfuser = core_user::get_user($behalfid, '*', MUST_EXIST);
+            $this->behalfuser = user::get_user($behalfid, '*', MUST_EXIST);
             $this->behalfid = $this->behalfuser->id;
         }
 
@@ -103,7 +104,7 @@ class page_nopermission implements renderable, templatable {
     protected function prepare_global_page_access() {
         global $PAGE, $SITE, $USER;
 
-        $myurl = new moodle_url('/admin/tool/policy/index.php', [
+        $myurl = new url('/admin/tool/policy/index.php', [
             'behalfid' => $this->behalfid,
         ]);
 
@@ -111,12 +112,12 @@ class page_nopermission implements renderable, templatable {
             // Disable notifications for new users, guests or users who haven't agreed to the policies.
             $PAGE->set_popup_notification_allowed(false);
         }
-        $PAGE->set_context(context_system::instance());
+        $PAGE->set_context(system::instance());
         $PAGE->set_pagelayout('standard');
         $PAGE->set_url($myurl);
         $PAGE->set_heading($SITE->fullname);
         $PAGE->set_title(get_string('policiesagreements', 'tool_policy'));
-        $PAGE->navbar->add(get_string('policiesagreements', 'tool_policy'), new moodle_url('/admin/tool/policy/index.php'));
+        $PAGE->navbar->add(get_string('policiesagreements', 'tool_policy'), new url('/admin/tool/policy/index.php'));
     }
 
     /**
@@ -129,7 +130,7 @@ class page_nopermission implements renderable, templatable {
         global $OUTPUT;
 
         $data = (object) [
-            'pluginbaseurl' => (new moodle_url('/admin/tool/policy'))->out(false),
+            'pluginbaseurl' => (new url('/admin/tool/policy'))->out(false),
             'haspermissionagreedocs' => $this->haspermissionagreedocs,
             'supportemail' => $OUTPUT->supportemail(['class' => 'fw-bold'])
         ];
@@ -140,9 +141,9 @@ class page_nopermission implements renderable, templatable {
         if (!$this->haspermissionagreedocs) {
             if (!empty($this->behalfuser)) {
                 // If viewing docs in behalf of other user, get his/her full name and profile link.
-                $userfullname = fullname($this->behalfuser, has_capability('moodle/site:viewfullnames', \context_system::instance())
-                    || has_capability('moodle/site:viewfullnames', \context_user::instance($this->behalfid)));
-                $data->behalfuser = html_writer::link(\context_user::instance($this->behalfid)->get_url(), $userfullname);
+                $userfullname = fullname($this->behalfuser, has_capability('moodle/site:viewfullnames', system::instance())
+                    || has_capability('moodle/site:viewfullnames', context_user::instance($this->behalfid)));
+                $data->behalfuser = html_writer::link(context_user::instance($this->behalfid)->get_url(), $userfullname);
 
                 $messagetitle = get_string('nopermissiontoagreedocsbehalf', 'tool_policy');
                 $messagedesc = get_string('nopermissiontoagreedocsbehalf_desc', 'tool_policy', $data->behalfuser);
@@ -158,7 +159,7 @@ class page_nopermission implements renderable, templatable {
         $policieslinks = array();
         foreach ($this->policies as $policyversion) {
             // Get a link to display the full policy document.
-            $policyurl = new moodle_url('/admin/tool/policy/view.php',
+            $policyurl = new url('/admin/tool/policy/view.php',
                 array('policyid' => $policyversion->policyid, 'returnurl' => qualified_me()));
             $policyattributes = array('data-action' => 'view',
                                       'data-versionid' => $policyversion->id,

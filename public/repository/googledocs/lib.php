@@ -29,6 +29,12 @@ require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->libdir . '/filebrowser/file_browser.php');
 require_once($CFG->libdir . '/google/lib.php');
 
+use core\context;
+use core\output\actions\popup_action;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
+use core_cache\cache;
 use repository_googledocs\helper;
 use repository_googledocs\googledocs_content_search;
 
@@ -105,7 +111,7 @@ class repository_googledocs extends repository {
         if ($overrideurl) {
             $returnurl = $overrideurl;
         } else {
-            $returnurl = new moodle_url('/repository/repository_callback.php');
+            $returnurl = new url('/repository/repository_callback.php');
             $returnurl->param('callback', 'yes');
             $returnurl->param('repo_id', $this->id);
             $returnurl->param('sesskey', sesskey());
@@ -154,7 +160,7 @@ class repository_googledocs extends repository {
         global $OUTPUT, $PAGE;
 
         $client = $this->get_user_oauth_client(false);
-        $url = new moodle_url($client->get_login_url());
+        $url = new url($client->get_login_url());
         $state = $url->get_param('state') . '&reloadparent=true';
         $url->param('state', $state);
 
@@ -533,11 +539,11 @@ class repository_googledocs extends repository {
         $newfilename = false;
         if ($source->exportformat == 'download') {
             $params = ['alt' => 'media'];
-            $sourceurl = new moodle_url($base . '/files/' . $source->id, $params);
+            $sourceurl = new url($base . '/files/' . $source->id, $params);
             $source = $sourceurl->out(false);
         } else {
             $params = ['mimeType' => $source->exportformat];
-            $sourceurl = new moodle_url($base . '/files/' . $source->id . '/export', $params);
+            $sourceurl = new url($base . '/files/' . $source->id . '/export', $params);
             $types = get_mimetypes_array();
             $checktype = $source->exportformat;
             if ($checktype == 'application/rtf') {
@@ -710,7 +716,7 @@ class repository_googledocs extends repository {
             $systemservice = new repository_googledocs\rest($systemauth);
 
             // Get the user oauth so we can get the account to add.
-            $url = moodle_url::make_pluginfile_url($storedfile->get_contextid(),
+            $url = url::make_pluginfile_url($storedfile->get_contextid(),
                                                    $storedfile->get_component(),
                                                    $storedfile->get_filearea(),
                                                    $storedfile->get_itemid(),
@@ -1140,7 +1146,7 @@ class repository_googledocs extends repository {
         $client = $this->get_user_oauth_client();
         $base = 'https://www.googleapis.com/drive/v3';
         $params = ['alt' => 'media'];
-        $sourceurl = new moodle_url($base . '/files/' . $fileid, $params);
+        $sourceurl = new url($base . '/files/' . $fileid, $params);
 
         $path = $this->prepare_file($originalfilename);
         $options = ['filepath' => $path, 'timeout' => $CFG->repositorygetfiletimeout, 'followlocation' => true, 'maxredirs' => 5];
@@ -1199,7 +1205,7 @@ class repository_googledocs extends repository {
      * @param string $classname repository class name.
      */
     public static function type_config_form($mform, $classname = 'repository') {
-        $url = new moodle_url('/admin/tool/oauth2/issuers.php');
+        $url = new url('/admin/tool/oauth2/issuers.php');
         $url = $url->out();
 
         $mform->addElement('static', null, '', get_string('oauth2serviceslink', 'repository_googledocs', $url));

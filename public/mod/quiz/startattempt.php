@@ -26,6 +26,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
 
@@ -54,7 +55,7 @@ if (!$quizobj->has_questions()) {
     if ($quizobj->has_capability('mod/quiz:manage')) {
         redirect($quizobj->edit_url());
     } else {
-        throw new \moodle_exception('cannotstartnoquestions', 'quiz', $quizobj->view_url());
+        throw new moodle_exception('cannotstartnoquestions', 'quiz', $quizobj->view_url());
     }
 }
 
@@ -69,7 +70,7 @@ list($currentattemptid, $attemptnumber, $lastattempt, $messages, $page) =
 // Check access.
 if (!$quizobj->is_preview_user() && $messages) {
     $output = $PAGE->get_renderer('mod_quiz');
-    throw new \moodle_exception('attempterror', 'quiz', $quizobj->view_url(),
+    throw new moodle_exception('attempterror', 'quiz', $quizobj->view_url(),
             $output->access_messages($messages));
 }
 

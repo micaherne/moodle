@@ -16,6 +16,8 @@
 
 namespace core\oauth2\server\entity;
 
+use core\context\course;
+use core\context\system;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -59,7 +61,7 @@ final class client_entity_test extends \advanced_testcase {
      */
     public function test_owner_context_getter(): void {
         $client = new client_entity();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $this->set_protected_property($client, 'ownercontext', $systemcontext);
 
         $this->assertSame($systemcontext, $client->get_owner_context());
@@ -161,7 +163,7 @@ final class client_entity_test extends \advanced_testcase {
         $this->set_protected_property($client, 'isConfidential', $isconfidential);
 
         if ($granttype === 'client_credentials') {
-            $ownercontext = $issystemcontext ? \context_system::instance() : \context_course::instance(SITEID);
+            $ownercontext = $issystemcontext ? system::instance() : course::instance(SITEID);
             $this->set_protected_property($client, 'ownercontext', $ownercontext);
         }
 
@@ -207,7 +209,7 @@ final class client_entity_test extends \advanced_testcase {
         array $expectedredirecturis
     ): void {
         $this->resetAfterTest();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $record->ownercontext = $systemcontext->id;
 
         $client = client_entity::create_from_record($record, $redirecturis);

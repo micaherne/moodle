@@ -24,11 +24,12 @@
  */
 namespace gradingform_rubric\privacy;
 
+use core\test\testing_util;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\writer;
 use gradingform_rubric\privacy\provider;
 use gradingform_rubric_controller;
-use context_module;
+use core\context\module;
 
 /**
  * Privacy tests for gradingform_rubric
@@ -46,7 +47,7 @@ final class provider_test extends provider_testcase {
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('assign', ['course' => $course]);
-        $modulecontext = context_module::instance($module->cmid);
+        $modulecontext = module::instance($module->cmid);
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
@@ -86,7 +87,7 @@ final class provider_test extends provider_testcase {
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
         $module = $this->getDataGenerator()->create_module('assign', ['course' => $course]);
-        $modulecontext = context_module::instance($module->cmid);
+        $modulecontext = module::instance($module->cmid);
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
@@ -141,8 +142,8 @@ final class provider_test extends provider_testcase {
      * @param string $area
      * @return gradingform_rubric_controller
      */
-    protected function get_test_rubric(context_module $context, string $component, string $area): gradingform_rubric_controller {
-        $generator = \testing_util::get_data_generator();
+    protected function get_test_rubric(module $context, string $component, string $area): gradingform_rubric_controller {
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         return $rubricgenerator->get_test_rubric($context, $component, $area);
@@ -167,7 +168,7 @@ final class provider_test extends provider_testcase {
         float $picturescore,
         string $pictureremark
     ): array {
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         return $rubricgenerator->get_test_form_data(

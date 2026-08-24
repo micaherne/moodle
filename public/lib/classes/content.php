@@ -23,14 +23,14 @@
  */
 namespace core;
 
-use coding_exception;
-use context;
+use core\exception\coding_exception;
+use core\context;
 use core\content\export\exporters\course_exporter;
 use core\content\export\exporters\component_exporter;
 use core\content\export\exporters\abstract_mod_exporter;
 use core\content\export\zipwriter;
 use core_component;
-use moodle_url;
+use core\url;
 use stdClass;
 use stored_file;
 

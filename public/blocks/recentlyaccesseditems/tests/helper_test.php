@@ -16,6 +16,7 @@
 
 namespace block_recentlyaccesseditems;
 
+use core\context\module;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -44,10 +45,10 @@ final class helper_test extends \advanced_testcase {
         self::setUser($user);
 
         // Get the user to visit the activities.
-        $event1params = ['context' => \context_module::instance($forum->cmid), 'objectid' => $forum->id];
+        $event1params = ['context' => module::instance($forum->cmid), 'objectid' => $forum->id];
         $event1 = \mod_forum\event\course_module_viewed::create($event1params);
         $event1->trigger();
-        $event2params = ['context' => \context_module::instance($glossary->cmid), 'objectid' => $glossary->id];
+        $event2params = ['context' => module::instance($glossary->cmid), 'objectid' => $glossary->id];
         $event2 = \mod_glossary\event\course_module_viewed::create($event2params);
         $event2->trigger();
         $recent1 = helper::get_recent_items();
@@ -73,7 +74,7 @@ final class helper_test extends \advanced_testcase {
         $forum = self::getDataGenerator()->create_module('forum', ['course' => $course]);
         self::setUser($user);
 
-        $eventparams = ['context' => \context_module::instance($forum->cmid), 'objectid' => $forum->id];
+        $eventparams = ['context' => module::instance($forum->cmid), 'objectid' => $forum->id];
         $event = \mod_forum\event\course_module_viewed::create($eventparams);
         $event->trigger();
 

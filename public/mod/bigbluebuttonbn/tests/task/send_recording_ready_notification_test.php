@@ -17,6 +17,7 @@
 namespace mod_bigbluebuttonbn\task;
 
 use advanced_testcase;
+use core\user;
 
 /**
  * Class containing the scheduled task for lti module.
@@ -136,7 +137,7 @@ final class send_recording_ready_notification_test extends advanced_testcase {
         $messages = $sink->get_messages();
         $this->assertCount(5, $messages);
 
-        $noreplyuser = \core_user::get_noreply_user();
+        $noreplyuser = user::get_noreply_user();
         foreach ($messages as $message) {
             $this->assertNotFalse(array_search($message->useridto, $recipients));
             $this->assertNotEquals($unrelateduser->id, $message->useridto);
@@ -184,7 +185,7 @@ final class send_recording_ready_notification_test extends advanced_testcase {
         $messages = $sink->get_messages();
         $this->assertCount(1, $messages);
 
-        $noreplyuser = \core_user::get_noreply_user();
+        $noreplyuser = user::get_noreply_user();
         foreach ($messages as $message) {
             $this->assertEquals($student->id, $message->useridto);
             $this->assertNotEquals($suspendedstudent->id, $message->useridto);

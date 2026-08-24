@@ -21,7 +21,7 @@ namespace core_reportbuilder\local\schedules;
 use core_reportbuilder\local\helpers\schedule as helper;
 use core_reportbuilder\local\models\schedule;
 use MoodleQuickForm;
-use progress_trace;
+use core\output\progress_trace;
 use stdClass;
 
 /**

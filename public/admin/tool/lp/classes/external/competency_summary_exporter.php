@@ -24,10 +24,10 @@
 namespace tool_lp\external;
 defined('MOODLE_INTERNAL') || die();
 
-use context_course;
-use renderer_base;
+use core\context\course;
+use core\output\renderer_base;
 use stdClass;
-use moodle_url;
+use core\url;
 use core_competency\competency_framework;
 use core_competency\external\competency_exporter;
 use core_competency\external\competency_framework_exporter;
@@ -97,7 +97,7 @@ class competency_summary_exporter extends \core\external\exporter {
         $courses = $this->related['linkedcourses'];
         $linkedcourses = array();
         foreach ($courses as $course) {
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             $exporter = new course_summary_exporter($course, array('context' => $context));
             $courseexport = $exporter->export($output);
             array_push($linkedcourses, $courseexport);
@@ -140,7 +140,7 @@ class competency_summary_exporter extends \core\external\exporter {
             'context' => $context
         ]);
         $result->comppath = $exporter->export($output);
-        $result->pluginbaseurl = (new moodle_url('/admin/tool/lp'))->out(true);
+        $result->pluginbaseurl = (new url('/admin/tool/lp'))->out(true);
         $result->showlinks = \core_competency\api::show_links();
 
         return (array) $result;

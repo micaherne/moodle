@@ -18,9 +18,9 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\report;
 
-use coding_exception;
-use context;
-use lang_string;
+use core\exception\coding_exception;
+use core\context;
+use core\lang_string;
 use core_reportbuilder\local\entities\base as entity_base;
 use core_reportbuilder\local\filters\base as filter_base;
 use core_reportbuilder\local\helpers\{database, user_filter_manager};

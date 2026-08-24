@@ -22,6 +22,9 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+use core\exception\moodle_exception;
+
 require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->libdir.'/flickrlib.php');
 require_once(__DIR__ . '/image.php');
@@ -584,7 +587,7 @@ class repository_flickr_public extends repository {
     public static function plugin_init() {
         //here we create a default instance for this type
 
-        $id = repository::static_function('flickr_public','create', 'flickr_public', 0, context_system::instance(), array('name'=>'', 'email_address' => null, 'usewatermarks' => false), 0);
+        $id = repository::static_function('flickr_public','create', 'flickr_public', 0, system::instance(), array('name'=>'', 'email_address' => null, 'usewatermarks' => false), 0);
         if (empty($id)) {
             return false;
         } else {

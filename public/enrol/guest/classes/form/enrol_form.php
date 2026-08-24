@@ -18,10 +18,12 @@ declare(strict_types=1);
 
 namespace enrol_guest\form;
 
+use core\context;
 use core\context\course as context_course;
+use core\exception\moodle_exception;
 use core_form\dynamic_form;
 use core_text;
-use moodle_url;
+use core\url;
 
 /**
  * Form for entering password for guest enrolment
@@ -49,7 +51,7 @@ class enrol_form extends dynamic_form {
             // We need enrol_get_instances() to validate that the enrolment method is enabled.
             $instances = enrol_get_instances($courseid, true);
             if (empty($instances[$instanceid]) || $instances[$instanceid]->enrol !== 'guest') {
-                throw new \moodle_exception('invalidenrolinstance', 'enrol');
+                throw new moodle_exception('invalidenrolinstance', 'enrol');
             }
             $this->instance = $instances[$instanceid] ?? null;
         }
@@ -98,21 +100,21 @@ class enrol_form extends dynamic_form {
         $course = get_course($courseid);
         $context = context_course::instance($this->get_instance()->courseid);
         if (!\core_course_category::can_view_course_info($course) && !is_enrolled($context, $USER, '', true)) {
-            throw new \moodle_exception('coursehidden', '', $CFG->wwwroot . '/');
+            throw new moodle_exception('coursehidden', '', $CFG->wwwroot . '/');
         }
     }
 
     #[\Override]
-    protected function get_context_for_dynamic_submission(): \context {
+    protected function get_context_for_dynamic_submission(): context {
         // This form is used for users who are not yet enrolled in the course and do not have access to the course.
         // For the purpose of permission checks they must be able to access the course category for this course.
         return context_course::instance($this->get_instance()->courseid)->get_parent_context();
     }
 
     #[\Override]
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $instance = $this->get_instance();
-        return new moodle_url('/enrol/index.php', ['id' => $instance->courseid, 'instance' => $instance->id]);
+        return new url('/enrol/index.php', ['id' => $instance->courseid, 'instance' => $instance->id]);
     }
 
     /**

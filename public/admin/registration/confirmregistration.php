@@ -34,6 +34,11 @@
  * directory later by web service.
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
+
 require('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -74,7 +79,7 @@ echo $OUTPUT->notification(get_string('registrationconfirmedon', 'hub'), 'notify
 // Display continue button.
 $returnurl = !empty($SESSION->registrationredirect) ? clean_param($SESSION->registrationredirect, PARAM_LOCALURL) : null;
 unset($SESSION->registrationredirect);
-$continueurl = new moodle_url($returnurl ?: '/admin/registration/index.php');
+$continueurl = new url($returnurl ?: '/admin/registration/index.php');
 $continuebutton = $OUTPUT->render(new single_button($continueurl, get_string('continue')));
 $continuebutton = html_writer::tag('div', $continuebutton, array('class' => 'mdl-align'));
 echo $continuebutton;

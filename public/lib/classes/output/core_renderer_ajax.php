@@ -17,7 +17,7 @@
 namespace core\output;
 
 use core_useragent;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**

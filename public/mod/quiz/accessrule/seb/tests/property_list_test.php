@@ -16,6 +16,8 @@
 
 namespace quizaccess_seb;
 
+use core\exception\invalid_parameter_exception;
+
 /**
  * PHPUnit for property_list class.
  *
@@ -135,7 +137,7 @@ final class property_list_test extends \advanced_testcase {
             . $this->get_plist_xml_footer();
         $plist = new property_list($xml);
 
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $this->expectExceptionMessage($exceptionmessage);
 
         $plist->update_element_value($key, $value);
@@ -172,7 +174,7 @@ final class property_list_test extends \advanced_testcase {
             . $this->get_plist_xml_footer();
         $plist = new property_list($xml);
 
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $this->expectExceptionMessage('New array must only contain CFType objects.');
 
         $plist->update_element_array('testDict', [false]);

@@ -24,9 +24,12 @@
  */
 namespace mod_quiz;
 
-use context_module;
+use core\context\course;
+use core\context\module;
+use core_course\cm_info;
 use core_external\external_api;
 use mod_quiz\quiz_settings;
+use mod_quiz\tests\question_helper_test_trait;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -39,7 +42,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 final class lib_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     public function test_quiz_has_grades(): void {
         $quiz = new \stdClass();
@@ -107,7 +110,7 @@ final class lib_test extends \advanced_testcase {
         // Setup a quiz with 1 standard and 1 random question.
         $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
         $quiz = $quizgenerator->create_instance(['course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0]);
-        $context = context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
 
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
@@ -154,7 +157,7 @@ final class lib_test extends \advanced_testcase {
 
         // Create a quiz with questions in the first course.
         $quiz = $this->create_test_quiz($course);
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         // Create questions.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category(['contextid' => $context->id]);
@@ -637,7 +640,7 @@ final class lib_test extends \advanced_testcase {
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
 
         // Remove the permission to attempt or review the quiz for the student role.
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         assign_capability('mod/quiz:reviewmyattempts', CAP_PROHIBIT, $studentrole->id, $coursecontext);
         assign_capability('mod/quiz:attempt', CAP_PROHIBIT, $studentrole->id, $coursecontext);
 
@@ -674,7 +677,7 @@ final class lib_test extends \advanced_testcase {
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
 
         // Remove the permission to attempt or review the quiz for the student role.
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         assign_capability('mod/quiz:reviewmyattempts', CAP_PROHIBIT, $studentrole->id, $coursecontext);
         assign_capability('mod/quiz:attempt', CAP_PROHIBIT, $studentrole->id, $coursecontext);
 
@@ -906,8 +909,8 @@ final class lib_test extends \advanced_testcase {
             'completion' => 2,
             'completionusegrade' => 0
         ]);
-        $cm1 = \cm_info::create(get_coursemodule_from_instance('quiz', $quiz1->id));
-        $cm2 = \cm_info::create(get_coursemodule_from_instance('quiz', $quiz2->id));
+        $cm1 = cm_info::create(get_coursemodule_from_instance('quiz', $quiz1->id));
+        $cm2 = cm_info::create(get_coursemodule_from_instance('quiz', $quiz2->id));
 
         // Data for the stdClass input type.
         // This type of input would occur when checking the default completion rules for an activity type, where we don't have
@@ -933,7 +936,7 @@ final class lib_test extends \advanced_testcase {
     public function test_creation_with_no_calendar_capabilities(): void {
         $this->resetAfterTest();
         $course = self::getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = self::getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $roleid = self::getDataGenerator()->create_role();
         self::getDataGenerator()->role_assign($roleid, $user->id, $context->id);

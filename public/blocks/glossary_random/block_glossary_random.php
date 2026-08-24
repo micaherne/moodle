@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
+
 define('BGR_RANDOMLY',     '0');
 define('BGR_LASTMODIFIED', '1');
 define('BGR_NEXTONE',      '2');
@@ -79,7 +84,7 @@ class block_glossary_random extends block_base {
                 $this->instance_config_commit();
             }
 
-            $glossaryctx = context_module::instance($cm->id);
+            $glossaryctx = module::instance($cm->id);
 
             $entries = $DB->get_records_sql('SELECT id, concept, definition, definitionformat, definitiontrust
                                                FROM {glossary_entries}
@@ -263,12 +268,12 @@ class block_glossary_random extends block_base {
         if ($cm->uservisible) {
             // Show glossary if visible and place links in footer.
             $this->content->text = $this->config->cache;
-            if (has_capability('mod/glossary:write', context_module::instance($cm->id))) {
-                $this->content->footer = html_writer::link(new moodle_url('/mod/glossary/edit.php', ['cmid' => $cm->id]),
+            if (has_capability('mod/glossary:write', module::instance($cm->id))) {
+                $this->content->footer = html_writer::link(new url('/mod/glossary/edit.php', ['cmid' => $cm->id]),
                     format_string($this->config->addentry)) . '<br/>';
             }
 
-            $this->content->footer .= html_writer::link(new moodle_url('/mod/glossary/view.php', ['id' => $cm->id]),
+            $this->content->footer .= html_writer::link(new url('/mod/glossary/view.php', ['id' => $cm->id]),
                 format_string($this->config->viewglossary));
         } else {
             // Otherwise just place some text, no link.
@@ -301,7 +306,7 @@ class block_glossary_random extends block_base {
      * @return bool
      */
     public function can_block_be_added(moodle_page $page): bool {
-        $pluginclass = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $pluginclass = plugin_manager::resolve_plugininfo_class('mod');
         return $pluginclass::get_enabled_plugin('glossary');
     }
 }

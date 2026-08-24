@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace core\plugininfo;
 
 use advanced_testcase;
+use core\plugin_manager;
 
 /**
  * Unit tests for the media plugininfo class.
@@ -57,7 +58,7 @@ final class media_test extends advanced_testcase {
     public function test_is_uninstall_allowed(
         string $plugin,
     ): void {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $plugininfo = $pluginmanager->get_plugin_info("media_{$plugin}");
         $this->assertTrue($plugininfo->is_uninstall_allowed());
     }
@@ -103,7 +104,7 @@ final class media_test extends advanced_testcase {
     }
 
     public static function change_plugin_order_provider(): array {
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $allplugins = $pluginmanager->get_plugins_of_type('media');
         \core_collator::asort_objects_by_method($allplugins, 'get_rank', \core_collator::SORT_NUMERIC);
         $getorder = function (array $plugins) use ($allplugins) {

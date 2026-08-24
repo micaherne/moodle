@@ -24,6 +24,10 @@
 
 namespace search_solr;
 
+use core\context;
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -1273,7 +1277,7 @@ class engine extends \core_search\engine {
         try {
             $schema = new schema($this);
             $schema->validate_setup();
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             return $e->getMessage();
         }
 
@@ -1554,7 +1558,7 @@ class engine extends \core_search\engine {
      * @param string $path The solr path to append.
      * @return \moodle_url
      */
-    public function get_server_url(string $path): \moodle_url {
+    public function get_server_url(string $path): url {
         // Must use the proper protocol, or SSL will fail.
         $protocol = !empty($this->config->secure) ? 'https' : 'http';
         $url = $protocol . '://' . rtrim($this->config->server_hostname, '/');
@@ -1562,7 +1566,7 @@ class engine extends \core_search\engine {
             $url .= ':' . $this->config->server_port;
         }
         $url .= '/solr/' . ltrim($path, '/');
-        return new \moodle_url($url);
+        return new url($url);
     }
 
     /**
@@ -1713,7 +1717,7 @@ class engine extends \core_search\engine {
      * @param \context $context Context that the user requested search from
      * @return array Array from order name => display text
      */
-    public function get_supported_orders(\context $context) {
+    public function get_supported_orders(context $context) {
         $orders = parent::get_supported_orders($context);
 
         // If not within a course, no other kind of sorting supported.

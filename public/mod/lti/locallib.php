@@ -51,6 +51,15 @@
 defined('MOODLE_INTERNAL') || die;
 
 // TODO: Switch to core oauthlib once implemented - MDL-30149.
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_cache\cache;
+use core_course\modinfo;
 use mod_lti\helper;
 use moodle\mod\lti as lti;
 use Firebase\JWT\JWT;
@@ -579,7 +588,7 @@ function lti_get_launch_data($instance, $nonce = '', $messagetype = 'basic-lti-l
         'sesskey' => sesskey());
 
     // Add the return URL. We send the launch container along to help us avoid frames-within-frames when the user returns.
-    $url = new \moodle_url('/mod/lti/return.php', $returnurlparams);
+    $url = new url('/mod/lti/return.php', $returnurlparams);
     $returnurl = $url->out(false);
 
     if (isset($typeconfig['forcessl']) && ($typeconfig['forcessl'] == '1')) {
@@ -636,7 +645,7 @@ function lti_get_launch_data($instance, $nonce = '', $messagetype = 'basic-lti-l
             $parms = lti_sign_jwt($requestparams, $endpoint, $key, $typeid, $nonce);
         }
 
-        $endpointurl = new \moodle_url($endpoint);
+        $endpointurl = new url($endpoint);
         $endpointparams = $endpointurl->params();
 
         // Strip querystring params in endpoint url from $parms to avoid duplication.
@@ -718,7 +727,7 @@ function lti_build_registration_request($toolproxy) {
 
     // Add the return URL.
     $returnurlparams = array('id' => $toolproxy->id, 'sesskey' => sesskey());
-    $url = new \moodle_url('/mod/lti/externalregistrationreturn.php', $returnurlparams);
+    $url = new url('/mod/lti/externalregistrationreturn.php', $returnurlparams);
     $returnurl = $url->out(false);
 
     $requestparams['launch_presentation_return_url'] = $returnurl;
@@ -849,7 +858,7 @@ function lti_build_request($instance, $typeconfig, $course, $typeid = null, $isl
         $requestparams['lis_result_sourcedid'] = $sourcedid;
 
         // Add outcome service URL.
-        $serviceurl = new \moodle_url('/mod/lti/service.php');
+        $serviceurl = new url('/mod/lti/service.php');
         $serviceurl = $serviceurl->out();
 
         $forcessl = false;
@@ -1053,7 +1062,7 @@ function lti_build_custom_parameters($toolproxy, $tool, $instance, $params, $cus
  * @throws moodle_exception When the LTI tool type does not exist.`
  * @throws coding_exception For invalid media type and presentation target parameters.
  */
-function lti_build_content_item_selection_request($id, $course, moodle_url $returnurl, $title = '', $text = '', $mediatypes = [],
+function lti_build_content_item_selection_request($id, $course, url $returnurl, $title = '', $text = '', $mediatypes = [],
                                                   $presentationtargets = [], $autocreate = false, $multiple = true,
                                                   $unsigned = false, $canconfirm = false, $copyadvice = false, $nonce = '') {
     global $USER;
@@ -1109,9 +1118,9 @@ function lti_build_content_item_selection_request($id, $course, moodle_url $retu
 
     // Set the tool URL.
     if (!empty($typeconfig['toolurl_ContentItemSelectionRequest'])) {
-        $toolurl = new moodle_url($typeconfig['toolurl_ContentItemSelectionRequest']);
+        $toolurl = new url($typeconfig['toolurl_ContentItemSelectionRequest']);
     } else {
-        $toolurl = new moodle_url($typeconfig['toolurl']);
+        $toolurl = new url($typeconfig['toolurl']);
     }
 
     // Check if SSL is forced.
@@ -1447,7 +1456,7 @@ function content_item_to_form(object $tool, object $typeconfig, object $item): s
         ];
     }
     if (isset($item->icon->{'@id'})) {
-        $iconurl = new moodle_url($item->icon->{'@id'});
+        $iconurl = new url($item->icon->{'@id'});
         // Assign item's icon URL to secureicon or icon depending on its scheme.
         if (strtolower($iconurl->get_scheme()) === 'https') {
             $config->secureicon = $iconurl->out(false);
@@ -1456,7 +1465,7 @@ function content_item_to_form(object $tool, object $typeconfig, object $item): s
         }
     }
     if (isset($item->url)) {
-        $url = new moodle_url($item->url);
+        $url = new url($item->url);
         $config->toolurl = $url->out(false);
         $config->typeid = 0;
     } else {
@@ -1735,7 +1744,7 @@ function lti_get_tool_table($tools, $id) {
             $delete = get_string('delete', 'lti');
 
             if (empty($type->toolproxyid)) {
-                $baseurl = new \moodle_url('/mod/lti/typessettings.php', array(
+                $baseurl = new url('/mod/lti/typessettings.php', array(
                         'action' => 'accept',
                         'id' => $type->id,
                         'sesskey' => sesskey(),
@@ -1743,7 +1752,7 @@ function lti_get_tool_table($tools, $id) {
                     ));
                 $ref = $type->baseurl;
             } else {
-                $baseurl = new \moodle_url('/mod/lti/toolssettings.php', array(
+                $baseurl = new url('/mod/lti/toolssettings.php', array(
                         'action' => 'accept',
                         'id' => $type->id,
                         'sesskey' => sesskey(),
@@ -1753,7 +1762,7 @@ function lti_get_tool_table($tools, $id) {
             }
 
             $accepthtml = $OUTPUT->action_icon($baseurl,
-                    new \pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
+                    new pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
                     array('title' => $accept, 'class' => 'editing_accept'));
 
             $deleteaction = 'delete';
@@ -1770,14 +1779,14 @@ function lti_get_tool_table($tools, $id) {
             $updateurl = clone($baseurl);
             $updateurl->param('action', 'update');
             $updatehtml = $OUTPUT->action_icon($updateurl,
-                    new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
+                    new pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
                     array('title' => $update, 'class' => 'editing_update'));
 
             if (($type->state != LTI_TOOL_STATE_REJECTED) || empty($type->toolproxyid)) {
                 $deleteurl = clone($baseurl);
                 $deleteurl->param('action', $deleteaction);
                 $deletehtml = $OUTPUT->action_icon($deleteurl,
-                        new \pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
+                        new pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
                         array('title' => $delete, 'class' => 'editing_delete'));
             } else {
                 $deletehtml = '';
@@ -1842,21 +1851,21 @@ EOD;
             $update = get_string('update', 'lti');
             $delete = get_string('delete', 'lti');
 
-            $baseurl = new \moodle_url('/mod/lti/registersettings.php', array(
+            $baseurl = new url('/mod/lti/registersettings.php', array(
                     'action' => 'accept',
                     'id' => $toolproxy->id,
                     'sesskey' => sesskey(),
                     'tab' => $id
                 ));
 
-            $registerurl = new \moodle_url('/mod/lti/register.php', array(
+            $registerurl = new url('/mod/lti/register.php', array(
                     'id' => $toolproxy->id,
                     'sesskey' => sesskey(),
                     'tab' => 'tool_proxy'
                 ));
 
             $accepthtml = $OUTPUT->action_icon($registerurl,
-                    new \pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
+                    new pix_icon('t/check', $accept, '', array('class' => 'iconsmall')), null,
                     array('title' => $accept, 'class' => 'editing_accept'));
 
             $deleteaction = 'delete';
@@ -1872,13 +1881,13 @@ EOD;
             $updateurl = clone($baseurl);
             $updateurl->param('action', 'update');
             $updatehtml = $OUTPUT->action_icon($updateurl,
-                    new \pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
+                    new pix_icon('t/edit', $update, '', array('class' => 'iconsmall')), null,
                     array('title' => $update, 'class' => 'editing_update'));
 
             $deleteurl = clone($baseurl);
             $deleteurl->param('action', $deleteaction);
             $deletehtml = $OUTPUT->action_icon($deleteurl,
-                    new \pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
+                    new pix_icon('t/delete', $delete, '', array('class' => 'iconsmall')), null,
                     array('title' => $delete, 'class' => 'editing_delete'));
             $html .= <<< EOD
             <tr>
@@ -2162,7 +2171,7 @@ function lti_get_ims_role($user, $cmid, $courseid, $islti2) {
         // If no cmid is passed, check if the user is a teacher in the course
         // This allows other modules to programmatically "fake" a launch without
         // a real LTI instance.
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
 
         if (has_capability('moodle/course:manageactivities', $context, $user)) {
             array_push($roles, 'Instructor');
@@ -2170,7 +2179,7 @@ function lti_get_ims_role($user, $cmid, $courseid, $islti2) {
             array_push($roles, 'Learner');
         }
     } else {
-        $context = context_module::instance($cmid);
+        $context = module::instance($cmid);
 
         if (has_capability('mod/lti:manage', $context)) {
             array_push($roles, 'Instructor');
@@ -2389,7 +2398,7 @@ function lti_get_configured_types($courseid, $sectionreturn = 0) {
         if (!is_null($sectionreturn)) {
             $params['sr'] = $sectionreturn;
         }
-        $type->link = new moodle_url('/course/modedit.php', $params);
+        $type->link = new url('/course/modedit.php', $params);
         $types[] = $type;
     }
     return $types;
@@ -2863,7 +2872,7 @@ function lti_update_type($type, $config) {
             $courseids = [];
             foreach ($rs as $record) {
                 $courseids[] = $record->course;
-                \course_modinfo::purge_course_module_cache($record->course, $record->id);
+                modinfo::purge_course_module_cache($record->course, $record->id);
             }
             $rs->close();
             $courseids = array_unique($courseids);
@@ -4073,7 +4082,7 @@ function get_tool_type_icon_url(stdClass $type) {
  * @return string The url to edit the tool type
  */
 function get_tool_type_edit_url(stdClass $type) {
-    $url = new moodle_url('/mod/lti/typessettings.php',
+    $url = new url('/mod/lti/typessettings.php',
                           array('action' => 'update', 'id' => $type->id, 'sesskey' => sesskey(), 'returnto' => 'toolconfigure'));
     return $url->out();
 }
@@ -4086,7 +4095,7 @@ function get_tool_type_edit_url(stdClass $type) {
  * @return string The url to edit the tool type
  */
 function get_tool_proxy_edit_url(stdClass $proxy) {
-    $url = new moodle_url('/mod/lti/registersettings.php',
+    $url = new url('/mod/lti/registersettings.php',
                           array('action' => 'update', 'id' => $proxy->id, 'sesskey' => sesskey(), 'returnto' => 'toolconfigure'));
     return $url->out();
 }
@@ -4100,7 +4109,7 @@ function get_tool_proxy_edit_url(stdClass $proxy) {
  */
 function get_tool_type_course_url(stdClass $type) {
     if ($type->course != 1) {
-        $url = new moodle_url('/course/view.php', array('id' => $type->course));
+        $url = new url('/course/view.php', array('id' => $type->course));
         return $url->out();
     }
     return null;
@@ -4125,11 +4134,11 @@ function get_tool_type_urls(stdClass $type) {
         $urls['course'] = $courseurl;
     }
 
-    $url = new moodle_url('/mod/lti/certs.php');
+    $url = new url('/mod/lti/certs.php');
     $urls['publickeyset'] = $url->out();
-    $url = new moodle_url('/mod/lti/token.php');
+    $url = new url('/mod/lti/token.php');
     $urls['accesstoken'] = $url->out();
-    $url = new moodle_url('/mod/lti/auth.php');
+    $url = new url('/mod/lti/auth.php');
     $urls['authrequest'] = $url->out();
 
     return $urls;
@@ -4206,13 +4215,13 @@ function get_tool_type_config($type) {
     $platformid = $CFG->wwwroot;
     $clientid = $type->clientid;
     $deploymentid = $type->id;
-    $publickeyseturl = new moodle_url('/mod/lti/certs.php');
+    $publickeyseturl = new url('/mod/lti/certs.php');
     $publickeyseturl = $publickeyseturl->out();
 
-    $accesstokenurl = new moodle_url('/mod/lti/token.php');
+    $accesstokenurl = new url('/mod/lti/token.php');
     $accesstokenurl = $accesstokenurl->out();
 
-    $authrequesturl = new moodle_url('/mod/lti/auth.php');
+    $authrequesturl = new url('/mod/lti/auth.php');
     $authrequesturl = $authrequesturl->out();
 
     return array(

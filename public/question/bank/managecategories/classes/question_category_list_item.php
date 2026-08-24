@@ -16,7 +16,7 @@
 
 namespace qbank_managecategories;
 
-use moodle_url;
+use core\url;
 
 /**
  * An item in a list of question categories.
@@ -42,13 +42,13 @@ class question_category_list_item extends \list_item {
         \core\deprecation::emit_deprecation([$this, __FUNCTION__]);
         global $CFG;
         $category = $this->item;
-        $url = new moodle_url('/question/bank/managecategories/category.php',
+        $url = new url('/question/bank/managecategories/category.php',
             ($this->parentlist->pageurl->params() + ['edit' => $category->id]));
         $this->icons['edit'] = $this->image_icon(get_string('editthiscategory', 'question'), $url, 'edit');
         parent::set_icon_html($first, $last, $lastitem);
         $toplevel = ($this->parentlist->parentitem === null);// This is a top level item.
         if (($this->parentlist->nextlist !== null) && $last && $toplevel && (count($this->parentlist->items) > 1)) {
-            $url = new moodle_url($this->parentlist->pageurl,
+            $url = new url($this->parentlist->pageurl,
                 [
                     'movedowncontext' => $this->id,
                     'tocontext' => $this->parentlist->nextlist->context->id,
@@ -60,7 +60,7 @@ class question_category_list_item extends \list_item {
                         $this->parentlist->nextlist->context->get_context_name()), $url, 'down');
         }
         if (($this->parentlist->lastlist !== null) && $first && $toplevel && (count($this->parentlist->items) > 1)) {
-            $url = new moodle_url($this->parentlist->pageurl,
+            $url = new url($this->parentlist->pageurl,
                 [
                     'moveupcontext' => $this->id,
                     'tocontext' => $this->parentlist->lastlist->context->id,
@@ -87,7 +87,7 @@ class question_category_list_item extends \list_item {
         $str = $extraargs['str'];
         $category = $this->item;
 
-        $questionbankurl = new moodle_url('/question/edit.php', $this->parentlist->pageurl->params());
+        $questionbankurl = new url('/question/edit.php', $this->parentlist->pageurl->params());
 
         $questionbankurl->param('cat', $category->id . ',' . $category->contextid);
 
@@ -103,7 +103,7 @@ class question_category_list_item extends \list_item {
         // Don't allow delete if this is the top category, or the last editable category in this context.
         $deleteurl = null;
         if ($category->parent && !helper::question_is_only_child_of_top_category_in_context($category->id)) {
-            $deleteurl = new moodle_url($this->parentlist->pageurl, ['delete' => $this->id, 'sesskey' => sesskey()]);
+            $deleteurl = new url($this->parentlist->pageurl, ['delete' => $this->id, 'sesskey' => sesskey()]);
         }
 
         // Render each question category.

@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\form\persistent;
 use core_competency\plan as planpersistent;
-use required_capability_exception;
+use core\exception\required_capability_exception;
 
 /**
  * Learning plan form.

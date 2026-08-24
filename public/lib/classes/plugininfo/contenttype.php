@@ -23,6 +23,12 @@
  */
 namespace core\plugininfo;
 
+use core\context;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
+
 /**
  * Class for contentbank plugins
  *
@@ -61,7 +67,7 @@ class contenttype extends base {
      * @param string $parentnodename
      * @param bool $hassiteconfig
      */
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
         global $CFG, $USER, $DB, $OUTPUT, $PAGE; // In case settings.php wants to refer to them.
         /** @var \admin_root $ADMIN */
         $ADMIN = $adminroot; // May be used in settings.php.
@@ -80,7 +86,7 @@ class contenttype extends base {
 
         $settings = null;
         if (file_exists($this->full_path('settings.php'))) {
-            $settings = new \admin_settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
+            $settings = new settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
             include($this->full_path('settings.php')); // This may also set $settings to null.
         }
         if ($settings) {
@@ -93,7 +99,7 @@ class contenttype extends base {
      * @return \moodle_url
      */
     public static function get_manage_url() {
-        return new \moodle_url('/admin/settings.php', array('section' => 'managecontentbanktypes'));
+        return new url('/admin/settings.php', array('section' => 'managecontentbanktypes'));
     }
 
 
@@ -131,7 +137,7 @@ class contenttype extends base {
     public static function get_enabled_plugins() {
         global $CFG;
 
-        $plugins = \core_plugin_manager::instance()->get_installed_plugins('contenttype');
+        $plugins = plugin_manager::instance()->get_installed_plugins('contenttype');
 
         if (!$plugins) {
             return array();
@@ -175,7 +181,7 @@ class contenttype extends base {
 
         if ($haschanged) {
             add_to_config_log('disabled', $oldvalue, $disabled, $plugin);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -216,7 +222,7 @@ class contenttype extends base {
         $contenttypename = 'contenttype_'.$this->name;
         $contenttypeclass = "\\$contenttypename\\contenttype";
         foreach ($records as $record) {
-            $context = \context::instance_by_id($record->contextid, MUST_EXIST);
+            $context = context::instance_by_id($record->contextid, MUST_EXIST);
             $contenttype = new $contenttypeclass($context);
             $contentclass = "\\$contenttypename\\content";
             $content = new $contentclass($record);

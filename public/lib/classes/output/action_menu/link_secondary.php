@@ -17,7 +17,7 @@
 namespace core\output\action_menu;
 
 use core\output\pix_icon;
-use moodle_url;
+use core\url;
 
 /**
  * A secondary action menu action
@@ -36,7 +36,7 @@ class link_secondary extends link {
      * @param string $text
      * @param array $attributes
      */
-    public function __construct(moodle_url $url, ?pix_icon $icon, $text, array $attributes = []) {
+    public function __construct(url $url, ?pix_icon $icon, $text, array $attributes = []) {
         parent::__construct($url, $icon, $text, false, $attributes);
     }
 }

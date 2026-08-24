@@ -24,15 +24,17 @@
 
 namespace core_courseformat\output\local\content\section;
 
-use context_course;
+use core\context\course;
+use core\output\renderer_base;
+use core\url;
 use core_availability_multiple_messages;
 use core\output\named_templatable;
 use core_availability\info;
 use core_availability\info_section;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use renderable;
-use section_info;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -79,7 +81,7 @@ class availability implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass|null data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): ?stdClass {
+    public function export_for_template(renderer_base $output): ?stdClass {
         $this->build_export_data($output);
         return $this->data;
     }
@@ -90,7 +92,7 @@ class availability implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return bool if the element has availability data to display
      */
-    public function has_availability(\renderer_base $output): bool {
+    public function has_availability(renderer_base $output): bool {
         $this->build_export_data($output);
         $attributename = $this->hasavailabilityname;
         return $this->data->$attributename;
@@ -101,7 +103,7 @@ class availability implements named_templatable, renderable {
      *
      * @param \renderer_base $output typically, the renderer that's calling this function
      */
-    protected function build_export_data(\renderer_base $output) {
+    protected function build_export_data(renderer_base $output) {
         if (!empty($this->data)) {
             return;
         }
@@ -129,15 +131,15 @@ class availability implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    protected function get_info(\renderer_base $output): array {
+    protected function get_info(renderer_base $output): array {
         global $CFG, $USER;
 
         $section = $this->section;
-        $context = context_course::instance($section->course);
+        $context = course::instance($section->course);
 
         $canviewhidden = has_capability('moodle/course:viewhiddensections', $context, $USER);
 
-        $editurl = new \moodle_url(
+        $editurl = new url(
             '/course/editsection.php',
             ['id' => $this->section->id, 'showonly' => 'availabilityconditions']
         );
@@ -212,7 +214,7 @@ class availability implements named_templatable, renderable {
      * @param string $availabilityinfo the avalability info
      * @return stdClass the availability information data
      */
-    protected function availability_info_from_string(\renderer_base $output, string $availabilityinfo): stdClass {
+    protected function availability_info_from_string(renderer_base $output, string $availabilityinfo): stdClass {
         $course = $this->format->get_course();
 
         $text = info::format_info($availabilityinfo, $course);
@@ -234,7 +236,7 @@ class availability implements named_templatable, renderable {
      * @return stdClass the availability information data
      */
     protected function availability_info_from_output(
-        \renderer_base $output,
+        renderer_base $output,
         core_availability_multiple_messages $availabilityinfo
     ): stdClass {
         $course = $this->format->get_course();

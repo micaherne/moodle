@@ -16,6 +16,9 @@
 
 namespace format_topics;
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
 use core_external\external_api;
 
 defined('MOODLE_INTERNAL') || die();
@@ -144,7 +147,7 @@ final class format_topics_test extends \advanced_testcase {
         try {
             \core_external::update_inplace_editable('format_topics', 'sectionname', $section->id, 'New section name');
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('Course or activity not accessible. (Not enrolled)',
                     $e->getMessage());
         }
@@ -188,7 +191,7 @@ final class format_topics_test extends \advanced_testcase {
         try {
             component_callback('format_weeks', 'inplace_editable', ['sectionname', $section->id, 'New name']);
             $this->fail('Exception expected');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals(1, preg_match('/^Can\'t find data record in database/', $e->getMessage()));
         }
     }
@@ -215,11 +218,11 @@ final class format_topics_test extends \advanced_testcase {
             'course' => $course,
             'category' => $category,
             'editoroptions' => [
-                'context' => \context_course::instance($course->id),
+                'context' => course::instance($course->id),
                 'subdirs' => 0
             ],
-            'returnto' => new \moodle_url('/'),
-            'returnurl' => new \moodle_url('/'),
+            'returnto' => new url('/'),
+            'returnurl' => new url('/'),
         ];
 
         $courseform = new \testable_course_edit_form(null, $args);

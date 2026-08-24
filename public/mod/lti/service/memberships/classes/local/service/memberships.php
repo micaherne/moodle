@@ -25,6 +25,8 @@
 
 namespace ltiservice_memberships\local\service;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -449,7 +451,7 @@ class memberships extends \mod_lti\local\ltiservice\service_base {
                                                                                      $lti->servicesalt,
                                                                                      $lti->typeid));
                     // Add outcome service URL.
-                    $serviceurl = new \moodle_url('/mod/lti/service.php');
+                    $serviceurl = new url('/mod/lti/service.php');
                     $serviceurl = $serviceurl->out();
                     $forcessl = false;
                     if (!empty($CFG->mod_lti_forcessl)) {

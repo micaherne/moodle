@@ -24,6 +24,8 @@
  * @since      Moodle 3.1
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
 use core_course\external\helper_for_get_mods_by_courses;
 use core_external\external_api;
 use core_external\external_files;
@@ -99,7 +101,7 @@ class mod_wiki_external extends external_api {
 
             foreach ($wikis as $wiki) {
 
-                $context = context_module::instance($wiki->coursemodule);
+                $context = module::instance($wiki->coursemodule);
 
                 // Entry to return.
                 $module = helper_for_get_mods_by_courses::standard_coursemodule_element_values(
@@ -203,7 +205,7 @@ class mod_wiki_external extends external_api {
 
         // Permission validation.
         list($course, $cm) = get_course_and_cm_from_instance($wiki, 'wiki');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Check if user can view this wiki.
@@ -278,7 +280,7 @@ class mod_wiki_external extends external_api {
 
         // Permission validation.
         list($course, $cm) = get_course_and_cm_from_instance($wiki, 'wiki');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Check if user can view this wiki.
@@ -348,7 +350,7 @@ class mod_wiki_external extends external_api {
 
         // Validate context and capabilities.
         list($course, $cm) = get_course_and_cm_from_instance($wiki, 'wiki');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
         require_capability('mod/wiki:viewpage', $context);
 
@@ -444,7 +446,7 @@ class mod_wiki_external extends external_api {
             throw new moodle_exception('incorrectwikiid', 'wiki');
         }
         list($course, $cm) = get_course_and_cm_from_instance($wiki, 'wiki');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Determine groupid and userid to use.
@@ -604,7 +606,7 @@ class mod_wiki_external extends external_api {
 
         // Permission validation.
         $cm = get_coursemodule_from_instance('wiki', $wiki->id, $wiki->course);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Check if user can view this wiki.
@@ -730,7 +732,7 @@ class mod_wiki_external extends external_api {
             throw new moodle_exception('incorrectwikiid', 'wiki');
         }
         list($course, $cm) = get_course_and_cm_from_instance($wiki, 'wiki');
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         // Determine groupid and userid to use.
@@ -858,7 +860,7 @@ class mod_wiki_external extends external_api {
 
         // Permission validation.
         $cm = get_coursemodule_from_instance('wiki', $wiki->id, $wiki->course);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         if (!wiki_user_can_edit($subwiki)) {
@@ -986,7 +988,7 @@ class mod_wiki_external extends external_api {
 
             // Permission validation.
             $cm = get_coursemodule_from_instance('wiki', $wiki->id, $wiki->course);
-            $context = context_module::instance($cm->id);
+            $context = module::instance($cm->id);
             self::validate_context($context);
 
         } else {
@@ -996,7 +998,7 @@ class mod_wiki_external extends external_api {
 
             // Permission validation.
             $cm = get_coursemodule_from_instance('wiki', $wiki->id, $wiki->course);
-            $context = context_module::instance($cm->id);
+            $context = module::instance($cm->id);
             self::validate_context($context);
 
             // Determine groupid and userid to use.
@@ -1129,7 +1131,7 @@ class mod_wiki_external extends external_api {
 
         // Permission validation.
         $cm = get_coursemodule_from_instance('wiki', $wiki->id, $wiki->course);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         if (!wiki_user_can_edit($subwiki)) {

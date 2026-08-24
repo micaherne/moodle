@@ -21,6 +21,16 @@
  * @package    core_group
  */
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\exception\coding_exception;
+use core\output\single_select;
+use core\url;
+use core_cache\cache;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -328,7 +338,7 @@ function groups_get_all_groups($courseid, $userid=0, $groupingid=0, $fields='g.*
 
     $visibilityfrom = '';
     $visibilitywhere = '';
-    $viewhidden = has_capability('moodle/course:viewhiddengroups', context_course::instance($courseid));
+    $viewhidden = has_capability('moodle/course:viewhiddengroups', course::instance($courseid));
     if (!$viewhidden) {
         // Apply group visibility restrictions. Only return groups where visibility is ALL, or the current user is a member and the
         // visibility is MEMBERS or OWN.
@@ -435,7 +445,7 @@ function groups_get_my_groups() {
 
     $params = ['userid' => $USER->id];
 
-    $viewhidden = has_capability('moodle/course:viewhiddengroups', context_system::instance());
+    $viewhidden = has_capability('moodle/course:viewhiddengroups', system::instance());
     $visibilitywhere = '';
     if (!$viewhidden) {
         $params['novisibility'] = GROUPS_VISIBILITY_NONE;
@@ -474,7 +484,7 @@ function groups_get_user_groups(int $courseid, int $userid = 0, bool $includehid
     }
 
     $usergroups = false;
-    $viewhidden = $includehidden || has_capability('moodle/course:viewhiddengroups', context_course::instance($courseid));
+    $viewhidden = $includehidden || has_capability('moodle/course:viewhiddengroups', course::instance($courseid));
     $viewall = \core_group\visibility::can_view_all_groups($courseid);
 
     $cache = cache::make('core', 'user_group_groupings');
@@ -763,7 +773,7 @@ function groups_print_course_menu($course, $urlroot, $return=false) {
         }
     }
 
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     $aag = has_capability('moodle/site:accessallgroups', $context);
 
     $usergroups = array();
@@ -800,7 +810,7 @@ function groups_print_course_menu($course, $urlroot, $return=false) {
         $groupname = reset($groupsmenu);
         $output = $grouplabel.': '.$groupname;
     } else {
-        $select = new single_select(new moodle_url($urlroot), 'group', $groupsmenu, $activegroup, null, 'selectgroup');
+        $select = new single_select(new url($urlroot), 'group', $groupsmenu, $activegroup, null, 'selectgroup');
         $select->label = $grouplabel;
         $output = $OUTPUT->render($select);
     }
@@ -917,7 +927,7 @@ function groups_allgroups_course_menu($course, $urlroot, $update = false, $activ
     global $SESSION, $OUTPUT, $USER;
 
     $groupmode = groups_get_course_groupmode($course);
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     $groupsmenu = array();
 
     if (has_capability('moodle/site:accessallgroups', $context)) {
@@ -950,7 +960,7 @@ function groups_allgroups_course_menu($course, $urlroot, $update = false, $activ
         $groupname = reset($groupsmenu);
         $output = $grouplabel.': '.$groupname;
     } else {
-        $select = new single_select(new moodle_url($urlroot), 'group', $groupsmenu, $activegroup, null, 'selectgroup');
+        $select = new single_select(new url($urlroot), 'group', $groupsmenu, $activegroup, null, 'selectgroup');
         $select->label = $grouplabel;
         $output = $OUTPUT->render($select);
     }
@@ -989,7 +999,7 @@ function groups_print_activity_menu(
 ) {
     global $USER, $OUTPUT;
 
-    if ($urlroot instanceof moodle_url) {
+    if ($urlroot instanceof url) {
         // no changes necessary
 
     } else {
@@ -1000,7 +1010,7 @@ function groups_print_activity_menu(
                       'groups_print_activity_menu($cm, $CFG->wwwroot . \'/mod/mymodule/view.php?id=13\');',
                       DEBUG_DEVELOPER);
         }
-        $urlroot = new moodle_url($urlroot);
+        $urlroot = new url($urlroot);
     }
 
     if (!$groupmode = groups_get_activity_groupmode($cm)) {
@@ -1011,7 +1021,7 @@ function groups_print_activity_menu(
         }
     }
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     $aag = has_capability('moodle/site:accessallgroups', $context);
 
     $usergroups = array();
@@ -1081,7 +1091,7 @@ function groups_get_course_group($course, $update=false, $allowedgroups=null) {
         return false;
     }
 
-    $context = context_course::instance($course->id);
+    $context = course::instance($course->id);
     if (has_capability('moodle/site:accessallgroups', $context)) {
         $groupmode = 'aag';
     }
@@ -1141,7 +1151,7 @@ function groups_get_activity_group(
         return false;
     }
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     if (has_capability('moodle/site:accessallgroups', $context)) {
         $groupmode = 'aag';
     }
@@ -1197,7 +1207,7 @@ function groups_get_activity_allowed_groups($cm,$userid=0) {
 
     // If visible groups mode, or user has the accessallgroups capability,
     // then they can access all groups for the activity...
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     if ($groupmode == VISIBLEGROUPS or has_capability('moodle/site:accessallgroups', $context, $userid)) {
         return groups_get_all_groups($cm->course, 0, $cm->groupingid, 'g.*', false, true);
     } else {
@@ -1229,7 +1239,7 @@ function groups_group_visible($groupid, $course, $cm = null, $userid = null) {
         return true;
     }
 
-    $context = empty($cm) ? context_course::instance($course->id) : context_module::instance($cm->id);
+    $context = empty($cm) ? course::instance($course->id) : module::instance($cm->id);
     if (has_capability('moodle/site:accessallgroups', $context, $userid)) {
         // User can see everything. Groupid = 0 is handled here as well.
         return true;
@@ -1621,7 +1631,7 @@ function groups_user_groups_visible($course, $userid, $cm = null) {
         return true;
     }
 
-    $context = empty($cm) ? context_course::instance($course->id) : context_module::instance($cm->id);
+    $context = empty($cm) ? course::instance($course->id) : module::instance($cm->id);
     if (has_capability('moodle/site:accessallgroups', $context)) {
         // User can see everything.
         return true;
@@ -1668,10 +1678,10 @@ function groups_get_groups_members($groupsids, $extrafields=null, $sort='lastnam
 
     if (count($courseids) > 1) {
         // Groups from multiple courses. Have to check permission in system context.
-        $context = context_system::instance();
+        $context = system::instance();
     } else {
         $courseid = reset($courseids);
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
     }
 
     if (!has_capability('moodle/course:viewhiddengroups', $context)) {

@@ -29,6 +29,9 @@
  * @subpackage admin
  */
 
+use core\exception\coding_exception;
+use core\plugin_manager;
+
 defined('MOODLE_INTERNAL') || die();
 
 /// Define a bunch of XML processing errors
@@ -479,7 +482,7 @@ function environment_check($version, $env_select) {
     // Locate any installed plugins belonging to deleted plugin types and block the install/upgrade process until they are removed.
     // Plugins on disk which aren't installed and which are either deprecated or deleted will be ignored by install/upgrade anyway,
     // so are not checked here.
-    $pluginman = \core_plugin_manager::instance();
+    $pluginman = plugin_manager::instance();
     foreach (core_component::get_deleted_plugin_types() as $plugintype => $dir) {
         foreach ($pluginman->get_installed_plugins($plugintype) as $name => $version) {
             $plugin = $plugintype . '_' . $name;
@@ -1528,7 +1531,7 @@ class environment_results {
      */
     function getPluginName() {
         if ($this->plugin) {
-            $manager = core_plugin_manager::instance();
+            $manager = plugin_manager::instance();
             list($plugintype, $pluginname) = core_component::normalize_component($this->plugin);
             return $manager->plugintype_name($plugintype) . ' / ' . $manager->plugin_name($this->plugin);
         } else {

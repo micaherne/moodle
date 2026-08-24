@@ -16,11 +16,14 @@
 
 namespace core_question\output;
 
-use context_course;
+use core\context\course;
+use core\output\renderable;
+use core\output\templatable;
+use core\url;
 use core_question\local\bank\formatted_bank;
 use core_question\local\bank\question_bank_helper;
-use renderer_base;
-use single_button;
+use core\output\renderer_base;
+use core\output\single_button;
 use stdClass;
 
 /**
@@ -31,7 +34,7 @@ use stdClass;
  * @author     Simon Adams <simon.adams@catalyst-eu.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class view_banks implements \templatable, \renderable {
+class view_banks implements templatable, renderable {
 
     /**
      * Create a new view_banks instance.
@@ -66,7 +69,7 @@ class view_banks implements \templatable, \renderable {
             static fn($plugin) => $plugin !== $defaultbankname
         );
         $addqbanklink = new single_button(
-            new \moodle_url('/course/modedit.php', [
+            new url('/course/modedit.php', [
                 'add' => $defaultbankname,
                 'course' => $this->course->id,
                 'section' => 0,
@@ -84,7 +87,7 @@ class view_banks implements \templatable, \renderable {
             get_string('createdefault', 'question')
         );
 
-        $cancreate = has_capability('moodle/course:manageactivities', context_course::instance($this->course->id));
+        $cancreate = has_capability('moodle/course:manageactivities', course::instance($this->course->id));
 
         return [
             'addqbank' => $cancreate ? $addqbanklink->export_for_template($output) : false,

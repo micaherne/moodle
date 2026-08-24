@@ -16,6 +16,7 @@
 
 namespace qtype_ddwtos;
 
+use core\context\system;
 use question_answer;
 use question_bank;
 use question_hint_with_parts;
@@ -119,7 +120,7 @@ final class question_type_test extends \question_testcase {
     public function test_save_question(): void {
         $this->resetAfterTest();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         /** @var core_question_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $generator->create_question_category(['contextid' => $syscontext->id]);
@@ -271,7 +272,7 @@ final class question_type_test extends \question_testcase {
     public function test_xml_export(): void {
         $qdata = new \stdClass();
         $qdata->id = 123;
-        $qdata->contextid = \context_system::instance()->id;
+        $qdata->contextid = system::instance()->id;
         $qdata->idnumber = null;
         $qdata->qtype = 'ddwtos';
         $qdata->name = 'A drag-and-drop question';

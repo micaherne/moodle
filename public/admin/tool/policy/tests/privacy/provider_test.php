@@ -24,6 +24,8 @@
  */
 namespace tool_policy\privacy;
 
+use core\context\system;
+use core\context\user;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
 use tool_policy\api;
@@ -58,7 +60,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Create manager user.
         $this->manager = $generator->create_user();
-        $this->syscontext = \context_system::instance();
+        $this->syscontext = system::instance();
         $rolemanagerid = create_role('Policy manager', 'policymanager', 'Can manage policy documents');
         assign_capability('tool/policy:managedocs', CAP_ALLOW, $rolemanagerid, $this->syscontext->id);
         assign_capability('tool/policy:acceptbehalf', CAP_ALLOW, $rolemanagerid, $this->syscontext->id);
@@ -119,10 +121,10 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $childuser = $generator->create_user();
 
         // Fetch relevant contexts.
-        $managercontext = \context_user::instance($this->manager->id);
-        $usercontext = $managercontext = \context_user::instance($this->user->id);
-        $parentcontext = $managercontext = \context_user::instance($parentuser->id);
-        $childcontext = $managercontext = \context_user::instance($childuser->id);
+        $managercontext = user::instance($this->manager->id);
+        $usercontext = $managercontext = user::instance($this->user->id);
+        $parentcontext = $managercontext = user::instance($parentuser->id);
+        $childcontext = $managercontext = user::instance($childuser->id);
 
         // Assign parent to accept on behalf of the child.
         $roleparentid = create_role('Parent', 'parent', 'Can accept policies on behalf of their child');
@@ -187,12 +189,12 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         global $CFG;
 
         $otheruser = $this->getDataGenerator()->create_user();
-        $otherusercontext = \context_user::instance($otheruser->id);
+        $otherusercontext = user::instance($otheruser->id);
 
         // Create policies and agree to them as manager.
         $this->setUser($this->manager);
-        $managercontext = \context_user::instance($this->manager->id);
-        $systemcontext = \context_system::instance();
+        $managercontext = user::instance($this->manager->id);
+        $systemcontext = system::instance();
         $agreementsubcontext = [
             get_string('privacyandpolicies', 'admin'),
             get_string('useracceptances', 'tool_policy')
@@ -209,7 +211,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Agree to the policies for oneself.
         $this->setUser($this->user);
-        $usercontext = \context_user::instance($this->user->id);
+        $usercontext = user::instance($this->user->id);
         api::accept_policies([$policy1->get('id'), $policy2->get('id')]);
 
         // Request export for this user.
@@ -247,9 +249,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
     public function test_export_agreements_for_other(): void {
         global $CFG;
 
-        $managercontext = \context_user::instance($this->manager->id);
-        $systemcontext = \context_system::instance();
-        $usercontext = \context_user::instance($this->user->id);
+        $managercontext = user::instance($this->manager->id);
+        $systemcontext = system::instance();
+        $usercontext = user::instance($this->user->id);
 
         // Create policies and agree to them as manager.
         $this->setUser($this->manager);
@@ -308,8 +310,8 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Create policies and agree to them as manager.
         $this->setUser($this->manager);
-        $managercontext = \context_user::instance($this->manager->id);
-        $systemcontext = \context_system::instance();
+        $managercontext = user::instance($this->manager->id);
+        $systemcontext = system::instance();
         $agreementsubcontext = [
             get_string('privacyandpolicies', 'admin'),
             get_string('useracceptances', 'tool_policy')

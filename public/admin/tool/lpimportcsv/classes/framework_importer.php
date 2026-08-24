@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 use core_competency\api;
 use grade_scale;
 use stdClass;
-use context_system;
+use core\context\system;
 use csv_import_reader;
 
 /**
@@ -458,7 +458,7 @@ class framework_importer {
         $record->scaleid = $this->get_scale_id($record->scalevalues, $record->shortname);
         $record->scaleconfiguration = $this->get_scale_configuration($record->scaleid, $record->scaleconfiguration);
         unset($record->scalevalues);
-        $record->contextid = context_system::instance()->id;
+        $record->contextid = system::instance()->id;
 
         $framework = api::create_framework($record);
         if ($this->useprogressbar === true) {

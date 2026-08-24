@@ -17,6 +17,7 @@
 namespace aiprovider_awsbedrock\form;
 
 use aiprovider_awsbedrock\helper;
+use core\lang_string;
 use core_ai\form\action_settings_form;
 
 /**
@@ -271,7 +272,7 @@ class action_form extends action_settings_form {
 
         $regions = [];
         foreach ($regioncodes as $region) {
-            $regions[$region] = new \lang_string('awsregion:' . $region, 'aiprovider_awsbedrock');
+            $regions[$region] = new lang_string('awsregion:' . $region, 'aiprovider_awsbedrock');
         }
 
         return $regions;

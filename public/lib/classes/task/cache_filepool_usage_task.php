@@ -24,6 +24,8 @@
 
 namespace core\task;
 
+use core_cache\cache;
+
 /**
  * Scheduled task to pre-cache file pool disk usage for the site registration page.
  *
@@ -46,7 +48,7 @@ class cache_filepool_usage_task extends scheduled_task {
      */
     public function execute(): void {
         // Purge the existing cached value so get_filepool_usage() recalculates a fresh result.
-        \cache::make('core', 'hub_filepoolusage')->purge();
+        cache::make('core', 'hub_filepoolusage')->purge();
         $size = \core\hub\registration::get_filepool_usage();
         mtrace(get_string('diskusagesize', 'hub', $size));
     }

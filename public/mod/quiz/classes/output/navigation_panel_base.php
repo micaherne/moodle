@@ -17,12 +17,12 @@
 namespace mod_quiz\output;
 
 use mod_quiz\quiz_attempt;
-use moodle_url;
+use core\url;
 use question_attempt;
 use question_display_options;
 use question_state;
-use renderable;
-use user_picture;
+use core\output\renderable;
+use core\output\user_picture;
 
 /**
  * Represents the navigation panel, and builds a {@see block_contents} to allow it to be output.
@@ -153,7 +153,7 @@ abstract class navigation_panel_base {
         if (!$this->attemptobj->is_own_preview()) {
             return '';
         }
-        return $output->restart_preview_button(new moodle_url(
+        return $output->restart_preview_button(new url(
                 $this->attemptobj->start_attempt_url(), ['forcenew' => true]));
     }
 

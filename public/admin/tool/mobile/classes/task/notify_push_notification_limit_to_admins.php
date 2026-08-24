@@ -18,6 +18,8 @@ namespace tool_mobile\task;
 
 use core\clock;
 use core\di;
+use core\url;
+use core\user;
 use tool_mobile\api;
 use tool_mobile\output\push_notification_limit_message;
 
@@ -129,7 +131,7 @@ class notify_push_notification_limit_to_admins extends \core\task\scheduled_task
             return false;
         }
 
-        $subscriptionurl = new \moodle_url('/admin/tool/mobile/subscription.php');
+        $subscriptionurl = new url('/admin/tool/mobile/subscription.php');
         $subject = get_string('limitreachedpushnotifications', 'tool_mobile');
         $devicelimit = self::get_push_notification_device_limit($subscriptiondata);
         $renderable = new push_notification_limit_message(
@@ -147,7 +149,7 @@ class notify_push_notification_limit_to_admins extends \core\task\scheduled_task
             $message = new \core\message\message();
             $message->component = 'tool_mobile';
             $message->name = 'pushlimitreached';
-            $message->userfrom = \core_user::get_noreply_user();
+            $message->userfrom = user::get_noreply_user();
             $message->userto = $recipient;
             $message->subject = $subject;
             $message->fullmessage = $fullmessage;

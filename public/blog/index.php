@@ -20,6 +20,13 @@
  * if a blog id is specified then the latest entries from that blog are shown
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\url;
+use core\user as core_user;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot .'/blog/lib.php');
 require_once($CFG->dirroot .'/blog/locallib.php');
@@ -64,9 +71,9 @@ if ($entryid and !isset($userid)) {
 if (isset($userid) && empty($courseid) && empty($modid)) {
     $context = context_user::instance($userid);
 } else if (!empty($courseid) && $courseid != SITEID) {
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
 } else {
-    $context = context_system::instance();
+    $context = system::instance();
 }
 $PAGE->set_context($context);
 
@@ -89,7 +96,7 @@ if ($CFG->bloglevel == BLOG_GLOBAL_LEVEL) {
     require_login();
     if (isguestuser()) {
         // They must have entered the url manually.
-        throw new \moodle_exception('noguest');
+        throw new moodle_exception('noguest');
     }
 
 } else if ($CFG->bloglevel == BLOG_USER_LEVEL) {
@@ -98,11 +105,11 @@ if ($CFG->bloglevel == BLOG_GLOBAL_LEVEL) {
 
 } else {
     // Weird!
-    throw new \moodle_exception('blogdisable', 'blog');
+    throw new moodle_exception('blogdisable', 'blog');
 }
 
 if (empty($CFG->enableblogs)) {
-    throw new \moodle_exception('blogdisable', 'blog');
+    throw new moodle_exception('blogdisable', 'blog');
 }
 
 list($courseid, $userid) = blog_validate_access($courseid, $modid, $groupid, $entryid, $userid);
@@ -128,7 +135,7 @@ $rsstitle = '';
 if ($CFG->enablerssfeeds) {
     list($thingid, $rsscontext, $filtertype) = blog_rss_get_params($blogheaders['filters']);
     if (empty($rsscontext)) {
-        $rsscontext = context_system::instance();
+        $rsscontext = system::instance();
     }
     $rsstitle = $blogheaders['heading'];
 
@@ -144,7 +151,7 @@ if ($usernode && $courseid != SITEID) {
     if ($courseblogsnode) {
         $courseblogsnode->remove();
     }
-    $blogurl = new moodle_url($PAGE->url);
+    $blogurl = new url($PAGE->url);
     $blognode = $usernode->add(get_string('blogscourse', 'blog'), $blogurl);
     $blognode->make_active();
 }
@@ -154,7 +161,7 @@ if ($courseid != SITEID) {
     echo $OUTPUT->header();
 
     if (!empty($user)) {
-        $backurl = new moodle_url('/user/view.php', ['id' => $user->id, 'course' => $courseid]);
+        $backurl = new url('/user/view.php', ['id' => $user->id, 'course' => $courseid]);
         echo $OUTPUT->single_button($backurl, get_string('back'), 'get', ['class' => 'mb-3']);
 
         $headerinfo = array('heading' => fullname($user), 'user' => $user);

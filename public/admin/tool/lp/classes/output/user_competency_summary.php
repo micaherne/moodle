@@ -24,10 +24,10 @@
 namespace tool_lp\output;
 defined('MOODLE_INTERNAL') || die();
 
-use core_user;
-use renderer_base;
-use renderable;
-use templatable;
+use core\user;
+use core\output\renderer_base;
+use core\output\renderable;
+use core\output\templatable;
 use core_competency\api;
 use core_competency\user_competency;
 use tool_lp\external\user_competency_summary_exporter;
@@ -65,7 +65,7 @@ class user_competency_summary implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         if (!isset($related['user'])) {
-            $related['user'] = core_user::get_user($this->usercompetency->get('userid'));
+            $related['user'] = user::get_user($this->usercompetency->get('userid'));
         }
         if (!isset($related['competency'])) {
             $related['competency'] = $this->usercompetency->get_competency();

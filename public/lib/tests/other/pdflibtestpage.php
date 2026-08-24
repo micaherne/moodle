@@ -22,11 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/pdflib.php');
 
 require_login();
-$context = context_system::instance();
+$context = system::instance();
 require_capability('moodle/site:config', $context);
 
 $getpdf     = optional_param('getpdf', 0, PARAM_INT);
@@ -149,5 +152,5 @@ $PAGE->set_heading('PDF library test');
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading('Press the button to generate test PDF', 2);
-echo $OUTPUT->continue_button(new moodle_url($PAGE->url, array('getpdf' => 1, 'fontfamily' => PDF_FONT_NAME_MAIN)));
+echo $OUTPUT->continue_button(new url($PAGE->url, array('getpdf' => 1, 'fontfamily' => PDF_FONT_NAME_MAIN)));
 echo $OUTPUT->footer();

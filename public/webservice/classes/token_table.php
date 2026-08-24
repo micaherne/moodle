@@ -24,6 +24,11 @@
 
 namespace core_webservice;
 
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/tablelib.php');
@@ -46,7 +51,7 @@ require_once($CFG->dirroot . '/user/lib.php');
     reason: 'Table replaced with a report builder system report',
     mdl: 'MDL-79496',
 )]
-class token_table extends \table_sql {
+class token_table extends sql_table {
 
     /**
      * @var bool $showalltokens Whether or not the user is able to see all tokens.
@@ -72,14 +77,14 @@ class token_table extends \table_sql {
         parent::__construct($id);
 
         // Get the context.
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Can we see tokens created by all users?
         $this->showalltokens = has_capability('moodle/webservice:managealltokens', $context);
         $this->hasviewfullnames = has_capability('moodle/site:viewfullnames', $context);
 
         // List of user identity fields.
-        $this->userextrafields = \core_user\fields::get_identity_fields(\context_system::instance(), false);
+        $this->userextrafields = \core_user\fields::get_identity_fields(system::instance(), false);
 
         // Filter form values.
         $this->filterdata = $filterdata;
@@ -125,14 +130,14 @@ class token_table extends \table_sql {
      * @return string Content for the column
      */
     public function col_operation($data) {
-        $tokenpageurl = new \moodle_url(
+        $tokenpageurl = new url(
             "/admin/webservice/tokens.php",
             [
                 "action" => "delete",
                 "tokenid" => $data->id
             ]
         );
-        return \html_writer::link($tokenpageurl, get_string("delete"));
+        return html_writer::link($tokenpageurl, get_string("delete"));
     }
 
     /**
@@ -178,11 +183,11 @@ class token_table extends \table_sql {
             $identity[] = s($data->$userextrafield);
         }
 
-        $userprofilurl = new \moodle_url('/user/profile.php', ['id' => $data->userid]);
-        $content = \html_writer::link($userprofilurl, fullname($data, $this->hasviewfullnames));
+        $userprofilurl = new url('/user/profile.php', ['id' => $data->userid]);
+        $content = html_writer::link($userprofilurl, fullname($data, $this->hasviewfullnames));
 
         if ($identity) {
-            $content .= \html_writer::div('<small>' . implode(', ', $identity) . '</small>', 'useridentity text-muted');
+            $content .= html_writer::div('<small>' . implode(', ', $identity) . '</small>', 'useridentity text-muted');
         }
 
         // Make up list of capabilities that the user is missing for the given webservice.
@@ -191,14 +196,14 @@ class token_table extends \table_sql {
 
         if ($data->serviceshortname <> MOODLE_OFFICIAL_MOBILE_SERVICE && !is_siteadmin($data->userid)
                 && array_key_exists($data->userid, $usermissingcaps)) {
-            $count = \html_writer::span(count($usermissingcaps[$data->userid]), 'badge bg-danger text-white');
+            $count = html_writer::span(count($usermissingcaps[$data->userid]), 'badge bg-danger text-white');
             $links = array_map(function($capname) {
-                return get_capability_docs_link((object)['name' => $capname]) . \html_writer::div($capname, 'text-muted');
+                return get_capability_docs_link((object)['name' => $capname]) . html_writer::div($capname, 'text-muted');
             }, $usermissingcaps[$data->userid]);
-            $list = \html_writer::alist($links);
+            $list = html_writer::alist($links);
             $help = $OUTPUT->help_icon('missingcaps', 'webservice');
-            $content .= print_collapsible_region(\html_writer::div($list . $help, 'missingcaps'), 'small mt-2',
-                \html_writer::random_id('usermissingcaps'), get_string('usermissingcaps', 'webservice', $count), '', true, true);
+            $content .= print_collapsible_region(html_writer::div($list . $help, 'missingcaps'), 'small mt-2',
+                html_writer::random_id('usermissingcaps'), get_string('usermissingcaps', 'webservice', $count), '', true, true);
         }
 
         return $content;
@@ -231,8 +236,8 @@ class token_table extends \table_sql {
             }
         }
 
-        $creatorprofileurl = new \moodle_url('/user/profile.php', ['id' => $data->creatorid]);
-        return \html_writer::link($creatorprofileurl, fullname((object)$user, $this->hasviewfullnames));
+        $creatorprofileurl = new url('/user/profile.php', ['id' => $data->creatorid]);
+        return html_writer::link($creatorprofileurl, fullname((object)$user, $this->hasviewfullnames));
     }
 
     /**
@@ -242,7 +247,7 @@ class token_table extends \table_sql {
      * @return string
      */
     public function col_servicename($data) {
-        return \html_writer::div(s($data->servicename)) . \html_writer::div(s($data->serviceshortname), 'small text-muted');
+        return html_writer::div(s($data->servicename)) . html_writer::div(s($data->serviceshortname), 'small text-muted');
     }
 
     /**

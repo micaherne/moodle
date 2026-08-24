@@ -22,10 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 $ADMIN->add('reports',
-    new admin_externalpage(
+    new externalpage(
         'reportthemeusage',
         get_string('pluginname', 'report_themeusage'),
         "$CFG->wwwroot/report/themeusage/index.php",

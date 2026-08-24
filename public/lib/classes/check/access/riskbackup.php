@@ -29,6 +29,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
+use core\url;
 
 /**
  * Lists all roles that have the ability to backup user data, as well as users
@@ -52,9 +54,9 @@ class riskbackup extends check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
-        return new \action_link(
-            new \moodle_url('/admin/roles/manage.php'),
+    public function get_action_link(): ?action_link {
+        return new action_link(
+            new url('/admin/roles/manage.php'),
             get_string('manageroles', 'role'));
     }
 

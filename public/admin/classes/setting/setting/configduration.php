@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\exception\coding_exception;
+
 /**
  * Seconds duration setting.
  *
@@ -65,7 +67,7 @@ class configduration extends \core_admin\setting {
      */
     public function set_min_duration(int $duration): void {
         if ($duration < 0) {
-            throw new \coding_exception('The minimum duration must be at least 0.');
+            throw new coding_exception('The minimum duration must be at least 0.');
         }
 
         $this->minduration = $duration;

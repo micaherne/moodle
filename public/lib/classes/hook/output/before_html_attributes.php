@@ -16,6 +16,8 @@
 
 namespace core\hook\output;
 
+use core\output\renderer_base;
+
 /**
  * Class before_html_attributes
  *
@@ -37,7 +39,7 @@ final class before_html_attributes {
      */
     public function __construct(
         /** @var \renderer_base The page renderer */
-        public readonly \renderer_base $renderer,
+        public readonly renderer_base $renderer,
         /** @var array The list of HTML attributes initially on the tag */
         private array $attributes = [],
     ) {

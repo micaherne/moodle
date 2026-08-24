@@ -29,9 +29,9 @@ use mod_h5pactivity\local\report;
 use mod_h5pactivity\local\manager;
 use mod_h5pactivity\local\attempt;
 use core\dml\sql_join;
-use table_sql;
-use moodle_url;
-use html_writer;
+use core_table\sql_table;
+use core\url;
+use core\output\html_writer;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -46,7 +46,7 @@ require_once($CFG->libdir.'/tablelib.php');
  * @since      Moodle 3.9
  * @copyright  2020 Ferran Recio <ferran@moodle.com>
  */
-class participants extends table_sql implements report {
+class participants extends sql_table implements report {
 
     /** @var manager the H5P activity manager instance. */
     private $manager;
@@ -166,7 +166,7 @@ class participants extends table_sql implements report {
             if (empty($score->attemptid)) {
                 return $scaled;
             } else {
-                $url = new moodle_url('/mod/h5pactivity/report.php', ['a' => $cm->instance, 'attemptid' => $score->attemptid]);
+                $url = new url('/mod/h5pactivity/report.php', ['a' => $cm->instance, 'attemptid' => $score->attemptid]);
                 return html_writer::link($url, $scaled);
             }
         }
@@ -183,7 +183,7 @@ class participants extends table_sql implements report {
         $cm = $this->manager->get_coursemodule();
         if (isset($this->count[$user->id])) {
             $msg = get_string('review_user_attempts', 'mod_h5pactivity', $this->count[$user->id]);
-            $url = new moodle_url('/mod/h5pactivity/report.php', ['a' => $cm->instance, 'userid' => $user->id]);
+            $url = new url('/mod/h5pactivity/report.php', ['a' => $cm->instance, 'userid' => $user->id]);
             return html_writer::link($url, $msg);
         }
         return '';

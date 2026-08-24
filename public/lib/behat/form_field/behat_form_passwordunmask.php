@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use Facebook\WebDriver\WebDriverKeys;
+
 defined('MOODLE_INTERNAL') || die();
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
@@ -63,6 +65,6 @@ class behat_form_passwordunmask extends behat_form_text {
         $this->wait_for_pending_js();
 
         // Press enter key after setting password to save.
-        behat_base::type_keys($this->session, [behat_keys::ENTER]);
+        behat_base::type_keys($this->session, [WebDriverKeys::ENTER]);
     }
 }

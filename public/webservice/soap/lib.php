@@ -31,6 +31,8 @@
  * @copyright  2010 Jerome Mouneyrac
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+
 class webservice_soap_client {
 
     /** @var moodle_url The server url. */
@@ -50,7 +52,7 @@ class webservice_soap_client {
      * @param array $options PHP SOAP client options - see php.net
      */
     public function __construct($serverurl, $token = null, ?array $options = null) {
-        $this->serverurl = new moodle_url($serverurl);
+        $this->serverurl = new url($serverurl);
         $this->token = $token ?: $this->serverurl->get_param('wstoken');
         $this->options = $options ?: array();
     }

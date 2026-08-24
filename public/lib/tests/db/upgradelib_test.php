@@ -18,6 +18,11 @@
 // and this is more correct than alternatives.
 namespace core\db;
 
+use core\context\block;
+use core\context\system;
+use core\context\user;
+use core\context_helper;
+
 /**
  * Unit tests for the lib/db/upgradelib.php library.
  *
@@ -197,7 +202,7 @@ final class upgradelib_test extends \advanced_testcase {
 
             // Fetch the user details.
             $dashboard = $DB->get_record('my_pages', ['id' => $dashboardid]);
-            $usercontext = \context_user::instance($dashboard->userid);
+            $usercontext = user::instance($dashboard->userid);
 
             $this->assertEquals($usercontext->id, $theblock->parentcontextid);
         }
@@ -362,13 +367,13 @@ final class upgradelib_test extends \advanced_testcase {
         }
 
         // Create missing contexts.
-        \context_helper::create_instances(CONTEXT_BLOCK);
+        context_helper::create_instances(CONTEXT_BLOCK);
 
         // Ensure that other related test data is present.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         foreach ($unchanged as $block) {
             // Get contexts.
-            $unchangedcontexts[] = \context_block::instance($block->id);
+            $unchangedcontexts[] = block::instance($block->id);
 
             // Create a block position.
             $DB->insert_record('block_positions', [
@@ -383,7 +388,7 @@ final class upgradelib_test extends \advanced_testcase {
 
         foreach ($deleted as $block) {
             // Get contexts.
-            $deletedcontexts[] = \context_block::instance($block->id);
+            $deletedcontexts[] = block::instance($block->id);
 
             // Create a block position.
             $DB->insert_record('block_positions', [
@@ -456,7 +461,7 @@ final class upgradelib_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->preventResetByRollback();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         $dashboards = [];
         $otherblocknames = [
@@ -531,7 +536,7 @@ final class upgradelib_test extends \advanced_testcase {
 
             // Fetch the my page and user details.
             $dashboard = $DB->get_record('my_pages', ['id' => $original->subpagepattern]);
-            $usercontext = \context_user::instance($dashboard->userid);
+            $usercontext = user::instance($dashboard->userid);
 
             // Only the contextid should be updated to the relevant user's context.
             // No other changes are expected.

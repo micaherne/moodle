@@ -24,6 +24,11 @@
 
 namespace core_search;
 
+use core\context;
+use core\context_helper;
+use core\exception\coding_exception;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -109,7 +114,7 @@ abstract class base_mod extends base {
      * @return array Array with SQL and parameters; both null if no need to query
      * @throws \coding_exception If called with invalid params
      */
-    protected function get_context_restriction_sql(?\context $context, $modname, $modtable,
+    protected function get_context_restriction_sql(?context $context, $modname, $modtable,
             $paramtype = SQL_PARAMS_QM) {
         global $DB;
 
@@ -135,7 +140,7 @@ abstract class base_mod extends base {
                 $key3 = 'gcrs2';
                 break;
             default:
-                throw new \coding_exception('Unexpected $paramtype: ' . $paramtype);
+                throw new coding_exception('Unexpected $paramtype: ' . $paramtype);
         }
 
         $params = [];
@@ -186,7 +191,7 @@ abstract class base_mod extends base {
                 return [null, null];
 
             default:
-                throw new \coding_exception('Unexpected contextlevel: ' . $context->contextlevel);
+                throw new coding_exception('Unexpected contextlevel: ' . $context->contextlevel);
         }
 
         return [$sql, $params];
@@ -223,9 +228,9 @@ abstract class base_mod extends base {
 
         list ($extrajoins, $dborder) = $this->get_contexts_to_reindex_extra_sql();
         $contexts = [];
-        $selectcolumns = \context_helper::get_preload_record_columns_sql('x');
+        $selectcolumns = context_helper::get_preload_record_columns_sql('x');
         $groupbycolumns = '';
-        foreach (\context_helper::get_preload_record_columns('x') as $column => $thing) {
+        foreach (context_helper::get_preload_record_columns('x') as $column => $thing) {
             if ($groupbycolumns !== '') {
                 $groupbycolumns .= ',';
             }
@@ -241,8 +246,8 @@ abstract class base_mod extends base {
               ORDER BY $dborder", [CONTEXT_MODULE, $this->get_module_name()]);
         return new \core\dml\recordset_walk($rs, function($rec) {
             $id = $rec->ctxid;
-            \context_helper::preload_from_record($rec);
-            return \context::instance_by_id($id);
+            context_helper::preload_from_record($rec);
+            return context::instance_by_id($id);
         });
     }
 
@@ -283,7 +288,7 @@ abstract class base_mod extends base {
      * @param \cm_info $cm
      * @return bool True to restrict by group
      */
-    public function restrict_cm_access_by_group(\cm_info $cm) {
+    public function restrict_cm_access_by_group(cm_info $cm) {
         return $cm->effectivegroupmode == SEPARATEGROUPS;
     }
 

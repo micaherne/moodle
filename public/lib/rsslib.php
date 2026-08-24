@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -84,7 +86,7 @@ function rss_get_url($contextid, $userid, $componentname, $additionalargs) {
     }
     $usertoken = rss_get_token($userid);
     $url = '/rss/file.php';
-    return moodle_url::make_file_url($url, '/'.$contextid.'/'.$usertoken.'/'.$componentname.'/'.$additionalargs.'/rss.xml');
+    return url::make_file_url($url, '/'.$contextid.'/'.$usertoken.'/'.$componentname.'/'.$additionalargs.'/rss.xml');
 }
 
 /**

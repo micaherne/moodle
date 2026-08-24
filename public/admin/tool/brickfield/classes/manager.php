@@ -16,6 +16,10 @@
 
 namespace tool_brickfield;
 
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+
 /**
  * Class manager
  * @package tool_brickfield
@@ -126,7 +130,7 @@ class manager {
      *
      * @return \moodle_url
      */
-    public static function registration_url(): \moodle_url {
+    public static function registration_url(): url {
         return accessibility::get_plugin_url('registration.php');
     }
 
@@ -140,8 +144,8 @@ class manager {
      */
     public static function registration_message(): string {
         $firstline = get_string('notregistered', self::PLUGINNAME);
-        if (has_capability('moodle/site:config', \context_system::instance())) {
-            $secondline = \html_writer::link(self::registration_url(), get_string('registernow', self::PLUGINNAME));
+        if (has_capability('moodle/site:config', system::instance())) {
+            $secondline = html_writer::link(self::registration_url(), get_string('registernow', self::PLUGINNAME));
         } else {
             $secondline = get_string('contactadmin', self::PLUGINNAME);
         }

@@ -23,13 +23,17 @@
  */
 
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/lib.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
 
 require_login(null, false);
-require_capability('moodle/site:config', context_system::instance());
+require_capability('moodle/site:config', system::instance());
 
 $returnurl = get_local_referer(false);
 
@@ -48,7 +52,7 @@ if (empty($action) || !in_array($action, \tool_mfa\plugininfo\factor::get_factor
 
 require_sesskey();
 
-$class = \core_plugin_manager::resolve_plugininfo_class('factor');
+$class = plugin_manager::resolve_plugininfo_class('factor');
 
 switch ($action) {
     case 'disable':

@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -52,7 +54,7 @@ abstract class core_backup_backup_restore_base_testcase extends advanced_testcas
     protected function perform_backup($course): string {
         global $CFG, $USER;
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         // Start backup process.
         $bc = new backup_controller(backup::TYPE_1COURSE, $course->id, backup::FORMAT_MOODLE,

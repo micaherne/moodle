@@ -22,6 +22,14 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\coursecat;
+use core\exception\moodle_exception;
+use core\navigation\navigation_cache;
+use core\navigation\navigation_node;
+use core\output\single_button;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../config.php');
@@ -32,24 +40,24 @@ $id = required_param('id', PARAM_INT); // Course ID.
 $delete = optional_param('delete', '', PARAM_ALPHANUM); // Confirmation hash.
 
 $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
-$coursecontext = context_course::instance($course->id);
+$coursecontext = course::instance($course->id);
 
 require_login();
 
 if ($SITE->id == $course->id || !can_delete_course($id)) {
     // Can not delete frontpage or don't have permission to delete the course.
-    throw new \moodle_exception('cannotdeletecourse');
+    throw new moodle_exception('cannotdeletecourse');
 }
 
-$categorycontext = context_coursecat::instance($course->category);
+$categorycontext = coursecat::instance($course->category);
 $PAGE->set_url('/course/delete.php', array('id' => $id));
 $PAGE->set_context($categorycontext);
 $PAGE->set_pagelayout('admin');
-navigation_node::override_active_url(new moodle_url('/course/management.php', array('categoryid'=>$course->category)));
+navigation_node::override_active_url(new url('/course/management.php', array('categoryid'=>$course->category)));
 
 $courseshortname = format_string($course->shortname, true, array('context' => $coursecontext));
 $coursefullname = format_string($course->fullname, true, array('context' => $coursecontext));
-$categoryurl = new moodle_url('/course/management.php', array('categoryid' => $course->category));
+$categoryurl = new url('/course/management.php', array('categoryid' => $course->category));
 
 // Check if we've got confirmation.
 if ($delete === md5($course->timemodified)) {
@@ -107,7 +115,7 @@ if (!async_helper::is_async_pending($id, 'course', 'backup')) {
     $strdeletecoursecheck = get_string('deletecoursecheck');
     $message = "{$strdeletecoursecheck}<br /><br />{$coursefullname} ({$courseshortname})";
 
-    $continueurl = new moodle_url('/course/delete.php', array('id' => $course->id, 'delete' => md5($course->timemodified)));
+    $continueurl = new url('/course/delete.php', array('id' => $course->id, 'delete' => md5($course->timemodified)));
     $continuebutton = new single_button($continueurl, get_string('delete'), 'post');
     echo $OUTPUT->confirm($message, $continuebutton, $categoryurl);
 } else {

@@ -24,6 +24,10 @@
 
 namespace core\event;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -50,7 +54,7 @@ class course_completed extends base {
             array(
                 'objectid' => $completion->id,
                 'relateduserid' => $completion->userid,
-                'context' => \context_course::instance($completion->course),
+                'context' => course::instance($completion->course),
                 'courseid' => $completion->course,
             )
         );
@@ -91,7 +95,7 @@ class course_completed extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/completion/index.php', array('course' => $this->courseid));
+        return new url('/report/completion/index.php', array('course' => $this->courseid));
     }
 
     /**
@@ -104,7 +108,7 @@ class course_completed extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

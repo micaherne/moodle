@@ -16,6 +16,8 @@
 
 namespace core\hook\output;
 
+use core\output\renderer_base;
+
 /**
  * Hook to allow subscribers to add HTML content after the main region content has been generated.
  *
@@ -36,7 +38,7 @@ final class after_standard_main_region_html_generation {
      */
     public function __construct(
         /** @var \renderer_base The page renderer object */
-        public readonly \renderer_base $renderer,
+        public readonly renderer_base $renderer,
         /** @var string The collected output */
         private string $output = '',
     ) {

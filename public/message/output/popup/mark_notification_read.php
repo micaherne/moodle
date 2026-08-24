@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 require_login(null, false);
@@ -36,9 +38,9 @@ $notification = $DB->get_record('notifications', array('id' => $notificationid))
 
 // If the redirect URL after filtering is empty, or it was never passed, then redirect to the notification page.
 if (!empty($notification->contexturl)) {
-    $redirecturl = new moodle_url($notification->contexturl);
+    $redirecturl = new url($notification->contexturl);
 } else {
-    $redirecturl = new moodle_url('/message/output/popup/notifications.php', ['notificationid' => $notificationid]);
+    $redirecturl = new url('/message/output/popup/notifications.php', ['notificationid' => $notificationid]);
 }
 
 // Check notification belongs to this user.

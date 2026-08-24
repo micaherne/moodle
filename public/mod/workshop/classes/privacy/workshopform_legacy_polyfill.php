@@ -25,6 +25,8 @@
 
 namespace mod_workshop\privacy;
 
+use core\context;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -52,7 +54,7 @@ trait workshopform_legacy_polyfill {
      * @param array $subcontext Subcontext within the context to export to
      * @param int $assessmentid ID of the assessment
      */
-    public static function export_assessment_form(\stdClass $user, \context $context, array $subcontext, int $assessmentid) {
+    public static function export_assessment_form(\stdClass $user, context $context, array $subcontext, int $assessmentid) {
         return static::_export_assessment_form($user, $context, $subcontext, $assessmentid);
     }
 }

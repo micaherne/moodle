@@ -25,6 +25,7 @@ namespace repository_nextcloud;
 
 use core\oauth2\client;
 use core\oauth2\rest;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -78,7 +79,7 @@ class ocs_client extends rest {
         if ($ocsendpoint === false) {
             throw new configuration_exception('Endpoint ocs_endpoint not defined.');
         }
-        $this->ocsendpoint = new \moodle_url($ocsendpoint);
+        $this->ocsendpoint = new url($ocsendpoint);
         if (empty($this->ocsendpoint->get_param('format'))) {
             $this->ocsendpoint->params(array('format' => 'xml'));
         }

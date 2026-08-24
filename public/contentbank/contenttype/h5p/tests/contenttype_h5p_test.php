@@ -16,6 +16,9 @@
 
 namespace contenttype_h5p;
 
+use core\context\course;
+use core\context\system;
+
 /**
  * Test for H5P content bank plugin.
  *
@@ -34,7 +37,7 @@ final class contenttype_h5p_test extends \advanced_testcase {
         global $CFG, $USER, $DB;
 
         $this->resetAfterTest();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         // Create users.
         $roleid = $DB->get_field('role', 'id', array('shortname' => 'manager'));
@@ -76,7 +79,7 @@ final class contenttype_h5p_test extends \advanced_testcase {
     public function test_can_upload(): void {
         $this->resetAfterTest();
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $systemtype = new \contenttype_h5p\contenttype($systemcontext);
 
         // Admins can upload.
@@ -86,7 +89,7 @@ final class contenttype_h5p_test extends \advanced_testcase {
         // Teacher can upload in the course but not at system level.
         $course = $this->getDataGenerator()->create_course();
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $coursetype = new \contenttype_h5p\contenttype($coursecontext);
         $this->setUser($teacher);
         $this->assertTrue($coursetype->can_upload());
@@ -108,7 +111,7 @@ final class contenttype_h5p_test extends \advanced_testcase {
         global $CFG;
 
         $this->resetAfterTest();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $this->setAdminUser();
         $contenttype = new contenttype($systemcontext);
 
@@ -150,7 +153,7 @@ final class contenttype_h5p_test extends \advanced_testcase {
         global $CFG;
 
         $this->resetAfterTest();
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $this->setAdminUser();
         $contenttype = new contenttype($systemcontext);
 

@@ -24,6 +24,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -126,7 +128,7 @@ class completion_criteria_role extends completion_criteria {
         if (!$role) {
             return '['.get_string('roleidnotfound', 'completion', $this->role).']';
         }
-        return role_get_name($role, context_course::instance($this->course));
+        return role_get_name($role, course::instance($this->course));
     }
 
     /**

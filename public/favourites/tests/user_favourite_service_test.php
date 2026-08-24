@@ -16,6 +16,9 @@
 
 namespace core_favourites;
 
+use core\context\course;
+use core\context\user;
+use core\exception\moodle_exception;
 use core_favourites\local\entity\favourite;
 
 /**
@@ -36,13 +39,13 @@ final class user_favourite_service_test extends \advanced_testcase {
     // Basic setup stuff to be reused in most tests.
     protected function setup_users_and_courses() {
         $user1 = self::getDataGenerator()->create_user();
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
         $user2 = self::getDataGenerator()->create_user();
-        $user2context = \context_user::instance($user2->id);
+        $user2context = user::instance($user2->id);
         $course1 = self::getDataGenerator()->create_course();
         $course2 = self::getDataGenerator()->create_course();
-        $course1context = \context_course::instance($course1->id);
-        $course2context = \context_course::instance($course2->id);
+        $course1context = course::instance($course1->id);
+        $course2context = course::instance($course2->id);
         return [$user1context, $user2context, $course1context, $course2context];
     }
 
@@ -68,7 +71,7 @@ final class user_favourite_service_test extends \advanced_testcase {
                 // Check the objects for the unique key.
                 foreach ($mockstore as $item) {
                     if ($item->uniquekey == $key) {
-                        throw new \moodle_exception('Favourite already exists');
+                        throw new moodle_exception('Favourite already exists');
                     }
                 }
                 $index = count($mockstore);     // Integer index.
@@ -379,7 +382,7 @@ final class user_favourite_service_test extends \advanced_testcase {
         $this->assertFalse($repo->exists($fav1->id));
 
         // Try to delete a favourite which we know doesn't exist.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $service->delete_favourite('core_course', 'course', $course1context->instanceid, $course1context);
     }
 

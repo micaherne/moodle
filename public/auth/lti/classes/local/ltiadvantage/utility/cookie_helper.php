@@ -16,6 +16,7 @@
 
 namespace auth_lti\local\ltiadvantage\utility;
 use core\session\utility\cookie_helper as core_cookie_helper;
+use core\url;
 
 /**
  * Helper class providing utils dealing with cookies in LTI, particularly 3rd party cookies.
@@ -68,7 +69,7 @@ final class cookie_helper {
      * @param \moodle_url $pageurl the URL of the page making the check, used to redirect back to after setting test cookies.
      * @return void
      */
-    public static function do_cookie_check(\moodle_url $pageurl): void {
+    public static function do_cookie_check(url $pageurl): void {
         global $_COOKIE, $SESSION, $CFG;
         $cookiecheck1 = optional_param('cookiecheck1', null, PARAM_INT);
         $cookiecheck2 = optional_param('cookiecheck2', null, PARAM_INT);

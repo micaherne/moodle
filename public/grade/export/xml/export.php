@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\exception\moodle_exception;
+
 require_once '../../../config.php';
 require_once $CFG->dirroot.'/grade/export/lib.php';
 require_once 'grade_export_xml.php';
@@ -23,11 +26,11 @@ $id                = required_param('id', PARAM_INT); // course id
 $PAGE->set_url('/grade/export/xml/export.php', array('id'=>$id));
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($id);
+$context = course::instance($id);
 $groupid = groups_get_course_group($course, true);
 
 require_capability('moodle/grade:export', $context);
@@ -45,7 +48,7 @@ if (!empty($CFG->gradepublishing) && !empty($key)) {
 
 if (groups_get_course_groupmode($COURSE) == SEPARATEGROUPS and !has_capability('moodle/site:accessallgroups', $context)) {
     if (!groups_is_member($groupid, $USER->id)) {
-        throw new \moodle_exception('cannotaccessgroup', 'grades');
+        throw new moodle_exception('cannotaccessgroup', 'grades');
     }
 }
 $mform = new grade_export_form(null, array('publishing' => true, 'simpleui' => true, 'multipledisplaytypes' => false,

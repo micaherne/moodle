@@ -16,6 +16,11 @@
 
 namespace tool_monitor;
 
+use core\context\course;
+use core\context\module;
+use core\context\user;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -132,7 +137,7 @@ final class eventobservers_test extends \advanced_testcase {
         // Fire a bunch of events.
         // Trigger a bunch of other events.
         $eventparams = array(
-            'context' => \context_course::instance($course->id)
+            'context' => course::instance($course->id)
         );
         for ($i = 0; $i < 5; $i++) {
             \core\event\course_viewed::create($eventparams)->trigger();
@@ -287,7 +292,7 @@ final class eventobservers_test extends \advanced_testcase {
 
         // Let us trigger events.
         $params = [
-            'context' => \context_module::instance($assign->cmid),
+            'context' => module::instance($assign->cmid),
             'objectid' => $assign->id,
         ];
         for ($i = 0; $i < 5; $i++) {
@@ -451,7 +456,7 @@ final class eventobservers_test extends \advanced_testcase {
         // Generate data.
         $course = $this->getDataGenerator()->create_course(['fullname' => 'Observed course', 'shortname' => 'obscourse']);
         $toolgenerator = $this->getDataGenerator()->get_plugin_generator('tool_monitor');
-        $context = \context_user::instance($USER->id, IGNORE_MISSING);
+        $context = user::instance($USER->id, IGNORE_MISSING);
 
         // Creating assign.
         $cm = new \stdClass();
@@ -487,7 +492,7 @@ final class eventobservers_test extends \advanced_testcase {
 
         // Now let us trigger the event.
         $params = [
-            'context' => \context_module::instance($assign->cmid),
+            'context' => module::instance($assign->cmid),
             'objectid' => $assign->id,
         ];
 
@@ -497,7 +502,7 @@ final class eventobservers_test extends \advanced_testcase {
         $msgs = $msgsink->get_messages();
         $msg = array_pop($msgs);
 
-        $modurl = new \moodle_url('/mod/assign/view.php', ['id' => $assign->cmid]);
+        $modurl = new url('/mod/assign/view.php', ['id' => $assign->cmid]);
 
         $this->assertMatchesRegularExpression('~<h2>.*' . preg_quote($event->get_url()->out(), '~') . '.*</h2>~',
             $msg->fullmessagehtml);

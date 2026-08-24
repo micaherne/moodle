@@ -16,6 +16,8 @@
 
 namespace auth_db;
 
+use core\output\progress_trace\null_progress_trace;
+
 /**
  * External database auth sync tests, this also tests adodb drivers
  * that are matching our four supported Moodle database drivers.
@@ -213,7 +215,7 @@ final class db_test extends \advanced_testcase {
 
         $this->assertCount(2, $DB->get_records('user'));
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         // Sync users and make sure that two events user_created werer triggered.
         $sink = $this->redirectEvents();
@@ -474,7 +476,7 @@ final class db_test extends \advanced_testcase {
         $extdbuser3 = (object)array('name'=>'u3', 'pass'=>'heslo', 'email'=>'u3@example.com',
                 'lastname' => 'user<script>alert(1);</script>xss');
         $extdbuser3->id = $DB->insert_record('auth_db_users', $extdbuser3);
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         // Let's test user sync make sure still works as expected..
         $auth->sync_users($trace, true);
@@ -520,7 +522,7 @@ final class db_test extends \advanced_testcase {
         }
 
         // Sync to moodle.
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
         $auth->sync_users($trace, true);
 
         // Check user is there.

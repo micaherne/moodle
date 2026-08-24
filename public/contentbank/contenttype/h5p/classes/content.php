@@ -24,6 +24,8 @@
 
 namespace contenttype_h5p;
 
+use core\context;
+use core\exception\moodle_exception;
 use core\notification;
 use core_h5p\factory;
 
@@ -65,7 +67,7 @@ class content extends \core_contentbank\content {
                 // capability. Reasons for contents without a proper H5P entry in DB:
                 // - Invalid H5P package (it won't be never deployed).
                 // - Disabled content-type library (it can't be deployed so there is no way to know the mainlibraryid).
-                $context = \context::instance_by_id($this->content->contextid);
+                $context = context::instance_by_id($this->content->contextid);
                 if (!has_capability('moodle/contentbank:manageanycontent', $context)) {
                     return false;
                 }
@@ -99,9 +101,9 @@ class content extends \core_contentbank\content {
                 notification::error($error->message);
             }
             if (empty($errors) || count($errors) > 1) {
-                throw new \moodle_exception('notvalidpackage', 'h5p');
+                throw new moodle_exception('notvalidpackage', 'h5p');
             }
-            throw new \moodle_exception($errors[0]->code, 'h5p');
+            throw new moodle_exception($errors[0]->code, 'h5p');
         }
         return parent::import_file($file);
     }

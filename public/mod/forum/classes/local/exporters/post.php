@@ -32,9 +32,9 @@ use mod_forum\local\exporters\author as author_exporter;
 use mod_forum\local\factories\exporter as exporter_factory;
 use core\external\exporter;
 use core_files\external\stored_file_exporter;
-use context;
+use core\context;
 use core_tag_tag;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');

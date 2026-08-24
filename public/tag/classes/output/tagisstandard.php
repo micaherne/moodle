@@ -24,7 +24,8 @@
 
 namespace core_tag\output;
 
-use context_system;
+use core\context\system;
+use core\output\renderer_base;
 use core_tag_tag;
 
 /**
@@ -42,7 +43,7 @@ class tagisstandard extends \core\output\inplace_editable {
      * @param \stdClass|core_tag_tag $tag
      */
     public function __construct($tag) {
-        $editable = has_capability('moodle/tag:manage', context_system::instance());
+        $editable = has_capability('moodle/tag:manage', system::instance());
         $value = (int)(bool)$tag->isstandard;
 
         parent::__construct('core_tag', 'tagisstandard', $tag->id, $editable, $value, $value);
@@ -55,7 +56,7 @@ class tagisstandard extends \core\output\inplace_editable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         if ($this->value) {
             $this->edithint = get_string('settypedefault', 'core_tag');
             $this->displayvalue = $output->pix_icon('i/checked', $this->edithint);
@@ -75,7 +76,7 @@ class tagisstandard extends \core\output\inplace_editable {
      * @return \self
      */
     public static function update($itemid, $newvalue) {
-        require_capability('moodle/tag:manage', context_system::instance());
+        require_capability('moodle/tag:manage', system::instance());
         $tag = core_tag_tag::get($itemid, '*', MUST_EXIST);
         $newvalue = (int)clean_param($newvalue, PARAM_BOOL);
         $tag->update(array('isstandard' => $newvalue));

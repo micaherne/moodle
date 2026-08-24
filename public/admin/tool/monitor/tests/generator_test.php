@@ -16,6 +16,8 @@
 
 namespace tool_monitor;
 
+use core\context\system;
+
 /**
  * PHPUnit data generator test case.
  *
@@ -92,7 +94,7 @@ final class generator_test extends \advanced_testcase {
     public function test_create_event_entries(): void {
         $this->setAdminUser();
         $this->resetAfterTest(true);
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Default data generator values.
         $monitorgenerator = $this->getDataGenerator()->get_plugin_generator('tool_monitor');

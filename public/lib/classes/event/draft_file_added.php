@@ -16,6 +16,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 /**
  * draft_file_added
  *
@@ -60,28 +62,28 @@ class draft_file_added extends base {
         parent::validate_data();
 
         if (!isset($this->other['itemid'])) {
-            throw new \coding_exception('The \'itemid\' must be set in other.');
+            throw new coding_exception('The \'itemid\' must be set in other.');
         }
 
         if (!isset($this->other['filename'])) {
-            throw new \coding_exception('The \'filename\' value must be set in other.');
+            throw new coding_exception('The \'filename\' value must be set in other.');
         }
 
         if (!isset($this->other['filesize'])) {
-            throw new \coding_exception('The \'filesize\' value must be set in other.');
+            throw new coding_exception('The \'filesize\' value must be set in other.');
         }
 
         if (!isset($this->other['filepath'])) {
-            throw new \coding_exception('The \'filepath\' value must be set in other.');
+            throw new coding_exception('The \'filepath\' value must be set in other.');
         }
 
         if (!isset($this->other['contenthash'])) {
-            throw new \coding_exception('The \'contenthash\' value must be set in other.');
+            throw new coding_exception('The \'contenthash\' value must be set in other.');
         }
 
         if (isset($this->data['other']['avscantime'])) {
             if (!is_numeric($this->data['other']['avscantime'])) {
-                throw new \coding_exception('If given, \'avscantime\' in other must be a number.');
+                throw new coding_exception('If given, \'avscantime\' in other must be a number.');
             }
             $this->data['other']['avscantime'] = (float) $this->data['other']['avscantime'];
         }

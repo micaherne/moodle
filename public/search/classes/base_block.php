@@ -26,6 +26,13 @@
 
 namespace core_search;
 
+use core\context;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\url;
+use core_cache\cache;
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -106,7 +113,7 @@ abstract class base_block extends base {
      * @param \context|null $context Context to find blocks within
      * @return false|\moodle_recordset|null
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
 
         // Get context restrictions.
@@ -157,19 +164,19 @@ abstract class base_block extends base {
                     $instance->pagetypepattern, DEBUG_DEVELOPER);
             $modinfo = get_fast_modinfo($courseid);
             $cm = $modinfo->get_cm($instance->cmid);
-            return new \moodle_url($cm->url, null, $anchor);
+            return new url($cm->url, null, $anchor);
         } else {
             // The block is at course level. Let's check the page type, although in practice we
             // currently only support the course main page.
             if ($instance->pagetypepattern === '*' || $instance->pagetypepattern === 'course-*' ||
                     preg_match('~^course-view-(.*)$~', $instance->pagetypepattern)) {
-                return new \moodle_url('/course/view.php', ['id' => $courseid], $anchor);
+                return new url('/course/view.php', ['id' => $courseid], $anchor);
             } else if ($instance->pagetypepattern === 'site-index') {
-                return new \moodle_url('/', ['redirect' => 0], $anchor);
+                return new url('/', ['redirect' => 0], $anchor);
             } else {
                 debugging('Unexpected page type for block ' . $blockinstanceid . ': ' .
                         $instance->pagetypepattern, DEBUG_DEVELOPER);
-                return new \moodle_url('/course/view.php', ['id' => $courseid], $anchor);
+                return new url('/course/view.php', ['id' => $courseid], $anchor);
             }
         }
     }
@@ -239,7 +246,7 @@ abstract class base_block extends base {
     protected function get_block_instance($id, $strictness = MUST_EXIST) {
         global $DB;
 
-        $cache = \cache::make_from_params(\cache_store::MODE_REQUEST, 'core_search',
+        $cache = cache::make_from_params(store::MODE_REQUEST, 'core_search',
                 self::CACHE_INSTANCES, [], ['simplekeys' => true]);
         $id = (int)$id;
         $instance = $cache->get($id);
@@ -263,7 +270,7 @@ abstract class base_block extends base {
      * replaced with cache_helper::purge_all) if MDL-59427 is fixed.
      */
     public static function clear_static() {
-        \cache::make_from_params(\cache_store::MODE_REQUEST, 'core_search',
+        cache::make_from_params(store::MODE_REQUEST, 'core_search',
                 self::CACHE_INSTANCES, [], ['simplekeys' => true])->purge();
     }
 
@@ -287,7 +294,7 @@ abstract class base_block extends base {
      * @return array Array with SQL and parameters
      * @throws \coding_exception If called with invalid params
      */
-    protected function get_context_restriction_sql(?\context $context = null, $blocktable = 'bi',
+    protected function get_context_restriction_sql(?context $context = null, $blocktable = 'bi',
             $paramtype = SQL_PARAMS_QM) {
         global $DB;
 
@@ -309,7 +316,7 @@ abstract class base_block extends base {
                 $key2 = 'gcrs1';
                 break;
             default:
-                throw new \coding_exception('Unexpected $paramtype: ' . $paramtype);
+                throw new coding_exception('Unexpected $paramtype: ' . $paramtype);
         }
 
         $params = [];
@@ -338,7 +345,7 @@ abstract class base_block extends base {
                 break;
 
             default:
-                throw new \coding_exception('Unexpected contextlevel: ' . $context->contextlevel);
+                throw new coding_exception('Unexpected contextlevel: ' . $context->contextlevel);
         }
 
         return [$sql, $params];
@@ -375,9 +382,9 @@ abstract class base_block extends base {
 
         list ($extrajoins, $dborder) = $this->get_contexts_to_reindex_extra_sql();
         $contexts = [];
-        $selectcolumns = \context_helper::get_preload_record_columns_sql('x');
+        $selectcolumns = context_helper::get_preload_record_columns_sql('x');
         $groupbycolumns = '';
-        foreach (\context_helper::get_preload_record_columns('x') as $column => $thing) {
+        foreach (context_helper::get_preload_record_columns('x') as $column => $thing) {
             if ($groupbycolumns !== '') {
                 $groupbycolumns .= ',';
             }
@@ -394,8 +401,8 @@ abstract class base_block extends base {
               ORDER BY $dborder", [CONTEXT_BLOCK, $this->get_block_name(), CONTEXT_COURSE]);
         return new \core\dml\recordset_walk($rs, function($rec) {
             $id = $rec->ctxid;
-            \context_helper::preload_from_record($rec);
-            return \context::instance_by_id($id);
+            context_helper::preload_from_record($rec);
+            return context::instance_by_id($id);
         });
     }
 

@@ -24,6 +24,8 @@
 
 namespace core_availability;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -189,7 +191,7 @@ abstract class tree_node {
      */
     public function filter_user_list(array $users, $not,
             \core_availability\info $info, capability_checker $checker) {
-        throw new \coding_exception('Not implemented (do not call unless '.
+        throw new coding_exception('Not implemented (do not call unless '.
                 'is_applied_to_user_lists is true)');
     }
 
@@ -222,7 +224,7 @@ abstract class tree_node {
      */
     public function get_user_list_sql($not, \core_availability\info $info, $onlyactive) {
         if (!$this->is_applied_to_user_lists()) {
-            throw new \coding_exception('Not implemented (do not call unless '.
+            throw new coding_exception('Not implemented (do not call unless '.
                     'is_applied_to_user_lists is true)');
         }
 

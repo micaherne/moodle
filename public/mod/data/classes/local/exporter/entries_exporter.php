@@ -16,8 +16,8 @@
 
 namespace mod_data\local\exporter;
 
-use file_serving_exception;
-use moodle_exception;
+use core\exception\file_serving_exception;
+use core\exception\moodle_exception;
 use zip_archive;
 
 /**

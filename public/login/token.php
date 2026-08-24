@@ -21,6 +21,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 define('AJAX_SCRIPT', true);
 define('REQUIRE_CORRECT_ACCESS', true);
 define('NO_MOODLE_COOKIES', true);
@@ -55,7 +59,7 @@ if (\core\di::get(\core\authentication::class)->is_restored_user($username)) {
     throw new moodle_exception('restoredaccountresetpassword', 'webservice');
 }
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 
 $reason = null;
 $user = authenticate_user_login($username, $password, false, $reason, false);

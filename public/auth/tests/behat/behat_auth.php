@@ -26,6 +26,8 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
+use core\url;
+
 require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
 
 /**
@@ -46,7 +48,7 @@ class behat_auth extends behat_base {
      * @param string $username the user to log in as.
      * @param moodle_url|null $wantsurl optional, URL to go to after logging in.
      */
-    public function i_log_in_as(string $username, ?moodle_url $wantsurl = null) {
+    public function i_log_in_as(string $username, ?url $wantsurl = null) {
         if ($this->running_javascript()) {
             $this->execute_script("window.globalAbortController?.abort();");
         }
@@ -57,7 +59,7 @@ class behat_auth extends behat_base {
             return;
         }
 
-        $loginurl = new moodle_url('/auth/tests/behat/login.php', [
+        $loginurl = new url('/auth/tests/behat/login.php', [
             'username' => $username,
         ]);
         if ($wantsurl !== null) {
@@ -75,6 +77,6 @@ class behat_auth extends behat_base {
      * @Given I am not logged in
      */
     public function i_log_out() {
-        $this->execute('behat_general::i_visit', [new moodle_url('/auth/tests/behat/logout.php')]);
+        $this->execute('behat_general::i_visit', [new url('/auth/tests/behat/logout.php')]);
     }
 }

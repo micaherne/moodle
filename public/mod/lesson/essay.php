@@ -23,6 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\user_picture;
+use core\url;
+use core_table\output\html_table;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 require_once($CFG->dirroot.'/mod/lesson/pagetypes/essay.php');
@@ -37,10 +44,10 @@ $dblesson = $DB->get_record('lesson', array('id' => $cm->instance), '*', MUST_EX
 $lesson = new lesson($dblesson);
 
 require_login($course, false, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/lesson:grade', $context);
 
-$url = new moodle_url('/mod/lesson/essay.php', array('id'=>$id));
+$url = new url('/mod/lesson/essay.php', array('id'=>$id));
 if ($mode !== 'display') {
     $url->param('mode', $mode);
 }
@@ -85,13 +92,13 @@ switch ($mode) {
         require_sesskey();
 
         if (empty($attempt)) {
-            throw new \moodle_exception('cannotfindattempt', 'lesson');
+            throw new moodle_exception('cannotfindattempt', 'lesson');
         }
         if (empty($user)) {
-            throw new \moodle_exception('cannotfinduser', 'lesson');
+            throw new moodle_exception('cannotfinduser', 'lesson');
         }
         if (empty($answer)) {
-            throw new \moodle_exception('cannotfindanswer', 'lesson');
+            throw new moodle_exception('cannotfindanswer', 'lesson');
         }
         break;
 
@@ -99,10 +106,10 @@ switch ($mode) {
         require_sesskey();
 
         if (empty($attempt)) {
-            throw new \moodle_exception('cannotfindattempt', 'lesson');
+            throw new moodle_exception('cannotfindattempt', 'lesson');
         }
         if (empty($user)) {
-            throw new \moodle_exception('cannotfinduser', 'lesson');
+            throw new moodle_exception('cannotfinduser', 'lesson');
         }
 
         $editoroptions = array('noclean' => true, 'maxfiles' => EDITOR_UNLIMITED_FILES,
@@ -117,7 +124,7 @@ switch ($mode) {
         }
         if ($form = $mform->get_data()) {
             if (!$grades = $DB->get_records('lesson_grades', array("lessonid"=>$lesson->id, "userid"=>$attempt->userid), 'completed', '*', $attempt->retry, 1)) {
-                throw new \moodle_exception('cannotfindgrade', 'lesson');
+                throw new moodle_exception('cannotfindgrade', 'lesson');
             }
 
             $essayinfo->graded = 1;
@@ -166,9 +173,9 @@ switch ($mode) {
             // update central gradebook
             lesson_update_grades($lesson, $grade->userid);
 
-            redirect(new moodle_url('/mod/lesson/essay.php', array('id'=>$cm->id)));
+            redirect(new url('/mod/lesson/essay.php', array('id'=>$cm->id)));
         } else {
-            throw new \moodle_exception('invalidformdata');
+            throw new moodle_exception('invalidformdata');
         }
         break;
     case 'email':
@@ -179,7 +186,7 @@ switch ($mode) {
         if ($userid = optional_param('userid', 0, PARAM_INT)) {
             $queryadd = " AND userid = ?";
             if (! $users = $DB->get_records('user', array('id' => $userid))) {
-                throw new \moodle_exception('cannotfinduser', 'lesson');
+                throw new moodle_exception('cannotfinduser', 'lesson');
             }
         } else {
             $queryadd = '';
@@ -200,7 +207,7 @@ switch ($mode) {
                        ) ui ON u.id = ui.userid
                   JOIN ($esql) ue ON ue.id = u.id
                   ORDER BY $sort", $params)) {
-                throw new \moodle_exception('cannotfinduser', 'lesson');
+                throw new moodle_exception('cannotfinduser', 'lesson');
             }
         }
 
@@ -217,13 +224,13 @@ switch ($mode) {
             $params[] = $userid;
         }
         if (!$attempts = $DB->get_records_select('lesson_attempts', "pageid $usql".$queryadd, $params)) {
-            throw new \moodle_exception('nooneansweredthisquestion', 'lesson');
+            throw new moodle_exception('nooneansweredthisquestion', 'lesson');
         }
         // Get the answers
         list($answerUsql, $parameters) = $DB->get_in_or_equal(array_keys($pages));
         array_unshift($parameters, $lesson->id);
         if (!$answers = $DB->get_records_select('lesson_answers', "lessonid = ? AND pageid $answerUsql", $parameters, '', 'pageid, score')) {
-            throw new \moodle_exception('cannotfindanswer', 'lesson');
+            throw new moodle_exception('cannotfindanswer', 'lesson');
         }
 
         $userpicture = new user_picture($USER);
@@ -272,7 +279,7 @@ switch ($mode) {
                 $subject = get_string('essayemailsubject', 'lesson');
 
                 // Context url.
-                $contexturl = new moodle_url('/grade/report/user/index.php', array('id' => $course->id));
+                $contexturl = new url('/grade/report/user/index.php', array('id' => $course->id));
 
                 $eventdata = new \core\message\message();
                 $eventdata->courseid         = $course->id;
@@ -304,7 +311,7 @@ switch ($mode) {
             }
         }
         $lesson->add_message(get_string('emailsuccess', 'lesson'), 'notifysuccess');
-        redirect(new moodle_url('/mod/lesson/essay.php', array('id'=>$cm->id)));
+        redirect(new url('/mod/lesson/essay.php', array('id'=>$cm->id)));
         break;
     case 'display':  // Default view - get the necessary data
     default:
@@ -416,7 +423,7 @@ switch ($mode) {
                     $essayinfo = lesson_page_type_essay::extract_useranswer($essay->useranswer);
 
                     // link for each essay
-                    $url = new moodle_url('/mod/lesson/essay.php', array('id'=>$cm->id,'mode'=>'grade','attemptid'=>$essay->id,'sesskey'=>sesskey()));
+                    $url = new url('/mod/lesson/essay.php', array('id'=>$cm->id,'mode'=>'grade','attemptid'=>$essay->id,'sesskey'=>sesskey()));
                     $linktitle = userdate($essay->timeseen, get_string('strftimedatetime')).' '.
                             format_string($pages[$essay->pageid]->title, true);
 
@@ -438,7 +445,7 @@ switch ($mode) {
                 }
             }
             // email link for this user
-            $url = new moodle_url('/mod/lesson/essay.php', array('id'=>$cm->id,'mode'=>'email','userid'=>$userid,'sesskey'=>sesskey()));
+            $url = new url('/mod/lesson/essay.php', array('id'=>$cm->id,'mode'=>'email','userid'=>$userid,'sesskey'=>sesskey()));
             $emaillink = html_writer::link($url, get_string('emailgradedessays', 'lesson'));
 
             $table->data[] = array($OUTPUT->user_picture($users[$userid], array('courseid' => $course->id)) . $studentname,
@@ -446,7 +453,7 @@ switch ($mode) {
         }
 
         // email link for all users
-        $url = new moodle_url('/mod/lesson/essay.php', array('id'=>$cm->id,'mode'=>'email','sesskey'=>sesskey()));
+        $url = new url('/mod/lesson/essay.php', array('id'=>$cm->id,'mode'=>'email','sesskey'=>sesskey()));
         $emailalllink = html_writer::link($url, get_string('emailallgradedessays', 'lesson'));
 
         $table->data[] = array(' ', ' ', ' ', $emailalllink);

@@ -16,7 +16,7 @@
 
 namespace core_course;
 
-use cm_info;
+use core_course\cm_info;
 use core_cache\cache;
 use core_courseformat\sectiondelegatemodule;
 use core\context\module as context_module;
@@ -24,7 +24,7 @@ use core\context_helper;
 use core\exception\coding_exception;
 use core\exception\moodle_exception;
 use core\url;
-use section_info;
+use core_course\section_info;
 use stdClass;
 
 /**

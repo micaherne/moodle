@@ -17,6 +17,7 @@
 namespace core\router\scope;
 
 use core\attribute_helper;
+use core\exception\coding_exception;
 
 /**
  * The abstract base class for all scopes.
@@ -58,7 +59,7 @@ abstract class abstract_scope implements \League\OAuth2\Server\Entities\ScopeEnt
 
             // All classes must have an identifier attribute.
             if ($attribute === null) {
-                throw new \coding_exception("The class {$classname} must have an #[identifier_attribute] attribute.");
+                throw new coding_exception("The class {$classname} must have an #[identifier_attribute] attribute.");
             }
 
             $parts[] = $attribute->get_identifier();
@@ -93,7 +94,7 @@ abstract class abstract_scope implements \League\OAuth2\Server\Entities\ScopeEnt
         // If the class is not abstract, it must have a summary attribute.
         $reflection = new \ReflectionClass($classname);
         if (!$reflection->isAbstract()) {
-            throw new \coding_exception("The scope class {$classname} must have an #[summary_attribute] attribute.");
+            throw new coding_exception("The scope class {$classname} must have an #[summary_attribute] attribute.");
         }
 
         return '';

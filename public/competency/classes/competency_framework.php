@@ -24,9 +24,9 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use context;
-use lang_string;
+use core\exception\coding_exception;
+use core\context;
+use core\lang_string;
 use stdClass;
 
 require_once($CFG->libdir . '/grade/grade_scale.php');

@@ -24,6 +24,11 @@
 
 namespace core_course\task;
 
+use core\context\module;
+use core\context\system;
+use core\exception\coding_exception;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 /**
  * Class handling course module deletion.
@@ -52,11 +57,11 @@ class course_delete_modules extends \core\task\adhoc_task {
 
         // Set the proper user.
         if ($this->get_custom_data()->userid !== $this->get_custom_data()->realuserid) {
-            $realuser = \core_user::get_user($this->get_custom_data()->realuserid, '*', MUST_EXIST);
+            $realuser = user::get_user($this->get_custom_data()->realuserid, '*', MUST_EXIST);
             \core\cron::setup_user($realuser);
-            \core\session\manager::loginas($this->get_custom_data()->userid, \context_system::instance(), false);
+            \core\session\manager::loginas($this->get_custom_data()->userid, system::instance(), false);
         } else {
-            $user = \core_user::get_user($this->get_custom_data()->userid, '*', MUST_EXIST);
+            $user = user::get_user($this->get_custom_data()->userid, '*', MUST_EXIST);
             \core\cron::setup_user($user);
         }
 
@@ -65,7 +70,7 @@ class course_delete_modules extends \core\task\adhoc_task {
         $cmsfailed = [];
         foreach ($cms as $key => $cm) {
             try {
-                $modulecontext = \context_module::instance($cm->id, IGNORE_MISSING);
+                $modulecontext = module::instance($cm->id, IGNORE_MISSING);
                 if (!$modulecontext) {
                     continue;
                 }
@@ -88,7 +93,7 @@ class course_delete_modules extends \core\task\adhoc_task {
             $customdata->cms = $cmsfailed;
             $this->set_custom_data($customdata);
 
-            throw new \coding_exception("The following course modules could not be deleted:\n " .
+            throw new coding_exception("The following course modules could not be deleted:\n " .
             implode('\n', $exceptions));
         }
     }

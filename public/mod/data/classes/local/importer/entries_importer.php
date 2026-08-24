@@ -16,7 +16,7 @@
 
 namespace mod_data\local\importer;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core_php_time_limit;
 use file_packer;
 

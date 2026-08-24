@@ -25,6 +25,7 @@ namespace core_calendar\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context as core_context;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\approved_contextlist;
 use \core_privacy\local\request\context;
@@ -254,7 +255,7 @@ class provider implements
      *
      * @param \context $context Transform the specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(core_context $context) {
         // Delete all Calendar Events in the specified context in batches.
         if ($eventids = array_keys(self::get_calendar_event_ids_by_context($context))) {
             self::delete_batch_records('event', 'id', $eventids);
@@ -383,7 +384,7 @@ class provider implements
                     'timeduration' => $event->timeduration
                 ];
 
-                $context = \context::instance_by_id($event->contextid);
+                $context = core_context::instance_by_id($event->contextid);
                 writer::with_context($context)->export_related_data($subcontexts, $name, $eventdetails);
             }
         }
@@ -431,7 +432,7 @@ class provider implements
                     $index++;
                 }
 
-                $context = \context::instance_by_id($subscription->contextid);
+                $context = core_context::instance_by_id($subscription->contextid);
                 writer::with_context($context)->export_related_data($subcontexts, $name, $subscription);
             }
         }
@@ -446,7 +447,7 @@ class provider implements
      * @return array|null
      * @throws \dml_exception
      */
-    protected static function get_calendar_event_ids_by_context(\context $context, $userids = array()) {
+    protected static function get_calendar_event_ids_by_context(core_context $context, $userids = array()) {
         global $DB;
 
         // Calendar Events can exist at Site (CONTEXT_SYSTEM), Course Category (CONTEXT_COURSECAT),
@@ -517,7 +518,7 @@ class provider implements
      * @return array
      * @throws \dml_exception
      */
-    protected static function get_calendar_subscription_ids_by_context(\context $context, $userids = array()) {
+    protected static function get_calendar_subscription_ids_by_context(core_context $context, $userids = array()) {
         global $DB;
 
         // Calendar Subscriptions can exist at Site (CONTEXT_SYSTEM), Course Category (CONTEXT_COURSECAT),

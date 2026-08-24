@@ -16,6 +16,8 @@
 
 namespace mod_quiz\admin;
 
+use core_admin\setting\setting\configselect_with_advanced;
+
 /**
  * Admin settings class for the choices for how to display the user's image.
  *
@@ -26,7 +28,7 @@ namespace mod_quiz\admin;
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class user_image_setting extends \admin_setting_configselect_with_advanced {
+class user_image_setting extends configselect_with_advanced {
     public function load_choices() {
         global $CFG;
 

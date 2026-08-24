@@ -22,20 +22,24 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\plugin_manager;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once("{$CFG->libdir}/adminlib.php");
 
 $action = optional_param('action', '', PARAM_ALPHA);
 $plugin = optional_param('plugin', '', PARAM_PLUGIN);
 
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url('/lib/editor/tinymce/subplugins.php');
 
 require_login();
-require_capability('moodle/site:config', context_system::instance());
+require_capability('moodle/site:config', system::instance());
 require_sesskey();
 
-$tinymanager = \core_plugin_manager::resolve_plugininfo_class('tiny');
+$tinymanager = plugin_manager::resolve_plugininfo_class('tiny');
 $pluginname = get_string('pluginname', "tiny_{$plugin}");
 
 switch ($action) {
@@ -58,6 +62,6 @@ switch ($action) {
     default:
 }
 
-redirect(new moodle_url('/admin/settings.php', [
+redirect(new url('/admin/settings.php', [
     'section' => 'editorsettingstiny',
 ]));

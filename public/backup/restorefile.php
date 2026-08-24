@@ -22,6 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\user;
+use core\output\html_writer;
+use core\url;
+
 require_once('../config.php');
 require_once(__DIR__ . '/restorefile_form.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
@@ -46,7 +52,7 @@ if (!empty($filecontextid)) {
     $filecontext = context::instance_by_id($filecontextid);
 }
 
-$url = new moodle_url('/backup/restorefile.php', array('contextid'=>$contextid));
+$url = new url('/backup/restorefile.php', array('contextid'=>$contextid));
 
 $PAGE->set_show_navigation_footer(false);
 $PAGE->set_url($url);
@@ -101,7 +107,7 @@ if ($action == 'choosebackupfile') {
             $params = $fileinfo->get_params();
             $file = $fs->get_file($params['contextid'], $params['component'], $params['filearea'],
                     $params['itemid'], $params['filepath'], $params['filename']);
-            $restore_url = new moodle_url('/backup/restore.php', array('contextid' => $contextid,
+            $restore_url = new url('/backup/restore.php', array('contextid' => $contextid,
                     'pathnamehash' => $file->get_pathnamehash(), 'contenthash' => $file->get_contenthash()));
         } else {
             // If it's some weird other kind of file then use old code.
@@ -110,7 +116,7 @@ if ($action == 'choosebackupfile') {
             if (!$fileinfo->copy_to_pathname($pathname)) {
                 throw new restore_ui_exception('errorcopyingbackupfile', null, $pathname);
             }
-            $restore_url = new moodle_url('/backup/restore.php', array(
+            $restore_url = new url('/backup/restore.php', array(
                     'contextid' => $contextid, 'filename' => $filename));
         }
         redirect($restore_url);
@@ -133,7 +139,7 @@ if ($data && has_capability('moodle/restore:uploadfile', $context)) {
     if (!$form->save_file('backupfile', $pathname)) {
         throw new restore_ui_exception('errorcopyingbackupfile', null, $pathname);
     }
-    $restore_url = new moodle_url('/backup/restore.php', array('contextid'=>$contextid, 'filename'=>$filename));
+    $restore_url = new url('/backup/restore.php', array('contextid'=>$contextid, 'filename'=>$filename));
     redirect($restore_url);
     die;
 }
@@ -162,7 +168,7 @@ if ($context->contextlevel == CONTEXT_MODULE) {
     $renderer = $PAGE->get_renderer('core', 'backup');
     echo $renderer->backup_files_viewer($treeviewoptions);
     // Update the course context with the proper value, because $context contains the module context.
-    $coursecontext = \context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
 } else {
     $coursecontext = $context;
 }
@@ -179,7 +185,7 @@ $renderer = $PAGE->get_renderer('core', 'backup');
 echo $renderer->backup_files_viewer($treeviewoptions);
 
 // Private backup area.
-$usercontext = context_user::instance($USER->id);
+$usercontext = user::instance($USER->id);
 $treeviewoptions = [
     'filecontext' => $usercontext,
     'currentcontext' => $context,

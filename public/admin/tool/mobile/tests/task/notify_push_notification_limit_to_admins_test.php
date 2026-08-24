@@ -16,6 +16,9 @@
 
 namespace tool_mobile\task;
 
+use core\user;
+use core_cache\cache;
+
 /**
  * Tests for the push notification limit task.
  *
@@ -52,7 +55,7 @@ final class notify_push_notification_limit_to_admins_test extends \advanced_test
         $actualrecipientids = [];
         foreach ($messages as $message) {
             $actualrecipientids[] = (int) $message->useridto;
-            $this->assertEquals(\core_user::get_noreply_user()->id, $message->useridfrom);
+            $this->assertEquals(user::get_noreply_user()->id, $message->useridfrom);
             $this->assertEquals('tool_mobile', $message->component);
             $this->assertEquals('pushlimitreached', $message->eventtype);
             $this->assertEquals(get_string('limitreachedpushnotifications', 'tool_mobile'), $message->subject);
@@ -157,7 +160,7 @@ final class notify_push_notification_limit_to_admins_test extends \advanced_test
         $currentyear = (int) date('Y', $currenttime);
         $currentmonth = (int) date('n', $currenttime);
 
-        $cache = \cache::make('tool_mobile', 'subscriptioninfo');
+        $cache = cache::make('tool_mobile', 'subscriptioninfo');
         $cache->set(0, [
             'statistics' => [
                 'notifications' => [

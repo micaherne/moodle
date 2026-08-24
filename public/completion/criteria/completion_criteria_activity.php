@@ -26,6 +26,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\output\html_writer;
+use core\output\pix_icon;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -187,7 +191,7 @@ class completion_criteria_activity extends completion_criteria {
         $activity = $DB->get_record($this->module, array('id' => $module->instance));
 
         return shorten_text(format_string($activity->name, true,
-                array('context' => context_module::instance($module->id))));
+                array('context' => module::instance($module->id))));
     }
 
     /**

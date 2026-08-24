@@ -19,6 +19,7 @@ namespace tool_brickfield\local\areas\core_course;
 use core\event\course_created;
 use core\event\course_updated;
 use core\event\course_restored;
+use core\url;
 use tool_brickfield\area_base;
 
 /**
@@ -106,13 +107,13 @@ abstract class base extends area_base {
      * @param \stdClass $componentinfo
      * @return \moodle_url
      */
-    public static function get_edit_url(\stdClass $componentinfo): \moodle_url {
+    public static function get_edit_url(\stdClass $componentinfo): url {
         if ($componentinfo->tablename == 'course_sections') {
-            return new \moodle_url('/course/editsection.php', ['id' => $componentinfo->itemid]);
+            return new url('/course/editsection.php', ['id' => $componentinfo->itemid]);
         } else if ($componentinfo->tablename == 'course_categories') {
-            return new \moodle_url('/course/editcategory.php', ['id' => $componentinfo->itemid]);
+            return new url('/course/editcategory.php', ['id' => $componentinfo->itemid]);
         } else {
-            return new \moodle_url('/course/edit.php', ['id' => $componentinfo->courseid]);
+            return new url('/course/edit.php', ['id' => $componentinfo->courseid]);
         }
     }
 }

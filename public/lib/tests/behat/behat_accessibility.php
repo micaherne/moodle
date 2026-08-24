@@ -17,6 +17,7 @@
 use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Element\NodeElement;
+use core\url;
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
@@ -110,7 +111,7 @@ class behat_accessibility extends behat_base {
 
         $this->require_javascript();
 
-        $axeurl = (new \moodle_url('/lib/behat/axe/axe.min.js'))->out(false);
+        $axeurl = (new url('/lib/behat/axe/axe.min.js'))->out(false);
         $axeconfig = $this->get_axe_config_for_tags($standardtags, $extratags);
         $xpath = '';
         if ($containerelement) {

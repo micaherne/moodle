@@ -24,6 +24,14 @@
 
 namespace enrol_lti;
 
+use core\context;
+use core\context\course;
+use core\output\help_icon;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
@@ -37,7 +45,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  2016 Mark Nelson <markn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class manage_table extends \table_sql {
+class manage_table extends sql_table {
 
     /**
      * @var \enrol_plugin $ltiplugin
@@ -85,12 +93,12 @@ class manage_table extends \table_sql {
         // Set the variables we need access to.
         $this->ltiplugin = enrol_get_plugin('lti');
         $this->ltienabled = enrol_is_enabled('lti');
-        $this->canconfig = has_capability('moodle/course:enrolconfig', \context_course::instance($courseid));
+        $this->canconfig = has_capability('moodle/course:enrolconfig', course::instance($courseid));
         $this->courseid = $courseid;
 
         // Set help icons.
-        $launchicon = new \help_icon('launchdetails', 'enrol_lti');
-        $regicon = new \help_icon('registrationurl', 'enrol_lti');
+        $launchicon = new help_icon('launchdetails', 'enrol_lti');
+        $regicon = new help_icon('registrationurl', 'enrol_lti');
         $this->define_help_for_headers(['1' => $launchicon, '2' => $regicon]);
     }
 
@@ -101,7 +109,7 @@ class manage_table extends \table_sql {
      * @return string
      */
     public function col_name($tool) {
-        $toolcontext = \context::instance_by_id($tool->contextid, IGNORE_MISSING);
+        $toolcontext = context::instance_by_id($tool->contextid, IGNORE_MISSING);
         $name = $toolcontext ? helper::get_name($tool) : $this->get_deleted_activity_name_html($tool);
 
         return $this->get_display_text($tool, $name);
@@ -183,23 +191,23 @@ class manage_table extends \table_sql {
         $strenable = get_string('enable');
         $strdisable = get_string('disable');
 
-        $url = new \moodle_url('/enrol/lti/index.php',
+        $url = new url('/enrol/lti/index.php',
             array('sesskey' => sesskey(), 'courseid' => $this->courseid, 'legacy' => 1));
 
         if ($this->ltiplugin->can_delete_instance($instance)) {
-            $aurl = new \moodle_url($url, array('action' => 'delete', 'instanceid' => $instance->id));
-            $buttons[] = $OUTPUT->action_icon($aurl, new \pix_icon('t/delete', $strdelete, 'core',
+            $aurl = new url($url, array('action' => 'delete', 'instanceid' => $instance->id));
+            $buttons[] = $OUTPUT->action_icon($aurl, new pix_icon('t/delete', $strdelete, 'core',
                 array('class' => 'iconsmall')));
         }
 
         if ($this->ltienabled && $this->ltiplugin->can_hide_show_instance($instance)) {
             if ($instance->status == ENROL_INSTANCE_ENABLED) {
-                $aurl = new \moodle_url($url, array('action' => 'disable', 'instanceid' => $instance->id));
-                $buttons[] = $OUTPUT->action_icon($aurl, new \pix_icon('t/hide', $strdisable, 'core',
+                $aurl = new url($url, array('action' => 'disable', 'instanceid' => $instance->id));
+                $buttons[] = $OUTPUT->action_icon($aurl, new pix_icon('t/hide', $strdisable, 'core',
                     array('class' => 'iconsmall')));
             } else if ($instance->status == ENROL_INSTANCE_DISABLED) {
-                $aurl = new \moodle_url($url, array('action' => 'enable', 'instanceid' => $instance->id));
-                $buttons[] = $OUTPUT->action_icon($aurl, new \pix_icon('t/show', $strenable, 'core',
+                $aurl = new url($url, array('action' => 'enable', 'instanceid' => $instance->id));
+                $buttons[] = $OUTPUT->action_icon($aurl, new pix_icon('t/show', $strenable, 'core',
                     array('class' => 'iconsmall')));
             }
         }
@@ -210,11 +218,11 @@ class manage_table extends \table_sql {
                 'id' => $instance->id,
                 'type' => $instance->enrol,
                 'legacy' => 1,
-                'returnurl' => new \moodle_url('/enrol/lti/index.php',
+                'returnurl' => new url('/enrol/lti/index.php',
                     array('courseid' => $this->courseid, 'legacy' => 1))
             );
-            $editlink = new \moodle_url("/enrol/editinstance.php", $linkparams);
-            $buttons[] = $OUTPUT->action_icon($editlink, new \pix_icon('t/edit', get_string('edit'), 'core',
+            $editlink = new url("/enrol/editinstance.php", $linkparams);
+            $buttons[] = $OUTPUT->action_icon($editlink, new pix_icon('t/edit', get_string('edit'), 'core',
                 array('class' => 'iconsmall')));
         }
 
@@ -248,7 +256,7 @@ class manage_table extends \table_sql {
      */
     protected function get_display_text($tool, $text) {
         if ($tool->status != ENROL_INSTANCE_ENABLED) {
-            return \html_writer::tag('div', $text, array('class' => 'dimmed_text'));
+            return html_writer::tag('div', $text, array('class' => 'dimmed_text'));
         }
 
         return $text;
@@ -262,7 +270,7 @@ class manage_table extends \table_sql {
      */
     protected function get_deleted_activity_name_html(\stdClass $tool): string {
         global $OUTPUT;
-        $icon = \html_writer::tag(
+        $icon = html_writer::tag(
             'a',
             $OUTPUT->pix_icon('enrolinstancewarning', get_string('deletedactivityalt' , 'enrol_lti'), 'enrol_lti'), [
                 "class" => "btn btn-link p-0",
@@ -276,9 +284,9 @@ class manage_table extends \table_sql {
                 "data-bs-trigger" => "focus",
             ]
         );
-        $name = \html_writer::span($icon . get_string('deletedactivity', 'enrol_lti'));
+        $name = html_writer::span($icon . get_string('deletedactivity', 'enrol_lti'));
         if ($tool->name) {
-            $name .= \html_writer::empty_tag('br') . \html_writer::empty_tag('br') . $tool->name;
+            $name .= html_writer::empty_tag('br') . html_writer::empty_tag('br') . $tool->name;
         }
 
         return $name;

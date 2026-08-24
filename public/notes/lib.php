@@ -25,6 +25,10 @@
 /**
  * Constants for states.
  */
+use core\context\course;
+use core\context\system;
+use core\url;
+
 define('NOTES_STATE_DRAFT', 'draft');
 define('NOTES_STATE_PUBLIC', 'public');
 define('NOTES_STATE_SITE', 'site');
@@ -131,7 +135,7 @@ function note_save(&$note) {
             'courseid' => $note->courseid,
             'relateduserid' => $note->userid,
             'userid' => $note->usermodified,
-            'context' => context_course::instance($note->courseid),
+            'context' => course::instance($note->courseid),
             'other' => array('publishstate' => $note->publishstate)
         ));
         $event->trigger();
@@ -146,7 +150,7 @@ function note_save(&$note) {
             'courseid' => $note->courseid,
             'relateduserid' => $note->userid,
             'userid' => $note->usermodified,
-            'context' => context_course::instance($note->courseid),
+            'context' => course::instance($note->courseid),
             'other' => array('publishstate' => $note->publishstate)
         ));
         $event->trigger();
@@ -239,8 +243,8 @@ function note_print($note, $detail = NOTES_SHOW_FULL) {
         debugging("User $note->usermodified not found");
         return;
     }
-    $context = context_course::instance($note->courseid);
-    $systemcontext = context_system::instance();
+    $context = course::instance($note->courseid);
+    $systemcontext = system::instance();
 
     $authoring = new stdClass();
     $authoring->name = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $author->id .
@@ -403,16 +407,16 @@ function core_notes_myprofile_navigation(core_user\output\myprofile\tree $tree, 
         return false;
     }
 
-    $url = new moodle_url("/notes/index.php", array('user' => $user->id));
+    $url = new url("/notes/index.php", array('user' => $user->id));
     $title = get_string('notes', 'core_notes');
     if (empty($course)) {
         // Site level profile.
-        if (!has_capability('moodle/notes:view', context_system::instance())) {
+        if (!has_capability('moodle/notes:view', system::instance())) {
             // No cap, nothing to do.
             return false;
         }
     } else {
-        if (!has_capability('moodle/notes:view', context_course::instance($course->id))) {
+        if (!has_capability('moodle/notes:view', course::instance($course->id))) {
             // No cap, nothing to do.
             return false;
         }

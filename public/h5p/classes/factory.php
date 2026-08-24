@@ -27,6 +27,8 @@ namespace core_h5p;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\url;
 use core_h5p\local\library\autoloader;
 use Moodle\H5PContentValidator as content_validator;
 use Moodle\H5peditor;
@@ -110,9 +112,9 @@ class factory {
         if (null === $this->core) {
             $fs = new \core_h5p\file_storage();
             $language = \core_h5p\framework::get_language();
-            $context = \context_system::instance();
+            $context = system::instance();
 
-            $url = \moodle_url::make_pluginfile_url($context->id, 'core_h5p', '', null,
+            $url = url::make_pluginfile_url($context->id, 'core_h5p', '', null,
                 '', '')->out();
 
             $this->core = new core($this->get_framework(), $fs, $url, $language, true);

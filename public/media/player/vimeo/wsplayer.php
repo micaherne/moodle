@@ -31,6 +31,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 define('NO_MOODLE_COOKIES', true);
 
 require_once(__DIR__ . '/../../../config.php');
@@ -58,7 +60,7 @@ if (get_config('media_vimeo', 'donottrack')) {
     $params['dnt'] = 1;
 }
 
-$embedurl = new moodle_url("https://player.vimeo.com/video/$video", $params);
+$embedurl = new url("https://player.vimeo.com/video/$video", $params);
 $context = ['embedurl' => $embedurl->out(false)]; // Template context.
 
 if (empty($width) && empty($height)) {

@@ -19,11 +19,11 @@ declare(strict_types=1);
 namespace core_blog\reportbuilder\local\entities;
 
 use blog_entry_attachment;
-use context_system;
+use core\context\system;
 use core_collator;
-use html_writer;
-use lang_string;
-use moodle_url;
+use core\output\html_writer;
+use core\lang_string;
+use core\url;
 use stdClass;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\{boolean_select, date, select, text};
@@ -92,7 +92,7 @@ class blog extends base {
                 if ($subject === null) {
                     return '';
                 }
-                return html_writer::link(new moodle_url('/blog/index.php', ['entryid' => $post->id]), $subject);
+                return html_writer::link(new url('/blog/index.php', ['entryid' => $post->id]), $subject);
             });
 
         // Body.
@@ -113,7 +113,7 @@ class blog extends base {
                 }
 
                 // All blog files are stored in system context.
-                $context = context_system::instance();
+                $context = system::instance();
                 $summary = file_rewrite_pluginfile_urls($summary, 'pluginfile.php', $context->id, 'blog', 'post', $post->id);
 
                 return format_text($summary, $post->summaryformat, ['context' => $context->id]);
@@ -139,7 +139,7 @@ class blog extends base {
                 $attachments = '';
 
                 // Loop over attached files, use blog renderer to generate appropriate content.
-                $files = get_file_storage()->get_area_files(context_system::instance()->id, 'blog', 'attachment', $post->id,
+                $files = get_file_storage()->get_area_files(system::instance()->id, 'blog', 'attachment', $post->id,
                     'filename', false);
                 foreach ($files as $file) {
                     $attachments .= $renderer->render(new blog_entry_attachment($file, $post->id));

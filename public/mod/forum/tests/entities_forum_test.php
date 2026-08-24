@@ -16,6 +16,7 @@
 
 namespace mod_forum;
 
+use core\context\module;
 use mod_forum\local\entities\discussion as discussion_entity;
 use mod_forum\local\entities\forum as forum_entity;
 
@@ -60,7 +61,7 @@ final class entities_forum_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $effectivegroupmode = NOGROUPS;
         $id = 1;
         $courseid = 2;

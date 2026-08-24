@@ -24,6 +24,9 @@
 
 namespace core_analytics;
 
+use core\exception\coding_exception;
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -79,7 +82,7 @@ abstract class calculable {
      *
      * @return \lang_string
      */
-    abstract public static function get_name(): \lang_string;
+    abstract public static function get_name(): lang_string;
 
     /**
      * The class id is the calculable class full qualified class name.
@@ -196,7 +199,7 @@ abstract class calculable {
      */
     protected function get_time_range_weeks_number($starttime, $endtime) {
         if ($endtime <= $starttime) {
-            throw new \coding_exception('End time timestamp should be greater than start time.');
+            throw new coding_exception('End time timestamp should be greater than start time.');
         }
 
         $starttimedt = new \DateTime();
@@ -246,7 +249,7 @@ abstract class calculable {
             $match = false;
 
             if (count($range) != 2) {
-                throw new \coding_exception('classify_value() $ranges array param should contain 2 items, the predicate ' .
+                throw new coding_exception('classify_value() $ranges array param should contain 2 items, the predicate ' .
                     'e.g. greater (gt), lower or equal (le)... and the value.');
             }
 
@@ -284,7 +287,7 @@ abstract class calculable {
                     }
                     break;
                 default:
-                    throw new \coding_exception('Unrecognised predicate ' . $predicate . '. Please use eq, ne, lt, le, ge or gt.');
+                    throw new coding_exception('Unrecognised predicate ' . $predicate . '. Please use eq, ne, lt, le, ge or gt.');
             }
 
             // Calculate and return a linear calculated value for the provided value.
@@ -293,7 +296,7 @@ abstract class calculable {
             }
         }
 
-        throw new \coding_exception('The provided value "' . $value . '" can not be fit into any of the provided ranges, you ' .
+        throw new coding_exception('The provided value "' . $value . '" can not be fit into any of the provided ranges, you ' .
             'should provide ranges for all possible values.');
     }
 

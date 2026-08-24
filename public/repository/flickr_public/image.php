@@ -23,6 +23,8 @@
  * @author     Dongsheng Cai <dongsheng@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
+use core\exception\moodle_exception;
+
 class moodle_image {
     private $imagepath;
     private $info;

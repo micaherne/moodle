@@ -16,6 +16,7 @@
 
 namespace mod_forum\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -67,7 +68,7 @@ class set_forum_subscription extends external_api {
         $forumvault = $vaultfactory->get_forum_vault();
         $forum = $forumvault->get_from_id($params['forumid']);
         if (!$forum) {
-            throw new \moodle_exception('invalidforumid', 'mod_forum', '', $params['forumid']);
+            throw new moodle_exception('invalidforumid', 'mod_forum', '', $params['forumid']);
         }
         $coursemodule = $forum->get_course_module_record();
         $context = $forum->get_context();
@@ -81,7 +82,7 @@ class set_forum_subscription extends external_api {
             && !has_capability('mod/forum:managesubscriptions', $context)
         ) {
             // Nothing to do. We won't actually output any content here though.
-            throw new \moodle_exception('cannotsubscribe', 'mod_forum');
+            throw new moodle_exception('cannotsubscribe', 'mod_forum');
         }
 
         $issubscribed = \mod_forum\subscriptions::is_subscribed(

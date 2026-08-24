@@ -24,9 +24,11 @@
 
 namespace mod_lesson\output;
 
-use moodle_url;
-use templatable;
-use renderable;
+use core\output\renderer_base;
+use core\output\url_select;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Output the report action menu for this activity.
@@ -48,7 +50,7 @@ class report_action_menu implements templatable, renderable {
      * @param int $lessonid The lessonid.
      * @param moodle_url $url The url for this page.
      */
-    public function __construct(int $lessonid, moodle_url $url) {
+    public function __construct(int $lessonid, url $url) {
         $this->lessonid = $lessonid;
         $this->url = $url;
     }
@@ -59,16 +61,16 @@ class report_action_menu implements templatable, renderable {
      * @param \renderer_base  $output Renderer output.
      * @return array The data for the template.
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $PAGE;
 
-        $overviewlink = new moodle_url('/mod/lesson/report.php', ['id' => $this->lessonid, 'action' => 'reportoverview']);
-        $fulllink = new moodle_url('/mod/lesson/report.php', ['id' => $this->lessonid, 'action' => 'reportdetail']);
+        $overviewlink = new url('/mod/lesson/report.php', ['id' => $this->lessonid, 'action' => 'reportoverview']);
+        $fulllink = new url('/mod/lesson/report.php', ['id' => $this->lessonid, 'action' => 'reportdetail']);
         $menu = [
             $overviewlink->out(false) => get_string('overview', 'mod_lesson'),
             $fulllink->out(false) => get_string('detailedstats', 'mod_lesson')
         ];
-        $reportselect = new \url_select($menu, $this->url->out(false), null, 'lesson-report-select');
+        $reportselect = new url_select($menu, $this->url->out(false), null, 'lesson-report-select');
         $reportselect->label = get_string('selectreport', 'mod_lesson');
         $reportselect->labelattributes = ['class' => 'visually-hidden'];
 

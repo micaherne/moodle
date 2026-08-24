@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 define('BLOCK_BLOG_TAGS_DEFAULTTIMEWITHIN', 90);
@@ -117,7 +121,7 @@ class block_blog_tags extends block_base {
 
         // admins should be able to read all tags
         $type = '';
-        if (!has_capability('moodle/user:readuserblogs', context_system::instance())) {
+        if (!has_capability('moodle/user:readuserblogs', system::instance())) {
             $type = " AND (p.publishstate = 'site' or p.publishstate='public')";
         }
 
@@ -178,7 +182,7 @@ class block_blog_tags extends block_base {
         /// Accessibility: markup as a list.
             $this->content->text .= "\n<ul class='inline-list'>\n";
             foreach ($etags as $tag) {
-                $blogurl = new moodle_url('/blog/index.php');
+                $blogurl = new url('/blog/index.php');
 
                 switch ($CFG->bloglevel) {
                     case BLOG_USER_LEVEL:

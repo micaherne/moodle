@@ -23,6 +23,9 @@
  */
 
 namespace mod_scorm\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -80,7 +83,7 @@ class interactions_viewed extends \core\event\base {
             'user' => $this->relateduserid,
             'attempt' => $this->other['attemptid']
         );
-        return new \moodle_url('/mod/scorm/userreportinteractions.php', $params);
+        return new url('/mod/scorm/userreportinteractions.php', $params);
     }
 
     /**
@@ -93,15 +96,15 @@ class interactions_viewed extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (empty($this->other['attemptid'])) {
-            throw new \coding_exception('The \'attemptid\' must be set in other.');
+            throw new coding_exception('The \'attemptid\' must be set in other.');
         }
 
         if (empty($this->other['instanceid'])) {
-            throw new \coding_exception('The \'instanceid\' must be set in other.');
+            throw new coding_exception('The \'instanceid\' must be set in other.');
         }
     }
 

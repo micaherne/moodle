@@ -9,6 +9,8 @@
  * @package mod_wiki
  */
 
+use core\output\html_writer;
+
 class parser_utils {
 
     public static function h($tag, $text = null, $options = array(), $escape_text = false) {

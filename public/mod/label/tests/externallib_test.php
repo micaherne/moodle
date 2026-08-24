@@ -16,6 +16,7 @@
 
 namespace mod_label;
 
+use core\context\module;
 use core_external\external_api;
 use mod_label_external;
 
@@ -119,7 +120,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Add a file to the intro.
         $filename = "file.txt";
         $filerecordinline = array(
-            'contextid' => \context_module::instance($label2->cmid)->id,
+            'contextid' => module::instance($label2->cmid)->id,
             'component' => 'mod_label',
             'filearea'  => 'intro',
             'itemid'    => 0,

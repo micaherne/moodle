@@ -23,6 +23,10 @@
  */
 
 namespace core\event;
+
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -60,7 +64,7 @@ class webservice_service_user_added extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/webservice/service_users.php', array('id' => $this->objectid));
+        return new url('/admin/webservice/service_users.php', array('id' => $this->objectid));
     }
 
     /**
@@ -69,7 +73,7 @@ class webservice_service_user_added extends base {
      * @return void
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = 'external_services';
@@ -84,7 +88,7 @@ class webservice_service_user_added extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

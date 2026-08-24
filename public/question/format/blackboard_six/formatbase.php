@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -103,7 +105,7 @@ class qformat_blackboard_six_base extends qformat_based_on_xml {
         // So that images with same name can be imported.
         $newfilename = clean_param(str_replace('/', '__', $filepathinsidetempdir . '__' . $filename), PARAM_FILE);
         $filerecord = array(
-            'contextid' => context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'component' => 'user',
             'filearea'  => 'draft',
             'itemid'    => $text['itemid'],

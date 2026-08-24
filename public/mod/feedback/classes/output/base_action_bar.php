@@ -16,10 +16,10 @@
 
 namespace mod_feedback\output;
 
-use context_module;
-use renderable;
-use renderer_base;
-use templatable;
+use core\context\module;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Class base_action_bar
@@ -50,7 +50,7 @@ abstract class base_action_bar implements renderable, templatable {
     public function __construct(int $cmid) {
         global $PAGE;
         $this->cmid = $cmid;
-        $this->context = context_module::instance($cmid);
+        $this->context = module::instance($cmid);
         [$course, $cm] = get_course_and_cm_from_cmid($cmid);
         $this->course = $course;
         $this->urlparams = [

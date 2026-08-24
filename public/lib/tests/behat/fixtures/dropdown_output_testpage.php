@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\pix_icon;
+use core\url;
+
 require_once(__DIR__ . '/../../../../config.php');
 
 defined('BEHAT_SITE_RUNNING') || die();
@@ -246,7 +249,7 @@ echo "<h3>Set option url example</h3>";
 $choice = new core\output\choicelist('Dialog content');
 $choice->add_option('option1', 'Option 1');
 $choice->add_option('option2', 'Option 2', [
-    'url' => new moodle_url('/lib/tests/behat/fixtures/dropdown_output_testpage.php', ['foo' => 'bar']),
+    'url' => new url('/lib/tests/behat/fixtures/dropdown_output_testpage.php', ['foo' => 'bar']),
 ]);
 $choice->add_option('option3', 'Option 3');
 $choice->set_option_extras('option2', ['data-foo' => 'bar']);

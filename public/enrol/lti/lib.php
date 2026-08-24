@@ -22,6 +22,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\navigation\navigation_node;
+use core\output\pix_icon;
+use core\url;
+use core\user;
 use enrol_lti\data_connector;
 use enrol_lti\local\ltiadvantage\repository\resource_link_repository;
 use IMSGlobal\LTI\ToolProvider\ToolConsumer;
@@ -44,7 +49,7 @@ class enrol_lti_plugin extends enrol_plugin {
      * @return boolean
      */
     public function can_add_instance($courseid) {
-        $context = context_course::instance($courseid, MUST_EXIST);
+        $context = course::instance($courseid, MUST_EXIST);
         return has_capability('moodle/course:enrolconfig', $context) && has_capability('enrol/lti:config', $context);
     }
 
@@ -55,7 +60,7 @@ class enrol_lti_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/lti:config', $context);
     }
 
@@ -66,7 +71,7 @@ class enrol_lti_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/lti:config', $context);
     }
 
@@ -369,7 +374,7 @@ class enrol_lti_plugin extends enrol_plugin {
 
         $institution = get_config('enrol_lti', 'institution');
         $mform->addElement('text', 'institution', get_string('institution'), 'maxlength="40" size="25"');
-        $mform->setType('institution', core_user::get_property_type('institution'));
+        $mform->setType('institution', user::get_property_type('institution'));
         $mform->setDefault('institution', $institution);
         $mform->setAdvanced('institution');
 
@@ -461,7 +466,7 @@ function enrol_lti_extend_navigation_course($navigation, $course, $context) {
         // Check that they can add an instance.
         $ltiplugin = enrol_get_plugin('lti');
         if ($ltiplugin->can_add_instance($course->id)) {
-            $url = new moodle_url('/enrol/lti/index.php', ['courseid' => $course->id]);
+            $url = new url('/enrol/lti/index.php', ['courseid' => $course->id]);
             $settingsnode = navigation_node::create(get_string('sharedexternaltools', 'enrol_lti'), $url,
                 navigation_node::TYPE_SETTING, null, 'publishedtools', new pix_icon('i/settings', ''));
             $navigation->add_node($settingsnode);

@@ -16,6 +16,7 @@
 
 namespace core_backup;
 
+use core\context\course;
 use core_backup_backup_restore_base_testcase;
 
 defined('MOODLE_INTERNAL') || die();
@@ -62,9 +63,9 @@ final class backup_restore_permission_test extends core_backup_backup_restore_ba
         // Create a course with some availability data set.
         $generator = $this->getDataGenerator();
         $this->course1 = $generator->create_course();
-        $this->course1context = \context_course::instance($this->course1->id);
+        $this->course1context = course::instance($this->course1->id);
         $this->course2 = $generator->create_course();
-        $this->course2context = \context_course::instance($this->course2->id);
+        $this->course2context = course::instance($this->course2->id);
         $this->capabilityname = 'enrol/manual:enrol';
         $this->user = $generator->create_user();
 

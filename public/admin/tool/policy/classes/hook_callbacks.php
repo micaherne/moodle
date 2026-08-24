@@ -18,8 +18,8 @@ namespace tool_policy;
 
 use core\hook\output\before_standard_footer_html_generation;
 use core\hook\output\before_standard_top_of_body_html_generation;
-use html_writer;
-use moodle_url;
+use core\output\html_writer;
+use core\url;
 
 /**
  * Allows the plugin to add any elements to the footer.
@@ -77,7 +77,7 @@ class hook_callbacks {
 
         $policies = api::get_current_versions_ids();
         if (!empty($policies)) {
-            $url = new moodle_url('/admin/tool/policy/viewall.php', ['returnurl' => $PAGE->url]);
+            $url = new url('/admin/tool/policy/viewall.php', ['returnurl' => $PAGE->url]);
             $hook->add_html(
                 html_writer::div(
                     html_writer::link($url, get_string('userpolicysettings', 'tool_policy')),

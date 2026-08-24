@@ -18,8 +18,9 @@ namespace mod_quiz\backup;
 
 use advanced_testcase;
 use backup_controller;
+use core\context\module;
 use restore_controller;
-use quiz_question_helper_test_trait;
+use mod_quiz\tests\question_helper_test_trait;
 use backup;
 
 defined('MOODLE_INTERNAL') || die();
@@ -43,7 +44,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  * @covers \restore_create_categories_and_questions
  */
 final class repeated_restore_test extends advanced_testcase {
-    use quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /**
      * Create 2 courses, and a quiz with questions on the first course.
@@ -65,9 +66,9 @@ final class repeated_restore_test extends advanced_testcase {
         $quiz = $this->create_test_quiz($course1);
         if ($sharedquestions) {
             $qbank = $generator->get_plugin_generator('mod_qbank')->create_instance(['course' => $course1->id]);
-            $context = \context_module::instance($qbank->cmid);
+            $context = module::instance($qbank->cmid);
         } else {
-            $context = \context_module::instance($quiz->cmid);
+            $context = module::instance($quiz->cmid);
         }
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
@@ -524,7 +525,7 @@ final class repeated_restore_test extends advanced_testcase {
         // Create a quiz with questions in the first course.
         $quiz = $this->create_test_quiz($course1);
         $qbank = $generator->get_plugin_generator('mod_qbank')->create_instance(['course' => $course1->id]);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
         // Create a question category.
@@ -649,7 +650,7 @@ final class repeated_restore_test extends advanced_testcase {
         $generator->enrol_user($teacher->id, $course1->id, 'editingteacher');
         $qbank = $generator->get_plugin_generator('mod_qbank')->create_instance(['course' => $course1->id]);
 
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
         // Create a question category.
@@ -696,7 +697,7 @@ final class repeated_restore_test extends advanced_testcase {
         $this->assertCount(2, $modules);
         $quiz2structure = \mod_quiz\question\bank\qbank_helper::get_question_structure(
             $quiz1->id,
-            \context_module::instance($quiz1->cmid),
+            module::instance($quiz1->cmid),
         );
         $quiz2 = end($modules);
         $quiz2structure = \mod_quiz\question\bank\qbank_helper::get_question_structure($quiz2->instance, $quiz2->context);
@@ -732,7 +733,7 @@ final class repeated_restore_test extends advanced_testcase {
         $teacher = $USER;
         $generator->enrol_user($teacher->id, $course1->id, 'editingteacher');
         $qbank = $generator->get_plugin_generator('mod_qbank')->create_instance(['course' => $course1->id]);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
         // Create a question category.
@@ -801,7 +802,7 @@ final class repeated_restore_test extends advanced_testcase {
         $teacher = $USER;
         $generator->enrol_user($teacher->id, $course1->id, 'editingteacher');
         $qbank = $generator->get_plugin_generator('mod_qbank')->create_instance(['course' => $course1->id]);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
         // Create a question category.
@@ -873,7 +874,7 @@ final class repeated_restore_test extends advanced_testcase {
         $generator->enrol_user($teacher->id, $course1->id, 'editingteacher');
         $generator->enrol_user($teacher->id, $course2->id, 'editingteacher');
 
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
         // Create a question category.
@@ -909,10 +910,10 @@ final class repeated_restore_test extends advanced_testcase {
         }
 
         $course1q1structure = \mod_quiz\question\bank\qbank_helper::get_question_structure(
-            $quiz1->id, \context_module::instance($quiz1->cmid));
+            $quiz1->id, module::instance($quiz1->cmid));
         $this->assertEquals($question1->id, $course1q1structure[1]->questionid);
         $course1q2structure = \mod_quiz\question\bank\qbank_helper::get_question_structure(
-            $quiz2->id, \context_module::instance($quiz2->cmid));
+            $quiz2->id, module::instance($quiz2->cmid));
         $this->assertEquals($question2->id, $course1q2structure[1]->questionid);
 
         // Backup course1.
@@ -932,7 +933,7 @@ final class repeated_restore_test extends advanced_testcase {
         // Verify that the newly-restored course's quizzes use the same questions as their counterparts of course1.
         $modules = get_fast_modinfo($course2->id)->get_instances_of('quiz');
         $course1q1structure = \mod_quiz\question\bank\qbank_helper::get_question_structure(
-                $quiz1->id, \context_module::instance($quiz1->cmid));
+                $quiz1->id, module::instance($quiz1->cmid));
         $course2quiz1 = array_shift($modules);
         $course2q1structure = \mod_quiz\question\bank\qbank_helper::get_question_structure(
                 $course2quiz1->instance, $course2quiz1->context);
@@ -940,7 +941,7 @@ final class repeated_restore_test extends advanced_testcase {
         $this->assertEquals($question1->id, $course2q1structure[1]->questionid);
 
         $course1q2structure = \mod_quiz\question\bank\qbank_helper::get_question_structure(
-                $quiz2->id, \context_module::instance($quiz2->cmid));
+                $quiz2->id, module::instance($quiz2->cmid));
         $course2quiz2 = array_shift($modules);
         $course2q2structure = \mod_quiz\question\bank\qbank_helper::get_question_structure(
                 $course2quiz2->instance, $course2quiz2->context);
@@ -973,7 +974,7 @@ final class repeated_restore_test extends advanced_testcase {
         $teacher = $USER;
         $generator->enrol_user($teacher->id, $course1->id, 'editingteacher');
         $qbank = $generator->get_plugin_generator('mod_qbank')->create_instance(['course' => $course1->id]);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
         // Create a question category.
@@ -1020,7 +1021,7 @@ final class repeated_restore_test extends advanced_testcase {
         $this->assertCount(2, $modules);
         $quiz1structure = \mod_quiz\question\bank\qbank_helper::get_question_structure(
             $quiz1->id,
-            \context_module::instance($quiz1->cmid),
+            module::instance($quiz1->cmid),
         );
         $quiz2 = end($modules);
         $quiz2structure = \mod_quiz\question\bank\qbank_helper::get_question_structure($quiz2->instance, $quiz2->context);
@@ -1089,7 +1090,7 @@ final class repeated_restore_test extends advanced_testcase {
         $teacher = $USER;
         $generator->enrol_user($teacher->id, $course1->id, 'editingteacher');
         $qbank = $generator->get_plugin_generator('mod_qbank')->create_instance(['course' => $course1->id]);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
 
         // Create a question category.
@@ -1128,7 +1129,7 @@ final class repeated_restore_test extends advanced_testcase {
         $this->assertCount(2, $modules);
         $quiz1structure = \mod_quiz\question\bank\qbank_helper::get_question_structure(
             $quiz1->id,
-            \context_module::instance($quiz1->cmid),
+            module::instance($quiz1->cmid),
         );
         $quiz2 = end($modules);
         $quiz2structure = \mod_quiz\question\bank\qbank_helper::get_question_structure($quiz2->instance, $quiz2->context);

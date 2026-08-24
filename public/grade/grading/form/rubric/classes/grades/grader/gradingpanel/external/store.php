@@ -28,15 +28,16 @@ namespace gradingform_rubric\grades\grader\gradingpanel\external;
 
 global $CFG;
 
-use coding_exception;
-use context;
+use core\exception\coding_exception;
+use core\context;
+use core\user;
 use core_grades\component_gradeitem as gradeitem;
 use core_grades\component_gradeitems;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
-use moodle_exception;
+use core\exception\moodle_exception;
 require_once($CFG->dirroot.'/grade/grading/form/rubric/lib.php');
 
 /**
@@ -142,7 +143,7 @@ class store extends external_api {
         }
 
         // Fetch the record for the graded user.
-        $gradeduser = \core_user::get_user($gradeduserid);
+        $gradeduser = user::get_user($gradeduserid);
 
         // Require that this user can save grades.
         $gradeitem->require_user_can_grade($gradeduser, $USER);

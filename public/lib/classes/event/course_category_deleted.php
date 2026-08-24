@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -96,7 +98,7 @@ class course_category_deleted extends base {
      */
     public function get_coursecat() {
         if ($this->is_restored()) {
-            throw new \coding_exception('Function get_coursecat() can not be used on restored events.');
+            throw new coding_exception('Function get_coursecat() can not be used on restored events.');
         }
         return $this->coursecat;
     }
@@ -111,7 +113,7 @@ class course_category_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
     }
 

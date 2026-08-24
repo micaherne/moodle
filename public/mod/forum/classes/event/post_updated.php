@@ -24,6 +24,9 @@
 
 namespace mod_forum\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -83,9 +86,9 @@ class post_updated extends \core\event\base {
             // Single discussion forums are an exception. We show
             // the forum itself since it only has one discussion
             // thread.
-            $url = new \moodle_url('/mod/forum/view.php', array('f' => $this->other['forumid']));
+            $url = new url('/mod/forum/view.php', array('f' => $this->other['forumid']));
         } else {
-            $url = new \moodle_url('/mod/forum/discuss.php', array('d' => $this->other['discussionid']));
+            $url = new url('/mod/forum/discuss.php', array('d' => $this->other['discussionid']));
         }
         $url->set_anchor('p'.$this->objectid);
         return $url;
@@ -101,19 +104,19 @@ class post_updated extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['discussionid'])) {
-            throw new \coding_exception('The \'discussionid\' value must be set in other.');
+            throw new coding_exception('The \'discussionid\' value must be set in other.');
         }
 
         if (!isset($this->other['forumid'])) {
-            throw new \coding_exception('The \'forumid\' value must be set in other.');
+            throw new coding_exception('The \'forumid\' value must be set in other.');
         }
 
         if (!isset($this->other['forumtype'])) {
-            throw new \coding_exception('The \'forumtype\' value must be set in other.');
+            throw new coding_exception('The \'forumtype\' value must be set in other.');
         }
 
         if ($this->contextlevel != CONTEXT_MODULE) {
-            throw new \coding_exception('Context level must be CONTEXT_MODULE.');
+            throw new coding_exception('Context level must be CONTEXT_MODULE.');
         }
     }
 

@@ -16,7 +16,7 @@
 
 namespace core_table;
 
-use flexible_table;
+use core_table\flexible_table;
 use moodle_recordset;
 use stdClass;
 

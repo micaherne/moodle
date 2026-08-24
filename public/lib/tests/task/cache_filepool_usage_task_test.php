@@ -16,6 +16,9 @@
 
 namespace core\task;
 
+use core\context\system;
+use core_cache\cache;
+
 /**
  * Unit tests for the cache_filepool_usage_task scheduled task.
  *
@@ -32,7 +35,7 @@ final class cache_filepool_usage_task_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         // Pre-populate the cache with a stale value.
-        $cache = \cache::make('core', 'hub_filepoolusage');
+        $cache = cache::make('core', 'hub_filepoolusage');
         $stalevalue = 999.999;
         $cache->set('filepoolusage', $stalevalue);
 
@@ -40,7 +43,7 @@ final class cache_filepool_usage_task_test extends \advanced_testcase {
         $fs = get_file_storage();
         $content = str_repeat('b', 1048576); // 1 MB.
         $fs->create_file_from_string([
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea'  => 'unittest',
             'itemid'    => 0,

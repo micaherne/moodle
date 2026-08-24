@@ -24,6 +24,10 @@
 
 namespace availability_profile;
 
+use core\context\course;
+use core_course\cm_info;
+use core_course\section_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -40,8 +44,8 @@ class frontend extends \core_availability\frontend {
                 'label_operator', 'label_value');
     }
 
-    protected function get_javascript_init_params($course, ?\cm_info $cm = null,
-            ?\section_info $section = null) {
+    protected function get_javascript_init_params($course, ?cm_info $cm = null,
+            ?section_info $section = null) {
 
         // Standard user fields.
         $standardfields = condition::get_standard_profile_fields();
@@ -49,7 +53,7 @@ class frontend extends \core_availability\frontend {
 
         // Custom fields.
         $customfields = array();
-        $options = array('context' => \context_course::instance($course->id));
+        $options = array('context' => course::instance($course->id));
         foreach (condition::get_custom_profile_fields() as $field) {
             $customfields[$field->shortname] = format_string($field->name, true, $options);
         }

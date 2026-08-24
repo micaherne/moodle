@@ -30,6 +30,17 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/badges/criteria/award_criteria.php');
 
 /* Include required user badge exporter */
+use \core_badges\badge;
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core\user as core_user;
 use core_badges\external\user_badge_exporter;
 /* Include required badge class exporter */
 use core_badges\external\badgeclass_exporter;
@@ -134,6 +145,7 @@ class_alias('\core_badges\badge', 'badge');
 use core_badges\png_metadata_handler;
 use core_badges\local\backpack\helper;
 use core_badges\local\backpack\ob_factory;
+use core_cache\cache;
 
 /**
  * Sends notifications to users about awarded badges.
@@ -156,7 +168,7 @@ function badges_notify_badge_award(badge $badge, $userid, $issued, $filepathhash
     $userfrom->firstname = !empty($CFG->badges_defaultissuername) ? $CFG->badges_defaultissuername : $admin->firstname;
     $userfrom->maildisplay = true;
 
-    $badgeurl = new moodle_url('/badges/badge.php', ['hash' => $issued]);
+    $badgeurl = new url('/badges/badge.php', ['hash' => $issued]);
     $issuedlink = html_writer::link($badgeurl, $badge->name);
     $userto = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
 
@@ -183,7 +195,7 @@ function badges_notify_badge_award(badge $badge, $userid, $issued, $filepathhash
 
     $eventdata->smallmessage      = '';
     $eventdata->customdata        = [
-        'notificationiconurl' => moodle_url::make_pluginfile_url(
+        'notificationiconurl' => url::make_pluginfile_url(
             $badge->get_context()->id, 'badges', 'badgeimage', $badge->id, '/', 'f1')->out(),
         'hash' => $issued,
     ];
@@ -227,7 +239,7 @@ function badges_notify_badge_award(badge $badge, $userid, $issued, $filepathhash
         $eventdata->fullmessagehtml   = $creatormessage;
         $eventdata->smallmessage      = '';
         $eventdata->customdata        = [
-            'notificationiconurl' => moodle_url::make_pluginfile_url(
+            'notificationiconurl' => url::make_pluginfile_url(
                 $badge->get_context()->id, 'badges', 'badgeimage', $badge->id, '/', 'f1')->out(),
             'hash' => $issued,
         ];
@@ -275,7 +287,7 @@ function badges_calculate_message_schedule($schedule) {
 function badge_message_from_template($message, $params, ?stdClass $user = null) {
     $params = (array) $params;
     if ($user !== null) {
-        $params += \core_user::get_name_placeholders($user);
+        $params += core_user::get_name_placeholders($user);
     }
     $msg = $message;
     foreach ($params as $key => $value) {
@@ -433,9 +445,9 @@ function badges_get_badge_by_hash(string $hash): object|bool {
 function badges_prepare_badge_for_external(stdClass $badge, stdClass $user): object {
     global $PAGE, $SITE, $USER;
     if ($badge->type == BADGE_TYPE_SITE) {
-        $context = context_system::instance();
+        $context = system::instance();
     } else {
-        $context = context_course::instance($badge->courseid);
+        $context = course::instance($badge->courseid);
     }
     $canconfiguredetails = has_capability('moodle/badges:configuredetails', $context);
     // If the user is viewing another user's badge and doesn't have the right capability return only part of the data.
@@ -468,7 +480,7 @@ function badges_prepare_badge_for_external(stdClass $badge, stdClass $user): obj
     if ($user->deleted) {
         $strdata = new stdClass();
         $strdata->user = fullname($user);
-        $strdata->site = format_string($SITE->fullname, true, ['context' => context_system::instance()]);
+        $strdata->site = format_string($SITE->fullname, true, ['context' => system::instance()]);
         $badge->recipientfullname = get_string('error:userdeleted', 'badges', $strdata);
     } else {
         $badge->recipientfullname = fullname($user);
@@ -527,11 +539,11 @@ function badges_prepare_badgeclass_for_external(core_badges\output\badgeclass $b
     $context = $badgeclass->context;
     $canconfiguredetails = has_capability('moodle/badges:configuredetails', $context);
 
-    $badgeurl = new \moodle_url('/badges/badgeclass.php', [
+    $badgeurl = new url('/badges/badgeclass.php', [
         'id' => $badgeclass->badge->id,
     ]);
     $badgeurl = $badgeurl->out(false);
-    $file = \moodle_url::make_webservice_pluginfile_url(
+    $file = url::make_webservice_pluginfile_url(
         $badgeclass->context->id,
         'badges',
         'badgeimage',
@@ -637,7 +649,7 @@ function badges_can_manage_badges(context $context): bool {
 function badges_add_course_navigation(navigation_node $coursenode, stdClass $course) {
     global $CFG, $SITE;
 
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
     $isfrontpage = (!$coursecontext || $course->id == $SITE->id);
     $canmanage = has_any_capability(array('moodle/badges:viewawarded',
                                           'moodle/badges:createbadge',
@@ -652,13 +664,13 @@ function badges_add_course_navigation(navigation_node $coursenode, stdClass $cou
                 navigation_node::TYPE_CONTAINER, null, 'coursebadges',
                 new pix_icon('i/badge', get_string('coursebadges', 'badges')));
 
-        $url = new moodle_url('/badges/index.php', array('type' => BADGE_TYPE_COURSE, 'id' => $course->id));
+        $url = new url('/badges/index.php', array('type' => BADGE_TYPE_COURSE, 'id' => $course->id));
 
         $coursenode->get('coursebadges')->add(get_string('managebadges', 'badges'), $url,
             navigation_node::TYPE_SETTING, null, 'coursebadges');
 
         if (has_capability('moodle/badges:createbadge', $coursecontext)) {
-            $url = new moodle_url('/badges/edit.php', ['action' => 'new', 'courseid' => $course->id]);
+            $url = new url('/badges/edit.php', ['action' => 'new', 'courseid' => $course->id]);
 
             $coursenode->get('coursebadges')->add(get_string('newbadge', 'badges'), $url,
                     navigation_node::TYPE_SETTING, null, 'newbadge');
@@ -719,7 +731,7 @@ function badges_process_badge_image(badge $badge, $iconfile) {
 function print_badge_image(badge $badge, stdClass $context, $size = 'small') {
     $fsize = ($size == 'small') ? 'f2' : 'f1';
 
-    $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/', $fsize, false);
+    $imageurl = url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/', $fsize, false);
     // Appending a random parameter to image link to forse browser reload the image.
     $imageurl->param('refresh', rand(1, 10000));
     $attributes = array('src' => $imageurl, 'alt' => s($badge->name), 'class' => 'activatebadge');
@@ -793,7 +805,7 @@ function badges_bake($hash, $badgeid, $userid = 0, $pathhash = false) {
         return $file->get_pathnamehash();
     }
 
-    $fileurl = moodle_url::make_pluginfile_url($user_context->id, 'badges', 'userbadge', $badge->id, '/', $hash, true);
+    $fileurl = url::make_pluginfile_url($user_context->id, 'badges', 'userbadge', $badge->id, '/', $hash, true);
     return $fileurl;
 }
 
@@ -906,8 +918,8 @@ function badges_handle_course_deletion($courseid) {
     global $CFG, $DB;
     include_once $CFG->libdir . '/filelib.php';
 
-    $systemcontext = context_system::instance();
-    $coursecontext = context_course::instance($courseid);
+    $systemcontext = system::instance();
+    $coursecontext = course::instance($courseid);
     $fs = get_file_storage();
 
     // Move badges images to the system context.
@@ -934,7 +946,7 @@ function badges_handle_course_deletion($courseid) {
  */
 function badges_create_site_backpack($data) {
     global $DB;
-    $context = context_system::instance();
+    $context = system::instance();
     require_capability('moodle/badges:manageglobalsettings', $context);
 
     $max = $DB->get_field_sql('SELECT MAX(sortorder) FROM {badge_external_backpack}');
@@ -952,7 +964,7 @@ function badges_create_site_backpack($data) {
  */
 function badges_update_site_backpack($id, $data) {
     global $DB;
-    $context = context_system::instance();
+    $context = system::instance();
     require_capability('moodle/badges:manageglobalsettings', $context);
 
     if ($backpack = badges_get_site_backpack($id)) {
@@ -972,7 +984,7 @@ function badges_update_site_backpack($id, $data) {
 function badges_delete_site_backpack($id) {
     global $DB;
 
-    $context = context_system::instance();
+    $context = system::instance();
     require_capability('moodle/badges:manageglobalsettings', $context);
 
     // Only remove site backpack if it's not the default one.
@@ -1215,7 +1227,7 @@ function badges_change_sortorder_backpacks(int $backpackid, int $direction): voi
     global $DB;
 
     if ($direction != BACKPACK_MOVE_UP && $direction != BACKPACK_MOVE_DOWN) {
-        throw new \coding_exception(
+        throw new coding_exception(
             'Must use a valid backpack API move direction constant (BACKPACK_MOVE_UP or BACKPACK_MOVE_DOWN)');
     }
 
@@ -1383,7 +1395,7 @@ function badges_send_verification_email($email, $backpackid, $backpackpassword) 
 
     // Generate the verification email body.
     $verificationurl = '/badges/backpackemailverify.php';
-    $verificationurl = new moodle_url($verificationurl);
+    $verificationurl = new url($verificationurl);
     $verificationpath = $verificationurl->out(false);
 
     $site = get_site();
@@ -1500,7 +1512,7 @@ function badge_assemble_notification(stdClass $badge) {
 
         // Put all messages in one digest.
         foreach ($msgs as $msg) {
-            $issuedlink = html_writer::link(new moodle_url('/badges/badge.php', array('hash' => $msg->uniquehash)), $badge->name);
+            $issuedlink = html_writer::link(new url('/badges/badge.php', array('hash' => $msg->uniquehash)), $badge->name);
             $recipient = $DB->get_record('user', array('id' => $msg->userid), '*', MUST_EXIST);
 
             $a = new stdClass();
@@ -1569,7 +1581,7 @@ function badges_verify_backpack(int $backpackid) {
             $warning = $backpackapi->get_authentication_error();
 
             $params = ['id' => $backpack->id, 'action' => 'edit'];
-            $backpackurl = (new moodle_url('/badges/backpacks.php', $params))->out(false);
+            $backpackurl = (new url('/badges/backpacks.php', $params))->out(false);
 
             $message = get_string('sitebackpackwarning', 'badges', ['url' => $backpackurl, 'warning' => $warning]);
             $icon = $OUTPUT->pix_icon('i/warning', get_string('warning', 'moodle'));
@@ -1597,7 +1609,7 @@ function badges_generate_badgr_open_url($backpack, $type, $externalid) {
         if ($type == OPEN_BADGES_V2_TYPE_BADGE) {
             $entity = "badge";
         }
-        $url = new moodle_url($backpack->backpackapiurl);
+        $url = new url($backpack->backpackapiurl);
         return "{$url->get_scheme()}://{$url->get_host()}/public/{$entity}s/$externalid";
 
     }

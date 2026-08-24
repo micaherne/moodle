@@ -24,6 +24,14 @@
 
 namespace tool_monitor\output\managesubs;
 
+use core\context\course;
+use core\context\system;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\renderable;
+use core\url;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/tablelib.php');
@@ -36,7 +44,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class subs extends \table_sql implements \renderable {
+class subs extends sql_table implements renderable {
 
     /**
      * @var int course id.
@@ -56,7 +64,7 @@ class subs extends \table_sql implements \renderable {
      * @param int $courseid course id.
      * @param int $perpage Number of rules to display per page.
      */
-    public function __construct($uniqueid, \moodle_url $url, $courseid = 0, $perpage = 100) {
+    public function __construct($uniqueid, url $url, $courseid = 0, $perpage = 100) {
         parent::__construct($uniqueid);
 
         $this->set_attribute('class', 'toolmonitor subscriptions table generaltable');
@@ -75,8 +83,8 @@ class subs extends \table_sql implements \renderable {
         );
         $this->courseid = $courseid;
         $this->pagesize = $perpage;
-        $systemcontext = \context_system::instance();
-        $this->context = empty($courseid) ? $systemcontext : \context_course::instance($courseid);
+        $systemcontext = system::instance();
+        $this->context = empty($courseid) ? $systemcontext : course::instance($courseid);
         $this->collapsible(false);
         $this->sortable(false);
         $this->pageable(true);
@@ -117,7 +125,7 @@ class subs extends \table_sql implements \renderable {
         if (empty($courseid)) {
             return $coursename;
         } else {
-            return \html_writer::link(new \moodle_url('/course/view.php', array('id' => $courseid)), $coursename);
+            return html_writer::link(new url('/course/view.php', array('id' => $courseid)), $coursename);
         }
     }
 
@@ -170,11 +178,11 @@ class subs extends \table_sql implements \renderable {
     public function col_unsubscribe(\tool_monitor\subscription $sub) {
         global $OUTPUT, $CFG;
 
-        $deleteurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/index.php', array('subscriptionid' => $sub->id,
+        $deleteurl = new url($CFG->wwwroot. '/admin/tool/monitor/index.php', array('subscriptionid' => $sub->id,
                 'action' => 'unsubscribe', 'courseid' => $this->courseid, 'sesskey' => sesskey()));
-        $icon = $OUTPUT->render(new \pix_icon('t/delete', get_string('deletesubscription', 'tool_monitor')));
+        $icon = $OUTPUT->render(new pix_icon('t/delete', get_string('deletesubscription', 'tool_monitor')));
 
-        return \html_writer::link($deleteurl, $icon, array('class' => 'action-icon'));
+        return html_writer::link($deleteurl, $icon, array('class' => 'action-icon'));
     }
 
     /**

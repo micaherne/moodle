@@ -22,13 +22,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Tung Thai <Tung.ThaiDuc@nashtechglobal.com>
  */
+use core\context\user;
+use core\exception\coding_exception;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
 $hash = optional_param('hash', null, PARAM_RAW);
 
 $PAGE->set_pagelayout('admin');
-$url = new moodle_url('/badges/backpack-export.php');
+$url = new url('/badges/backpack-export.php');
 
 require_login();
 if (empty($CFG->badges_allowexternalbackpack) || empty($CFG->enablebadges)) {
@@ -41,7 +45,7 @@ if (badges_open_badges_backpack_api($backpack->id) != OPEN_BADGES_V2P1) {
 }
 
 $userbadges = badges_get_user_badges($USER->id);
-$context = context_user::instance($USER->id);
+$context = user::instance($USER->id);
 
 $PAGE->set_context($context);
 $PAGE->set_url($url);
@@ -50,7 +54,7 @@ $PAGE->set_title($title);
 $PAGE->set_heading(fullname($USER));
 $PAGE->set_pagelayout('standard');
 
-$redirecturl = new moodle_url('/badges/mybadges.php');
+$redirecturl = new url('/badges/mybadges.php');
 if ($hash) {
     $api = new core_badges\backpack_api2p1($backpack);
     $notify = $api->put_assertions($hash);

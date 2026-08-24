@@ -16,7 +16,7 @@
 
 namespace core\lock;
 
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Lock factory for use during installation.

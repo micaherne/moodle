@@ -24,6 +24,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\single_select;
+use core\url;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -136,7 +142,7 @@ class workshopallocation_manual_renderer extends mod_workshop_renderer  {
             // todo add an option to exclude users without own submission
             $options = array_diff_key($reviewers, $exclude);
             if ($options) {
-                $handler = new moodle_url($this->page->url, array('mode' => 'new', 'of' => $allocation->userid, 'sesskey' => sesskey()));
+                $handler = new url($this->page->url, array('mode' => 'new', 'of' => $allocation->userid, 'sesskey' => sesskey()));
                 $select = new single_select($handler, 'by', $options, '', array(''=>get_string('chooseuser', 'workshop')), 'addreviewof' . $allocation->userid);
                 $select->set_label(get_string('addreviewer', 'workshopallocation_manual'));
                 $o .= $this->output->render($select);
@@ -149,7 +155,7 @@ class workshopallocation_manual_renderer extends mod_workshop_renderer  {
             $o .= fullname($userinfo[$reviewerid]);
 
             // delete icon
-            $handler = new moodle_url($this->page->url, array('mode' => 'del', 'what' => $assessmentid, 'sesskey' => sesskey()));
+            $handler = new url($this->page->url, array('mode' => 'del', 'what' => $assessmentid, 'sesskey' => sesskey()));
             $o .= $this->helper_remove_allocation_icon($handler);
 
             $o .= html_writer::end_tag('li');
@@ -176,7 +182,7 @@ class workshopallocation_manual_renderer extends mod_workshop_renderer  {
         // todo add an option to exclude users without own submission
         $options = array_diff_key($authors, $exclude);
         if ($options) {
-            $handler = new moodle_url($this->page->url, array('mode' => 'new', 'by' => $allocation->userid, 'sesskey' => sesskey()));
+            $handler = new url($this->page->url, array('mode' => 'new', 'by' => $allocation->userid, 'sesskey' => sesskey()));
             $select = new single_select($handler, 'of', $options, '', array(''=>get_string('chooseuser', 'workshop')), 'addreviewby' . $allocation->userid);
             $select->set_label(get_string('addreviewee', 'workshopallocation_manual'));
             $o .= $this->output->render($select);
@@ -190,7 +196,7 @@ class workshopallocation_manual_renderer extends mod_workshop_renderer  {
             $o .= fullname($userinfo[$authorid]);
 
             // delete icon
-            $handler = new moodle_url($this->page->url, array('mode' => 'del', 'what' => $assessmentid, 'sesskey' => sesskey()));
+            $handler = new url($this->page->url, array('mode' => 'del', 'what' => $assessmentid, 'sesskey' => sesskey()));
             $o .= $this->helper_remove_allocation_icon($handler);
 
             $o .= html_writer::end_tag('li');

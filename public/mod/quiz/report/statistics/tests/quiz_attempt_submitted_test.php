@@ -21,6 +21,7 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
 
 use core\task\manager;
+use mod_quiz\tests\question_helper_test_trait;
 use quiz_statistics\task\recalculate;
 use quiz_statistics\tests\statistics_helper;
 use quiz_statistics\tests\statistics_test_trait;
@@ -35,7 +36,7 @@ use quiz_statistics\tests\statistics_test_trait;
  * @covers    \quiz_statistics\hook_callbacks::quiz_attempt_submitted_or_deleted
  */
 final class quiz_attempt_submitted_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
     use statistics_test_trait;
 
     /**

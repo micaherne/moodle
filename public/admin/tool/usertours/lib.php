@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
 use core_external\external_api;
 use tool_usertours\helper;
 
@@ -34,7 +35,7 @@ use tool_usertours\helper;
  * @return \core\output\inplace_editable
  */
 function tool_usertours_inplace_editable($itemtype, $itemid, $newvalue) {
-    $context = \context_system::instance();
+    $context = system::instance();
     external_api::validate_context($context);
     require_capability('tool/usertours:managetours', $context);
 

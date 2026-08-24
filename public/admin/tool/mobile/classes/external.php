@@ -35,11 +35,11 @@ use core_external\external_single_structure;
 use core_external\external_settings;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_system;
-use moodle_exception;
-use moodle_url;
-use core_user;
-use coding_exception;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+use core\user;
+use core\exception\coding_exception;
 
 /**
  * This is the external API for this tool.
@@ -298,7 +298,7 @@ class external extends external_api {
         $params = self::validate_parameters(self::get_autologin_key_parameters(), array('privatetoken' => $privatetoken));
         $privatetoken = $params['privatetoken'];
 
-        $context = context_system::instance();
+        $context = system::instance();
 
         // We must toletare these two exceptions: forcepasswordchangenotice and usernotfullysetup.
         try {
@@ -349,7 +349,7 @@ class external extends external_api {
 
         $result = array();
         $result['key'] = api::get_autologin_key();
-        $autologinurl = new moodle_url("/$CFG->admin/tool/mobile/autologin.php");
+        $autologinurl = new url("/$CFG->admin/tool/mobile/autologin.php");
         $result['autologinurl'] = $autologinurl->out(false);
         $result['warnings'] = array();
         return $result;
@@ -643,7 +643,7 @@ class external extends external_api {
         $params = self::validate_parameters(self::get_tokens_for_qr_login_parameters(),
             ['qrloginkey' => $qrloginkey, 'userid' => $userid]);
 
-        $context = context_system::instance();
+        $context = system::instance();
         // We need this to make work the format text functions.
         $PAGE->set_context($context);
 
@@ -670,8 +670,8 @@ class external extends external_api {
         }
 
         // Key validated, check user.
-        $user = core_user::get_user($key->userid, '*', MUST_EXIST);
-        core_user::require_active_user($user, true, true);
+        $user = user::get_user($key->userid, '*', MUST_EXIST);
+        user::require_active_user($user, true, true);
 
         // Generate WS tokens.
         \core\session\manager::set_user($user);
@@ -738,7 +738,7 @@ class external extends external_api {
 
         $params = self::validate_parameters(self::validate_subscription_key_parameters(), ['key' => $key]);
 
-        $context = context_system::instance();
+        $context = system::instance();
         $PAGE->set_context($context);
 
         $validated = false;

@@ -16,6 +16,8 @@
 
 namespace core_communication;
 
+use core\context\system;
+
 /**
  * Trait communication_test_helper_trait to generate initial setup for communication providers.
  *
@@ -107,7 +109,7 @@ trait communication_test_helper_trait {
 
         $itemid = file_get_unused_draft_itemid();
         return $fs->create_file_from_pathname((object) [
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'user',
             'filearea' => 'draftfile',
             'itemid' => $itemid,

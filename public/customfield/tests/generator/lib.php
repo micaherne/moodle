@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\exception\coding_exception;
 use \core_customfield\category_controller;
 use \core_customfield\field_controller;
 use \core_customfield\api;

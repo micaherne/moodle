@@ -16,8 +16,9 @@
 
 namespace core_completion\form;
 
+use core\exception\coding_exception;
 use core_grades\component_gradeitems;
-use cm_info;
+use core_course\cm_info;
 
 /**
  * Completion trait helper, with methods to add completion elements and validate them.
@@ -60,7 +61,7 @@ trait form_trait {
             return $this->_form;
         }
 
-        throw new \coding_exception('This class does not have a _form property. Please, add it or override the get_form() method.');
+        throw new coding_exception('This class does not have a _form property. Please, add it or override the get_form() method.');
     }
 
     /**
@@ -110,7 +111,7 @@ trait form_trait {
                 $supportgrades = plugin_supports('mod', $modname, FEATURE_GRADE_HAS_GRADE, false);
                 $rating = $this->_features->rating;
             } else {
-                throw new \coding_exception('You must specify the modname parameter if you are not using a moodleform_mod.');
+                throw new coding_exception('You must specify the modname parameter if you are not using a moodleform_mod.');
             }
         }
 

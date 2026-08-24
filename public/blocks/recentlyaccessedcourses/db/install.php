@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
  /**
@@ -44,7 +46,7 @@ function xmldb_block_recentlyaccessedcourses_install() {
     }
 
     $page = new moodle_page();
-    $systemcontext = context_system::instance();
+    $systemcontext = system::instance();
     $page->set_context($systemcontext);
     // Add the block to the default /my.
     $page->blocks->add_region('content');

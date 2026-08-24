@@ -26,8 +26,8 @@
 namespace core_block\privacy;
 defined('MOODLE_INTERNAL') || die();
 
-use context;
-use context_block;
+use core\context;
+use core\context\block;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\transform;
@@ -172,7 +172,7 @@ class provider implements
         $hiddenstr = get_string('privacy:request:blockishidden', 'core_block');
         $recordset = $DB->get_recordset_sql($sql, $params);
         foreach ($recordset as $record) {
-            $context = context_block::instance($record->id);
+            $context = block::instance($record->id);
             if ($record->prefdocked !== null) {
                 writer::with_context($context)->export_user_preference(
                     'core_block',

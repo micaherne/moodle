@@ -24,9 +24,9 @@ namespace qbank_managecategories;
  */
 define('QUESTION_PAGE_LENGTH', 25);
 
-use context;
-use moodle_exception;
-use moodle_url;
+use core\context;
+use core\exception\moodle_exception;
+use core\url;
 use qbank_managecategories\form\question_category_edit_form;
 use question_bank;
 use stdClass;

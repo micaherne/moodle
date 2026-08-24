@@ -25,6 +25,7 @@
  */
 namespace repository_recent;
 
+use core\context\user;
 use repository;
 
 defined('MOODLE_INTERNAL') || die();
@@ -56,7 +57,7 @@ final class lib_test extends \advanced_testcase {
         global $USER;
         parent::setUp();
         $this->setAdminUser();
-        $this->usercontext = \context_user::instance($USER->id);
+        $this->usercontext = user::instance($USER->id);
         $repoid = $this->getDataGenerator()->create_repository('recent')->id;
         $this->repo = repository::get_repository_by_id($repoid, $this->usercontext);
     }

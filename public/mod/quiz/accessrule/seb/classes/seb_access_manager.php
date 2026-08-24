@@ -28,7 +28,7 @@
 
 namespace quizaccess_seb;
 
-use context_module;
+use core\context\module;
 use mod_quiz\quiz_settings;
 
 defined('MOODLE_INTERNAL') || die();
@@ -66,7 +66,7 @@ class seb_access_manager {
      */
     public function __construct(quiz_settings $quiz) {
         $this->quiz = $quiz;
-        $this->context = context_module::instance($quiz->get_cmid());
+        $this->context = module::instance($quiz->get_cmid());
         $this->quizsettings = seb_quiz_settings::get_by_quiz_id($quiz->get_quizid());
         $this->validconfigkey = seb_quiz_settings::get_config_key_by_quiz_id($quiz->get_quizid());
     }

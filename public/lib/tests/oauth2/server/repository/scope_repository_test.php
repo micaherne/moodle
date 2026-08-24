@@ -16,6 +16,7 @@
 
 namespace core\oauth2\server\repository;
 
+use core\context\system;
 use core\oauth2\server\entity\client_entity;
 use core\tests\fake_plugins_test_trait;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -122,7 +123,7 @@ final class scope_repository_test extends \advanced_testcase {
         $DB->insert_record('oauth2_server_clients', (object)[
             'clientidentifier' => $clientidentifier,
             'name' => 'Test client',
-            'ownercontext' => \context_system::instance()->id,
+            'ownercontext' => system::instance()->id,
             'status' => client_entity::STATUS_ACTIVE,
             'isconfidential' => 1,
             'timecreated' => time(),

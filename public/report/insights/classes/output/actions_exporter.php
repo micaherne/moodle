@@ -24,6 +24,10 @@
 
 namespace report_insights\output;
 
+use core\context;
+use core\output\action_menu;
+use core\output\renderer_base;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -44,12 +48,12 @@ class actions_exporter {
      * @param  bool                              $includedetailsaction
      * @return \stdClass|false
      */
-    public static function add_prediction_actions(\core_analytics\local\target\base $target, \renderer_base $output,
+    public static function add_prediction_actions(\core_analytics\local\target\base $target, renderer_base $output,
             \core_analytics\prediction $prediction, bool $includedetailsaction = false) {
 
         $actions = $target->prediction_actions($prediction, $includedetailsaction);
         if ($actions) {
-            $actionsmenu = new \action_menu();
+            $actionsmenu = new action_menu();
 
             // Add all actions defined by the target.
             foreach ($actions as $action) {
@@ -73,8 +77,8 @@ class actions_exporter {
      * @param  \context                          $context       The context of these predictions.
      * @return \stdClass[]|false
      */
-    public static function add_bulk_actions(\core_analytics\local\target\base $target, \renderer_base $output, array $predictions,
-            \context $context) {
+    public static function add_bulk_actions(\core_analytics\local\target\base $target, renderer_base $output, array $predictions,
+            context $context) {
         global $USER;
 
         $bulkactions = $target->bulk_actions($predictions);

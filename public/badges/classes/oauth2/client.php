@@ -32,8 +32,8 @@ require_once($CFG->libdir . '/oauthlib.php');
 require_once($CFG->libdir . '/filelib.php');
 require_once('badge_backpack_oauth2.php');
 
-use moodle_url;
-use moodle_exception;
+use core\url;
+use core\exception\moodle_exception;
 use stdClass;
 
 define('BACKPACK_CHALLENGE_METHOD', 'S256');
@@ -126,7 +126,7 @@ class client extends \core\oauth2\client {
                 'code_challenge_method' => BACKPACK_CHALLENGE_METHOD,
             ]
         );
-        return new moodle_url($this->auth_url(), $params);
+        return new url($this->auth_url(), $params);
     }
 
     /**
@@ -173,7 +173,7 @@ class client extends \core\oauth2\client {
      * @return moodle_url url of callback
      */
     public static function callback_url() {
-        return new moodle_url('/admin/oauth2callback.php');
+        return new url('/admin/oauth2callback.php');
     }
 
     /**

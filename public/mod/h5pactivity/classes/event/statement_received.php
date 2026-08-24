@@ -24,6 +24,8 @@
 
 namespace mod_h5pactivity\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -71,7 +73,7 @@ class statement_received extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/h5pactivity/grade.php',
+        return new url('/mod/h5pactivity/grade.php',
                 ['id' => $this->contextinstanceid, 'user' => $this->userid]);
     }
 

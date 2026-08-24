@@ -16,6 +16,7 @@
 
 namespace qformat_gift;
 
+use core\context;
 use core\test\phpunit\phpunit_util;
 use qformat_gift;
 use question_bank;
@@ -1374,7 +1375,7 @@ FALSE#42 is the Ultimate Answer.#You gave the right answer.}";
         $question = $generator->create_question('truefalse', null,
                 ['category' => $category->id, 'idnumber' => 'myid']);
         \core_tag_tag::set_item_tags('core_question', 'question', $question->id,
-                \context::instance_by_id($category->contextid), ['tag1', 'tag2'], 0);
+                context::instance_by_id($category->contextid), ['tag1', 'tag2'], 0);
 
         // Export it.
         $questiondata = question_bank::load_question_data($question->id);

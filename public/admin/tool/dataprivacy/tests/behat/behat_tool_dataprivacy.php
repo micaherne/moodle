@@ -27,6 +27,12 @@ require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
 
 use Behat\Gherkin\Node\TableNode as TableNode;
 use Behat\Behat\Tester\Exception\PendingException as PendingException;
+use core\context\block;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\exception\coding_exception;
+use core\user;
 use tool_dataprivacy\api;
 
 /**
@@ -160,7 +166,7 @@ class behat_tool_dataprivacy extends behat_base {
         ];
         $select = 'name = :name OR idnumber = :idnumber';
         $coursecatid = $DB->get_field_select('course_categories', 'id', $select, $params, MUST_EXIST);
-        $context = context_coursecat::instance($coursecatid);
+        $context = coursecat::instance($coursecatid);
 
         $this->set_category_and_purpose($context->id, $category, $purpose);
     }
@@ -184,7 +190,7 @@ class behat_tool_dataprivacy extends behat_base {
         ];
         $select = 'shortname = :shortname OR fullname = :fullname OR idnumber = :idnumber';
         $courseid = $DB->get_field_select('course', 'id', $select, $params, MUST_EXIST);
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
 
         $this->set_category_and_purpose($context->id, $category, $purpose);
     }
@@ -222,7 +228,7 @@ class behat_tool_dataprivacy extends behat_base {
         if ($cmid === null) {
             throw new coding_exception("Activity module '{$name}' of type '{$type}' not found!");
         }
-        $context = context_module::instance($cmid);
+        $context = module::instance($cmid);
 
         $this->set_category_and_purpose($context->id, $category, $purpose);
     }
@@ -249,11 +255,11 @@ class behat_tool_dataprivacy extends behat_base {
         $courseid = $DB->get_field_select('course', 'id', $select, $params, MUST_EXIST);
 
         // Fetch the course context.
-        $coursecontext = context_course::instance($courseid);
+        $coursecontext = course::instance($courseid);
 
         // Fetch the block record and context.
         $blockid = $DB->get_field('block_instances', 'id', ['blockname' => $name, 'parentcontextid' => $coursecontext->id]);
-        $context = context_block::instance($blockid);
+        $context = block::instance($blockid);
 
         // Set the category and purpose.
         $this->set_category_and_purpose($context->id, $category, $purpose);
@@ -295,7 +301,7 @@ class behat_tool_dataprivacy extends behat_base {
             throw new \Behat\Behat\Tester\Exception\ExpectationException("Unknown request type '{$type}'");
         }
 
-        $user = \core_user::get_user_by_username($username);
+        $user = user::get_user_by_username($username);
 
         \tool_dataprivacy\api::create_data_request($user->id, $type);
     }
@@ -317,7 +323,7 @@ class behat_tool_dataprivacy extends behat_base {
             throw new \Behat\Behat\Tester\Exception\ExpectationException("Unknown request type '{$type}'");
         }
 
-        $user = \core_user::get_user_by_username($username);
+        $user = user::get_user_by_username($username);
 
         $request = \tool_dataprivacy\data_request::get_record([
             'userid'    => $user->id,

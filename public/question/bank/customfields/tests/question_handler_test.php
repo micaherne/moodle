@@ -16,6 +16,8 @@
 
 namespace qbank_customfields;
 
+use core\context\module;
+
 /**
  * Class qbank_customfields_question_handler_testcase
  *
@@ -36,7 +38,7 @@ final class question_handler_test extends \advanced_testcase {
         $course = self::getDataGenerator()->create_course();
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $questioncategory = $questiongenerator->create_question_category(['contextid' => $context->id]);
         $questiondata = ['category' => $questioncategory->id, 'idnumber' => 'q1'];
         $question = $questiongenerator->create_question('shortanswer', null, $questiondata);

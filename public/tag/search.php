@@ -21,12 +21,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../config.php');
 
 require_login();
 
 if (empty($CFG->usetags)) {
-    throw new \moodle_exception('tagsaredisabled', 'tag');
+    throw new moodle_exception('tagsaredisabled', 'tag');
 }
 
 $query     = optional_param('query', '', PARAM_RAW);
@@ -41,16 +45,16 @@ if ($tagcollid) {
     $params['tc'] = $tagcollid;
 }
 
-$PAGE->set_url(new moodle_url('/tag/search.php', $params));
-$PAGE->set_context(context_system::instance());
+$PAGE->set_url(new url('/tag/search.php', $params));
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('standard');
 
 $PAGE->set_title(get_string('tags', 'tag'));
 $PAGE->set_heading($SITE->fullname);
 
 $buttons = '';
-if (has_capability('moodle/tag:manage', context_system::instance())) {
-    $buttons .= $OUTPUT->single_button(new moodle_url('/tag/manage.php'),
+if (has_capability('moodle/tag:manage', system::instance())) {
+    $buttons .= $OUTPUT->single_button(new url('/tag/manage.php'),
             get_string('managetags', 'tag'), 'GET');
 }
 if ($PAGE->user_allowed_editing()) {

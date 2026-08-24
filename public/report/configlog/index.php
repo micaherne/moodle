@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
 use core_reportbuilder\system_report_factory;
 use core_reportbuilder\local\filters\text;
 use report_configlog\reportbuilder\local\systemreports\config_changes;
@@ -39,7 +40,7 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('configlog', 'report_configlog'));
 
 // Create out report instance, setting initial filtering if required.
-$report = system_report_factory::create(config_changes::class, context_system::instance());
+$report = system_report_factory::create(config_changes::class, system::instance());
 if (!empty($search)) {
     $report->set_filter_values([
         'config_change:setting_operator' => text::IS_EQUAL_TO,

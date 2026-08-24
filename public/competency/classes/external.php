@@ -27,10 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/grade/grade_scale.php");
 
-use context_course;
-use context_module;
-use context_system;
-use context_user;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context\user;
 use core_competency\external\competency_exporter;
 use core_competency\external\competency_framework_exporter;
 use core_competency\external\course_competency_exporter;
@@ -49,7 +49,7 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use grade_scale;
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 
 /**
  * External API class.
@@ -846,7 +846,7 @@ class external extends external_api {
             $framework = api::read_framework($safefilters['competencyframeworkid']);
             $context = $framework->get_context();
         } else {
-            $context = context_system::instance();
+            $context = system::instance();
         }
 
         self::validate_context($context);
@@ -988,7 +988,7 @@ class external extends external_api {
             $framework = api::read_framework($safefilters['competencyframeworkid']);
             $context = $framework->get_context();
         } else {
-            $context = context_system::instance();
+            $context = system::instance();
         }
 
         self::validate_context($context);
@@ -1214,7 +1214,7 @@ class external extends external_api {
             'id' => $courseid,
         ));
 
-        self::validate_context(context_course::instance($params['id']));
+        self::validate_context(course::instance($params['id']));
 
         return api::count_competencies_in_course($params['id']);
     }
@@ -1258,7 +1258,7 @@ class external extends external_api {
             'cmid' => $cmid
         ));
 
-        $context = context_module::instance($params['cmid']);
+        $context = module::instance($params['cmid']);
         self::validate_context($context);
 
         $output = $PAGE->get_renderer('core');
@@ -1338,7 +1338,7 @@ class external extends external_api {
             'cmid' => $cmid
         ));
 
-        $context = context_module::instance($params['cmid']);
+        $context = module::instance($params['cmid']);
         self::validate_context($context);
 
         return api::count_course_module_competencies($params['cmid']);
@@ -1366,7 +1366,7 @@ class external extends external_api {
             'id' => $courseid,
         ));
 
-        $coursecontext = context_course::instance($params['id']);
+        $coursecontext = course::instance($params['id']);
         self::validate_context($coursecontext);
 
         $output = $PAGE->get_renderer('core');
@@ -1441,7 +1441,7 @@ class external extends external_api {
             'courseid' => $courseid,
             'competencyid' => $competencyid,
         ));
-        self::validate_context(context_course::instance($params['courseid']));
+        self::validate_context(course::instance($params['courseid']));
         return api::add_competency_to_course($params['courseid'], $params['competencyid']);
     }
 
@@ -1489,7 +1489,7 @@ class external extends external_api {
             'courseid' => $courseid,
             'competencyid' => $competencyid,
         ));
-        self::validate_context(context_course::instance($params['courseid']));
+        self::validate_context(course::instance($params['courseid']));
         return api::remove_competency_from_course($params['courseid'], $params['competencyid']);
     }
 
@@ -1545,7 +1545,7 @@ class external extends external_api {
             'competencyidfrom' => $competencyidfrom,
             'competencyidto' => $competencyidto,
         ));
-        self::validate_context(context_course::instance($params['courseid']));
+        self::validate_context(course::instance($params['courseid']));
         return api::reorder_course_competency($params['courseid'], $params['competencyidfrom'], $params['competencyidto']);
     }
 
@@ -2464,7 +2464,7 @@ class external extends external_api {
             'competencyid' => $competencyid
         ));
 
-        $context = context_user::instance($params['userid']);
+        $context = user::instance($params['userid']);
         self::validate_context($context);
 
         return api::user_competency_cancel_review_request($userid, $competencyid);
@@ -2504,7 +2504,7 @@ class external extends external_api {
             'competencyid' => $competencyid,
         ));
 
-        $context = context_user::instance($params['userid']);
+        $context = user::instance($params['userid']);
         self::validate_context($context);
 
         return api::user_competency_request_review($userid, $competencyid);
@@ -2544,7 +2544,7 @@ class external extends external_api {
             'competencyid' => $competencyid
         ));
 
-        $context = context_user::instance($params['userid']);
+        $context = user::instance($params['userid']);
         self::validate_context($context);
 
         return api::user_competency_start_review($userid, $competencyid);
@@ -2584,7 +2584,7 @@ class external extends external_api {
             'competencyid' => $competencyid
         ));
 
-        $context = context_user::instance($params['userid']);
+        $context = user::instance($params['userid']);
         self::validate_context($context);
 
         return api::user_competency_stop_review($userid, $competencyid);
@@ -2692,7 +2692,7 @@ class external extends external_api {
         $params = self::validate_parameters(self::create_plan_parameters(), array('plan' => $plan));
         $params = $params['plan'];
 
-        $context = context_user::instance($params['userid']);
+        $context = user::instance($params['userid']);
         self::validate_context($context);
         $output = $PAGE->get_renderer('core');
 
@@ -3241,7 +3241,7 @@ class external extends external_api {
             'userid' => $userid
         ));
 
-        $context = context_user::instance($params['userid']);
+        $context = user::instance($params['userid']);
         self::validate_context($context);
         $output = $PAGE->get_renderer('core');
 
@@ -3490,7 +3490,7 @@ class external extends external_api {
                 'scaleid' => $scaleid,
             )
         );
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         // The following section is not learning plan specific and so has not been moved to the api.
         // Retrieve the scale value from the database.
@@ -3660,7 +3660,7 @@ class external extends external_api {
         ));
 
         $coursecompetency = new course_competency($params['coursecompetencyid']);
-        self::validate_context(context_course::instance($coursecompetency->get('courseid')));
+        self::validate_context(course::instance($coursecompetency->get('courseid')));
 
         return api::set_course_competency_ruleoutcome($coursecompetency, $params['ruleoutcome']);
     }
@@ -4128,7 +4128,7 @@ class external extends external_api {
         ));
 
         $course = $DB->get_record('course', array('id' => $params['courseid']));
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         self::validate_context($context);
         $output = $PAGE->get_renderer('core');
 
@@ -4288,7 +4288,7 @@ class external extends external_api {
             'settings' => $settings
         ));
 
-        $context = context_course::instance($params['courseid']);
+        $context = course::instance($params['courseid']);
         self::validate_context($context);
         $result = api::update_course_competency_settings($params['courseid'], $params['settings']);
 

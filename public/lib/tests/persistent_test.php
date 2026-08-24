@@ -17,9 +17,9 @@
 namespace core;
 
 use advanced_testcase;
-use coding_exception;
+use core\exception\coding_exception;
 use dml_missing_record_exception;
-use lang_string;
+use core\lang_string;
 use xmldb_table;
 
 /**

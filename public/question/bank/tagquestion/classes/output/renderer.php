@@ -16,7 +16,7 @@
 
 namespace qbank_tagquestion\output;
 
-use plugin_renderer_base;
+use core\output\plugin_renderer_base;
 
 /**
  * Class renderer for qbank_tagquestion.

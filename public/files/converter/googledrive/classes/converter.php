@@ -25,9 +25,10 @@ namespace fileconverter_googledrive;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
 use stored_file;
-use moodle_exception;
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
 use \core_files\conversion;
 
 /**
@@ -142,7 +143,7 @@ class converter implements \core_files\converter_interface {
         $fileid = $result->id;
         // Now export it again.
         $params = ['mimeType' => $exportformat];
-        $sourceurl = new moodle_url('https://www.googleapis.com/drive/v3/files/' . $fileid . '/export', $params);
+        $sourceurl = new url('https://www.googleapis.com/drive/v3/files/' . $fileid . '/export', $params);
         $source = $sourceurl->out(false);
 
         $tmp = make_request_directory();
@@ -177,7 +178,7 @@ class converter implements \core_files\converter_interface {
         require_once($CFG->libdir . '/filelib.php');
 
         $filerecord = [
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'test',
             'filearea' => 'fileconverter_googledrive',
             'itemid' => 0,

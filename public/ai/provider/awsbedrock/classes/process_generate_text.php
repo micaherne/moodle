@@ -17,6 +17,7 @@
 namespace aiprovider_awsbedrock;
 
 use Aws\Result;
+use core\exception\coding_exception;
 
 /**
  * Class process text generation.
@@ -255,7 +256,7 @@ class process_generate_text extends abstract_processor {
         } else if (str_contains($model, 'mistral')) {
             $requestobj = $this->create_mistral_request($requestobj, $systeminstruction, $modelsettings);
         } else {
-            throw new \coding_exception('Unknown model class type.');
+            throw new coding_exception('Unknown model class type.');
         }
 
         return [
@@ -299,7 +300,7 @@ class process_generate_text extends abstract_processor {
             $response['finishreason'] = $bodyobj->outputs[0]->stop_reason;
             $response['model'] = $model;
         } else {
-            throw new \coding_exception('Unknown model class type.');
+            throw new coding_exception('Unknown model class type.');
         }
 
         return $response;

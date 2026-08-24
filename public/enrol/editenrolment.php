@@ -27,6 +27,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\navigation\navigation_node;
+use core\url;
+
 require('../config.php');
 require_once("$CFG->dirroot/enrol/locallib.php"); // Required for the course enrolment manager.
 require_once("$CFG->dirroot/enrol/renderer.php"); // Required for the course enrolment users table.
@@ -41,7 +45,7 @@ $instance = $DB->get_record('enrol', array('id'=>$ue->enrolid), '*', MUST_EXIST)
 $course = $DB->get_record('course', array('id'=>$instance->courseid), '*', MUST_EXIST);
 
 // The URL of the enrolled users page for the course.
-$usersurl = new moodle_url('/user/index.php', array('id' => $course->id));
+$usersurl = new url('/user/index.php', array('id' => $course->id));
 
 // Do not allow any changes if plugin disabled, not available or not suitable.
 if (!$plugin = enrol_get_plugin($instance->enrol)) {
@@ -54,7 +58,7 @@ if (!$plugin->allow_manage($instance)) {
 // Obviously.
 require_login($course);
 // The user must be able to manage enrolments within the course.
-require_capability('enrol/'.$instance->enrol.':manage', context_course::instance($course->id, MUST_EXIST));
+require_capability('enrol/'.$instance->enrol.':manage', course::instance($course->id, MUST_EXIST));
 
 // Get the enrolment manager for this course.
 $manager = new course_enrolment_manager($PAGE, $course, $filter);
@@ -64,9 +68,9 @@ $manager = new course_enrolment_manager($PAGE, $course, $filter);
 $table = new course_enrolment_users_table($manager, $PAGE);
 
 // The URl to return the user too after this screen.
-$returnurl = new moodle_url($usersurl, $manager->get_url_params()+$table->get_url_params());
+$returnurl = new url($usersurl, $manager->get_url_params()+$table->get_url_params());
 // The URL of this page.
-$url = new moodle_url('/enrol/editenrolment.php', $returnurl->params());
+$url = new url('/enrol/editenrolment.php', $returnurl->params());
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');

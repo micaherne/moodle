@@ -16,8 +16,8 @@
 
 namespace core\navigation\views;
 
-use navigation_node;
-use navigation_node_collection;
+use core\navigation\navigation_node;
+use core\navigation\navigation_node_collection;
 
 /**
  * Class view.

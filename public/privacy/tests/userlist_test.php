@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\system;
 use \core_privacy\local\request\userlist;
 
 /**
@@ -50,7 +51,7 @@ final class userlist_test extends advanced_testcase {
         $params = [];
         $allusers = $DB->get_records_sql($sql, $params);
 
-        $uut = new userlist(\context_system::instance(), 'core_privacy');
+        $uut = new userlist(system::instance(), 'core_privacy');
         $uut->add_from_sql('id', $sql, $params);
 
         $this->assertCount(count($allusers), $uut);
@@ -67,7 +68,7 @@ final class userlist_test extends advanced_testcase {
         $u1 = $this->getDataGenerator()->create_user();
         $u2 = $this->getDataGenerator()->create_user();
 
-        $uut = new userlist(\context_system::instance(), 'core_privacy');
+        $uut = new userlist(system::instance(), 'core_privacy');
         $uut->add_user($u1->id);
 
         $this->assertCount(1, $uut);
@@ -88,7 +89,7 @@ final class userlist_test extends advanced_testcase {
         $u3 = $this->getDataGenerator()->create_user();
         $expected = [$u1->id, $u3->id];
 
-        $uut = new userlist(\context_system::instance(), 'core_privacy');
+        $uut = new userlist(system::instance(), 'core_privacy');
         $uut->add_users([$u1->id, $u3->id]);
 
         $this->assertCount(2, $uut);

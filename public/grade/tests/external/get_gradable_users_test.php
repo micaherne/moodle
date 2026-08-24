@@ -16,6 +16,7 @@
 
 namespace core_grades\external;
 
+use core\exception\required_capability_exception;
 use core_external\external_api;
 
 /**
@@ -245,7 +246,7 @@ final class get_gradable_users_test extends \core_external\tests\externallib_tes
             $result = get_gradable_users::execute($course->id);
             $result = external_api::clean_returnvalue(get_gradable_users::execute_returns(), $result);
             $this->fail('Users without moodle/site:viewuseridentity should not be able to access this service.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
     }

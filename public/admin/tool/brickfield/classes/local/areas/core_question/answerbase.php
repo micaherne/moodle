@@ -16,6 +16,7 @@
 
 namespace tool_brickfield\local\areas\core_question;
 
+use core\context\course;
 use core\event\question_created;
 use core\event\question_updated;
 
@@ -134,7 +135,7 @@ abstract class answerbase extends base {
     public function find_course_areas(int $courseid): ?\moodle_recordset {
         global $DB;
 
-        $coursecontext = \context_course::instance($courseid);
+        $coursecontext = course::instance($courseid);
         $param = [
             'module' => CONTEXT_MODULE,
             'coursecontextpath' => $DB->sql_like_escape($coursecontext->path) . '/%',

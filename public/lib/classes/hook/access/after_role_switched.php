@@ -16,7 +16,7 @@
 
 namespace core\hook\access;
 
-use context;
+use core\context;
 
 /**
  * Hook after we switch user role.

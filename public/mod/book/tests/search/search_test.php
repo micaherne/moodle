@@ -25,6 +25,9 @@
 
 namespace mod_book\search;
 
+use core\context\course;
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -128,17 +131,17 @@ final class search_test extends \advanced_testcase {
                 'content' => 'Chapter3', 'title' => 'Title3'));
 
         // Query by context, first book.
-        $recordset = $searcharea->get_document_recordset(0, \context_module::instance($book->cmid));
+        $recordset = $searcharea->get_document_recordset(0, module::instance($book->cmid));
         $this->assertEquals(2, iterator_count($recordset));
         $recordset->close();
 
         // Second book.
-        $recordset = $searcharea->get_document_recordset(0, \context_module::instance($book2->cmid));
+        $recordset = $searcharea->get_document_recordset(0, module::instance($book2->cmid));
         $this->assertEquals(1, iterator_count($recordset));
         $recordset->close();
 
         // Course.
-        $recordset = $searcharea->get_document_recordset(0, \context_course::instance($course1->id));
+        $recordset = $searcharea->get_document_recordset(0, course::instance($course1->id));
         $this->assertEquals(3, iterator_count($recordset));
         $recordset->close();
     }

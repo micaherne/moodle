@@ -23,16 +23,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 
 // Course id.
 $courseid = required_param('courseid', PARAM_INT);
 
-$PAGE->set_url(new moodle_url('/report/view.php', array('courseid' => $courseid)));
+$PAGE->set_url(new url('/report/view.php', array('courseid' => $courseid)));
 
 // Basic access checks.
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 require_login($course);
 
@@ -48,7 +53,7 @@ echo $OUTPUT->heading(get_string('reports'));
 
 // Check if there is at least one displayable report.
 $hasreports = false;
-if ($reportnode = $PAGE->settingsnav->find('coursereports', \navigation_node::TYPE_CONTAINER)) {
+if ($reportnode = $PAGE->settingsnav->find('coursereports', navigation_node::TYPE_CONTAINER)) {
     foreach ($reportnode->children as $child) {
         if ($child->display) {
             $hasreports = true;

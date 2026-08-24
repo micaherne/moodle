@@ -24,7 +24,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\lang_string;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\progress_trace;
 use core\output\single_button;
+use core\url;
 use core_enrol\output\enrol_page;
 
 /**
@@ -44,7 +50,7 @@ class enrol_fee_plugin extends enrol_plugin {
     public function get_instance_name_for_management_page(stdClass $instance): string {
         $result = $this->get_instance_name($instance);
         if (strlen((string)$instance->customchar1)) {
-            $context = context_course::instance($instance->courseid);
+            $context = course::instance($instance->courseid);
             $result .= html_writer::empty_tag('br') .
                 html_writer::tag('em', format_string($instance->customchar1, true, ['context' => $context]));
         }
@@ -126,7 +132,7 @@ class enrol_fee_plugin extends enrol_plugin {
      * @return boolean
      */
     public function can_add_instance($courseid) {
-        $context = context_course::instance($courseid, MUST_EXIST);
+        $context = course::instance($courseid, MUST_EXIST);
 
         if (empty(\core_payment\helper::get_supported_currencies())) {
             return false;
@@ -192,7 +198,7 @@ class enrol_fee_plugin extends enrol_plugin {
         }
 
         $course = $DB->get_record('course', array('id' => $instance->courseid));
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         if ( (float) $instance->cost <= 0 ) {
             $cost = (float) $this->get_config('cost');
@@ -214,7 +220,7 @@ class enrol_fee_plugin extends enrol_plugin {
             return $OUTPUT->render($enrolpage);
         } else {
             if (isguestuser() || !isloggedin()) {
-                $button = new single_button(new moodle_url(get_login_url()), get_string('loginsite'),
+                $button = new single_button(new url(get_login_url()), get_string('loginsite'),
                      'get', single_button::BUTTON_PRIMARY);
             } else {
                 $PAGE->requires->js_call_amd('core_payment/gateways_modal', 'init');
@@ -449,7 +455,7 @@ class enrol_fee_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/fee:config', $context);
     }
 
@@ -460,7 +466,7 @@ class enrol_fee_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/fee:config', $context);
     }
 }

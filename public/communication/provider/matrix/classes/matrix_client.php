@@ -17,7 +17,9 @@
 namespace communication_matrix;
 
 use communication_matrix\local\command;
+use core\exception\moodle_exception;
 use core\http_client;
+use core_cache\cache;
 use DirectoryIterator;
 use Exception;
 use GuzzleHttp\Psr7\Response;
@@ -80,7 +82,7 @@ abstract class matrix_client {
         $versions = array_intersect($clientversions, $serverversions);
         if (count($versions) === 0) {
             // No versions in common.
-            throw new \moodle_exception('No supported Matrix API versions found.');
+            throw new moodle_exception('No supported Matrix API versions found.');
         }
         asort($versions);
         $version = array_key_last($versions);
@@ -144,11 +146,11 @@ abstract class matrix_client {
         if (!$this->implements_feature($feature)) {
             if (is_array($feature)) {
                 $features = implode(', ', $feature);
-                throw new \moodle_exception(
+                throw new moodle_exception(
                     "None of the possible feature are implemented in this Matrix Client: '{$features}'"
                 );
             }
-            throw new \moodle_exception("The requested feature is not implemented in this Matrix Client: '{$feature}'");
+            throw new moodle_exception("The requested feature is not implemented in this Matrix Client: '{$feature}'");
         }
     }
 
@@ -197,7 +199,7 @@ abstract class matrix_client {
      */
     protected static function query_server_supports(string $serverurl): ?\stdClass {
         // Attempt to return from the cache first.
-        $cache = \cache::make('communication_matrix', 'serverversions');
+        $cache = cache::make('communication_matrix', 'serverversions');
         $serverkey = sha1($serverurl);
         if ($cache->get($serverkey)) {
             return $cache->get($serverkey);
@@ -343,6 +345,6 @@ abstract class matrix_client {
             return;
         }
 
-        throw new \moodle_exception("Matrix API version {$minversion} or higher is required for this command.");
+        throw new moodle_exception("Matrix API version {$minversion} or higher is required for this command.");
     }
 }

@@ -16,6 +16,8 @@
 
 namespace availability_grouping;
 
+use core\exception\coding_exception;
+
 /**
  * Unit tests for the condition.
  *
@@ -122,7 +124,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing ->id / ->activity', $e->getMessage());
         }
 
@@ -131,7 +133,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Invalid ->id', $e->getMessage());
         }
 
@@ -141,7 +143,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Invalid ->activity', $e->getMessage());
         }
 
@@ -150,7 +152,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Invalid ->activity', $e->getMessage());
         }
 

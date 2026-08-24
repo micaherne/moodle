@@ -16,6 +16,10 @@
 
 namespace core;
 
+use core\context\course;
+use core\context\coursecat;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -133,7 +137,7 @@ final class gradelib_test extends \advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Add a grade letter to the course.
         $letter = new \stdClass();
@@ -143,7 +147,7 @@ final class gradelib_test extends \advanced_testcase {
         $DB->insert_record('grade_letters', $letter);
 
         // Pre-warm the cache, ensure that that the letter is cached.
-        $cache = \cache::make('core', 'grade_letters');
+        $cache = cache::make('core', 'grade_letters');
 
         // Check that the cache is empty beforehand.
         $letters = $cache->get($context->id);
@@ -180,7 +184,7 @@ final class gradelib_test extends \advanced_testcase {
         $letter = new \stdClass();
         $letter->letter = 'M';
         $letter->lowerboundary = '100';
-        $letter->contextid = \context_coursecat::instance($category->id)->id;
+        $letter->contextid = coursecat::instance($category->id)->id;
         $DB->insert_record('grade_letters', $letter);
 
         grade_course_category_delete($category->id, '', false);
@@ -322,9 +326,9 @@ final class gradelib_test extends \advanced_testcase {
 
         // Setup some basics.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
-        $cache = \cache::make('core', 'grade_letters');
+        $cache = cache::make('core', 'grade_letters');
         $letters = $cache->get($context->id);
 
         // Make sure the cache is empty.
@@ -347,9 +351,9 @@ final class gradelib_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
-        $cache = \cache::make('core', 'grade_letters');
+        $cache = cache::make('core', 'grade_letters');
         $letters = $cache->get($context->id);
 
         // Make sure the cache is empty.

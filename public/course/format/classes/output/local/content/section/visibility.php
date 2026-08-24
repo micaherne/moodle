@@ -15,16 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace core_courseformat\output\local\content\section;
 
-use context_course;
+use core\context\course;
 use core\output\choicelist;
 use core\output\local\dropdown\status;
 use core\output\named_templatable;
+use core\output\renderer_base;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
 use core_courseformat\sectiondelegatemodule;
-use pix_icon;
-use renderable;
-use section_info;
+use core\output\pix_icon;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -59,14 +60,14 @@ class visibility implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass|null data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): ?stdClass {
+    public function export_for_template(renderer_base $output): ?stdClass {
         global $USER;
 
         if ($this->section->visible) {
             return null;
         }
 
-        $context = context_course::instance($this->section->course);
+        $context = course::instance($this->section->course);
         $data = new stdClass();
 
         if (!has_capability('moodle/course:sectionvisibility', $context, $USER)) {
@@ -110,7 +111,7 @@ class visibility implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array
      */
-    protected function get_visibility_dropdown(\renderer_base $output): array {
+    protected function get_visibility_dropdown(renderer_base $output): array {
         $badgetext = $output->visually_hidden_text(get_string('availability'));
         $badgetext .= get_string('hiddenfromstudents');
         $icon = $this->get_icon('hide');

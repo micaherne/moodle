@@ -22,16 +22,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configmulticheckbox;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
 
-    $settings->add(new admin_setting_configmulticheckbox('filter_urltolink/formats',
+    $settings->add(new configmulticheckbox('filter_urltolink/formats',
             get_string('settingformats', 'filter_urltolink'),
             get_string('settingformats_desc', 'filter_urltolink'),
             [FORMAT_HTML => 1, FORMAT_MARKDOWN => 1, FORMAT_MOODLE => 1], format_text_menu()));
 
-    $settings->add(new admin_setting_configcheckbox('filter_urltolink/embedimages',
+    $settings->add(new configcheckbox('filter_urltolink/embedimages',
             get_string('embedimages', 'filter_urltolink'),
             get_string('embedimages_desc', 'filter_urltolink'),
             1));

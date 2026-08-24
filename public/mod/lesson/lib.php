@@ -23,6 +23,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\context\course;
+use core\context\module;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\output\html_writer;
+use core\url;
+use core_cache\cache;
+use core_course\cached_cm_info;
+use core_course\cm_info;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Event types.
@@ -47,7 +58,7 @@ function lesson_add_instance($data, $mform) {
 
     $cmid = $data->coursemodule;
     $draftitemid = $data->mediafile;
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
     lesson_process_pre_save($data);
 
@@ -79,7 +90,7 @@ function lesson_update_instance($data, $mform) {
     $data->id = $data->instance;
     $cmid = $data->coursemodule;
     $draftitemid = $data->mediafile;
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
     lesson_process_pre_save($data);
 
@@ -407,7 +418,7 @@ function lesson_user_outline($course, $user, $mod, $lesson) {
                 $return->info = get_string("nolessonattempts", "lesson");
             }
         } else {
-            if (!$grade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+            if (!$grade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
                 $return->info = get_string('gradenoun') . ': ' . $grade->str_long_grade;
             } else {
                 $return->info = get_string('gradenoun') . ': ' . get_string('hidden', 'grades');
@@ -461,7 +472,7 @@ function lesson_user_complete($course, $user, $mod, $lesson) {
                 $status = get_string("nolessonattempts", "lesson");
             }
         } else {
-            if (!$grade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+            if (!$grade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
                 $status = get_string('gradenoun') . ': ' . $grade->str_long_grade;
             } else {
                 $status = get_string('gradenoun') . ': ' . get_string('hidden', 'grades');
@@ -472,7 +483,7 @@ function lesson_user_complete($course, $user, $mod, $lesson) {
         echo $OUTPUT->container($status);
 
         if ($grade->str_feedback &&
-            (!$grade->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id)))) {
+            (!$grade->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id)))) {
             echo $OUTPUT->container(get_string('feedback').': '.$grade->str_feedback);
         }
     }
@@ -899,7 +910,7 @@ function lesson_reset_userdata($data) {
                 if (!$cm = get_coursemodule_from_instance('lesson', $lessonid)) {
                     continue;
                 }
-                $context = context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 $fs->delete_area_files($context->id, 'mod_lesson', 'essay_responses');
                 $fs->delete_area_files($context->id, 'mod_lesson', 'essay_answers');
             }
@@ -1025,7 +1036,7 @@ function lesson_extend_settings_navigation(settings_navigation $settings, naviga
     }
 
     if (has_capability('mod/lesson:manageoverrides', $settings->get_page()->cm->context)) {
-        $url = new moodle_url('/mod/lesson/overrides.php', ['cmid' => $settings->get_page()->cm->id, 'mode' => 'user']);
+        $url = new url('/mod/lesson/overrides.php', ['cmid' => $settings->get_page()->cm->id, 'mode' => 'user']);
         $node = navigation_node::create(get_string('overrides', 'lesson'), $url,
                 navigation_node::TYPE_SETTING, null, 'mod_lesson_useroverrides');
         $lessonnode->add_node($node, $beforekey);
@@ -1034,7 +1045,7 @@ function lesson_extend_settings_navigation(settings_navigation $settings, naviga
     if (has_capability('mod/lesson:viewreports', $settings->get_page()->cm->context)) {
         $reportsnode = $lessonnode->add(
             get_string('reports', 'lesson'),
-            new moodle_url('/mod/lesson/report.php', ['id' => $settings->get_page()->cm->id,
+            new url('/mod/lesson/report.php', ['id' => $settings->get_page()->cm->id,
                 'action' => 'reportoverview'])
         );
     }
@@ -1457,7 +1468,7 @@ function mod_lesson_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('startlesson', 'lesson'),
-        new \moodle_url('/mod/lesson/view.php', ['id' => $cm->id]),
+        new url('/mod/lesson/view.php', ['id' => $cm->id]),
         1,
         $lesson->is_accessible()
     );
@@ -1677,7 +1688,7 @@ function mod_lesson_core_calendar_event_timestart_updated(\calendar_event $event
     $modified = false;
 
     $coursemodule = get_fast_modinfo($courseid)->instances[$modulename][$instanceid];
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
 
     // The user does not have the capability to modify this activity.
     if (!has_capability('moodle/course:manageactivities', $context)) {

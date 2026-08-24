@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -187,7 +190,7 @@ final class core_media_manager {
      * @param array $options Array of key/value pairs
      * @return string HTML content of embed
      */
-    public function embed_url(moodle_url $url, $name = '', $width = 0, $height = 0,
+    public function embed_url(url $url, $name = '', $width = 0, $height = 0,
                               $options = array()) {
 
         // Get width and height from URL if specified (overrides parameters in
@@ -196,7 +199,7 @@ final class core_media_manager {
         if (preg_match('/[?#]d=([\d]{1,4}%?)x([\d]{1,4}%?)/', $rawurl, $matches)) {
             $width = $matches[1];
             $height = $matches[2];
-            $url = new moodle_url(str_replace($matches[0], '', $rawurl));
+            $url = new url(str_replace($matches[0], '', $rawurl));
         }
 
         // Defer to array version of function.
@@ -319,7 +322,7 @@ final class core_media_manager {
      * @param array $options Options (same as when embedding)
      * @return bool True if file can be embedded
      */
-    public function can_embed_url(moodle_url $url, $options = array()) {
+    public function can_embed_url(url $url, $options = array()) {
         return $this->can_embed_urls(array($url), $options);
     }
 
@@ -419,7 +422,7 @@ final class core_media_manager {
             }
 
             // Turn it into moodle_url object.
-            $returnurls[] = new moodle_url($url);
+            $returnurls[] = new url($url);
         }
 
         return $returnurls;
@@ -429,7 +432,7 @@ final class core_media_manager {
      * Returns the file extension for a URL.
      * @param moodle_url $url URL
      */
-    public function get_extension(moodle_url $url) {
+    public function get_extension(url $url) {
         // Note: Does not use core_text (. is UTF8-safe).
         $filename = self::get_filename($url);
         $dot = strrpos($filename, '.');
@@ -445,7 +448,7 @@ final class core_media_manager {
      * @param moodle_url $url URL
      * @return string Filename only (not escaped)
      */
-    public function get_filename(moodle_url $url) {
+    public function get_filename(url $url) {
         // Use the 'file' parameter if provided (for links created when
         // slasharguments was off). If not present, just use URL path.
         $path = $url->get_param('file');
@@ -466,7 +469,7 @@ final class core_media_manager {
      * @param moodle_url $url URL
      * @return string MIME type
      */
-    public function get_mimetype(moodle_url $url) {
+    public function get_mimetype(url $url) {
         return mimeinfo('type', $this->get_filename($url));
     }
 

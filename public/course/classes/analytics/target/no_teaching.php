@@ -24,6 +24,11 @@
 
 namespace core_course\analytics\target;
 
+use core\context;
+use core\lang_string;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -61,8 +66,8 @@ class no_teaching extends \core_analytics\local\target\binary {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
-        return new \lang_string('target:noteachingactivity', 'course');
+    public static function get_name(): lang_string {
+        return new lang_string('target:noteachingactivity', 'course');
     }
 
     /**
@@ -72,7 +77,7 @@ class no_teaching extends \core_analytics\local\target\binary {
      * @param  \context $context
      * @return string
      */
-    public function get_insight_subject(int $modelid, \context $context) {
+    public function get_insight_subject(int $modelid, context $context) {
         return get_string('noteachingupcomingcourses');
     }
 
@@ -85,7 +90,7 @@ class no_teaching extends \core_analytics\local\target\binary {
      * @param  \moodle_url  $insighturl
      * @return string[]                     The plain text message and the HTML message
      */
-    public function get_insight_body(\context $context, string $contextname, \stdClass $user, \moodle_url $insighturl): array {
+    public function get_insight_body(context $context, string $contextname, \stdClass $user, url $insighturl): array {
         global $OUTPUT;
 
         $a = (object)['userfirstname' => $user->firstname];
@@ -116,14 +121,14 @@ class no_teaching extends \core_analytics\local\target\binary {
 
         $actions = array();
 
-        $url = new \moodle_url('/course/view.php', array('id' => $course->id));
-        $pix = new \pix_icon('i/course', get_string('course'));
+        $url = new url('/course/view.php', array('id' => $course->id));
+        $pix = new pix_icon('i/course', get_string('course'));
         $actions[] = new \core_analytics\prediction_action('viewcourse', $prediction,
             $url, $pix, get_string('view'));
 
         if (course_can_view_participants($sampledata['context'])) {
-            $url = new \moodle_url('/user/index.php', array('id' => $course->id));
-            $pix = new \pix_icon('i/cohort', get_string('participants'));
+            $url = new url('/user/index.php', array('id' => $course->id));
+            $pix = new pix_icon('i/cohort', get_string('participants'));
             $actions[] = new \core_analytics\prediction_action('viewparticipants', $prediction,
                 $url, $pix, get_string('participants'));
         }

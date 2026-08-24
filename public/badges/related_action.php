@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Tung Thai <Tung.ThaiDuc@nashtechglobal.com>
  */
+use \core_badges\badge;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
@@ -30,7 +33,7 @@ $badgeid = optional_param('badgeid', 0, PARAM_INT); // Badge ID.
 $action = optional_param('action', 'remove', PARAM_TEXT); // Add, remove option.
 
 require_login();
-$return = new moodle_url('/badges/related.php', array('id' => $badgeid));
+$return = new url('/badges/related.php', array('id' => $badgeid));
 $badge = new badge($badgeid);
 $context = $badge->get_context();
 require_capability('moodle/badges:configuredetails', $context);

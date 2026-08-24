@@ -40,6 +40,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
 use mod_quiz\output\edit_nav_actions;
 use mod_quiz\quiz_settings;
 
@@ -81,7 +84,7 @@ foreach ($params as $key => $value) {
     }
 }
 
-$afteractionurl = new moodle_url($thispageurl);
+$afteractionurl = new url($thispageurl);
 
 if (optional_param('repaginate', false, PARAM_BOOL) && confirm_sesskey()) {
     // Re-paginate the quiz.

@@ -16,6 +16,7 @@
 
 namespace core_course\route\controller;
 
+use core\exception\coding_exception;
 use core\router\route;
 use core\router\require_login;
 use core_course\cm_info;
@@ -211,7 +212,7 @@ class course_navigation {
         string $direction,
     ): ?section_info {
         if ($direction !== 'next' && $direction !== 'previous') {
-            throw new \coding_exception("Invalid direction '{$direction}'. Expected 'next' or 'previous'.");
+            throw new coding_exception("Invalid direction '{$direction}'. Expected 'next' or 'previous'.");
         }
 
         if ($direction === 'previous' && $currentsection->sectionnum <= 0) {
@@ -262,7 +263,7 @@ class course_navigation {
     ): bool {
         $cmindex = array_search($cm, $allsectioncms, true);
         if ($cmindex === false) {
-            throw new \coding_exception('The course module is not part of the given section.');
+            throw new coding_exception('The course module is not part of the given section.');
         }
 
         // First element in the section checks whether there is a previous section.
@@ -305,7 +306,7 @@ class course_navigation {
     ): bool {
         $cmindex = array_search($cm, $allsectioncms, true);
         if ($cmindex === false) {
-            throw new \coding_exception('The course module is not part of the given section.');
+            throw new coding_exception('The course module is not part of the given section.');
         }
 
         // Last element in the section checks whether there is a next section.

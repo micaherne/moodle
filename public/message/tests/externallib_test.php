@@ -16,10 +16,17 @@
 
 namespace core_message;
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\output\user_picture;
+use core\url;
 use core_external\external_api;
 use core_message\tests\helper as testhelper;
 use core_message_external;
-use core_user;
+use core\user;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -335,7 +342,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($user1);
 
         // Unset the required capabilities by the external function.
-        $contextid = \context_system::instance()->id;
+        $contextid = system::instance()->id;
         $userrole = $DB->get_record('role', array('shortname' => 'user'));
         $this->unassignUserCapability('moodle/site:sendmessage', $contextid, $userrole->id);
 
@@ -451,12 +458,12 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertCount(1, $requests);
 
         $request = reset($requests);
-        $userpicture = new \user_picture($user2);
+        $userpicture = new user_picture($user2);
         $profileimageurl = $userpicture->get_url($PAGE)->out(false);
 
         $this->assertEquals($user2->id, $request['id']);
         $this->assertEquals(fullname($user2), $request['fullname']);
-        $this->assertEquals(core_user::get_initials($user2), $request['initials']);
+        $this->assertEquals(user::get_initials($user2), $request['initials']);
         $this->assertArrayHasKey('profileimageurl', $request);
         $this->assertArrayHasKey('profileimageurlsmall', $request);
         $this->assertArrayHasKey('isonline', $request);
@@ -1108,7 +1115,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($user1);
 
         $authenticateduser = $DB->get_record('role', array('shortname' => 'user'));
-        assign_capability('moodle/site:messageanyuser', CAP_ALLOW, $authenticateduser->id, \context_system::instance(), true);
+        assign_capability('moodle/site:messageanyuser', CAP_ALLOW, $authenticateduser->id, system::instance(), true);
 
         // Blocking a user.
         $return = core_message_external::block_user($user1->id, $user2->id);
@@ -1292,7 +1299,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertEquals($user5->id, $result['id']);
 
         // Empty query, will throw an exception.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $results = core_message_external::search_contacts('');
     }
 
@@ -1407,7 +1414,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $message->fullmessagehtml   = markdown_to_html($message->fullmessage);
         $message->smallmessage      = $message->subject;
         $message->contexturlname    = $course->fullname;
-        $message->contexturl        = (string)new \moodle_url('/course/view.php', array('id' => $course->id));
+        $message->contexturl        = (string)new url('/course/view.php', array('id' => $course->id));
         message_send($message);
 
         $message = new \core\message\message();
@@ -1423,10 +1430,10 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $message->fullmessagehtml   = markdown_to_html($message->fullmessage);
         $message->smallmessage      = $message->subject;
         $message->contexturlname    = $course->fullname;
-        $message->contexturl        = (string)new \moodle_url('/course/view.php', array('id' => $course->id));
+        $message->contexturl        = (string)new url('/course/view.php', array('id' => $course->id));
         message_send($message);
 
-        $userfrom = \core_user::get_noreply_user();
+        $userfrom = user::get_noreply_user();
         $userfrom->maildisplay = true;
         $eventdata = new \core\message\message();
         $eventdata->courseid          = $course->id;
@@ -1507,7 +1514,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $messages = core_message_external::get_messages(0, $user1->id, 'conversations', MESSAGE_GET_UNREAD, true, 0, 0);
             $this->fail('Exception expected due messaging disabled.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('disabled', $e->errorcode);
         }
 
@@ -1517,7 +1524,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $messages = core_message_external::get_messages(0, 0, 'conversations', MESSAGE_GET_UNREAD, true, 0, 0);
             $this->fail('Exception expected due invalid users.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('accessdenied', $e->errorcode);
         }
 
@@ -1525,7 +1532,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $messages = core_message_external::get_messages(2500, 0, 'conversations', MESSAGE_GET_UNREAD, true, 0, 0);
             $this->fail('Exception expected due invalid users.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invaliduser', $e->errorcode);
         }
 
@@ -1534,7 +1541,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $messages = core_message_external::get_messages(0, $user1->id, 'conversations', MESSAGE_GET_UNREAD, true, 0, 0);
             $this->fail('Exception expected due invalid user.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('accessdenied', $e->errorcode);
         }
 
@@ -1707,7 +1714,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $messageid = core_message_external::mark_message_read($messageid, time());
             $this->fail('Exception expected due invalid messageid.');
-        } catch (\invalid_parameter_exception $e) {
+        } catch (invalid_parameter_exception $e) {
             $this->assertEquals('invalidparameter', $e->errorcode);
         }
     }
@@ -1767,7 +1774,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $notificationid = core_message_external::mark_notification_read($notificationid, time());
             $this->fail('Exception expected due invalid notificationid.');
-        } catch (\invalid_parameter_exception $e) {
+        } catch (invalid_parameter_exception $e) {
             $this->assertEquals('invalidparameter', $e->errorcode);
         }
     }
@@ -1815,7 +1822,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $messageid = core_message_external::delete_message($m2to3, $user3->id, false);
             $this->fail('Exception expected due invalid messageid.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('You do not have permission to delete this message', $e->errorcode);
         }
 
@@ -1850,7 +1857,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $result = core_message_external::delete_message($m1to2, -1, false);
             $this->fail('Exception expected due invalid user.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invaliduser', $e->errorcode);
         }
 
@@ -1859,7 +1866,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $result = core_message_external::delete_message($m1to2, $user2->id, false);
             $this->fail('Exception expected due invalid user.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('userdeleted', $e->errorcode);
         }
 
@@ -2192,9 +2199,9 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Check that we retrieved the correct contacts.
         $this->assertCount(2, $contacts);
         $this->assertEquals($users[2]->id, $contacts[0]['id']);
-        $this->assertEquals(core_user::get_initials($users[2]), $contacts[0]['initials']);
+        $this->assertEquals(user::get_initials($users[2]), $contacts[0]['initials']);
         $this->assertEquals($users[3]->id, $contacts[1]['id']);
-        $this->assertEquals(core_user::get_initials($users[3]), $contacts[1]['initials']);
+        $this->assertEquals(user::get_initials($users[3]), $contacts[1]['initials']);
 
         // Verify the correct conversations were returned for the contacts.
         $this->assertCount(2, $contacts[0]['conversations']);
@@ -2212,13 +2219,13 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // In this case, as a student, that's the course contact for course2 and those noncontacts sharing a course with user1.
         $this->assertCount(4, $noncontacts);
         $this->assertEquals($users[1]->id, $noncontacts[0]['id']);
-        $this->assertEquals(core_user::get_initials($users[1]), $noncontacts[0]['initials']);
+        $this->assertEquals(user::get_initials($users[1]), $noncontacts[0]['initials']);
         $this->assertEquals($users[6]->id, $noncontacts[1]['id']);
-        $this->assertEquals(core_user::get_initials($users[6]), $noncontacts[1]['initials']);
+        $this->assertEquals(user::get_initials($users[6]), $noncontacts[1]['initials']);
         $this->assertEquals($users[7]->id, $noncontacts[2]['id']);
-        $this->assertEquals(core_user::get_initials($users[7]), $noncontacts[2]['initials']);
+        $this->assertEquals(user::get_initials($users[7]), $noncontacts[2]['initials']);
         $this->assertEquals($users[9]->id, $noncontacts[3]['id']);
-        $this->assertEquals(core_user::get_initials($users[9]), $noncontacts[3]['initials']);
+        $this->assertEquals(user::get_initials($users[9]), $noncontacts[3]['initials']);
 
         // Verify the correct conversations were returned for the non-contacts.
         $this->assertCount(1, $noncontacts[1]['conversations']);
@@ -2397,7 +2404,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Grant the authenticated user role the capability 'user:viewdetails' at site context.
         $authenticatedrole = $DB->get_record('role', ['shortname' => 'user'], '*', MUST_EXIST);
-        assign_capability('moodle/user:viewdetails', CAP_ALLOW, $authenticatedrole->id, \context_system::instance());
+        assign_capability('moodle/user:viewdetails', CAP_ALLOW, $authenticatedrole->id, system::instance());
 
         // Perform a search with $CFG->messagingallusers disabled.
         set_config('messagingallusers', 0);
@@ -2495,7 +2502,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $this->assertEquals($user2->id, $message1['userid']);
         $this->assertEquals(fullname($user2), $message1['fullname']);
-        $this->assertEquals(core_user::get_initials($user2), $message1['initials']);
+        $this->assertEquals(user::get_initials($user2), $message1['initials']);
         $this->assertTrue($message1['ismessaging']);
         $this->assertFalse($message1['sentfromcurrentuser']);
         $this->assertEquals('Word.', $message1['lastmessage']);
@@ -2508,7 +2515,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $this->assertEquals($user2->id, $message2['userid']);
         $this->assertEquals(fullname($user2), $message2['fullname']);
-        $this->assertEquals(core_user::get_initials($user2), $message2['initials']);
+        $this->assertEquals(user::get_initials($user2), $message2['initials']);
         $this->assertTrue($message2['ismessaging']);
         $this->assertTrue($message2['sentfromcurrentuser']);
         $this->assertEquals('Yo!', $message2['lastmessage']);
@@ -2672,17 +2679,17 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $this->assertEquals($user2->id, $contact1['id']);
         $this->assertEquals(fullname($user2), $contact1['fullname']);
-        $this->assertEquals(core_user::get_initials($user2), $contact1['initials']);
+        $this->assertEquals(user::get_initials($user2), $contact1['initials']);
         $this->assertTrue($contact1['iscontact']);
 
         $this->assertEquals($user3->id, $contact2['id']);
         $this->assertEquals(fullname($user3), $contact2['fullname']);
-        $this->assertEquals(core_user::get_initials($user3), $contact2['initials']);
+        $this->assertEquals(user::get_initials($user3), $contact2['initials']);
         $this->assertTrue($contact2['iscontact']);
 
         $this->assertEquals($user4->id, $contact3['id']);
         $this->assertEquals(fullname($user4), $contact3['fullname']);
-        $this->assertEquals(core_user::get_initials($user4), $contact3['initials']);
+        $this->assertEquals(user::get_initials($user4), $contact3['initials']);
         $this->assertTrue($contact3['iscontact']);
     }
 
@@ -2860,9 +2867,9 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertContainsEquals(fullname($user3), $membersfullnames);
 
         $membersinitials = [$members[0]['initials'], $members[1]['initials'], $members[2]['initials']];
-        $this->assertContainsEquals(core_user::get_initials($user1), $membersinitials);
-        $this->assertContainsEquals(core_user::get_initials($user2), $membersinitials);
-        $this->assertContainsEquals(core_user::get_initials($user3), $membersinitials);
+        $this->assertContainsEquals(user::get_initials($user1), $membersinitials);
+        $this->assertContainsEquals(user::get_initials($user2), $membersinitials);
+        $this->assertContainsEquals(user::get_initials($user3), $membersinitials);
 
         // Confirm the messages data is correct.
         $messages = $result['messages'];
@@ -3637,7 +3644,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Try to favourite conversation 1 for user 2, as user3.
         $conversation1 = \core_message\api::get_conversation_between_users([$user1->id, $user2->id]);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $result = core_message_external::set_favourite_conversations($user2->id, [$conversation1]);
     }
 
@@ -3666,7 +3673,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Try to favourite conversation 1 as user 3.
         $conversation1 = \core_message\api::get_conversation_between_users([$user1->id, $user2->id]);
         $conversation2 = \core_message\api::get_conversation_between_users([$user1->id, $user3->id]);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $result = core_message_external::set_favourite_conversations($user3->id, [$conversation1]);
     }
 
@@ -3680,7 +3687,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($user1);
 
         // Try to favourite a non-existent conversation.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $result = core_message_external::set_favourite_conversations($user1->id, [0]);
     }
 
@@ -3761,7 +3768,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Try to unfavourite conversation 1 for user 2, as user3.
         $conversation1 = \core_message\api::get_conversation_between_users([$user1->id, $user2->id]);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $result = core_message_external::unset_favourite_conversations($user2->id, [$conversation1]);
     }
 
@@ -3775,7 +3782,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser($user1);
 
         // Try to unfavourite a non-existent conversation.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $result = core_message_external::unset_favourite_conversations($user1->id, [0]);
     }
 
@@ -4032,7 +4039,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertCount(4, $conversations);
 
         // Verify an exception is thrown if an unrecognized type is specified.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         core_message_external::get_conversations($user1->id, 0, 20, 0);
     }
 
@@ -4340,7 +4347,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $conversations = $result['conversations'];
 
         // Format original data.
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $coursename = \core_external\util::format_string($coursename, $coursecontext->id);
         $groupname = \core_external\util::format_string($groupname, $coursecontext->id);
 
@@ -4543,7 +4550,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Confirm the standard fields are OK.
         $this->assertEquals($user1->id, $member1->id);
         $this->assertEquals(fullname($user1), $member1->fullname);
-        $this->assertEquals(core_user::get_initials($user1), $member1->initials);
+        $this->assertEquals(user::get_initials($user1), $member1->initials);
         $this->assertEquals(true, $member1->isonline);
         $this->assertEquals(true, $member1->showonlinestatus);
         $this->assertEquals(false, $member1->iscontact);
@@ -4553,7 +4560,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $this->assertEquals($user2->id, $member2->id);
         $this->assertEquals(fullname($user2), $member2->fullname);
-        $this->assertEquals(core_user::get_initials($user2), $member2->initials);
+        $this->assertEquals(user::get_initials($user2), $member2->initials);
         $this->assertEquals(false, $member2->isonline);
         $this->assertEquals(true, $member2->showonlinestatus);
         $this->assertEquals(true, $member2->iscontact);
@@ -4563,7 +4570,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         $this->assertEquals($user3->id, $member3->id);
         $this->assertEquals(fullname($user3), $member3->fullname);
-        $this->assertEquals(core_user::get_initials($user3), $member3->initials);
+        $this->assertEquals(user::get_initials($user3), $member3->initials);
         $this->assertEquals(false, $member3->isonline);
         $this->assertEquals(true, $member3->showonlinestatus);
         $this->assertEquals(false, $member3->iscontact);
@@ -4822,7 +4829,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 'textformat' => FORMAT_MOODLE
             ],
         ];
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $writtenmessages = core_message_external::send_messages_to_conversation(0, $messages);
     }
 
@@ -4857,7 +4864,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 'textformat' => FORMAT_MOODLE
             ],
         ];
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $writtenmessages = core_message_external::send_messages_to_conversation($gc1->id, $messages);
     }
 
@@ -4889,7 +4896,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
             ],
         ];
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $writtenmessages = core_message_external::send_messages_to_conversation($gc2->id, $messages);
     }
 
@@ -4967,7 +4974,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $user3 = self::getDataGenerator()->create_user();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $course1context = \context_course::instance($course1->id);
+        $course1context = course::instance($course1->id);
 
         // Create a group with a linked conversation and a valid image.
         $this->setAdminUser();
@@ -5558,7 +5565,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $deleteuser = !is_null($deletemessagesuser) ? $users[$deletemessagesuser] : null;
         $this->setUser($users[$arguments[0]]);
         $arguments[0] = $users[$arguments[0]]->id;
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $conversations = [];
         $messageids = [];
 
@@ -5590,7 +5597,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
             foreach ($config['favourites'] as $userfromindex) {
                 $userfrom = $users[$userfromindex];
-                $usercontext = \context_user::instance($userfrom->id);
+                $usercontext = context_user::instance($userfrom->id);
                 $ufservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
                 $ufservice->create_favourite('core_message', 'message_conversations', $conversation->id, $systemcontext);
             }
@@ -5655,7 +5662,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $deleteuser = !is_null($deletemessagesuser) ? $users[$deletemessagesuser] : null;
         $this->setUser($users[$arguments[0]]);
         $arguments[0] = $users[$arguments[0]]->id;
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $conversations = [];
         $messageids = [];
 
@@ -5676,7 +5683,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
             foreach ($config['favourites'] as $userfromindex) {
                 $userfrom = $users[$userfromindex];
-                $usercontext = \context_user::instance($userfrom->id);
+                $usercontext = context_user::instance($userfrom->id);
                 $ufservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
                 $ufservice->create_favourite('core_message', 'message_conversations', $conversation->id, $systemcontext);
             }
@@ -5722,7 +5729,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // User1 deletes the first message for all users of group conversation.
         // First, we have to allow user1 (Teacher) can delete messages for all users.
         $editingteacher = $DB->get_record('role', ['shortname' => 'editingteacher']);
-        assign_capability('moodle/site:deleteanymessage', CAP_ALLOW, $editingteacher->id, \context_system::instance());
+        assign_capability('moodle/site:deleteanymessage', CAP_ALLOW, $editingteacher->id, system::instance());
 
         $this->setUser($user1);
 
@@ -5810,7 +5817,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // First, we have to allow user1 (Teacher) can delete messages for all users.
         $editingteacher = $DB->get_record('role', ['shortname' => 'editingteacher']);
-        assign_capability('moodle/site:deleteanymessage', CAP_ALLOW, $editingteacher->id, \context_system::instance());
+        assign_capability('moodle/site:deleteanymessage', CAP_ALLOW, $editingteacher->id, system::instance());
 
         $this->setUser($user1);
 
@@ -5879,7 +5886,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Create a course and enrol the users.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $this->getDataGenerator()->enrol_user($user1->id, $course->id, 'editingteacher');
         $this->getDataGenerator()->enrol_user($user2->id, $course->id, 'student');
         $this->getDataGenerator()->enrol_user($user3->id, $course->id, 'student');
@@ -5898,7 +5905,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
             'core_group',
             'groups',
             $group1->id,
-            \context_course::instance($course->id)->id
+            course::instance($course->id)->id
         );
 
         // Create and individual conversation.

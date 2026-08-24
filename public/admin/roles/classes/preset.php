@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context_helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -111,7 +114,7 @@ class core_role_preset {
                FROM {role_capabilities}
               WHERE contextid = :syscontext AND roleid = :roleid
            ORDER BY capability ASC",
-            array('syscontext'=>context_system::instance()->id, 'roleid'=>$roleid));
+            array('syscontext'=>system::instance()->id, 'roleid'=>$roleid));
 
         $allcapabilities = $DB->get_records('capabilities', array(), 'name ASC');
         foreach ($allcapabilities as $cap) {

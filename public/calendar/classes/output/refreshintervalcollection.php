@@ -24,6 +24,7 @@
 
 namespace core_calendar\output;
 
+use core\exception\moodle_exception;
 use core\output\inplace_editable;
 
 class refreshintervalcollection extends inplace_editable {
@@ -48,7 +49,7 @@ class refreshintervalcollection extends inplace_editable {
             $tmpl = new self($subscription);
             return $tmpl;
         } else {
-            throw new \moodle_exception('nopermissions', 'error', '', get_string('managesubscriptions', 'calendar'));
+            throw new moodle_exception('nopermissions', 'error', '', get_string('managesubscriptions', 'calendar'));
         }
     }
 }

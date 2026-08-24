@@ -31,6 +31,11 @@
  * process because
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
+
 require('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -60,7 +65,7 @@ $hublink = html_writer::tag('a', HUB_MOODLEORGHUBURL, array('href' => HUB_MOODLE
 
 $deletedregmsg = get_string('previousregistrationdeleted', 'hub', $hublink);
 
-$button = new single_button(new moodle_url('/admin/registration/index.php'),
+$button = new single_button(new url('/admin/registration/index.php'),
                 get_string('restartregistration', 'hub'));
 $button->class = 'restartregbutton';
 

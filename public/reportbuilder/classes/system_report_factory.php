@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder;
 
-use context;
+use core\context;
 use core_reportbuilder\local\models\report;
 use core_reportbuilder\local\report\base;
 use core_reportbuilder\exception\source_invalid_exception;

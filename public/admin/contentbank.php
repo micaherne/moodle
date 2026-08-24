@@ -23,38 +23,44 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+use core_cache\cache;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 $action = required_param('action', PARAM_ALPHANUMEXT);
 $name   = required_param('name', PARAM_PLUGIN);
 
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 $PAGE->set_url('/admin/contentbank.php');
 $PAGE->set_context($syscontext);
 
 require_admin();
 require_sesskey();
 
-$return = new moodle_url('/admin/settings.php', array('section' => 'managecontentbanktypes'));
+$return = new url('/admin/settings.php', array('section' => 'managecontentbanktypes'));
 
-$plugins = core_plugin_manager::instance()->get_plugins_of_type('contenttype');
+$plugins = plugin_manager::instance()->get_plugins_of_type('contenttype');
 $sortorder = array_flip(array_keys($plugins));
 
 if (!isset($plugins[$name])) {
-    throw new \moodle_exception('contenttypenotfound', 'error', $return, $name);
+    throw new moodle_exception('contenttypenotfound', 'error', $return, $name);
 }
 
 switch ($action) {
     case 'disable':
         if ($plugins[$name]->is_enabled()) {
-            $class = \core_plugin_manager::resolve_plugininfo_class('contenttype');
+            $class = plugin_manager::resolve_plugininfo_class('contenttype');
             $class::enable_plugin($name, false);
         }
         break;
     case 'enable':
         if (!$plugins[$name]->is_enabled()) {
-            $class = \core_plugin_manager::resolve_plugininfo_class('contenttype');
+            $class = plugin_manager::resolve_plugininfo_class('contenttype');
             $class::enable_plugin($name, true);
         }
         break;
@@ -65,7 +71,7 @@ switch ($action) {
             $seq[$currentindex] = $seq[$currentindex - 1];
             $seq[$currentindex - 1] = $name;
             set_config('contentbank_plugins_sortorder', implode(',', $seq));
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
         break;
     case 'down':
@@ -75,7 +81,7 @@ switch ($action) {
             $seq[$currentindex] = $seq[$currentindex + 1];
             $seq[$currentindex + 1] = $name;
             set_config('contentbank_plugins_sortorder', implode(',', $seq));
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
         break;
 }

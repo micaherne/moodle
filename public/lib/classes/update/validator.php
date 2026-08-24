@@ -29,9 +29,9 @@
 namespace core\update;
 
 use core_component;
-use core_plugin_manager;
-use help_icon;
-use coding_exception;
+use core\plugin_manager;
+use core\output\help_icon;
+use core\exception\coding_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -639,6 +639,6 @@ class validator {
      * @return core_plugin_manager
      */
     protected function get_plugin_manager() {
-        return core_plugin_manager::instance();
+        return plugin_manager::instance();
     }
 }

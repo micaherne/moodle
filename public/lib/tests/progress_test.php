@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -229,25 +231,25 @@ final class progress_test extends \basic_testcase {
         try {
             $progress->progress();
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~without start_progress~', $e->getMessage()));
         }
         try {
             $progress->end_progress();
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~without start_progress~', $e->getMessage()));
         }
         try {
             $progress->get_current_description();
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~Not inside progress~', $e->getMessage()));
         }
         try {
             $progress->start_progress('', 1, 7);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~must be 1~', $e->getMessage()));
         }
 
@@ -255,7 +257,7 @@ final class progress_test extends \basic_testcase {
         try {
             $progress->start_progress('hello', -2);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~cannot be negative~', $e->getMessage()));
         }
 
@@ -264,7 +266,7 @@ final class progress_test extends \basic_testcase {
         try {
             $progress->progress(\core\progress\base::INDETERMINATE);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~expecting value~', $e->getMessage()));
         }
 
@@ -273,7 +275,7 @@ final class progress_test extends \basic_testcase {
         try {
             $progress->progress(4);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~expecting INDETERMINATE~', $e->getMessage()));
         }
 
@@ -282,13 +284,13 @@ final class progress_test extends \basic_testcase {
         try {
             $progress->progress(-2);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~out of range~', $e->getMessage()));
         }
         try {
             $progress->progress(11);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~out of range~', $e->getMessage()));
         }
 
@@ -302,7 +304,7 @@ final class progress_test extends \basic_testcase {
         try {
             $progress->progress(3);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~backwards~', $e->getMessage()));
         }
 
@@ -310,7 +312,7 @@ final class progress_test extends \basic_testcase {
         try {
             $progress->start_progress('', 1, 7);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertEquals(1, preg_match('~would exceed max~', $e->getMessage()));
         }
     }

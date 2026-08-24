@@ -23,8 +23,10 @@
  */
 
 namespace tool_dataprivacy;
-use context_system;
-use moodle_url;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -45,15 +47,15 @@ class page_helper {
      * @param string $attachtoparentnode The parent navigation node where this page can be accessed from.
      * @param string $requiredcapability The required capability to view this page.
      */
-    public static function setup(moodle_url $url, $title, $attachtoparentnode = '',
+    public static function setup(url $url, $title, $attachtoparentnode = '',
                                  $requiredcapability = 'tool/dataprivacy:managedataregistry') {
         global $PAGE, $SITE;
 
-        $context = context_system::instance();
+        $context = system::instance();
 
         require_login();
         if (isguestuser()) {
-            throw new \moodle_exception('noguest');
+            throw new moodle_exception('noguest');
         }
 
         // TODO Check that data privacy is enabled.
@@ -71,13 +73,13 @@ class page_helper {
 
         // If necessary, override the settings navigation to add this page into the breadcrumb navigation.
         if ($attachtoparentnode) {
-            if ($siteadmin = $PAGE->settingsnav->find('root', \navigation_node::TYPE_SITE_ADMIN)) {
+            if ($siteadmin = $PAGE->settingsnav->find('root', navigation_node::TYPE_SITE_ADMIN)) {
                 $PAGE->navbar->add($siteadmin->get_content(), $siteadmin->action());
             }
-            if ($dataprivacy = $PAGE->settingsnav->find('privacy', \navigation_node::TYPE_SETTING)) {
+            if ($dataprivacy = $PAGE->settingsnav->find('privacy', navigation_node::TYPE_SETTING)) {
                 $PAGE->navbar->add($dataprivacy->get_content(), $dataprivacy->action());
             }
-            if ($dataregistry = $PAGE->settingsnav->find($attachtoparentnode, \navigation_node::TYPE_SETTING)) {
+            if ($dataregistry = $PAGE->settingsnav->find($attachtoparentnode, navigation_node::TYPE_SETTING)) {
                 $PAGE->navbar->add($dataregistry->get_content(), $dataregistry->action());
             }
 

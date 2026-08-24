@@ -26,8 +26,15 @@ namespace tool_uploaduser;
 
 defined('MOODLE_INTERNAL') || die();
 
-use context_system;
-use context_coursecat;
+use core\context\course;
+use core\context\system;
+use core\context\coursecat;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core\user as core_user;
 use core_course_category;
 
 use tool_uploaduser\local\field_value_validators;
@@ -116,7 +123,7 @@ class process {
         $this->cir = $cir;
         if ($progresstrackerclass) {
             if (!class_exists($progresstrackerclass) || !is_subclass_of($progresstrackerclass, \uu_progress_tracker::class)) {
-                throw new \coding_exception('Progress tracker class must extend \uu_progress_tracker');
+                throw new coding_exception('Progress tracker class must extend \uu_progress_tracker');
             }
             $this->progresstrackerclass = $progresstrackerclass;
         } else {
@@ -190,7 +197,7 @@ class process {
      */
     public function get_file_columns(): array {
         if ($this->filecolumns === null) {
-            $returnurl = new \moodle_url('/admin/tool/uploaduser/index.php');
+            $returnurl = new url('/admin/tool/uploaduser/index.php');
             $this->filecolumns = uu_validate_user_upload_columns($this->cir,
                 $this->standardfields, $this->profilefields, $returnurl);
         }
@@ -420,7 +427,7 @@ class process {
         // Normalize username.
         $user->originalusername = $user->username;
         if ($this->get_normalise_user_names()) {
-            $user->username = \core_user::clean_field($user->username, 'username');
+            $user->username = core_user::clean_field($user->username, 'username');
         }
 
         // Make sure we really have username.
@@ -435,7 +442,7 @@ class process {
             return null;
         }
 
-        if ($user->username !== \core_user::clean_field($user->username, 'username')) {
+        if ($user->username !== core_user::clean_field($user->username, 'username')) {
             $this->upt->track('status', get_string('invalidusername', 'error', 'username'), 'error');
             $this->upt->track('username', get_string('error'), 'error');
             $this->userserrors++;
@@ -587,7 +594,7 @@ class process {
         // Delete user.
         if (!empty($user->deleted)) {
             if (!$this->get_allow_deletes() or $remoteuser or
-                    !has_capability('moodle/user:delete', context_system::instance())) {
+                    !has_capability('moodle/user:delete', system::instance())) {
                 $this->usersskipped++;
                 $this->upt->track('status', get_string('usernotdeletedoff', 'error'), 'warning');
                 return;
@@ -656,7 +663,7 @@ class process {
             }
 
             if ($this->get_normalise_user_names()) {
-                $oldusername = \core_user::clean_field($user->oldusername, 'username');
+                $oldusername = core_user::clean_field($user->oldusername, 'username');
             } else {
                 $oldusername = $user->oldusername;
             }
@@ -738,8 +745,8 @@ class process {
         if ($existinguser) {
             $user->id = $existinguser->id;
 
-            $this->upt->track('username', \html_writer::link(
-                new \moodle_url('/user/profile.php', ['id' => $existinguser->id]), s($existinguser->username)), 'normal', false);
+            $this->upt->track('username', html_writer::link(
+                new url('/user/profile.php', ['id' => $existinguser->id]), s($existinguser->username)), 'normal', false);
             $this->upt->track('suspended', $this->get_string_yes_no($existinguser->suspended) , 'normal', false);
             $this->upt->track('auth', $existinguser->auth, 'normal', false);
 
@@ -827,7 +834,7 @@ class process {
                             if (empty($user->lang)) {
                                 // Do not change to not-set value.
                                 continue;
-                            } else if (\core_user::clean_field($user->lang, 'lang') === '') {
+                            } else if (core_user::clean_field($user->lang, 'lang') === '') {
                                 $this->upt->track('status', get_string('cannotfindlang', 'error', $user->lang), 'warning');
                                 continue;
                             }
@@ -1007,7 +1014,7 @@ class process {
 
             if (empty($user->lang)) {
                 $user->lang = '';
-            } else if (\core_user::clean_field($user->lang, 'lang') === '') {
+            } else if (core_user::clean_field($user->lang, 'lang') === '') {
                 $this->upt->track('status', get_string('cannotfindlang', 'error', $user->lang), 'warning');
                 $user->lang = '';
             }
@@ -1050,8 +1057,8 @@ class process {
             }
 
             $user->id = \core\user::create_user($user, false, false);
-            $this->upt->track('username', \html_writer::link(
-                new \moodle_url('/user/profile.php', ['id' => $user->id]), s($user->username)), 'normal', false);
+            $this->upt->track('username', html_writer::link(
+                new url('/user/profile.php', ['id' => $user->id]), s($user->username)), 'normal', false);
 
             // Pre-process custom profile menu fields data from csv file.
             $user = uu_pre_process_custom_profile_data($user);
@@ -1073,7 +1080,7 @@ class process {
             $this->usersnew++;
 
             // Make sure user context exists.
-            \context_user::instance($user->id);
+            context_user::instance($user->id);
 
             if ($this->get_bulk() == UU_BULK_NEW or $this->get_bulk() == UU_BULK_ALL) {
                 if (!array_key_exists($user->id, $SESSION->bulk_users)) {
@@ -1101,12 +1108,12 @@ class process {
                         $cohort = $DB->get_record('cohort', ['id' => $addcohort]);
                     } else {
                         $cohort = $DB->get_record('cohort', ['idnumber' => $addcohort]);
-                        if (empty($cohort) && has_capability('moodle/cohort:manage', \context_system::instance())) {
+                        if (empty($cohort) && has_capability('moodle/cohort:manage', system::instance())) {
                             // Cohort was not found. Create a new one.
                             $cohortid = cohort_add_cohort((object)array(
                                 'idnumber' => $addcohort,
                                 'name' => $addcohort,
-                                'contextid' => \context_system::instance()->id
+                                'contextid' => system::instance()->id
                             ));
                             $cohort = $DB->get_record('cohort', ['id' => $cohortid]);
                         }
@@ -1196,7 +1203,7 @@ class process {
                     }
                     $categoryrolecache[$categoryidnumber] = uu_allowed_roles_cache($category->id);
                     $categoryobj = core_course_category::get($category->id);
-                    $context = context_coursecat::instance($categoryobj->id);
+                    $context = coursecat::instance($categoryobj->id);
                     $categorycache[$categoryidnumber] = $context;
                 }
                 // Check the user's category role.
@@ -1234,7 +1241,7 @@ class process {
                 $this->ccache[$shortname]->groups = null;
             }
             $courseid      = $this->ccache[$shortname]->id;
-            $coursecontext = \context_course::instance($courseid);
+            $coursecontext = course::instance($courseid);
             if (!isset($this->manualcache[$courseid])) {
                 $this->manualcache[$courseid] = false;
                 if ($this->manualenrol) {
@@ -1266,7 +1273,7 @@ class process {
                         continue;
                     }
 
-                    role_assign($roleid, $user->id, \context_course::instance($courseid));
+                    role_assign($roleid, $user->id, course::instance($courseid));
 
                     $a = new \stdClass();
                     $a->course = $shortname;
@@ -1406,7 +1413,7 @@ class process {
                     } else {
                         $this->upt->track('enrolments', get_string('addedtogroupnot', '', s($gname)), 'error');
                     }
-                } catch (\moodle_exception $e) {
+                } catch (moodle_exception $e) {
                     $this->upt->track('enrolments', get_string('addedtogroupnot', '', s($gname)), 'error');
                     continue;
                 }
@@ -1414,7 +1421,7 @@ class process {
         }
 
         // Warn user about invalid data values.
-        if (($invalid = \core_user::validate($user)) !== true) {
+        if (($invalid = core_user::validate($user)) !== true) {
             $listseparator = get_string('listsep', 'langconfig') . ' ';
             $this->upt->track('status', get_string('invaliduserdatavalues', 'tool_uploaduser', [
                 'username' => s($user->username),

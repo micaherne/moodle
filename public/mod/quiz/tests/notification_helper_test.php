@@ -16,6 +16,7 @@
 
 namespace mod_quiz;
 
+use core\url;
 use mod_quiz\task\queue_all_quiz_open_notification_tasks;
 use mod_quiz\task\queue_quiz_open_notification_tasks_for_users;
 use mod_quiz\task\send_quiz_open_soon_notification_to_user;
@@ -415,7 +416,7 @@ final class notification_helper_test extends \advanced_testcase {
             'firstname' => $student->firstname,
             'coursename' => 'A&B (en)',
             'timeclose' => !empty($quiz->timeclose) ? userdate($quiz->timeclose) : get_string('statusna'),
-            'url' => new \moodle_url('/mod/quiz/view.php', ['id' => $quiz->cmid])
+            'url' => new url('/mod/quiz/view.php', ['id' => $quiz->cmid])
         ]);
         $expectedfullmessage = get_string('quizopendatesoonhtml', 'mod_quiz', $fullmessagestringparams);
 

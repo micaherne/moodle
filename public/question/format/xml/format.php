@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\user;
 use core\exception\xml_format_exception;
 
 defined('MOODLE_INTERNAL') || die();
@@ -199,7 +201,7 @@ class qformat_xml extends qformat_default {
                 continue;
             }
             $filerecord = array(
-                'contextid' => context_user::instance($USER->id)->id,
+                'contextid' => user::instance($USER->id)->id,
                 'component' => 'user',
                 'filearea'  => 'draft',
                 'itemid'    => $itemid,
@@ -244,7 +246,7 @@ class qformat_xml extends qformat_default {
             }
             $filename = clean_param(str_replace('/', '_', $filename), PARAM_FILE);
             $filerecord = array(
-                'contextid' => context_user::instance($USER->id)->id,
+                'contextid' => user::instance($USER->id)->id,
                 'component' => 'user',
                 'filearea'  => 'draft',
                 'itemid'    => $qo->questiontextitemid,
@@ -531,7 +533,7 @@ class qformat_xml extends qformat_default {
             }
             $filename = clean_param(str_replace('/', '_', $filename), PARAM_FILE);
             $filerecord = array(
-                'contextid' => context_user::instance($USER->id)->id,
+                'contextid' => user::instance($USER->id)->id,
                 'component' => 'user',
                 'filearea'  => 'draft',
                 'itemid'    => $qo->questiontextitemid,

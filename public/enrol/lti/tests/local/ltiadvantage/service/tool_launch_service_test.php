@@ -16,6 +16,10 @@
 
 namespace enrol_lti\local\ltiadvantage\service;
 
+use core\context as core_context;
+use core\context\course;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_availability\info_module;
 use enrol_lti\local\ltiadvantage\entity\resource_link;
 use enrol_lti\local\ltiadvantage\entity\user;
@@ -106,15 +110,15 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
         $this->assertInstanceOf(context::class, $context);
         $this->assertEquals($deployment->get_id(), $context->get_deploymentid());
 
-        $enrolledusers = get_enrolled_users(\context_course::instance($course->id));
+        $enrolledusers = get_enrolled_users(course::instance($course->id));
         $this->assertCount(1, $enrolledusers);
 
         // Verify the module is visible to the user.
-        $cmcontext = \context::instance_by_id($modresource->contextid);
+        $cmcontext = core_context::instance_by_id($modresource->contextid);
         $this->assertTrue(info_module::is_user_visible($cmcontext->instanceid, $userid));
 
         // And that other published modules are not yet visible to the user.
-        $cmcontext = \context::instance_by_id($modresource2->contextid);
+        $cmcontext = core_context::instance_by_id($modresource2->contextid);
         $this->assertFalse(info_module::is_user_visible($cmcontext->instanceid, $userid));
     }
 
@@ -216,7 +220,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
                     ],
                 ],
                 'expected' => [
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exception_message' => "Invalid 'oauth_consumer_key_sign' signature in lti1p1 claim"
                 ]
             ],
@@ -239,7 +243,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
                     ],
                 ],
                 'expected' => [
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exception_message' => "Missing 'oauth_consumer_key_sign' property in lti1p1 migration claim."
                 ]
             ],
@@ -280,7 +284,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
         $mockuser = self::get_mock_launch_users_with_ids(['1p3_1'])[0];
         $mocklaunch = $this->get_mock_launch($modresource, $mockuser, null, null, false, null, []);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('ltiadvlauncherror:missingid', 'enrol_lti'));
         [$userid, $resource] = $launchservice->user_launches_tool($instructoruser, $mocklaunch);
     }
@@ -298,7 +302,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
         $mockuser = self::get_mock_launch_users_with_ids(['1p3_1'])[0];
         $mocklaunch = $this->get_mock_launch($modresource, $mockuser, null, null, false, null, ['id' => 999999]);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('ltiadvlauncherror:invalidid', 'enrol_lti', 999999));
         [$userid, $resource] = $launchservice->user_launches_tool($instructoruser, $mocklaunch);
     }
@@ -330,7 +334,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
         $mockuser = self::get_mock_launch_users_with_ids(['1p3_1'])[0];
         $mocklaunch = $this->get_mock_launch($modresource, $mockuser);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('ltiadvlauncherror:invalidregistration', 'enrol_lti',
             [$registration->get_platformid(), $registration->get_clientid()]));
         [$userid, $resource] = $launchservice->user_launches_tool($instructoruser, $mocklaunch);
@@ -363,7 +367,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
         $mockuser = self::get_mock_launch_users_with_ids(['1p3_1'])[0];
         $mocklaunch = $this->get_mock_launch($modresource, $mockuser);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('ltiadvlauncherror:invaliddeployment', 'enrol_lti',
             [$deployment->get_deploymentid()]));
         [$userid, $resource] = $launchservice->user_launches_tool($instructoruser, $mocklaunch);
@@ -405,7 +409,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
 
         // Launch and confirm the role assignment.
         $launchservice = $this->get_tool_launch_service();
-        $modulecontext = \context::instance_by_id($modresource->contextid);
+        $modulecontext = core_context::instance_by_id($modresource->contextid);
 
         [$instructorid] = $launchservice->user_launches_tool($instructoruser, $mockinstructorlaunch);
         [$instructorrole] = array_slice(get_user_roles($modulecontext, $instructorid), 0, 1);
@@ -485,7 +489,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
         $mockinstructorlaunch = $this->get_mock_launch($modresource, $mockinstructoruser);
         $launchservice = $this->get_tool_launch_service();
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $launchservice->user_launches_tool($instructoruser, $mockinstructorlaunch);
     }
 
@@ -578,7 +582,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
                 'aud' => ['cat', 'dog', '123'],
                 'expected' => [
                     'valid' => false,
-                    'exception' => \moodle_exception::class,
+                    'exception' => moodle_exception::class,
                     'exceptionmessage' => get_string('ltiadvlauncherror:invalidregistration', 'enrol_lti')
                 ]
             ],
@@ -586,7 +590,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
                 'aud' => ['cat'],
                 'expected' => [
                     'valid' => false,
-                    'exception' => \moodle_exception::class,
+                    'exception' => moodle_exception::class,
                     'exceptionmessage' => get_string('ltiadvlauncherror:invalidregistration', 'enrol_lti')
                 ]
             ],
@@ -594,7 +598,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
                 'aud' => 'cat',
                 'expected' => [
                     'valid' => false,
-                    'exception' => \moodle_exception::class,
+                    'exception' => moodle_exception::class,
                     'exceptionmessage' => get_string('ltiadvlauncherror:invalidregistration', 'enrol_lti')
                 ]
             ],
@@ -602,7 +606,7 @@ final class tool_launch_service_test extends \lti_advantage_testcase {
                 'aud' => '',
                 'expected' => [
                     'valid' => false,
-                    'exception' => \moodle_exception::class,
+                    'exception' => moodle_exception::class,
                     'exceptionmessage' => get_string('ltiadvlauncherror:invalidregistration', 'enrol_lti')
                 ]
             ],

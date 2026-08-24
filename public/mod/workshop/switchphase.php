@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\single_button;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 
@@ -45,7 +49,7 @@ if ($confirm) {
         throw new moodle_exception('confirmsesskeybad');
     }
     if (!$workshop->switch_phase($phase)) {
-        throw new \moodle_exception('errorswitchingphase', 'workshop', $workshop->view_url());
+        throw new moodle_exception('errorswitchingphase', 'workshop', $workshop->view_url());
     }
     redirect($workshop->view_url());
 }
@@ -66,7 +70,7 @@ $PAGE->set_secondary_active_tab("modulepage");
 //
 echo $OUTPUT->header();
 $continuebtn = new single_button(
-    new moodle_url($PAGE->url, array('confirm' => 1)),
+    new url($PAGE->url, array('confirm' => 1)),
     get_string('continue'),
     'post',
     single_button::BUTTON_PRIMARY

@@ -18,8 +18,9 @@ namespace mod_quiz\task;
 
 defined('MOODLE_INTERNAL') || die();
 
-use context_module;
-use core_user;
+use core\context\module;
+use core\exception\coding_exception;
+use core\user;
 use mod_quiz\quiz_attempt;
 use moodle_recordset;
 use question_display_options;
@@ -66,7 +67,7 @@ class quiz_notify_attempt_manual_grading_completed extends \core\task\scheduled_
      */
     public function set_time_for_testing(int $time): void {
         if (!PHPUNIT_TEST) {
-            throw new \coding_exception('set_time_for_testing should only be used in unit tests.');
+            throw new coding_exception('set_time_for_testing should only be used in unit tests.');
         }
         $this->forcedtime = $time;
     }
@@ -88,7 +89,7 @@ class quiz_notify_attempt_manual_grading_completed extends \core\task\scheduled_
             if (!$quiz || $attempt->quiz != $quiz->id) {
                 $quiz = $DB->get_record('quiz', ['id' => $attempt->quiz], '*', MUST_EXIST);
                 $cm = get_coursemodule_from_instance('quiz', $attempt->quiz);
-                $quizcontext = context_module::instance($cm->id);
+                $quizcontext = module::instance($cm->id);
             }
 
             if (!$course || $course->id != $quiz->course) {
@@ -115,7 +116,7 @@ class quiz_notify_attempt_manual_grading_completed extends \core\task\scheduled_
 
             // OK, send notification.
             mtrace('Sending email to user ' . $attempt->userid . '...');
-            $ok = quiz_send_notify_manual_graded_message($attemptobj, core_user::get_user($attempt->userid));
+            $ok = quiz_send_notify_manual_graded_message($attemptobj, user::get_user($attempt->userid));
             if ($ok) {
                 mtrace('Send email successfully!');
                 $attempt->gradednotificationsenttime = $this->get_time();

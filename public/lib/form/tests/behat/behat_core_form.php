@@ -31,6 +31,7 @@ require_once(__DIR__ . '/../../../../question/tests/behat/behat_question_base.ph
 use Behat\Gherkin\Node\TableNode as TableNode;
 
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
+use core\url;
 
 /**
  * Steps definitions related to core_form.
@@ -47,7 +48,7 @@ class behat_core_form extends behat_question_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_url(string $page): moodle_url {
+    protected function resolve_page_url(string $page): url {
         switch (strtolower($page)) {
             default:
                 throw new Exception('Unrecognised core_form page type "' . $page . '."');
@@ -69,10 +70,10 @@ class behat_core_form extends behat_question_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
         switch (strtolower($type)) {
             case 'fixture':
-                return new moodle_url('/lib/form/tests/fixtures/' .
+                return new url('/lib/form/tests/fixtures/' .
                         clean_param($identifier, PARAM_ALPHAEXT) . '.php');
 
             default:

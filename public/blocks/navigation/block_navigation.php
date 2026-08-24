@@ -34,6 +34,8 @@
  * @copyright 2009 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\navigation\navigation_node;
+
 class block_navigation extends block_base {
 
     /** @var int This allows for multiple navigation trees */

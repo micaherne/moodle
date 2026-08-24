@@ -16,6 +16,7 @@
 
 namespace mod_forum;
 
+use core\context\module;
 use mod_forum\local\entities\author as author_entity;
 use mod_forum\local\exporters\author as author_exporter;
 
@@ -39,7 +40,7 @@ final class exporters_author_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $entityfactory = \mod_forum\local\container::get_entity_factory();
         $forum = $entityfactory->get_forum_from_stdClass($forum, $context, $coursemodule, $course);
         $author = new author_entity(
@@ -79,7 +80,7 @@ final class exporters_author_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $entityfactory = \mod_forum\local\container::get_entity_factory();
         $forum = $entityfactory->get_forum_from_stdClass($forum, $context, $coursemodule, $course);
         $author = new author_entity(
@@ -118,7 +119,7 @@ final class exporters_author_test extends \advanced_testcase {
         $course = $datagenerator->create_course();
         $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
         $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($coursemodule->id);
+        $context = module::instance($coursemodule->id);
         $entityfactory = \mod_forum\local\container::get_entity_factory();
         $forum = $entityfactory->get_forum_from_stdClass($forum, $context, $coursemodule, $course);
         $author = new author_entity(

@@ -16,8 +16,10 @@
 
 namespace quizaccess_seb;
 
-use context_module;
-use moodle_url;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+use core_cache\cache;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -54,8 +56,8 @@ final class quiz_settings_test extends \advanced_testcase {
             'course' => $this->course->id,
             'seb_requiresafeexambrowser' => settings_provider::USE_SEB_CONFIG_MANUALLY,
         ]);
-        $this->context = \context_module::instance($this->quiz->cmid);
-        $this->url = new \moodle_url("/mod/quiz/view.php", ['id' => $this->quiz->cmid]);
+        $this->context = module::instance($this->quiz->cmid);
+        $this->url = new url("/mod/quiz/view.php", ['id' => $this->quiz->cmid]);
     }
 
     /**
@@ -219,7 +221,7 @@ final class quiz_settings_test extends \advanced_testcase {
      * Test that uploaded seb file gets converted to config string.
      */
     public function test_config_file_uploaded_converted_to_config(): void {
-        $url = new \moodle_url("/mod/quiz/view.php", ['id' => $this->quiz->cmid]);
+        $url = new url("/mod/quiz/view.php", ['id' => $this->quiz->cmid]);
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 . "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
                 . "<plist version=\"1.0\"><dict><key>hashedQuitPassword</key><string>hashedpassword</string>"
@@ -240,7 +242,7 @@ final class quiz_settings_test extends \advanced_testcase {
         $quizsettings = seb_quiz_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG);
         $cmid = $quizsettings->get('cmid');
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage("No uploaded SEB config file could be found for quiz with cmid: {$cmid}");
         $quizsettings->get_config();
     }
@@ -743,19 +745,19 @@ final class quiz_settings_test extends \advanced_testcase {
      */
     public function test_quizsettings_cache_exists_after_creation(): void {
         $expected = seb_quiz_settings::get_record(['quizid' => $this->quiz->id]);
-        $this->assertEquals($expected->to_record(), \cache::make('quizaccess_seb', 'quizsettings')->get($this->quiz->id));
+        $this->assertEquals($expected->to_record(), cache::make('quizaccess_seb', 'quizsettings')->get($this->quiz->id));
     }
 
     /**
      * Test that quizsettings cache gets deleted after deletion.
      */
     public function test_quizsettings_cache_purged_after_deletion(): void {
-        $this->assertNotEmpty(\cache::make('quizaccess_seb', 'quizsettings')->get($this->quiz->id));
+        $this->assertNotEmpty(cache::make('quizaccess_seb', 'quizsettings')->get($this->quiz->id));
 
         $quizsettings = seb_quiz_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->delete();
 
-        $this->assertFalse(\cache::make('quizaccess_seb', 'quizsettings')->get($this->quiz->id));
+        $this->assertFalse(cache::make('quizaccess_seb', 'quizsettings')->get($this->quiz->id));
     }
 
     /**
@@ -782,19 +784,19 @@ final class quiz_settings_test extends \advanced_testcase {
      * Test that SEB config cache exists after creation of the quiz.
      */
     public function test_config_cache_exists_after_creation(): void {
-        $this->assertNotEmpty(\cache::make('quizaccess_seb', 'config')->get($this->quiz->id));
+        $this->assertNotEmpty(cache::make('quizaccess_seb', 'config')->get($this->quiz->id));
     }
 
     /**
      * Test that SEB config cache gets deleted after deletion.
      */
     public function test_config_cache_purged_after_deletion(): void {
-        $this->assertNotEmpty(\cache::make('quizaccess_seb', 'config')->get($this->quiz->id));
+        $this->assertNotEmpty(cache::make('quizaccess_seb', 'config')->get($this->quiz->id));
 
         $quizsettings = seb_quiz_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->delete();
 
-        $this->assertFalse(\cache::make('quizaccess_seb', 'config')->get($this->quiz->id));
+        $this->assertFalse(cache::make('quizaccess_seb', 'config')->get($this->quiz->id));
     }
 
     /**
@@ -822,19 +824,19 @@ final class quiz_settings_test extends \advanced_testcase {
      * Test that SEB config key cache exists after creation of the quiz.
      */
     public function test_config_key_cache_exists_after_creation(): void {
-        $this->assertNotEmpty(\cache::make('quizaccess_seb', 'configkey')->get($this->quiz->id));
+        $this->assertNotEmpty(cache::make('quizaccess_seb', 'configkey')->get($this->quiz->id));
     }
 
     /**
      * Test that SEB config key cache gets deleted after deletion.
      */
     public function test_config_key_cache_purged_after_deletion(): void {
-        $this->assertNotEmpty(\cache::make('quizaccess_seb', 'configkey')->get($this->quiz->id));
+        $this->assertNotEmpty(cache::make('quizaccess_seb', 'configkey')->get($this->quiz->id));
 
         $quizsettings = seb_quiz_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->delete();
 
-        $this->assertFalse(\cache::make('quizaccess_seb', 'configkey')->get($this->quiz->id));
+        $this->assertFalse(cache::make('quizaccess_seb', 'configkey')->get($this->quiz->id));
     }
 
     /**

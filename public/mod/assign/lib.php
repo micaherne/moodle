@@ -23,6 +23,17 @@
  * @copyright 2012 NetSpot {@link http://www.netspot.com.au}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\url;
+use core\user;
+use core_cache\cache;
+use core_course\cached_cm_info;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -37,7 +48,7 @@ function assign_add_instance(stdClass $data, ?mod_assign_mod_form $form = null) 
     global $CFG;
     require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
-    $assignment = new assign(context_module::instance($data->coursemodule), null, null);
+    $assignment = new assign(module::instance($data->coursemodule), null, null);
     return $assignment->add_instance($data, true);
 }
 
@@ -50,7 +61,7 @@ function assign_delete_instance($id) {
     global $CFG;
     require_once($CFG->dirroot . '/mod/assign/locallib.php');
     $cm = get_coursemodule_from_instance('assign', $id, 0, false, MUST_EXIST);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $assignment = new assign($context, null, null);
     return $assignment->delete_instance();
@@ -81,7 +92,7 @@ function assign_reset_userdata($data) {
                 false,
                 MUST_EXIST,
             );
-            $context = context_module::instance($cm->id);
+            $context = module::instance($cm->id);
             $assignment = new assign($context, $cm, $course);
             $status = array_merge($status, $assignment->reset_userdata($data));
         }
@@ -160,7 +171,7 @@ function assign_prepare_update_events($assign, $course = null, $cm = null) {
         list($course, $cm) = get_course_and_cm_from_instance($assign->id, 'assign', $assign->course);
     }
     // Refresh the assignment's calendar events.
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     $assignment = new assign($context, $cm, $course);
     $assignment->update_calendar($cm->id);
     // Refresh the calendar events also for the assignment overrides.
@@ -236,7 +247,7 @@ function assign_reset_course_form_defaults($course) {
 function assign_update_instance(stdClass $data, $form) {
     global $CFG;
     require_once($CFG->dirroot . '/mod/assign/locallib.php');
-    $context = context_module::instance($data->coursemodule);
+    $context = module::instance($data->coursemodule);
     $assignment = new assign($context, null, null);
     return $assignment->update_instance($data);
 }
@@ -424,7 +435,7 @@ function assign_extend_settings_navigation(settings_navigation $settings, naviga
     }
 
     if (has_capability('mod/assign:manageoverrides', $settings->get_page()->cm->context)) {
-        $url = new moodle_url('/mod/assign/overrides.php', ['cmid' => $settings->get_page()->cm->id, 'mode' => 'user']);
+        $url = new url('/mod/assign/overrides.php', ['cmid' => $settings->get_page()->cm->id, 'mode' => 'user']);
 
         $node = navigation_node::create(get_string('overrides', 'assign'),
             $url,
@@ -438,7 +449,7 @@ function assign_extend_settings_navigation(settings_navigation $settings, naviga
 
         if ($assignment && $assignment->blindmarking && !$assignment->revealidentities) {
             $urlparams = array('id' => $cm->id, 'action'=>'revealidentities');
-            $url = new moodle_url('/mod/assign/view.php', $urlparams);
+            $url = new url('/mod/assign/view.php', $urlparams);
             $linkname = get_string('revealidentities', 'assign');
             $node = $navref->add($linkname, $url, navigation_node::TYPE_SETTING);
         }
@@ -447,7 +458,7 @@ function assign_extend_settings_navigation(settings_navigation $settings, naviga
     $assign = new assign($context, null, null);
     // If the current user can view grades, include the 'Submissions' navigation node.
     if ($assign->can_view_grades()) {
-        $url = new moodle_url('/mod/assign/view.php', ['id' => $settings->get_page()->cm->id, 'action' => 'grading']);
+        $url = new url('/mod/assign/view.php', ['id' => $settings->get_page()->cm->id, 'action' => 'grading']);
         $navref->add(
             text: get_string('gradeitem:submissions', 'assign'),
             action: $url,
@@ -681,7 +692,7 @@ function assign_print_recent_activity($course, $viewfullnames, $timestart) {
             continue;
         }
 
-        $context = context_module::instance($submission->cmid);
+        $context = module::instance($submission->cmid);
         // The act of submitting of assignment may be considered private -
         // only graders will see it if specified.
         if (empty($showrecentsubmissions)) {
@@ -726,7 +737,7 @@ function assign_print_recent_activity($course, $viewfullnames, $timestart) {
 
     foreach ($show as $submission) {
         $cm = $modinfo->get_cm($submission->cmid);
-        $context = context_module::instance($submission->cmid);
+        $context = module::instance($submission->cmid);
         $assign = new assign($context, $cm, $cm->course);
         $link = $CFG->wwwroot.'/mod/assign/view.php?id='.$cm->id;
         // Obscure first and last name if blind marking enabled.
@@ -819,7 +830,7 @@ function assign_get_recent_mod_activity(&$activities,
     }
 
     $groupmode       = groups_get_activity_groupmode($cm, $course);
-    $cmcontext      = context_module::instance($cm->id);
+    $cmcontext      = module::instance($cm->id);
     $grader          = has_capability('moodle/grade:viewall', $cmcontext);
     $accessallgroups = has_capability('moodle/site:accessallgroups', $cmcontext);
     $viewfullnames   = has_capability('moodle/site:viewfullnames', $cmcontext);
@@ -1027,7 +1038,7 @@ function assign_grade_item_update($assign, $grades=null) {
     } else if ($assign->grade == 0) { // Grade feedback is needed only when grade == 0.
         require_once($CFG->dirroot . '/mod/assign/locallib.php');
         $mod = get_coursemodule_from_instance('assign', $assign->id, $assign->courseid);
-        $cm = context_module::instance($mod->id);
+        $cm = module::instance($mod->id);
         $assignment = new assign($cm, null, null);
         $gradefeedbackenabled = $assignment->is_gradebook_feedback_enabled();
     }
@@ -1102,7 +1113,7 @@ function assign_get_user_grades($assign, $userid=0) {
     require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
     $cm = get_coursemodule_from_instance('assign', $assign->id, 0, false, MUST_EXIST);
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     $assignment = new assign($context, null, null);
     $assignment->set_instance($assign);
     return $assignment->get_user_grades_for_gradebook($userid);
@@ -1278,7 +1289,7 @@ function assign_user_complete($course, $user, $coursemodule, $assign) {
     global $CFG;
     require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
 
     $assignment = new assign($context, $coursemodule, $course);
 
@@ -1358,7 +1369,7 @@ function assign_user_outline($course, $user, $coursemodule, $assignment) {
         return null;
     }
     $result = new stdClass();
-    if (!$gradingitem->hidden || has_capability('moodle/grade:viewhidden', context_course::instance($course->id))) {
+    if (!$gradingitem->hidden || has_capability('moodle/grade:viewhidden', course::instance($course->id))) {
         $result->info = get_string('outlinegrade', 'assign', $gradebookgrade->str_long_grade);
     } else {
         $result->info = get_string('gradenoun') . ': ' . get_string('hidden', 'grades');
@@ -1556,7 +1567,7 @@ function mod_assign_core_calendar_is_event_visible(calendar_event $event, $useri
     }
 
     $cm = get_fast_modinfo($event->courseid, $userid)->instances['assign'][$event->instance];
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $assign = new assign($context, $cm, null);
 
@@ -1591,7 +1602,7 @@ function mod_assign_core_calendar_provide_event_action(calendar_event $event,
     }
 
     $cm = get_fast_modinfo($event->courseid, $userid)->instances['assign'][$event->instance];
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $completion = new \completion_info($cm->get_course());
 
@@ -1608,7 +1619,7 @@ function mod_assign_core_calendar_provide_event_action(calendar_event $event,
 
     if ($event->eventtype == ASSIGN_EVENT_TYPE_GRADINGDUE) {
         $name = get_string('gradeverb');
-        $url = new \moodle_url('/mod/assign/view.php', [
+        $url = new url('/mod/assign/view.php', [
             'id' => $cm->id,
             'action' => 'grader'
         ]);
@@ -1641,7 +1652,7 @@ function mod_assign_core_calendar_provide_event_action(calendar_event $event,
 
         // The user has not yet submitted anything. Show the addsubmission link.
         $name = get_string('addsubmission', 'assign');
-        $url = new \moodle_url('/mod/assign/view.php', [
+        $url = new url('/mod/assign/view.php', [
             'id' => $cm->id,
             'action' => 'editsubmission'
         ]);
@@ -1707,7 +1718,7 @@ function mod_assign_core_calendar_get_valid_event_timestart_range(\calendar_even
     $modulename = $event->modulename;
     $instanceid = $event->instance;
     $coursemodule = get_fast_modinfo($courseid)->instances[$modulename][$instanceid];
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
     $assign = new assign($context, null, null);
     $assign->set_instance($instance);
 
@@ -1744,7 +1755,7 @@ function mod_assign_core_calendar_event_timestart_updated(\calendar_event $event
     $instanceid = $event->instance;
     $modified = false;
     $coursemodule = get_fast_modinfo($courseid)->instances[$modulename][$instanceid];
-    $context = context_module::instance($coursemodule->id);
+    $context = module::instance($coursemodule->id);
 
     // The user does not have the capability to modify this activity.
     if (!has_capability('moodle/course:manageactivities', $context)) {
@@ -1801,19 +1812,19 @@ function mod_assign_user_preferences(): array {
         'type' => PARAM_ALPHA,
         'null' => NULL_NOT_ALLOWED,
         'default' => '',
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
     $preferences['assign_workflowfilter'] = array(
         'type' => PARAM_ALPHA,
         'null' => NULL_NOT_ALLOWED,
         'default' => '',
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
     $preferences['assign_markerfilter'] = array(
         'type' => PARAM_ALPHANUMEXT,
         'null' => NULL_NOT_ALLOWED,
         'default' => '',
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
 
     return $preferences;

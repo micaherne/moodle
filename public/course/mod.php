@@ -23,6 +23,12 @@
  * @package course
  */
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\single_button;
+use core\url;
+use core_course\modinfo;
 use core_courseformat\formatactions;
 
 require("../config.php");
@@ -48,7 +54,7 @@ $cancelcopy    = optional_param('cancelcopy', 0, PARAM_BOOL); // TODO remove thi
 $confirm       = optional_param('confirm', 0, PARAM_BOOL); // TODO remove this param as part of MDL-83530.
 
 // This page should always redirect
-$url = new moodle_url('/course/mod.php');
+$url = new url('/course/mod.php');
 foreach (compact('indent','update','hide','show','copy','moveto','movetosection','delete','course','cancelcopy','confirm') as $key=>$value) {
     if ($value !== 0) {
         $url->param($key, $value);
@@ -109,7 +115,7 @@ if (!empty($add)) {
     ];
 
     redirect(
-        new moodle_url(
+        new url(
             '/course/modedit.php',
             $params,
         )
@@ -125,7 +131,7 @@ if (!empty($add)) {
         'returnoptions' => $returnoptions,
     ];
     redirect(
-        new moodle_url(
+        new url(
             '/course/modedit.php',
             $params,
         )
@@ -140,7 +146,7 @@ if (!empty($add)) {
      $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
     require_login($course, false, $cm);
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
     require_all_capabilities(['moodle/backup:backuptargetimport', 'moodle/restore:restoretargetimport'], $coursecontext);
 
     // Duplicate the module.
@@ -158,7 +164,7 @@ if (!empty($add)) {
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
     require_login($course, false, $cm);
-    $modcontext = context_module::instance($cm->id);
+    $modcontext = module::instance($cm->id);
     require_capability('moodle/course:manageactivities', $modcontext);
 
     if (plugin_supports('mod', $cm->modname, FEATURE_PUBLISHES_QUESTIONS)) {
@@ -187,7 +193,7 @@ if (!empty($add)) {
 
         echo $OUTPUT->header();
         echo $OUTPUT->box_start('noticebox');
-        $formcontinue = new single_button(new moodle_url("$CFG->wwwroot/course/mod.php", $optionsyes), get_string('yes'));
+        $formcontinue = new single_button(new url("$CFG->wwwroot/course/mod.php", $optionsyes), get_string('yes'));
         $formcancel = new single_button($return, get_string('no'), 'get');
         echo $OUTPUT->confirm($strdeletechecktypename, $formcontinue, $formcancel);
         echo $OUTPUT->box_end();
@@ -213,27 +219,27 @@ if ((!empty($movetosection) or !empty($moveto)) and confirm_sesskey()) {
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
     require_login($course, false, $cm);
-    $coursecontext = context_course::instance($course->id);
-    $modcontext = context_module::instance($cm->id);
+    $coursecontext = course::instance($course->id);
+    $modcontext = module::instance($cm->id);
     require_capability('moodle/course:manageactivities', $modcontext);
 
     if (!empty($movetosection)) {
         if (!$section = $DB->get_record('course_sections', array('id'=>$movetosection, 'course'=>$cm->course))) {
-            throw new \moodle_exception('sectionnotexist');
+            throw new moodle_exception('sectionnotexist');
         }
         $beforecm = NULL;
 
     } else {                      // normal moveto
         if (!$beforecm = get_coursemodule_from_id('', $moveto, $cm->course, true)) {
-            throw new \moodle_exception('invalidcoursemodule');
+            throw new moodle_exception('invalidcoursemodule');
         }
         if (!$section = $DB->get_record('course_sections', array('id'=>$beforecm->section, 'course'=>$cm->course))) {
-            throw new \moodle_exception('sectionnotexist');
+            throw new moodle_exception('sectionnotexist');
         }
     }
 
     if (!ismoving($section->course)) {
-        throw new \moodle_exception('needcopy', '', "view.php?id=$section->course");
+        throw new moodle_exception('needcopy', '', "view.php?id=$section->course");
     }
 
     $formatactions = formatactions::cm($course->id);
@@ -242,7 +248,7 @@ if ((!empty($movetosection) or !empty($moveto)) and confirm_sesskey()) {
     } else if (!empty($beforecm)) {
         $formatactions->move_before($cm->id, $beforecm->id);
     } else {
-        throw new \moodle_exception('invalidmovetarget');
+        throw new moodle_exception('invalidmovetarget');
     }
 
     $sectionreturn = $USER->activitycopysectionreturn;
@@ -265,8 +271,8 @@ if ((!empty($movetosection) or !empty($moveto)) and confirm_sesskey()) {
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
     require_login($course, false, $cm);
-    $coursecontext = context_course::instance($course->id);
-    $modcontext = context_module::instance($cm->id);
+    $coursecontext = course::instance($course->id);
+    $modcontext = module::instance($cm->id);
     require_capability('moodle/course:manageactivities', $modcontext);
 
     $cm->indent += $indent;
@@ -277,7 +283,7 @@ if ((!empty($movetosection) or !empty($moveto)) and confirm_sesskey()) {
 
     $DB->set_field('course_modules', 'indent', $cm->indent, array('id'=>$cm->id));
 
-    \course_modinfo::purge_course_module_cache($cm->course, $cm->id);
+    modinfo::purge_course_module_cache($cm->course, $cm->id);
     // Rebuild invalidated module cache.
     rebuild_course_cache($cm->course, false, true);
 
@@ -293,8 +299,8 @@ if ((!empty($movetosection) or !empty($moveto)) and confirm_sesskey()) {
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
     require_login($course, false, $cm);
-    $coursecontext = context_course::instance($course->id);
-    $modcontext = context_module::instance($cm->id);
+    $coursecontext = course::instance($course->id);
+    $modcontext = module::instance($cm->id);
     require_capability('moodle/course:activityvisibility', $modcontext);
 
     if (set_coursemodule_visible($cm->id, 0)) {
@@ -345,8 +351,8 @@ if ((!empty($movetosection) or !empty($moveto)) and confirm_sesskey()) {
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
     require_login($course, false, $cm);
-    $coursecontext = context_course::instance($course->id);
-    $modcontext = context_module::instance($cm->id);
+    $coursecontext = course::instance($course->id);
+    $modcontext = module::instance($cm->id);
     require_capability('moodle/course:manageactivities', $modcontext);
 
     formatactions::cm($coursecontext->instanceid)->set_groupmode($cm->id, $groupmode);
@@ -363,8 +369,8 @@ if ((!empty($movetosection) or !empty($moveto)) and confirm_sesskey()) {
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
     require_login($course, false, $cm);
-    $coursecontext = context_course::instance($course->id);
-    $modcontext = context_module::instance($cm->id);
+    $coursecontext = course::instance($course->id);
+    $modcontext = module::instance($cm->id);
     require_capability('moodle/course:manageactivities', $modcontext);
 
     $section = $DB->get_record('course_sections', array('id'=>$cm->section), '*', MUST_EXIST);
@@ -393,5 +399,5 @@ if ((!empty($movetosection) or !empty($moveto)) and confirm_sesskey()) {
     unset($USER->activitycopysectionreturn);
     redirect(course_get_url($course, $cm->sectionnum, $returnoptions));
 } else {
-    throw new \moodle_exception('unknowaction');
+    throw new moodle_exception('unknowaction');
 }

@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\exception\moodle_exception;
+
 require_once $CFG->libdir.'/gradelib.php';
 require_once $CFG->dirroot.'/grade/lib.php';
 require_once $CFG->dirroot.'/grade/import/lib.php';
@@ -143,7 +145,7 @@ function gradeimport_xml_fetch_and_commit(stdClass $course, string $url, bool $f
 
     $text = download_file_content($url);
     if ($text === false) {
-        throw new \moodle_exception(
+        throw new moodle_exception(
             'cannotreadfile',
             'error',
             $CFG->wwwroot . '/grade/import/xml/index.php?id=' . $course->id,
@@ -154,7 +156,7 @@ function gradeimport_xml_fetch_and_commit(stdClass $course, string $url, bool $f
     $error = '';
     $importcode = import_xml_grades($text, $course, $error);
     if ($importcode === false) {
-        throw new \moodle_exception(
+        throw new moodle_exception(
             'errorduringimport',
             'gradeimport_xml',
             $CFG->wwwroot . '/grade/import/xml/index.php?id=' . $course->id,

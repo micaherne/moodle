@@ -18,8 +18,8 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\form;
 
-use context;
-use moodle_url;
+use core\context;
+use core\url;
 use core_form\dynamic_form;
 use core_reportbuilder\manager;
 use core_reportbuilder\permission;
@@ -96,8 +96,8 @@ class condition extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
-        return new moodle_url('/');
+    protected function get_page_url_for_dynamic_submission(): url {
+        return new url('/');
     }
 
     /**

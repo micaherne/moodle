@@ -16,7 +16,8 @@
 
 namespace core_ai\cache;
 
-use cache_definition;
+use core_cache\data_source_interface;
+use core_cache\definition;
 
 /**
  * Cache class for AI policy.
@@ -25,12 +26,12 @@ use cache_definition;
  * @copyright  2024 Matt Porritt <matt.porritt@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class policy implements \cache_data_source {
+class policy implements data_source_interface {
     /** @var policy|null the singleton instance of this class. */
     protected static ?policy $instance = null;
 
     #[\Override]
-    public static function get_instance_for_cache(cache_definition $definition): policy {
+    public static function get_instance_for_cache(definition $definition): policy {
         if (is_null(self::$instance)) {
             self::$instance = new self();
         }

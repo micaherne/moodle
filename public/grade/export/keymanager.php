@@ -23,6 +23,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\url;
+use core_table\output\html_table;
+
 require_once '../../config.php';
 require_once $CFG->dirroot.'/grade/export/lib.php';
 
@@ -31,18 +38,18 @@ $id = required_param('id', PARAM_INT); // course id
 $PAGE->set_url('/grade/export/keymanager.php', array('id' => $id));
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($id);
+$context = course::instance($id);
 
 require_capability('moodle/grade:export', $context);
 
 // Check if the user has at least one grade publishing capability.
 $plugins = grade_helper::get_plugins_export($course->id);
 if (!isset($plugins['keymanager'])) {
-    throw new \moodle_exception('nopermissions');
+    throw new moodle_exception('nopermissions');
 }
 
 $actionbar = new \core_grades\output\export_key_manager_action_bar($context);
@@ -62,7 +69,7 @@ if ($keys) {
         $line[1] = $key->iprestriction;
         $line[2] = empty($key->validuntil) ? get_string('always') : userdate($key->validuntil);
 
-        $url = new moodle_url('key.php');
+        $url = new url('key.php');
         if (!empty($key->id)) {
             $url->param('id', $key->id);
         }

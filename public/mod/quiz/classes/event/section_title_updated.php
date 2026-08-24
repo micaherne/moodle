@@ -24,6 +24,9 @@
 
 namespace mod_quiz\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * The mod_quiz section title updated event class.
  *
@@ -64,7 +67,7 @@ class section_title_updated extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/edit.php', [
+        return new url('/mod/quiz/edit.php', [
             'cmid' => $this->contextinstanceid
         ]);
     }
@@ -73,19 +76,19 @@ class section_title_updated extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->objectid)) {
-            throw new \coding_exception('The \'objectid\' value must be set.');
+            throw new coding_exception('The \'objectid\' value must be set.');
         }
 
         if (!isset($this->contextinstanceid)) {
-            throw new \coding_exception('The \'contextinstanceid\' value must be set.');
+            throw new coding_exception('The \'contextinstanceid\' value must be set.');
         }
 
         if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+            throw new coding_exception('The \'quizid\' value must be set in other.');
         }
 
         if (!isset($this->other['newtitle'])) {
-            throw new \coding_exception('The \'newtitle\' value must be set in other.');
+            throw new coding_exception('The \'newtitle\' value must be set in other.');
         }
 
     }

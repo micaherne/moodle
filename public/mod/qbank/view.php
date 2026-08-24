@@ -23,10 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/questionlib.php');
 
 require_login();
 
-$context = context_module::instance(required_param('id', PARAM_INT));
+$context = module::instance(required_param('id', PARAM_INT));
 redirect(question_edit_url($context));

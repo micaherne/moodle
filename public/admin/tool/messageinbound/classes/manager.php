@@ -24,6 +24,10 @@
 
 namespace tool_messageinbound;
 
+use core\exception\moodle_exception;
+use core\url;
+use core\user;
+
 /**
  * Mail Pickup Manager.
  *
@@ -158,7 +162,7 @@ class manager {
             $this->select_mailbox(mailbox: $mailbox);
             return true;
         } else {
-            throw new \moodle_exception('imapconnectfailure', 'tool_messageinbound', '', null, 'Could not connect to IMAP server.');
+            throw new moodle_exception('imapconnectfailure', 'tool_messageinbound', '', null, 'Could not connect to IMAP server.');
         }
     }
 
@@ -1179,7 +1183,7 @@ class manager {
 
         // The message will be sent from the intended user.
         $eventdata->courseid            = SITEID;
-        $eventdata->userfrom            = \core_user::get_noreply_user();
+        $eventdata->userfrom            = user::get_noreply_user();
         $eventdata->userto              = $USER;
         $eventdata->subject             = $this->get_reply_subject($this->currentmessagedata->envelope->subject);
         $eventdata->fullmessage         = get_string('invalidrecipientdescription', 'tool_messageinbound', $this->currentmessagedata);
@@ -1262,7 +1266,7 @@ class manager {
         $messageparams = new \stdClass();
         $messageparams->html    = $message->html;
         $messageparams->plain   = $message->plain;
-        $messagepreferencesurl = new \moodle_url("/message/notificationpreferences.php", array('id' => $USER->id));
+        $messagepreferencesurl = new url("/message/notificationpreferences.php", array('id' => $USER->id));
         $messageparams->messagepreferencesurl = $messagepreferencesurl->out();
         $htmlmessage = get_string('messageprocessingsuccesshtml', 'tool_messageinbound', $messageparams);
         $plainmessage = get_string('messageprocessingsuccess', 'tool_messageinbound', $messageparams);

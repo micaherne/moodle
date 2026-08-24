@@ -17,7 +17,7 @@
 namespace core_cache;
 
 use core\exception\coding_exception;
-use lang_string;
+use core\lang_string;
 
 /**
  * The cache definition class.

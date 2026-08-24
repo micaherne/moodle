@@ -25,6 +25,8 @@
 
 namespace enrol_manual\task;
 
+use core\output\progress_trace\text_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -51,7 +53,7 @@ class sync_enrolments extends \core\task\scheduled_task {
      */
     public function execute() {
         $enrol = enrol_get_plugin('manual');
-        $trace = new \text_progress_trace();
+        $trace = new text_progress_trace();
         $enrol->sync($trace);
     }
 }

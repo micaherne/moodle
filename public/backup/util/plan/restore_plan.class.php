@@ -27,6 +27,8 @@
  *
  * TODO: Finish phpdocs
  */
+use core\context\course;
+
 class restore_plan extends base_plan implements loggable {
 
     /**
@@ -216,7 +218,7 @@ class restore_plan extends base_plan implements loggable {
             $event = \core\event\course_restored::create(array(
                 'objectid' => $this->get_courseid(),
                 'userid' => $this->get_userid(),
-                'context' => context_course::instance($this->get_courseid()),
+                'context' => course::instance($this->get_courseid()),
                 'other' => $otherarray
             ));
             $event->trigger();

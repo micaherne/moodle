@@ -61,9 +61,9 @@ if ($returnoptions) {
 }
 
 // Normalize the return URL.
-$returnurl = new moodle_url($returnurl);
+$returnurl = new url($returnurl);
 
-$currenturl = new moodle_url(
+$currenturl = new url(
     '/course/format/update.php',
     [
         'action' => $action,

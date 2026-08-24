@@ -25,6 +25,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context_helper;
+
 global $CFG;
 require_once($CFG->libdir . '/form/autocomplete.php');
 require_once($CFG->dirroot . '/cohort/lib.php');
@@ -83,7 +86,7 @@ class MoodleQuickForm_cohort extends MoodleQuickForm_autocomplete {
         if (isset($options['contextid'])) {
             $this->contextid = $options['contextid'];
         } else {
-            $this->contextid = context_system::instance()->id;
+            $this->contextid = system::instance()->id;
         }
         if (isset($options['exclude'])) {
             $this->exclude = $options['exclude'];

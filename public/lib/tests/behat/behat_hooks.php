@@ -42,6 +42,7 @@ use Behat\Testwork\Hook\Scope\BeforeSuiteScope,
     Facebook\WebDriver\Exception\UnexpectedAlertOpenException,
     Facebook\WebDriver\Exception\WebDriverCurlException,
     Facebook\WebDriver\Exception\UnknownErrorException;
+use core\exception\coding_exception;
 
 /**
  * Hooks to the behat process.

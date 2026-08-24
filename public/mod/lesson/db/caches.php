@@ -24,11 +24,13 @@
 
 declare(strict_types=1);
 
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 $definitions = [
     'overrides' => [
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => true,
         'datasource' => '\mod_lesson\cache\overrides',
     ],

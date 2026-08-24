@@ -23,6 +23,9 @@
  */
 
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
 use mod_assign\override_manager;
 
 require_once(dirname(__FILE__) . '/../../config.php');
@@ -39,7 +42,7 @@ if (! $override = $DB->get_record('assign_overrides', array('id' => $overrideid)
 }
 
 list($course, $cm) = get_course_and_cm_from_instance($override->assignid, 'assign');
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 $assign = new assign($context, null, null);
 
 require_login($course, false, $cm);
@@ -58,9 +61,9 @@ if ($override->groupid) {
     }
 }
 
-$url = new moodle_url('/mod/assign/overridedelete.php', array('id' => $override->id));
-$confirmurl = new moodle_url($url, array('id' => $override->id, 'confirm' => 1));
-$cancelurl = new moodle_url('/mod/assign/overrides.php', array('cmid' => $cm->id));
+$url = new url('/mod/assign/overridedelete.php', array('id' => $override->id));
+$confirmurl = new url($url, array('id' => $override->id, 'confirm' => 1));
+$cancelurl = new url('/mod/assign/overrides.php', array('cmid' => $cm->id));
 
 if (!empty($override->userid)) {
     $cancelurl->param('mode', 'user');

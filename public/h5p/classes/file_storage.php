@@ -24,6 +24,13 @@
 
 namespace core_h5p;
 
+use core\context;
+use core\context\system;
+use core\context\user;
+use core\exception\file_serving_exception;
+use core\exception\moodle_exception;
+use core\url;
+use core_cache\cache;
 use stored_file;
 use Moodle\H5PCore;
 use Moodle\H5peditorFile;
@@ -71,7 +78,7 @@ class file_storage implements H5PFileStorage {
      */
     public function __construct() {
         // Currently everything uses the system context.
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->fs = get_file_storage();
     }
 
@@ -330,7 +337,7 @@ class file_storage implements H5PFileStorage {
         ) = $this->get_file_elements_from_filepath($filepath);
 
         if (!$itemid) {
-            throw new \file_serving_exception('Could not retrieve the requested file, check your file permissions.');
+            throw new file_serving_exception('Could not retrieve the requested file, check your file permissions.');
         }
 
         // Locate file.
@@ -355,7 +362,7 @@ class file_storage implements H5PFileStorage {
         $component = self::COMPONENT;
         $filearea = self::CONTENT_FILEAREA;
         if ($contentid === 0) {
-            $usercontext = \context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             $context = $usercontext->id;
             $component = 'user';
             $filearea = 'draft';
@@ -477,7 +484,7 @@ class file_storage implements H5PFileStorage {
             $filepath,
             self::ICON_FILENAME)
         ) {
-            $iconurl  = \moodle_url::make_pluginfile_url(
+            $iconurl  = url::make_pluginfile_url(
                 $this->context->id,
                 self::COMPONENT,
                 self::LIBRARY_FILEAREA,
@@ -600,7 +607,7 @@ class file_storage implements H5PFileStorage {
 
         $areafiles = $this->fs->get_area_files($this->context->id, self::COMPONENT, self::LIBRARY_FILEAREA, $library['libraryId']);
         $this->delete_directory($this->context->id, self::COMPONENT, self::LIBRARY_FILEAREA, $library['libraryId']);
-        $librarycache = \cache::make('core', 'h5p_library_files');
+        $librarycache = cache::make('core', 'h5p_library_files');
         foreach ($areafiles as $file) {
             if (!$DB->record_exists('files', array('contenthash' => $file->get_contenthash(),
                                                    'component' => self::COMPONENT,
@@ -630,7 +637,7 @@ class file_storage implements H5PFileStorage {
      * @param  array  $options File system information.
      */
     private function copy_directory(string $source, array $options): void {
-        $librarycache = \cache::make('core', 'h5p_library_files');
+        $librarycache = cache::make('core', 'h5p_library_files');
         $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS),
                 \RecursiveIteratorIterator::SELF_FIRST);
 
@@ -676,7 +683,7 @@ class file_storage implements H5PFileStorage {
         // Read source files.
         $files = $this->fs->get_directory_files($contextid, self::COMPONENT, $filearea, $itemid, $filepath, true);
 
-        $librarycache = \cache::make('core', 'h5p_library_files');
+        $librarycache = cache::make('core', 'h5p_library_files');
 
         foreach ($files as $file) {
             $path = $target . str_replace($filepath, DIRECTORY_SEPARATOR, $file->get_filepath());
@@ -706,7 +713,7 @@ class file_storage implements H5PFileStorage {
      * @param  \context $context Context
      * @return string All of the file content in one string.
      */
-    private function concatenate_files(array $assets, string $type, \context $context): string {
+    private function concatenate_files(array $assets, string $type, context $context): string {
         $content = '';
         foreach ($assets as $asset) {
             // Find location of asset.
@@ -828,7 +835,7 @@ class file_storage implements H5PFileStorage {
         if ($filearea === 'draft') {
             $itemid = 0;
             $component = 'user';
-            $usercontext = \context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             $context = $usercontext->id;
         }
 
@@ -918,7 +925,7 @@ class file_storage implements H5PFileStorage {
             if (empty($css)) {
                 // The custom CSS file exists and yet the setting 'h5pcustomcss' is empty.
                 // This prevents an invalid content hash.
-                throw new \moodle_exception(
+                throw new moodle_exception(
                     'The H5P \'h5pcustomcss\' setting is empty and yet the custom CSS file \''.
                     $record['filename'].
                     '\' exists.',
@@ -926,7 +933,7 @@ class file_storage implements H5PFileStorage {
                 );
             }
             // File exists, so generate the url and version hash.
-            $cssurl = \moodle_url::make_pluginfile_url(
+            $cssurl = url::make_pluginfile_url(
                 $record['contextid'],
                 $record['component'],
                 $record['filearea'],
@@ -937,7 +944,7 @@ class file_storage implements H5PFileStorage {
             return ['cssurl' => $cssurl, 'cssversion' => md5($css)];
         } else if (!empty($css)) {
             // The custom CSS file does not exist and yet should do.
-            throw new \moodle_exception(
+            throw new moodle_exception(
                 'The H5P custom CSS file \''.
                 $record['filename'].
                 '\' does not exist and yet there is CSS in the \'h5pcustomcss\' setting.',
@@ -954,7 +961,7 @@ class file_storage implements H5PFileStorage {
      */
     private static function get_custom_styles_file_record(): array {
         return [
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => self::COMPONENT,
             'filearea' => self::CSS_FILEAREA,
             'itemid' => 0,

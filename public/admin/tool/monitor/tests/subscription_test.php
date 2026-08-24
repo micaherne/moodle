@@ -16,6 +16,8 @@
 
 namespace tool_monitor;
 
+use core\exception\coding_exception;
+
 /**
  * Unit tests for the subscription class.
  * @since 3.2.0
@@ -64,7 +66,7 @@ final class subscription_test extends \advanced_testcase {
      */
     public function test_magic_get(): void {
         $this->assertEquals(20, $this->subscription->courseid);
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->subscription->ruleid;
     }
 }

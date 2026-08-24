@@ -181,7 +181,7 @@ class notification implements renderable, templatable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return array data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $titleicon = null;
         if (!empty($this->titleicon)) {
             $icon = $this->titleicon;

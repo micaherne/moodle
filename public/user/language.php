@@ -22,6 +22,9 @@
  * @package core_user
  */
 
+use core\url;
+use core\user;
+
 require_once('../config.php');
 require_once($CFG->libdir.'/gdlib.php');
 require_once($CFG->dirroot.'/user/language_form.php');
@@ -39,14 +42,14 @@ list($user, $course) = useredit_setup_preference_page($userid, $courseid);
 $languageform = new user_edit_language_form(null, array('userid' => $user->id));
 $languageform->set_data($user);
 
-$redirect = new moodle_url("/user/preferences.php", array('userid' => $user->id));
+$redirect = new url("/user/preferences.php", array('userid' => $user->id));
 if ($languageform->is_cancelled()) {
     redirect($redirect);
 } else if ($data = $languageform->get_data()) {
     $lang = $data->lang;
     // If the specified language does not exist, use the site default.
     if (!get_string_manager()->translation_exists($lang, false)) {
-        $lang = core_user::get_property_default('lang');
+        $lang = user::get_property_default('lang');
     }
 
     $user->lang = $lang;

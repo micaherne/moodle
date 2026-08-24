@@ -27,6 +27,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require(__DIR__.'/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/mnet/lib.php');
@@ -47,15 +52,15 @@ admin_externalpage_setup($adminsection);
 
 if (!empty($updra) && confirm_sesskey()) {
     set_config('mnet_register_allhosts', optional_param('registerallhosts', 0, PARAM_INT));
-    redirect(new moodle_url('/admin/mnet/peers.php'), get_string('changessaved'));
+    redirect(new url('/admin/mnet/peers.php'), get_string('changessaved'));
 }
 
 if (!extension_loaded('openssl')) {
-    throw new \moodle_exception('requiresopenssl', 'mnet');
+    throw new moodle_exception('requiresopenssl', 'mnet');
 }
 
 if (!function_exists('curl_init') ) {
-    throw new \moodle_exception('nocurl', 'mnet');
+    throw new moodle_exception('nocurl', 'mnet');
 }
 
 if (!isset($CFG->mnet_dispatcher_mode)) {
@@ -164,9 +169,9 @@ if ($formdata = $reviewform->get_data()) {
     $mnet_peer->sslverification     = $formdata->sslverification;
 
     if ($mnet_peer->commit()) {
-        redirect(new moodle_url('/admin/mnet/peers.php', array('hostid' => $mnet_peer->id)), get_string('changessaved'));
+        redirect(new url('/admin/mnet/peers.php', array('hostid' => $mnet_peer->id)), get_string('changessaved'));
     } else {
-        throw new \moodle_exception('invalidaction', 'error', 'index.php');
+        throw new moodle_exception('invalidaction', 'error', 'index.php');
     }
 } else if ($reviewform->is_submitted()) { // submitted, but errors
     echo $OUTPUT->header();
@@ -188,7 +193,7 @@ $table->head = array(get_string('registerallhosts', 'mnet'));
 
 $registerrow = '';
 $registerstr = '';
-$registerurl = new moodle_url('/admin/mnet/peers.php', array('updateregisterall' => 1, 'sesskey' => sesskey()));
+$registerurl = new url('/admin/mnet/peers.php', array('updateregisterall' => 1, 'sesskey' => sesskey()));
 if (!empty($CFG->mnet_register_allhosts)) {
     $registerrow = get_string('registerhostson', 'mnet');
     $registerurl->param('registerallhosts', 0);
@@ -220,10 +225,10 @@ $table->head = array(
     '',
 );
 $table->wrap = array('nowrap', 'nowrap', 'nowrap', 'nowrap');
-$baseurl = new moodle_url('/admin/mnet/peers.php');
+$baseurl = new url('/admin/mnet/peers.php');
 $deleted = array();
 foreach($hosts as $host) {
-    $hosturl = new moodle_url($baseurl, array('hostid' => $host->id));
+    $hosturl = new url($baseurl, array('hostid' => $host->id));
     if (trim($host->name) === '') {
         // should not happen but...
         $host->name = '???';
@@ -249,7 +254,7 @@ foreach($hosts as $host) {
         html_writer::link($hosturl, $host->name),
         html_writer::link($host->wwwroot, $host->wwwroot),
         $last_connect,
-        $OUTPUT->single_button(new moodle_url('/admin/mnet/delete.php', array('hostid' => $host->id)), get_string('delete'))
+        $OUTPUT->single_button(new url('/admin/mnet/delete.php', array('hostid' => $host->id)), get_string('delete'))
     );
 }
 echo html_writer::table($table);

@@ -20,12 +20,12 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
 
-use cache;
-use coding_exception;
+use core_cache\cache;
+use core\exception\coding_exception;
 use core_badges\external\issuer_exporter;
 use core_badges\external\badgeclass_exporter;
 use stdClass;
-use context_system;
+use core\context\system;
 
 define('BADGE_ACCESS_TOKEN', 'access');
 define('BADGE_USER_ID_TOKEN', 'user_id');
@@ -559,7 +559,7 @@ class backpack_api {
             $badges = $badges[0];
             if ($expanded) {
                 $publicassertions = [];
-                $context = context_system::instance();
+                $context = system::instance();
                 $output = $PAGE->get_renderer('core', 'badges');
                 foreach ($badges->assertions as $assertion) {
                     $remoteassertion = $this->get_assertion($assertion);

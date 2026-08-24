@@ -21,6 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/forum/lib.php');
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use mod_forum\external\set_forum_tracking;
 use mod_forum\subscriptions;
@@ -90,7 +91,7 @@ final class set_forum_tracking_test extends \core_external\tests\externallib_tes
         $this->setUser($user);
 
         if ($expectedexception) {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         } else if ($initialstate !== null) {
             // Set the initial state of the subscription.
             if ($initialstate) {
@@ -161,7 +162,7 @@ final class set_forum_tracking_test extends \core_external\tests\externallib_tes
 
         $this->setUser($user);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         external_api::clean_returnvalue(
             set_forum_tracking::execute_returns(),
             set_forum_tracking::execute($forum->id, true),
@@ -178,7 +179,7 @@ final class set_forum_tracking_test extends \core_external\tests\externallib_tes
         $this->resetAfterTest();
 
         $this->setAdminUser();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         external_api::clean_returnvalue(
             set_forum_tracking::execute_returns(),
             set_forum_tracking::execute(9999, true),
@@ -199,7 +200,7 @@ final class set_forum_tracking_test extends \core_external\tests\externallib_tes
         $this->setUser($user);
         $forum = self::getDataGenerator()->create_module('forum', ['course' => $course->id]);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         external_api::clean_returnvalue(
             set_forum_tracking::execute_returns(),
             set_forum_tracking::execute($forum->id, true),

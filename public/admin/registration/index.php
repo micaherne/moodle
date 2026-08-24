@@ -27,6 +27,9 @@
  * It also handles update operation by web service.
  */
 
+use core\output\html_writer;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -43,15 +46,15 @@ if ($unregistration && $siteisregistered) {
         \core\hub\registration::unregister(false, false);
 
         if (!\core\hub\registration::is_registered()) {
-            redirect(new moodle_url('/admin/registration/index.php'));
+            redirect(new url('/admin/registration/index.php'));
         }
     }
 
     echo $OUTPUT->header();
     echo $OUTPUT->confirm(
         get_string('registerwithmoodleorgremove', 'core_hub'),
-        new moodle_url(new moodle_url('/admin/registration/index.php', ['unregistration' => 1, 'confirm' => 1])),
-        new moodle_url(new moodle_url('/admin/registration/index.php'))
+        new url(new url('/admin/registration/index.php', ['unregistration' => 1, 'confirm' => 1])),
+        new url(new url('/admin/registration/index.php'))
     );
     echo $OUTPUT->footer();
     exit;
@@ -71,9 +74,9 @@ if ($fromform = $siteregistrationform->get_data()) {
 
     if (\core\hub\registration::is_registered()) {
         if (\core\hub\registration::update_manual()) {
-            redirect(new moodle_url($returnurl));
+            redirect(new url($returnurl));
         }
-        redirect(new moodle_url('/admin/registration/index.php', ['returnurl' => $returnurl]));
+        redirect(new url('/admin/registration/index.php', ['returnurl' => $returnurl]));
     } else {
         \core\hub\registration::register($returnurl);
         // This method will redirect away.
@@ -121,10 +124,10 @@ $siteregistrationform->display();
 
 if ($siteisregistered) {
     // Unregister link.
-    $unregisterhuburl = new moodle_url("/admin/registration/index.php", ['unregistration' => 1]);
+    $unregisterhuburl = new url("/admin/registration/index.php", ['unregistration' => 1]);
     echo html_writer::div(html_writer::link($unregisterhuburl, get_string('unregister', 'hub')), 'unregister mt-2');
 } else if ($isinitialregistration) {
-    echo html_writer::div(html_writer::link(new moodle_url($returnurl), get_string('skipregistration', 'hub')),
+    echo html_writer::div(html_writer::link(new url($returnurl), get_string('skipregistration', 'hub')),
         'skipregistration mt-2');
 }
 

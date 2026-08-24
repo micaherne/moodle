@@ -25,6 +25,9 @@
 
 namespace tool_mobile\output;
 
+use core\output\renderable;
+use core\output\templatable;
+use core\url;
 use tool_mobile\api;
 
 /**
@@ -35,7 +38,7 @@ use tool_mobile\api;
  * @author    <juan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class subscription implements \renderable, \templatable {
+class subscription implements renderable, templatable {
 
     /**
      * Subscription data.
@@ -99,14 +102,14 @@ class subscription implements \renderable, \templatable {
             'siteurl' => $CFG->wwwroot,
             'origin' => 'moodlelms',
         ];
-        $unregisteredurl = new \moodle_url(
+        $unregisteredurl = new url(
             \tool_mobile\api::MOODLE_APPS_PORTAL_URL . '/local/apps/signup_site.php',
             $params,
         );
 
         $params['plan'] = 'premium';
         $params['email'] = md5($USER->email);
-        $appsportalupgradeurl = new \moodle_url(
+        $appsportalupgradeurl = new url(
             \tool_mobile\api::MOODLE_APPS_PORTAL_URL . '/local/apps/signup_site.php',
             $params,
         );
@@ -229,7 +232,7 @@ class subscription implements \renderable, \templatable {
                 }
                 $data['messagesnotificationsseemore'] = get_string('notificationsseemore', 'tool_mobile', $data['appsportalurl']);
             } else {
-                $urlmessagesetting = new \moodle_url('/admin/settings.php', ['section' => 'messagesettingairnotifier']);
+                $urlmessagesetting = new url('/admin/settings.php', ['section' => 'messagesettingairnotifier']);
                 $data['messagesnonotifications'][] = [
                     'icon' => [
                         'icon' => 'i/warning',

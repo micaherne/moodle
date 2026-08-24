@@ -31,6 +31,8 @@
  * @copyright 2010 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+
 class backup_ui extends base_ui {
     /**
      * The stages of the backup user interface.
@@ -184,7 +186,7 @@ class backup_ui extends base_ui {
                     $params = array();
                 }
                 $params = array_merge($params, array('backup' => $this->get_backupid(), 'stage' => $stage));
-                $item['link'] = new moodle_url($PAGE->url, $params);
+                $item['link'] = new url($PAGE->url, $params);
             }
             array_unshift($items, $item);
             $stage = floor($stage / 2);

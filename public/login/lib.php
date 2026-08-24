@@ -25,6 +25,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 define('PWRESET_STATUS_NOEMAILSENT', 1);
@@ -85,7 +88,7 @@ function core_login_process_password_reset($username, $email) {
     global $CFG, $DB;
 
     if (empty($username) && empty($email)) {
-        throw new \moodle_exception('cannotmailconfirm');
+        throw new moodle_exception('cannotmailconfirm');
     }
 
     // Next find the user account in the database which the requesting user claims to own.
@@ -127,7 +130,7 @@ function core_login_process_password_reset($username, $email) {
     // Send email address to account's email address if appropriate.
     $pwresetstatus = PWRESET_STATUS_NOEMAILSENT;
     if ($user and !empty($user->confirmed)) {
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         $userauth = \core\di::get(\core\authentication::class)->get_plugin($user->auth);
         if (
@@ -138,7 +141,7 @@ function core_login_process_password_reset($username, $email) {
             if (send_password_change_info($user)) {
                 $pwresetstatus = PWRESET_STATUS_OTHEREMAILSENT;
             } else {
-                throw new \moodle_exception('cannotmailconfirm');
+                throw new moodle_exception('cannotmailconfirm');
             }
         } else {
             // The account the requesting user claims to be is entitled to change their password.
@@ -173,7 +176,7 @@ function core_login_process_password_reset($username, $email) {
                 if ($sendresult) {
                     $pwresetstatus = PWRESET_STATUS_TOKENSENT;
                 } else {
-                    throw new \moodle_exception('cannotmailconfirm');
+                    throw new moodle_exception('cannotmailconfirm');
                 }
             }
         }
@@ -259,13 +262,13 @@ function core_login_process_password_set($token) {
     ) {
         // Bad luck - user is not able to login, do not let them set password.
         echo $OUTPUT->header();
-        throw new \moodle_exception('forgotteninvalidurl');
+        throw new moodle_exception('forgotteninvalidurl');
         die; // Never reached.
     }
 
     // Check this isn't guest user.
     if (isguestuser($user)) {
-        throw new \moodle_exception('cannotresetguestpwd');
+        throw new moodle_exception('cannotresetguestpwd');
     }
 
     // Token is correct, and unexpired.
@@ -290,7 +293,7 @@ function core_login_process_password_set($token) {
         $DB->delete_records('user_password_resets', array('id' => $user->tokenid));
         $userauth = \core\di::get(\core\authentication::class)->get_plugin($user->auth);
         if (!$userauth->user_update_password($user, $data->password)) {
-            throw new \moodle_exception('errorpasswordupdate', 'auth');
+            throw new moodle_exception('errorpasswordupdate', 'auth');
         }
         \core\user::add_password_history($user->id, $data->password);
         if (!empty($CFG->passwordchangelogout) || !empty($data->logoutothersessions)) {

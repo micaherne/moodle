@@ -16,6 +16,11 @@
 
 namespace auth_lti;
 
+use core\context\system;
+use core\context\user as context_user;
+use core\output\user_picture;
+use core\user as core_user;
+
 /**
  * Tests for the auth_plugin_lti class.
  *
@@ -48,15 +53,15 @@ final class auth_test extends \advanced_testcase {
      */
     protected function verify_user_profile_image_updated(int $userid): void {
         global $CFG;
-        $user = \core_user::get_user($userid);
-        $usercontext = \context_user::instance($user->id);
+        $user = core_user::get_user($userid);
+        $usercontext = context_user::instance($user->id);
         $expected = $CFG->wwwroot . '/pluginfile.php/' . $usercontext->id . '/user/icon/boost/f2?rev='. $user->picture;
 
         $page = new \moodle_page();
         $page->set_url('/user/profile.php');
-        $page->set_context(\context_system::instance());
+        $page->set_context(system::instance());
         $renderer = $page->get_renderer('core');
-        $userpicture = new \user_picture($user);
+        $userpicture = new user_picture($user);
         $this->assertEquals($expected, $userpicture->get_url($page, $renderer)->out(false));
     }
 
@@ -1103,7 +1108,7 @@ final class auth_test extends \advanced_testcase {
         $mockjwtdata = $this->get_mock_launchdata_for_user($launchdata['user']);
         $sink = $this->redirectEvents();
         $auth->update_user_account($user, $mockjwtdata, $mockjwtdata['iss']);
-        $user = \core_user::get_user($user->id);
+        $user = core_user::get_user($user->id);
         $events = $sink->get_events();
         $sink->close();
 

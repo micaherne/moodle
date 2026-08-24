@@ -16,6 +16,8 @@
 
 namespace core_courseformat\local\overview;
 
+use core\exception\coding_exception;
+
 /**
  * Tests for course
  *
@@ -168,7 +170,7 @@ final class overviewfactory_test extends \advanced_testcase {
         $property->setAccessible(true);
         $property->setValue($cm, 'wrongcm');
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessageMatches("/.* must extend core_courseformat\\\\activityoverviewbase.*/");
         overviewfactory::create($cm);
     }

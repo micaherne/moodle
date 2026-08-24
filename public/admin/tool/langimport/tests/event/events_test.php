@@ -24,6 +24,8 @@
 
 namespace tool_langimport\event;
 
+use core\context\system;
+
 /**
  * Test class for langimport events.
  *
@@ -54,7 +56,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         $this->assertInstanceOf('\tool_langimport\event\langpack_updated', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 
     public function test_langpack_updated_validation(): void {
@@ -74,7 +76,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         $this->assertInstanceOf('\tool_langimport\event\langpack_imported', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 
     public function test_langpack_installed_validation(): void {
@@ -94,7 +96,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         $this->assertInstanceOf('\tool_langimport\event\langpack_removed', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 
     public function test_langpack_removed_validation(): void {

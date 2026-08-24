@@ -24,6 +24,9 @@
  * @since Moodle 2.7
  */
 
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -232,7 +235,7 @@ class message_airnotifier_manager {
 
         $results = [];
         // Check Mobile services enabled.
-        $summary = html_writer::link(new moodle_url('/admin/search.php', ['query' => 'enablemobilewebservice']),
+        $summary = html_writer::link(new url('/admin/search.php', ['query' => 'enablemobilewebservice']),
                 get_string('enablemobilewebservice', 'admin'));
         if (empty($CFG->enablewebservices) || empty($CFG->enablemobilewebservice)) {
             $results[] = new core\check\result(core\check\result::CRITICAL, $summary, get_string('enablewsdescription', 'webservice'));
@@ -259,7 +262,7 @@ class message_airnotifier_manager {
             }
         }
 
-        $summary = html_writer::link((new moodle_url('/admin/message.php')), get_string('enableprocessor', 'message_airnotifier'));
+        $summary = html_writer::link((new url('/admin/message.php')), get_string('enableprocessor', 'message_airnotifier'));
         if ($enabled) {
             $results[] = new core\check\result(core\check\result::OK, $summary, get_string('enabled', 'admin'));
         } else {
@@ -268,7 +271,7 @@ class message_airnotifier_manager {
         }
 
         // Check Mobile notifications configuration is ok.
-        $summary = html_writer::link((new moodle_url('/admin/settings.php', ['section' => 'messagesettingairnotifier'])),
+        $summary = html_writer::link((new url('/admin/settings.php', ['section' => 'messagesettingairnotifier'])),
             get_string('notificationsserverconfiguration', 'message_airnotifier'));
         if ($this->is_system_configured()) {
             $results[] = new core\check\result(core\check\result::OK, $summary, get_string('configured', 'message_airnotifier'));
@@ -281,7 +284,7 @@ class message_airnotifier_manager {
         if ($this->is_system_configured()) {
             foreach ($settingstocheck as $setting) {
                 if ($CFG->$setting != trim($CFG->$setting)) {
-                    $summary = html_writer::link((new moodle_url('/admin/settings.php', ['section' => 'messagesettingairnotifier'])),
+                    $summary = html_writer::link((new url('/admin/settings.php', ['section' => 'messagesettingairnotifier'])),
                         get_string('notificationsserverconfiguration', 'message_airnotifier'));
 
                     $results[] = new core\check\result(core\check\result::ERROR, $summary,
@@ -310,7 +313,7 @@ class message_airnotifier_manager {
         }
 
         // Check access key by trying to create an invalid token.
-        $settingsurl = new moodle_url('/admin/settings.php', ['section' => 'messagesettingairnotifier']);
+        $settingsurl = new url('/admin/settings.php', ['section' => 'messagesettingairnotifier']);
         $summary = html_writer::link($settingsurl, get_string('airnotifieraccesskey', 'message_airnotifier'));
         if (!empty($CFG->airnotifieraccesskey)) {
             $url = $CFG->airnotifierurl . ':' . $CFG->airnotifierport . '/tokens/testtoken';
@@ -349,7 +352,7 @@ class message_airnotifier_manager {
             }
         }
 
-        $summary = html_writer::link((new moodle_url('/admin/message.php')), get_string('managemessageoutputs', 'message'));
+        $summary = html_writer::link((new url('/admin/message.php')), get_string('managemessageoutputs', 'message'));
         if ($providersconfigured == 0) {
             $results[] = new core\check\result(core\check\result::ERROR, $summary,
                 get_string('messageprovidersempty', 'message_airnotifier'));

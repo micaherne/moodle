@@ -26,6 +26,8 @@ namespace report_stats\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\course;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\contextlist;
 use \core_privacy\local\request\approved_contextlist;
@@ -124,7 +126,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof course) {
             return;
         }
 
@@ -184,7 +186,7 @@ class provider implements
 
             $statsrecords = [];
             foreach ($records as $record) {
-                $context = \context_course::instance($record->courseid);
+                $context = course::instance($record->courseid);
                 if (!isset($statsrecords[$record->courseid])) {
                     $statsrecords[$record->courseid] = new \stdClass();
                     $statsrecords[$record->courseid]->context = $context;
@@ -210,7 +212,7 @@ class provider implements
      *
      * @param context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         // Check that this context is a course context.
         if ($context->contextlevel == CONTEXT_COURSE) {
             static::delete_stats($context->instanceid);
@@ -243,7 +245,7 @@ class provider implements
 
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_course) {
+        if ($context instanceof course) {
             list($usersql, $userparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
             $select = "courseid = :courseid AND userid {$usersql}";
             $params = ['courseid' => $context->instanceid] + $userparams;

@@ -33,6 +33,10 @@
  * @copyright 2009 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+use core\navigation\navigation_node;
+use core\url;
+
 class block_settings extends block_base {
 
     /** @var string */
@@ -136,8 +140,8 @@ class block_settings extends block_base {
 
         // only do search if you have moodle/site:config
         if (!empty($this->content->text)) {
-            if (has_capability('moodle/site:config',context_system::instance()) ) {
-                $this->content->footer = $renderer->search_form(new moodle_url("$CFG->wwwroot/$CFG->admin/search.php"), optional_param('query', '', PARAM_RAW));
+            if (has_capability('moodle/site:config',system::instance()) ) {
+                $this->content->footer = $renderer->search_form(new url("$CFG->wwwroot/$CFG->admin/search.php"), optional_param('query', '', PARAM_RAW));
             } else {
                 $this->content->footer = '';
             }

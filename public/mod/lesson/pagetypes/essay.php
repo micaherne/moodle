@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\context\module;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** Essay question type */
@@ -67,7 +71,7 @@ class lesson_page_type_essay extends lesson_page {
     public function display($renderer, $attempt) {
         global $PAGE, $CFG, $USER;
 
-        $context = context_module::instance($PAGE->cm->id);
+        $context = module::instance($PAGE->cm->id);
         $options = array(
             'contents' => $this->get_contents(),
             'lessonid' => $this->lesson->id,
@@ -96,7 +100,7 @@ class lesson_page_type_essay extends lesson_page {
 
         // Trigger an event question viewed.
         $eventparams = array(
-            'context' => context_module::instance($PAGE->cm->id),
+            'context' => module::instance($PAGE->cm->id),
             'objectid' => $this->properties->id,
             'other' => array(
                     'pagetype' => $this->get_typestring()
@@ -141,7 +145,7 @@ class lesson_page_type_essay extends lesson_page {
             // Save any linked files if we are using an editor.
             $editoroptions = array(
                 'maxbytes' => $PAGE->course->maxbytes,
-                'context' => context_module::instance($PAGE->cm->id),
+                'context' => module::instance($PAGE->cm->id),
                 'noclean' => true, 'maxfiles' => EDITOR_UNLIMITED_FILES,
                 'enable_filemanagement' => false,
             );
@@ -182,7 +186,7 @@ class lesson_page_type_essay extends lesson_page {
         global $PAGE, $CFG;
         $result = parent::check_answer();
         $result->isessayquestion = true;
-        $context = context_module::instance($PAGE->cm->id);
+        $context = module::instance($PAGE->cm->id);
         $options = array(
             'contents' => $this->get_contents(),
             'editoroptions' => array(
@@ -242,7 +246,7 @@ class lesson_page_type_essay extends lesson_page {
         $properties->id = $this->properties->id;
         $properties->lessonid = $this->lesson->id;
         $properties->timemodified = time();
-        $properties = file_postupdate_standard_editor($properties, 'contents', array('noclean'=>true, 'maxfiles'=>EDITOR_UNLIMITED_FILES, 'maxbytes'=>$PAGE->course->maxbytes), context_module::instance($PAGE->cm->id), 'mod_lesson', 'page_contents', $properties->id);
+        $properties = file_postupdate_standard_editor($properties, 'contents', array('noclean'=>true, 'maxfiles'=>EDITOR_UNLIMITED_FILES, 'maxbytes'=>$PAGE->course->maxbytes), module::instance($PAGE->cm->id), 'mod_lesson', 'page_contents', $properties->id);
         $DB->update_record("lesson_pages", $properties);
 
         // Trigger an event: page updated.
@@ -294,7 +298,7 @@ class lesson_page_type_essay extends lesson_page {
         $formattextdefoptions->para = false;
         $formattextdefoptions->context = $answerpage->context;
         $answers = $this->get_answers();
-        $context = context_module::instance($PAGE->cm->id);
+        $context = module::instance($PAGE->cm->id);
         foreach ($answers as $answer) {
             $hasattempts = $DB->record_exists('lesson_attempts', ['answerid' => $answer->id]);
             if ($useranswer != null) {
@@ -331,7 +335,7 @@ class lesson_page_type_essay extends lesson_page {
             } else {
                 $essayinfo = new stdClass();
                 if ($hasattempts && has_capability('mod/lesson:grade', $answerpage->context)) {
-                    $essayinfo->answer = html_writer::link(new moodle_url("/mod/lesson/essay.php",
+                    $essayinfo->answer = html_writer::link(new url("/mod/lesson/essay.php",
                         ['id' => $PAGE->cm->id]), get_string("viewessayanswers", "lesson"));
                 } else {
                     $essayinfo->answer = "";

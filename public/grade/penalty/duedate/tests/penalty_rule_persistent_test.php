@@ -16,8 +16,8 @@
 
 namespace gradepenalty_duedate;
 
-use context_course;
-use context_system;
+use core\context\course;
+use core\context\system;
 use gradepenalty_duedate\tests\penalty_testcase;
 
 /**
@@ -38,8 +38,8 @@ final class penalty_rule_persistent_test extends penalty_testcase {
 
         $course = $this->getDataGenerator()->create_course();
 
-        $systemcontextid = context_system::instance()->id;
-        $coursecontextid = context_course::instance($course->id)->id;
+        $systemcontextid = system::instance()->id;
+        $coursecontextid = course::instance($course->id)->id;
 
         // Check system context penalty rules.
         $rules = penalty_rule::get_rules($systemcontextid);
@@ -70,7 +70,7 @@ final class penalty_rule_persistent_test extends penalty_testcase {
     public function test_reset_rules(): void {
         $this->resetAfterTest();
         $this->create_sample_rules();
-        $systemcontextid = context_system::instance()->id;
+        $systemcontextid = system::instance()->id;
         penalty_rule::reset_rules($systemcontextid);
         $rules = penalty_rule::get_rules($systemcontextid);
         // Default 0% rule.
@@ -84,12 +84,12 @@ final class penalty_rule_persistent_test extends penalty_testcase {
     public function test_is_overridden(): void {
         $this->resetAfterTest();
         // System context penalty rules are never considered to be overridden.
-        $systemcontextid = context_system::instance()->id;
+        $systemcontextid = system::instance()->id;
         $this->create_sample_rules();
         $this->assertFalse(penalty_rule::is_overridden($systemcontextid));
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontextid = context_course::instance($course->id)->id;
+        $coursecontextid = course::instance($course->id)->id;
 
         // Verify the course with no rules is not considered overridden.
         $this->assertFalse(penalty_rule::is_overridden($coursecontextid));
@@ -105,13 +105,13 @@ final class penalty_rule_persistent_test extends penalty_testcase {
     public function test_is_inherited(): void {
         $this->resetAfterTest();
         // System context.
-        $systemcontextid = context_system::instance()->id;
+        $systemcontextid = system::instance()->id;
         $this->create_sample_rules();
         $this->assertFalse(penalty_rule::is_inherited($systemcontextid));
 
         // Create a course.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontextid = context_course::instance($course->id)->id;
+        $coursecontextid = course::instance($course->id)->id;
 
         // There is no rules created at course context, so they are inherited rules.
         $this->assertTrue(penalty_rule::is_inherited($coursecontextid));

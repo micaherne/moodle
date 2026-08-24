@@ -22,11 +22,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
+
 require('../../config.php');
 
 require_once($CFG->libdir.'/adminlib.php');
 require_login();
-$context = context_system::instance();
+$context = system::instance();
 $PAGE->set_context($context);
 $adminroot = admin_get_root(false, false);  // settings not required - only pages
 
@@ -37,7 +43,7 @@ if ($section = optional_param('section', '', PARAM_SAFEPATH) and confirm_sesskey
         $bookmarks = explode(',', get_user_preferences('admin_bookmarks'));
 
         if (in_array($section, $bookmarks)) {
-            throw new \moodle_exception('bookmarkalreadyexists', 'admin');
+            throw new moodle_exception('bookmarkalreadyexists', 'admin');
             die;
         }
 
@@ -47,29 +53,29 @@ if ($section = optional_param('section', '', PARAM_SAFEPATH) and confirm_sesskey
 
     $temp = $adminroot->locate($section);
 
-    if ($temp instanceof admin_settingpage || $temp instanceof admin_externalpage || $temp instanceof admin_category) {
+    if ($temp instanceof settingpage || $temp instanceof externalpage || $temp instanceof category) {
         $bookmarks[] = $section;
         $bookmarks = implode(',', $bookmarks);
         set_user_preference('admin_bookmarks', $bookmarks);
 
     } else {
-        throw new \moodle_exception('invalidsection', 'admin');
+        throw new moodle_exception('invalidsection', 'admin');
         die;
     }
 
-    if ($temp instanceof admin_settingpage) {
+    if ($temp instanceof settingpage) {
         redirect($CFG->wwwroot . '/' . $CFG->admin . '/settings.php?section=' . $section);
 
-    } elseif ($temp instanceof admin_externalpage) {
+    } elseif ($temp instanceof externalpage) {
         redirect($temp->url);
 
-    } else if ($temp instanceof admin_category) {
+    } else if ($temp instanceof category) {
         redirect($CFG->wwwroot . '/' . $CFG->admin . '/category.php?category=' . $section);
 
     }
 
 } else {
-    throw new \moodle_exception('invalidsection', 'admin');
+    throw new moodle_exception('invalidsection', 'admin');
     die;
 }
 

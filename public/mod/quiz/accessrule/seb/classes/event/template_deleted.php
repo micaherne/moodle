@@ -25,8 +25,9 @@
 
 namespace quizaccess_seb\event;
 
-use context_system;
+use core\context\system;
 use core\event\base;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -48,7 +49,7 @@ class template_deleted extends base {
      * @param context_system $context Context system.
      * @return base
      */
-    public static function create_strict(string $id, context_system $context): base {
+    public static function create_strict(string $id, system $context): base {
         global $USER;
 
         return self::create([
@@ -81,7 +82,7 @@ class template_deleted extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/accessrule/seb/template.php');
+        return new url('/mod/quiz/accessrule/seb/template.php');
     }
 
     /**

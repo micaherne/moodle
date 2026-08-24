@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use \core_badges\badge;
+use core\context\system;
 use core_badges\helper;
 use core_badges\local\backpack\ob_factory;
 use core_badges\tests\badges_testcase;
@@ -916,7 +918,7 @@ final class badgeslib_test extends badges_testcase {
         set_config('enablebadges', true);
 
         $userroleid = $DB->get_field('role', 'id', ['shortname' => 'user'], MUST_EXIST);
-        assign_capability('moodle/badges:viewbadges', CAP_PROHIBIT, $userroleid, \context_system::instance()->id, true);
+        assign_capability('moodle/badges:viewbadges', CAP_PROHIBIT, $userroleid, system::instance()->id, true);
         accesslib_clear_all_caches_for_unit_testing();
 
         core_badges_myprofile_navigation($tree, $this->user, false, null);

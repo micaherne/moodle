@@ -16,6 +16,9 @@
 
 namespace quiz_statistics;
 
+use core\context\module;
+use mod_quiz\tests\question_helper_test_trait;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -35,7 +38,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
  */
 final class quiz_statistics_report_test extends \advanced_testcase {
 
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /**
      * Secondary database connection for creating locks.
@@ -103,7 +106,7 @@ final class quiz_statistics_report_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $user = $this->getDataGenerator()->create_user();
         $quiz = $this->create_test_quiz($course);
-        $quizcontext = \context_module::instance($quiz->cmid);
+        $quizcontext = module::instance($quiz->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $this->add_two_regular_questions($questiongenerator, $quiz, ['contextid' => $quizcontext->id]);
         $this->attempt_quiz($quiz, $user);

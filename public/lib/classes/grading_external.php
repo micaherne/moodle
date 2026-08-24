@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\module;
+use core\exception\invalid_parameter_exception;
 use core_external\external_api;
 use core_external\external_format_value;
 use core_external\external_function_parameters;
@@ -74,7 +77,7 @@ class core_grading_external extends external_api {
         $warnings = array();
         $areas = array();
         foreach ($params['cmids'] as $cmid) {
-            $context = context_module::instance($cmid);
+            $context = module::instance($cmid);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {

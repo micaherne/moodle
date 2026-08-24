@@ -24,6 +24,9 @@
 
 namespace core_course\event;
 
+use core\context\course;
+use core\context\system;
+
 /**
  * This file contains the class that handles testing of course events.
  *
@@ -57,7 +60,7 @@ final class events_test extends \advanced_testcase {
         // Trigger an event: course category viewed.
         $eventparams = array(
             'objectid' => $category->id,
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
         );
 
         $event = \core\event\course_category_viewed::create($eventparams);
@@ -90,7 +93,7 @@ final class events_test extends \advanced_testcase {
         // Trigger an event: course category viewed.
         $eventparams = array(
             'objectid' => $course->id,
-            'context' => \context_course::instance($course->id),
+            'context' => course::instance($course->id),
         );
 
         $event = \core\event\course_information_viewed::create($eventparams);
@@ -119,7 +122,7 @@ final class events_test extends \advanced_testcase {
         // Trigger an event: courses searched.
         $search = 'mysearch';
         $eventparams = array(
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'other' => array('query' => $search)
         );
 
@@ -153,7 +156,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course($data);
 
         $eventparams = [
-            'context' => \context_course::instance($course->id),
+            'context' => course::instance($course->id),
         ];
         $event = \core\event\course_overview_viewed::create($eventparams);
 

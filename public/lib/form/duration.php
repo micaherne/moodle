@@ -25,6 +25,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+
 global $CFG;
 require_once($CFG->libdir . '/form/group.php');
 require_once($CFG->libdir . '/formslib.php');

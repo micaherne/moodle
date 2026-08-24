@@ -24,22 +24,23 @@
 
 namespace core_courseformat;
 
-use navigation_node;
+use core\navigation\navigation_node;
+use core_cache\helper;
 use moodle_page;
-use cm_info;
+use core_course\cm_info;
 use core_component;
-use course_modinfo;
-use html_writer;
-use section_info;
-use context_course;
+use core_course\modinfo;
+use core\output\html_writer;
+use core_course\section_info;
+use core\context\course;
 use editsection_form;
 use core\exception\moodle_exception;
 use core\exception\coding_exception;
-use moodle_url;
-use lang_string;
+use core\url;
+use core\lang_string;
 use core_external\external_api;
 use stdClass;
-use cache;
+use core_cache\cache;
 use core_courseformat\output\legacy_renderer;
 
 /**
@@ -296,7 +297,7 @@ abstract class base {
      * @return void
      */
     public static function invalidate_all_session_caches_for_course(stdClass $course): void {
-        \cache_helper::invalidate_by_event('changesincoursestate', [$course->id]);
+        helper::invalidate_by_event('changesincoursestate', [$course->id]);
     }
 
     /**
@@ -322,8 +323,8 @@ abstract class base {
      *
      * @return context_course the course context
      */
-    final public function get_context(): context_course {
-        return context_course::instance($this->courseid);
+    final public function get_context(): course {
+        return course::instance($this->courseid);
     }
 
     /**
@@ -381,10 +382,10 @@ abstract class base {
      *
      * @return course_modinfo
      */
-    public function get_modinfo(): course_modinfo {
+    public function get_modinfo(): modinfo {
         global $USER;
         if ($this->modinfo === null) {
-            $this->modinfo = course_modinfo::instance($this->courseid, $USER->id);
+            $this->modinfo = modinfo::instance($this->courseid, $USER->id);
         }
         return $this->modinfo;
     }
@@ -976,9 +977,9 @@ abstract class base {
 
         // Base URL.
         if (is_null($pagesection)) {
-            $url = new moodle_url('/course/view.php', ['id' => $course->id]);
+            $url = new url('/course/view.php', ['id' => $course->id]);
         } else {
-            $url = new moodle_url('/course/section.php', ['id' => $pagesection->id]);
+            $url = new url('/course/section.php', ['id' => $pagesection->id]);
         }
 
         // Add details.
@@ -1011,10 +1012,10 @@ abstract class base {
         array $ids = [],
         ?int $targetsectionid = null,
         ?int $targetcmid = null,
-        ?moodle_url $returnurl = null,
+        ?url $returnurl = null,
         stdClass|section_info|null $returnsection = null,
         array $returnoptions = []
-    ): moodle_url {
+    ): url {
         $params = [
             'courseid' => $this->get_courseid(),
             'sesskey' => sesskey(),
@@ -1042,7 +1043,7 @@ abstract class base {
             $params['returnsectionid'] = $returnsection->id;
         }
         $params['returnoptions'] = $returnoptions;
-        return new moodle_url('/course/format/update.php', $params);
+        return new url('/course/format/update.php', $params);
     }
 
     /**
@@ -1064,7 +1065,7 @@ abstract class base {
         since: '5.0',
         mdl: 'MDL-82767',
     )]
-    public function get_non_ajax_cm_action_url(string $action, cm_info $cm): moodle_url {
+    public function get_non_ajax_cm_action_url(string $action, cm_info $cm): url {
         $nonajaxactions = [
             'cmDelete' => 'cm_delete',
             'cmDuplicate' => 'cm_duplicate',
@@ -1532,7 +1533,7 @@ abstract class base {
         if ($needrebuild) {
             if ($sectionid) {
                 // Invalidate the section cache by given section id.
-                course_modinfo::purge_course_section_cache_by_id($this->courseid, $sectionid);
+                modinfo::purge_course_section_cache_by_id($this->courseid, $sectionid);
                 // Partial rebuild sections that have been invalidated.
                 rebuild_course_cache($this->courseid, true, true);
             } else {
@@ -1787,7 +1788,7 @@ abstract class base {
     public function show_editor(?array $capabilities = ['moodle/course:manageactivities']): bool {
         global $PAGE;
         $course = $this->get_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         if ($capabilities === null) {
             $capabilities = ['moodle/course:manageactivities'];
         }
@@ -1909,12 +1910,12 @@ abstract class base {
         $DB->delete_records('course_format_options', array('sectionid' => $section->id));
         $DB->delete_records('course_sections', array('id' => $section->id));
         // Invalidate the section cache by given section id.
-        course_modinfo::purge_course_section_cache_by_id($course->id, $section->id);
+        modinfo::purge_course_section_cache_by_id($course->id, $section->id);
         // Partial rebuild section cache that has been purged.
         rebuild_course_cache($course->id, true, true);
 
         // Delete section summary files.
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $fs = get_file_storage();
         $fs->delete_area_files($context->id, 'course', 'section', $section->id);
 
@@ -1971,7 +1972,7 @@ abstract class base {
 
         if ($editable === null) {
             $editable = !empty($USER->editing) && has_capability('moodle/course:update',
-                    context_course::instance($section->course));
+                    course::instance($section->course));
         }
 
         $displayvalue = $title = get_section_name($section->course, $section);
@@ -2012,7 +2013,7 @@ abstract class base {
      */
     public function inplace_editable_update_section_name($section, $itemtype, $newvalue) {
         if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
-            $context = context_course::instance($section->course);
+            $context = course::instance($section->course);
             external_api::validate_context($context);
             require_capability('moodle/course:update', $context);
 
@@ -2118,7 +2119,7 @@ abstract class base {
         }
 
         $course = $this->get_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $modinfo = $this->get_modinfo();
         $renderer = $this->get_renderer($PAGE);
 
@@ -2216,7 +2217,7 @@ abstract class base {
         }
 
         $course = $this->get_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $newsection = course_create_section($course, $originalsection->section + 1); // Place new section after existing one.
 
         $newsectiondata = new stdClass();

@@ -28,21 +28,24 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 require_login(null, false);
-require_capability('moodle/site:config', context_system::instance());
+require_capability('moodle/site:config', system::instance());
 
-$returnurl = new moodle_url('/admin/settings.php', array('section' => 'manageglobalsearch'));
+$returnurl = new url('/admin/settings.php', array('section' => 'manageglobalsearch'));
 
 $schema = new \search_solr\schema();
 
 $status = $schema->can_setup_server();
 if ($status !== true) {
 
-    $PAGE->set_context(context_system::instance());
-    $PAGE->set_url(new moodle_url('/search/engine/solr/setup_schema.php'));
+    $PAGE->set_context(system::instance());
+    $PAGE->set_url(new url('/search/engine/solr/setup_schema.php'));
 
     echo $OUTPUT->header();
     echo $OUTPUT->notification($status, \core\output\notification::NOTIFY_ERROR);

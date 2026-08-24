@@ -25,8 +25,8 @@
 namespace tool_lpmigrate;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use moodle_exception;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_competency\api;
 use core_competency\competency;
 use core_competency\course_competency;

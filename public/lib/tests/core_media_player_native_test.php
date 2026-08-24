@@ -65,7 +65,7 @@ final class core_media_player_native_test extends \advanced_testcase {
 
         // Create list of URLs for each extension.
         $urls = array_map(function($ext){
-            return new \moodle_url('http://example.org/video.' . $ext);
+            return new url('http://example.org/video.' . $ext);
         }, $nativeextensions);
 
         // Make sure that the list of supported URLs is not filtering permitted extensions.
@@ -78,8 +78,8 @@ final class core_media_player_native_test extends \advanced_testcase {
      */
     public function test_get_attribute(): void {
         $urls = [
-            new \moodle_url('http://example.org/some_filename.mp4'),
-            new \moodle_url('http://example.org/some_filename_hires.mp4'),
+            new url('http://example.org/some_filename.mp4'),
+            new url('http://example.org/some_filename_hires.mp4'),
         ];
 
         $player = new media_test_native_plugin();
@@ -96,8 +96,8 @@ final class core_media_player_native_test extends \advanced_testcase {
      */
     public function test_add_remove_attributes(): void {
         $urls = [
-            new \moodle_url('http://example.org/some_filename.mp4'),
-            new \moodle_url('http://example.org/some_filename_hires.mp4'),
+            new url('http://example.org/some_filename.mp4'),
+            new url('http://example.org/some_filename_hires.mp4'),
         ];
 
         $player = new media_test_native_plugin();
@@ -135,8 +135,8 @@ final class core_media_player_native_test extends \advanced_testcase {
      */
     public function test_replace_sources(): void {
         $urls = [
-            new \moodle_url('http://example.org/some_filename.mp4'),
-            new \moodle_url('http://example.org/some_filename_hires.mp4'),
+            new url('http://example.org/some_filename.mp4'),
+            new url('http://example.org/some_filename_hires.mp4'),
         ];
 
         $player = new media_test_native_plugin();

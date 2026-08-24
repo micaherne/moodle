@@ -17,15 +17,15 @@
 namespace core;
 
 use advanced_testcase;
-use cache;
-use cm_info;
-use coding_exception;
-use context_course;
-use context_module;
-use course_modinfo;
+use core_cache\cache;
+use core_course\cm_info;
+use core\exception\coding_exception;
+use core\context\course;
+use core\context\module;
+use core_course\modinfo;
 use core_courseformat\formatactions;
-use moodle_exception;
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
 use Exception;
 
 /**
@@ -89,7 +89,7 @@ final class modinfolib_test extends advanced_testcase {
         $cache->release_lock($course->id);
 
         // Clear static cache and call get_fast_modinfo() again (pretend we are in another request). Cache should not be rebuilt.
-        course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
         $modinfo = get_fast_modinfo($course->id);
         $cacherev = $DB->get_field('course', 'cacherev', ['id' => $course->id]);
         $this->assertEquals($prevcacherev, $cacherev);
@@ -114,7 +114,7 @@ final class modinfolib_test extends advanced_testcase {
         // Update cacherev in DB and make sure the cache will be rebuilt on the next call to get_fast_modinfo().
         increment_revision_number('course', 'cacherev', 'id = ?', [$course->id]);
         // We need to clear static cache for course_modinfo instances too.
-        course_modinfo::clear_instance_cache();
+        modinfo::clear_instance_cache();
         $modinfo = get_fast_modinfo($course->id);
         $cacherev = $DB->get_field('course', 'cacherev', ['id' => $course->id]);
         $this->assertGreaterThan($prevcacherev, $cacherev);
@@ -219,7 +219,7 @@ final class modinfolib_test extends advanced_testcase {
         $assign = $this->getDataGenerator()->create_module('assign', ['course' => $course->id]);
 
         // Create and enrol a student.
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $studentrole = $DB->get_record('role', ['shortname' => 'student'], '*', MUST_EXIST);
         $student = $this->getDataGenerator()->create_user();
         role_assign($studentrole->id, $student->id, $coursecontext);
@@ -248,7 +248,7 @@ final class modinfolib_test extends advanced_testcase {
         $this->assertFalse($cm->is_user_access_restricted_by_capability());
 
         // Prohibit student to view mod_assign for the particular module.
-        role_change_permission($studentrole->id, context_module::instance($cm->id), 'mod/assign:view', CAP_PROHIBIT);
+        role_change_permission($studentrole->id, module::instance($cm->id), 'mod/assign:view', CAP_PROHIBIT);
         get_fast_modinfo($course->id, 0, true);
         $cm = get_fast_modinfo($course->id)->instances['assign'][$assign->id];
         $this->assertFalse($cm->uservisible);

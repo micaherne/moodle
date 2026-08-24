@@ -16,6 +16,7 @@
 
 namespace assignsubmission_file;
 
+use core\context\user;
 use mod_assign_test_generator;
 
 defined('MOODLE_INTERNAL') || die();
@@ -60,7 +61,7 @@ final class locallib_test extends \advanced_testcase {
         $plugin = $assign->get_submission_plugin_by_type('file');
 
         if ($data) {
-            $data += ['contextid' => \context_user::instance($student->id)->id, 'itemid' => $itemid];
+            $data += ['contextid' => user::instance($student->id)->id, 'itemid' => $itemid];
             $fs = get_file_storage();
             $fs->create_file_from_string((object)$data, 'Content of ' . $data['filename']);
         }
@@ -87,7 +88,7 @@ final class locallib_test extends \advanced_testcase {
         $plugin = $assign->get_submission_plugin_by_type('file');
         $fs = get_file_storage();
         $fs->create_directory(
-                \context_user::instance($student->id)->id,
+                user::instance($student->id)->id,
                 'user',
                 'draft',
                 $itemid,
@@ -121,7 +122,7 @@ final class locallib_test extends \advanced_testcase {
         $submission = (object) ['files_filemanager' => $itemid];
 
         if ($data) {
-            $data += ['contextid' => \context_user::instance($student->id)->id, 'itemid' => $itemid];
+            $data += ['contextid' => user::instance($student->id)->id, 'itemid' => $itemid];
             $fs = get_file_storage();
             $fs->create_file_from_string((object)$data, 'Content of ' . $data['filename']);
         }
@@ -148,7 +149,7 @@ final class locallib_test extends \advanced_testcase {
         $plugin = $assign->get_submission_plugin_by_type('file');
         $fs = get_file_storage();
         $fs->create_directory(
-                \context_user::instance($student->id)->id,
+                user::instance($student->id)->id,
                 'user',
                 'draft',
                 $itemid,

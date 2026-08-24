@@ -21,8 +21,8 @@ use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_course;
-use moodle_exception;
+use core\context\course;
+use core\exception\moodle_exception;
 
 /**
  * This is the external method for deleting a blog post entry.
@@ -71,12 +71,12 @@ class delete_entry extends external_api {
         }
 
         $courseid = !empty($entry->courseid) ? $entry->courseid : SITEID;
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
 
         self::validate_context($context);
 
         if (!blog_user_can_edit_entry($entry)) {
-            throw new \moodle_exception('nopermissionstodeleteentry', 'blog');
+            throw new moodle_exception('nopermissionstodeleteentry', 'blog');
         }
 
         $entry->delete();

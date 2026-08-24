@@ -24,10 +24,11 @@
 namespace tool_lp\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use stdClass;
-use moodle_url;
+use core\url;
 use core_competency\api;
 use core_competency\external\performance_helper;
 use core_competency\plan;
@@ -62,13 +63,13 @@ class plan_page implements renderable, templatable {
      * @param renderer_base $output
      * @return stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         $planexporter = new plan_exporter($this->plan, array('template' => $this->plan->get_template()));
 
         $data = new stdClass();
         $data->plan = $planexporter->export($output);
         $data->competencies = array();
-        $data->pluginbaseurl = (new moodle_url('/admin/tool/lp'))->out(false);
+        $data->pluginbaseurl = (new url('/admin/tool/lp'))->out(false);
         $data->contextid = $this->plan->get_context()->id;
 
         if ($data->plan->iscompleted) {

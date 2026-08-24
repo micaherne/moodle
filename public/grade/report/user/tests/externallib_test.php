@@ -16,6 +16,9 @@
 
 namespace gradereport_user;
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
 use core_external\external_api;
 use gradereport_user\external\user as user_external;
 
@@ -54,7 +57,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $teacher = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($teacher->id, $course->id, $teacherrole->id);
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         assign_capability('moodle/site:accessallgroups', CAP_PROHIBIT, $teacherrole->id, $context);
         accesslib_clear_all_caches_for_unit_testing();
 
@@ -158,7 +161,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Expect exception when user is not indicated.
         $this->setUser($student3);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         user_external::get_grades_table($course->id);
     }
 
@@ -181,7 +184,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $studentgrade = user_external::get_grades_table($course->id, $student1->id);
             $this->fail('Exception expected due to not perissions to view other user grades.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('notingroup', $e->errorcode);
         }
     }
@@ -211,7 +214,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Check the event details are correct.
         $this->assertInstanceOf('\gradereport_user\event\grade_report_viewed', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($USER->id, $event->get_data()['relateduserid']);
 
         $this->setUser($teacher);
@@ -223,14 +226,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Check the event details are correct.
         $this->assertInstanceOf('\gradereport_user\event\grade_report_viewed', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($student1->id, $event->get_data()['relateduserid']);
 
         $this->setUser($student2);
         try {
             $studentgrade = user_external::view_grade_report($course->id, $student1->id);
             $this->fail('Exception expected due to not permissions to view other user grades.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissiontoviewgrades', $e->errorcode);
         }
     }

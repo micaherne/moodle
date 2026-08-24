@@ -18,6 +18,7 @@ namespace mod_assign;
 
 use assignfeedback_editpdf\document_services;
 use assignfeedback_editpdf\combined_document;
+use core\context\module;
 use mod_assign_test_generator;
 
 defined('MOODLE_INTERNAL') || die();
@@ -79,7 +80,7 @@ final class feedback_test extends \advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
         $instance = $generator->create_instance($params);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         return new \assign($context, $cm, $params['course']);
     }
 

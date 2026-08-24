@@ -25,6 +25,8 @@
 
 namespace core\event;
 
+use core\context\system;
+
 /**
  * Test for content bank created event.
  *
@@ -58,7 +60,7 @@ final class contentbank_content_created_test extends \advanced_testcase {
         $this->setAdminUser();
 
         // Save the system context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         // Trigger and capture the event when creating a content.
         $sink = $this->redirectEvents();

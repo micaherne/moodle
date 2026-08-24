@@ -25,6 +25,7 @@ namespace repository_flickr\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\user;
 use repository_flickr\privacy\provider;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
@@ -57,7 +58,7 @@ final class provider_test extends provider_testcase {
         $contextlist = provider::get_contexts_for_userid($user->id);
         $approvedcontextlist = new approved_contextlist($user, 'repository_flickr', $contextlist->get_contextids());
         $user = $approvedcontextlist->get_user();
-        $contextuser = \context_user::instance($user->id);
+        $contextuser = user::instance($user->id);
 
         // Test exporting of Flickr repository user preferences *without* OAuth token/secret preference configured.
         provider::export_user_preferences($user->id);

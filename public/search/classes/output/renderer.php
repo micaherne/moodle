@@ -24,6 +24,10 @@
 
 namespace core_search\output;
 
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\tabobject;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,7 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2015 David Monllao {@link http://www.davidmonllao.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * @var int Max number chars to display of a string value
@@ -66,7 +70,7 @@ class renderer extends \plugin_renderer_base {
                 $taburl->param('cat', $category->get_name());
                 $taburl->param('page', 0);
                 $taburl->remove_params(['page', 'areaids']);
-                $toprow[$category->get_name()] = new \tabobject($category->get_name(), $taburl, $category->get_visiblename());
+                $toprow[$category->get_name()] = new tabobject($category->get_name(), $taburl, $category->get_visiblename());
             }
 
             if (\core_search\manager::should_hide_all_results_category()) {
@@ -85,7 +89,7 @@ class renderer extends \plugin_renderer_base {
         foreach ($results as $hit) {
             $resultshtml[] = $this->render_result($hit);
         }
-        $content .= \html_writer::tag('div', implode('<hr/>', $resultshtml), array('class' => 'search-results'));
+        $content .= html_writer::tag('div', implode('<hr/>', $resultshtml), array('class' => 'search-results'));
 
         // Paging bar.
         $content .= $this->output->paging_bar($totalcount, $page, $perpage, $url);
@@ -102,12 +106,12 @@ class renderer extends \plugin_renderer_base {
     public function render_top_results($results): string {
         $content = $this->output->box_start('topresults');
         $content .= $this->output->heading(get_string('topresults', 'core_search'));
-        $content .= \html_writer::tag('hr', '');
+        $content .= html_writer::tag('hr', '');
         $resultshtml = array();
         foreach ($results as $hit) {
             $resultshtml[] = $this->render_result($hit);
         }
-        $content .= \html_writer::tag('div', implode('<hr/>', $resultshtml), array('class' => 'search-results'));
+        $content .= html_writer::tag('div', implode('<hr/>', $resultshtml), array('class' => 'search-results'));
         $content .= $this->output->box_end();
         return $content;
     }

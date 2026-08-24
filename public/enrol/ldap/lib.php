@@ -26,6 +26,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\output\progress_trace;
+use core\output\progress_trace\error_log_progress_trace;
+use core\output\progress_trace\null_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 class enrol_ldap_plugin extends enrol_plugin {
@@ -110,7 +116,7 @@ class enrol_ldap_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         if (!has_capability('enrol/ldap:manage', $context)) {
             return false;
         }
@@ -134,7 +140,7 @@ class enrol_ldap_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/ldap:manage', $context);
     }
 
@@ -273,7 +279,7 @@ class enrol_ldap_plugin extends enrol_plugin {
             // Deal with unenrolments.
             $transaction = $DB->start_delegated_transaction();
             foreach ($enrolments[$role->id]['current'] as $course) {
-                $context = context_course::instance($course->courseid);
+                $context = course::instance($course->courseid);
                 $instance = $DB->get_record('enrol', array('id'=>$course->enrolid));
                 switch ($this->get_config('unenrolaction')) {
                     case ENROL_EXT_REMOVED_UNENROL:
@@ -522,7 +528,7 @@ class enrol_ldap_plugin extends enrol_plugin {
                                  JOIN {enrol} e ON (e.id = ue.enrolid)
                                 WHERE u.deleted = 0 AND e.courseid = :courseid ";
                         $params = array('roleid'=>$role->id, 'courseid'=>$course_obj->id);
-                        $context = context_course::instance($course_obj->id);
+                        $context = course::instance($course_obj->id);
                         if (!empty($ldapmembers)) {
                             list($ldapml, $params2) = $DB->get_in_or_equal($ldapmembers, SQL_PARAMS_NAMED, 'm', false);
                             $sql .= "AND u.idnumber $ldapml";
@@ -632,7 +638,7 @@ class enrol_ldap_plugin extends enrol_plugin {
                             } else {
                                 if (!$DB->record_exists('role_assignments', array('roleid'=>$role->id, 'userid'=>$member->id, 'contextid'=>$context->id, 'component'=>'enrol_ldap', 'itemid'=>$instance->id))) {
                                     // This happens when reviving users or when user has multiple roles in one course.
-                                    $context = context_course::instance($course_obj->id);
+                                    $context = course::instance($course_obj->id);
                                     role_assign($role->id, $member->id, $context->id, 'enrol_ldap', $instance->id);
                                     $trace->output("Assign role to user '$member->username' in course '$course_obj->shortname ($course_obj->id)'");
                                 }

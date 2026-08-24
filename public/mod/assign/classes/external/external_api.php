@@ -16,6 +16,8 @@
 
 namespace mod_assign\external;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -86,7 +88,7 @@ class external_api extends \core_external\external_api {
         $assign = $DB->get_record('assign', ['id' => $assignid], 'id', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($assign, 'assign');
 
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         // Please, note that is not required to check mod/assign:view because is done by validate_context->require_login.
         self::validate_context($context);
         $assign = new \assign($context, $cm, $course);

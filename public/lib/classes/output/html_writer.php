@@ -21,7 +21,7 @@ use core_table\output\html_table;
 use core_table\output\html_table_cell;
 use core_table\output\html_table_row;
 use core_text;
-use moodle_url;
+use core\url;
 
 /**
  * Simple html output class
@@ -100,7 +100,7 @@ class html_writer {
      * @return string HTML fragment
      */
     public static function attribute($name, $value) {
-        if ($value instanceof moodle_url) {
+        if ($value instanceof url) {
             return ' ' . $name . '="' . $value->out() . '"';
         }
 
@@ -475,7 +475,7 @@ class html_writer {
      * @param null|array $exclude list of excluded parameters
      * @return string HTML fragment
      */
-    public static function input_hidden_params(moodle_url $url, ?array $exclude = null) {
+    public static function input_hidden_params(url $url, ?array $exclude = null) {
         $exclude = (array)$exclude;
         $params = $url->params();
         foreach ($exclude as $key) {

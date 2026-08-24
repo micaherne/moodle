@@ -27,7 +27,7 @@ namespace enrol_lti\task;
 defined('MOODLE_INTERNAL') || die();
 
 use core\task\scheduled_task;
-use core_user;
+use core\user as core_user;
 use enrol_lti\data_connector;
 use enrol_lti\helper;
 use IMSGlobal\LTI\ToolProvider\Context;

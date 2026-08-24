@@ -24,7 +24,7 @@
 
 namespace mod_bigbluebuttonbn\local\helpers;
 
-use context_module;
+use core\context\module;
 use core_tag_tag;
 use mod_bigbluebuttonbn\local\config;
 use mod_bigbluebuttonbn\recording;
@@ -74,7 +74,7 @@ class reset {
                 if (!$cm = get_coursemodule_from_instance('bigbluebuttonbn', $bigbluebuttonbn->id, $courseid)) {
                     continue;
                 }
-                $context = context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 core_tag_tag::delete_instances('mod_bigbluebuttonbn', null, $context->id);
             }
         }

@@ -26,7 +26,9 @@ namespace tool_dataprivacy;
 
 defined('MOODLE_INTERNAL') || die();
 
-use lang_string;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\lang_string;
 use core\persistent;
 
 /**
@@ -232,7 +234,7 @@ class data_request extends persistent {
                 $fs = get_file_storage();
 
                 foreach ($expiredrequests as $id => $userid) {
-                    $usercontext = \context_user::instance($userid);
+                    $usercontext = user::instance($userid);
                     $fs->delete_area_files($usercontext->id, 'tool_dataprivacy', 'export', $id);
                 }
             }
@@ -286,7 +288,7 @@ class data_request extends persistent {
         }
 
         if (!$this->is_resettable()) {
-            throw new \moodle_exception('cannotreset', 'tool_dataprivacy');
+            throw new moodle_exception('cannotreset', 'tool_dataprivacy');
         }
 
         $currentdata = $this->to_record();

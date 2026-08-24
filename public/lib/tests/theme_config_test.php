@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later (5)
  */
 
+use core\output\theme_config;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;

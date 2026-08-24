@@ -27,8 +27,8 @@ namespace core_badges\external;
 defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
-use renderer_base;
-use moodle_url;
+use core\output\renderer_base;
+use core\url;
 use core_badges\external\endorsement_exporter;
 use core_badges\external\alignment_exporter;
 use core_badges\external\related_info_exporter;
@@ -276,7 +276,7 @@ class user_badge_exporter extends exporter {
         $relatedbadges = $this->related['relatedbadges'];
 
         $values = array(
-            'badgeurl' => moodle_url::make_webservice_pluginfile_url($context->id, 'badges', 'badgeimage', $this->data->id, '/',
+            'badgeurl' => url::make_webservice_pluginfile_url($context->id, 'badges', 'badgeimage', $this->data->id, '/',
                 'f3')->out(false),
             'alignment' => array(),
             'relatedbadges' => array(),

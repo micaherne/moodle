@@ -16,8 +16,8 @@
 
 namespace core_adminpresets\privacy;
 
-use context_system;
-use context_user;
+use core\context\system;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\tests\provider_testcase;
 
@@ -77,7 +77,7 @@ final class privacy_provider_test extends provider_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('core_adminpresets');
         $generator->create_preset();
 
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $userlist = new \core_privacy\local\request\userlist($usercontext, 'core_adminpresets');
         \core_message\privacy\provider::get_users_in_context($userlist);
         $this->assertEmpty($userlist->get_userids());
@@ -99,7 +99,7 @@ final class privacy_provider_test extends provider_testcase {
         $generator->create_preset();
 
         // Check data is not exported in user context.
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $this->export_context_data_for_user($USER->id, $usercontext, 'core_adminpresets');
         $writer = \core_privacy\local\request\writer::with_context($usercontext);
 
@@ -108,7 +108,7 @@ final class privacy_provider_test extends provider_testcase {
         $this->assertEmpty($writer->get_files([]));
 
         // Check data is not exported in system context either.
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $this->export_context_data_for_user($USER->id, $systemcontext, 'core_adminpresets');
         $writer = \core_privacy\local\request\writer::with_context($systemcontext);
 
@@ -134,7 +134,7 @@ final class privacy_provider_test extends provider_testcase {
         $generator->create_preset();
         $this->assertEquals($currentpresets + 1, $DB->count_records('adminpresets'));
 
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
 
         provider::delete_data_for_all_users_in_context($usercontext);
 
@@ -159,7 +159,7 @@ final class privacy_provider_test extends provider_testcase {
         $generator->create_preset();
         $this->assertEquals($currentpresets + 1, $DB->count_records('adminpresets'));
 
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $contextlist = new \core_privacy\local\request\approved_contextlist($USER, 'core_adminpresets', [$usercontext->id]);
         provider::delete_data_for_user($contextlist);
 

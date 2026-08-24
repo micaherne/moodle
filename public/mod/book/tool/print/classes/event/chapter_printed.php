@@ -23,6 +23,9 @@
  */
 
 namespace booktool_print\event;
+
+use core\context\module;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -44,7 +47,7 @@ class chapter_printed extends \core\event\base {
      * @param \stdClass $chapter
      * @return chapter_printed
      */
-    public static function create_from_chapter(\stdClass $book, \context_module $context, \stdClass $chapter) {
+    public static function create_from_chapter(\stdClass $book, module $context, \stdClass $chapter) {
         $data = array(
             'context' => $context,
             'objectid' => $chapter->id,
@@ -81,7 +84,7 @@ class chapter_printed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/book/tool/print/index.php', array('id' => $this->contextinstanceid));
+        return new url('/mod/book/tool/print/index.php', array('id' => $this->contextinstanceid));
     }
 
     /**

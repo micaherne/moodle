@@ -24,6 +24,8 @@
 
 namespace core\task;
 
+use core\output\progress_trace\text_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -52,7 +54,7 @@ trait logging_trait {
      */
     protected function get_trace() {
         if (null === $this->trace) {
-            $this->trace = new \text_progress_trace();
+            $this->trace = new text_progress_trace();
             $this->tracestats = new \stdClass();
         }
 

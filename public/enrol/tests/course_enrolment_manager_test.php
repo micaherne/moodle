@@ -16,7 +16,7 @@
 
 namespace core_enrol;
 
-use context_course;
+use core\context\course;
 use core_courseformat\formatactions;
 use course_enrolment_manager;
 use stdClass;
@@ -312,7 +312,7 @@ final class course_enrolment_manager_test extends \advanced_testcase {
         // Configure extra fields to include one normal user field and one profile field, and
         // set the values for a new test user.
         $newuser = $this->setup_for_user_identity_tests();
-        $context = \context_course::instance($this->course->id);
+        $context = course::instance($this->course->id);
         role_assign($DB->get_field('role', 'id', ['shortname' => 'manager']), $newuser->id, $context->id);
 
         // Get the 'other' (role but not enrolled) users and fish out the one we're interested in.
@@ -693,7 +693,7 @@ final class course_enrolment_manager_test extends \advanced_testcase {
 
         // Allow teacher to access all groups.
         $roleid = $DB->get_field('role', 'id', ['shortname' => 'teacher']);
-        assign_capability('moodle/site:accessallgroups', CAP_ALLOW, $roleid, context_course::instance($this->course->id)->id);
+        assign_capability('moodle/site:accessallgroups', CAP_ALLOW, $roleid, course::instance($this->course->id)->id);
 
         $courseusers = (new course_enrolment_manager($PAGE, $this->course))->search_users('', false, 0, 25, true);
         $this->assertEqualsCanonicalizing([

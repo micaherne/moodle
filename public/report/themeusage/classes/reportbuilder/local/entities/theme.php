@@ -18,7 +18,7 @@ namespace report_themeusage\reportbuilder\local\entities;
 
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\report\column;
-use lang_string;
+use core\lang_string;
 
 /**
  * Theme entity.

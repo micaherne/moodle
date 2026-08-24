@@ -22,6 +22,9 @@
  * @copyright 2009 Moodle Pty Ltd (http://moodle.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once('forms.php');
@@ -37,7 +40,7 @@ if ($node && $newnode) {
     $newnode->make_active();
 }
 $PAGE->navbar->add(get_string('externalservices', 'webservice'),
-    new moodle_url('/admin/settings.php', ['section' => 'externalservices']));
+    new url('/admin/settings.php', ['section' => 'externalservices']));
 
 $PAGE->set_primary_active_tab('siteadminnode');
 
@@ -91,7 +94,7 @@ if ($mform->is_cancelled()) {
         $event->trigger();
 
         //redirect to the 'add functions to service' page
-        $addfunctionpage = new moodle_url(
+        $addfunctionpage = new url(
                         $CFG->wwwroot . '/' . $CFG->admin . '/webservice/service_functions.php',
                         array('id' => $servicedata->id));
         $returnurl = $addfunctionpage->out(false);

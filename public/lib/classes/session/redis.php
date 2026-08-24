@@ -16,7 +16,7 @@
 
 namespace core\session;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core\di;
 use core\clock;
 use RedisCluster;

@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -60,7 +63,7 @@ class completion_defaults_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/course/defaultcompletion.php', array('id' => $this->courseid));
+        return new url('/course/defaultcompletion.php', array('id' => $this->courseid));
     }
 
     /**
@@ -81,10 +84,10 @@ class completion_defaults_updated extends base {
     protected function validate_data() {
         parent::validate_data();
         if ($this->contextlevel != CONTEXT_COURSE) {
-            throw new \coding_exception('Context passed must be course context.');
+            throw new coding_exception('Context passed must be course context.');
         }
         if (!isset($this->other['modulename'])) {
-            throw new \coding_exception('The \'modulename\' value must be set in other.');
+            throw new coding_exception('The \'modulename\' value must be set in other.');
         }
     }
 

@@ -16,6 +16,9 @@
 
 namespace enrol_cohort;
 
+use core\context\course;
+use core\context\coursecat;
+use core\output\progress_trace\null_progress_trace;
 use core\plugininfo\enrol;
 
 defined('MOODLE_INTERNAL') || die();
@@ -46,7 +49,7 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('category' => $category->id));
         $course2 = $this->getDataGenerator()->create_course(array('category' => $category->id));
         // Create a cohort.
-        $cohort = $this->getDataGenerator()->create_cohort(array('context' => \context_coursecat::instance($category->id)->id));
+        $cohort = $this->getDataGenerator()->create_cohort(array('context' => coursecat::instance($category->id)->id));
         // Run the function.
         $groupid = enrol_cohort_create_new_group($course->id, $cohort->id);
         // Check the results.
@@ -136,7 +139,7 @@ final class lib_test extends \advanced_testcase {
         global $CFG, $DB, $PAGE;
         $this->resetAfterTest();
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         $cohortplugin = enrol_get_plugin('cohort');
         $cohortplugin->set_config('unenrolaction', ENROL_EXT_REMOVED_SUSPEND);
@@ -167,14 +170,14 @@ final class lib_test extends \advanced_testcase {
         enrol_cohort_sync($trace, $course->id);
 
         // All users should be enrolled.
-        $this->assertTrue(is_enrolled(\context_course::instance($course->id), $user1));
-        $this->assertTrue(is_enrolled(\context_course::instance($course->id), $user2));
-        $this->assertTrue(is_enrolled(\context_course::instance($course->id), $user3));
-        $this->assertTrue(is_enrolled(\context_course::instance($course->id), $user4));
+        $this->assertTrue(is_enrolled(course::instance($course->id), $user1));
+        $this->assertTrue(is_enrolled(course::instance($course->id), $user2));
+        $this->assertTrue(is_enrolled(course::instance($course->id), $user3));
+        $this->assertTrue(is_enrolled(course::instance($course->id), $user4));
 
         // Remove cohort member.
         cohort_remove_member($cohort->id, $user1->id);
-        $this->assertTrue(is_enrolled(\context_course::instance($course->id), $user1));
+        $this->assertTrue(is_enrolled(course::instance($course->id), $user1));
 
         // Run the sync again.
         enrol_cohort_sync($trace, $course->id);
@@ -227,11 +230,11 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(['category' => $cat1->id, 'shortname' => 'ANON']);
 
         $cohort1 = $this->getDataGenerator()->create_cohort([
-            'contextid' => \context_coursecat::instance($cat1->id)->id,
+            'contextid' => coursecat::instance($cat1->id)->id,
             'idnumber' => 'one',
         ]);
         $cohort2 = $this->getDataGenerator()->create_cohort([
-            'contextid' => \context_coursecat::instance($cat2->id)->id,
+            'contextid' => coursecat::instance($cat2->id)->id,
             'idnumber' => 'two',
         ]);
 
@@ -268,7 +271,7 @@ final class lib_test extends \advanced_testcase {
         $cat = $this->getDataGenerator()->create_category();
         $course = $this->getDataGenerator()->create_course(['category' => $cat->id, 'shortname' => 'ANON']);
         $cohort = $this->getDataGenerator()->create_cohort([
-            'contextid' => \context_coursecat::instance($cat->id)->id,
+            'contextid' => coursecat::instance($cat->id)->id,
             'idnumber' => 'one',
         ]);
         $group = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
@@ -328,11 +331,11 @@ final class lib_test extends \advanced_testcase {
         $group1 = $this->getDataGenerator()->create_group(['courseid' => $course->id, 'name' => 'Group 1']);
 
         $cohort1 = $this->getDataGenerator()->create_cohort([
-            'contextid' => \context_coursecat::instance($cat1->id)->id,
+            'contextid' => coursecat::instance($cat1->id)->id,
             'idnumber' => 'one',
         ]);
         $cohort2 = $this->getDataGenerator()->create_cohort([
-            'contextid' => \context_coursecat::instance($cat2->id)->id,
+            'contextid' => coursecat::instance($cat2->id)->id,
             'idnumber' => 'two',
         ]);
 
@@ -415,16 +418,16 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(['category' => $cat->id, 'shortname' => 'ANON']);
 
         $cohort1 = $this->getDataGenerator()->create_cohort([
-            'contextid' => \context_coursecat::instance($cat->id)->id,
+            'contextid' => coursecat::instance($cat->id)->id,
             'idnumber' => 'one',
         ]);
         $cohort2 = $this->getDataGenerator()->create_cohort([
-            'contextid' => \context_coursecat::instance($cat->id)->id,
+            'contextid' => coursecat::instance($cat->id)->id,
             'idnumber' => 'two',
         ]);
 
         $cohort3 = $this->getDataGenerator()->create_cohort([
-            'contextid' => \context_coursecat::instance($cat->id)->id,
+            'contextid' => coursecat::instance($cat->id)->id,
             'idnumber' => 'three',
         ]);
 

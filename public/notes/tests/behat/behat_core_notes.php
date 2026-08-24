@@ -25,6 +25,8 @@
 
 declare(strict_types=1);
 
+use core\url;
+
 require_once(__DIR__ . '/../../../lib/behat/behat_base.php');
 
 /**
@@ -47,11 +49,11 @@ class behat_core_notes extends behat_base {
      * @return moodle_url
      * @throws Exception if the page type is not recognised.
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
         switch (strtolower($type)) {
             case 'course index':
                 $courseid = $this->get_course_id($identifier);
-                return new moodle_url('/notes/index.php', [
+                return new url('/notes/index.php', [
                     'filtertype' => 'course',
                     'filterselect' => $courseid,
                 ]);

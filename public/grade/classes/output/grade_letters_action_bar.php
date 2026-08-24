@@ -16,7 +16,9 @@
 
 namespace core_grades\output;
 
-use moodle_url;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\url;
 
 /**
  * Renderable class for the action bar elements in the grade letters page.
@@ -42,18 +44,18 @@ class grade_letters_action_bar extends action_bar {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         $data = [];
         // If in the course context, we should display the general navigation selector in gradebook.
         if ($this->context->contextlevel === CONTEXT_COURSE) {
             // Get the data used to output the general navigation selector.
-            $generalnavselector = new general_action_bar($this->context, new moodle_url('/grade/edit/letter/index.php',
+            $generalnavselector = new general_action_bar($this->context, new url('/grade/edit/letter/index.php',
                 ['id' => $this->context->id]), 'letter', 'view');
             $data = $generalnavselector->export_for_template($output);
         }
         // Add a button to the action bar with a link to the 'edit grade letters' page.
-        $editbuttonlink = new moodle_url('/grade/edit/letter/index.php', ['id' => $this->context->id, 'edit' => 1]);
-        $editbutton = new \single_button($editbuttonlink, get_string('edit'), 'get', \single_button::BUTTON_PRIMARY);
+        $editbuttonlink = new url('/grade/edit/letter/index.php', ['id' => $this->context->id, 'edit' => 1]);
+        $editbutton = new single_button($editbuttonlink, get_string('edit'), 'get', single_button::BUTTON_PRIMARY);
         $data['editbutton'] = $editbutton->export_for_template($output);
 
         return $data;

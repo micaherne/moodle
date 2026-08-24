@@ -16,10 +16,10 @@
 
 namespace mod_data;
 
-use coding_exception;
+use core\exception\coding_exception;
 use dml_exception;
 use mod_data\local\importer\csv_entries_importer;
-use moodle_exception;
+use core\exception\moodle_exception;
 use zip_archive;
 
 /**

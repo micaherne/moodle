@@ -25,9 +25,9 @@
 namespace dataformat_pdf;
 
 use core\dataformat;
-use context_system;
-use html_writer;
-use moodle_url;
+use core\context\system;
+use core\output\html_writer;
+use core\url;
 
 /**
  * Writer tests
@@ -48,7 +48,7 @@ final class writer_test extends \advanced_testcase {
 
         $imagefixture = "{$CFG->dirroot}/lib/filestorage/tests/fixtures/testimage.jpg";
         $image = get_file_storage()->create_file_from_pathname([
-            'contextid' => context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'dataformat_pdf',
             'filearea'  => 'test',
             'itemid'    => 0,
@@ -57,7 +57,7 @@ final class writer_test extends \advanced_testcase {
 
         ], $imagefixture);
 
-        $imageurl = moodle_url::make_pluginfile_url($image->get_contextid(), $image->get_component(), $image->get_filearea(),
+        $imageurl = url::make_pluginfile_url($image->get_contextid(), $image->get_component(), $image->get_filearea(),
             $image->get_itemid(), $image->get_filepath(), $image->get_filename());
 
         // Insert out test image into the data so it is exported.

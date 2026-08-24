@@ -16,7 +16,7 @@
 
 namespace core;
 
-use filter_manager;
+use core_filters\filter_manager;
 
 /**
  * Unit tests for the {@link filter_manager} class.

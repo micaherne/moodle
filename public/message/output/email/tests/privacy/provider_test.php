@@ -16,7 +16,7 @@
 
 namespace message_email\privacy;
 
-use context_system;
+use core\context\system;
 use core_message_external;
 use core_privacy\local\request\writer;
 use core_privacy\tests\provider_testcase;
@@ -81,7 +81,7 @@ final class provider_test extends provider_testcase {
 
         provider::export_user_preferences($user->id);
 
-        $writer = writer::with_context(context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertTrue($writer->has_any_data());
 
         $preferences = $writer->get_user_preferences('message_email');

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\plugin_manager;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
@@ -61,7 +63,7 @@ class report_eventlist_filter_form extends moodleform {
      * @return array[] Component type => [...Components]
      */
     private static function group_components_by_type(array $components): array {
-        $pluginmanager = core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
 
         $result = [];
         foreach ($components as $component) {

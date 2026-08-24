@@ -25,6 +25,7 @@
 
 namespace core_h5p;
 
+use core\test\testing_util;
 use core_h5p\local\library\autoloader;
 use Moodle\H5PCore;
 
@@ -60,7 +61,7 @@ final class editor_ajax_test extends \advanced_testcase {
     public function test_getLatestLibraryVersions(): void {
         $this->resetAfterTest();
 
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $h5pgenerator = $generator->get_plugin_generator('core_h5p');
 
         // Create several libraries records.
@@ -85,7 +86,7 @@ final class editor_ajax_test extends \advanced_testcase {
     public function test_getContentTypeCache(): void {
         $this->resetAfterTest();
 
-        $h5pgenerator = \testing_util::get_data_generator()->get_plugin_generator('core_h5p');
+        $h5pgenerator = testing_util::get_data_generator()->get_plugin_generator('core_h5p');
 
         // Create several libraries records.
         $lib1 = $h5pgenerator->create_library_record('Library1', 'Lib1', 1, 0, 1, '', null, 'http://tutorial.org',
@@ -122,7 +123,7 @@ final class editor_ajax_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         // Fetch generator.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $h5pgenerator = $generator->get_plugin_generator('core_h5p');
 
         $h5pfilestorage = new file_storage();

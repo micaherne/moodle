@@ -23,6 +23,8 @@
  */
 namespace core\message\inbound;
 
+use core\exception\coding_exception;
+
 /**
  * Abstract class describing Inbound Message Handlers.
  *
@@ -94,7 +96,7 @@ abstract class handler {
         }
 
         // Unknown property - bail.
-        throw new \coding_exception('unknown_property ' . $key);
+        throw new coding_exception('unknown_property ' . $key);
     }
 
     /**

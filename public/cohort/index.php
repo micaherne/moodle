@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\single_button;
+use core\url;
 use core_cohort\reportbuilder\local\systemreports\cohorts;
 use core_reportbuilder\local\filters\text;
 use core_reportbuilder\system_report_factory;
@@ -39,11 +45,11 @@ require_login();
 if ($contextid) {
     $context = context::instance_by_id($contextid, MUST_EXIST);
 } else {
-    $context = context_system::instance();
+    $context = system::instance();
 }
 
 if ($context->contextlevel != CONTEXT_COURSECAT and $context->contextlevel != CONTEXT_SYSTEM) {
-    throw new \moodle_exception('invalidcontext');
+    throw new moodle_exception('invalidcontext');
 }
 
 $category = null;
@@ -74,7 +80,7 @@ if ($category) {
     $showall = false;
 } else {
     admin_externalpage_setup('cohorts', '', null, '', array('pagelayout'=>'report'));
-    navigation_node::override_active_url(new moodle_url('/cohort/index.php'));
+    navigation_node::override_active_url(new url('/cohort/index.php'));
     if ($showall) {
         $strallcohorts = get_string('allcohorts', 'cohort');
         $PAGE->set_title($strallcohorts);
@@ -98,7 +104,7 @@ if ($searchquery) {
 if ($showall) {
     $params['showall'] = true;
 }
-$baseurl = new moodle_url('/cohort/index.php', $params);
+$baseurl = new url('/cohort/index.php', $params);
 
 if ($editcontrols = cohort_edit_controls($context, $baseurl)) {
     echo $OUTPUT->render($editcontrols);
@@ -125,7 +131,7 @@ if ($showall) {
 
 if ($canmanagecohorts && $DB->record_exists('cohort', [])) {
     echo $OUTPUT->render(new single_button(
-        new moodle_url('#'),
+        new url('#'),
         get_string('deleteselected'),
         'post',
         single_button::BUTTON_PRIMARY,

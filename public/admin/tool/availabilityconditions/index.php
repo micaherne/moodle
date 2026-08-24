@@ -24,6 +24,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/tablelib.php');
@@ -43,12 +47,12 @@ foreach (core_component::get_plugin_list('availability') as $plugin => $plugindi
 core_collator::asort($plugins);
 
 // Do plugin actions.
-$pageurl = new moodle_url('/' . $CFG->admin . '/tool/availabilityconditions/');
-$classavailability = \core_plugin_manager::resolve_plugininfo_class('availability');
+$pageurl = new url('/' . $CFG->admin . '/tool/availabilityconditions/');
+$classavailability = plugin_manager::resolve_plugininfo_class('availability');
 if (($plugin = optional_param('plugin', '', PARAM_PLUGIN))) {
     require_sesskey();
     if (!array_key_exists($plugin, $plugins)) {
-        throw new \moodle_exception('invalidcomponent', 'error', $pageurl);
+        throw new moodle_exception('invalidcomponent', 'error', $pageurl);
     }
     $action = optional_param('action', '', PARAM_ALPHA);
     if ($action === 'hide' && $classavailability::enable_plugin($plugin, 0)) {

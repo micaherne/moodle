@@ -25,7 +25,7 @@
 namespace qbank_editquestion;
 
 use core_question\local\bank\question_action_base;
-use moodle_url;
+use core\url;
 
 /**
  * Question bank column for the duplicate action icon.
@@ -48,7 +48,7 @@ class copy_action extends question_action_base {
     public function init(): void {
         parent::init();
         $this->strcopy = get_string('duplicate');
-        $this->duplicatequestionurl = new \moodle_url('/question/bank/editquestion/question.php',
+        $this->duplicatequestionurl = new url('/question/bank/editquestion/question.php',
                 array('returnurl' => $this->qbank->returnurl));
         $this->duplicatequestionurl->param('cmid', $this->qbank->cm->id);
     }
@@ -63,8 +63,8 @@ class copy_action extends question_action_base {
      * @param int $questionid the question id.
      * @return \moodle_url the URL.
      */
-    public function duplicate_question_moodle_url($questionid): moodle_url {
-        return new \moodle_url($this->duplicatequestionurl, ['id' => $questionid, 'makecopy' => 1]);
+    public function duplicate_question_moodle_url($questionid): url {
+        return new url($this->duplicatequestionurl, ['id' => $questionid, 'makecopy' => 1]);
     }
 
     protected function get_url_icon_and_label(\stdClass $question): array {

@@ -16,6 +16,8 @@
 
 namespace mod_h5pactivity;
 
+use core\context\user;
+use core\exception\coding_exception;
 use mod_h5pactivity\local\manager;
 
 /**
@@ -74,7 +76,7 @@ final class generator_test extends \advanced_testcase {
             'course' => $course->id,
             'packagefile' => file_get_unused_draft_itemid()
         ];
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $filerecord = ['component' => 'user', 'filearea' => 'draft',
                 'contextid' => $usercontext->id, 'itemid' => $params['packagefile'],
                 'filename' => 'singlescobasic.zip', 'filepath' => '/'];
@@ -99,7 +101,7 @@ final class generator_test extends \advanced_testcase {
             'course' => $course->id,
             'packagefilepath' => $CFG->dirroot.'/h5p/tests/fixtures/wrong_file_.xxx'
         ];
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $activity = $this->getDataGenerator()->create_module('h5pactivity', $params);
     }
 
@@ -314,7 +316,7 @@ final class generator_test extends \advanced_testcase {
         $activity = $this->getDataGenerator()->create_module('h5pactivity', ['course' => $course]);
         $user = $this->getDataGenerator()->create_and_enrol($course, 'student');
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
 
         $attemptinfo = [
             'attempt' => 1,

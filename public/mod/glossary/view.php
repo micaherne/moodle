@@ -1,6 +1,13 @@
 <?php
 
 /// This page prints a particular instance of glossary
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_course\cm_info;
+
 require_once("../../config.php");
 require_once("lib.php");
 require_once($CFG->libdir . '/completionlib.php');
@@ -23,33 +30,33 @@ $show       = optional_param('show', '', PARAM_ALPHA);           // [ concept | 
 
 if (!empty($id)) {
     if (! $cm = get_coursemodule_from_id('glossary', $id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     if (! $course = $DB->get_record("course", array("id"=>$cm->course))) {
-        throw new \moodle_exception('coursemisconf');
+        throw new moodle_exception('coursemisconf');
     }
     if (! $glossary = $DB->get_record("glossary", array("id"=>$cm->instance))) {
-        throw new \moodle_exception('invalidid', 'glossary');
+        throw new moodle_exception('invalidid', 'glossary');
     }
 
 } else if (!empty($g)) {
     if (! $glossary = $DB->get_record("glossary", array("id"=>$g))) {
-        throw new \moodle_exception('invalidid', 'glossary');
+        throw new moodle_exception('invalidid', 'glossary');
     }
     if (! $course = $DB->get_record("course", array("id"=>$glossary->course))) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
     if (!$cm = get_coursemodule_from_instance("glossary", $glossary->id, $course->id)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     $id = $cm->id;
 } else {
-    throw new \moodle_exception('invalidid', 'glossary');
+    throw new moodle_exception('invalidid', 'glossary');
 }
 $cm = cm_info::create($cm);
 
 require_course_login($course->id, true, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/glossary:view', $context);
 $hassecondary = $PAGE->has_secondary_navigation();
 
@@ -278,7 +285,7 @@ $strwaitingapproval = get_string('pendingapproval', 'glossary');
 /// If we are in approval mode, prit special header
 $PAGE->set_title($glossary->name);
 $PAGE->set_heading($course->fullname);
-$url = new moodle_url('/mod/glossary/view.php', array('id'=>$cm->id));
+$url = new url('/mod/glossary/view.php', array('id'=>$cm->id));
 if (isset($mode) && $mode) {
     $url->param('mode', $mode);
 }
@@ -292,7 +299,7 @@ $PAGE->force_settings_menu();
 if (!empty($CFG->enablerssfeeds) && !empty($CFG->glossary_enablerssfeeds)
     && $glossary->rsstype && $glossary->rssarticles) {
 
-    $rsstitle = format_string($course->shortname, true, array('context' => context_course::instance($course->id))) . ': '. format_string($glossary->name);
+    $rsstitle = format_string($course->shortname, true, array('context' => course::instance($course->id))) . ': '. format_string($glossary->name);
     rss_add_http_header($context, 'mod_glossary', $glossary, $rsstitle);
 }
 if ($tab == GLOSSARY_APPROVAL_VIEW) {
@@ -388,7 +395,7 @@ if ($allentries) {
     }
 
     //Build paging bar
-    $baseurl = new moodle_url('/mod/glossary/view.php', ['id' => $id, 'mode' => $mode, 'hook' => $hook,
+    $baseurl = new url('/mod/glossary/view.php', ['id' => $id, 'mode' => $mode, 'hook' => $hook,
         'sortkey' => $sortkey, 'sortorder' => $sortorder, 'fullsearch' => $fullsearch]);
     $paging = glossary_get_paging_bar($count, $page, $entriesbypage, $baseurl->out() . '&amp;',
         9999, 10, '&nbsp;&nbsp;', $specialtext, -1);
@@ -443,7 +450,7 @@ if ($allentries) {
                         'courseid' => $course->id,
                     ];
                     $categoryheader .= $OUTPUT->user_picture($user, $userpictureoptions);
-                    $coursecontext = context_course::instance($course->id);
+                    $coursecontext = course::instance($course->id);
                     $pivottoshow = fullname($user, has_capability('moodle/site:viewfullnames', $coursecontext));
                 }
                 $categoryheader .= $OUTPUT->heading($pivottoshow, $headinglevel);

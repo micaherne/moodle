@@ -24,6 +24,7 @@
 
 namespace repository_contentbank;
 
+use core\context;
 use repository_contentbank\browser\contentbank_browser;
 
 /**
@@ -41,7 +42,7 @@ class helper {
      * @param \context $context The context
      * @return \repository_contentbank\browser\contentbank_browser|null The content bank repository browser
      */
-    public static function get_contentbank_browser(\context $context): ?contentbank_browser {
+    public static function get_contentbank_browser(context $context): ?contentbank_browser {
         switch ($context->contextlevel) {
             case CONTEXT_SYSTEM:
                 return new \repository_contentbank\browser\contentbank_browser_context_system($context);
@@ -126,7 +127,7 @@ class helper {
      * @param \context $context The context
      * @return array The navigation node
      */
-    public static function create_navigation_node(\context $context): array {
+    public static function create_navigation_node(context $context): array {
         return [
             'path' => base64_encode(json_encode(['contextid' => $context->id])),
             'name' => $context->get_context_name(false, false, false),

@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\bootstrap_renderer;
+use core\output\progress_trace;
+
 defined('MOODLE_INTERNAL') || die;
 /*
 

@@ -16,6 +16,9 @@
 
 namespace tool_lp;
 
+use core\context\coursecat;
+use core\context\system;
+use core\context\user;
 use core_competency\api;
 use core_competency\competency;
 use core_external\external_api;
@@ -68,8 +71,8 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $catcreator = $this->getDataGenerator()->create_user();
         $category = $this->getDataGenerator()->create_category();
         $othercategory = $this->getDataGenerator()->create_category();
-        $syscontext = \context_system::instance();
-        $catcontext = \context_coursecat::instance($category->id);
+        $syscontext = system::instance();
+        $catcontext = coursecat::instance($category->id);
 
         // Fetching default authenticated user role.
         $authrole = $DB->get_record('role', array('id' => $CFG->defaultuserroleid));
@@ -137,11 +140,11 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Assign capability required to perform the search.
         $this->setUser($ux);
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $customrole = $this->assignUserCapability('moodle/competency:templatemanage', $systemcontext->id);
 
         // Now we assign a different capability.
-        $usercontext = \context_user::instance($u1->id);
+        $usercontext = user::instance($u1->id);
         $this->assignUserCapability('moodle/competency:templatemanage', $usercontext->id, $customrole);
 
         $result = external::search_users('yyylan', 'moodle/competency:planmanage');
@@ -150,7 +153,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->assertEquals(0, $result['count']);
 
         // Now we assign a matching capability in the same role.
-        $usercontext = \context_user::instance($u1->id);
+        $usercontext = user::instance($u1->id);
         $this->assignUserCapability('moodle/competency:planmanage', $usercontext->id, $customrole);
 
         $result = external::search_users('yyylan', 'moodle/competency:planmanage');
@@ -178,7 +181,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $ux3 = $dg->create_user();
         role_assign($this->creatorrole, $ux3->id, $usercontext->id);
         $this->setUser($ux3);
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $customrole = $this->assignUserCapability('moodle/competency:templatemanage', $systemcontext->id, $customrole);
         $result = external::search_users('yyylan', 'moodle/competency:planmanage');
         $result = external_api::clean_returnvalue(external::search_users_returns(), $result);
@@ -217,10 +220,10 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $slave2 = $dg->create_user(array('lastname' => 'MOODLER'));
         $slave3 = $dg->create_user(array('lastname' => 'MOODLER'));
 
-        $syscontext = \context_system::instance();
-        $slave1context = \context_user::instance($slave1->id);
-        $slave2context = \context_user::instance($slave2->id);
-        $slave3context = \context_user::instance($slave3->id);
+        $syscontext = system::instance();
+        $slave1context = user::instance($slave1->id);
+        $slave2context = user::instance($slave2->id);
+        $slave3context = user::instance($slave3->id);
 
         // Creating a role giving the site config.
         $roleid = $dg->create_role();
@@ -288,19 +291,19 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // We need to give the user the capability we are searching for on each of the test users.
         $this->setAdminUser();
-        $usercontext = \context_user::instance($u1->id);
+        $usercontext = user::instance($u1->id);
         $dummyrole = $this->assignUserCapability('moodle/competency:planmanage', $usercontext->id);
-        $usercontext = \context_user::instance($u2->id);
+        $usercontext = user::instance($u2->id);
         $this->assignUserCapability('moodle/competency:planmanage', $usercontext->id, $dummyrole);
-        $usercontext = \context_user::instance($u3->id);
+        $usercontext = user::instance($u3->id);
         $this->assignUserCapability('moodle/competency:planmanage', $usercontext->id, $dummyrole);
 
         $this->setUser($ux);
-        $usercontext = \context_user::instance($u1->id);
+        $usercontext = user::instance($u1->id);
         $this->assignUserCapability('moodle/competency:planmanage', $usercontext->id, $dummyrole);
-        $usercontext = \context_user::instance($u2->id);
+        $usercontext = user::instance($u2->id);
         $this->assignUserCapability('moodle/competency:planmanage', $usercontext->id, $dummyrole);
-        $usercontext = \context_user::instance($u3->id);
+        $usercontext = user::instance($u3->id);
         $this->assignUserCapability('moodle/competency:planmanage', $usercontext->id, $dummyrole);
 
         $this->setAdminUser();
@@ -372,7 +375,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Switch to a user that cannot view identity fields.
         $this->setUser($ux);
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $this->assignUserCapability('moodle/competency:templatemanage', $systemcontext->id, $dummyrole);
         $CFG->showuseridentity = 'idnumber,email,phone1,phone2,department,institution';
 

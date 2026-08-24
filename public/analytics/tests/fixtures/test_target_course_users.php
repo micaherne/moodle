@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/test_target_site_users.php');
@@ -53,8 +55,8 @@ class test_target_course_users extends test_target_site_users {
      *
      * @return \lang_string
      */
-    public static function get_name(): \lang_string {
+    public static function get_name(): lang_string {
         // Using a string that exists and contains a corresponding '_help' string.
-        return new \lang_string('adminhelpedituser');
+        return new lang_string('adminhelpedituser');
     }
 }

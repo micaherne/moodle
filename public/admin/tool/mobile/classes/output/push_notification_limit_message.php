@@ -16,6 +16,10 @@
 
 namespace tool_mobile\output;
 
+use core\output\renderable;
+use core\output\templatable;
+use core\url;
+
 /**
  * Push notification limit alert message.
  *
@@ -23,7 +27,7 @@ namespace tool_mobile\output;
  * @copyright  2026 Daniel Ureña <daniel.urena@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class push_notification_limit_message implements \renderable, \templatable {
+class push_notification_limit_message implements renderable, templatable {
     /** @var int Devices currently receiving push notifications. */
     protected int $currentactivedevices;
 
@@ -34,7 +38,7 @@ class push_notification_limit_message implements \renderable, \templatable {
     protected ?int $devicelimit;
 
     /** @var \moodle_url Subscription management URL. */
-    protected \moodle_url $buttonurl;
+    protected url $buttonurl;
 
     /**
      * Constructor.
@@ -48,7 +52,7 @@ class push_notification_limit_message implements \renderable, \templatable {
         int $currentactivedevices,
         int $ignorednotifications,
         ?int $devicelimit,
-        \moodle_url $buttonurl,
+        url $buttonurl,
     ) {
         $this->currentactivedevices = $currentactivedevices;
         $this->ignorednotifications = $ignorednotifications;
@@ -90,8 +94,8 @@ class push_notification_limit_message implements \renderable, \templatable {
             'buttonurl' => $this->buttonurl->out(false),
             'ratiolabel' => $ratiolabel,
             'progresswidth' => $progresswidth,
-            'illustrationurl' => (new \moodle_url('/admin/tool/mobile/pix/push_notification.svg'))->out(false),
-            'alerticonurl' => (new \moodle_url('/pix/i/risk_xss.svg'))->out(false),
+            'illustrationurl' => (new url('/admin/tool/mobile/pix/push_notification.svg'))->out(false),
+            'alerticonurl' => (new url('/pix/i/risk_xss.svg'))->out(false),
         ];
     }
 }

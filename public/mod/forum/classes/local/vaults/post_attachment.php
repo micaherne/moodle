@@ -27,7 +27,7 @@ namespace mod_forum\local\vaults;
 defined('MOODLE_INTERNAL') || die();
 
 use mod_forum\local\entities\post as post_entity;
-use context;
+use core\context;
 use file_storage;
 
 /**

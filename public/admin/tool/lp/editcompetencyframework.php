@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -56,7 +59,7 @@ if ($form->is_cancelled()) {
         // Create new framework.
         $data->contextid = $context->id;
         $framework = \core_competency\api::create_framework($data);
-        $frameworkmanageurl = new moodle_url('/admin/tool/lp/competencies.php', array(
+        $frameworkmanageurl = new url('/admin/tool/lp/competencies.php', array(
             'pagecontextid' => $pagecontextid,
             'competencyframeworkid' => $framework->get('id')
         ));

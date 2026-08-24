@@ -16,6 +16,10 @@
 
 namespace core;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+
 /**
  * Tests the report_helper class.
  *
@@ -198,9 +202,9 @@ final class report_helper_test extends \advanced_testcase {
                 groups_add_member($groupid, $this->userids[$key]->id);
             }
         }
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         [$course, $cm] = get_course_and_cm_from_instance($assign->id, 'assign');
-        $modulecontext = \context_module::instance($cm->id);
+        $modulecontext = module::instance($cm->id);
         [$hasvalidgroupcourse, $hasvalidgroupmodule, $hasvalidgroupsystem] = $expected;
         $this->assertEquals(
             $hasvalidgroupcourse,
@@ -214,7 +218,7 @@ final class report_helper_test extends \advanced_testcase {
         );
         $this->assertEquals(
             $hasvalidgroupsystem,
-            report_helper::has_valid_group(\context_system::instance(), $this->userids[$username]->id),
+            report_helper::has_valid_group(system::instance(), $this->userids[$username]->id),
             'Failed for user ' . $username . ' in system context'
         );
     }

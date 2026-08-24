@@ -23,6 +23,9 @@
  */
 
 namespace mod_scorm\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -82,7 +85,7 @@ class tracks_viewed extends \core\event\base {
             'attempt' => $this->other['attemptid'],
             'scoid' => $this->other['scoid']
         );
-        return new \moodle_url('/mod/scorm/userreporttracks.php', $params);
+        return new url('/mod/scorm/userreporttracks.php', $params);
     }
 
     /**
@@ -95,16 +98,16 @@ class tracks_viewed extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
         if (empty($this->other['attemptid'])) {
-            throw new \coding_exception('The \'attemptid\' value must be set in other.');
+            throw new coding_exception('The \'attemptid\' value must be set in other.');
         }
         if (empty($this->other['instanceid'])) {
-            throw new \coding_exception('The \'instanceid\' value must be set in other.');
+            throw new coding_exception('The \'instanceid\' value must be set in other.');
         }
         if (empty($this->other['scoid'])) {
-            throw new \coding_exception('The \'scoid\' value must be set in other.');
+            throw new coding_exception('The \'scoid\' value must be set in other.');
         }
     }
 

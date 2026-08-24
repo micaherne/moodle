@@ -28,6 +28,8 @@ namespace tool_log\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
+use core\context\course;
+use core\user;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
@@ -59,10 +61,10 @@ final class provider_test extends provider_testcase {
     }
 
     public function test_get_contexts_for_userid(): void {
-        $admin = \core_user::get_user(2);
+        $admin = user::get_user(2);
         $u1 = $this->getDataGenerator()->create_user();
         $c1 = $this->getDataGenerator()->create_course();
-        $c1ctx = \context_course::instance($c1->id);
+        $c1ctx = course::instance($c1->id);
 
         $this->enable_logging();
         $manager = get_log_manager(true);
@@ -79,7 +81,7 @@ final class provider_test extends provider_testcase {
         $u1 = $this->getDataGenerator()->create_user();
         $u2 = $this->getDataGenerator()->create_user();
         $c1 = $this->getDataGenerator()->create_course();
-        $c1ctx = \context_course::instance($c1->id);
+        $c1ctx = course::instance($c1->id);
 
         $this->enable_logging();
         $manager = get_log_manager(true);
@@ -113,7 +115,7 @@ final class provider_test extends provider_testcase {
         $u1 = $this->getDataGenerator()->create_user();
         $u2 = $this->getDataGenerator()->create_user();
         $c1 = $this->getDataGenerator()->create_course();
-        $c1ctx = \context_course::instance($c1->id);
+        $c1ctx = course::instance($c1->id);
 
         $this->enable_logging();
         $manager = get_log_manager(true);
@@ -143,10 +145,10 @@ final class provider_test extends provider_testcase {
     }
 
     public function test_export_data_for_user(): void {
-        $admin = \core_user::get_user(2);
+        $admin = user::get_user(2);
         $u1 = $this->getDataGenerator()->create_user();
         $c1 = $this->getDataGenerator()->create_course();
-        $c1ctx = \context_course::instance($c1->id);
+        $c1ctx = course::instance($c1->id);
 
         $path = [get_string('privacy:path:logs', 'tool_log'), get_string('pluginname', 'logstore_standard')];
         $this->enable_logging();

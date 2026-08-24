@@ -16,7 +16,7 @@
 
 namespace mod_bigbluebuttonbn\local\helpers;
 
-use context_course;
+use core\context\course;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\test\testcase_helper_trait;
 
@@ -45,7 +45,7 @@ final class roles_test extends \advanced_testcase {
             $this->setup_course_students_teachers(
                 (object) ['enablecompletion' => true, 'groupmode' => strval(SEPARATEGROUPS), 'groupmodeforce' => 1],
                 $numstudents, $numteachers, $groupsnum);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         // Prevent access all groups.
         role_change_permission($roleids['teacher'], $context, 'moodle/site:accessallgroups', CAP_PREVENT);
         $this->setUser($teachers[0]);
@@ -80,7 +80,7 @@ final class roles_test extends \advanced_testcase {
                 (object) ['enablecompletion' => true, 'groupmode' => strval(VISIBLEGROUPS), 'groupmodeforce' => 1],
                 $numstudents, $numteachers, $groupsnum);
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         $this->setUser($teachers[0]);
         $users = roles::get_users_array($context, $bbactivity);
         $this->assertCount($numstudents + $numteachers, $users);

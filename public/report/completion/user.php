@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\exception\moodle_exception;
+
 require('../../config.php');
 require_once($CFG->dirroot.'/report/completion/lib.php');
 require_once($CFG->libdir.'/completionlib.php');
@@ -33,8 +37,8 @@ $courseid = required_param('course', PARAM_INT);
 $user = $DB->get_record('user', array('id'=>$userid, 'deleted'=>0), '*', MUST_EXIST);
 $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
 
-$coursecontext   = context_course::instance($course->id);
-$personalcontext = context_user::instance($user->id);
+$coursecontext   = course::instance($course->id);
+$personalcontext = user::instance($user->id);
 
 if ($USER->id != $user->id and has_capability('moodle/user:viewuseractivitiesreport', $personalcontext)
         and !is_enrolled($coursecontext, $USER) and is_enrolled($coursecontext, $user)) {
@@ -47,7 +51,7 @@ if ($USER->id != $user->id and has_capability('moodle/user:viewuseractivitiesrep
 
 if (!report_completion_can_access_user_report($user, $course)) {
     // this should never happen
-    throw new \moodle_exception('nocapability', 'report_completion');
+    throw new moodle_exception('nocapability', 'report_completion');
 }
 
 $stractivityreport = get_string('activityreport');
@@ -173,7 +177,7 @@ foreach ($courses as $type => $infos) {
 
             // Get course info
             $c_course = $DB->get_record('course', array('id' => $c_info->course_id));
-            $course_context = context_course::instance($c_course->id, MUST_EXIST);
+            $course_context = course::instance($c_course->id, MUST_EXIST);
             $course_name = format_string($c_course->fullname, true, array('context' => $course_context));
 
             // Get completions

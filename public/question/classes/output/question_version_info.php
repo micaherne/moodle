@@ -16,7 +16,9 @@
 
 namespace core_question\output;
 
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Track and display question version information.
@@ -30,7 +32,7 @@ use renderer_base;
  * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class question_version_info implements \renderable, \templatable {
+class question_version_info implements renderable, templatable {
 
     /**
      * @var array List of definitions that don't know whether they are the latest version yet.

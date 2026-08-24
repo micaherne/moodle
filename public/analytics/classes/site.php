@@ -24,6 +24,8 @@
 
 namespace core_analytics;
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,7 +71,7 @@ class site implements \core_analytics\analysable {
      * @return \context
      */
     public function get_context() {
-        return \context_system::instance();
+        return system::instance();
     }
 
     /**

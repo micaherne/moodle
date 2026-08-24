@@ -16,6 +16,8 @@
 
 namespace core\event;
 
+use core\url;
+
 /**
  * Abstract grade report exported event class.
  *
@@ -81,6 +83,6 @@ abstract class grade_exported extends base {
      */
     public function get_url() {
         $url = '/grade/export/' . $this->get_export_type() . '/export.php';
-        return new \moodle_url($url, array('id' => $this->courseid));
+        return new url($url, array('id' => $this->courseid));
     }
 }

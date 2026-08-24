@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -76,7 +79,7 @@ class role_deleted extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/roles/manage.php');
+        return new url('/admin/roles/manage.php');
     }
 
     /**
@@ -89,7 +92,7 @@ class role_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->other['shortname'])) {
-            throw new \coding_exception('The \'shortname\' value must be set in other.');
+            throw new coding_exception('The \'shortname\' value must be set in other.');
         }
     }
 

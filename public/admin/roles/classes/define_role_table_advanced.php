@@ -22,6 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -280,7 +286,7 @@ class core_role_define_role_table_advanced extends core_role_capability_table_wi
 
         if ($options['permissions']) {
             $this->permissions = $DB->get_records_menu('role_capabilities',
-                array('roleid' => $roleid, 'contextid' => context_system::instance()->id),
+                array('roleid' => $roleid, 'contextid' => system::instance()->id),
                 '', 'capability,permission');
 
             foreach ($this->capabilities as $capid => $cap) {
@@ -463,7 +469,7 @@ class core_role_define_role_table_advanced extends core_role_capability_table_wi
             // the UI. It would be better to do this only when we know that fields affected are
             // updated. But thats getting into the weeds of the coursecat cache and role edits
             // should not be that frequent, so here is the ugly brutal approach.
-            core_course_category::role_assignment_changed($this->role->id, context_system::instance());
+            core_course_category::role_assignment_changed($this->role->id, system::instance());
         }
 
         // Assignable contexts.
@@ -489,7 +495,7 @@ class core_role_define_role_table_advanced extends core_role_capability_table_wi
         $deltable = 'role_allow_'.$type;
         $field = 'allow'.$type;
         $eventclass = "\\core\\event\\role_allow_" . $type . "_updated";
-        $context = context_system::instance();
+        $context = system::instance();
 
         foreach ($current as $roleid) {
             if (!in_array($roleid, $wanted)) {

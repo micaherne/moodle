@@ -23,7 +23,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
 use core\context\system;
+use core\exception\moodle_exception;
+use core\output\pix_icon;
+use core\output\renderable;
+use core\output\single_button;
+use core\output\user_picture;
+use core\url;
 use core_user\fields;
 
 defined('MOODLE_INTERNAL') || die();
@@ -140,7 +147,7 @@ class course_enrolment_manager {
     public function __construct(moodle_page $moodlepage, $course, $instancefilter = null,
             $rolefilter = 0, $searchfilter = '', $groupfilter = 0, $statusfilter = -1) {
         $this->moodlepage = $moodlepage;
-        $this->context = context_course::instance($course->id);
+        $this->context = course::instance($course->id);
         $this->course = $course;
         $this->instancefilter = $instancefilter;
         $this->rolefilter = $rolefilter;
@@ -1094,7 +1101,7 @@ class course_enrolment_manager {
      * @param int $perpage
      * @return array
      */
-    public function get_other_users_for_display(core_enrol_renderer $renderer, moodle_url $pageurl, $sort, $direction, $page, $perpage) {
+    public function get_other_users_for_display(core_enrol_renderer $renderer, url $pageurl, $sort, $direction, $page, $perpage) {
 
         $userroles = $this->get_other_users($sort, $direction, $page, $perpage);
         $roles = $this->get_all_roles();
@@ -1180,7 +1187,7 @@ class course_enrolment_manager {
         $context    = $this->get_context();
         $canmanagegroups = has_capability('moodle/course:managegroups', $context);
 
-        $url = new moodle_url($pageurl, $this->get_url_params());
+        $url = new url($pageurl, $this->get_url_params());
         // TODO Does not support custom user profile fields (MDL-70456).
         $extrafields = fields::get_identity_fields($context, false);
 
@@ -1425,7 +1432,7 @@ class enrol_user_button extends single_button {
      * @param string $label The text to display in the button
      * @param string $method Either post or get
      */
-    public function __construct(moodle_url $url, $label, $method = 'post') {
+    public function __construct(url $url, $label, $method = 'post') {
         static $count = 0;
         $count ++;
         parent::__construct($url, $label, $method);
@@ -1550,7 +1557,7 @@ class user_enrolment_action implements renderable {
     public function __construct(pix_icon $icon, $title, $url, ?array $attributes = null) {
         $this->icon = $icon;
         $this->title = $title;
-        $this->url = new moodle_url($url);
+        $this->url = new url($url);
         if (!empty($attributes)) {
             $this->attributes = $attributes;
         }

@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\user;
 use \core_privacy\local\request\approved_contextlist;
 
 /**
@@ -45,7 +46,7 @@ final class approved_contextlist_test extends advanced_testcase {
      * @covers \core_privacy\local\request\approved_contextlist<extended>
      */
     public function test_default_values_set(): void {
-        $testuser = \core_user::get_user_by_username('admin');
+        $testuser = user::get_user_by_username('admin');
         $contextids = [3, 2, 1];
         $component = 'core_privacy';
 

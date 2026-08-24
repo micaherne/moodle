@@ -16,6 +16,7 @@
 
 namespace core\external;
 
+use core\context_helper;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -62,7 +63,7 @@ class editmode extends external_api {
             ]
         );
 
-        $context = \context_helper::instance_by_id($params['context']);
+        $context = context_helper::instance_by_id($params['context']);
         self::validate_context($context);
 
         $USER->editing = $params['setmode'];

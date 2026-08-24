@@ -17,7 +17,7 @@
 namespace core\task;
 
 use core\http_client;
-use moodle_exception;
+use core\exception\moodle_exception;
 use PharData;
 
 /**

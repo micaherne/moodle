@@ -24,6 +24,8 @@
 
 namespace core_privacy\local\request;
 
+use core\context;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -88,7 +90,7 @@ abstract class contextlist_base implements
             // contextlist. Exceptions here will stop the further processing of this component and that is why we are
             // doing a try catch.
             try {
-                $contexts[] = \context::instance_by_id($contextid);
+                $contexts[] = context::instance_by_id($contextid);
             } catch (\Exception $e) {
                 // Remove this context.
                 unset($this->contextids[$this->iteratorposition]);
@@ -127,7 +129,7 @@ abstract class contextlist_base implements
         // contextlist. Exceptions here will stop the further processing of this component and that is why we are
         // doing a try catch.
         try {
-            $context = \context::instance_by_id($this->contextids[$this->iteratorposition]);
+            $context = context::instance_by_id($this->contextids[$this->iteratorposition]);
         } catch (\Exception $e) {
             // Remove this context.
             unset($this->contextids[$this->iteratorposition]);

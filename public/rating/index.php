@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
+
 require_once("../config.php");
 require_once("lib.php");
 
@@ -37,7 +43,7 @@ $popup      = optional_param('popup', 0, PARAM_INT); // Any non-zero value if in
 list($context, $course, $cm) = get_context_info_array($contextid);
 require_login($course, false, $cm);
 
-$url = new moodle_url('/rating/index.php', array('contextid' => $contextid,
+$url = new url('/rating/index.php', array('contextid' => $contextid,
                                                  'component' => $component,
                                                  'ratingarea' => $ratingarea,
                                                  'itemid' => $itemid,
@@ -62,7 +68,7 @@ $params = array('contextid' => $contextid,
                 'scaleid' => $scaleid);
 if (!has_capability('moodle/rating:view', $context) ||
         !component_callback($component, 'rating_can_see_item_ratings', array($params), true)) {
-    throw new \moodle_exception('noviewrate', 'rating');
+    throw new moodle_exception('noviewrate', 'rating');
 }
 
 $canviewallratings = has_capability('moodle/rating:viewall', $context);
@@ -102,7 +108,7 @@ if (!$ratings) {
     echo html_writer::tag('div', $msg, array('class' => 'mdl-align'));
 } else {
     // To get the sort URL, copy the current URL and remove any previous sort.
-    $sorturl = new moodle_url($url);
+    $sorturl = new url($url);
     $sorturl->remove_params('sort');
 
     $table = new html_table;
@@ -111,9 +117,9 @@ if (!$ratings) {
     $table->attributes['class'] = 'generalbox ratingtable table-reboot';
     $table->head = array(
         '',
-        html_writer::link(new moodle_url($sorturl, array('sort' => 'firstname')), $strname),
-        html_writer::link(new moodle_url($sorturl, array('sort' => 'rating')), $strrating),
-        html_writer::link(new moodle_url($sorturl, array('sort' => 'time')), $strtime)
+        html_writer::link(new url($sorturl, array('sort' => 'firstname')), $strname),
+        html_writer::link(new url($sorturl, array('sort' => 'rating')), $strrating),
+        html_writer::link(new url($sorturl, array('sort' => 'time')), $strtime)
     );
     $table->colclasses = array('', 'firstname', 'rating', 'time');
     $table->data = array();

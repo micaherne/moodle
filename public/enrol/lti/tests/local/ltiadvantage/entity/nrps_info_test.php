@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Tests for nrps_info.
  *
@@ -56,7 +59,7 @@ final class nrps_info_test extends \advanced_testcase {
         return [
             'Valid creation' => [
                 'args' => [
-                    'contextmembershipsurl' => new \moodle_url('https://lms.example.com/45/memberships'),
+                    'contextmembershipsurl' => new url('https://lms.example.com/45/memberships'),
                     'serviceversions' => ['1.0', '2.0'],
                 ],
                 'expectations' => [
@@ -66,29 +69,29 @@ final class nrps_info_test extends \advanced_testcase {
             ],
             'Missing service version' => [
                 'args' => [
-                    'contextmembershipsurl' => new \moodle_url('https://lms.example.com/45/memberships'),
+                    'contextmembershipsurl' => new url('https://lms.example.com/45/memberships'),
                     'serviceversions' => [],
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => 'Service versions array cannot be empty'
                 ]
             ],
             'Invalid service version' => [
                 'args' => [
-                    'contextmembershipsurl' => new \moodle_url('https://lms.example.com/45/memberships'),
+                    'contextmembershipsurl' => new url('https://lms.example.com/45/memberships'),
                     'serviceversions' => ['1.1'],
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid Names and Roles service version '1.1'"
                 ]
             ],
             'Duplicate service version' => [
                 'args' => [
-                    'contextmembershipsurl' => new \moodle_url('https://lms.example.com/45/memberships'),
+                    'contextmembershipsurl' => new url('https://lms.example.com/45/memberships'),
                     'serviceversions' => ['1.0', '1.0'],
                 ],
                 'expectations' => [
@@ -106,7 +109,7 @@ final class nrps_info_test extends \advanced_testcase {
      */
     public function test_get_context_memberships_url(): void {
         $nrpsendpoint = 'https://lms.example.com/45/memberships';
-        $nrpsinfo = nrps_info::create(new \moodle_url($nrpsendpoint));
+        $nrpsinfo = nrps_info::create(new url($nrpsendpoint));
         $membershipsurlcopy = $nrpsinfo->get_context_memberships_url();
         $this->assertEquals($nrpsendpoint, $membershipsurlcopy->out(false));
         $rlid = '01234567-1234-5678-90ab-123456789abc';

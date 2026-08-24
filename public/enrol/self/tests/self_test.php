@@ -16,7 +16,12 @@
 
 namespace enrol_self;
 
-use context_course;
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\progress_trace\null_progress_trace;
+use core\output\progress_trace\progress_trace_buffer;
+use core\output\progress_trace\text_progress_trace;
+use core\user;
 use enrol_self_plugin;
 
 defined('MOODLE_INTERNAL') || die();
@@ -49,7 +54,7 @@ final class self_test extends \advanced_testcase {
 
         $selfplugin = enrol_get_plugin('self');
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         // Just make sure the sync does not throw any errors when nothing to do.
         $selfplugin->sync($trace, null);
@@ -66,7 +71,7 @@ final class self_test extends \advanced_testcase {
 
         $now = time();
 
-        $trace = new \progress_trace_buffer(new \text_progress_trace(), false);
+        $trace = new progress_trace_buffer(new text_progress_trace(), false);
 
         // Prepare some data.
 
@@ -88,9 +93,9 @@ final class self_test extends \advanced_testcase {
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
         $course3 = $this->getDataGenerator()->create_course();
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
-        $context3 = \context_course::instance($course3->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
+        $context3 = course::instance($course3->id);
 
         $this->assertEquals(3, $DB->count_records('enrol', array('enrol'=>'self')));
         $instance1 = $DB->get_record('enrol', array('courseid'=>$course1->id, 'enrol'=>'self'), '*', MUST_EXIST);
@@ -237,7 +242,7 @@ final class self_test extends \advanced_testcase {
         $now = time();
         $coursestartdate = $now - WEEKSECS * 4;
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         // Note: hopefully nobody executes the unit tests the last second before midnight...
         $selfplugin->set_config('expirynotifylast', $now - DAYSECS);
@@ -326,7 +331,7 @@ final class self_test extends \advanced_testcase {
 
         $now = time();
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         // Prepare some data.
 
@@ -345,9 +350,9 @@ final class self_test extends \advanced_testcase {
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
         $course3 = $this->getDataGenerator()->create_course();
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
-        $context3 = \context_course::instance($course3->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
+        $context3 = course::instance($course3->id);
 
         $this->assertEquals(3, $DB->count_records('enrol', array('enrol'=>'self')));
         $instance1 = $DB->get_record('enrol', array('courseid'=>$course1->id, 'enrol'=>'self'), '*', MUST_EXIST);
@@ -445,7 +450,7 @@ final class self_test extends \advanced_testcase {
         $now = time();
         $admin = get_admin();
 
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
 
         // Note: hopefully nobody executes the unit tests the last second before midnight...
 
@@ -922,7 +927,7 @@ final class self_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         /** @var enrol_self_plugin $plugin */
         $plugin = enrol_get_plugin('self');
@@ -999,10 +1004,10 @@ final class self_test extends \advanced_testcase {
         $user2 = $this->getDataGenerator()->create_user(['lastname' => 'Victoria']);
         $user3 = $this->getDataGenerator()->create_user(['lastname' => 'Burch']);
         $user4 = $this->getDataGenerator()->create_user(['lastname' => 'Cartman']);
-        $noreplyuser = \core_user::get_noreply_user();
+        $noreplyuser = user::get_noreply_user();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course1->id);
+        $context = course::instance($course1->id);
 
         // Get editing teacher role.
         $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
@@ -1066,7 +1071,7 @@ final class self_test extends \advanced_testcase {
         $contact = $selfplugin->get_welcome_message_contact(ENROL_SEND_EMAIL_FROM_NOREPLY, $context);
         $this->assertEquals($noreplyuser, $contact);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage('Invalid send option');
         $contact = $selfplugin->get_welcome_message_contact(10, $context);
     }

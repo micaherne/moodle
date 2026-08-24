@@ -16,6 +16,11 @@
 
 namespace core_user;
 
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\user as core_user;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -45,7 +50,7 @@ final class userlib_test extends \advanced_testcase {
         $user3 = $this->getDataGenerator()->create_user();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         $this->getDataGenerator()->enrol_user($user1->id, $course1->id);
         $this->getDataGenerator()->enrol_user($user2->id, $course1->id);
@@ -202,7 +207,7 @@ final class userlib_test extends \advanced_testcase {
         // Test event.
         $this->assertInstanceOf('\core\event\user_updated', $event);
         $this->assertSame($user->id, $event->objectid);
-        $this->assertEquals(\context_user::instance($user->id), $event->get_context());
+        $this->assertEquals(context_user::instance($user->id), $event->get_context());
 
         // Update user with no password update.
         $password = $user->password = \core\di::get(\core\authentication\password::class)->hash('M00dLe@T');
@@ -293,7 +298,7 @@ final class userlib_test extends \advanced_testcase {
         // Test event.
         $this->assertInstanceOf('\core\event\user_created', $event);
         $this->assertEquals($user['id'], $event->objectid);
-        $this->assertEquals(\context_user::instance($user['id']), $event->get_context());
+        $this->assertEquals(context_user::instance($user['id']), $event->get_context());
 
         // Verify event is not triggred by user_create_user when needed.
         $user = ['username' => 'usernametest2']; // Create another user.
@@ -347,7 +352,7 @@ final class userlib_test extends \advanced_testcase {
             'username' => 'newuser',
         ], false, false);
 
-        $user = \core_user::get_user($userid);
+        $user = core_user::get_user($userid);
         $this->assertEquals($CFG->calendartype, $user->calendartype);
         $this->assertEquals($CFG->defaultpreference_maildisplay, $user->maildisplay);
         $this->assertEquals($CFG->defaultpreference_mailformat, $user->mailformat);
@@ -611,7 +616,7 @@ final class userlib_test extends \advanced_testcase {
 
         // Course without sections.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $this->setAdminUser();
 
@@ -697,7 +702,7 @@ final class userlib_test extends \advanced_testcase {
          // Create two courses.
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course2->id);
+        $coursecontext = course::instance($course2->id);
         // Prepare another course with separate groups and groupmodeforce set to true.
         $record = new \stdClass();
         $record->groupmode = 1;
@@ -766,7 +771,7 @@ final class userlib_test extends \advanced_testcase {
         // Test the user:viewalldetails cap check using the course creator role which, by default, can't see student profiles.
         $this->setUser($user7);
         $this->assertFalse(\core\user::can_view_profile($user4));
-        assign_capability('moodle/user:viewalldetails', CAP_ALLOW, $coursecreatorrole->id, \context_system::instance()->id, true);
+        assign_capability('moodle/user:viewalldetails', CAP_ALLOW, $coursecreatorrole->id, system::instance()->id, true);
         reload_all_capabilities();
         $this->assertTrue(\core\user::can_view_profile($user4));
         unassign_capability('moodle/user:viewalldetails', $coursecreatorrole->id, $coursecontext->id);
@@ -788,7 +793,7 @@ final class userlib_test extends \advanced_testcase {
 
         // Even with cap, still guests should not be allowed in.
         $guestrole = $DB->get_records_menu('role', ['shortname' => 'guest'], 'id', 'archetype, id');
-        assign_capability('moodle/user:viewdetails', CAP_ALLOW, $guestrole['guest'], \context_system::instance()->id, true);
+        assign_capability('moodle/user:viewdetails', CAP_ALLOW, $guestrole['guest'], system::instance()->id, true);
         reload_all_capabilities();
         foreach ($users as $user) {
             $this->assertFalse(\core\user::can_view_profile($user));
@@ -822,18 +827,18 @@ final class userlib_test extends \advanced_testcase {
         $this->getDataGenerator()->role_assign($managerrole->id, $user9->id);
 
         // Make sure viewalldetails and viewdetails are overridden to 'prevent' (i.e. can be overridden at a lower context).
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         assign_capability('moodle/user:viewdetails', CAP_PREVENT, $managerrole->id, $systemcontext, true);
         assign_capability('moodle/user:viewalldetails', CAP_PREVENT, $managerrole->id, $systemcontext, true);
 
         // And override these to 'Allow' in a specific course.
-        $course4context = \context_course::instance($course4->id);
+        $course4context = course::instance($course4->id);
         assign_capability('moodle/user:viewalldetails', CAP_ALLOW, $managerrole->id, $course4context, true);
         assign_capability('moodle/user:viewdetails', CAP_ALLOW, $managerrole->id, $course4context, true);
 
         // The manager now shouldn't have viewdetails in the system or user context.
         $this->setUser($user9);
-        $user1context = \context_user::instance($user1->id);
+        $user1context = context_user::instance($user1->id);
         $this->assertFalse(has_capability('moodle/user:viewdetails', $systemcontext));
         $this->assertFalse(has_capability('moodle/user:viewdetails', $user1context));
 
@@ -859,7 +864,7 @@ final class userlib_test extends \advanced_testcase {
         $studentfullname = fullname($student);
 
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->getDataGenerator()->enrol_user($teacher->id, $course1->id);
@@ -966,7 +971,7 @@ final class userlib_test extends \advanced_testcase {
         $student1fullname = fullname($student1);
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $this->getDataGenerator()->enrol_user($teacher->id, $course->id);
         $this->getDataGenerator()->enrol_user($student1->id, $course->id);
         $this->getDataGenerator()->enrol_user($student2->id, $course->id);
@@ -1041,7 +1046,7 @@ final class userlib_test extends \advanced_testcase {
         $student2 = $this->getDataGenerator()->create_user();
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $this->getDataGenerator()->enrol_user($teacher->id, $course->id);
         $this->getDataGenerator()->enrol_user($student1->id, $course->id);
         $this->getDataGenerator()->enrol_user($student2->id, $course->id);
@@ -1119,7 +1124,7 @@ final class userlib_test extends \advanced_testcase {
 
         // Add user name fields to $a as an object based on $user.
         $a = new \stdClass();
-        $placeholders = \core_user::get_name_placeholders($user);
+        $placeholders = core_user::get_name_placeholders($user);
         foreach ($placeholders as $field => $value) {
             $a->{$field} = $value;
         }

@@ -24,10 +24,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+
 defined('MOODLE_INTERNAL') || die;
 
 $settings->add(
-    new admin_setting_configcheckbox(
+    new configcheckbox(
         'cachestore_apcu/testperformance',
         new lang_string('testperformance', 'cachestore_apcu'),
         new lang_string('testperformance_desc', 'cachestore_apcu'),

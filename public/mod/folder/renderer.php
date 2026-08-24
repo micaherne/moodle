@@ -22,6 +22,13 @@
  * @copyright 2009 Petr Skoda  {@link http://skodak.org}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\module;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\renderable;
+use core\output\single_button;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 class mod_folder_renderer extends plugin_renderer_base {
@@ -40,7 +47,7 @@ class mod_folder_renderer extends plugin_renderer_base {
         $folderinstances = get_fast_modinfo($folder->course)->get_instances_of('folder');
         if (!isset($folderinstances[$folder->id]) ||
                 !($cm = $folderinstances[$folder->id]) ||
-                !($context = context_module::instance($cm->id))) {
+                !($context = module::instance($cm->id))) {
             // Some error in parameters.
             // Don't throw any errors in renderer, just return empty string.
             // Capability to view module must be checked before calling renderer.
@@ -61,7 +68,7 @@ class mod_folder_renderer extends plugin_renderer_base {
         $canmanagefolderfiles = has_capability('mod/folder:managefiles', $context);
         $canmanagecourseactivities = has_capability('moodle/course:manageactivities', $context);
         if ($canmanagefolderfiles && ($folder->display != FOLDER_DISPLAY_INLINE || !$canmanagecourseactivities)) {
-            $editbutton = new single_button(new moodle_url('/mod/folder/edit.php', ['id' => $cm->id]),
+            $editbutton = new single_button(new url('/mod/folder/edit.php', ['id' => $cm->id]),
                 get_string('edit'), 'post', single_button::BUTTON_PRIMARY);
             $editbutton->class = 'navitem';
             $data['edit_button'] = $editbutton->export_for_template($this->output);
@@ -70,7 +77,7 @@ class mod_folder_renderer extends plugin_renderer_base {
 
         $downloadable = folder_archive_available($folder, $cm);
         if ($downloadable) {
-            $downloadbutton = new single_button(new moodle_url('/mod/folder/download_folder.php', ['id' => $cm->id]),
+            $downloadbutton = new single_button(new url('/mod/folder/download_folder.php', ['id' => $cm->id]),
                 get_string('downloadfolder', 'folder'), 'get');
             $downloadbutton->class = 'navitem ms-auto';
             $data['download_button'] = $downloadbutton->export_for_template($this->output);
@@ -122,7 +129,7 @@ class mod_folder_renderer extends plugin_renderer_base {
             $filename = $file->get_filename();
             $filenamedisplay = clean_filename($filename);
 
-            $url = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
+            $url = url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
                 $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $filename, false);
             if (file_extension_in_typegroup($filename, 'web_image')) {
                 $image = $url->out(false, ['preview' => 'tinyicon', 'oid' => $file->get_timemodified()]);
@@ -158,7 +165,7 @@ class folder_tree implements renderable {
         $this->folder = $folder;
         $this->cm     = $cm;
 
-        $this->context = context_module::instance($cm->id);
+        $this->context = module::instance($cm->id);
         $fs = get_file_storage();
         $this->dir = $fs->get_area_tree($this->context->id, 'mod_folder', 'content', 0);
     }

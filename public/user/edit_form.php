@@ -22,6 +22,10 @@
  * @package core_user
  */
 
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    //  It must be included from a Moodle page.
 }
@@ -132,7 +136,7 @@ class user_edit_form extends moodleform {
             }
 
             // Print picture.
-            $context = context_user::instance($user->id, MUST_EXIST);
+            $context = user::instance($user->id, MUST_EXIST);
             $fs = get_file_storage();
             $hasuploadedpicture = ($fs->file_exists($context->id, 'user', 'icon', 0, '/', 'f2.png') || $fs->file_exists($context->id, 'user', 'icon', 0, '/', 'f2.jpg'));
             if (!empty($user->picture) && $hasuploadedpicture) {
@@ -229,7 +233,7 @@ class user_edit_form extends moodleform {
             $errors['email'] = get_string('toomanybounces');
         }
 
-        if (isset($usernew->email) and !empty($CFG->verifychangedemail) and !isset($errors['email']) and !has_capability('moodle/user:update', context_system::instance())) {
+        if (isset($usernew->email) and !empty($CFG->verifychangedemail) and !isset($errors['email']) and !has_capability('moodle/user:update', system::instance())) {
             $errorstr = email_is_not_allowed($usernew->email);
             if ($errorstr !== false) {
                 $errors['email'] = $errorstr;

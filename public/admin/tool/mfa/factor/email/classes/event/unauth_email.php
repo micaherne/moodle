@@ -16,6 +16,7 @@
 
 namespace factor_email\event;
 
+use core\context\user;
 use stdClass;
 
 /**
@@ -47,7 +48,7 @@ class unauth_email extends \core\event\base {
 
         $data = [
             'relateduserid' => null,
-            'context' => \context_user::instance($user->id),
+            'context' => user::instance($user->id),
             'other' => [
                 'userid' => $user->id,
                 'ip' => $ip,

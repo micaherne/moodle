@@ -21,10 +21,10 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/question/editlib.php');
 
-use context;
-use context_course;
-use context_module;
-use moodle_url;
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\url;
 use core_question\local\bank\question_edit_contexts;
 use stdClass;
 
@@ -92,15 +92,15 @@ final class question_category_object_test extends \advanced_testcase {
         // Set up tests in a quiz context.
         $this->course = $this->getDataGenerator()->create_course();
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $this->course->id]);
-        $qbankcontext = context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
         $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->qcontexts = new question_edit_contexts(context_module::instance($this->quiz->cmid));
+        $this->qcontexts = new question_edit_contexts(module::instance($this->quiz->cmid));
 
         $contexts = new question_edit_contexts($qbankcontext);
         $this->topcat = question_get_top_category($qbankcontext->id, true);
         $this->resetDebugging();
         $this->qcobject = new question_category_object(null,
-            new moodle_url('/question/bank/managecategories/category.php', ['cmid' => $qbank->cmid]),
+            new url('/question/bank/managecategories/category.php', ['cmid' => $qbank->cmid]),
             $contexts->having_one_edit_tab_cap('categories'), 0, null, 0,
             $contexts->having_cap('moodle/question:add')
         );
@@ -117,7 +117,7 @@ final class question_category_object_test extends \advanced_testcase {
         $this->resetDebugging();
         $this->qcobjectquiz = new question_category_object(
             1,
-            new moodle_url('/mod/quiz/edit.php', ['cmid' => $this->quiz->cmid]),
+            new url('/mod/quiz/edit.php', ['cmid' => $this->quiz->cmid]),
             $this->qcontexts->having_one_edit_tab_cap('categories'),
             $this->defaultcategoryobj->id,
             $this->defaultcategory,
@@ -372,7 +372,7 @@ final class question_category_object_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\question_category_created', $event);
-        $this->assertEquals(context_module::instance($this->quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -410,7 +410,7 @@ final class question_category_object_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\question_category_deleted', $event);
-        $this->assertEquals(context_module::instance($this->quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->quiz->cmid), $event->get_context());
         $this->assertEquals($categoryid, $event->objectid);
     }
 
@@ -449,7 +449,7 @@ final class question_category_object_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\question_category_updated', $event);
-        $this->assertEquals(context_module::instance($this->quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->quiz->cmid), $event->get_context());
         $this->assertEquals($categoryid, $event->objectid);
     }
 
@@ -473,7 +473,7 @@ final class question_category_object_test extends \advanced_testcase {
         // Log the view of this category.
         $category = new stdClass();
         $category->id = $categoryid;
-        $context = context_module::instance($this->quiz->cmid);
+        $context = module::instance($this->quiz->cmid);
         $event = \core\event\question_category_viewed::create_from_question_category_instance($category, $context);
 
         // Trigger and capture the event.
@@ -484,7 +484,7 @@ final class question_category_object_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\question_category_viewed', $event);
-        $this->assertEquals(context_module::instance($this->quiz->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->quiz->cmid), $event->get_context());
         $this->assertEquals($categoryid, $event->objectid);
     }
 

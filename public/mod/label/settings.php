@@ -23,12 +23,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext('label/dndresizewidth',
+    $settings->add(new configtext('label/dndresizewidth',
         get_string('dndresizewidth', 'mod_label'), get_string('configdndresizewidth', 'mod_label'), 400, PARAM_INT, 6));
 
-    $settings->add(new admin_setting_configtext('label/dndresizeheight',
+    $settings->add(new configtext('label/dndresizeheight',
         get_string('dndresizeheight', 'mod_label'), get_string('configdndresizeheight', 'mod_label'), 400, PARAM_INT, 6));
 }

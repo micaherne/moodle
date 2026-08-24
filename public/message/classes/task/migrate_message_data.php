@@ -24,6 +24,8 @@
 
 namespace core_message\task;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -107,7 +109,7 @@ class migrate_message_data extends \core\task\adhoc_task {
                 set_user_preference('core_message_migrate_data', true, $userid);
             } else {
                 // Throwing an exception in the task will mean that it isn't removed from the queue and is tried again.
-                throw new \moodle_exception('Task failed.');
+                throw new moodle_exception('Task failed.');
             }
         }
     }

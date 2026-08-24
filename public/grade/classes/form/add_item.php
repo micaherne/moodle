@@ -18,14 +18,14 @@ namespace core_grades\form;
 
 defined('MOODLE_INTERNAL') || die;
 
-use context;
-use context_course;
+use core\context;
+use core\context\course;
 use core_form\dynamic_form;
 use grade_category;
 use grade_item;
 use grade_plugin_return;
 use grade_scale;
-use moodle_url;
+use core\url;
 
 require_once($CFG->dirroot.'/grade/lib.php');
 
@@ -346,7 +346,7 @@ class add_item extends dynamic_form {
             }
         }
 
-        $url = new moodle_url('/grade/edit/tree/item.php', ['id' => $id, 'courseid' => $courseid]);
+        $url = new url('/grade/edit/tree/item.php', ['id' => $id, 'courseid' => $courseid]);
         $url = $this->gpr->add_url_params($url);
         $url = '<a class="showadvancedform" href="' . $url . '">' . get_string('showmore', 'form') .'</a>';
         $mform->addElement('static', 'advancedform', $url);
@@ -364,7 +364,7 @@ class add_item extends dynamic_form {
      */
     protected function get_context_for_dynamic_submission(): context {
         $courseid = $this->optional_param('courseid', null, PARAM_INT);
-        return context_course::instance($courseid);
+        return course::instance($courseid);
     }
 
     /**
@@ -375,7 +375,7 @@ class add_item extends dynamic_form {
      */
     protected function check_access_for_dynamic_submission(): void {
         $courseid = $this->optional_param('courseid', null, PARAM_INT);
-        require_capability('moodle/grade:manage', context_course::instance($courseid));
+        require_capability('moodle/grade:manage', course::instance($courseid));
     }
 
     /**
@@ -396,12 +396,12 @@ class add_item extends dynamic_form {
      * @return moodle_url
      * @throws \moodle_exception
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $params = [
             'id' => $this->optional_param('courseid', null, PARAM_INT),
             'itemid' => $this->optional_param('itemid', null, PARAM_INT),
         ];
-        return new moodle_url('/grade/edit/tree/index.php', $params);
+        return new url('/grade/edit/tree/index.php', $params);
     }
 
     /**

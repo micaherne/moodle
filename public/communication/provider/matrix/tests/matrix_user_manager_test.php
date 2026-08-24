@@ -16,7 +16,7 @@
 
 namespace communication_matrix;
 
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Class matrix_user_manager_test to test the matrix user manager.

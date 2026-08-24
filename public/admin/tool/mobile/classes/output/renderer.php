@@ -25,7 +25,7 @@
 
 namespace tool_mobile\output;
 
-use plugin_renderer_base;
+use core\output\plugin_renderer_base;
 
 
 /**

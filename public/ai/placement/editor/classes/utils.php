@@ -16,6 +16,8 @@
 
 namespace aiplacement_editor;
 
+use core\context;
+use core\plugin_manager;
 use core_ai\aiactions\generate_image;
 use core_ai\aiactions\generate_text;
 use core_ai\manager;
@@ -39,7 +41,7 @@ class utils {
      * @return bool If the action is accessible, available, and enable.
      */
     public static function is_html_editor_placement_action_available(
-        \context $context,
+        context $context,
         string $actionname,
         string $actionclass,
         bool $checkcontext = true,
@@ -68,7 +70,7 @@ class utils {
      */
     public static function is_html_editor_placement_available(): bool {
         [$plugintype, $pluginname] = explode('_', \core_component::normalize_componentname('aiplacement_editor'), 2);
-        $pluginmanager = \core_plugin_manager::resolve_plugininfo_class($plugintype);
+        $pluginmanager = plugin_manager::resolve_plugininfo_class($plugintype);
         if (!$pluginmanager::is_plugin_enabled($pluginname)) {
             return false;
         }
@@ -83,7 +85,7 @@ class utils {
      * @param bool $checkcontext If true, check the action is available in context.
      * @return array Return the actions available with data.
      */
-    public static function get_actions_available(\context $context, bool $checkcontext = true): array {
+    public static function get_actions_available(context $context, bool $checkcontext = true): array {
         $actions = [];
 
         // Action generate_text.

@@ -24,6 +24,8 @@
 
 namespace core\message\inbound;
 
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
@@ -76,7 +78,7 @@ class private_files_handler extends handler {
     public function process_message(\stdClass $record, \stdClass $data) {
         global $USER, $CFG;
 
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
 
         if (!has_capability('moodle/user:manageownfiles', $context)) {
             throw new \core\message\inbound\processing_failed_exception('emailtoprivatefilesdenied', 'moodle', $data);

@@ -16,6 +16,7 @@
 
 namespace core_user\external;
 
+use core\context\user;
 use core_external\external_api;
 
 /**
@@ -40,7 +41,7 @@ final class update_private_files_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $anotheruser = $this->getDataGenerator()->create_user();
         $this->setUser($user);
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         // Create one file in the user private file area.
         $filename = 'faketxt.txt';
@@ -129,7 +130,7 @@ final class update_private_files_test extends \advanced_testcase {
 
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
 
         // Force the quota so we are sure it won't be space to add the new file.
         $fileareainfo = file_get_file_area_info($context->id, 'user', 'private');

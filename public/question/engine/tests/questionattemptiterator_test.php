@@ -16,6 +16,8 @@
 
 namespace core_question;
 
+use core\context\system;
+use core\exception\moodle_exception;
 use question_engine;
 
 defined('MOODLE_INTERNAL') || die();
@@ -40,7 +42,7 @@ final class questionattemptiterator_test extends \advanced_testcase {
     protected function setUp(): void {
         parent::setUp();
         $this->quba = question_engine::make_questions_usage_by_activity('unit_test',
-                \context_system::instance());
+                system::instance());
         $this->quba->set_preferred_behaviour('deferredfeedback');
 
         $slot = $this->quba->add_question(\test_question_maker::make_question('description'));
@@ -85,7 +87,7 @@ final class questionattemptiterator_test extends \advanced_testcase {
     }
 
     public function test_offsetGet_before_start(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $step = $this->iterator[0];
     }
 
@@ -98,17 +100,17 @@ final class questionattemptiterator_test extends \advanced_testcase {
     }
 
     public function test_offsetGet_past_end(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $step = $this->iterator[3];
     }
 
     public function test_cannot_set(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->iterator[0] = null;
     }
 
     public function test_cannot_unset(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         unset($this->iterator[2]);
     }
 }

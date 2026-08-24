@@ -16,6 +16,9 @@
 
 namespace mod_scorm;
 
+use core\context\user;
+use core\exception\coding_exception;
+
 /**
  * Genarator tests class for mod_scorm.
  *
@@ -59,7 +62,7 @@ final class generator_test extends \advanced_testcase {
             'course' => $course->id,
             'packagefile' => file_get_unused_draft_itemid()
         );
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $filerecord = array('component' => 'user', 'filearea' => 'draft',
                 'contextid' => $usercontext->id, 'itemid' => $params['packagefile'],
                 'filename' => 'singlescobasic.zip', 'filepath' => '/');
@@ -128,7 +131,7 @@ final class generator_test extends \advanced_testcase {
                 'attemptdata' => [
                     'userid' => 'SETUSERID',
                 ],
-                'expectedexception' => \coding_exception::class,
+                'expectedexception' => coding_exception::class,
             ],
             'Without userid (current is used)' => [
                 'attemptdata' => [

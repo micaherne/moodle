@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\privacy;
 
-use context_system;
+use core\context\system;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\metadata\types\database_table;
 use core_privacy\local\request\userlist;
@@ -72,7 +72,7 @@ final class provider_test extends provider_testcase {
 
         $contextlist = $this->get_contexts_for_userid((int) $user->id, 'core_reportbuilder');
         $this->assertCount(1, $contextlist);
-        $this->assertInstanceOf(context_system::class, $contextlist->current());
+        $this->assertInstanceOf(system::class, $contextlist->current());
     }
 
     /**
@@ -94,7 +94,7 @@ final class provider_test extends provider_testcase {
 
         $contextlist = $this->get_contexts_for_userid((int) $user->id, 'core_reportbuilder');
         $this->assertCount(1, $contextlist);
-        $this->assertInstanceOf(context_system::class, $contextlist->current());
+        $this->assertInstanceOf(system::class, $contextlist->current());
     }
 
     /**
@@ -116,7 +116,7 @@ final class provider_test extends provider_testcase {
 
         $contextlist = $this->get_contexts_for_userid((int) $user->id, 'core_reportbuilder');
         $this->assertCount(1, $contextlist);
-        $this->assertInstanceOf(context_system::class, $contextlist->current());
+        $this->assertInstanceOf(system::class, $contextlist->current());
     }
 
     /**
@@ -138,7 +138,7 @@ final class provider_test extends provider_testcase {
 
         $contextlist = $this->get_contexts_for_userid((int) $user->id, 'core_reportbuilder');
         $this->assertCount(1, $contextlist);
-        $this->assertInstanceOf(context_system::class, $contextlist->current());
+        $this->assertInstanceOf(system::class, $contextlist->current());
     }
 
     /**
@@ -174,7 +174,7 @@ final class provider_test extends provider_testcase {
 
         $generator->create_schedule(['reportid' => $report->get('id'), 'name' => 'My schedule']);
 
-        $userlist = new userlist(context_system::instance(), 'core_reportbuilder');
+        $userlist = new userlist(system::instance(), 'core_reportbuilder');
         provider::get_users_in_context($userlist);
 
         $this->assertEqualsCanonicalizing([
@@ -208,7 +208,7 @@ final class provider_test extends provider_testcase {
 
         user_filter_manager::set($report->get('id'), ['entity:filter_name' => 1]);
 
-        $context = context_system::instance();
+        $context = system::instance();
         $this->export_context_data_for_user((int) $user->id, $context, 'core_reportbuilder');
 
         /** @var \core_privacy\tests\request\content_writer $writer */
@@ -282,7 +282,7 @@ final class provider_test extends provider_testcase {
 
         $user = $this->getDataGenerator()->create_user();
 
-        $context = context_system::instance();
+        $context = system::instance();
         $this->export_context_data_for_user((int) $user->id, $context, 'core_reportbuilder');
 
         $this->assertFalse(writer::with_context($context)->has_any_data());

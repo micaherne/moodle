@@ -23,14 +23,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
 
-$pageurl = new \moodle_url('/admin/tool/task/runningtasks.php');
+$pageurl = new url('/admin/tool/task/runningtasks.php');
 $heading = get_string('runningtasks', 'tool_task');
 $PAGE->set_url($pageurl);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title($heading);
 $PAGE->set_heading($heading);

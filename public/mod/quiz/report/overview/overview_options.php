@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\module;
 use mod_quiz\local\reports\attempts_report;
 use mod_quiz\local\reports\attempts_report_options;
 
@@ -88,7 +89,7 @@ class quiz_overview_options extends attempts_report_options {
         // We only want to show the checkbox to delete attempts
         // if the user has permissions and if the report mode is showing attempts.
         $this->checkboxcolumn = has_any_capability(
-                ['mod/quiz:regrade', 'mod/quiz:deleteattempts'], context_module::instance($this->cm->id))
+                ['mod/quiz:regrade', 'mod/quiz:deleteattempts'], module::instance($this->cm->id))
                 && ($this->attempts != attempts_report::ENROLLED_WITHOUT);
     }
 }

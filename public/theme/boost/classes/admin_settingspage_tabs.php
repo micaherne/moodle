@@ -20,6 +20,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\settingpage\settingpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -27,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2016 Ryan Wyllie
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class theme_boost_admin_settingspage_tabs extends admin_settingpage {
+class theme_boost_admin_settingspage_tabs extends settingpage {
 
     /** @var The tabs */
     protected $tabs = array();
@@ -37,7 +39,7 @@ class theme_boost_admin_settingspage_tabs extends admin_settingpage {
      *
      * @param admin_settingpage $tab A tab.
      */
-    public function add_tab(admin_settingpage $tab) {
+    public function add_tab(settingpage $tab) {
         foreach ($tab->settings as $setting) {
             $this->settings->{$setting->name} = $setting;
         }

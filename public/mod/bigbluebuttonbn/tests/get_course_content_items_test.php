@@ -21,6 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/bigbluebuttonbn/lib.php');
 
+use core\url;
 use core_course\local\entity\content_item;
 use core_course\local\entity\lang_string_title;
 
@@ -44,7 +45,7 @@ final class get_course_content_items_test extends \advanced_testcase {
             id: 1,
             name: 'bigbluebuttonbn',
             title: new lang_string_title('modulename', 'mod_bigbluebuttonbn'),
-            link: new \moodle_url('/course/mod.php', ['id' => $course->id, 'add' => 'bigbluebuttonbn']),
+            link: new url('/course/mod.php', ['id' => $course->id, 'add' => 'bigbluebuttonbn']),
             icon: '',
             help: '',
             archetype: MOD_ARCHETYPE_OTHER,

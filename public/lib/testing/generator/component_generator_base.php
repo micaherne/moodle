@@ -23,6 +23,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\user as core_user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -143,7 +148,7 @@ abstract class component_generator_base {
                 $user = $USER;
             } else {
                 [$sourcefile, $targetfile, $username] = $explodedfilename;
-                $user = \core_user::get_user_by_username($username);
+                $user = core_user::get_user_by_username($username);
             }
             $filepath = "{$CFG->dirroot}/{$sourcefile}";
             if (!file_exists($filepath)) {

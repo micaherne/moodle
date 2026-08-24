@@ -24,6 +24,7 @@
 
 namespace repository_wikimedia;
 
+use core\exception\moodle_exception;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -97,7 +98,7 @@ final class repository_test extends \advanced_testcase {
         ['mock' => $mock] = $this->get_mocked_http_client();
         $mock->append(new Response(503, [], 'Service Unavailable'));
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('errorwhiledownload', 'repository', 'Service Unavailable'));
 
         $this->repo->get_file('https://upload.wikimedia.org/wikipedia/commons/test.jpg');
@@ -110,7 +111,7 @@ final class repository_test extends \advanced_testcase {
         ['mock' => $mock] = $this->get_mocked_http_client();
         $mock->append(new RequestException('Connection refused', new Request('GET', 'https://upload.wikimedia.org/')));
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage(get_string('errorwhiledownload', 'repository', 'Connection refused'));
 
         $this->repo->get_file('https://upload.wikimedia.org/wikipedia/commons/test.jpg');

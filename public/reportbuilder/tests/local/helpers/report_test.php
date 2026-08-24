@@ -26,7 +26,7 @@ use core_reportbuilder\local\models\{audience, column, filter, schedule};
 use core_reportbuilder\local\systemreports\report_access_list;
 use core_tag_tag;
 use core_user\reportbuilder\datasource\users;
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 
 /**
  * Unit tests for the report helper class

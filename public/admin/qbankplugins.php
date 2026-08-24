@@ -27,22 +27,26 @@
 require_once('../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
+use core\context\system;
 use core\event\qbank_plugin_enabled;
 use core\event\qbank_plugin_disabled;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
 
 $action = required_param('action', PARAM_ALPHANUMEXT);
 $name   = required_param('name', PARAM_PLUGIN);
 
-$syscontext = context_system::instance();
+$syscontext = system::instance();
 $PAGE->set_url('/admin/qbankplugins.php');
 $PAGE->set_context($syscontext);
 
 require_admin();
 require_sesskey();
 
-$return = new moodle_url('/admin/settings.php', ['section' => 'manageqbanks']);
+$return = new url('/admin/settings.php', ['section' => 'manageqbanks']);
 
-$plugins = core_plugin_manager::instance()->get_plugins_of_type('qbank');
+$plugins = plugin_manager::instance()->get_plugins_of_type('qbank');
 $sortorder = array_flip(array_keys($plugins));
 
 if (!isset($plugins[$name])) {
@@ -55,7 +59,7 @@ switch ($action) {
     case 'disable':
         if ($plugins[$name]->is_enabled()) {
             qbank_plugin_disabled::create_for_plugin($plugintypename)->trigger();
-            $class = \core_plugin_manager::resolve_plugininfo_class('qbank');
+            $class = plugin_manager::resolve_plugininfo_class('qbank');
             $class::enable_plugin($name, false);
             set_config('disabled', 1, 'qbank_'. $name);
         }
@@ -63,7 +67,7 @@ switch ($action) {
     case 'enable':
         if (!$plugins[$name]->is_enabled()) {
             qbank_plugin_enabled::create_for_plugin($plugintypename)->trigger();
-            $class = \core_plugin_manager::resolve_plugininfo_class('qbank');
+            $class = plugin_manager::resolve_plugininfo_class('qbank');
             $class::enable_plugin($name, true);
         }
         break;

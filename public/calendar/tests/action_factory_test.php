@@ -16,6 +16,7 @@
 
 namespace core_calendar;
 
+use core\url;
 use core_calendar\local\event\entities\action_interface;
 
 /**
@@ -33,7 +34,7 @@ final class action_factory_test extends \advanced_testcase {
         $factory = new action_factory();
         $instance = $factory->create_instance(
             'test',
-            new \moodle_url('http://example.com'),
+            new url('http://example.com'),
             1729,
             true
         );

@@ -24,15 +24,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\output\html_writer;
+use core\url;
+use core_admin\setting\setting\description;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 // Column sort order link in manageqbanks page.
-$url = new moodle_url('/question/bank/columnsortorder/sortcolumns.php', ['section' => 'columnsortorder']);
+$url = new url('/question/bank/columnsortorder/sortcolumns.php', ['section' => 'columnsortorder']);
 
 if ($ADMIN->fulltree) {
     $page = $adminroot->locate('manageqbanks');
     if (isset($page)) {
-        $page->add(new admin_setting_description(
+        $page->add(new description(
             'manageqbanksgotocolumnsort',
             '',
             new lang_string('qbankgotocolumnsort', 'qbank_columnsortorder',
@@ -41,4 +47,4 @@ if ($ADMIN->fulltree) {
     }
 }
 // Column sort order link in admin page.
-$settings = new admin_externalpage('qbank_columnsortorder', get_string('qbankcolumnsortorder', 'qbank_columnsortorder'), $url);
+$settings = new externalpage('qbank_columnsortorder', get_string('qbankcolumnsortorder', 'qbank_columnsortorder'), $url);

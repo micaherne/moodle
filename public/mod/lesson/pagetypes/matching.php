@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\context\module;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** Matching question type */
@@ -57,7 +61,7 @@ class lesson_page_type_matching extends lesson_page {
 
         // Trigger an event question viewed.
         $eventparams = array(
-            'context' => context_module::instance($PAGE->cm->id),
+            'context' => module::instance($PAGE->cm->id),
             'objectid' => $this->properties->id,
             'other' => array(
                     'pagetype' => $this->get_typestring()
@@ -119,7 +123,7 @@ class lesson_page_type_matching extends lesson_page {
         $newanswer->timecreated = $this->properties->timecreated;
 
         $cm = get_coursemodule_from_instance('lesson', $this->lesson->id, $this->lesson->course);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Check for duplicate response format.
         $duplicateresponse = array();
@@ -333,7 +337,7 @@ class lesson_page_type_matching extends lesson_page {
         $properties->id = $this->properties->id;
         $properties->lessonid = $this->lesson->id;
         $properties->timemodified = time();
-        $properties = file_postupdate_standard_editor($properties, 'contents', array('noclean'=>true, 'maxfiles'=>EDITOR_UNLIMITED_FILES, 'maxbytes'=>$PAGE->course->maxbytes), context_module::instance($PAGE->cm->id), 'mod_lesson', 'page_contents', $properties->id);
+        $properties = file_postupdate_standard_editor($properties, 'contents', array('noclean'=>true, 'maxfiles'=>EDITOR_UNLIMITED_FILES, 'maxbytes'=>$PAGE->course->maxbytes), module::instance($PAGE->cm->id), 'mod_lesson', 'page_contents', $properties->id);
         $DB->update_record("lesson_pages", $properties);
 
         // Trigger an event: page updated.

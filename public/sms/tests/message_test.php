@@ -16,6 +16,7 @@
 
 namespace core_sms;
 
+use core\exception\coding_exception;
 use ValueError;
 
 /**
@@ -87,7 +88,7 @@ final class message_test extends \advanced_testcase {
         $message = $message->with(id: 123);
         $this->assertEquals(123, $message->id);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $message->with(id: 987);
     }
 

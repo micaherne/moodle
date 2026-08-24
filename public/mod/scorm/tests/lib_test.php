@@ -25,6 +25,10 @@
  */
 namespace mod_scorm;
 
+use core\context\course;
+use core\context\module;
+use core\url;
+use core_course\cm_info;
 use mod_scorm_get_completion_active_rule_descriptions;
 
 defined('MOODLE_INTERNAL') || die();
@@ -81,7 +85,7 @@ final class lib_test extends \advanced_testcase {
         // Setup test data.
         $this->course = $this->getDataGenerator()->create_course();
         $this->scorm = $this->getDataGenerator()->create_module('scorm', array('course' => $this->course->id));
-        $this->context = \context_module::instance($this->scorm->cmid);
+        $this->context = module::instance($this->scorm->cmid);
         $this->cm = get_coursemodule_from_instance('scorm', $this->scorm->id);
 
         // Create users.
@@ -156,7 +160,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_scorm\event\course_module_viewed', $event);
         $this->assertEquals($this->context, $event->get_context());
-        $url = new \moodle_url('/mod/scorm/view.php', array('id' => $this->cm->id));
+        $url = new url('/mod/scorm/view.php', array('id' => $this->cm->id));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -554,8 +558,8 @@ final class lib_test extends \advanced_testcase {
             'completionscorerequired' => null,
             'completionstatusallscos' => null
         ]);
-        $cm1 = \cm_info::create(get_coursemodule_from_instance('scorm', $scorm1->id));
-        $cm2 = \cm_info::create(get_coursemodule_from_instance('scorm', $scorm2->id));
+        $cm1 = cm_info::create(get_coursemodule_from_instance('scorm', $scorm1->id));
+        $cm2 = cm_info::create(get_coursemodule_from_instance('scorm', $scorm2->id));
 
         // Data for the stdClass input type.
         // This type of input would occur when checking the default completion rules for an activity type, where we don't have
@@ -890,7 +894,7 @@ final class lib_test extends \advanced_testcase {
     public function test_creation_with_no_calendar_capabilities(): void {
         $this->resetAfterTest();
         $course = self::getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = self::getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $roleid = self::getDataGenerator()->create_role();
         self::getDataGenerator()->role_assign($roleid, $user->id, $context->id);

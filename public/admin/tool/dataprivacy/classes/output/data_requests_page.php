@@ -24,15 +24,15 @@
 namespace tool_dataprivacy\output;
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
+use core\exception\coding_exception;
 use dml_exception;
-use moodle_exception;
-use moodle_url;
-use renderable;
-use renderer_base;
-use single_select;
+use core\exception\moodle_exception;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_select;
 use stdClass;
-use templatable;
+use core\output\templatable;
 use tool_dataprivacy\api;
 use tool_dataprivacy\local\helper;
 
@@ -72,7 +72,7 @@ class data_requests_page implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
-        $data->newdatarequesturl = new moodle_url('/admin/tool/dataprivacy/createdatarequest.php');
+        $data->newdatarequesturl = new url('/admin/tool/dataprivacy/createdatarequest.php');
         $data->newdatarequesturl->param('manage', true);
 
         if (!is_https()) {
@@ -80,7 +80,7 @@ class data_requests_page implements renderable, templatable {
             $data->httpsite = array('message' => $httpwarningmessage, 'announce' => 1);
         }
 
-        $url = new moodle_url('/admin/tool/dataprivacy/datarequests.php');
+        $url = new url('/admin/tool/dataprivacy/datarequests.php');
         $filteroptions = helper::get_request_filter_options();
         $filter = new request_filter($filteroptions, $this->filters, $url);
         $data->filter = $filter->export_for_template($output);

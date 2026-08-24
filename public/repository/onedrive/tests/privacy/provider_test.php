@@ -24,6 +24,7 @@
 namespace repository_onedrive\privacy;
 
 defined('MOODLE_INTERNAL') || die();
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\approved_contextlist;
@@ -205,7 +206,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Test the repository_onedrive_access data is exported at the User context level.
         $user = $approvedcontextlist->get_user();
-        $contextuser = \context_user::instance($user->id);
+        $contextuser = user::instance($user->id);
         $writer = writer::with_context($contextuser);
         $this->assertTrue($writer->has_any_data());
     }

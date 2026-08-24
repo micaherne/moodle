@@ -23,6 +23,9 @@
  */
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -75,7 +78,7 @@ class user_enrolment_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/enrol/editenrolment.php', array('ue' => $this->objectid));
+        return new url('/enrol/editenrolment.php', array('ue' => $this->objectid));
     }
 
     /**
@@ -87,10 +90,10 @@ class user_enrolment_updated extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['enrol'])) {
-            throw new \coding_exception('The \'enrol\' value must be set in other.');
+            throw new coding_exception('The \'enrol\' value must be set in other.');
         }
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

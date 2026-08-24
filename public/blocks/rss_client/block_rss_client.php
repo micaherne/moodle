@@ -29,7 +29,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
  */
 
- class block_rss_client extends block_base {
+ use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
+class block_rss_client extends block_base {
     /** @var bool track whether any of the output feeds have recorded failures */
     private $hasfailedfeeds = false;
 
@@ -66,7 +70,7 @@
                 if ($footer === null) {
                     $footer = new block_rss_client\output\footer();
                 }
-                $manageurl = new moodle_url('/blocks/rss_client/managefeeds.php',
+                $manageurl = new url('/blocks/rss_client/managefeeds.php',
                         ['courseid' => $this->page->course->id]);
                 $footer->set_failed($manageurl);
             }
@@ -94,7 +98,7 @@
         $managefeedfooterlink = '';
         if (has_any_capability(['block/rss_client:manageanyfeeds', 'block/rss_client:manageownfeeds'], $this->context)) {
             $managefeedfooterlink = html_writer::link(
-                new moodle_url('/blocks/rss_client/managefeeds.php', ['courseid' => $this->page->course->id]),
+                new url('/blocks/rss_client/managefeeds.php', ['courseid' => $this->page->course->id]),
                 get_string('managefeeds', 'block_rss_client'),
                 ['class' => 'btn btn-primary', 'role' => 'button'],
             );
@@ -222,10 +226,10 @@
                 try {
                     $item = new \block_rss_client\output\item(
                         $simplepieitem->get_id(),
-                        new moodle_url($simplepieitem->get_link()),
+                        new url($simplepieitem->get_link()),
                         $simplepieitem->get_title(),
                         $simplepieitem->get_description(),
-                        new moodle_url($simplepieitem->get_permalink()),
+                        new url($simplepieitem->get_permalink()),
                         $simplepieitem->get_date('U'),
                         $this->config->display_description
                     );
@@ -245,9 +249,9 @@
         if ($imageurl = $simplepiefeed->get_image_url()) {
             try {
                 $image = new \block_rss_client\output\channel_image(
-                    new moodle_url($imageurl),
+                    new url($imageurl),
                     $simplepiefeed->get_image_title(),
-                    new moodle_url($simplepiefeed->get_image_link())
+                    new url($simplepiefeed->get_image_link())
                 );
 
                 $feed->set_image($image);
@@ -262,7 +266,7 @@
         // Feed channel link.
         if ($this->config->block_rss_client_show_channel_link) {
             $channellink = $simplepiefeed->get_link();
-            $feed->set_channellink($channellink ? new moodle_url($channellink) : null);
+            $feed->set_channellink($channellink ? new url($channellink) : null);
         }
 
         return $feed;

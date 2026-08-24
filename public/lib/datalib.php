@@ -26,6 +26,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\context_helper;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core_cache\helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -190,7 +200,7 @@ function search_users($courseid, $groupid, $searchtext, $sort='', ?array $except
             return $DB->get_records_sql($sql, $params);
 
         } else {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
 
             // We want to query both the current context and parent contexts.
             list($relatedctxsql, $relatedctxparams) = $DB->get_in_or_equal($context->get_parent_context_ids(true), SQL_PARAMS_NAMED, 'relatedctx');
@@ -796,7 +806,7 @@ function get_courses_search($searchterms, $sort, $page, $recordsperpage, &$total
     foreach($rs as $course) {
         // Preload contexts only for hidden courses or courses we need to return.
         context_helper::preload_from_record($course);
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         if (!array_key_exists($course->id, $mycourses) && !core_course_category::can_view_course_info($course)) {
             continue;
         }
@@ -901,7 +911,7 @@ function fix_course_sortorder() {
         $defaultcat = reset($topcats);
         foreach ($frontcourses as $course) {
             $DB->set_field('course', 'category', $defaultcat->id, array('id'=>$course->id));
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             $fixcontexts[$context->id] = $context;
             $cacheevents['changesincourse'] = true;
         }
@@ -1029,7 +1039,7 @@ function fix_course_sortorder() {
 
     // advise all caches that need to be rebuilt
     foreach (array_keys($cacheevents) as $event) {
-        cache_helper::purge_by_event($event);
+        helper::purge_by_event($event);
     }
 }
 
@@ -1064,7 +1074,7 @@ function _fix_course_cats($children, &$sortorder, $parent, $depth, $path, &$fixc
             $update = true;
 
             // make sure context caches are rebuild and dirty contexts marked
-            $context = context_coursecat::instance($cat->id);
+            $context = coursecat::instance($cat->id);
             $fixcontexts[$context->id] = $context;
         }
         if ($cat->sortorder != $sortorder) {
@@ -1153,7 +1163,7 @@ function get_scales_menu($courseid=0) {
     $scales = array();
     $results = $DB->get_records_sql($sql, $params);
     foreach ($results as $index => $record) {
-        $context = empty($record->courseid) ? context_system::instance() : context_course::instance($record->courseid);
+        $context = empty($record->courseid) ? system::instance() : course::instance($record->courseid);
         $scales[$index] = format_string($record->name, false, ["context" => $context]);
     }
     // Format: [id => 'scale name'].
@@ -1561,7 +1571,7 @@ function add_to_config_log($name, $oldvalue, $value, $plugin) {
     $event = core\event\config_log_created::create(array(
             'objectid' => $id,
             'userid' => $log->userid,
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'other' => array(
                 'name' => $log->name,
                 'oldvalue' => $log->oldvalue,
@@ -2025,7 +2035,7 @@ function user_can_create_courses() {
     global $DB;
     $catsrs = $DB->get_recordset('course_categories');
     foreach ($catsrs as $cat) {
-        if (has_capability('moodle/course:create', context_coursecat::instance($cat->id))) {
+        if (has_capability('moodle/course:create', coursecat::instance($cat->id))) {
             $catsrs->close();
             return true;
         }
@@ -2095,7 +2105,7 @@ function decompose_update_into_safe_changes(array $newvalues, $unusedvalue) {
     $nontrivialmap = array();
     foreach ($newvalues as $from => $to) {
         if ($from == $unusedvalue || $to == $unusedvalue) {
-            throw new \coding_exception('Supposedly unused value ' . $unusedvalue . ' is actually used!');
+            throw new coding_exception('Supposedly unused value ' . $unusedvalue . ' is actually used!');
         }
         if ($from != $to) {
             $nontrivialmap[$from] = $to;

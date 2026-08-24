@@ -29,6 +29,8 @@ require_once(__DIR__.'/../extlib/ParagonIE/ConstantTime/EncoderInterface.php');
 require_once(__DIR__.'/../extlib/ParagonIE/ConstantTime/Binary.php');
 require_once(__DIR__.'/../extlib/ParagonIE/ConstantTime/Base32.php');
 
+use core\output\html_writer;
+use core_table\output\html_table;
 use MoodleQuickForm;
 use tool_mfa\local\factor\object_factor_base;
 use OTPHP\TOTP;
@@ -109,7 +111,7 @@ class factor extends object_factor_base {
         $uri = $this->generate_totp_uri($secret);
         $qrcode = new \TCPDF2DBarcode($uri, 'QRCODE');
         $image = $qrcode->getBarcodePngData(7, 7);
-        $html = \html_writer::img('data:image/png;base64,' . base64_encode($image), '', ['width' => '150px']);
+        $html = html_writer::img('data:image/png;base64,' . base64_encode($image), '', ['width' => '150px']);
         return $html;
     }
 
@@ -159,11 +161,11 @@ class factor extends object_factor_base {
         $headingstring = $mform->elementExists('replaceid') ? 'replacefactor' : 'setupfactor';
         $mform->addElement('html', $OUTPUT->heading(get_string($headingstring, 'factor_totp'), 2));
 
-        $html = \html_writer::tag('p', get_string('setupfactor:intro', 'factor_totp'));
+        $html = html_writer::tag('p', get_string('setupfactor:intro', 'factor_totp'));
         $mform->addElement('html', $html);
 
         // Device name.
-        $html = \html_writer::tag('p', get_string('setupfactor:instructionsdevicename', 'factor_totp'), ['class' => 'bold']);
+        $html = html_writer::tag('p', get_string('setupfactor:instructionsdevicename', 'factor_totp'), ['class' => 'bold']);
         $mform->addElement('html', $html);
 
         $mform->addElement('text', 'devicename', get_string('setupfactor:devicename', 'factor_totp'), [
@@ -173,27 +175,27 @@ class factor extends object_factor_base {
         $mform->setType('devicename', PARAM_TEXT);
         $mform->addRule('devicename', get_string('required'), 'required', null, 'client');
 
-        $html = \html_writer::tag('p', get_string('setupfactor:devicenameinfo', 'factor_totp'));
+        $html = html_writer::tag('p', get_string('setupfactor:devicenameinfo', 'factor_totp'));
         $mform->addElement('static', 'devicenameinfo', '', $html);
 
         // Scan QR code.
-        $html = \html_writer::tag('p', get_string('setupfactor:instructionsscan', 'factor_totp'), ['class' => 'bold']);
+        $html = html_writer::tag('p', get_string('setupfactor:instructionsscan', 'factor_totp'), ['class' => 'bold']);
         $mform->addElement('html', $html);
 
         $secretfield = $mform->getElement('secret');
         $secret = $secretfield->getValue();
         $qrcode = $this->generate_qrcode($secret);
 
-        $html = \html_writer::tag('p', $qrcode);
+        $html = html_writer::tag('p', $qrcode);
         $mform->addElement('static', 'scan', '', $html);
 
         // Enter manually.
         $secret = wordwrap($secret, 4, ' ', true) . '</code>';
-        $secret = \html_writer::tag('code', $secret);
+        $secret = html_writer::tag('code', $secret);
 
         $sitefullname = format_string($SITE->fullname, true, ['context' => system::instance()]);
 
-        $manualtable = new \html_table();
+        $manualtable = new html_table();
         $manualtable->id = 'manualattributes';
         $manualtable->attributes['class'] = 'generaltable table table-bordered table-sm w-auto table-hover';
         $manualtable->attributes['style'] = 'width: auto;';
@@ -203,11 +205,11 @@ class factor extends object_factor_base {
             [get_string('setupfactor:mode', 'factor_totp'), get_string('setupfactor:mode:timebased', 'factor_totp')],
         ];
 
-        $html = \html_writer::table($manualtable);
+        $html = html_writer::table($manualtable);
         // Wrap the table in a couple of divs to be controlled via bootstrap.
-        $html = \html_writer::div($html, 'collapse', ['id' => 'collapseManualAttributes']);
+        $html = html_writer::div($html, 'collapse', ['id' => 'collapseManualAttributes']);
 
-        $togglelink = \html_writer::tag('a', get_string('setupfactor:link', 'factor_totp'), [
+        $togglelink = html_writer::tag('a', get_string('setupfactor:link', 'factor_totp'), [
             'data-bs-toggle' => 'collapse',
             'data-bs-target' => '#collapseManualAttributes',
             'aria-expanded' => 'false',
@@ -226,7 +228,7 @@ class factor extends object_factor_base {
         }
 
         // Verification.
-        $html = \html_writer::tag('p', get_string('setupfactor:instructionsverification', 'factor_totp'), ['class' => 'bold']);
+        $html = html_writer::tag('p', get_string('setupfactor:instructionsverification', 'factor_totp'), ['class' => 'bold']);
         $mform->addElement('html', $html);
 
         $verificationfield = new \tool_mfa\local\form\verification_field(

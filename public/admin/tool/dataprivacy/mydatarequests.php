@@ -22,12 +22,16 @@
  * @package tool_dataprivacy
  */
 
+use core\context\user;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../../../config.php");
 require_once('lib.php');
 
 $courseid = optional_param('course', 0, PARAM_INT);
 
-$url = new moodle_url('/admin/tool/dataprivacy/mydatarequests.php');
+$url = new url('/admin/tool/dataprivacy/mydatarequests.php');
 if ($courseid) {
     $url->param('course', $courseid);
 }
@@ -36,10 +40,10 @@ $PAGE->set_url($url);
 
 require_login();
 if (isguestuser()) {
-    throw new \moodle_exception('noguest');
+    throw new moodle_exception('noguest');
 }
 
-$usercontext = context_user::instance($USER->id);
+$usercontext = user::instance($USER->id);
 $PAGE->set_context($usercontext);
 
 if ($profilenode = $PAGE->settingsnav->find('myprofile', null)) {
@@ -54,7 +58,7 @@ $params = ['id' => $USER->id];
 if ($courseid) {
     $params['course'] = $courseid;
 }
-$returnurl = new moodle_url('/user/profile.php', $params);
+$returnurl = new url('/user/profile.php', $params);
 
 $PAGE->set_heading($title);
 $PAGE->set_title($title);

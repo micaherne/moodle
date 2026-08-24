@@ -1,5 +1,9 @@
 <?php
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../config.php');
 require_once('lib.php');
 
@@ -8,7 +12,7 @@ $confirm  = optional_param('confirm', 0, PARAM_BOOL); // export confirmation
 $prevmode = required_param('prevmode', PARAM_ALPHA);
 $hook     = optional_param('hook', '', PARAM_CLEAN);
 
-$url = new moodle_url('/mod/glossary/exportentry.php', array('id'=>$id,'prevmode'=>$prevmode));
+$url = new url('/mod/glossary/exportentry.php', array('id'=>$id,'prevmode'=>$prevmode));
 if ($confirm !== 0) {
     $url->param('confirm', $confirm);
 }
@@ -19,31 +23,31 @@ $PAGE->set_url($url);
 $PAGE->set_show_navigation_footer(false);
 
 if (!$entry = $DB->get_record('glossary_entries', array('id'=>$id))) {
-    throw new \moodle_exception('invalidentry');
+    throw new moodle_exception('invalidentry');
 }
 
 if ($entry->sourceglossaryid) {
     //already exported
     if (!$cm = get_coursemodule_from_id('glossary', $entry->sourceglossaryid)) {
-        throw new \moodle_exception('invalidcoursemodule');
+        throw new moodle_exception('invalidcoursemodule');
     }
     redirect('view.php?id='.$cm->id.'&amp;mode=entry&amp;hook='.$entry->id);
 }
 
 if (!$cm = get_coursemodule_from_instance('glossary', $entry->glossaryid)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 if (!$glossary = $DB->get_record('glossary', array('id'=>$cm->instance))) {
-    throw new \moodle_exception('invalidid', 'glossary');
+    throw new moodle_exception('invalidid', 'glossary');
 }
 
 if (!$course = $DB->get_record('course', array('id'=>$cm->course))) {
-    throw new \moodle_exception('coursemisconf');
+    throw new moodle_exception('coursemisconf');
 }
 
 require_course_login($course->id, true, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/glossary:export', $context);
 
 $returnurl = "view.php?id=$cm->id&amp;mode=$prevmode&amp;hook=".urlencode($hook);
@@ -54,14 +58,14 @@ if (!$mainglossary = $DB->get_record('glossary', array('course'=>$cm->course, 'm
 }
 
 if (!$maincm = get_coursemodule_from_instance('glossary', $mainglossary->id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
-$context     = context_module::instance($cm->id);
-$maincontext = context_module::instance($maincm->id);
+$context     = module::instance($cm->id);
+$maincontext = module::instance($maincm->id);
 
 if (!$course = $DB->get_record('course', array('id'=>$cm->course))) {
-    throw new \moodle_exception('coursemisconf');
+    throw new moodle_exception('coursemisconf');
 }
 
 
@@ -96,7 +100,7 @@ if (!data_submitted() or !$confirm or !confirm_sesskey()) {
     $optionsyes = array('id'=>$entry->id, 'confirm'=>1, 'sesskey'=>sesskey(), 'prevmode'=>$prevmode, 'hook'=>$hook);
     $optionsno  = array('id'=>$cm->id, 'mode'=>$prevmode, 'hook'=>$hook);
 
-    echo $OUTPUT->confirm($areyousure, new moodle_url($linkyes, $optionsyes), new moodle_url($linkno, $optionsno));
+    echo $OUTPUT->confirm($areyousure, new url($linkyes, $optionsyes), new url($linkno, $optionsno));
     echo '</div>';
     echo $OUTPUT->footer();
     die;

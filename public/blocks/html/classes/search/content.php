@@ -24,6 +24,7 @@
 
 namespace block_html\search;
 
+use core\context;
 use core_search\moodle_recordset;
 
 defined('MOODLE_INTERNAL') || die();
@@ -81,7 +82,7 @@ class content extends \core_search\base_block {
     public function attach_files($document) {
         $fs = get_file_storage();
 
-        $context = \context::instance_by_id($document->get('contextid'));
+        $context = context::instance_by_id($document->get('contextid'));
 
         $files = $fs->get_area_files($context->id, 'block_html', 'content',
                 false, 'itemid, filepath, filename', false);

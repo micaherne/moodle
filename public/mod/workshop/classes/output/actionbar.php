@@ -16,11 +16,11 @@
 
 namespace mod_workshop\output;
 
-use moodle_url;
-use renderer_base;
-use url_select;
-use renderable;
-use templatable;
+use core\url;
+use core\output\renderer_base;
+use core\output\url_select;
+use core\output\renderable;
+use core\output\templatable;
 
 /**
  * Output the rendered elements for the tertiary nav for page action.
@@ -49,7 +49,7 @@ class actionbar implements renderable, templatable {
      * @param moodle_url $currenturl The current URL.
      * @param \workshop $workshop The workshop object.
      */
-    public function __construct(moodle_url $currenturl, \workshop $workshop) {
+    public function __construct(url $currenturl, \workshop $workshop) {
         $this->currenturl = $currenturl;
         $this->workshop = $workshop;
     }

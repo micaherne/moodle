@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\lang_string;
+use core\navigation\navigation_node;
+use core\url;
+use core_course\cm_info;
+use core_course\modinfo;
+use core_course\section_info;
 use core_courseformat\sectiondelegate;
 
 defined('MOODLE_INTERNAL') || die();
@@ -42,7 +51,7 @@ class format_singleactivity extends core_courseformat\base implements core_cours
      * @return moodle_url
      */
     public function get_view_url($section, $options = []) {
-        return new moodle_url('/course/view.php', ['id' => $this->courseid]);
+        return new url('/course/view.php', ['id' => $this->courseid]);
     }
 
     /**
@@ -87,13 +96,13 @@ class format_singleactivity extends core_courseformat\base implements core_cours
             core_collator::asort($availabletypes);
             if ($this->courseid) {
                 // The course exists. Test against the course.
-                $testcontext = context_course::instance($this->courseid);
+                $testcontext = course::instance($this->courseid);
             } else if ($this->categoryid) {
                 // The course does not exist yet, but we have a category ID that we can test against.
-                $testcontext = context_coursecat::instance($this->categoryid);
+                $testcontext = coursecat::instance($this->categoryid);
             } else {
                 // The course does not exist, and we somehow do not have a category. Test capabilities against the system context.
-                $testcontext = context_system::instance();
+                $testcontext = system::instance();
             }
             foreach (array_keys($availabletypes) as $activity) {
                 $capability = "mod/{$activity}:addinstance";
@@ -103,7 +112,7 @@ class format_singleactivity extends core_courseformat\base implements core_cours
                     } else {
                         // We do not have a course yet, so we guess if the user will have the capability to add the activity after
                         // creating the course.
-                        $categorycontext = \context_coursecat::instance($this->categoryid);
+                        $categorycontext = coursecat::instance($this->categoryid);
                         if (!guess_if_creator_will_have_course_capability($capability, $categorycontext)) {
                             unset($availabletypes[$activity]);
                         }
@@ -179,7 +188,7 @@ class format_singleactivity extends core_courseformat\base implements core_cours
     }
 
     #[\Override]
-    public function get_main_activity(): ?\cm_info {
+    public function get_main_activity(): ?cm_info {
         if ($this->activity === false) {
             $modinfo = get_fast_modinfo($this->courseid);
 
@@ -226,7 +235,7 @@ class format_singleactivity extends core_courseformat\base implements core_cours
             if (
                 plugin_supports('mod', $module, FEATURE_NO_VIEW_LINK, false)
                 || sectiondelegate::has_delegate_class('mod_' . $module)
-                || !course_modinfo::is_mod_type_visible_on_course($module)
+                || !modinfo::is_mod_type_visible_on_course($module)
             ) {
                 unset($availabletypes[$module]);
             }
@@ -244,7 +253,7 @@ class format_singleactivity extends core_courseformat\base implements core_cours
         if (!($modname = $this->get_activitytype())) {
             return false;
         }
-        if (!has_capability('moodle/course:manageactivities', context_course::instance($this->courseid))) {
+        if (!has_capability('moodle/course:manageactivities', course::instance($this->courseid))) {
             return false;
         }
         if (!course_allowed_module($this->get_course(), $modname)) {
@@ -284,8 +293,8 @@ class format_singleactivity extends core_courseformat\base implements core_cours
         } else {
             // Get the single item.
             $itemmetadata = $metadata[array_search('mod_' . $modname, array_column($metadata, 'componentname'))];
-            $urlbase = new \moodle_url('/course/mod.php', ['id' => $this->get_course()->id]);
-            $referenceurl = new \moodle_url($urlbase, ['add' => $modname]);
+            $urlbase = new url('/course/mod.php', ['id' => $this->get_course()->id]);
+            $referenceurl = new url($urlbase, ['add' => $modname]);
             if ($referenceurl->out(false) != $itemmetadata->link) {
                 return true;
             }
@@ -311,7 +320,7 @@ class format_singleactivity extends core_courseformat\base implements core_cours
         global $PAGE;
         $page->add_body_class('format-'. $this->get_format());
         if ($PAGE == $page && $page->has_set_url() &&
-                $page->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)) {
+                $page->url->compare(new url('/course/view.php'), URL_MATCH_BASE)) {
             $edit = optional_param('edit', -1, PARAM_BOOL);
             if (($edit == 0 || $edit == 1) && confirm_sesskey()) {
                 // This is a request to turn editing mode on or off, do not redirect here, /course/view.php will do redirection.
@@ -319,9 +328,9 @@ class format_singleactivity extends core_courseformat\base implements core_cours
             }
             $cm = $this->get_main_activity();
             if (!$this->get_activitytype()) {
-                if (has_capability('moodle/course:update', context_course::instance($this->courseid))) {
+                if (has_capability('moodle/course:update', course::instance($this->courseid))) {
                     // Teacher is redirected to edit course page.
-                    $url = new moodle_url('/course/edit.php', ['id' => $this->courseid]);
+                    $url = new url('/course/edit.php', ['id' => $this->courseid]);
                     redirect($url, get_string('erroractivitytype', 'format_singleactivity'));
                 } else {
                     // Student sees an empty course page.
@@ -336,12 +345,12 @@ class format_singleactivity extends core_courseformat\base implements core_cours
                         if (optional_param('addactivity', 0, PARAM_INT)) {
                             return;
                         } else {
-                            $url = new moodle_url('/course/view.php', ['id' => $this->courseid, 'addactivity' => 1]);
+                            $url = new url('/course/view.php', ['id' => $this->courseid, 'addactivity' => 1]);
                             redirect($url);
                         }
                     }
                     // Redirect to the add activity form.
-                    $url = new moodle_url(
+                    $url = new url(
                         '/course/mod.php',
                         [
                             'id' => $this->courseid,

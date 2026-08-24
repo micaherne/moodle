@@ -25,7 +25,7 @@
 
 namespace mod_h5pactivity\local;
 
-use templatable;
+use core\output\templatable;
 use stdClass;
 
 /**

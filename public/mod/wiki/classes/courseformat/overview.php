@@ -16,7 +16,7 @@
 
 namespace mod_wiki\courseformat;
 
-use cm_info;
+use core_course\cm_info;
 use core\url;
 use mod_wiki\manager;
 use core\output\action_link;

@@ -16,6 +16,7 @@
 
 namespace tool_brickfield\local\areas\mod_book;
 
+use core\url;
 use tool_brickfield\local\areas\module_area_base;
 
 /**
@@ -31,9 +32,9 @@ abstract class base extends module_area_base {
      * @param \stdClass $componentinfo
      * @return \moodle_url
      */
-    public static function get_edit_url(\stdClass $componentinfo): \moodle_url {
+    public static function get_edit_url(\stdClass $componentinfo): url {
         if (!empty($componentinfo->refid)) {
-            return new \moodle_url('/mod/book/edit.php',
+            return new url('/mod/book/edit.php',
                 ['cmid' => $componentinfo->cmid, 'id' => $componentinfo->itemid, 'sesskey' => sesskey()]);
         } else {
             return parent::get_edit_url($componentinfo);

@@ -22,7 +22,7 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use context_module;
+use core\context\module;
 use core_h5p\factory;
 
 /**
@@ -83,7 +83,7 @@ class get_h5pactivities_by_courses extends external_api {
             // We can avoid then additional validate_context calls.
             $h5pactivities = get_all_instances_in_courses('h5pactivity', $courses);
             foreach ($h5pactivities as $h5pactivity) {
-                $context = context_module::instance($h5pactivity->coursemodule);
+                $context = module::instance($h5pactivity->coursemodule);
                 // Remove fields that are not from the h5p activity (added by get_all_instances_in_courses).
                 unset($h5pactivity->coursemodule, $h5pactivity->context,
                     $h5pactivity->visible, $h5pactivity->section,

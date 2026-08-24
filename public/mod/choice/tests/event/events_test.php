@@ -24,6 +24,10 @@
 
 namespace mod_choice\event;
 
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -61,7 +65,7 @@ final class events_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course();
         $this->choice = $this->getDataGenerator()->create_module('choice', array('course' => $this->course->id));
         $this->cm = $DB->get_record('course_modules', array('id' => $this->choice->cmid));
-        $this->context = \context_module::instance($this->choice->cmid);
+        $this->context = module::instance($this->choice->cmid);
     }
 
     /**
@@ -85,7 +89,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\mod_choice\event\answer_created', $events[0]);
         $this->assertEquals($user->id, $events[0]->userid);
         $this->assertEquals($user->id, $events[0]->relateduserid);
-        $this->assertEquals(\context_module::instance($this->choice->cmid), $events[0]->get_context());
+        $this->assertEquals(module::instance($this->choice->cmid), $events[0]->get_context());
         $this->assertEquals($answer->id, $events[0]->objectid);
         $this->assertEquals($this->choice->id, $events[0]->other['choiceid']);
         $this->assertEquals($optionids[3], $events[0]->other['optionid']);
@@ -113,7 +117,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\mod_choice\event\answer_created', $events[0]);
         $this->assertEquals($USER->id, $events[0]->userid);
         $this->assertEquals($user->id, $events[0]->relateduserid);
-        $this->assertEquals(\context_module::instance($this->choice->cmid), $events[0]->get_context());
+        $this->assertEquals(module::instance($this->choice->cmid), $events[0]->get_context());
         $this->assertEquals($answer->id, $events[0]->objectid);
         $this->assertEquals($this->choice->id, $events[0]->other['choiceid']);
         $this->assertEquals($optionids[3], $events[0]->other['optionid']);
@@ -135,7 +139,7 @@ final class events_test extends \advanced_testcase {
         $choice = $this->getDataGenerator()->create_module('choice', array('course' => $this->course->id,
             'allowmultiple' => 1));
         $cm = $DB->get_record('course_modules', array('id' => $choice->cmid));
-        $context = \context_module::instance($choice->cmid);
+        $context = module::instance($choice->cmid);
 
         $optionids = array_keys($DB->get_records('choice_options', array('choiceid' => $choice->id)));
         $submittedoptionids = array($optionids[1], $optionids[3]);
@@ -152,7 +156,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\mod_choice\event\answer_created', $events[0]);
         $this->assertEquals($user->id, $events[0]->userid);
         $this->assertEquals($user->id, $events[0]->relateduserid);
-        $this->assertEquals(\context_module::instance($choice->cmid), $events[0]->get_context());
+        $this->assertEquals(module::instance($choice->cmid), $events[0]->get_context());
         $this->assertEquals($answers[0]->id, $events[0]->objectid);
         $this->assertEquals($choice->id, $events[0]->other['choiceid']);
         $this->assertEquals($optionids[1], $events[0]->other['optionid']);
@@ -161,7 +165,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\mod_choice\event\answer_created', $events[1]);
         $this->assertEquals($user->id, $events[1]->userid);
         $this->assertEquals($user->id, $events[1]->relateduserid);
-        $this->assertEquals(\context_module::instance($choice->cmid), $events[1]->get_context());
+        $this->assertEquals(module::instance($choice->cmid), $events[1]->get_context());
         $this->assertEquals($answers[1]->id, $events[1]->objectid);
         $this->assertEquals($choice->id, $events[1]->other['choiceid']);
         $this->assertEquals($optionids[3], $events[1]->other['optionid']);
@@ -184,7 +188,7 @@ final class events_test extends \advanced_testcase {
         $eventdata['other'] = array();
 
         // Make sure content identifier is always set.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $event = \mod_choice\event\answer_created::create($eventdata);
         $event->trigger();
         $this->assertEventContextNotUsed($event);
@@ -217,7 +221,7 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(2, $events);
         $this->assertInstanceOf('\mod_choice\event\answer_deleted', $events[0]);
         $this->assertEquals($user->id, $events[0]->userid);
-        $this->assertEquals(\context_module::instance($this->choice->cmid), $events[0]->get_context());
+        $this->assertEquals(module::instance($this->choice->cmid), $events[0]->get_context());
         $this->assertEquals($oldanswer->id, $events[0]->objectid);
         $this->assertEquals($this->choice->id, $events[0]->other['choiceid']);
         $this->assertEquals($optionids[2], $events[0]->other['optionid']);
@@ -225,7 +229,7 @@ final class events_test extends \advanced_testcase {
 
         $this->assertInstanceOf('\mod_choice\event\answer_created', $events[1]);
         $this->assertEquals($user->id, $events[1]->userid);
-        $this->assertEquals(\context_module::instance($this->choice->cmid), $events[1]->get_context());
+        $this->assertEquals(module::instance($this->choice->cmid), $events[1]->get_context());
         $this->assertEquals($newanswer->id, $events[1]->objectid);
         $this->assertEquals($this->choice->id, $events[1]->other['choiceid']);
         $this->assertEquals($optionids[3], $events[1]->other['optionid']);
@@ -263,7 +267,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\mod_choice\event\answer_deleted', $event);
         $this->assertEquals($USER->id, $event->userid);
         $this->assertEquals($user->id, $event->relateduserid);
-        $this->assertEquals(\context_module::instance($this->choice->cmid), $event->get_context());
+        $this->assertEquals(module::instance($this->choice->cmid), $event->get_context());
         $this->assertEquals($this->choice->id, $event->other['choiceid']);
         $this->assertEquals($answer->optionid, $event->other['optionid']);
         $this->assertEventContextNotUsed($event);
@@ -299,7 +303,7 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(1, $event);
         $this->assertInstanceOf('\mod_choice\event\report_viewed', $event[0]);
         $this->assertEquals($USER->id, $event[0]->userid);
-        $this->assertEquals(\context_module::instance($this->choice->cmid), $event[0]->get_context());
+        $this->assertEquals(module::instance($this->choice->cmid), $event[0]->get_context());
         $sink->close();
     }
 
@@ -333,7 +337,7 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(1, $event);
         $this->assertInstanceOf('\mod_choice\event\report_downloaded', $event[0]);
         $this->assertEquals($USER->id, $event[0]->userid);
-        $this->assertEquals(\context_module::instance($this->choice->cmid), $event[0]->get_context());
+        $this->assertEquals(module::instance($this->choice->cmid), $event[0]->get_context());
         $this->assertEquals('csv', $event[0]->other['format']);
         $this->assertEquals($this->choice->id, $event[0]->other['choiceid']);
         $this->assertEventContextNotUsed($event[0]);
@@ -367,7 +371,7 @@ final class events_test extends \advanced_testcase {
         $this->assertCount(1, $event);
         $this->assertInstanceOf('\mod_choice\event\course_module_viewed', $event[0]);
         $this->assertEquals($USER->id, $event[0]->userid);
-        $this->assertEquals(\context_module::instance($this->choice->cmid), $event[0]->get_context());
+        $this->assertEquals(module::instance($this->choice->cmid), $event[0]->get_context());
         $sink->close();
     }
 
@@ -381,7 +385,7 @@ final class events_test extends \advanced_testcase {
         // let's just check that the event contains the expected basic information.
         $this->setAdminUser();
 
-        $params = array('context' => \context_course::instance($this->course->id));
+        $params = array('context' => course::instance($this->course->id));
         $event = \mod_choice\event\course_module_instance_list_viewed::create($params);
         $sink = $this->redirectEvents();
         $event->trigger();
@@ -389,6 +393,6 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
         $this->assertInstanceOf('\mod_choice\event\course_module_instance_list_viewed', $event);
         $this->assertEquals($USER->id, $event->userid);
-        $this->assertEquals(\context_course::instance($this->course->id), $event->get_context());
+        $this->assertEquals(course::instance($this->course->id), $event->get_context());
     }
 }

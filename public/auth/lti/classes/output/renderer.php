@@ -17,6 +17,8 @@
 namespace auth_lti\output;
 
 use core\output\notification;
+use core\output\plugin_renderer_base;
+use core\url;
 
 /**
  * Renderer class for auth_lti.
@@ -25,7 +27,7 @@ use core\output\notification;
  * @copyright  2021 Jake Dallimore <jrhdallimore@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
     /**
      * Render the account options view, displayed to instructors on first launch if no account binding exists.
      *
@@ -34,7 +36,7 @@ class renderer extends \plugin_renderer_base {
      */
     public function render_account_binding_options_page(int $provisioningmode): string {
 
-        $formaction = new \moodle_url('/auth/lti/login.php');
+        $formaction = new url('/auth/lti/login.php');
         $notification = new notification(get_string('firstlaunchnotice', 'auth_lti'), \core\notification::INFO, false);
         $cancreateaccounts = !get_config('moodle', 'authpreventaccountcreation');
         if ($provisioningmode == \auth_plugin_lti::PROVISIONING_MODE_PROMPT_EXISTING_ONLY) {
@@ -76,7 +78,7 @@ class renderer extends \plugin_renderer_base {
      * @param \moodle_url $returnurl the URL to return to when the user clicks continue on the rendered page.
      * @return string the rendered HTML
      */
-    public function render_account_binding_complete(notification $notification, \moodle_url $returnurl): string {
+    public function render_account_binding_complete(notification $notification, url $returnurl): string {
         $context = (object) [
             'notification' => $notification->export_for_template($this),
             'returnurl' => $returnurl->out()

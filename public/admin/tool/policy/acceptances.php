@@ -26,6 +26,7 @@ require(__DIR__.'/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 use core\output\notification;
+use core\url;
 
 $policyid = optional_param('policyid', null, PARAM_INT);
 $versionid = optional_param('versionid', null, PARAM_INT);
@@ -39,7 +40,7 @@ $versionid = $acceptancesfilter->get_version_id_filter();
 // Set up the page as an admin page 'tool_policy_managedocs'.
 $urlparams = ($policyid ? ['policyid' => $policyid] : []) + ($versionid ? ['versionid' => $versionid] : []);
 admin_externalpage_setup('tool_policy_acceptances', '', $urlparams,
-    new moodle_url('/admin/tool/policy/acceptances.php'));
+    new url('/admin/tool/policy/acceptances.php'));
 
 $acceptancesfilter->validate_ids();
 $output = $PAGE->get_renderer('tool_policy');

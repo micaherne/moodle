@@ -22,6 +22,9 @@
  * @package core
  * @category phpunit
  */
+use core\exception\coding_exception;
+use core\output\renderer_factory\renderer_factory_base;
+
 class test_output_factory extends renderer_factory_base {
 
     /**

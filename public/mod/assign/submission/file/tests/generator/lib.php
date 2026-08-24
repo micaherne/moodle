@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\user;
+
 require_once("{$CFG->dirroot}/mod/assign/tests/generator/assignsubmission_subplugin_generator.php");
 
 /**
@@ -52,7 +54,7 @@ class assignsubmission_file_generator extends assignsubmission_subplugin_generat
 
                 $fs->create_file_from_pathname((object) [
                     'itemid' => $itemid,
-                    'contextid' => context_user::instance($submission->userid)->id,
+                    'contextid' => user::instance($submission->userid)->id,
                     'component' => 'user',
                     'filearea' => 'draft',
                     'filepath' => '/',

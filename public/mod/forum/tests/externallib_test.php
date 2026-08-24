@@ -16,8 +16,13 @@
 
 namespace mod_forum;
 
+use core\context\module;
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\output\user_picture;
+use core\url;
 use core_external\external_api;
-use core_user;
+use core\user;
 use mod_forum_external;
 
 /**
@@ -58,9 +63,9 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
      * @param \moodle_url|null $url
      * @return array
      */
-    protected function get_expected_attachment(\stored_file $file, array $values  = [], ?\moodle_url $url = null): array {
+    protected function get_expected_attachment(\stored_file $file, array $values  = [], ?url $url = null): array {
         if (!$url) {
-            $url = \moodle_url::make_pluginfile_url(
+            $url = url::make_pluginfile_url(
                 $file->get_contextid(),
                 $file->get_component(),
                 $file->get_filearea(),
@@ -175,7 +180,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Assign capabilities to view forums for forum 2.
         $cm2 = get_coursemodule_from_id('forum', $forum2->cmid, 0, false, MUST_EXIST);
-        $context2 = \context_module::instance($cm2->id);
+        $context2 = module::instance($cm2->id);
         $newrole = create_role('Role 2', 'role2', 'Role 2 description');
         $roleid2 = $this->assignUserCapability('mod/forum:viewdiscussion', $context2->id, $newrole);
 
@@ -275,7 +280,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $this->setUser(0);
         try {
             $response = mod_forum_external::toggle_favourite_state($discussion1->id, 0);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
     }
@@ -356,7 +361,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $exporteduser2 = [
             'id' => (int) $user2->id,
             'fullname' => fullname($user2),
-            'initials' => \core_user::get_initials($user2),
+            'initials' => user::get_initials($user2),
             'isdeleted' => false,
             'groups' => [],
             'urls' => [
@@ -370,7 +375,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $exporteduser3 = [
             'id' => (int) $user3->id,
             'fullname' => fullname($user3),
-            'initials' => \core_user::get_initials($user3),
+            'initials' => user::get_initials($user3),
             'groups' => [],
             'isdeleted' => false,
             'urls' => [
@@ -390,14 +395,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Display word count. Otherwise, word and char counts will be set to null by the forum post exporter.
         $record->displaywordcount = true;
         $forum1 = self::getDataGenerator()->create_module('forum', $record);
-        $forum1context = \context_module::instance($forum1->cmid);
+        $forum1context = module::instance($forum1->cmid);
 
         // Forum with tracking enabled.
         $record = new \stdClass();
         $record->course = $course1->id;
         $forum2 = self::getDataGenerator()->create_module('forum', $record);
         $forum2cm = get_coursemodule_from_id('forum', $forum2->cmid);
-        $forum2context = \context_module::instance($forum2->cmid);
+        $forum2context = module::instance($forum2->cmid);
 
         // Add discussions to the forums.
         $record = new \stdClass();
@@ -529,7 +534,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 'edit' => null,
                 'delete' =>null,
                 'split' => null,
-                'reply' => (new \moodle_url('/mod/forum/post.php#mformforum', [
+                'reply' => (new url('/mod/forum/post.php#mformforum', [
                     'reply' => $discussion1reply2->id
                 ]))->out(false),
                 'export' => null,
@@ -594,7 +599,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                 'edit' => null,
                 'delete' =>null,
                 'split' => null,
-                'reply' => (new \moodle_url('/mod/forum/post.php#mformforum', [
+                'reply' => (new url('/mod/forum/post.php#mformforum', [
                     'reply' => $discussion1reply1->id
                 ]))->out(false),
                 'export' => null,
@@ -694,7 +699,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $forum1 = self::getDataGenerator()->create_module('forum', (object) [
             'course' => $course1->id,
         ]);
-        $forum1context = \context_module::instance($forum1->cmid);
+        $forum1context = module::instance($forum1->cmid);
 
         // Add discussions to the forum.
         $discussion = $generator->create_discussion((object) [
@@ -777,7 +782,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $draftidinlineattach = file_get_unused_draft_itemid();
         $draftidattach = file_get_unused_draft_itemid();
         self::setUser($user);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = context_user::instance($user->id);
         $filepath = '/';
         $filearea = 'draft';
         $component = 'user';
@@ -849,7 +854,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $record->course = $course1->id;
         $record->type = 'qanda';
         $forum1 = self::getDataGenerator()->create_module('forum', $record);
-        $forum1context = \context_module::instance($forum1->cmid);
+        $forum1context = module::instance($forum1->cmid);
 
         // Add discussions to the forums.
         $record = new \stdClass();
@@ -961,7 +966,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Assign capabilities to view discussions for forum 1.
         $cm = get_coursemodule_from_id('forum', $forum1->cmid, 0, false, MUST_EXIST);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $newrole = create_role('Role 2', 'role2', 'Role 2 description');
         $this->assignUserCapability('mod/forum:viewdiscussion', $context->id, $newrole);
 
@@ -1013,15 +1018,15 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         );
 
         // Wait the theme to be loaded (the external_api call does that) to generate the user profiles.
-        $userpicture = new \user_picture($user1);
+        $userpicture = new user_picture($user1);
         $userpicture->size = 2; // Size f2.
         $expectedreturn['discussions'][0]['userpictureurl'] = $userpicture->get_url($PAGE)->out(false);
-        $expectedreturn['discussions'][0]['userinitials'] = core_user::get_initials($user1);
+        $expectedreturn['discussions'][0]['userinitials'] = user::get_initials($user1);
 
-        $userpicture = new \user_picture($user4);
+        $userpicture = new user_picture($user4);
         $userpicture->size = 2; // Size f2.
         $expectedreturn['discussions'][0]['usermodifiedpictureurl'] = $userpicture->get_url($PAGE)->out(false);
-        $expectedreturn['discussions'][0]['usermodifiedinitials'] = core_user::get_initials($user4);
+        $expectedreturn['discussions'][0]['usermodifiedinitials'] = user::get_initials($user4);
 
         $this->assertEquals($expectedreturn, $discussions);
 
@@ -1037,7 +1042,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_forum_external::get_forum_discussions($forum1->id);
             $this->fail('Exception expected due to missing capability.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('noviewdiscussionspermission', $e->errorcode);
         }
 
@@ -1048,7 +1053,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_forum_external::get_forum_discussions($forum1->id);
             $this->fail('Exception expected due to being unenrolled from the course.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -1107,7 +1112,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
 
         // Assign capabilities to view discussions for forum 1.
         $cm = get_coursemodule_from_id('forum', $forum1->cmid, 0, false, MUST_EXIST);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $newrole = create_role('Role 2', 'role2', 'Role 2 description');
         $this->assignUserCapability('mod/forum:viewdiscussion', $context->id, $newrole);
 
@@ -1267,7 +1272,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $record->course = $course->id;
         $forum = self::getDataGenerator()->create_module('forum', $record);
         $cm = get_coursemodule_from_id('forum', $forum->cmid, 0, false, MUST_EXIST);
-        $forumcontext = \context_module::instance($forum->cmid);
+        $forumcontext = module::instance($forum->cmid);
 
         // Add discussions to the forums.
         $record = new \stdClass();
@@ -1281,7 +1286,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_forum_external::add_discussion_post($discussion->firstpost, 'some subject', 'some text here...');
             $this->fail('Exception expected due to being unenrolled from the course.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -1338,7 +1343,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $draftidinlineattach = file_get_unused_draft_itemid();
         $draftidattach = file_get_unused_draft_itemid();
         self::setUser($user);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = context_user::instance($user->id);
         $filepath = '/';
         $filearea = 'draft';
         $component = 'user';
@@ -1402,7 +1407,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_forum_external::add_discussion_post($discussion->firstpost, 'some subject', 'some text here...');
             $this->fail('Exception expected due to invalid permissions for posting.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopostforum', $e->errorcode);
         }
     }
@@ -1518,7 +1523,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_forum_external::add_discussion($forum->id, 'the subject', 'some text here...');
             $this->fail('Exception expected due to invalid permissions.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('cannotcreatediscussion', $e->errorcode);
         }
 
@@ -1554,7 +1559,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $draftidinlineattach = file_get_unused_draft_itemid();
         $draftidattach = file_get_unused_draft_itemid();
 
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = context_user::instance($USER->id);
         $filepath = '/';
         $filearea = 'draft';
         $component = 'user';
@@ -1633,14 +1638,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_forum_external::add_discussion($forum->id, 'the subject', 'some text here...');
             $this->fail('Exception expected due to invalid group permissions.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('cannotcreatediscussion', $e->errorcode);
         }
 
         try {
             mod_forum_external::add_discussion($forum->id, 'the subject', 'some text here...', 0);
             $this->fail('Exception expected due to invalid group permissions.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('cannotcreatediscussion', $e->errorcode);
         }
 
@@ -1651,7 +1656,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_forum_external::add_discussion($forum->id, 'the subject', 'some text here...', $group->id);
             $this->fail('Exception expected due to invalid group permissions.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('cannotcreatediscussion', $e->errorcode);
         }
 
@@ -1662,7 +1667,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_forum_external::add_discussion($forum->id, 'the subject', 'some text here...', $group->id + 1);
             $this->fail('Exception expected due to invalid group.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('cannotcreatediscussion', $e->errorcode);
         }
 
@@ -1728,7 +1733,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $record->course = $course->id;
         $record->type = 'news';
         $forum = self::getDataGenerator()->create_module('forum', $record);
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
 
         $record = new \stdClass();
         $record->course = $course->id;
@@ -1744,7 +1749,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             $result = mod_forum_external::set_lock_state($forum->id, $discussion->id, 0);
             $this->fail('Exception expected due to missing capability.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('errorcannotlock', $e->errorcode);
         }
 
@@ -1888,7 +1893,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $record->assessed = RATING_AGGREGATE_AVERAGE;
         $record->scale = 100;
         $forum = self::getDataGenerator()->create_module('forum', $record);
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
 
         // Add discussion to the forum.
         $record = new \stdClass();
@@ -2020,7 +2025,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $record->course = $course->id;
         $forum = self::getDataGenerator()->create_module('forum', $record);
         $cm = get_coursemodule_from_id('forum', $forum->cmid, 0, false, MUST_EXIST);
-        $forumcontext = \context_module::instance($forum->cmid);
+        $forumcontext = module::instance($forum->cmid);
         $generator = self::getDataGenerator()->get_plugin_generator('mod_forum');
 
         // Create an enrol users.
@@ -2117,7 +2122,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $record->course = $course->id;
         $record->type = 'qanda';
         $forum = self::getDataGenerator()->create_module('forum', $record);
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
 
         // Add discussions to the forums.
         $discussionrecord = new \stdClass();
@@ -2178,7 +2183,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $record->course = $course->id;
         $record->type = 'qanda';
         $forum = self::getDataGenerator()->create_module('forum', $record);
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
 
         // Add discussions to the forums.
         $discussionrecord = new \stdClass();
@@ -2346,7 +2351,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $exporteduser1 = [
             'id' => (int) $user1->id,
             'fullname' => fullname($user1),
-            'initials' => \core_user::get_initials($user1),
+            'initials' => user::get_initials($user1),
             'groups' => [],
             'urls' => [
                 'profile' => $urlfactory->get_author_profile_url($user1entity, $course1->id)->out(false),
@@ -2360,7 +2365,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $exporteduser2 = [
             'id' => (int) $user2->id,
             'fullname' => fullname($user2),
-            'initials' => \core_user::get_initials($user2),
+            'initials' => user::get_initials($user2),
             'groups' => [],
             'urls' => [
                 'profile' => $urlfactory->get_author_profile_url($user2entity, $course1->id)->out(false),
@@ -2379,7 +2384,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $record = new \stdClass();
         $record->course = $course1->id;
         $forum1 = self::getDataGenerator()->create_module('forum', $record);
-        $forum1context = \context_module::instance($forum1->cmid);
+        $forum1context = module::instance($forum1->cmid);
 
         // Add discussions to the forums.
         $time = time();
@@ -2519,16 +2524,16 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                             'viewisolated' => $isolatedurluser->out(false),
                             'viewparent' => $urlfactory->get_view_post_url_from_post_id(
                                 $discussion1reply1->discussion, $discussion1reply1->parent)->out(false),
-                            'edit' => (new \moodle_url('/mod/forum/post.php', [
+                            'edit' => (new url('/mod/forum/post.php', [
                                 'edit' => $discussion1reply1->id
                             ]))->out(false),
-                            'delete' => (new \moodle_url('/mod/forum/post.php', [
+                            'delete' => (new url('/mod/forum/post.php', [
                                 'delete' => $discussion1reply1->id
                             ]))->out(false),
-                            'split' => (new \moodle_url('/mod/forum/post.php', [
+                            'split' => (new url('/mod/forum/post.php', [
                                 'prune' => $discussion1reply1->id
                             ]))->out(false),
-                            'reply' => (new \moodle_url('/mod/forum/post.php#mformforum', [
+                            'reply' => (new url('/mod/forum/post.php#mformforum', [
                                 'reply' => $discussion1reply1->id
                             ]))->out(false),
                             'export' => null,
@@ -2588,14 +2593,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                                 $discussion1firstpostobject->discussion, $discussion1firstpostobject->id)->out(false),
                             'viewisolated' => $isolatedurlparent->out(false),
                             'viewparent' => null,
-                            'edit' => (new \moodle_url('/mod/forum/post.php', [
+                            'edit' => (new url('/mod/forum/post.php', [
                                 'edit' => $discussion1firstpostobject->id
                             ]))->out(false),
-                            'delete' => (new \moodle_url('/mod/forum/post.php', [
+                            'delete' => (new url('/mod/forum/post.php', [
                                 'delete' => $discussion1firstpostobject->id
                             ]))->out(false),
                             'split' => null,
-                            'reply' => (new \moodle_url('/mod/forum/post.php#mformforum', [
+                            'reply' => (new url('/mod/forum/post.php#mformforum', [
                                 'reply' => $discussion1firstpostobject->id
                             ]))->out(false),
                             'export' => null,
@@ -2670,16 +2675,16 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                             'viewisolated' => $isolatedurluser->out(false),
                             'viewparent' => $urlfactory->get_view_post_url_from_post_id(
                                 $discussion2reply1->discussion, $discussion2reply1->parent)->out(false),
-                            'edit' => (new \moodle_url('/mod/forum/post.php', [
+                            'edit' => (new url('/mod/forum/post.php', [
                                 'edit' => $discussion2reply1->id
                             ]))->out(false),
-                            'delete' => (new \moodle_url('/mod/forum/post.php', [
+                            'delete' => (new url('/mod/forum/post.php', [
                                 'delete' => $discussion2reply1->id
                             ]))->out(false),
-                            'split' => (new \moodle_url('/mod/forum/post.php', [
+                            'split' => (new url('/mod/forum/post.php', [
                                 'prune' => $discussion2reply1->id
                             ]))->out(false),
-                            'reply' => (new \moodle_url('/mod/forum/post.php#mformforum', [
+                            'reply' => (new url('/mod/forum/post.php#mformforum', [
                                 'reply' => $discussion2reply1->id
                             ]))->out(false),
                             'export' => null,
@@ -2739,14 +2744,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
                                 $discussion2firstpostobject->discussion, $discussion2firstpostobject->id)->out(false),
                             'viewisolated' => $isolatedurlparent->out(false),
                             'viewparent' => null,
-                            'edit' => (new \moodle_url('/mod/forum/post.php', [
+                            'edit' => (new url('/mod/forum/post.php', [
                                 'edit' => $discussion2firstpostobject->id
                             ]))->out(false),
-                            'delete' => (new \moodle_url('/mod/forum/post.php', [
+                            'delete' => (new url('/mod/forum/post.php', [
                                 'delete' => $discussion2firstpostobject->id
                             ]))->out(false),
                             'split' => null,
-                            'reply' => (new \moodle_url('/mod/forum/post.php#mformforum', [
+                            'reply' => (new url('/mod/forum/post.php#mformforum', [
                                 'reply' => $discussion2firstpostobject->id
                             ]))->out(false),
                             'export' => null,
@@ -2931,7 +2936,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Add some files only in the attachment area.
         $filename = 'faketxt.txt';
         $filerecordinline = array(
-            'contextid' => \context_module::instance($forum->cmid)->id,
+            'contextid' => module::instance($forum->cmid)->id,
             'component' => 'mod_forum',
             'filearea'  => 'attachment',
             'itemid'    => $post->id,
@@ -3057,7 +3062,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $draftidinlineattach = file_get_unused_draft_itemid();
         $draftidattach = file_get_unused_draft_itemid();
         self::setUser($user);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = context_user::instance($user->id);
         $filepath = '/';
         $filearea = 'draft';
         $component = 'user';

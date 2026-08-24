@@ -51,6 +51,8 @@
  *
  * TODO: Finish phpdocs
  */
+use core\exception\moodle_exception;
+
 class progressive_parser {
 
     protected $xml_parser; // PHP's low level XML SAX parser

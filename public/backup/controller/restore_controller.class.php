@@ -30,6 +30,8 @@
  *
  * TODO: Finish phpdocs
  */
+use core\navigation\navigation_cache;
+
 class restore_controller extends base_controller {
 
     protected $tempdir;   // Directory under $CFG->backuptempdir awaiting restore

@@ -16,18 +16,18 @@
 
 namespace core_cohort\reportbuilder\local\systemreports;
 
-use context;
-use context_coursecat;
-use context_system;
+use core\context;
+use core\context\coursecat;
+use core\context\system;
 use core_reportbuilder\local\aggregation\count;
 use core_cohort\reportbuilder\local\entities\{cohort, cohort_member};
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\report\action;
 use core_reportbuilder\local\report\column;
-use html_writer;
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\output\html_writer;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 use core_reportbuilder\system_report;
 use stdClass;
 
@@ -75,7 +75,7 @@ class cohorts extends system_report {
         });
 
         // Check if report needs to show a specific category.
-        if (!$this->get_context() instanceof context_system || !$this->get_parameter('showall', false, PARAM_BOOL)) {
+        if (!$this->get_context() instanceof system || !$this->get_parameter('showall', false, PARAM_BOOL)) {
             $paramcontextid = database::generate_param_name();
             $this->add_base_condition_sql("{$entitymainalias}.contextid = :{$paramcontextid}", [
                 $paramcontextid => $this->get_context()->id,
@@ -111,12 +111,12 @@ class cohorts extends system_report {
         $entitymainalias = $cohortentity->get_table_alias('cohort');
 
         // Category column. An extra callback is appended in order to extend the current column formatting.
-        if ($this->get_context() instanceof context_system && $this->get_parameter('showall', false, PARAM_BOOL)) {
+        if ($this->get_context() instanceof system && $this->get_parameter('showall', false, PARAM_BOOL)) {
             $this->add_column_from_entity('cohort:context')
                 ->add_callback(static function(string $value, stdClass $cohort): string {
                     $context = context::instance_by_id($cohort->ctxid);
-                    if ($context instanceof context_coursecat) {
-                        return html_writer::link(new moodle_url('/cohort/index.php',
+                    if ($context instanceof coursecat) {
+                        return html_writer::link(new url('/cohort/index.php',
                             ['contextid' => $context->id]), $value);
                     }
 
@@ -191,7 +191,7 @@ class cohorts extends system_report {
      */
     protected function add_actions(): void {
 
-        $returnurl = (new moodle_url('/cohort/index.php', [
+        $returnurl = (new url('/cohort/index.php', [
             'id' => ':id',
             'contextid' => $this->get_context()->id,
             'showall' => $this->get_parameter('showall', false, PARAM_BOOL),
@@ -199,7 +199,7 @@ class cohorts extends system_report {
 
         // Hide action. It will be only shown if the property 'visible' is true and user has 'moodle/cohort:manage' capabillity.
         $this->add_action((new action(
-            new moodle_url('/cohort/edit.php', ['id' => ':id', 'sesskey' => sesskey(), 'hide' => 1, 'returnurl' => $returnurl]),
+            new url('/cohort/edit.php', ['id' => ':id', 'sesskey' => sesskey(), 'hide' => 1, 'returnurl' => $returnurl]),
             new pix_icon('t/show', '', 'core'),
             [],
             false,
@@ -211,7 +211,7 @@ class cohorts extends system_report {
 
         // Show action. It will be only shown if the property 'visible' is false and user has 'moodle/cohort:manage' capabillity.
         $this->add_action((new action(
-            new moodle_url('/cohort/edit.php', ['id' => ':id', 'sesskey' => sesskey(), 'show' => 1, 'returnurl' => $returnurl]),
+            new url('/cohort/edit.php', ['id' => ':id', 'sesskey' => sesskey(), 'show' => 1, 'returnurl' => $returnurl]),
             new pix_icon('t/hide', '', 'core'),
             [],
             false,
@@ -223,7 +223,7 @@ class cohorts extends system_report {
 
         // Edit action. It will be only shown if user has 'moodle/cohort:manage' capabillity.
         $this->add_action((new action(
-            new moodle_url('/cohort/edit.php', ['id' => ':id', 'returnurl' => $returnurl]),
+            new url('/cohort/edit.php', ['id' => ':id', 'returnurl' => $returnurl]),
             new pix_icon('t/edit', '', 'core'),
             [],
             false,
@@ -234,7 +234,7 @@ class cohorts extends system_report {
 
         // Delete action. It will be only shown if user has 'moodle/cohort:manage' capabillity.
         $this->add_action((new action(
-            new moodle_url('#'),
+            new url('#'),
             new pix_icon('t/delete', '', 'core'),
             ['class' => 'text-danger', 'data-action' => 'cohort-delete', 'data-cohort-id' => ':id', 'data-cohort-name' => ':name'],
             false,
@@ -245,7 +245,7 @@ class cohorts extends system_report {
 
         // Assign members to cohort action. It will be only shown if user has 'moodle/cohort:assign' capabillity.
         $this->add_action((new action(
-            new moodle_url('/cohort/assign.php', ['id' => ':id', 'returnurl' => $returnurl]),
+            new url('/cohort/assign.php', ['id' => ':id', 'returnurl' => $returnurl]),
             new pix_icon('i/users', '', 'core'),
             [],
             false,

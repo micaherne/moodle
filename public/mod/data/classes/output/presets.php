@@ -16,14 +16,15 @@
 
 namespace mod_data\output;
 
-use action_menu;
-use action_menu_link_secondary;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\user;
 use mod_data\manager;
 use mod_data\preset;
-use moodle_url;
-use templatable;
-use renderable;
-use renderer_base;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
 
 /**
@@ -58,7 +59,7 @@ class presets implements templatable, renderable {
      * @param moodle_url $formactionurl The action url for the form
      * @param bool $manage Whether the manage preset options should be displayed
      */
-    public function __construct(manager $manager, array $presets, moodle_url $formactionurl, bool $manage = false) {
+    public function __construct(manager $manager, array $presets, url $formactionurl, bool $manage = false) {
         $this->id = $manager->get_instance()->id;
         $this->cmid = $manager->get_coursemodule()->id;
         $this->presets = $presets;
@@ -98,14 +99,14 @@ class presets implements templatable, renderable {
                 $userfieldsapi = \core_user\fields::for_name();
                 $namefields = $userfieldsapi->get_sql('', false, '', '', false)->selects;
                 $fields = 'id, ' . $namefields;
-                $presetuser = \core_user::get_user($userid, $fields, MUST_EXIST);
+                $presetuser = user::get_user($userid, $fields, MUST_EXIST);
                 $username = fullname($presetuser, true);
                 $presetname = "{$presetname} ({$username})";
             }
             $actions = $this->get_preset_action_menu($output, $preset, $userid);
 
             $fullname = $preset->get_fullname();
-            $previewurl = new moodle_url(
+            $previewurl = new url(
                     '/mod/data/preset.php',
                     ['d' => $this->id, 'fullname' => $fullname, 'action' => 'preview']
             );
@@ -148,7 +149,7 @@ class presets implements templatable, renderable {
         $actionmenu->set_additional_classes('presets-actions');
         $canmanage = $preset->can_manage();
 
-        $usepreseturl = new moodle_url('/mod/data/preset.php', [
+        $usepreseturl = new url('/mod/data/preset.php', [
             'action' => 'usepreset',
             'cmid' => $this->cmid,
         ]);
@@ -160,7 +161,7 @@ class presets implements templatable, renderable {
         );
 
         // Attention: the id here is the cm->id, not d->id.
-        $previewpreseturl = new moodle_url('/mod/data/preset.php', [
+        $previewpreseturl = new url('/mod/data/preset.php', [
             'fullname' => $preset->get_fullname(),
             'action' => 'preview',
             'id' => $this->cmid,
@@ -174,7 +175,7 @@ class presets implements templatable, renderable {
         if (!$preset->isplugin) {
             // Edit.
             if ($canmanage) {
-                $editactionurl = new moodle_url('/mod/data/preset.php', [
+                $editactionurl = new url('/mod/data/preset.php', [
                     'action' => 'edit',
                     'd' => $this->id,
                 ]);
@@ -186,7 +187,7 @@ class presets implements templatable, renderable {
             }
 
             // Export.
-            $exporturl = new moodle_url('/mod/data/preset.php', [
+            $exporturl = new url('/mod/data/preset.php', [
                 'presetname' => $preset->name,
                 'action' => 'export',
                 'd' => $this->id,
@@ -200,7 +201,7 @@ class presets implements templatable, renderable {
             // Delete.
             if ($canmanage) {
 
-                $deleteactionurl = new moodle_url('/mod/data/preset.php', [
+                $deleteactionurl = new url('/mod/data/preset.php', [
                     'action' => 'delete',
                     'd' => $this->id,
                 ]);
@@ -223,12 +224,12 @@ class presets implements templatable, renderable {
      * @param array $otherattributes
      * @return void
      */
-    private function add_action_menu(action_menu &$actionmenu, string $actionlabel, moodle_url $actionurl,
+    private function add_action_menu(action_menu &$actionmenu, string $actionlabel, url $actionurl,
         array $otherattributes) {
         $attributes = [
             'data-dataid' => $this->id,
         ];
-        $actionmenu->add(new action_menu_link_secondary(
+        $actionmenu->add(new link_secondary(
             $actionurl,
             null,
             $actionlabel,

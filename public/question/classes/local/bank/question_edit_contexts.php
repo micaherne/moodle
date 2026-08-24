@@ -16,6 +16,9 @@
 
 namespace core_question\local\bank;
 
+use core\context;
+use core\exception\moodle_exception;
+
 /**
  * Tracks all the contexts related to the one we are currently editing questions and provides helper methods to check permissions.
  *
@@ -65,7 +68,7 @@ class question_edit_contexts {
      * Constructor
      * @param \context $thiscontext the current context.
      */
-    public function __construct(\context $thiscontext) {
+    public function __construct(context $thiscontext) {
         $this->allcontexts = [$thiscontext];
     }
 
@@ -193,7 +196,7 @@ class question_edit_contexts {
      */
     public function require_cap($cap) {
         if (!$this->have_cap($cap)) {
-            throw new \moodle_exception('nopermissions', '', '', $cap);
+            throw new moodle_exception('nopermissions', '', '', $cap);
         }
     }
 
@@ -205,7 +208,7 @@ class question_edit_contexts {
     public function require_one_cap($caps) {
         if (!$this->have_one_cap($caps)) {
             $capsstring = join(', ', $caps);
-            throw new \moodle_exception('nopermissions', '', '', $capsstring);
+            throw new moodle_exception('nopermissions', '', '', $capsstring);
         }
     }
 
@@ -216,7 +219,7 @@ class question_edit_contexts {
      */
     public function require_one_edit_tab_cap($tabname) {
         if (!$this->have_one_edit_tab_cap($tabname)) {
-            throw new \moodle_exception('nopermissions', '', '', 'access question edit tab '.$tabname);
+            throw new moodle_exception('nopermissions', '', '', 'access question edit tab '.$tabname);
         }
     }
 }

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace core_files\hook;
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Tests for before_file_created hook.

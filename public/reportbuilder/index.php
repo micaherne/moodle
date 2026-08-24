@@ -24,6 +24,7 @@
 
 declare(strict_types=1);
 
+use core\context\system;
 use core_reportbuilder\permission;
 use core_reportbuilder\system_report_factory;
 use core_reportbuilder\local\systemreports\reports_list;
@@ -39,7 +40,7 @@ $PAGE->requires->js_call_amd('core_reportbuilder/reports_list', 'init');
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('customreports', 'core_reportbuilder'));
 
-$report = system_report_factory::create(reports_list::class, context_system::instance());
+$report = system_report_factory::create(reports_list::class, system::instance());
 if (permission::can_create_report()) {
     $report->set_report_action(new report_action(
         get_string('newreport', 'core_reportbuilder'),

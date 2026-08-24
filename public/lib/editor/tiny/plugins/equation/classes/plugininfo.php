@@ -24,15 +24,15 @@
 
 namespace tiny_equation;
 
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 use editor_tiny\editor;
 use editor_tiny\plugin;
 use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_configuration;
 use editor_tiny\plugin_with_configuration_for_external;
 use editor_tiny\plugin_with_menuitems;
-use filter_manager;
+use core_filters\filter_manager;
 
 /**
  * Tiny equation plugin.
@@ -74,7 +74,7 @@ class plugininfo extends plugin implements
         if (isset($options['context'])) {
             $context = $options['context'];
         } else {
-            $context = context_system::instance();
+            $context = system::instance();
         }
 
         $libraries = [

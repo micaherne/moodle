@@ -31,6 +31,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+
 require_once('../../config.php');
 
 require_once($CFG->dirroot . '/mod/wiki/lib.php');
@@ -44,31 +47,31 @@ $compare = required_param('compare', PARAM_INT);
 $comparewith = required_param('comparewith', PARAM_INT);
 
 if (!$page = wiki_get_page($pageid)) {
-    throw new \moodle_exception('incorrectpageid', 'wiki');
+    throw new moodle_exception('incorrectpageid', 'wiki');
 }
 
 if (!$subwiki = wiki_get_subwiki($page->subwikiid)) {
-    throw new \moodle_exception('incorrectsubwikiid', 'wiki');
+    throw new moodle_exception('incorrectsubwikiid', 'wiki');
 }
 
 if (!$wiki = wiki_get_wiki($subwiki->wikiid)) {
-    throw new \moodle_exception('incorrectwikiid', 'wiki');
+    throw new moodle_exception('incorrectwikiid', 'wiki');
 }
 
 if (!$cm = get_coursemodule_from_instance('wiki', $wiki->id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
 if ($compare >= $comparewith) {
-    throw new \moodle_exception('cannotcomparenewerversion', 'wiki');
+    throw new moodle_exception('cannotcomparenewerversion', 'wiki');
 }
 
 require_course_login($course, true, $cm);
 
 if (!wiki_user_can_view($subwiki, $wiki)) {
-    throw new \moodle_exception('cannotviewpage', 'wiki');
+    throw new moodle_exception('cannotviewpage', 'wiki');
 }
 
 $wikipage = new page_wiki_diff($wiki, $subwiki, $cm, 'modulepage');
@@ -78,7 +81,7 @@ $wikipage->set_comparison($compare, $comparewith);
 
 $event = \mod_wiki\event\page_diff_viewed::create(
         array(
-            'context' => context_module::instance($cm->id),
+            'context' => module::instance($cm->id),
             'objectid' => $pageid,
             'other' => array(
                 'comparewith' => $comparewith,

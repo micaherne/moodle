@@ -16,6 +16,7 @@
 
 namespace core\router\scope;
 
+use core\exception\coding_exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -42,7 +43,7 @@ final class identifier_attribute_test extends \advanced_testcase {
         ?string $expectedexception,
     ): void {
         if ($expectedexception !== null) {
-            $this->expectException(\coding_exception::class);
+            $this->expectException(coding_exception::class);
             $this->expectExceptionMessage($expectedexception);
         }
 

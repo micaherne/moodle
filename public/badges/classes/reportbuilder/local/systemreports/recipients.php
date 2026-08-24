@@ -21,9 +21,9 @@ namespace core_badges\reportbuilder\local\systemreports;
 use core_badges\reportbuilder\local\entities\badge_issued;
 use core_reportbuilder\local\report\action;
 use core_reportbuilder\system_report;
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 
 /**
  * Badge recipients system report class implementation
@@ -113,7 +113,7 @@ class recipients extends system_report {
      */
     protected function add_actions(): void {
         $this->add_action((new action(
-            new moodle_url('/badges/badge.php', [
+            new url('/badges/badge.php', [
                 'hash' => ':uniquehash',
             ]),
             new pix_icon('i/search', '', 'core'),

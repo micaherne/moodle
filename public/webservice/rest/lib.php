@@ -33,6 +33,8 @@
  * @copyright  2010 Jerome Mouneyrac
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+
 class webservice_rest_client {
 
     /** @var moodle_url the REST server url */
@@ -52,7 +54,7 @@ class webservice_rest_client {
      * @param string $format returned value format: xml or json
      */
     public function __construct($serverurl, $token, $format = 'xml') {
-        $this->serverurl = new moodle_url($serverurl);
+        $this->serverurl = new url($serverurl);
         $this->token = $token;
         $this->format = $format;
     }

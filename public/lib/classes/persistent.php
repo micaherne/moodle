@@ -16,9 +16,9 @@
 
 namespace core;
 
-use coding_exception;
-use invalid_parameter_exception;
-use lang_string;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\lang_string;
 use ReflectionMethod;
 use stdClass;
 

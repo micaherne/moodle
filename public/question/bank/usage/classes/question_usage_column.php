@@ -16,6 +16,8 @@
 
 namespace qbank_usage;
 
+use core\output\help_icon;
+use core\output\html_writer;
 use core_question\local\bank\column_base;
 
 /**
@@ -49,8 +51,8 @@ class question_usage_column extends column_base {
         return get_string('questionusage', 'qbank_usage');
     }
 
-    public function help_icon(): ?\help_icon {
-        return new \help_icon('questionusage', 'qbank_usage');
+    public function help_icon(): ?help_icon {
+        return new help_icon('questionusage', 'qbank_usage');
     }
 
     protected function display_content($question, $rowclasses): void {
@@ -66,7 +68,7 @@ class question_usage_column extends column_base {
                 'data-contextid' => $question->contextid,
             ];
         }
-        echo \html_writer::tag('a', $usagecount, $attributes);
+        echo html_writer::tag('a', $usagecount, $attributes);
     }
 
     public function get_extra_classes(): array {

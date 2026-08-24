@@ -24,18 +24,26 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configmulticheckbox;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
 global $ADMIN;
 
 if ($hassiteconfig) {
 
-    $settings->add(new admin_setting_heading(
+    $settings->add(new heading(
         'quizaccess_seb/supportedversions',
         '',
         $OUTPUT->notification(get_string('setting:supportedversions', 'quizaccess_seb'), 'warning')));
 
-    $settings->add(new admin_setting_configcheckbox('quizaccess_seb/autoreconfigureseb',
+    $settings->add(new configcheckbox('quizaccess_seb/autoreconfigureseb',
         get_string('setting:autoreconfigureseb', 'quizaccess_seb'),
         get_string('setting:autoreconfigureseb_desc', 'quizaccess_seb'),
         '1'));
@@ -44,39 +52,39 @@ if ($hassiteconfig) {
         'seb' => get_string('setting:showseblink', 'quizaccess_seb'),
         'http' => get_string('setting:showhttplink', 'quizaccess_seb')
     ];
-    $settings->add(new admin_setting_configmulticheckbox('quizaccess_seb/showseblinks',
+    $settings->add(new configmulticheckbox('quizaccess_seb/showseblinks',
         get_string('setting:showseblinks', 'quizaccess_seb'),
         get_string('setting:showseblinks_desc', 'quizaccess_seb'),
         $links, $links));
 
-    $settings->add(new admin_setting_configtext('quizaccess_seb/downloadlink',
+    $settings->add(new configtext('quizaccess_seb/downloadlink',
         get_string('setting:downloadlink', 'quizaccess_seb'),
         get_string('setting:downloadlink_desc', 'quizaccess_seb'),
         'https://safeexambrowser.org/download_en.html',
         PARAM_URL));
 
-    $settings->add(new admin_setting_configcheckbox('quizaccess_seb/quizpasswordrequired',
+    $settings->add(new configcheckbox('quizaccess_seb/quizpasswordrequired',
         get_string('setting:quizpasswordrequired', 'quizaccess_seb'),
         get_string('setting:quizpasswordrequired_desc', 'quizaccess_seb'),
         '0'));
 
-    $settings->add(new admin_setting_configcheckbox('quizaccess_seb/displayblocksbeforestart',
+    $settings->add(new configcheckbox('quizaccess_seb/displayblocksbeforestart',
         get_string('setting:displayblocksbeforestart', 'quizaccess_seb'),
         get_string('setting:displayblocksbeforestart_desc', 'quizaccess_seb'),
         '0'));
 
-    $settings->add(new admin_setting_configcheckbox('quizaccess_seb/displayblockswhenfinished',
+    $settings->add(new configcheckbox('quizaccess_seb/displayblockswhenfinished',
         get_string('setting:displayblockswhenfinished', 'quizaccess_seb'),
         get_string('setting:displayblockswhenfinished_desc', 'quizaccess_seb'),
         '1'));
 }
 
-if (has_capability('quizaccess/seb:managetemplates', context_system::instance())) {
+if (has_capability('quizaccess/seb:managetemplates', system::instance())) {
     $ADMIN->add('modsettingsquizcat',
-        new admin_externalpage(
+        new externalpage(
             'quizaccess_seb/template',
             get_string('manage_templates', 'quizaccess_seb'),
-            new moodle_url('/mod/quiz/accessrule/seb/template.php'),
+            new url('/mod/quiz/accessrule/seb/template.php'),
             'quizaccess/seb:managetemplates'
         )
     );

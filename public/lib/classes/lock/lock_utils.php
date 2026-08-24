@@ -16,6 +16,7 @@
 
 namespace core\lock;
 
+use core\exception\invalid_parameter_exception;
 use core\progress\base;
 
 /**
@@ -53,11 +54,11 @@ class lock_utils {
         int $maxlifetime = DAYSECS,
     ) {
         if ($progressupdatetime < 1) {
-            throw new \invalid_parameter_exception('Progress bar cannot update more than once per second. ' .
+            throw new invalid_parameter_exception('Progress bar cannot update more than once per second. ' .
                 '$progressupdate time must be at least 1.');
         }
         if ($progressupdatetime > $timeout) {
-            throw new \invalid_parameter_exception('$timeout must be greater than $progressupdatetime.');
+            throw new invalid_parameter_exception('$timeout must be greater than $progressupdatetime.');
         }
         $lockattempts = 0;
         $maxattempts = $timeout / $progressupdatetime;

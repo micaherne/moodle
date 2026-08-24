@@ -16,6 +16,8 @@
 
 namespace mod_quiz\external;
 
+use core\exception\invalid_parameter_exception;
+
 /**
  * Tests for override webservices
  *
@@ -102,7 +104,7 @@ final class override_test extends \core_external\tests\externallib_testcase {
                     'id' => ':existingid',
                     'timeopen' => -1,
                 ],
-                'expectedexception' => \invalid_parameter_exception::class,
+                'expectedexception' => invalid_parameter_exception::class,
             ],
             'good update' => [
                 'data' => [
@@ -114,7 +116,7 @@ final class override_test extends \core_external\tests\externallib_testcase {
                     'id' => ':existingid',
                     'timeopen' => -1,
                 ],
-                'expectedexception' => \invalid_parameter_exception::class,
+                'expectedexception' => invalid_parameter_exception::class,
             ],
         ];
     }
@@ -177,7 +179,7 @@ final class override_test extends \core_external\tests\externallib_testcase {
             ],
             'delete override that does not exist' => [
                 'id' => -1,
-                'expectedexception' => \invalid_parameter_exception::class,
+                'expectedexception' => invalid_parameter_exception::class,
             ],
         ];
     }
@@ -265,7 +267,7 @@ final class override_test extends \core_external\tests\externallib_testcase {
                 ],
                 'expectedreason' => null,
                 'expectedformat' => FORMAT_HTML,
-                'expectedexception' => \invalid_parameter_exception::class,
+                'expectedexception' => invalid_parameter_exception::class,
             ],
             'create with format only' => [
                 'data' => [
@@ -273,7 +275,7 @@ final class override_test extends \core_external\tests\externallib_testcase {
                 ],
                 'expectedreason' => null,
                 'expectedformat' => FORMAT_MOODLE,
-                'expectedexception' => \invalid_parameter_exception::class,
+                'expectedexception' => invalid_parameter_exception::class,
             ],
             'create with null reason' => [
                 'data' => [
@@ -281,13 +283,13 @@ final class override_test extends \core_external\tests\externallib_testcase {
                 ],
                 'expectedreason' => null,
                 'expectedformat' => FORMAT_HTML,
-                'expectedexception' => \invalid_parameter_exception::class,
+                'expectedexception' => invalid_parameter_exception::class,
             ],
             'create with no reason or format' => [
                 'data' => [],
                 'expectedreason' => null,
                 'expectedformat' => FORMAT_HTML,
-                'expectedexception' => \invalid_parameter_exception::class,
+                'expectedexception' => invalid_parameter_exception::class,
             ],
         ];
     }
@@ -405,7 +407,7 @@ final class override_test extends \core_external\tests\externallib_testcase {
                 ],
                 'expectedreason' => null,
                 'expectedformat' => null,
-                'expectedexception' => \invalid_parameter_exception::class,
+                'expectedexception' => invalid_parameter_exception::class,
             ],
             'update no changes' => [
                 'initialreason' => 'Initial reason',
@@ -413,7 +415,7 @@ final class override_test extends \core_external\tests\externallib_testcase {
                 'data' => [],
                 'expectedreason' => null,
                 'expectedformat' => null,
-                'expectedexception' => \invalid_parameter_exception::class,
+                'expectedexception' => invalid_parameter_exception::class,
             ],
         ];
     }

@@ -24,12 +24,12 @@
 namespace core_group\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
-use context_course;
-use moodle_url;
+use core\output\templatable;
+use core\context\course;
+use core\url;
 
 /**
  * Group details page class.
@@ -61,7 +61,7 @@ class group_details implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
 
         if (!empty($this->group->description) || (!empty($this->group->picture))) {
-            $context = context_course::instance($this->group->courseid);
+            $context = course::instance($this->group->courseid);
             $description = file_rewrite_pluginfile_urls($this->group->description,
                                                         'pluginfile.php',
                                                         $context->id,
@@ -81,7 +81,7 @@ class group_details implements renderable, templatable {
             $data->description = format_text($description, $descriptionformat, $options);
 
             if (has_capability('moodle/course:managegroups', $context)) {
-                $url = new moodle_url('/group/group.php', ['id' => $this->group->id, 'courseid' => $this->group->courseid]);
+                $url = new url('/group/group.php', ['id' => $this->group->id, 'courseid' => $this->group->courseid]);
                 $data->editurl = $url->out(false);
             }
 

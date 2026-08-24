@@ -16,6 +16,8 @@
 
 namespace core_external;
 
+use core\exception\moodle_exception;
+
 /**
  * Exception indicating user is not allowed to use external function in the current context.
  *
@@ -23,7 +25,7 @@ namespace core_external;
  * @copyright  2009 Petr Skodak
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restricted_context_exception extends \moodle_exception {
+class restricted_context_exception extends moodle_exception {
     /**
      * Constructor
      */

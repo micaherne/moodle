@@ -16,8 +16,10 @@
 
 namespace mod_data\output;
 
-use templatable;
-use renderable;
+use core\output\action_menu;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Renderable class for the action bar elements in the field pages in the database activity.
@@ -43,7 +45,7 @@ class fields_action_bar implements templatable, renderable {
      */
     public function __construct(int $id, $unused1 = null, $unused2 = null,
             $unused3 = null, $unused4 = null,
-            ?\action_menu $unused5 = null) {
+            ?action_menu $unused5 = null) {
 
         if ($unused1 !== null || $unused2 !== null || $unused3 !== null || $unused4 !== null || $unused5 !== null) {
             debugging('Deprecated argument passed to fields_action_bar constructor', DEBUG_DEVELOPER);
@@ -58,7 +60,7 @@ class fields_action_bar implements templatable, renderable {
      * @param \renderer_base $output The renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
 
         $data = [
             'd' => $this->id,

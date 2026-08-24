@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
 use core_external\external_api;
 use core_external\external_description;
 use core_external\external_files;

@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**#@+
@@ -298,7 +300,7 @@ class WikiToMarkdown {
     $line = preg_replace("/ ([a-zA-Z]+):([0-9]+)\(([^)]+)\)/i",
        " [\\3](".$CFG->wwwroot."/mod/\\1/view.php?id=\\2) ", $line );
 
-    $coursefileurl = array(moodle_url::make_legacyfile_url($this->courseid, null));
+    $coursefileurl = array(url::make_legacyfile_url($this->courseid, null));
 
     // Replace picture resource link
     $line = preg_replace("#/([a-zA-Z0-9./_-]+)(png|gif|jpg)\(([^)]+)\)#i",

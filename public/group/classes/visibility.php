@@ -25,6 +25,9 @@
 
 namespace core_group;
 
+use core\context\course;
+use core_cache\cache;
+
 /**
  * Group visibility methods.
  */
@@ -38,10 +41,10 @@ class visibility {
      * @return void
      * @throws \dml_exception
      */
-    public static function update_hiddengroups_cache(int $courseid, ?\cache $cache = null): void {
+    public static function update_hiddengroups_cache(int $courseid, ?cache $cache = null): void {
         global $DB;
         if (!$cache) {
-            $cache = \cache::make('core', 'coursehiddengroups');
+            $cache = cache::make('core', 'coursehiddengroups');
         }
         $hiddengroups = $DB->count_records_select('groups', 'courseid = ? AND visibility != ?',
                 [$courseid, GROUPS_VISIBILITY_ALL]);
@@ -60,7 +63,7 @@ class visibility {
      * @throws \dml_exception
      */
     public static function course_has_hidden_groups(int $courseid): bool {
-        $cache = \cache::make('core', 'coursehiddengroups');
+        $cache = cache::make('core', 'coursehiddengroups');
         $hiddengroups = $cache->get($courseid);
         if ($hiddengroups === false) {
             self::update_hiddengroups_cache($courseid, $cache);
@@ -82,7 +85,7 @@ class visibility {
      * @return bool
      */
     public static function can_view_all_groups(int $courseid): bool {
-        $viewhidden = has_capability('moodle/course:viewhiddengroups', \context_course::instance($courseid));
+        $viewhidden = has_capability('moodle/course:viewhiddengroups', course::instance($courseid));
         $hashidden = self::course_has_hidden_groups($courseid);
         return $viewhidden || !$hashidden;
     }

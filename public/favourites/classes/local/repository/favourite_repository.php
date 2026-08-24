@@ -21,6 +21,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace core_favourites\local\repository;
+use core\exception\moodle_exception;
 use \core_favourites\local\entity\favourite;
 
 defined('MOODLE_INTERNAL') || die();
@@ -104,12 +105,12 @@ class favourite_repository implements favourite_repository_interface {
         });
 
         if ($missingfields = array_keys(array_diff_key($requiredfields, $favourite))) {
-            throw new \moodle_exception("Missing object property(s) '" . join(', ', $missingfields) . "'.");
+            throw new moodle_exception("Missing object property(s) '" . join(', ', $missingfields) . "'.");
         }
 
         // If the record contains fields we don't allow, throw an exception.
         if ($unsupportedfields = array_keys(array_diff_key($favourite, $allowedfields))) {
-            throw new \moodle_exception("Unexpected object property(s) '" . join(', ', $unsupportedfields) . "'.");
+            throw new moodle_exception("Unexpected object property(s) '" . join(', ', $unsupportedfields) . "'.");
         }
     }
 

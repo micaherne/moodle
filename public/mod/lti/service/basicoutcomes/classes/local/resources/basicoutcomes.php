@@ -24,6 +24,8 @@
 
 namespace ltiservice_basicoutcomes\local\resources;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -58,7 +60,7 @@ class basicoutcomes extends \mod_lti\local\ltiservice\resource_base {
      */
     public function get_endpoint() {
 
-        $url = new \moodle_url('/mod/lti/service.php');
+        $url = new url('/mod/lti/service.php');
         return $url->out(false);
 
     }

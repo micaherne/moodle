@@ -24,6 +24,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\exception\require_login_exception;
+use core\url;
+
 require('../config.php');
 require_once('lib.php');
 
@@ -65,17 +71,17 @@ if ($ispopup) {
 }
 
 $PAGE->set_url('/iplookup/index.php', $urlparams);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 $info = array($ip);
 $note = array();
 
 if (cleanremoteaddr($ip) === false) {
-    throw new \moodle_exception('invalidipformat', 'error');
+    throw new moodle_exception('invalidipformat', 'error');
 }
 
 if (!ip_is_public($ip)) {
-    throw new \moodle_exception('iplookupprivate', 'error');
+    throw new moodle_exception('iplookupprivate', 'error');
 }
 
 $info = iplookup_find_location($ip);
@@ -88,7 +94,7 @@ if ($info['error']) {
 if ($user) {
     if ($user = $DB->get_record('user', array('id'=>$user, 'deleted'=>0))) {
         // note: better not show full names to everybody
-        if (has_capability('moodle/user:viewdetails', context_user::instance($user->id))) {
+        if (has_capability('moodle/user:viewdetails', user::instance($user->id))) {
             array_unshift($info['title'], fullname($user));
         }
     }
@@ -133,7 +139,7 @@ if (empty($CFG->googlemapkey3)) { // No Google API key is set, we use OSM.
 
 
 } else { // Google API key is set, then use Google Maps.
-    $PAGE->requires->js(new moodle_url(
+    $PAGE->requires->js(new url(
         'https://maps.googleapis.com/maps/api/js',
         [
             'key' => $CFG->googlemapkey3,

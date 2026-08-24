@@ -16,6 +16,8 @@
 
 namespace core_question;
 
+use core\context\module;
+
 /**
  * Unit test for the cleanup_questions_without_categories_task class.
  *
@@ -35,7 +37,7 @@ final class cleanup_questions_without_categories_task_test extends \advanced_tes
 
         $course = $this->getDataGenerator()->create_course();
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $topcategory = question_get_top_category($context->id, true);
         $defaultcategory = question_get_default_category($context->id);

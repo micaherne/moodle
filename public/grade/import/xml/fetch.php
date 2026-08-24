@@ -15,21 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\exception\moodle_exception;
+
 define('NO_MOODLE_COOKIES', true); // session not used here
 require_once '../../../config.php';
 
 $id = required_param('id', PARAM_INT); // course id
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_user_key_login('grade/import', $id); // we want different keys for each course
 
 if (empty($CFG->gradepublishing)) {
-    throw new \moodle_exception('gradepubdisable');
+    throw new moodle_exception('gradepubdisable');
 }
 
-$context = context_course::instance($id);
+$context = course::instance($id);
 require_capability('gradeimport/xml:publish', $context);
 
 // use the same page parameters as import.php and append &key=sdhakjsahdksahdkjsahksadjksahdkjsadhksa

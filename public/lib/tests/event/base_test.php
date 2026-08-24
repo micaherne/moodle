@@ -16,6 +16,13 @@
 
 namespace core\event;
 
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/..//fixtures/event_fixtures.php');
@@ -35,7 +42,7 @@ final class base_test extends \advanced_testcase {
     public function test_event_properties(): void {
         global $USER;
 
-        $system = \context_system::instance();
+        $system = system::instance();
         $event = \core_tests\event\unittest_executed::create(array('context'=>$system, 'objectid'=>5, 'other'=>array('sample'=>null, 'xx'=>10)));
 
         $this->assertSame('\core_tests\event\unittest_executed', $event->eventname);
@@ -68,15 +75,15 @@ final class base_test extends \advanced_testcase {
         try {
             $event->courseid = 2;
             $this->fail('Exception expected on event modification');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
 
         try {
             $event->xxxx = 1;
             $this->fail('Exception expected on event modification');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
 
         $event2 = \core_tests\event\unittest_executed::create(array('contextid'=>$system->id, 'objectid'=>5, 'anonymous'=>1, 'other'=>array('sample'=>null, 'xx'=>10)));
@@ -93,7 +100,7 @@ final class base_test extends \advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $forum = $this->getDataGenerator()->create_module('forum', array('course' => $course->id));
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
         $event = \core_tests\event\unittest_executed::create(array('context' => $context, 'objectid' => 5));
 
         // Check guessed course ID, and default properties.
@@ -108,7 +115,7 @@ final class base_test extends \advanced_testcase {
         $this->assertNull($event->relateduserid);
 
         $user = $this->getDataGenerator()->create_user();
-        $context = \context_user::instance($user->id);
+        $context = user::instance($user->id);
         $event = \core_tests\event\unittest_executed::create(array('contextid' => $context->id, 'objectid' => 5));
 
         // Check guessing on contextid, and user context level.
@@ -305,7 +312,7 @@ final class base_test extends \advanced_testcase {
         \core\event\manager::phpunit_replace_observers($observers);
         \core_tests\event\unittest_observer::reset();
 
-        $event1 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
+        $event1 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
         $event1->nest = 1;
         $this->assertFalse($event1->is_triggered());
         $this->assertFalse($event1->is_dispatched());
@@ -315,7 +322,7 @@ final class base_test extends \advanced_testcase {
         $this->assertTrue($event1->is_dispatched());
         $this->assertFalse($event1->is_restored());
 
-        $event1 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
+        $event1 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
         $event1->trigger();
 
         $this->assertSame(
@@ -325,13 +332,13 @@ final class base_test extends \advanced_testcase {
 
     public function test_event_sink(): void {
         $sink = $this->redirectEvents();
-        $event1 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
+        $event1 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
         $event1->trigger();
         $this->assertSame(1, $sink->count());
         $retult = $sink->get_events();
         $this->assertSame($event1, $retult[0]);
 
-        $event2 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
+        $event2 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
         $event2->trigger();
         $this->assertSame(2, $sink->count());
         $retult = $sink->get_events();
@@ -342,14 +349,14 @@ final class base_test extends \advanced_testcase {
         $this->assertSame(0, $sink->count());
         $this->assertSame(array(), $sink->get_events());
 
-        $event3 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>3, 'xx'=>10)));
+        $event3 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>3, 'xx'=>10)));
         $event3->trigger();
         $this->assertSame(1, $sink->count());
         $retult = $sink->get_events();
         $this->assertSame($event3, $retult[0]);
 
         $sink->close();
-        $event4 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>4, 'xx'=>10)));
+        $event4 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>4, 'xx'=>10)));
         $event4->trigger();
         $this->assertSame(1, $sink->count());
         $retult = $sink->get_events();
@@ -374,11 +381,11 @@ final class base_test extends \advanced_testcase {
         \core\event\manager::phpunit_replace_observers($observers);
         \core_tests\event\unittest_observer::reset();
 
-        $event1 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
+        $event1 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
         $event1->trigger();
         $this->assertDebuggingCalled();
 
-        $event1 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
+        $event1 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
         $event1->trigger();
         $this->assertDebuggingCalled();
 
@@ -410,9 +417,9 @@ final class base_test extends \advanced_testcase {
         \core\event\manager::phpunit_replace_observers($observers);
         \core_tests\event\unittest_observer::reset();
 
-        $event1 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
+        $event1 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
         $event1->trigger();
-        $event2 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
+        $event2 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
         $event2->trigger();
 
         $this->assertSame(
@@ -426,9 +433,9 @@ final class base_test extends \advanced_testcase {
 
         $trans = $DB->start_delegated_transaction();
 
-        $event1 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
+        $event1 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
         $event1->trigger();
-        $event2 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
+        $event2 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
         $event2->trigger();
 
         $this->assertSame(
@@ -444,16 +451,16 @@ final class base_test extends \advanced_testcase {
         \core\event\manager::phpunit_replace_observers($observers);
         \core_tests\event\unittest_observer::reset();
 
-        $event1 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
+        $event1 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
         $event1->trigger();
         $trans = $DB->start_delegated_transaction();
-        $event2 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
+        $event2 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>2, 'xx'=>10)));
         $event2->trigger();
         try {
-            $trans->rollback(new \moodle_exception('xxx'));
+            $trans->rollback(new moodle_exception('xxx'));
             $this->fail('Expecting exception');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\moodle_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(moodle_exception::class, $e);
         }
 
         $this->assertSame(
@@ -480,18 +487,18 @@ final class base_test extends \advanced_testcase {
 
         $this->assertCount(0, \core_tests\event\unittest_observer::$event);
 
-        \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
+        \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
         $this->assertCount(1, \core_tests\event\unittest_observer::$event);
         \core_tests\event\unittest_observer::reset();
 
         $transaction1 = $DB->start_delegated_transaction();
 
-        \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
+        \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
         $this->assertCount(0, \core_tests\event\unittest_observer::$event);
 
         $transaction2 = $DB->start_delegated_transaction();
 
-        \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
+        \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
         $this->assertCount(0, \core_tests\event\unittest_observer::$event);
 
         try {
@@ -510,7 +517,7 @@ final class base_test extends \advanced_testcase {
 
         $this->assertFalse($DB->is_transaction_started());
 
-        \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
+        \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
         $this->assertCount(1, \core_tests\event\unittest_observer::$event);
     }
 
@@ -533,18 +540,18 @@ final class base_test extends \advanced_testcase {
 
         $this->assertCount(0, \core_tests\event\unittest_observer::$event);
 
-        \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
+        \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
         $this->assertCount(1, \core_tests\event\unittest_observer::$event);
         \core_tests\event\unittest_observer::reset();
 
         $transaction1 = $DB->start_delegated_transaction();
 
-        \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
+        \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
         $this->assertCount(0, \core_tests\event\unittest_observer::$event);
 
         $transaction2 = $DB->start_delegated_transaction();
 
-        \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
+        \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
         $this->assertCount(0, \core_tests\event\unittest_observer::$event);
 
         $DB->force_transaction_rollback();
@@ -552,7 +559,7 @@ final class base_test extends \advanced_testcase {
 
         $this->assertFalse($DB->is_transaction_started());
 
-        \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
+        \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)))->trigger();
         $this->assertCount(1, \core_tests\event\unittest_observer::$event);
     }
 
@@ -574,7 +581,7 @@ final class base_test extends \advanced_testcase {
     }
 
     public function test_restore_event(): void {
-        $event1 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
+        $event1 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
         $data1 = $event1->get_data();
 
         $event2 = \core\event\base::restore($data1, array('origin'=>'clid'));
@@ -610,13 +617,13 @@ final class base_test extends \advanced_testcase {
     public function test_trigger_problems(): void {
         $this->resetAfterTest(true);
 
-        $event = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>5, 'xx'=>10)));
+        $event = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>5, 'xx'=>10)));
         $event->trigger();
         try {
             $event->trigger();
             $this->fail('Exception expected on double trigger');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
 
         $data = $event->get_data();
@@ -627,16 +634,16 @@ final class base_test extends \advanced_testcase {
         try {
             $restored->trigger();
             $this->fail('Exception expected on triggering of restored event');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
 
-        $event = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>5, 'xx'=>10)));
+        $event = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>5, 'xx'=>10)));
         try {
             \core\event\manager::dispatch($event);
             $this->fail('Exception expected on manual event dispatching');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
     }
 
@@ -646,55 +653,55 @@ final class base_test extends \advanced_testcase {
         try {
             $event = \core_tests\event\unittest_executed::create(array('other'=>array('sample'=>5, 'xx'=>10)));
             $this->fail('Exception expected when context and contextid missing');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
 
-        $event = \core_tests\event\bad_event1::create(array('context'=>\context_system::instance()));
+        $event = \core_tests\event\bad_event1::create(array('context'=>system::instance()));
         try {
             $event->trigger();
             $this->fail('Exception expected when $data not valid');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
 
-        $event = \core_tests\event\bad_event2::create(array('context'=>\context_system::instance()));
+        $event = \core_tests\event\bad_event2::create(array('context'=>system::instance()));
         try {
             $event->trigger();
             $this->fail('Exception expected when $data not valid');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
 
-        $event = \core_tests\event\bad_event2b::create(array('context'=>\context_system::instance()));
+        $event = \core_tests\event\bad_event2b::create(array('context'=>system::instance()));
         @$event->trigger();
         $this->assertDebuggingCalled();
 
-        $event = \core_tests\event\bad_event3::create(array('context'=>\context_system::instance()));
+        $event = \core_tests\event\bad_event3::create(array('context'=>system::instance()));
         @$event->trigger();
         $this->assertDebuggingCalled();
 
-        $event = \core_tests\event\bad_event4::create(array('context'=>\context_system::instance()));
+        $event = \core_tests\event\bad_event4::create(array('context'=>system::instance()));
         @$event->trigger();
         $this->assertDebuggingCalled();
 
-        $event = \core_tests\event\bad_event5::create(array('context'=>\context_system::instance()));
+        $event = \core_tests\event\bad_event5::create(array('context'=>system::instance()));
         @$event->trigger();
         $this->assertDebuggingCalled();
 
-        $event = \core_tests\event\bad_event6::create(array('objectid'=>1, 'context'=>\context_system::instance()));
+        $event = \core_tests\event\bad_event6::create(array('objectid'=>1, 'context'=>system::instance()));
         $event->trigger();
         $this->assertDebuggingCalled('Unknown table specified in objecttable field');
 
-        $event = \core_tests\event\bad_event7::create(array('objectid'=>1, 'context'=>\context_system::instance()));
+        $event = \core_tests\event\bad_event7::create(array('objectid'=>1, 'context'=>system::instance()));
         try {
             $event->trigger();
             $this->fail('Exception expected when $data contains objectid but objecttable not specified');
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
 
-        $event = \core_tests\event\bad_event8::create(array('context'=>\context_system::instance()));
+        $event = \core_tests\event\bad_event8::create(array('context'=>system::instance()));
         $event->trigger();
         $this->assertDebuggingCalled('Event property objectid must be set when objecttable is defined');
     }
@@ -702,25 +709,25 @@ final class base_test extends \advanced_testcase {
     public function test_problematic_events(): void {
         $this->resetAfterTest(true);
 
-        $event1 = \core_tests\event\problematic_event1::create(array('context'=>\context_system::instance()));
+        $event1 = \core_tests\event\problematic_event1::create(array('context'=>system::instance()));
         $this->assertDebuggingNotCalled();
         $this->assertNull($event1->xxx);
         $this->assertDebuggingCalled();
 
-        $event2 = \core_tests\event\problematic_event1::create(array('xxx'=>0, 'context'=>\context_system::instance()));
+        $event2 = \core_tests\event\problematic_event1::create(array('xxx'=>0, 'context'=>system::instance()));
         $this->assertDebuggingCalled();
 
         set_debugging(DEBUG_NONE);
-        $event3 = \core_tests\event\problematic_event1::create(array('xxx'=>0, 'context'=>\context_system::instance()));
+        $event3 = \core_tests\event\problematic_event1::create(array('xxx'=>0, 'context'=>system::instance()));
         $this->assertDebuggingNotCalled();
         set_debugging(DEBUG_DEVELOPER);
 
-        $event4 = \core_tests\event\problematic_event1::create(array('context'=>\context_system::instance(), 'other'=>array('a'=>1)));
+        $event4 = \core_tests\event\problematic_event1::create(array('context'=>system::instance(), 'other'=>array('a'=>1)));
         $event4->trigger();
         $this->assertDebuggingNotCalled();
 
         // Check the invalid content that cannot be converted to JSON will trigger debugging messages.
-        $event5 = \core_tests\event\problematic_event1::create(array('context' => \context_system::instance(), 'other' => [
+        $event5 = \core_tests\event\problematic_event1::create(array('context' => system::instance(), 'other' => [
             'a' => NAN
         ]));
         $this->assertDebuggingNotCalled();
@@ -728,20 +735,20 @@ final class base_test extends \advanced_testcase {
         $this->assertDebuggingCalled();
 
         // Check that moodle_url object does not trigger debugging messages.
-        $url = new \moodle_url('/admin/');
-        $event6 = \core_tests\event\problematic_event1::create(array('context'=>\context_system::instance(), 'other'=>array('a'=>$url)));
+        $url = new url('/admin/');
+        $event6 = \core_tests\event\problematic_event1::create(array('context'=>system::instance(), 'other'=>array('a'=>$url)));
         $event6->trigger();
         $this->assertDebuggingNotCalled();
 
         // Check that whole float numbers do not trigger debugging messages.
-        $event7 = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(),
+        $event7 = \core_tests\event\unittest_executed::create(array('context'=>system::instance(),
             'other' => array('wholenumber' => 90.0000, 'numberwithdecimals' => 54.7656, 'sample' => 1)));
         $event7->trigger();
         $this->assertDebuggingNotCalled();
 
         $event = \core_tests\event\problematic_event2::create(array());
         $this->assertDebuggingNotCalled();
-        $event = \core_tests\event\problematic_event2::create(array('context'=>\context_system::instance()));
+        $event = \core_tests\event\problematic_event2::create(array('context'=>system::instance()));
         $this->assertDebuggingCalled();
 
         $event = \core_tests\event\problematic_event3::create(array('other'=>1));
@@ -755,7 +762,7 @@ final class base_test extends \advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        $event = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
+        $event = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
         $course1 = $DB->get_record('course', array('id'=>1));
         $this->assertNotEmpty($course1);
 
@@ -774,16 +781,16 @@ final class base_test extends \advanced_testcase {
         try {
             $event->add_record_snapshot('course', $course1);
             $this->fail('Updating of snapshots after trigger is not ok');;
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
 
         $event2 = \core_tests\event\unittest_executed::restore($event->get_data(), array());
         try {
             $event2->get_record_snapshot('course', $course1->id);
             $this->fail('Reading of snapshots from restored events is not ok');;
-        } catch (\moodle_exception $e) {
-            $this->assertInstanceOf(\coding_exception::class, $e);
+        } catch (moodle_exception $e) {
+            $this->assertInstanceOf(coding_exception::class, $e);
         }
     }
 
@@ -793,7 +800,7 @@ final class base_test extends \advanced_testcase {
     }
 
     public function test_iteration(): void {
-        $event = \core_tests\event\unittest_executed::create(array('context'=>\context_system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
+        $event = \core_tests\event\unittest_executed::create(array('context'=>system::instance(), 'other'=>array('sample'=>1, 'xx'=>10)));
 
         $data = array();
         foreach ($event as $k => $v) {
@@ -892,7 +899,7 @@ and nothing else.";
 
         $course  = $this->getDataGenerator()->create_course();
         $feed    = $this->getDataGenerator()->create_module('feedback', ['course' => $course->id]);
-        $context = \context_module::instance($feed->cmid);
+        $context = module::instance($feed->cmid);
         $data    = [
             'context'  => $context,
             'courseid' => $course->id,

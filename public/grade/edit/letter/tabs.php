@@ -22,7 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-    $row = $tabs = array();
+    use core\output\tabobject;
+
+$row = $tabs = array();
 
     $row[] = new tabobject('lettersview',
                            $CFG->wwwroot.'/grade/edit/letter/index.php?id='.$COURSE->id,

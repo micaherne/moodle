@@ -14,12 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core_admin\setting\setting\configselect;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     $options = array(0=>get_string('no'), 1=>get_string('yes'));
     $str = get_string('configallowfullanonymous', 'feedback');
-    $settings->add(new admin_setting_configselect('feedback_allowfullanonymous',
+    $settings->add(new configselect('feedback_allowfullanonymous',
                                     get_string('allowfullanonymous', 'feedback'),
                                     $str, 0, $options));
 }

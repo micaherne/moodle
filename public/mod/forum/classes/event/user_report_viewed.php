@@ -24,6 +24,9 @@
 
 namespace mod_forum\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +81,7 @@ class user_report_viewed extends \core\event\base {
      */
     public function get_url() {
 
-        $url = new \moodle_url('/mod/forum/user.php', array('id' => $this->relateduserid,
+        $url = new url('/mod/forum/user.php', array('id' => $this->relateduserid,
             'mode' => $this->other['reportmode']));
 
         if ($this->courseid != SITEID) {
@@ -97,10 +100,10 @@ class user_report_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
         if (!isset($this->other['reportmode'])) {
-            throw new \coding_exception('The \'reportmode\' value must be set in other.');
+            throw new coding_exception('The \'reportmode\' value must be set in other.');
         }
 
         switch ($this->contextlevel)
@@ -112,7 +115,7 @@ class user_report_viewed extends \core\event\base {
                 break;
             default:
                 // Unexpected contextlevel.
-                throw new \coding_exception('Context level must be either CONTEXT_SYSTEM, CONTEXT_COURSE or CONTEXT_USER.');
+                throw new coding_exception('Context level must be either CONTEXT_SYSTEM, CONTEXT_COURSE or CONTEXT_USER.');
         }
     }
 

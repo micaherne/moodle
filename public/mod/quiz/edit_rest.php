@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
 use mod_quiz\quiz_settings;
 
 if (!defined('AJAX_SCRIPT')) {

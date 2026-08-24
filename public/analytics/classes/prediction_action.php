@@ -24,6 +24,11 @@
 
 namespace core_analytics;
 
+use core\output\action_menu\link_primary;
+use core\output\action_menu\link_secondary;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -48,7 +53,7 @@ class prediction_action extends action {
      * @param string|false $type
      * @return void
      */
-    public function __construct($actionname, \core_analytics\prediction $prediction, \moodle_url $actionurl, \pix_icon $icon,
+    public function __construct($actionname, \core_analytics\prediction $prediction, url $actionurl, pix_icon $icon,
                                 $text, $primary = false, $attributes = array(), $type = false) {
 
         $this->actionname = $actionname;
@@ -59,9 +64,9 @@ class prediction_action extends action {
 
         // The \action_menu_link items are displayed as an icon with a label, no need to show any text.
         if ($primary === false) {
-            $this->actionlink = new \action_menu_link_secondary($this->url, $icon, '', $attributes);
+            $this->actionlink = new link_secondary($this->url, $icon, '', $attributes);
         } else {
-            $this->actionlink = new \action_menu_link_primary($this->url, $icon, '', $attributes);
+            $this->actionlink = new link_primary($this->url, $icon, '', $attributes);
         }
     }
 
@@ -75,11 +80,11 @@ class prediction_action extends action {
      * @param  int         $predictionid
      * @return \moodle_url
      */
-    public static function transform_to_forward_url(\moodle_url $actionurl, string $actionname, int $predictionid): \moodle_url {
+    public static function transform_to_forward_url(url $actionurl, string $actionname, int $predictionid): url {
 
         // We want to track how effective are our suggested actions, we pass users through a script that will log these actions.
         $params = ['action' => $actionname, 'predictionid' => $predictionid,
             'forwardurl' => $actionurl->out(false)];
-        return new \moodle_url('/report/insights/action.php', $params);
+        return new url('/report/insights/action.php', $params);
     }
 }

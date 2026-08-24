@@ -23,12 +23,14 @@
  */
 namespace core\update;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * General exception thrown by the {@link \core\update\checker} class
  */
-class checker_exception extends \moodle_exception {
+class checker_exception extends moodle_exception {
 
     /**
      * @param string $errorcode exception description identifier

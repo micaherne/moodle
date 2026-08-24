@@ -24,6 +24,8 @@
 
 namespace core\task;
 
+use core\output\theme_config;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -45,7 +47,7 @@ class build_installed_themes_task extends adhoc_task {
         $themenames = array_keys(\core_component::get_plugin_list('theme'));
         // Load the theme configs.
         $themeconfigs = array_map(function($themename) {
-            return \theme_config::load($themename);
+            return theme_config::load($themename);
         }, $themenames);
 
         // Build the list of themes and cache them in local cache.

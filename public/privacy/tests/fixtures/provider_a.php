@@ -26,6 +26,7 @@ namespace mod_component_a\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
@@ -78,7 +79,7 @@ class provider implements
      *
      * @param   context                 $context   The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
     }
 
     /**

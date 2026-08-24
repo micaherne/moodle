@@ -16,6 +16,7 @@
 
 namespace mod_glossary\courseformat;
 
+use core\context\module;
 use core_courseformat\local\overview\overviewfactory;
 
 /**
@@ -204,7 +205,7 @@ final class overview_test extends \advanced_testcase {
             /** @var \core_comment_generator $generator */
             $generator = $this->getDataGenerator()->get_plugin_generator('core_comment');
             $cmtoptions = new \stdClass();
-            $cmtoptions->context = \context_module::instance($activity->cmid);
+            $cmtoptions->context = module::instance($activity->cmid);
             $cmtoptions->instanceid = $activity->cmid;
             $cmtoptions->component = 'mod_glossary';
             $cmtoptions->area = 'glossary_entry';

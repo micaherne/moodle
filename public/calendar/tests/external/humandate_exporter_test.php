@@ -16,6 +16,7 @@
 
 namespace core_calendar\external;
 
+use core\context\system;
 use core_calendar\output\humandate;
 
 /**
@@ -69,7 +70,7 @@ final class humandate_exporter_test extends \advanced_testcase {
             $icondata = null;
         }
 
-        $exporter = new humandate_exporter($humandate, ['context' => \context_system::instance()]);
+        $exporter = new humandate_exporter($humandate, ['context' => system::instance()]);
         $data = $exporter->export($renderer);
 
         $this->assertObjectHasProperty('timestamp', $data);

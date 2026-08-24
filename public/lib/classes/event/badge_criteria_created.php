@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -72,7 +75,7 @@ class badge_criteria_created extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/badges/criteria.php', array('id' => $this->other['badgeid']));
+        return new url('/badges/criteria.php', array('id' => $this->other['badgeid']));
     }
 
     /**
@@ -85,10 +88,10 @@ class badge_criteria_created extends base {
         parent::validate_data();
 
         if (!isset($this->objectid)) {
-            throw new \coding_exception('The \'objectid\' must be set.');
+            throw new coding_exception('The \'objectid\' must be set.');
         }
         if (!isset($this->other['badgeid'])) {
-            throw new \coding_exception('The \'badgeid\' value must be set in other.');
+            throw new coding_exception('The \'badgeid\' value must be set in other.');
         }
     }
 

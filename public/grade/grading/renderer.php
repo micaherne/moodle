@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\single_select;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -41,12 +46,12 @@ class core_grading_renderer extends plugin_renderer_base {
      * @param moodle_url $targeturl
      * @return string
      */
-    public function management_method_selector(grading_manager $manager, moodle_url $targeturl) {
+    public function management_method_selector(grading_manager $manager, url $targeturl) {
 
         $method = $manager->get_active_method();
         $methods = $manager->get_available_methods(false);
         $methods['none'] = get_string('gradingmethodnone', 'core_grading');
-        $selector = new single_select(new moodle_url($targeturl, array('sesskey' => sesskey())),
+        $selector = new single_select(new url($targeturl, array('sesskey' => sesskey())),
             'setmethod', $methods, empty($method) ? 'none' : $method, null, 'activemethodselector');
         $selector->set_label(get_string('changeactivemethod', 'core_grading'));
         $selector->set_help_icon('gradingmethod', 'core_grading');
@@ -62,7 +67,7 @@ class core_grading_renderer extends plugin_renderer_base {
      * @param string $icon the name of the icon to use
      * @return string
      */
-    public function management_action_icon(moodle_url $url, $text, $icon) {
+    public function management_action_icon(url $url, $text, $icon) {
 
         $img = $this->output->pix_icon($icon, '');
         $txt = html_writer::tag('div', $text, array('class' => 'action-text'));
@@ -91,7 +96,7 @@ class core_grading_renderer extends plugin_renderer_base {
      * @param string $class extra class of this action
      * @return string
      */
-    public function pick_action_icon(moodle_url $url, $text, $icon = '', $class = '') {
+    public function pick_action_icon(url $url, $text, $icon = '', $class = '') {
 
         $img = $this->output->pix_icon($icon, '');
         $txt = html_writer::tag('div', $text, array('class' => 'action-text'));

@@ -1,5 +1,9 @@
 <?php
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -9,7 +13,7 @@ $entry    = optional_param('entry', 0, PARAM_INT);    // entry id
 $prevmode = required_param('prevmode', PARAM_ALPHA);
 $hook     = optional_param('hook', '', PARAM_CLEAN);
 
-$url = new moodle_url('/mod/glossary/deleteentry.php', array('id'=>$id,'prevmode'=>$prevmode));
+$url = new url('/mod/glossary/deleteentry.php', array('id'=>$id,'prevmode'=>$prevmode));
 if ($confirm !== 0) {
     $url->param('confirm', $confirm);
 }
@@ -28,27 +32,27 @@ $entrydeleted  = get_string("entrydeleted","glossary");
 
 
 if (! $cm = get_coursemodule_from_id('glossary', $id)) {
-    throw new \moodle_exception("invalidcoursemodule");
+    throw new moodle_exception("invalidcoursemodule");
 }
 
 if (! $course = $DB->get_record("course", array("id"=>$cm->course))) {
-    throw new \moodle_exception('coursemisconf');
+    throw new moodle_exception('coursemisconf');
 }
 
 if (! $entry = $DB->get_record("glossary_entries", array("id"=>$entry))) {
-    throw new \moodle_exception('invalidentry');
+    throw new moodle_exception('invalidentry');
 }
 
 // Permission checks are based on the course module instance so make sure it is correct.
 if ($cm->instance != $entry->glossaryid) {
-    throw new \moodle_exception('invalidentry');
+    throw new moodle_exception('invalidentry');
 }
 
 require_login($course, false, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 if (! $glossary = $DB->get_record("glossary", array("id"=>$cm->instance))) {
-    throw new \moodle_exception('invalidid', 'glossary');
+    throw new moodle_exception('invalidid', 'glossary');
 }
 
 // Throws an exception if the user cannot delete the entry.
@@ -75,7 +79,7 @@ if ($confirm and confirm_sesskey()) { // the operation was confirmed.
     $optionsyes = array('id'=>$cm->id, 'entry'=>$entry->id, 'confirm'=>1, 'sesskey'=>sesskey(), 'prevmode'=>$prevmode, 'hook'=>$hook);
     $optionsno  = array('id'=>$cm->id, 'mode'=>$prevmode, 'hook'=>$hook);
 
-    echo $OUTPUT->confirm($areyousure, new moodle_url($linkyes, $optionsyes), new moodle_url($linkno, $optionsno));
+    echo $OUTPUT->confirm($areyousure, new url($linkyes, $optionsyes), new url($linkno, $optionsno));
 
     echo $OUTPUT->footer();
 }

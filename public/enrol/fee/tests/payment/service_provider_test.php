@@ -25,6 +25,8 @@
 
 namespace enrol_fee\payment;
 
+use core\context\course;
+
 /**
  * Unit tests for the enrol_fee's payment subsystem callback implementation.
  *
@@ -108,7 +110,7 @@ final class service_provider_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $account = $generator->get_plugin_generator('core_payment')->create_payment_account(['gateways' => 'paypal']);
         $course = $generator->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = $generator->create_user();
 
         $data = [

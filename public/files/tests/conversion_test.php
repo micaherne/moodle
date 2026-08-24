@@ -16,6 +16,8 @@
 
 namespace core_files;
 
+use core\context\system;
+
 /**
  * PHPUnit tests for conversion persistent.
  *
@@ -35,7 +37,7 @@ final class conversion_test extends \advanced_testcase {
      */
     protected function create_stored_file($filecontent = 'content', $filename = 'testfile.txt', $filerecord = []) {
         $filerecord = array_merge([
-                'contextid' => \context_system::instance()->id,
+                'contextid' => system::instance()->id,
                 'component' => 'core',
                 'filearea'  => 'unittest',
                 'itemid'    => 0,
@@ -307,7 +309,7 @@ final class conversion_test extends \advanced_testcase {
         ]);
 
         $record = [
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea'  => 'documentconversion',
             'itemid'    => 0,
@@ -355,7 +357,7 @@ final class conversion_test extends \advanced_testcase {
         ]);
 
         $record = [
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea'  => 'documentconversion',
             'itemid'    => 0,

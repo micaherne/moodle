@@ -18,11 +18,11 @@ namespace core_course\output;
 
 use core\output\select_menu;
 use core_completion\manager;
-use moodle_url;
-use renderable;
-use renderer_base;
-use templatable;
-use url_select;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\output\url_select;
 
 /**
  * Renderable class for the action bar elements in the course completion pages.
@@ -45,7 +45,7 @@ class completion_action_bar implements templatable, renderable {
      * @param int $courseid The course id.
      * @param moodle_url $pageurl The URL of the current page.
      */
-    public function __construct(int $courseid, moodle_url $pageurl) {
+    public function __construct(int $courseid, url $pageurl) {
         $this->courseid = $courseid;
         $this->currenturl = $pageurl;
     }

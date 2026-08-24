@@ -16,7 +16,9 @@
 
 namespace core_communication;
 
-use context;
+use core\context;
+use core\context\course;
+use core\exception\coding_exception;
 use stdClass;
 
 /**
@@ -54,7 +56,7 @@ class helper {
      */
     public static function load_by_course(
         int $courseid,
-        \context $context,
+        context $context,
         ?string $provider = null,
     ): api {
         return \core_communication\api::load_by_instance(
@@ -117,10 +119,10 @@ class helper {
         // Validate communication api action.
         $roomuserprovider = new \ReflectionClass(room_user_provider::class);
         if (!$roomuserprovider->hasMethod($memberaction)) {
-            throw new \coding_exception('Invalid action provided.');
+            throw new coding_exception('Invalid action provided.');
         }
 
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
 
         $communication = self::load_by_course(
             courseid: $course->id,
@@ -243,7 +245,7 @@ class helper {
         int $courseid
     ): array {
         $allgroupsusers = [];
-        $context = \context_course::instance(courseid: $courseid);
+        $context = course::instance(courseid: $courseid);
 
         foreach ($userids as $userid) {
             if (
@@ -280,7 +282,7 @@ class helper {
         $url = '';
         // Get the group mode for this course.
         $groupmode = $course->groupmode ?? get_course(courseid: $course->id)->groupmode;
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
 
         // If group mode is not set then just handle the course communication for these users.
         if ((int)$groupmode === NOGROUPS) {
@@ -349,7 +351,7 @@ class helper {
 
         // Get the group mode for this course.
         $groupmode = $course->groupmode ?? get_course(courseid: $course->id)->groupmode;
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
 
         // If group mode is not set then just handle the course communication for these users.
         if ((int)$groupmode === NOGROUPS) {
@@ -418,7 +420,7 @@ class helper {
         }
 
         // Get the course context.
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         // Get the course image.
         $courseimage = course_get_courseimage(course: $course);
         // Get the course communication instance.
@@ -514,7 +516,7 @@ class helper {
         string $provider,
     ): void {
         $coursegroups = groups_get_all_groups(courseid: $course->id);
-        $coursecontext = \context_course::instance(courseid: $course->id);
+        $coursecontext = course::instance(courseid: $course->id);
         $allaccessgroupusers = self::get_users_has_access_to_all_groups(
             userids: self::get_enrolled_users_for_course(course: $course),
             courseid: $course->id,

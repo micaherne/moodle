@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_bigbluebuttonbn\output;
 
-use lang_string;
+use core\lang_string;
 use mod_bigbluebuttonbn\local\bigbluebutton;
-use moodle_exception;
+use core\exception\moodle_exception;
 use core\output\inplace_editable;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\bigbluebutton\recordings\recording_action;

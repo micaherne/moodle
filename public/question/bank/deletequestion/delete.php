@@ -25,6 +25,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\output\single_button;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../../editlib.php');
 global $DB, $OUTPUT, $PAGE, $COURSE;
@@ -35,17 +39,17 @@ $cmid = required_param('cmid', PARAM_INT);
 $deleteall = optional_param('deleteall', false, PARAM_BOOL);
 
 if ($returnurl) {
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 }
 
 \core_question\local\bank\helper::require_plugin_enabled('qbank_deletequestion');
 
 [$module, $cm] = get_module_from_cmid($cmid);
 require_login($cm->course, false, $cm);
-$thiscontext = context_module::instance($cmid);
+$thiscontext = module::instance($cmid);
 
 $contexts = new core_question\local\bank\question_edit_contexts($thiscontext);
-$url = new moodle_url('/question/bank/deletequestion/delete.php');
+$url = new url('/question/bank/deletequestion/delete.php');
 
 $PAGE->set_url($url);
 $streditingquestions = get_string('deletequestion', 'qbank_deletequestion');
@@ -95,7 +99,7 @@ if ($deleteselected) {
     }
     $questionlist = rtrim($questionlist, ',');
 
-    $deleteurl = new \moodle_url(
+    $deleteurl = new url(
         '/question/bank/deletequestion/delete.php',
         [
             'deleteselected' => $questionlist,
@@ -106,7 +110,7 @@ if ($deleteselected) {
             'cmid' => $cmid,
         ],
     );
-    $continue = new \single_button($deleteurl, get_string('delete'), 'post');
+    $continue = new single_button($deleteurl, get_string('delete'), 'post');
 
     $questionids = explode(',', $questionlist);
     [$displayoptions, $message] = qbank_deletequestion\helper::get_delete_confirmation_message($questionids,

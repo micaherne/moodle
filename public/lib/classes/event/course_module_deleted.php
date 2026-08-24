@@ -23,6 +23,8 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -80,10 +82,10 @@ class course_module_deleted extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['modulename'])) {
-            throw new \coding_exception('The \'modulename\' value must be set in other.');
+            throw new coding_exception('The \'modulename\' value must be set in other.');
         }
         if (!isset($this->other['instanceid'])) {
-            throw new \coding_exception('The \'instanceid\' value must be set in other.');
+            throw new coding_exception('The \'instanceid\' value must be set in other.');
         }
     }
 

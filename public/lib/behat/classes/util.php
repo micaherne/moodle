@@ -35,6 +35,11 @@ require_once(__DIR__ . '/../../csslib.php');
 
 use Behat\Mink\Session;
 use Behat\Mink\Exception\ExpectationException;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\theme_config;
+use core_admin\setting\setting\special_frontpagedesc;
+use core_filters\filter_manager;
 
 /**
  * Init/reset utilities for Behat database and dataroot
@@ -93,7 +98,7 @@ class behat_util extends \core\test\testing_util {
         // So each time we reset the dataroot before running a test, the default files are still installed.
         self::save_original_data_files();
 
-        $frontpagesummary = new admin_setting_special_frontpagedesc();
+        $frontpagesummary = new special_frontpagedesc();
         $frontpagesummary->write_setting(self::BEHATSITENAME);
 
         // Update admin user info.
@@ -152,7 +157,7 @@ class behat_util extends \core\test\testing_util {
 
         // Load the theme configs.
         $themeconfigs = array_map(function($themename) {
-            return \theme_config::load($themename);
+            return theme_config::load($themename);
         }, $themenames);
 
         // Build the list of themes and cache them in local cache.
@@ -458,7 +463,7 @@ class behat_util extends \core\test\testing_util {
         $directions = ['ltr', 'rtl'];
 
         $themeconfigs = array_map(function($themename) {
-            return \theme_config::load($themename);
+            return theme_config::load($themename);
         }, $themenames);
 
         foreach ($themeconfigs as $themeconfig) {

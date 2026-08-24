@@ -21,6 +21,12 @@
  * @copyright  2014 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\system;
+use core\exception\coding_exception;
+use core\plugin_manager;
+use core_cache\cache;
+use core_course\modinfo;
+
 #[\PHPUnit\Framework\Attributes\CoversClass(core_courseformat\base::class)]
 final class base_test extends advanced_testcase {
 
@@ -94,11 +100,11 @@ final class base_test extends advanced_testcase {
         $generator->enrol_user($courseoverviewuser->id, $course1->id, $roleids['courseoverview']);
 
         // Remove the ignoreavailabilityrestrictions from the teacher role.
-        role_change_permission($roleids['teacher'], context_system::instance(0),
+        role_change_permission($roleids['teacher'], system::instance(0),
                 'moodle/course:ignoreavailabilityrestrictions', CAP_PREVENT);
 
         // Allow the courseoverview role to ingore available restriction.
-        role_change_permission($roleids['courseoverview'], context_system::instance(0),
+        role_change_permission($roleids['courseoverview'], system::instance(0),
                 'moodle/course:ignoreavailabilityrestrictions', CAP_ALLOW);
 
         // Make sure that initially both sections and both modules are available and visible for a student.
@@ -582,7 +588,7 @@ final class base_test extends advanced_testcase {
         }
 
         $newmodcount = $DB->count_records('course_modules', ['course' => $course->id, 'section' => $newsection->id]);
-        $modinfo = course_modinfo::instance($course);
+        $modinfo = modinfo::instance($course);
         $qbankinstances = $modinfo->get_instances_of('qbank');
         $this->assertCount(1, $qbankinstances);
         $this->assertEquals($originalmodcount - 1, $newmodcount);
@@ -597,7 +603,7 @@ final class base_test extends advanced_testcase {
         $this->setAdminUser();
         $this->resetAfterTest();
         // Add subsection.
-        $manager = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $manager = plugin_manager::resolve_plugininfo_class('mod');
         $manager::enable_plugin('subsection', 1);
         $course = $this->getDataGenerator()->create_course(['format' => 'topics', 'numsections' => 1]);
         $subsection1 = $this->getDataGenerator()->create_module(
@@ -651,7 +657,7 @@ final class base_test extends advanced_testcase {
         if ($expectedstring) {
             $expected = get_string($expectedstring[0], $expectedstring[1], $expectedstring[2]);
         } else {
-            $this->expectException(\coding_exception::class);
+            $this->expectException(coding_exception::class);
         }
         $format = course_get_format($course);
         $result = $format->get_format_string($key, $data);
@@ -836,7 +842,7 @@ final class base_test extends advanced_testcase {
         $cminfo = $modinfo->get_cm($assign0->cmid);
 
         if ($exception) {
-            $this->expectException(\coding_exception::class);
+            $this->expectException(coding_exception::class);
         }
         $result = $format->get_non_ajax_cm_action_url($action, $cminfo);
         if (!$exception) {
@@ -925,7 +931,7 @@ final class base_test extends advanced_testcase {
         $this->assertNull($format->get_sectionnum());
 
         // Invalid section.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $format->set_sectionid(-1);
     }
 
@@ -945,7 +951,7 @@ final class base_test extends advanced_testcase {
         $format = course_get_format($course);
 
         if ($exceptionexpected) {
-            $this->expectException(\coding_exception::class);
+            $this->expectException(coding_exception::class);
         }
         $format->set_sectionnum($sectionnum);
         if ($nullexpected) {

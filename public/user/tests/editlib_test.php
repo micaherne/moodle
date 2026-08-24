@@ -16,6 +16,9 @@
 
 namespace core_user;
 
+use core\lang_string;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -148,7 +151,7 @@ final class editlib_test extends \advanced_testcase {
             // Pretend we have hook callbacks adding extra allowed options.
             $testcallback = function(\core_user\hook\extend_default_homepage $hook) use ($extraoptions) {
                 foreach ($extraoptions as $localurl) {
-                    $hook->add_option(new \moodle_url($localurl), new \lang_string('yes'));
+                    $hook->add_option(new url($localurl), new lang_string('yes'));
                 }
             };
             $this->redirectHook(\core_user\hook\extend_default_homepage::class, $testcallback);

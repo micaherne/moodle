@@ -24,11 +24,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\module;
+use core\context\system;
+use core\output\html_writer;
 use core\output\notification;
 use core\output\action_menu;
 use core\output\action_link;
 use core\output\action_menu\link_secondary;
 use core\output\actions\confirm_action;
+use core\output\pix_icon;
+use core\url;
 
 global $CFG;
 require_once($CFG->libdir . '/tablelib.php');
@@ -115,7 +120,7 @@ class mod_feedback_templates_table extends core_table\flexible_table {
     private function get_row_actions(stdClass $template): action_menu {
         global $PAGE, $OUTPUT;
 
-        $url = new moodle_url($this->baseurl, ['templateid' => $template->id, 'sesskey' => sesskey()]);
+        $url = new url($this->baseurl, ['templateid' => $template->id, 'sesskey' => sesskey()]);
         $actions = new action_menu();
         $label = get_string('actions');
         $triggercontent = $OUTPUT->pix_icon('a/setting', '') .
@@ -125,16 +130,16 @@ class mod_feedback_templates_table extends core_table\flexible_table {
 
         // Preview.
         $actions->add(new link_secondary(
-            new moodle_url($this->baseurl, ['templateid' => $template->id, 'sesskey' => sesskey()]),
+            new url($this->baseurl, ['templateid' => $template->id, 'sesskey' => sesskey()]),
             new pix_icon('t/preview', ''),
             get_string('preview'),
         ));
 
         // Use template.
-        if (has_capability('mod/feedback:edititems', context_module::instance($this->cmid))) {
+        if (has_capability('mod/feedback:edititems', module::instance($this->cmid))) {
             $PAGE->requires->js_call_amd('mod_feedback/usetemplate', 'init');
             $actions->add(new link_secondary(
-                new moodle_url('#'),
+                new url('#'),
                 new pix_icon('i/files', ''),
                 get_string('use_this_template', 'mod_feedback'),
                 ['data-action' => 'usetemplate', 'data-dataid' => $this->cmid, 'data-templateid' => $template->id],
@@ -142,15 +147,15 @@ class mod_feedback_templates_table extends core_table\flexible_table {
         }
 
         // Delete.
-        $showdelete = has_capability('mod/feedback:deletetemplate', context_module::instance($this->cmid));
+        $showdelete = has_capability('mod/feedback:deletetemplate', module::instance($this->cmid));
         if ($template->ispublic) {
             $showdelete = has_all_capabilities(
                 ['mod/feedback:createpublictemplate', 'mod/feedback:deletetemplate'],
-                context_system::instance()
+                system::instance()
             );
         }
         if ($showdelete) {
-            $exporturl = new moodle_url(
+            $exporturl = new url(
                 '/mod/feedback/manage_templates.php',
                 $url->params() + ['deletetemplate' => $template->id]
             );

@@ -25,7 +25,11 @@
 declare(strict_types=1);
 
 use core\exception\invalid_parameter_exception;
+use core\lang_string;
+use core\output\html_writer;
 use core\output\inplace_editable;
+use core\output\pix_icon;
+use core\url;
 use core_reportbuilder\form\{audience, filter};
 use core_reportbuilder\local\audiences\base as audience_base;
 use core_reportbuilder\local\helpers\audience as audience_helper;
@@ -122,7 +126,7 @@ function core_reportbuilder_get_tagged_reports(
             $tagfeed->add(
                 $OUTPUT->render($pixicon),
                 html_writer::link(
-                    new moodle_url('/reportbuilder/view.php', ['id' => $report->id]),
+                    new url('/reportbuilder/view.php', ['id' => $report->id]),
                     (new report(0, $report))->get_formatted_name(),
                 ),
             );

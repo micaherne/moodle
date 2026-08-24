@@ -16,7 +16,7 @@
 
 namespace mod_bigbluebuttonbn\local\admin;
 
-use admin_setting_configmultiselect;
+use core_admin\setting\setting\configmultiselect;
 
 /**
  * Multiselect admin setting with autocomplete that supports custom tag values.
@@ -26,7 +26,7 @@ use admin_setting_configmultiselect;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author    Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
-class setting_configmultiselect_tags extends admin_setting_configmultiselect {
+class setting_configmultiselect_tags extends configmultiselect {
     /** @var string Placeholder shown in the enhanced select. */
     protected string $placeholder;
     /** @var bool Whether to show suggestions immediately. */

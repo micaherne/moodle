@@ -22,6 +22,9 @@
  * @copyright  2007 mattc-catalyst (http://moodle.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context;
+use core\context\course;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -43,7 +46,7 @@ class autogroup_form extends moodleform {
      */
     function definition() {
         global $USER, $COURSE;
-        $coursecontext = context_course::instance($COURSE->id);
+        $coursecontext = course::instance($COURSE->id);
 
         $mform =& $this->_form;
 
@@ -89,7 +92,7 @@ class autogroup_form extends moodleform {
             $mform->setDefault('roleid', $student->id);
         }
 
-        $coursecontext = context_course::instance($COURSE->id);
+        $coursecontext = course::instance($COURSE->id);
         if ($cohorts = cohort_get_available_cohorts($coursecontext, COHORT_WITH_ENROLLED_MEMBERS_ONLY, 0, 0)) {
             $options = array(0 => get_string('anycohort', 'cohort'));
             foreach ($cohorts as $c) {

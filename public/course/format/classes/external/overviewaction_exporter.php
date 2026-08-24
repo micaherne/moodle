@@ -17,6 +17,7 @@
 namespace core_courseformat\external;
 
 use core\external\action_link_exporter;
+use core\output\renderer_base;
 use core_courseformat\output\local\overview\overviewaction;
 
 /**
@@ -61,7 +62,7 @@ class overviewaction_exporter extends action_link_exporter {
     }
 
     #[\Override]
-    protected function get_other_values(\renderer_base $output) {
+    protected function get_other_values(renderer_base $output) {
         $values = parent::get_other_values($output);
 
         /** @var overviewaction $source */

@@ -16,6 +16,11 @@
 
 namespace core_admin\setting\setting;
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 /**
  * Search setup steps info.
  *
@@ -72,7 +77,7 @@ class searchsetupinfo extends \core_admin\setting {
         global $CFG, $OUTPUT, $ADMIN;
 
         $return = '';
-        $brtag = \html_writer::empty_tag('br');
+        $brtag = html_writer::empty_tag('br');
 
         $searchareas = \core_search\manager::get_search_areas_list();
         $anyenabled = !empty(\core_search\manager::get_search_areas_list(true));
@@ -87,7 +92,7 @@ class searchsetupinfo extends \core_admin\setting {
 
         $return .= $OUTPUT->heading(get_string('searchsetupinfo', 'admin'), 3, 'main');
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head = [get_string('step', 'search'), get_string('status')];
         $table->colclasses = ['leftalign step', 'leftalign status'];
         $table->id = 'searchsetup';
@@ -98,16 +103,16 @@ class searchsetupinfo extends \core_admin\setting {
 
         // Select a search engine.
         $row = [];
-        $url = new \moodle_url('/admin/settings.php?section=manageglobalsearch#admin-searchengine');
-        $row[0] = '1. ' . \html_writer::tag(
+        $url = new url('/admin/settings.php?section=manageglobalsearch#admin-searchengine');
+        $row[0] = '1. ' . html_writer::tag(
             'a',
             get_string('selectsearchengine', 'admin'),
             ['href' => $url]
         );
 
-        $status = \html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
+        $status = html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
         if (!empty($CFG->searchengine)) {
-            $status = \html_writer::tag(
+            $status = html_writer::tag(
                 'span',
                 get_string('pluginname', 'search_' . $CFG->searchengine),
                 ['class' => 'badge bg-success text-white']
@@ -118,16 +123,16 @@ class searchsetupinfo extends \core_admin\setting {
 
         // Available areas.
         $row = [];
-        $url = new \moodle_url('/admin/searchareas.php');
-        $row[0] = '2. ' . \html_writer::tag(
+        $url = new url('/admin/searchareas.php');
+        $row[0] = '2. ' . html_writer::tag(
             'a',
             get_string('enablesearchareas', 'admin'),
             ['href' => $url]
         );
 
-        $status = \html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
+        $status = html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
         if ($anyenabled) {
-            $status = \html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white']);
+            $status = html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white']);
         }
         $row[1] = $status;
         $table->data[] = $row;
@@ -136,11 +141,11 @@ class searchsetupinfo extends \core_admin\setting {
         $row = [];
         if (empty($CFG->searchengine)) {
             $row[0] = '3. ' . get_string('setupsearchengine', 'admin');
-            $row[1] = \html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
+            $row[1] = html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
         } else {
             if ($ADMIN->locate('search' . $CFG->searchengine)) {
-                $url = new \moodle_url('/admin/settings.php?section=search' . $CFG->searchengine);
-                $row[0] = '3. ' . \html_writer::link($url, get_string('setupsearchengine', 'core_admin'));
+                $url = new url('/admin/settings.php?section=search' . $CFG->searchengine);
+                $row[0] = '3. ' . html_writer::link($url, get_string('setupsearchengine', 'core_admin'));
             } else {
                 $row[0] = '3. ' . get_string('setupsearchengine', 'core_admin');
             }
@@ -149,13 +154,13 @@ class searchsetupinfo extends \core_admin\setting {
             $searchengine = \core_search\manager::search_engine_instance();
             try {
                 $serverstatus = $searchengine->is_server_ready();
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 $serverstatus = $e->getMessage();
             }
             if ($serverstatus === true) {
-                $status = \html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white']);
+                $status = html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white']);
             } else {
-                $status = \html_writer::tag('span', $serverstatus, ['class' => 'badge bg-danger text-white']);
+                $status = html_writer::tag('span', $serverstatus, ['class' => 'badge bg-danger text-white']);
             }
             $row[1] = $status;
         }
@@ -163,47 +168,47 @@ class searchsetupinfo extends \core_admin\setting {
 
         // Indexed data.
         $row = [];
-        $url = new \moodle_url('/admin/searchareas.php');
-        $row[0] = '4. ' . \html_writer::tag('a', get_string('indexdata', 'admin'), ['href' => $url]);
+        $url = new url('/admin/searchareas.php');
+        $row[0] = '4. ' . html_writer::tag('a', get_string('indexdata', 'admin'), ['href' => $url]);
         if ($anyindexed) {
-            $status = \html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white']);
+            $status = html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white']);
         } else {
-            $status = \html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
+            $status = html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
         }
         $row[1] = $status;
         $table->data[] = $row;
 
         // Enable global search.
         $row = [];
-        $url = new \moodle_url("/admin/search.php?query=enableglobalsearch");
-        $row[0] = '5. ' . \html_writer::tag(
+        $url = new url("/admin/search.php?query=enableglobalsearch");
+        $row[0] = '5. ' . html_writer::tag(
             'a',
             get_string('enableglobalsearch', 'admin'),
             ['href' => $url]
         );
-        $status = \html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
+        $status = html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
         if (\core_search\manager::is_global_search_enabled()) {
-            $status = \html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white']);
+            $status = html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white']);
         }
         $row[1] = $status;
         $table->data[] = $row;
 
         // Replace front page search.
         $row = [];
-        $url = new \moodle_url("/admin/search.php?query=searchincludeallcourses");
-        $row[0] = '6. ' . \html_writer::tag(
+        $url = new url("/admin/search.php?query=searchincludeallcourses");
+        $row[0] = '6. ' . html_writer::tag(
             'a',
             get_string('replacefrontsearch', 'admin'),
             ['href' => $url]
         );
-        $status = \html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
+        $status = html_writer::tag('span', get_string('no'), ['class' => 'badge bg-danger text-white']);
         if (\core_search\manager::can_replace_course_search()) {
-            $status = \html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white']);
+            $status = html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white']);
         }
         $row[1] = $status;
         $table->data[] = $row;
 
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
 
         return highlight($query, $return);
     }

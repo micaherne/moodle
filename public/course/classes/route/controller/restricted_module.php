@@ -16,6 +16,7 @@
 
 namespace core_course\route\controller;
 
+use core\context\module;
 use core\router\route;
 use core\router\require_login;
 use core_course\modinfo;
@@ -56,7 +57,7 @@ class restricted_module {
     ): ResponseInterface {
         global $OUTPUT, $PAGE;
 
-        $context = \context_module::instance($cmdata->id);
+        $context = module::instance($cmdata->id);
 
         $course = get_course($cmdata->course);
         $modinfo = get_fast_modinfo($course);

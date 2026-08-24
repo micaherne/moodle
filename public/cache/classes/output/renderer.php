@@ -16,17 +16,18 @@
 
 namespace core_cache\output;
 
-use context;
+use core\context;
+use core\output\plugin_renderer_base;
 use core_cache\factory as cache_factory;
 use core_cache\store as cache_store;
 use core_collator;
-use html_table;
-use html_table_cell;
-use html_table_row;
-use html_writer;
-use lang_string;
-use moodle_url;
-use single_select;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+use core\output\html_writer;
+use core\lang_string;
+use core\url;
+use core\output\single_select;
 
 /**
  * The cache renderer (mainly admin interfaces).
@@ -35,7 +36,7 @@ use single_select;
  * @copyright  2012 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
     /**
      * Displays store summaries.
      *
@@ -269,7 +270,7 @@ class renderer extends \plugin_renderer_base {
         $html .= $this->output->heading(get_string('definitionsummaries', 'cache'), 3);
         $html .= html_writer::table($table);
 
-        $url = new moodle_url('/cache/admin.php', ['action' => 'rescandefinitions', 'sesskey' => sesskey()]);
+        $url = new url('/cache/admin.php', ['action' => 'rescandefinitions', 'sesskey' => sesskey()]);
         $link = html_writer::link($url, get_string('rescandefinitions', 'cache'));
         $html .= html_writer::tag('div', $link, ['id' => 'core-cache-rescan-definitions']);
 
@@ -286,7 +287,7 @@ class renderer extends \plugin_renderer_base {
      * @param moodle_url $editurl
      * @return string HTML
      */
-    public function mode_mappings($applicationstore, $sessionstore, $requeststore, moodle_url $editurl) {
+    public function mode_mappings($applicationstore, $sessionstore, $requeststore, url $editurl) {
         $table = new html_table();
         $table->colclasses = [
             'mode',
@@ -352,7 +353,7 @@ class renderer extends \plugin_renderer_base {
         foreach ($locks as $lock) {
             $actions = [];
             if ($lock['uses'] === 0 && !$lock['default']) {
-                $url = new moodle_url('/cache/admin.php', ['lock' => $lock['name'], 'action' => 'deletelock']);
+                $url = new url('/cache/admin.php', ['lock' => $lock['name'], 'action' => 'deletelock']);
                 $actions[] = html_writer::link($url, get_string('delete', 'cache'));
             }
             $table->data[] = new html_table_row([
@@ -377,7 +378,7 @@ class renderer extends \plugin_renderer_base {
      * @return string
      */
     public function additional_lock_actions(): string {
-        $url = new moodle_url('/cache/admin.php', ['action' => 'newlockinstance']);
+        $url = new url('/cache/admin.php', ['action' => 'newlockinstance']);
         $select = new single_select($url, 'lock', cache_factory::get_administration_display_helper()->get_addable_lock_options());
         $select->label = get_string('addnewlockinstance', 'cache');
 
@@ -421,7 +422,7 @@ class renderer extends \plugin_renderer_base {
      * @throws \coding_exception
      */
     public function usage_tables(array $usage): array {
-        $table = new \html_table();
+        $table = new html_table();
         $table->id = 'usage_main';
         $table->head = [
             get_string('definition', 'cache'),
@@ -438,7 +439,7 @@ class renderer extends \plugin_renderer_base {
         ];
         $table->data = [];
 
-        $summarytable = new \html_table();
+        $summarytable = new html_table();
         $summarytable->id = 'usage_summary';
         $summarytable->head = [
             get_string('storename', 'cache'),
@@ -505,7 +506,7 @@ class renderer extends \plugin_renderer_base {
                 } else {
                     $row[] = '';
                 }
-                $htmlrow = new \html_table_row($row);
+                $htmlrow = new html_table_row($row);
                 if ($cellsize > $highlightover) {
                     $htmlrow->attributes = ['class' => 'table-warning'];
                 }
@@ -537,10 +538,10 @@ class renderer extends \plugin_renderer_base {
      * @param \moodleform $samplesform Form to select number of samples
      * @return string HTML for page
      */
-    public function usage_page(\html_table $maintable, \html_table $summarytable, \moodleform $samplesform): string {
+    public function usage_page(html_table $maintable, html_table $summarytable, \moodleform $samplesform): string {
         $data = [
-            'maintable' => \html_writer::table($maintable),
-            'summarytable' => \html_writer::table($summarytable),
+            'maintable' => html_writer::table($maintable),
+            'summarytable' => html_writer::table($summarytable),
             'samplesform' => $samplesform->render(),
         ];
 

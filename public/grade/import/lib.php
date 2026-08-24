@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\output\html_writer;
+
 require_once($CFG->libdir.'/gradelib.php');
 
 /**
@@ -182,7 +185,7 @@ function grade_import_commit($courseid, $importcode, $importfeedback=true, $verb
 function get_unenrolled_users_in_import($importcode, $courseid) {
     global $CFG, $DB;
 
-    $coursecontext = context_course::instance($courseid);
+    $coursecontext = course::instance($courseid);
 
     // We want to query both the current context and parent contexts.
     list($relatedctxsql, $relatedctxparams) = $DB->get_in_or_equal($coursecontext->get_parent_context_ids(true), SQL_PARAMS_NAMED, 'relatedctx');
@@ -193,7 +196,7 @@ function get_unenrolled_users_in_import($importcode, $courseid) {
     $usernamefields = core_user\fields::for_name()->get_sql('u', false, '', '', false);
 
     // Enrolled users.
-    $context = context_course::instance($courseid);
+    $context = course::instance($courseid);
     list($enrolledsql, $enrolledparams) = get_enrolled_sql($context);
     list($sort, $sortparams) = users_order_by_sql('u');
 

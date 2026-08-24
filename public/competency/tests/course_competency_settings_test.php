@@ -16,6 +16,8 @@
 
 namespace core_competency;
 
+use core\context\system;
+
 /**
  * This test ensures that the course competency settings are applied and work correctly.
  *
@@ -30,7 +32,7 @@ final class course_competency_settings_test extends \advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $dg = $this->getDataGenerator();
         $lpg = $dg->get_plugin_generator('core_competency');
         $role = create_role('Settings changer role', 'settingschanger', 'Someone who can change course competency settings');

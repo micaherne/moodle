@@ -31,7 +31,13 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/questionlib.php');
 
+use core\context;
+use core\context\module;
+use core\context\user;
+use core\exception\moodle_exception;
 use \core\notification;
+use core\output\html_writer;
+use core\url;
 use qbank_previewquestion\form\preview_options_form;
 use qbank_previewquestion\question_preview_options;
 use qbank_previewquestion\helper;
@@ -55,7 +61,7 @@ $restartversion = optional_param('restartversion', question_preview_options::ALW
 $question = question_bank::load_question($id);
 
 if ($returnurl) {
-    $returnurl = new moodle_url($returnurl);
+    $returnurl = new url($returnurl);
 }
 
 // Were we given a particular context to run the question in?
@@ -63,7 +69,7 @@ if ($returnurl) {
 if ($cmid = optional_param('cmid', 0, PARAM_INT)) {
     $cm = get_coursemodule_from_id(false, $cmid);
     require_login($cm->course, false, $cm);
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 } else {
     require_login();
     $category = $DB->get_record('question_categories', ['id' => $question->category], '*', MUST_EXIST);
@@ -113,7 +119,7 @@ if ($previewid) {
 
 } else {
     $quba = question_engine::make_questions_usage_by_activity(
-            'core_question_preview', context_user::instance($USER->id));
+            'core_question_preview', user::instance($USER->id));
     $quba->set_preferred_behaviour($options->behaviour);
     $slot = $quba->add_question($question, $options->maxmark);
 
@@ -320,7 +326,7 @@ if (!is_null($returnurl)) {
     $previewdata['redirect'] = true;
     $previewdata['redirecturl'] = $returnurl;
 }
-$closeurl = new moodle_url('/question/edit.php', ['cmid' => $context->instanceid]);
+$closeurl = new url('/question/edit.php', ['cmid' => $context->instanceid]);
 echo $PAGE->get_renderer('qbank_previewquestion')->render_preview_page($previewdata);
 
 // Log the preview of this question.

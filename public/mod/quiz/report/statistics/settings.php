@@ -23,10 +23,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext(
+    $settings->add(new configtext(
         'quiz_statistics/getstatslocktimeout',
         get_string('getstatslocktimeout', 'quiz_statistics'),
         get_string('getstatslocktimeoutdesc', 'quiz_statistics'),

@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+use core\output\single_button;
+use core\url;
+
 require_once("../../config.php");
 require_once($CFG->dirroot . "/auth/shibboleth/auth.php");
 
@@ -48,7 +51,7 @@ if (isset($idp)) {
     if (isset($idplist[$idp])) {
         set_saml_cookie($idp);
 
-        $targeturl = new moodle_url('/auth/shibboleth/index.php');
+        $targeturl = new url('/auth/shibboleth/index.php');
         $idpinfo = $idplist[$idp];
 
         // Redirect to SessionInitiator with entityID as argument.
@@ -79,8 +82,8 @@ if (isloggedin() and !isguestuser()) {
     // Prevent logging when already logged in, we do not want them to relogin by accident because sesskey would be changed.
     echo $OUTPUT->box_start();
     $params = ['sesskey' => sesskey(), 'loginpage' => 1];
-    $logout = new single_button(new moodle_url('/login/logout.php', $params), get_string('logout'), 'post');
-    $continue = new single_button(new moodle_url('/'), get_string('cancel'), 'get');
+    $logout = new single_button(new url('/login/logout.php', $params), get_string('logout'), 'post');
+    $continue = new single_button(new url('/'), get_string('cancel'), 'get');
     echo $OUTPUT->confirm(get_string('alreadyloggedin', 'error', fullname($USER)), $logout, $continue);
     echo $OUTPUT->box_end();
 } else {
@@ -121,14 +124,14 @@ if (isloggedin() and !isguestuser()) {
         'adminemail' => get_admin()->email,
         'cansignup' => $cansignup,
         'guestlogin' => $CFG->guestloginbutton,
-        'guestloginurl' => new moodle_url('/login/index.php'),
+        'guestloginurl' => new url('/login/index.php'),
         'idps' => $idps,
         'instructions' => $instructions,
         'loginname' => format_string($config->login_name ?? '', options: ['context' => $PAGE->context]),
         'logintoken' => \core\session\manager::get_login_token(),
-        'loginurl' => new moodle_url('/auth/shibboleth/login.php'),
+        'loginurl' => new url('/auth/shibboleth/login.php'),
         'showinstructions' => $showinstructions,
-        'signupurl' => new moodle_url('/login/signup.php'),
+        'signupurl' => new url('/login/signup.php'),
         'isvalid' => $isvalid,
     ];
 

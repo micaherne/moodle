@@ -22,7 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$settings->add(new admin_setting_configcheckbox('assignfeedback_file/default',
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+
+$settings->add(new configcheckbox('assignfeedback_file/default',
                    new lang_string('default', 'assignfeedback_file'),
                    new lang_string('default_help', 'assignfeedback_file'), 0));
 

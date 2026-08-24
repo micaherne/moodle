@@ -25,6 +25,8 @@
 
 namespace core\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -90,9 +92,9 @@ class capability_assigned extends base {
      */
     public function get_url() {
         if ($this->contextlevel == CONTEXT_SYSTEM) {
-            return new \moodle_url('/admin/roles/define.php', ['action' => 'edit', 'roleid' => $this->objectid]);
+            return new url('/admin/roles/define.php', ['action' => 'edit', 'roleid' => $this->objectid]);
         } else {
-            return new \moodle_url('/admin/roles/override.php', ['contextid' => $this->contextid,
+            return new url('/admin/roles/override.php', ['contextid' => $this->contextid,
                 'roleid' => $this->objectid]);
         }
     }

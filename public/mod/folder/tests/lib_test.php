@@ -25,8 +25,9 @@
  */
 namespace mod_folder;
 
-use context_user;
-use context_module;
+use core\context\user;
+use core\context\module;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -74,7 +75,7 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
         $folder = $this->getDataGenerator()->create_module('folder', array('course' => $course->id),
                                                             array('completion' => 2, 'completionview' => 1));
-        $context = \context_module::instance($folder->cmid);
+        $context = module::instance($folder->cmid);
         $cm = get_coursemodule_from_instance('folder', $folder->id);
 
         // Trigger and capture the event.
@@ -90,7 +91,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_folder\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/folder/view.php', array('id' => $cm->id));
+        $moodleurl = new url('/mod/folder/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -320,7 +321,7 @@ final class lib_test extends \advanced_testcase {
 
         // Add files to draft area.
         $filesitem = file_get_unused_draft_itemid();
-        $usercontext = context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $filerecord = [
             'component' => 'user',
             'filearea' => 'draft',
@@ -342,7 +343,7 @@ final class lib_test extends \advanced_testcase {
 
         // Get some additional data.
         $cm = get_coursemodule_from_instance('folder', $module->id);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Add user with the specific capability.
         $user = $this->getDataGenerator()->create_user();
@@ -430,7 +431,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertEquals($expecteddata, $cm->get_custom_data());
 
         // Add a test file to the folder activity.
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $fs = get_file_storage();
         $filerecord = [
             'contextid' => $context->id,

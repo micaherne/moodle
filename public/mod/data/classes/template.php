@@ -16,20 +16,20 @@
 
 namespace mod_data;
 
-use action_menu;
-use action_menu_link_secondary;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
 use core\output\checkbox_toggleall;
 use data_field_base;
-use html_writer;
+use core\output\html_writer;
 use mod_data\manager;
-use moodle_url;
-use pix_icon;
+use core\url;
+use core\output\pix_icon;
 use stdClass;
-use user_picture;
-use core_user;
+use core\output\user_picture;
+use core\user;
 use portfolio_add_button;
 use data_portfolio_caller;
-use comment;
+use core_comment\manager as comment;
 use core_tag_tag;
 
 /**
@@ -183,7 +183,7 @@ class template {
      */
     public function add_options(array $options = []) {
         $cm = $this->manager->get_coursemodule();
-        $baseurl = $options['baseurl'] ?? new moodle_url('/mod/data/view.php', ['id' => $cm->id]);
+        $baseurl = $options['baseurl'] ?? new url('/mod/data/view.php', ['id' => $cm->id]);
         if (isset($options['page'])) {
             $baseurl->params([
                 'page' => $options['page'],
@@ -380,11 +380,11 @@ class template {
         if (!$canmanageentry) {
             return '';
         }
-        $backurl = new moodle_url($this->baseurl, [
+        $backurl = new url($this->baseurl, [
             'rid' => $entry->id,
             'mode' => 'single',
         ]);
-        $url = new moodle_url('/mod/data/edit.php', $this->baseurl->params());
+        $url = new url('/mod/data/edit.php', $this->baseurl->params());
         $url->params([
             'rid' => $entry->id,
             'sesskey' => sesskey(),
@@ -409,7 +409,7 @@ class template {
         if (!$canmanageentry) {
             return '';
         }
-        $url = new moodle_url($this->baseurl, [
+        $url = new url($this->baseurl, [
             'delete' => $entry->id,
             'sesskey' => sesskey(),
             'mode' => 'single',
@@ -436,7 +436,7 @@ class template {
             return '';
         }
 
-        $url = new moodle_url($this->baseurl, [
+        $url = new url($this->baseurl, [
             'rid' => $entry->id,
             'filter' => 1,
         ]);
@@ -455,7 +455,7 @@ class template {
      * @return string the tag replacement
      */
     protected function get_tag_moreurl_replacement(stdClass $entry, bool $canmanageentry): string {
-        $url = new moodle_url($this->baseurl, [
+        $url = new url($this->baseurl, [
             'rid' => $entry->id,
             'filter' => 1,
         ]);
@@ -494,7 +494,7 @@ class template {
      */
     protected function get_tag_user_replacement(stdClass $entry, bool $canmanageentry): string {
         $cm = $this->manager->get_coursemodule();
-        $url = new moodle_url('/user/view.php', [
+        $url = new url('/user/view.php', [
             'id' => $entry->userid,
             'course' => $cm->course,
         ]);
@@ -518,7 +518,7 @@ class template {
         $user = user_picture::unalias($entry, null, 'userid');
         // If the record didn't come with user data, retrieve the user from database.
         if (!isset($user->picture)) {
-            $user = core_user::get_user($entry->userid);
+            $user = user::get_user($entry->userid);
         }
         return $OUTPUT->user_picture($user, ['courseid' => $cm->course, 'size' => 64]);
     }
@@ -603,7 +603,7 @@ class template {
         if (!has_capability('mod/data:approve', $context) || !$this->instance->approval || $entry->approved) {
             return '';
         }
-        $url = new moodle_url($this->baseurl, [
+        $url = new url($this->baseurl, [
             'approve' => $entry->id,
             'sesskey' => sesskey(),
         ]);
@@ -627,7 +627,7 @@ class template {
         if (!has_capability('mod/data:approve', $context) || !$this->instance->approval || !$entry->approved) {
             return '';
         }
-        $url = new moodle_url($this->baseurl, [
+        $url = new url($this->baseurl, [
             'disapprove' => $entry->id,
             'sesskey' => sesskey(),
         ]);
@@ -780,11 +780,11 @@ class template {
 
         // Show more.
         if ($this->showmore) {
-            $showmoreurl = new moodle_url($this->baseurl, [
+            $showmoreurl = new url($this->baseurl, [
                 'rid' => $entry->id,
                 'filter' => 1,
             ]);
-            $actionmenu->add(new action_menu_link_secondary(
+            $actionmenu->add(new link_secondary(
                 $showmoreurl,
                 null,
                 get_string('showmore', 'mod_data')
@@ -793,29 +793,29 @@ class template {
 
         if ($canmanageentry) {
             // Edit entry.
-            $backurl = new moodle_url($this->baseurl, [
+            $backurl = new url($this->baseurl, [
                 'rid' => $entry->id,
                 'mode' => 'single',
             ]);
-            $editurl = new moodle_url('/mod/data/edit.php', $this->baseurl->params());
+            $editurl = new url('/mod/data/edit.php', $this->baseurl->params());
             $editurl->params([
                 'rid' => $entry->id,
                 'backto' => urlencode($backurl->out(false))
             ]);
 
-            $actionmenu->add(new action_menu_link_secondary(
+            $actionmenu->add(new link_secondary(
                 $editurl,
                 null,
                 get_string('edit')
             ));
 
             // Delete entry.
-            $deleteurl = new moodle_url($this->baseurl, [
+            $deleteurl = new url($this->baseurl, [
                 'delete' => $entry->id,
                 'mode' => 'single',
             ]);
 
-            $actionmenu->add(new action_menu_link_secondary(
+            $actionmenu->add(new link_secondary(
                 $deleteurl,
                 null,
                 get_string('delete')
@@ -826,21 +826,21 @@ class template {
         $context = $this->manager->get_context();
         if (has_capability('mod/data:approve', $context) && $this->instance->approval) {
             if ($entry->approved) {
-                $disapproveurl = new moodle_url($this->baseurl, [
+                $disapproveurl = new url($this->baseurl, [
                     'disapprove' => $entry->id,
                     'sesskey' => sesskey(),
                 ]);
-                $actionmenu->add(new action_menu_link_secondary(
+                $actionmenu->add(new link_secondary(
                     $disapproveurl,
                     null,
                     get_string('disapprove', 'mod_data')
                 ));
             } else {
-                $approveurl = new moodle_url($this->baseurl, [
+                $approveurl = new url($this->baseurl, [
                     'approve' => $entry->id,
                     'sesskey' => sesskey(),
                 ]);
-                $actionmenu->add(new action_menu_link_secondary(
+                $actionmenu->add(new link_secondary(
                     $approveurl,
                     null,
                     get_string('approve', 'mod_data')
@@ -868,7 +868,7 @@ class template {
                 $button->set_formats($formats);
                 $exporturl = $button->to_html(PORTFOLIO_ADD_MOODLE_URL);
                 if (!is_null($exporturl)) {
-                    $actionmenu->add(new action_menu_link_secondary(
+                    $actionmenu->add(new link_secondary(
                         $exporturl,
                         null,
                         get_string('addtoportfolio', 'portfolio')

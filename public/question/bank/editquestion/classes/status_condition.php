@@ -16,6 +16,7 @@
 
 namespace qbank_editquestion;
 
+use core\exception\moodle_exception;
 use core_question\local\bank\condition;
 use core_question\local\bank\question_version_status;
 
@@ -78,7 +79,7 @@ class status_condition extends condition {
         }
         $statuses = self::get_status_list();
         if (!array_key_exists($filter['values'][0], $statuses)) {
-            throw new \moodle_exception('filter:invalidstatus', 'qbank_editquestion', '', $filter['values'][0]);
+            throw new moodle_exception('filter:invalidstatus', 'qbank_editquestion', '', $filter['values'][0]);
         }
         return [
             'qv.status = :status',

@@ -16,7 +16,7 @@
 
 namespace tool_dataprivacy\task;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core\task\adhoc_task;
 use tool_dataprivacy\api;
 use tool_dataprivacy\contextlist_context;

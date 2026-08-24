@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\context\system;
+
 /**
  * Checkbox for enabling the mobile web service.
  *
@@ -63,7 +65,7 @@ class enablemobileservice extends \core_admin\setting\setting\configcheckbox {
             $assign = true;
         }
         if (!empty($assign)) {
-            $systemcontext = \context_system::instance();
+            $systemcontext = system::instance();
             assign_capability('webservice/rest:use', $permission, $CFG->defaultuserroleid, $systemcontext->id, true);
         }
     }

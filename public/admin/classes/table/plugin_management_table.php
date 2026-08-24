@@ -16,12 +16,13 @@
 
 namespace core_admin\table;
 
-use context_system;
-use core_plugin_manager;
+use core\context\system;
+use core\output\renderable;
+use core\plugin_manager;
 use core_table\dynamic as dynamic_table;
-use flexible_table;
-use html_writer;
-use moodle_url;
+use core_table\flexible_table;
+use core\output\html_writer;
+use core\url;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -42,7 +43,7 @@ abstract class plugin_management_table extends flexible_table implements dynamic
     protected int $enabledplugincount = 0;
 
     /** @var core_plugin_manager */
-    protected core_plugin_manager $pluginmanager;
+    protected plugin_manager $pluginmanager;
 
     /** @var string The plugininfo class for this plugintype */
     protected string $plugininfoclass;
@@ -54,7 +55,7 @@ abstract class plugin_management_table extends flexible_table implements dynamic
         require_once($CFG->libdir . '/adminlib.php');
 
         // Fetch the plugininfo class.
-        $this->pluginmanager = core_plugin_manager::instance();
+        $this->pluginmanager = plugin_manager::instance();
         $this->plugininfoclass = $this->pluginmanager::resolve_plugininfo_class($this->get_plugintype());
 
         $this->guess_base_url();
@@ -107,7 +108,7 @@ abstract class plugin_management_table extends flexible_table implements dynamic
         $this->define_headers(array_values($columnlist));
 
         $columnswithhelp = $this->get_columns_with_help();
-        $columnhelp = array_map(function (string $column) use ($columnswithhelp): ?\renderable {
+        $columnhelp = array_map(function (string $column) use ($columnswithhelp): ?renderable {
             if (array_key_exists($column, $columnswithhelp)) {
                 return $columnswithhelp[$column];
             }
@@ -151,7 +152,7 @@ abstract class plugin_management_table extends flexible_table implements dynamic
      * @param array $params
      * @return moodle_url
      */
-    abstract protected function get_action_url(array $params = []): moodle_url;
+    abstract protected function get_action_url(array $params = []): url;
 
     /**
      * Provide a default implementation for guessing the base URL from the action URL.
@@ -220,8 +221,8 @@ abstract class plugin_management_table extends flexible_table implements dynamic
      *
      * @return context_system
      */
-    public function get_context(): context_system {
-        return context_system::instance();
+    public function get_context(): system {
+        return system::instance();
     }
 
     /**
@@ -275,7 +276,7 @@ abstract class plugin_management_table extends flexible_table implements dynamic
      */
     protected function col_name(stdClass $row): string {
         $status = $row->plugininfo->get_status();
-        if ($status === core_plugin_manager::PLUGIN_STATUS_MISSING) {
+        if ($status === plugin_manager::PLUGIN_STATUS_MISSING) {
             return html_writer::span(
                 get_string('pluginmissingfromdisk', 'core', $row->plugininfo),
                 'notifyproblem'
@@ -421,11 +422,11 @@ abstract class plugin_management_table extends flexible_table implements dynamic
     protected function col_uninstall(stdClass $row): string {
         $status = $row->plugininfo->get_status();
 
-        if ($status === core_plugin_manager::PLUGIN_STATUS_NEW) {
+        if ($status === plugin_manager::PLUGIN_STATUS_NEW) {
             return get_string('status_new', 'core_plugin');
         }
 
-        if ($status === core_plugin_manager::PLUGIN_STATUS_MISSING) {
+        if ($status === plugin_manager::PLUGIN_STATUS_MISSING) {
             $uninstall = get_string('status_missing', 'core_plugin') . '<br/>';
         } else {
             $uninstall = '';
@@ -469,7 +470,7 @@ abstract class plugin_management_table extends flexible_table implements dynamic
      */
     protected function get_row_class($row): string {
         $plugininfo = $row->plugininfo;
-        if ($plugininfo->get_status() === core_plugin_manager::PLUGIN_STATUS_MISSING) {
+        if ($plugininfo->get_status() === plugin_manager::PLUGIN_STATUS_MISSING) {
             return '';
         }
 

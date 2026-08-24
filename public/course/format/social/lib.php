@@ -23,6 +23,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\navigation\navigation_node;
+use core\url;
+use core_course\section_info;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot. '/course/format/lib.php');
 
@@ -44,7 +49,7 @@ class format_social extends core_courseformat\base {
      * @return moodle_url
      */
     public function get_view_url($section, $options = []) {
-        return new moodle_url('/course/view.php', ['id' => $this->courseid]);
+        return new url('/course/view.php', ['id' => $this->courseid]);
     }
 
     /**

@@ -16,7 +16,8 @@
 
 namespace tool_usertours;
 
-use context_system;
+use core\context\system;
+use core\output\html_writer;
 use stdClass;
 
 /**
@@ -475,7 +476,7 @@ class step {
      * @return array List of files.
      */
     protected function embed_files(): array {
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $fs = get_file_storage();
         $areafiles = $fs->get_area_files($systemcontext->id, 'tool_usertours', 'stepcontent', $this->id);
         $files = [];
@@ -501,7 +502,7 @@ class step {
      */
     protected function extract_files() {
         $fs = get_file_storage();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         foreach ($this->files as $file) {
             $filename = $file->name;
             $filepath = $file->path;
@@ -580,7 +581,7 @@ class step {
             $this->get_tour()->reset_step_sortorder();
         }
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         if ($draftid = file_get_submitted_draft_itemid('content')) {
             // Take any files added to the stepcontent draft file area and
             // convert them into the proper event description file area. Also
@@ -734,7 +735,7 @@ class step {
 
         // Prepare content for editing in a form 'editor' field type.
         $draftitemid = file_get_submitted_draft_itemid('tool_usertours');
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $data->content = [
             'format' => $data->contentformat,
             'itemid' => $draftitemid,
@@ -819,7 +820,7 @@ class step {
                 if ($component == 'moodle') {
                     $component = 'core';
                 }
-                return \html_writer::img(
+                return html_writer::img(
                     $OUTPUT->image_url($matches['identifier'], $component)->out(false),
                     '',
                     ['class' => 'img-fluid']

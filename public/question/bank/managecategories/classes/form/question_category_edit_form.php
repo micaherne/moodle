@@ -16,12 +16,12 @@
 
 namespace qbank_managecategories\form;
 
-use context;
-use context_module;
-use context_course;
+use core\context;
+use core\context\module;
+use core\context\course;
 use qbank_managecategories\helper;
-use moodle_exception;
-use moodle_url;
+use core\exception\moodle_exception;
+use core\url;
 use core_question\local\bank\question_edit_contexts;
 use qbank_managecategories\output\category;
 use core_question\category_manager;
@@ -72,7 +72,7 @@ class question_category_edit_form extends \core_form\dynamic_form {
         $cmid = isset($this->_ajaxformdata['cmid']) ? (int)$this->_ajaxformdata['cmid'] : 0;
         $courseid = isset($this->_ajaxformdata['courseid']) ? (int)$this->_ajaxformdata['courseid'] : 0;
         if ($cmid !== 0) {
-            $thiscontext = context_module::instance($cmid);
+            $thiscontext = module::instance($cmid);
         }
 
         return [$currentcat, $cmid, $courseid, $thiscontext, [$thiscontext]];
@@ -291,7 +291,7 @@ class question_category_edit_form extends \core_form\dynamic_form {
     }
 
     #[\Override]
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
+    protected function get_page_url_for_dynamic_submission(): url {
         $params = [];
         $cmid = isset($this->_ajaxformdata['cmid']) ? (int)$this->_ajaxformdata['cmid'] : 0;
         $courseid = isset($this->_ajaxformdata['courseid']) ? (int)$this->_ajaxformdata['courseid'] : 0;
@@ -302,6 +302,6 @@ class question_category_edit_form extends \core_form\dynamic_form {
         if ($courseid !== 0) {
             $params['courseid'] = $courseid;
         }
-        return new moodle_url('/question/bank/managecategories/category.php', $params);
+        return new url('/question/bank/managecategories/category.php', $params);
     }
 }

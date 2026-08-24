@@ -16,6 +16,8 @@
 
 namespace core_mocksearch\search;
 
+use core\url;
+
 /**
  * Component implementing search for testing purposes.
  *
@@ -124,11 +126,11 @@ class mock_search_area extends \core_search\base {
     }
 
     public function get_doc_url(\core_search\document $doc) {
-        return new \moodle_url('/index.php');
+        return new url('/index.php');
     }
 
     public function get_context_url(\core_search\document $doc) {
-        return new \moodle_url('/index.php');
+        return new url('/index.php');
     }
 
     public function get_visible_name($lazyload = false) {

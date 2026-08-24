@@ -24,7 +24,9 @@
  */
 
 namespace core\files;
+use core\exception\moodle_exception;
 use core\ip_utils;
+use core\url;
 
 defined('MOODLE_INTERNAL') || exit();
 
@@ -97,11 +99,11 @@ class curl_security_helper extends curl_security_helper_base {
 
         // Try to parse the URL to get the 'host' and 'port' components.
         try {
-            $url = new \moodle_url($urlstring);
+            $url = new url($urlstring);
             $parsed['scheme'] = $url->get_scheme();
             $parsed['host'] = $url->get_host();
             $parsed['port'] = $url->get_port();
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             // Moodle exception is thrown if the $urlstring is invalid. Treat as blocked.
             return true;
         }

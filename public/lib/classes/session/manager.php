@@ -17,8 +17,12 @@
 namespace core\session;
 
 use core\clock;
+use core\context;
 use core\di;
-use html_writer;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
 
 /**
  * Session manager, this is the public Moodle API for sessions.
@@ -274,7 +278,7 @@ class manager {
             if (!empty($CFG->enable_read_only_sessions) && isset($_SESSION['SESSION']->cachestore_session)) {
                 $caches = join(', ', array_keys($_SESSION['SESSION']->cachestore_session));
                 $caches = str_replace('default_session-', '', $caches);
-                throw new \moodle_exception("The session caches can not be in the session store when "
+                throw new moodle_exception("The session caches can not be in the session store when "
                     . "enable_read_only_sessions is enabled. Please map all session mode caches to be outside of the "
                     . "default session store before enabling this features. Found these definitions in the session: $caches");
             }
@@ -1077,7 +1081,7 @@ class manager {
 
         try {
             $result = self::$handler->destroy_all();
-        } catch (\moodle_exception $ignored) {
+        } catch (moodle_exception $ignored) {
             // Do not show any warnings - might be during upgrade/installation.
             $result = true;
         }
@@ -1248,7 +1252,7 @@ class manager {
      * @param bool $generateevent Set to false to prevent the loginas event to be generated
      * @return void
      */
-    public static function loginas($userid, \context $context, $generateevent = true) {
+    public static function loginas($userid, context $context, $generateevent = true) {
         global $USER;
 
         if (self::is_loggedinas()) {
@@ -1329,14 +1333,14 @@ class manager {
         if ($frequency) {
             if ($frequency > $CFG->sessiontimeout) {
                 // Sanity check the frequency.
-                throw new \coding_exception('Keepalive frequency is longer than the session lifespan.');
+                throw new coding_exception('Keepalive frequency is longer than the session lifespan.');
             }
         } else {
             // A frequency of sessiontimeout / 10 matches the timeouts in core/network amd module.
             $frequency = $CFG->sessiontimeout / 10;
         }
 
-        if ($redirect instanceof \moodle_url) {
+        if ($redirect instanceof url) {
             $redirect = $redirect->out();
         }
 

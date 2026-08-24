@@ -16,7 +16,10 @@
 
 namespace core;
 
-use context_course;
+use core\context\course;
+use core\context\module;
+use core\navigation\navigation_node;
+use core\output\html_writer;
 use stdClass;
 
 /**
@@ -38,7 +41,7 @@ class report_helper {
     public static function print_report_selector(string $pluginname, string $additional = ''): void {
         global $OUTPUT, $PAGE;
 
-        if ($reportnode = $PAGE->settingsnav->find('coursereports', \navigation_node::TYPE_CONTAINER)) {
+        if ($reportnode = $PAGE->settingsnav->find('coursereports', navigation_node::TYPE_CONTAINER)) {
 
             $menuarray = \core\navigation\views\secondary::create_menu_element([$reportnode]);
             if (empty($menuarray)) {
@@ -71,18 +74,18 @@ class report_helper {
             }
             $selectmenu = new \core\output\select_menu('reporttype', $menuarray, $activeurl, true);
             $selectmenu->set_label(get_string('reporttype'), ['class' => 'visually-hidden']);
-            $options = \html_writer::tag(
+            $options = html_writer::tag(
                 'div',
                 $OUTPUT->render_from_template('core/tertiary_navigation_selector', $selectmenu->export_for_template($OUTPUT)),
                 ['class' => 'navitem']
             );
 
             if ($additional) {
-                $options .= \html_writer::div('', 'navitem-divider') .
-                    \html_writer::div($additional, 'navitem');
+                $options .= html_writer::div('', 'navitem-divider') .
+                    html_writer::div($additional, 'navitem');
             }
 
-            echo \html_writer::tag(
+            echo html_writer::tag(
                 'div',
                 $options,
                 ['class' => 'tertiary-navigation full-width-bottom-border ms-0 d-flex', 'id' => 'tertiary-navigation']);
@@ -111,7 +114,7 @@ class report_helper {
         $course = get_course($courseid);
         $groupmode = groups_get_course_groupmode($course);
         $groupid = $filterparams->groupid ?? 0;
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
         if ($groupid || ($groupmode == SEPARATEGROUPS && !has_capability('moodle/site:accessallgroups', $context))) {
             if ($groupid) {
                 $cgroups = [(int) $groupid];
@@ -166,16 +169,16 @@ class report_helper {
      * @param int|null $userid user id to check, if null the current user is used
      * @return bool true if the user is in a valid group (i.e. belongs to a group in SEPARATEGROUPS MODE), false otherwise
      */
-    public static function has_valid_group(\context $context, ?int $userid = null): bool {
+    public static function has_valid_group(context $context, ?int $userid = null): bool {
         global $USER;
 
         $userid = $userid ?? $USER->id;
 
-        if ($context instanceof context_course) {
+        if ($context instanceof course) {
             $courseid = $context->instanceid;
             $course = get_course($courseid);
             $groupmode = $course->groupmode;
-        } else if ($context instanceof \context_module) {
+        } else if ($context instanceof module) {
             $courseid = $context->get_course_context()->instanceid;
             $modinfo = get_fast_modinfo($courseid);
             $cm = $modinfo->get_cm($context->instanceid);

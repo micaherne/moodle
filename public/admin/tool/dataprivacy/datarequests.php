@@ -22,6 +22,8 @@
  * @package tool_dataprivacy
  */
 
+use core\url;
+
 require_once("../../../config.php");
 require_once('lib.php');
 
@@ -29,7 +31,7 @@ require_login(null, false);
 
 $perpage = optional_param('perpage', 0, PARAM_INT);
 
-$url = new moodle_url('/admin/tool/dataprivacy/datarequests.php');
+$url = new url('/admin/tool/dataprivacy/datarequests.php');
 
 $title = get_string('datarequests', 'tool_dataprivacy');
 

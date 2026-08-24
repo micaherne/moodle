@@ -16,6 +16,7 @@
 
 namespace core_user;
 
+use core\context\course;
 use testable_user_selector;
 
 defined('MOODLE_INTERNAL') || die();
@@ -50,7 +51,7 @@ final class userselector_test extends \advanced_testcase {
         $env->manager = $this->getDataGenerator()->create_user();
 
         $env->course = $this->getDataGenerator()->create_course();
-        $env->coursecontext = \context_course::instance($env->course->id);
+        $env->coursecontext = course::instance($env->course->id);
 
         $env->teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
         $env->studentrole = $DB->get_record('role', array('shortname' => 'student'));

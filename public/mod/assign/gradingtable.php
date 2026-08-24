@@ -22,6 +22,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\output\html_writer;
+use core\output\paging_bar;
+use core\output\renderable;
+use core\url;
+use core\user;
+use core_table\sql_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/tablelib.php');
@@ -35,7 +44,7 @@ require_once($CFG->dirroot.'/mod/assign/locallib.php');
  * @copyright 2012 NetSpot {@link http://www.netspot.com.au}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class assign_grading_table extends table_sql implements renderable {
+class assign_grading_table extends sql_table implements renderable {
     /** @var assign $assignment */
     private $assignment = null;
     /** @var int $perpage */
@@ -105,7 +114,7 @@ class assign_grading_table extends table_sql implements renderable {
         $this->output = $PAGE->get_renderer('mod_assign');
 
         $urlparams = array('action' => 'grading', 'id' => $assignment->get_course_module()->id);
-        $url = new moodle_url($CFG->wwwroot . '/mod/assign/view.php', $urlparams);
+        $url = new url($CFG->wwwroot . '/mod/assign/view.php', $urlparams);
         $this->define_baseurl($url);
 
         // Do some business - then set the sql.
@@ -119,7 +128,7 @@ class assign_grading_table extends table_sql implements renderable {
         $groupid = groups_get_course_group($assignment->get_course(), true);
         // If the user ID is set, it indicates that a user has been selected. In this case, override the user search
         // string with the full name of the selected user.
-        $usersearch = $userid ? fullname(\core_user::get_user($userid)) : optional_param('search', '', PARAM_NOTAGS);
+        $usersearch = $userid ? fullname(user::get_user($userid)) : optional_param('search', '', PARAM_NOTAGS);
         $assignment->set_usersearch($userid, $groupid, $usersearch);
         $users = array_keys( $assignment->list_participants($currentgroup, true));
         if (count($users) == 0) {
@@ -981,7 +990,7 @@ class assign_grading_table extends table_sql implements renderable {
     public function col_fullname($row) {
         if (!$this->is_downloading()) {
             $courseid = $this->assignment->get_course()->id;
-            $fullname = $this->output->render(\core_user::get_profile_picture($row, null,
+            $fullname = $this->output->render(user::get_profile_picture($row, null,
                 ['courseid' => $courseid, 'includefullname' => true]));
         } else {
             $fullname = $this->assignment->fullname($row);
@@ -1106,7 +1115,7 @@ class assign_grading_table extends table_sql implements renderable {
             } else {
                 $urlparams['userid'] = $row->userid;
             }
-            $url = new moodle_url('/mod/assign/view.php', $urlparams);
+            $url = new url('/mod/assign/view.php', $urlparams);
 
             // The container with the grade information.
             $gradecontainer = $this->output->container($displaygrade, 'w-100');
@@ -1119,7 +1128,7 @@ class assign_grading_table extends table_sql implements renderable {
             // Prioritise the menu ahead of all other actions.
             $menu->prioritise = true;
             // Add the 'Grade' action item to the contextual menu.
-            $menu->add(new action_menu_link_secondary($url, null, get_string('gradeverb')));
+            $menu->add(new link_secondary($url, null, get_string('gradeverb')));
             // The contextual menu container.
             $contextualmenucontainer = $this->output->container($this->output->render($menu), 'd-flex');
 
@@ -1211,7 +1220,7 @@ class assign_grading_table extends table_sql implements renderable {
                 } else {
                     $urlparams['userid'] = $row->userid;
                 }
-                $url = new moodle_url('/mod/assign/view.php', $urlparams);
+                $url = new url('/mod/assign/view.php', $urlparams);
 
                 // The container with the grade information.
                 $gradecontainer = $this->output->container($displaymark, 'w-100');
@@ -1245,7 +1254,7 @@ class assign_grading_table extends table_sql implements renderable {
                     // Prioritise the menu ahead of all other actions.
                     $menu->prioritise = true;
                     // Add the 'Mark' action item to the contextual menu.
-                    $menu->add(new action_menu_link_secondary($url, null, get_string('markverb', 'assign')));
+                    $menu->add(new link_secondary($url, null, get_string('markverb', 'assign')));
                     // The contextual menu container.
                     $contextualmenucontainer = $this->output->container($this->output->render($menu), 'd-flex');
                     return $allocatedmarker .
@@ -1394,7 +1403,7 @@ class assign_grading_table extends table_sql implements renderable {
                 $urlparams['userid'] = $row->userid;
             }
 
-            $baseactionurl = new moodle_url('/mod/assign/view.php', $urlparams);
+            $baseactionurl = new url('/mod/assign/view.php', $urlparams);
 
             $menu = new action_menu();
             $menu->set_owner_selector('.gradingtable-actionmenu');
@@ -1411,7 +1420,7 @@ class assign_grading_table extends table_sql implements renderable {
                     // Edit submission action link.
                     $baseactionurl->param('action', 'editsubmission');
                     $description = get_string('editsubmission', 'assign');
-                    $menu->add(new action_menu_link_secondary($baseactionurl, null, $description));
+                    $menu->add(new link_secondary($baseactionurl, null, $description));
                 }
 
                 if (!$row->status || $row->status == ASSIGN_SUBMISSION_STATUS_DRAFT
@@ -1420,7 +1429,7 @@ class assign_grading_table extends table_sql implements renderable {
                     $baseactionurl->param('action', $row->locked ? 'unlock' : 'lock');
                     $description = $row->locked ? get_string('allowsubmissionsshort', 'assign') :
                         get_string('preventsubmissionsshort', 'assign');
-                    $menu->add(new action_menu_link_secondary($baseactionurl, null, $description));
+                    $menu->add(new link_secondary($baseactionurl, null, $description));
                 }
             }
 
@@ -1429,7 +1438,7 @@ class assign_grading_table extends table_sql implements renderable {
                 // Grant extension action link.
                 $baseactionurl->param('action', 'grantextension');
                 $description = get_string('grantextension', 'assign');
-                $menu->add(new action_menu_link_secondary($baseactionurl, null, $description));
+                $menu->add(new link_secondary($baseactionurl, null, $description));
             }
 
             if ($row->status == ASSIGN_SUBMISSION_STATUS_SUBMITTED &&
@@ -1437,7 +1446,7 @@ class assign_grading_table extends table_sql implements renderable {
                 // Revert submission to draft action link.
                 $baseactionurl->param('action', 'reverttodraft');
                 $description = get_string('reverttodraftshort', 'assign');
-                $menu->add(new action_menu_link_secondary($baseactionurl, null, $description));
+                $menu->add(new link_secondary($baseactionurl, null, $description));
             }
 
             if ($row->status == ASSIGN_SUBMISSION_STATUS_DRAFT && $this->assignment->get_instance()->submissiondrafts &&
@@ -1445,7 +1454,7 @@ class assign_grading_table extends table_sql implements renderable {
                 // Submit for grading action link.
                 $baseactionurl->param('action', 'submitotherforgrading');
                 $description = get_string('submitforgrading', 'assign');
-                $menu->add(new action_menu_link_secondary($baseactionurl, null, $description));
+                $menu->add(new link_secondary($baseactionurl, null, $description));
             }
 
             $ismanual = $this->assignment->get_instance()->attemptreopenmethod == ASSIGN_ATTEMPT_REOPEN_METHOD_MANUAL;
@@ -1458,7 +1467,7 @@ class assign_grading_table extends table_sql implements renderable {
                 // Allow another attempt action link.
                 $baseactionurl->param('action', 'addattempt');
                 $description = get_string('addattempt', 'assign');
-                $menu->add(new action_menu_link_secondary($baseactionurl, null, $description));
+                $menu->add(new link_secondary($baseactionurl, null, $description));
             }
 
             if ($this->assignment->is_any_submission_plugin_enabled()) {
@@ -1467,7 +1476,7 @@ class assign_grading_table extends table_sql implements renderable {
                     // within the contextual menu.
                     $baseactionurl->param('action', 'removesubmissionconfirm');
                     $description = get_string('removesubmission', 'assign');
-                    $menu->add(new action_menu_link_secondary($baseactionurl, null, $description,
+                    $menu->add(new link_secondary($baseactionurl, null, $description,
                         ['class' => 'text-danger']));
                 }
             }
@@ -1624,7 +1633,7 @@ class assign_grading_table extends table_sql implements renderable {
         } else {
             $urlparams['userid'] = $row->userid;
         }
-        $url = new moodle_url('/mod/assign/view.php', $urlparams);
+        $url = new url('/mod/assign/view.php', $urlparams);
         $noimage = null;
 
         if (!$row->grade) {
@@ -1632,7 +1641,7 @@ class assign_grading_table extends table_sql implements renderable {
         } else {
             $description = get_string('updategrade', 'assign');
         }
-        $actions['grade'] = new action_menu_link_secondary(
+        $actions['grade'] = new link_secondary(
             $url,
             $noimage,
             $description
@@ -1667,10 +1676,10 @@ class assign_grading_table extends table_sql implements renderable {
                         'action' => 'lock',
                         'sesskey' => sesskey(),
                         'page' => $this->currpage);
-                    $url = new moodle_url('/mod/assign/view.php', $urlparams);
+                    $url = new url('/mod/assign/view.php', $urlparams);
 
                     $description = get_string('preventsubmissionsshort', 'assign');
-                    $actions['lock'] = new action_menu_link_secondary(
+                    $actions['lock'] = new link_secondary(
                         $url,
                         $noimage,
                         $description
@@ -1681,9 +1690,9 @@ class assign_grading_table extends table_sql implements renderable {
                         'action' => 'unlock',
                         'sesskey' => sesskey(),
                         'page' => $this->currpage);
-                    $url = new moodle_url('/mod/assign/view.php', $urlparams);
+                    $url = new url('/mod/assign/view.php', $urlparams);
                     $description = get_string('allowsubmissionsshort', 'assign');
-                    $actions['unlock'] = new action_menu_link_secondary(
+                    $actions['unlock'] = new link_secondary(
                         $url,
                         $noimage,
                         $description
@@ -1699,9 +1708,9 @@ class assign_grading_table extends table_sql implements renderable {
                     'action' => 'editsubmission',
                     'sesskey' => sesskey(),
                     'page' => $this->currpage);
-                $url = new moodle_url('/mod/assign/view.php', $urlparams);
+                $url = new url('/mod/assign/view.php', $urlparams);
                 $description = get_string('editsubmission', 'assign');
-                $actions['editsubmission'] = new action_menu_link_secondary(
+                $actions['editsubmission'] = new link_secondary(
                     $url,
                     $noimage,
                     $description
@@ -1715,9 +1724,9 @@ class assign_grading_table extends table_sql implements renderable {
                     'action' => 'removesubmissionconfirm',
                     'sesskey' => sesskey(),
                     'page' => $this->currpage);
-                $url = new moodle_url('/mod/assign/view.php', $urlparams);
+                $url = new url('/mod/assign/view.php', $urlparams);
                 $description = get_string('removesubmission', 'assign');
-                $actions['removesubmission'] = new action_menu_link_secondary(
+                $actions['removesubmission'] = new link_secondary(
                     $url,
                     $noimage,
                     $description
@@ -1732,9 +1741,9 @@ class assign_grading_table extends table_sql implements renderable {
                 'action' => 'grantextension',
                 'sesskey' => sesskey(),
                 'page' => $this->currpage);
-            $url = new moodle_url('/mod/assign/view.php', $urlparams);
+            $url = new url('/mod/assign/view.php', $urlparams);
             $description = get_string('grantextension', 'assign');
-            $actions['grantextension'] = new action_menu_link_secondary(
+            $actions['grantextension'] = new link_secondary(
                 $url,
                 $noimage,
                 $description
@@ -1747,9 +1756,9 @@ class assign_grading_table extends table_sql implements renderable {
                 'action' => 'reverttodraft',
                 'sesskey' => sesskey(),
                 'page' => $this->currpage);
-            $url = new moodle_url('/mod/assign/view.php', $urlparams);
+            $url = new url('/mod/assign/view.php', $urlparams);
             $description = get_string('reverttodraftshort', 'assign');
-            $actions['reverttodraft'] = new action_menu_link_secondary(
+            $actions['reverttodraft'] = new link_secondary(
                 $url,
                 $noimage,
                 $description
@@ -1765,9 +1774,9 @@ class assign_grading_table extends table_sql implements renderable {
                 'action' => 'submitotherforgrading',
                 'sesskey' => sesskey(),
                 'page' => $this->currpage);
-            $url = new moodle_url('/mod/assign/view.php', $urlparams);
+            $url = new url('/mod/assign/view.php', $urlparams);
             $description = get_string('submitforgrading', 'assign');
-            $actions['submitforgrading'] = new action_menu_link_secondary(
+            $actions['submitforgrading'] = new link_secondary(
                 $url,
                 $noimage,
                 $description
@@ -1786,9 +1795,9 @@ class assign_grading_table extends table_sql implements renderable {
                 'action' => 'addattempt',
                 'sesskey' => sesskey(),
                 'page' => $this->currpage);
-            $url = new moodle_url('/mod/assign/view.php', $urlparams);
+            $url = new url('/mod/assign/view.php', $urlparams);
             $description = get_string('addattempt', 'assign');
-            $actions['addattempt'] = new action_menu_link_secondary(
+            $actions['addattempt'] = new link_secondary(
                 $url,
                 $noimage,
                 $description
@@ -1857,7 +1866,7 @@ class assign_grading_table extends table_sql implements renderable {
             if (self::is_plugin_marker_column($colname)) {
                 $urlparams['markid'] = $markid;
             }
-            $url = new moodle_url('/mod/assign/view.php', $urlparams);
+            $url = new url('/mod/assign/view.php', $urlparams);
             $link = $this->output->action_link($url, $icon);
             $separator = $this->output->spacer(array(), true);
         }

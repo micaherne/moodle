@@ -24,6 +24,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\plugin_manager;
+
 define('AJAX_SCRIPT', true);
 
 require(__DIR__ . '/../../../config.php');
@@ -31,7 +34,7 @@ require_once($CFG->libdir.'/adminlib.php');
 
 require_login(null, false);
 
-if (!has_capability('moodle/site:config', context_system::instance())) {
+if (!has_capability('moodle/site:config', system::instance())) {
     header('HTTP/1.1 403 Forbidden');
     die();
 }
@@ -52,7 +55,7 @@ if (is_null($plugintype)) {
     die();
 }
 
-$pluginman = core_plugin_manager::instance();
+$pluginman = plugin_manager::instance();
 
 $plugintypepath = $pluginman->get_plugintype_root($plugintype);
 

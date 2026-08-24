@@ -16,6 +16,7 @@
 
 namespace core_analytics;
 
+use core_cache\cache;
 use test_timesplitting_seconds;
 use test_timesplitting_upcoming_seconds;
 
@@ -380,7 +381,7 @@ final class time_splittings_test extends \advanced_testcase {
      * @return null
      */
     private function mock_cache_first_analysis_caching($modelid, $analysableid, $range) {
-        $cache = \cache::make('core', 'modelfirstanalyses');
+        $cache = cache::make('core', 'modelfirstanalyses');
         $cache->set($modelid . '_' . $analysableid, $range['time']);
     }
 }

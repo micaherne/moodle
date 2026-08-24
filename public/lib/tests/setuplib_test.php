@@ -16,6 +16,8 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
+
 /**
  * Unit tests for setuplib.php
  *
@@ -84,7 +86,7 @@ final class setuplib_test extends \advanced_testcase {
                 $expected .= "[$cfgname] ";
             }
         }
-        $exception     = new \moodle_exception('generalexceptionmessage', 'error', '', $fixture, $fixture);
+        $exception     = new moodle_exception('generalexceptionmessage', 'error', '', $fixture, $fixture);
         $exceptioninfo = get_exception_info($exception);
 
         $this->assertStringContainsString($expected, $exceptioninfo->message,
@@ -364,45 +366,45 @@ final class setuplib_test extends \advanced_testcase {
 
         // Simple local URL.
         $url = $CFG->wwwroot . '/something/here?really=yes';
-        $exception = new \moodle_exception('none', 'error', $url);
+        $exception = new moodle_exception('none', 'error', $url);
         $infos = $this->get_exception_info($exception);
         $this->assertSame($url, $infos->link);
 
         // Relative local URL.
         $url = '/something/here?really=yes';
-        $exception = new \moodle_exception('none', 'error', $url);
+        $exception = new moodle_exception('none', 'error', $url);
         $infos = $this->get_exception_info($exception);
         $this->assertSame($CFG->wwwroot . '/', $infos->link);
 
         // HTTPS URL when login HTTPS is not enabled (default) and site is HTTP.
         $CFG->wwwroot = str_replace('https:', 'http:', $CFG->wwwroot);
         $url = $httpswwwroot . '/something/here?really=yes';
-        $exception = new \moodle_exception('none', 'error', $url);
+        $exception = new moodle_exception('none', 'error', $url);
         $infos = $this->get_exception_info($exception);
         $this->assertSame($CFG->wwwroot . '/', $infos->link);
 
         // HTTPS URL when login HTTPS is not enabled and site is HTTPS.
         $CFG->wwwroot = str_replace('http:', 'https:', $CFG->wwwroot);
         $url = $httpswwwroot . '/something/here?really=yes';
-        $exception = new \moodle_exception('none', 'error', $url);
+        $exception = new moodle_exception('none', 'error', $url);
         $infos = $this->get_exception_info($exception);
         $this->assertSame($url, $infos->link);
 
         // External HTTP URL.
         $url = 'http://moodle.org/something/here?really=yes';
-        $exception = new \moodle_exception('none', 'error', $url);
+        $exception = new moodle_exception('none', 'error', $url);
         $infos = $this->get_exception_info($exception);
         $this->assertSame($CFG->wwwroot . '/', $infos->link);
 
         // External HTTPS URL.
         $url = 'https://moodle.org/something/here?really=yes';
-        $exception = new \moodle_exception('none', 'error', $url);
+        $exception = new moodle_exception('none', 'error', $url);
         $infos = $this->get_exception_info($exception);
         $this->assertSame($CFG->wwwroot . '/', $infos->link);
 
         // External URL containing local URL.
         $url = 'http://moodle.org/something/here?' . $CFG->wwwroot;
-        $exception = new \moodle_exception('none', 'error', $url);
+        $exception = new moodle_exception('none', 'error', $url);
         $infos = $this->get_exception_info($exception);
         $this->assertSame($CFG->wwwroot . '/', $infos->link);
     }
@@ -416,7 +418,7 @@ final class setuplib_test extends \advanced_testcase {
     public function get_exception_info($ex) {
         try {
             throw $ex;
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             return get_exception_info($e);
         }
     }

@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\user;
+use core\output\html_writer;
+use core\url;
 use core_user\output\myprofile\tree;
 
 require_once($CFG->dirroot . '/grade/report/lib.php');
@@ -187,7 +191,7 @@ function grade_report_user_profilereport(object $course, object $user, bool $vie
         echo $OUTPUT->render($taskindicator);
     } else if (!empty($course->showgrades)) {
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // Fetch the return tracking object.
         $gpr = new grade_plugin_return(
@@ -219,14 +223,14 @@ function gradereport_user_myprofile_navigation(tree $tree, stdClass $user, bool 
         // We want to display these reports under the site context.
         $course = get_fast_modinfo(SITEID)->get_course();
     }
-    $usercontext = context_user::instance($user->id);
+    $usercontext = user::instance($user->id);
     $anyreport = has_capability('moodle/user:viewuseractivitiesreport', $usercontext);
 
     // Start capability checks.
     if ($anyreport || $iscurrentuser) {
         // Add grade hardcoded grade report if necessary.
         $gradeaccess = false;
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         if (has_capability('moodle/grade:viewall', $coursecontext)) {
             // Can view all course grades.
             $gradeaccess = true;
@@ -243,7 +247,7 @@ function gradereport_user_myprofile_navigation(tree $tree, stdClass $user, bool 
             }
         }
         if ($gradeaccess) {
-            $url = new moodle_url('/course/user.php', array('mode' => 'grade', 'id' => $course->id, 'user' => $user->id));
+            $url = new url('/course/user.php', array('mode' => 'grade', 'id' => $course->id, 'user' => $user->id));
             $node = new core_user\output\myprofile\node('reports', 'grade', get_string('grades'), null, $url);
             $tree->add_node($node);
         }
@@ -261,7 +265,7 @@ function gradereport_user_myprofile_navigation(tree $tree, stdClass $user, bool 
  * @param ?stdClass $templatecontext Template context
  * @return stdClass|null
  */
-function gradereport_user_get_report_link(context_course $context, int $courseid, array $element,
+function gradereport_user_get_report_link(course $context, int $courseid, array $element,
         grade_plugin_return $gpr, string $mode, ?stdClass $templatecontext): ?stdClass {
     global $CFG;
 
@@ -279,7 +283,7 @@ function gradereport_user_get_report_link(context_course $context, int $courseid
         }
 
         if ($canseeuserreport) {
-            $url = new moodle_url('/grade/report/' . $CFG->grade_profilereport . '/index.php',
+            $url = new url('/grade/report/' . $CFG->grade_profilereport . '/index.php',
                 ['userid' => $element['userid'], 'id' => $courseid]);
             $gpr->add_url_params($url);
             $templatecontext->reporturl1 = html_writer::link($url, $reportstring,

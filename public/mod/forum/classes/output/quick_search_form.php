@@ -25,11 +25,11 @@
 namespace mod_forum\output;
 defined('MOODLE_INTERNAL') || die();
 
-use help_icon;
-use moodle_url;
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\help_icon;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Quick search form renderable class.
@@ -58,7 +58,7 @@ class quick_search_form implements renderable, templatable {
     public function __construct($courseid, $query = '') {
         $this->courseid = $courseid;
         $this->query = $query;
-        $this->actionurl = new moodle_url('/mod/forum/search.php');
+        $this->actionurl = new url('/mod/forum/search.php');
         $this->helpicon = new help_icon('search', 'core');
     }
 

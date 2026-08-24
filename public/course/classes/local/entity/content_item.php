@@ -24,6 +24,8 @@
  */
 namespace core_course\local\entity;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -60,7 +62,7 @@ class content_item {
         /** @var title $title the title. */
         private title $title,
         /** @var \moodle_url $link the url for the content item's setup page (usually mod/edit.php). */
-        private \moodle_url $link,
+        private url $link,
         /** @var string $icon an html string containing the icon for this item. */
         private string $icon,
         /** @var string $help the description/help text for this content item. */
@@ -144,7 +146,7 @@ class content_item {
      *
      * @return \moodle_url
      */
-    public function get_link(): \moodle_url {
+    public function get_link(): url {
         return $this->link;
     }
 

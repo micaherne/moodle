@@ -16,6 +16,8 @@
 
 namespace search_solr;
 
+use core\exception\coding_exception;
+
 /**
  * Solr search engine unit tests that can operate using a mock http_client and without creating a
  * search manager instance.
@@ -378,7 +380,7 @@ final class mock_engine_test extends \advanced_testcase {
                 'connect_timeout' => 30,
                 'read_timeout' => 30,
             ],
-        )->willThrowException(new \coding_exception('ex'));
+        )->willThrowException(new coding_exception('ex'));
         $engine = new engine();
         $status = $engine->get_status();
         $this->assertFalse($status['connected']);
@@ -387,7 +389,7 @@ final class mock_engine_test extends \advanced_testcase {
             'Exception occurred: Coding error detected, it must be fixed by a programmer: ex',
             $status['error'],
         );
-        $this->assertInstanceOf(\coding_exception::class, $status['exception']);
+        $this->assertInstanceOf(coding_exception::class, $status['exception']);
     }
 
     /**

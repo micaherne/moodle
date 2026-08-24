@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context;
+use core\context\course;
+use core\output\html_writer;
+use core\output\single_button;
+use core\url;
+use core_table\output\html_table;
 use tool_brickfield\accessibility;
 use tool_brickfield\analysis;
 use tool_brickfield\area_base;
@@ -91,7 +97,7 @@ class block_accessreview extends block_base {
         $this->content->text = '';
 
         // Check to see user can view/use the accessmap.
-        $context = context_course::instance($COURSE->id);
+        $context = course::instance($COURSE->id);
         if (!isloggedin() || isguestuser() || !has_capability('block/accessreview:view', $context)) {
             return $this->content;
         }
@@ -154,7 +160,7 @@ class block_accessreview extends block_base {
             $this->content->text = get_string('schedule:blocknotscheduled', manager::PLUGINNAME, manager::get_helpurl());
 
             $button = new single_button(
-                new moodle_url(accessibility::get_plugin_url(), ['action' => 'requestanalysis', 'courseid' => $COURSE->id]),
+                new url(accessibility::get_plugin_url(), ['action' => 'requestanalysis', 'courseid' => $COURSE->id]),
                 get_string('schedule:requestanalysis', manager::PLUGINNAME), 'post', single_button::BUTTON_PRIMARY,
                 ['class' => 'block_accessreview_analysisbutton']);
             $this->content->text .= html_writer::tag('div', $OUTPUT->render($button),
@@ -269,7 +275,7 @@ class block_accessreview extends block_base {
 
         if (has_capability(accessibility::get_capability_name('viewcoursetools'), $context)) {
             return html_writer::link(
-                new moodle_url(accessibility::get_plugin_url(),
+                new url(accessibility::get_plugin_url(),
                     [
                         'courseid' => $COURSE->id,
                         'tab' => 'printable',
@@ -301,7 +307,7 @@ class block_accessreview extends block_base {
 
         if (has_capability(accessibility::get_capability_name('viewcoursetools'), $context)) {
             return html_writer::link(
-                new moodle_url(accessibility::get_plugin_url(),
+                new url(accessibility::get_plugin_url(),
                     [
                         'courseid' => $COURSE->id,
                         'tab' => get_config('block_accessreview', 'toolpage'),

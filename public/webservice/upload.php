@@ -34,6 +34,9 @@
 /**
  * AJAX_SCRIPT - exception will be converted into JSON
  */
+use core\context\user;
+use core\exception\moodle_exception;
+
 define('AJAX_SCRIPT', true);
 
 /**
@@ -61,7 +64,7 @@ if ($fileuploaddisabled) {
     throw new webservice_access_exception('Web service file upload must be enabled in external service settings');
 }
 
-$context = context_user::instance($USER->id);
+$context = user::instance($USER->id);
 
 $fs = get_file_storage();
 

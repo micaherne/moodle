@@ -25,6 +25,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,7 +72,7 @@ class mnet_access_control_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/mnet/access_control.php');
+        return new url('/admin/mnet/access_control.php');
     }
 
     /**
@@ -92,15 +95,15 @@ class mnet_access_control_updated extends base {
         parent::validate_data();
 
         if (!isset($this->other['username'])) {
-            throw new \coding_exception('The \'username\' value must be set in other.');
+            throw new coding_exception('The \'username\' value must be set in other.');
         }
 
         if (!isset($this->other['hostname'])) {
-            throw new \coding_exception('The \'hostname\' value must be set in other.');
+            throw new coding_exception('The \'hostname\' value must be set in other.');
         }
 
         if (!isset($this->other['accessctrl'])) {
-            throw new \coding_exception('The \'accessctrl\' value must be set in other.');
+            throw new coding_exception('The \'accessctrl\' value must be set in other.');
         }
     }
 

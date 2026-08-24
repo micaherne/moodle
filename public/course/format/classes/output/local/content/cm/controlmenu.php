@@ -24,7 +24,7 @@
 
 namespace core_courseformat\output\local\content\cm;
 
-use cm_info;
+use core_course\cm_info;
 use core\context\module as context_module;
 use core\output\action_menu;
 use core\output\action_menu\link;
@@ -36,7 +36,7 @@ use core_courseformat\base as course_format;
 use core_courseformat\output\local\content\basecontrolmenu;
 use core_courseformat\sectiondelegate;
 use core\url;
-use section_info;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -458,7 +458,7 @@ class controlmenu extends basecontrolmenu {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return action_menu|null the activity action menu
      */
-    private function get_action_menu_legacy(\renderer_base $output): ?action_menu {
+    private function get_action_menu_legacy(renderer_base $output): ?action_menu {
         $mod = $this->mod;
 
         $controls = $this->cm_control_items();

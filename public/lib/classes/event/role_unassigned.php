@@ -25,6 +25,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -74,7 +77,7 @@ class role_unassigned extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/roles/assign.php', array('contextid' => $this->contextid, 'roleid' => $this->objectid));
+        return new url('/admin/roles/assign.php', array('contextid' => $this->contextid, 'roleid' => $this->objectid));
     }
 
     /**
@@ -87,15 +90,15 @@ class role_unassigned extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
 
         if (!isset($this->other['id'])) {
-            throw new \coding_exception('The \'id\' value must be set in other.');
+            throw new coding_exception('The \'id\' value must be set in other.');
         }
 
         if (!isset($this->other['component'])) {
-            throw new \coding_exception('The \'component\' value must be set in other.');
+            throw new coding_exception('The \'component\' value must be set in other.');
         }
     }
 

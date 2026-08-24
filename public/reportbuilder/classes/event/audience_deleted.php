@@ -18,10 +18,10 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\event;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core\event\base;
 use core_reportbuilder\local\models\audience;
-use moodle_url;
+use core\url;
 
 /**
  * Report builder custom report audience deleted event class.
@@ -106,7 +106,7 @@ class audience_deleted extends base {
      *
      * @return moodle_url
      */
-    public function get_url(): moodle_url {
-        return new moodle_url('/reportbuilder/edit.php', ['id' => $this->other['reportid']], 'audience');
+    public function get_url(): url {
+        return new url('/reportbuilder/edit.php', ['id' => $this->other['reportid']], 'audience');
     }
 }

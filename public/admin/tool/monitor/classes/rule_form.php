@@ -24,6 +24,9 @@
 
 namespace tool_monitor;
 
+use core\context\course;
+use core\context\system;
+
 require_once($CFG->dirroot.'/lib/formslib.php');
 
 /**
@@ -72,9 +75,9 @@ class rule_form extends \moodleform {
         $mform->setConstant('courseid', $courseid);
 
         if (empty($courseid)) {
-            $context = \context_system::instance();
+            $context = system::instance();
         } else {
-            $context = \context_course::instance($courseid);
+            $context = course::instance($courseid);
         }
 
         $editoroptions = array(

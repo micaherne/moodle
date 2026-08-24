@@ -24,6 +24,12 @@
 
 namespace core_availability;
 
+use core\context\course;
+use core\exception\coding_exception;
+use core\output\html_writer;
+use core\plugin_manager;
+use core_course\modinfo;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -96,7 +102,7 @@ abstract class info {
      */
     public function get_modinfo() {
         if (!$this->modinfo) {
-            throw new \coding_exception(
+            throw new coding_exception(
                     'info::get_modinfo available only during condition checking');
         }
         return $this->modinfo;
@@ -110,7 +116,7 @@ abstract class info {
     public function get_availability_tree() {
         if (is_null($this->availabilitytree)) {
             if (is_null($this->availability)) {
-                throw new \coding_exception(
+                throw new coding_exception(
                         'Cannot call get_availability_tree with null availability');
             }
             $this->availabilitytree = $this->decode_availability($this->availability, true);
@@ -139,7 +145,7 @@ abstract class info {
         // Decode JSON data.
         $structure = json_decode($availability);
         if (is_null($structure)) {
-            throw new \coding_exception('Invalid availability text', $availability);
+            throw new coding_exception('Invalid availability text', $availability);
         }
 
         // Recursively decode tree.
@@ -173,7 +179,7 @@ abstract class info {
      * @return bool True if this item is available to the user, false otherwise
      */
     public function is_available(&$information, $grabthelot = false, $userid = 0,
-            ?\course_modinfo $modinfo = null) {
+            ?modinfo $modinfo = null) {
         global $USER;
 
         // Default to no information.
@@ -197,7 +203,7 @@ abstract class info {
         try {
             $tree = $this->get_availability_tree();
             $result = $tree->check_available(false, $this, $grabthelot, $userid);
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->warn_about_invalid_availability($e);
             $this->modinfo = null;
             return false;
@@ -232,7 +238,7 @@ abstract class info {
         } else {
             try {
                 return $this->get_availability_tree()->is_available_for_all();
-            } catch (\coding_exception $e) {
+            } catch (coding_exception $e) {
                 $this->warn_about_invalid_availability($e);
                 return false;
             }
@@ -254,7 +260,7 @@ abstract class info {
      * @return string Information string (for admin) about all restrictions on
      *   this item
      */
-    public function get_full_information(?\course_modinfo $modinfo = null) {
+    public function get_full_information(?modinfo $modinfo = null) {
         // Do nothing if there are no availability restrictions.
         if (is_null($this->availability)) {
             return '';
@@ -270,7 +276,7 @@ abstract class info {
             $result = $this->get_availability_tree()->get_full_information($this);
             $this->modinfo = null;
             return $result;
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->warn_about_invalid_availability($e);
             return false;
         }
@@ -283,7 +289,7 @@ abstract class info {
      *
      * @param \coding_exception $e Exception that occurred
      */
-    protected function warn_about_invalid_availability(\coding_exception $e) {
+    protected function warn_about_invalid_availability(coding_exception $e) {
         $name = $this->get_thing_name();
         $htmlname = $this->format_info($name, $this->course);
         // Because we call format_info here, likely in the middle of building dynamic data for the
@@ -598,7 +604,7 @@ abstract class info {
             $matches = array();
             if (!preg_match('~^({"op":"&","showc":\[(?:true|false)(?:,(?:true|false))*)' .
                     '(\],"c":\[.*)(\]})$~', $availability, $matches)) {
-                throw new \coding_exception('Unexpected availability value');
+                throw new coding_exception('Unexpected availability value');
             }
             $availability = $matches[1] . ',' . $showtext . $matches[2] .
                     ',' . $condition . $matches[3];
@@ -731,7 +737,7 @@ abstract class info {
 
         // Handle CMNAME tags.
         $modinfo = get_fast_modinfo($courseorid);
-        $context = \context_course::instance($modinfo->courseid);
+        $context = course::instance($modinfo->courseid);
         $info = preg_replace_callback('~<AVAILABILITY_CMNAME_([0-9]+)/>~',
                 function($matches) use($modinfo, $context) {
                     $cm = $modinfo->get_cm($matches[1]);
@@ -739,14 +745,14 @@ abstract class info {
                     // We make sure that we add a data attribute to the name so we can change it later if the
                     // original module name changes.
                     if (
-                        \course_modinfo::is_mod_type_visible_on_course($cm->modname)
+                        modinfo::is_mod_type_visible_on_course($cm->modname)
                         && $cm->has_view()
                         && $cm->get_user_visible()
                     ) {
                         // Help student by providing a link to the module which is preventing availability.
-                        return \html_writer::link($cm->get_url(), $modulename, ['data-cm-name-for' => $cm->id]);
+                        return html_writer::link($cm->get_url(), $modulename, ['data-cm-name-for' => $cm->id]);
                     } else {
-                        return \html_writer::span($modulename, '', ['data-cm-name-for' => $cm->id]);
+                        return html_writer::span($modulename, '', ['data-cm-name-for' => $cm->id]);
                     }
                 }, $info);
         $info = preg_replace_callback('~<AVAILABILITY_FORMAT_STRING>(.*?)</AVAILABILITY_FORMAT_STRING>~s',
@@ -786,7 +792,7 @@ abstract class info {
         // Access all plugins. Normally only the completion plugin is going
         // to affect this value, but it's potentially possible that some other
         // plugin could also rely on the completion plugin.
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $enabled = $pluginmanager->get_enabled_plugins('availability');
         foreach ($enabled as $plugin => $info) {
             /** @var \core_availability\condition $class */

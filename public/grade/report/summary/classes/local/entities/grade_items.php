@@ -16,11 +16,13 @@
 
 namespace gradereport_summary\local\entities;
 
+use core\context\course;
+use core\output\html_writer;
 use core_reportbuilder\local\filters\select;
 use grade_item;
 use grade_plugin_return;
 use grade_report_summary;
-use lang_string;
+use core\lang_string;
 use stdClass;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\report\column;
@@ -84,7 +86,7 @@ class grade_items extends base {
      * @return base
      */
     public function initialise(): base {
-        $context = \context_course::instance($this->course->id);
+        $context = course::instance($this->course->id);
 
         $gpr = new grade_plugin_return(
             [
@@ -127,14 +129,14 @@ class grade_items extends base {
 
                 $icon = \grade_helper::get_element_icon($element);
                 $elementtype = \grade_helper::get_element_type_string($element);
-                $itemtype = \html_writer::span($elementtype, 'd-block text-uppercase small dimmed_text',
+                $itemtype = html_writer::span($elementtype, 'd-block text-uppercase small dimmed_text',
                     ['title' => $elementtype]);
-                $content = \html_writer::div($itemtype . $fullname);
+                $content = html_writer::div($itemtype . $fullname);
                 $dimmed = '';
                 if ($row->hidden) {
                     $dimmed = ' dimmed_text';
                 }
-                return \html_writer::div($icon . $content, "item d-flex align-items-center" . $dimmed);
+                return html_writer::div($icon . $content, "item d-flex align-items-center" . $dimmed);
             });
 
         $report = [

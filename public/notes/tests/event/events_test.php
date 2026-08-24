@@ -24,6 +24,9 @@
 
 namespace core_notes\event;
 
+use core\context\course;
+use core\url;
+
 /**
  * Class core_notes_events_testcase
  *
@@ -79,7 +82,7 @@ final class events_test extends \advanced_testcase {
         $this->assertEquals(NOTES_STATE_SITE, $event->other['publishstate']);
 
         // Test legacy data.
-        $logurl = new \moodle_url('index.php',
+        $logurl = new url('index.php',
                 array('course' => $this->eventnote->courseid, 'user' => $this->eventnote->userid));
         $logurl->set_anchor('note-' . $this->eventnote->id);
         $this->assertEventContextNotUsed($event);
@@ -140,7 +143,7 @@ final class events_test extends \advanced_testcase {
      * simply create the event and trigger it.
      */
     public function test_notes_viewed(): void {
-        $coursecontext = \context_course::instance($this->eventnote->courseid);
+        $coursecontext = course::instance($this->eventnote->courseid);
         // Trigger event for notes viewed.
         $event = \core\event\notes_viewed::create(array(
             'context' => $coursecontext,

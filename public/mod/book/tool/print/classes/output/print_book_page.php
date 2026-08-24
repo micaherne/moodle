@@ -25,12 +25,13 @@ namespace booktool_print\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_url;
-use renderable;
-use renderer_base;
+use core\output\html_writer;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
-use context_module;
+use core\output\templatable;
+use core\context\module;
 
 /**
  * Class containing data for the print book page.
@@ -70,7 +71,7 @@ class print_book_page implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         global $OUTPUT, $CFG, $SITE, $USER;
 
-        $context = context_module::instance($this->cm->id);
+        $context = module::instance($this->cm->id);
         $chapters = book_preload_chapters($this->book);
         $course = get_course($this->book->course);
 
@@ -82,7 +83,7 @@ class print_book_page implements renderable, templatable {
         $introtext = file_rewrite_pluginfile_urls($this->book->intro, 'pluginfile.php', $context->id, 'mod_book', 'intro', null);
         $data->bookintro = format_text($introtext, $this->book->introformat,
                 array('noclean' => true, 'context' => $context));
-        $data->sitelink = \html_writer::link(new moodle_url($CFG->wwwroot),
+        $data->sitelink = html_writer::link(new url($CFG->wwwroot),
                 format_string($SITE->fullname, true, array('context' => $context)));
         $data->coursename = format_string($course->fullname, true, array('context' => $context));
         $data->modulename = format_string($this->book->name, true, array('context' => $context));

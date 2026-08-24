@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\exception\required_capability_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once(__DIR__ . '/backupfilesedit_form.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
@@ -38,7 +43,7 @@ $returnurl  = optional_param('returnurl', null, PARAM_LOCALURL);
 list($context, $course, $cm) = get_context_info_array($currentcontext);
 $filecontext = context::instance_by_id($contextid, IGNORE_MISSING);
 
-$url = new moodle_url('/backup/backupfilesedit.php', array('currentcontext'=>$currentcontext, 'contextid'=>$contextid, 'component'=>$component, 'filearea'=>$filearea));
+$url = new url('/backup/backupfilesedit.php', array('currentcontext'=>$currentcontext, 'contextid'=>$contextid, 'component'=>$component, 'filearea'=>$filearea));
 
 require_login($course, false, $cm);
 require_capability('moodle/restore:uploadfile', $context);
@@ -65,7 +70,7 @@ if ($context->contextlevel == CONTEXT_COURSECAT) {
     $PAGE->set_heading($SITE->fullname);
 }
 // Set the restore course node active in the settings navigation block.
-navigation_node::override_active_url(new moodle_url('/backup/restorefile.php', ['contextid' => $contextid]));
+navigation_node::override_active_url(new url('/backup/restorefile.php', ['contextid' => $contextid]));
 
 switch($filearea) {
     case 'activity':

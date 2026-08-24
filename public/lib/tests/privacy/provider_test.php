@@ -16,6 +16,7 @@
 
 namespace core\privacy;
 
+use core\context\user;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
 use core_privacy\tests\provider_testcase;
@@ -49,7 +50,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $contextlist);
 
         // Check that the context returned is the expected one.
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $this->assertEquals($usercontext->id, $contextlist->get_contextids()[0]);
     }
 
@@ -63,7 +64,7 @@ final class provider_test extends provider_testcase {
 
         // Create some users.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         // Get userlists and check they are empty for now.
         $userlist = new \core_privacy\local\request\userlist($usercontext, 'core');
@@ -100,7 +101,7 @@ final class provider_test extends provider_testcase {
         ];
 
         // Check if user has any exported data yet.
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $writer = writer::with_context($usercontext);
         $this->assertFalse($writer->has_any_data());
 
@@ -144,7 +145,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(2, $usersdata);
 
         // Delete everything for a user1 in context.
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         provider::delete_data_for_all_users_in_context($usercontext1);
 
         // Check what is remaining belongs to user2.
@@ -175,7 +176,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(2, $usersdata);
 
         // Delete everything for user1.
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         $approvedlist = new approved_contextlist($user1, 'core', [$usercontext1->id]);
         provider::delete_data_for_user($approvedlist);
 
@@ -197,8 +198,8 @@ final class provider_test extends provider_testcase {
         // Create some users.
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext1 = \context_user::instance($user1->id);
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext1 = user::instance($user1->id);
+        $usercontext2 = user::instance($user2->id);
 
         // Insert a record for each user.
         $this->insert_dummy_shortlink_record($user1->id);

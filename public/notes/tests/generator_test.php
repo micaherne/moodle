@@ -24,6 +24,8 @@
 
 namespace core_notes;
 
+use core\exception\coding_exception;
+
 /**
  * Generator tests class.
  *
@@ -65,7 +67,7 @@ final class generator_test extends \advanced_testcase {
         try {
             $gen->create_instance(array('courseid' => 2));
             $this->fail('A note should not be allowed to be created without associcated userid');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Module generator requires $record->userid', $e->getMessage());
         }
 
@@ -73,7 +75,7 @@ final class generator_test extends \advanced_testcase {
         try {
             $gen->create_instance(array('userid' => 2));
             $this->fail('A note should not be allowed to be created without associcated courseid');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Module generator requires $record->courseid', $e->getMessage());
         }
     }

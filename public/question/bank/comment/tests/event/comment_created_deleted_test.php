@@ -17,10 +17,10 @@
 namespace qbank_comment\event;
 
 use advanced_testcase;
-use cache;
-use context;
-use context_course;
-use context_module;
+use core_cache\cache;
+use core\context;
+use core\context\course;
+use core\context\module;
 use core_question_generator;
 use stdClass;
 
@@ -62,7 +62,7 @@ final class comment_created_deleted_test extends advanced_testcase {
         // Create a course.
         $this->course = $generator->create_course();
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $this->course->id]);
-        $this->context = context_module::instance($qbank->cmid);
+        $this->context = module::instance($qbank->cmid);
 
         // Create a question in the default category.
         $contexts = new \core_question\local\bank\question_edit_contexts($this->context);

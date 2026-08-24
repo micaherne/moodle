@@ -16,6 +16,12 @@
 
 namespace core_privacy\local\request;
 
+use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core\url;
+
 /**
  * The moodle_content_writer is the default Moodle implementation of a content writer.
  *
@@ -70,7 +76,7 @@ class moodle_content_writer implements content_writer {
      *
      * @param   \context        $context    The context to use
      */
-    public function set_context(\context $context): content_writer {
+    public function set_context(context $context): content_writer {
         $this->context = $context;
 
         return $this;
@@ -388,7 +394,7 @@ class moodle_content_writer implements content_writer {
         $targetpath = $this->path . DIRECTORY_SEPARATOR . $path;
         check_dir_exists(dirname($targetpath), true, true);
         if (file_put_contents($targetpath, $data) === false) {
-            throw new \moodle_exception('cannotsavefile', 'error', '', $targetpath);
+            throw new moodle_exception('cannotsavefile', 'error', '', $targetpath);
         }
         $this->files[$path] = $targetpath;
     }
@@ -486,7 +492,7 @@ class moodle_content_writer implements content_writer {
                 $contextid = array_pop($namearray);
                 if (is_numeric($contextid)) {
                     $object[$index]->name = implode('_.', $namearray);
-                    $object[$index]->context = \context::instance_by_id($contextid);
+                    $object[$index]->context = context::instance_by_id($contextid);
                 }
             } else {
                 $object[$index]->name = $index;
@@ -502,7 +508,7 @@ class moodle_content_writer implements content_writer {
             if (isset($treekey[$gokey]) && $treekey[$gokey] !== 'No var') {
                 $treeleaf->datavar = $treekey[$gokey];
             } else {
-                $treeleaf->url = new \moodle_url($url . '/' . $file);
+                $treeleaf->url = new url($url . '/' . $file);
             }
         };
 
@@ -597,7 +603,7 @@ class moodle_content_writer implements content_writer {
      */
     protected function check_plugin_is_installed(string $component): Bool {
         if (!isset($this->checkedplugins[$component])) {
-            $pluginmanager = \core_plugin_manager::instance();
+            $pluginmanager = plugin_manager::instance();
             $plugin = $pluginmanager->get_plugin_info($component);
             $this->checkedplugins[$component] = !is_null($plugin);
         }
@@ -664,7 +670,7 @@ class moodle_content_writer implements content_writer {
         $navigationpage = new \core_privacy\output\exported_navigation_page(current($richtree));
         $navigationhtml = $output->render_navigation($navigationpage);
 
-        $systemname = format_string($SITE->fullname, true, ['context' => \context_system::instance()]);
+        $systemname = format_string($SITE->fullname, true, ['context' => system::instance()]);
         $fullusername = fullname($USER);
         $siteurl = $CFG->wwwroot;
 
@@ -720,7 +726,7 @@ class moodle_content_writer implements content_writer {
     protected function get_file_content(string $filepath): String {
         $content = file_get_contents($filepath);
         if ($content === false) {
-            throw new \moodle_exception('cannotopenfile', 'error', '', $filepath);
+            throw new moodle_exception('cannotopenfile', 'error', '', $filepath);
         }
         return $content;
     }

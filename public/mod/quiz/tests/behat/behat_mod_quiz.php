@@ -31,6 +31,8 @@ require_once(__DIR__ . '/../../../../question/tests/behat/behat_question_base.ph
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\ExpectationException;
+use core\exception\coding_exception;
+use core\url;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
 
@@ -52,7 +54,7 @@ class behat_mod_quiz extends behat_question_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_url(string $page): moodle_url {
+    protected function resolve_page_url(string $page): url {
         switch (strtolower($page)) {
             default:
                 throw new Exception('Unrecognised quiz page type "' . $page . '."');
@@ -80,44 +82,44 @@ class behat_mod_quiz extends behat_question_base {
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
-    protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
+    protected function resolve_page_instance_url(string $type, string $identifier): url {
         global $DB;
 
         switch (strtolower($type)) {
             case 'view':
-                return new moodle_url('/mod/quiz/view.php',
+                return new url('/mod/quiz/view.php',
                         ['id' => $this->get_cm_by_quiz_name($identifier)->id]);
 
             case 'edit':
-                return new moodle_url('/mod/quiz/edit.php',
+                return new url('/mod/quiz/edit.php',
                         ['cmid' => $this->get_cm_by_quiz_name($identifier)->id]);
 
             case 'multiple grades setup':
-                return new moodle_url('/mod/quiz/editgrading.php',
+                return new url('/mod/quiz/editgrading.php',
                         ['cmid' => $this->get_cm_by_quiz_name($identifier)->id]);
 
             case 'group overrides':
-                return new moodle_url('/mod/quiz/overrides.php',
+                return new url('/mod/quiz/overrides.php',
                     ['cmid' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'group']);
 
             case 'user overrides':
-                return new moodle_url('/mod/quiz/overrides.php',
+                return new url('/mod/quiz/overrides.php',
                     ['cmid' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'user']);
 
             case 'grades report':
-                return new moodle_url('/mod/quiz/report.php',
+                return new url('/mod/quiz/report.php',
                     ['id' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'overview']);
 
             case 'responses report':
-                return new moodle_url('/mod/quiz/report.php',
+                return new url('/mod/quiz/report.php',
                     ['id' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'responses']);
 
             case 'statistics report':
-                return new moodle_url('/mod/quiz/report.php',
+                return new url('/mod/quiz/report.php',
                     ['id' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'statistics']);
 
             case 'manual grading report':
-                return new moodle_url('/mod/quiz/report.php',
+                return new url('/mod/quiz/report.php',
                         ['id' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'grading']);
             case 'attempt view':
                 list($quizname, $username, $attemptno, $pageno) = explode(' > ', $identifier);
@@ -129,7 +131,7 @@ class behat_mod_quiz extends behat_question_base {
                 $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
                 $attempt = $DB->get_record('quiz_attempts',
                     ['quiz' => $quiz->id, 'userid' => $user->id, 'attempt' => $attemptno], '*', MUST_EXIST);
-                return new moodle_url('/mod/quiz/attempt.php', [
+                return new url('/mod/quiz/attempt.php', [
                     'attempt' => $attempt->id,
                     'cmid' => $quizcm->id,
                     'page' => $pageno
@@ -146,17 +148,17 @@ class behat_mod_quiz extends behat_question_base {
                 $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
                 $attempt = $DB->get_record('quiz_attempts',
                         ['quiz' => $quiz->id, 'userid' => $user->id, 'attempt' => $attemptno], '*', MUST_EXIST);
-                return new moodle_url('/mod/quiz/review.php', ['attempt' => $attempt->id]);
+                return new url('/mod/quiz/review.php', ['attempt' => $attempt->id]);
 
             case 'question bank':
                 // The question bank does not handle fields at the edge of the viewport well.
                 // Increase the size to avoid this.
                 $this->execute('behat_general::i_change_window_size_to', ['window', 'large']);
-                return new moodle_url('/question/edit.php', [
+                return new url('/question/edit.php', [
                     'cmid' => $this->get_cm_by_quiz_name($identifier)->id,
                 ]);
             case 'question categories':
-                return new moodle_url('/question/bank/managecategories/category.php', [
+                return new url('/question/bank/managecategories/category.php', [
                     'cmid' => $this->get_cm_by_quiz_name($identifier)->id,
                 ]);
 

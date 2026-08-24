@@ -22,6 +22,14 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\output\pix_icon;
+use core\output\plugin_renderer_base;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -72,13 +80,13 @@ class tool_messageinbound_renderer extends plugin_renderer_base {
         $descriptionoptions->newlines = false;
         $descriptionoptions->overflowdiv = true;
 
-        $editurlbase = new moodle_url('/admin/tool/messageinbound/index.php');
+        $editurlbase = new url('/admin/tool/messageinbound/index.php');
         foreach ($handlers as $handler) {
             $handlername = new html_table_cell($handler->name . "\n" .
                     html_writer::tag('span', $handler->classname, array('class' => 'handler-function')));
             $handlername->header = true;
 
-            $editurl = new moodle_url($editurlbase, array('classname' => $handler->classname));
+            $editurl = new url($editurlbase, array('classname' => $handler->classname));
             $editlink = $this->action_icon($editurl, new pix_icon('t/edit',
                     get_string('edithandler', 'tool_messageinbound', $handler->classname)));
 

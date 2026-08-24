@@ -26,6 +26,7 @@ namespace core_course;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
 use core_course\local\service\content_item_service;
 use core_course\local\repository\content_item_readonly_repository;
 
@@ -81,7 +82,7 @@ final class services_content_item_service_test extends \advanced_testcase {
 
         // Override the capability 'mod/assign:addinstance' for the 'editing teacher' role.
         $teacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'));
-        assign_capability('mod/assign:addinstance', CAP_PROHIBIT, $teacherrole->id, \context_course::instance($course->id));
+        assign_capability('mod/assign:addinstance', CAP_PROHIBIT, $teacherrole->id, course::instance($course->id));
 
         $contentitems = $cis->get_content_items_for_user_in_course($user, $course);
         $this->assertArrayNotHasKey('assign', $contentitems);

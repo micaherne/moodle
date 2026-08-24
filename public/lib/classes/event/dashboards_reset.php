@@ -23,6 +23,8 @@
  */
 
 namespace core\event;
+
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,6 +80,6 @@ class dashboards_reset extends base {
      * @return \moodle_url|null
      */
     public function get_url() {
-        return new \moodle_url('/my/indexsys.php');
+        return new url('/my/indexsys.php');
     }
 }

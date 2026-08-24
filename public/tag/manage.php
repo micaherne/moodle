@@ -27,6 +27,9 @@ require_once('lib.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
 use core_reportbuilder\system_report_factory;
 use core_tag\reportbuilder\local\systemreports\tags;
 
@@ -43,7 +46,7 @@ if ($tagcollid) {
 admin_externalpage_setup('managetags', '', $params, '', array('pagelayout' => 'report'));
 
 if (empty($CFG->usetags)) {
-    throw new \moodle_exception('tagsaredisabled', 'tag');
+    throw new moodle_exception('tagsaredisabled', 'tag');
 }
 
 $tagobject = null;
@@ -52,11 +55,11 @@ if ($tagid) {
     $tagcollid = $tagobject->tagcollid;
 }
 $tagcoll = core_tag_collection::get_by_id($tagcollid);
-$manageurl = new moodle_url('/tag/manage.php');
+$manageurl = new url('/tag/manage.php');
 if ($tagcoll) {
     // We are inside a tag collection - add it to the breadcrumb.
     $PAGE->navbar->add(core_tag_collection::display_name($tagcoll),
-            new moodle_url($manageurl, array('tc' => $tagcoll->id)));
+            new url($manageurl, array('tc' => $tagcoll->id)));
 }
 
 $PAGE->set_blocks_editing_capability('moodle/tag:editblocks');
@@ -178,7 +181,7 @@ if (!$tagcoll) {
 
     echo $OUTPUT->heading(get_string('tagcollections', 'core_tag') . $OUTPUT->help_icon('tagcollection', 'tag'), 3);
     echo html_writer::table($colltable);
-    $url = new moodle_url($manageurl, array('action' => 'colladd'));
+    $url = new url($manageurl, array('action' => 'colladd'));
     echo html_writer::div(html_writer::link('#', get_string('addtagcoll', 'tag'), array('data-url' => $url)),
             'mdl-right addtagcoll');
 

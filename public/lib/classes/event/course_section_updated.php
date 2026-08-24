@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +81,7 @@ class course_section_updated extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/course/editsection.php', array('id' => $this->objectid));
+        return new url('/course/editsection.php', array('id' => $this->objectid));
     }
 
     /**
@@ -91,7 +94,7 @@ class course_section_updated extends base {
         parent::validate_data();
 
         if (!isset($this->other['sectionnum'])) {
-            throw new \coding_exception('The \'sectionnum\' value must be set in other.');
+            throw new coding_exception('The \'sectionnum\' value must be set in other.');
         }
     }
 

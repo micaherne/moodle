@@ -16,7 +16,7 @@
 
 namespace mod_bigbluebuttonbn\local\proxy;
 
-use cache;
+use core_cache\cache;
 use completion_info;
 use Exception;
 use mod_bigbluebuttonbn\completion\custom_completion;
@@ -24,9 +24,9 @@ use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\config;
 use mod_bigbluebuttonbn\local\exceptions\bigbluebutton_exception;
 use mod_bigbluebuttonbn\local\exceptions\server_not_available_exception;
-use moodle_url;
+use core\url;
 use stdClass;
-use user_picture;
+use core\output\user_picture;
 
 /**
  * The bigbluebutton proxy class.
@@ -134,7 +134,7 @@ class bigbluebutton_proxy extends proxy_base {
      * @param stdClass $user
      * @return moodle_url
      */
-    private static function get_avatar_url(stdClass $user): moodle_url {
+    private static function get_avatar_url(stdClass $user): url {
         global $PAGE;
         $userpicture = new user_picture($user);
         $userpicture->includetoken = true;
@@ -450,11 +450,11 @@ class bigbluebutton_proxy extends proxy_base {
      */
     public static function get_server_not_available_url(instance $instance): string {
         if ($instance->is_admin()) {
-            return new moodle_url('/admin/settings.php', ['section' => 'modsettingbigbluebuttonbn']);
+            return new url('/admin/settings.php', ['section' => 'modsettingbigbluebuttonbn']);
         } else if ($instance->is_moderator()) {
-            return new moodle_url('/course/view.php', ['id' => $instance->get_course_id()]);
+            return new url('/course/view.php', ['id' => $instance->get_course_id()]);
         } else {
-            return new moodle_url('/course/view.php', ['id' => $instance->get_course_id()]);
+            return new url('/course/view.php', ['id' => $instance->get_course_id()]);
         }
     }
 

@@ -23,6 +23,10 @@
  */
 
 namespace core\event;
+
+use core\context\course;
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -49,7 +53,7 @@ class enrol_instance_created extends base {
      */
     final public static function create_from_record($enrol) {
         $event = static::create(array(
-            'context'  => \context_course::instance($enrol->courseid),
+            'context'  => course::instance($enrol->courseid),
             'objectid' => $enrol->id,
             'other'    => array('enrol' => $enrol->enrol)
         ));
@@ -81,7 +85,7 @@ class enrol_instance_created extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/enrol/instances.php', array('id' => $this->courseid));
+        return new url('/enrol/instances.php', array('id' => $this->courseid));
     }
 
     /**
@@ -103,7 +107,7 @@ class enrol_instance_created extends base {
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['enrol'])) {
-            throw new \coding_exception('The \'enrol\' value must be set in other.');
+            throw new coding_exception('The \'enrol\' value must be set in other.');
         }
     }
 

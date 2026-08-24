@@ -23,6 +23,9 @@
  */
 
 namespace forumreport_summary\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -81,7 +84,7 @@ class report_downloaded extends \core\event\base {
             $params['forumid'] = $this->other['forumid'];
         }
 
-        return new \moodle_url('/mod/forum/report/summary/index.php', $params);
+        return new url('/mod/forum/report/summary/index.php', $params);
     }
 
     /**
@@ -93,7 +96,7 @@ class report_downloaded extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['hasviewall'])) {
-            throw new \coding_exception('The \'hasviewall\' value must be set');
+            throw new coding_exception('The \'hasviewall\' value must be set');
         }
     }
 }

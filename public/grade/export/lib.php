@@ -15,6 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once($CFG->dirroot.'/lib/gradelib.php');
 require_once($CFG->dirroot.'/grade/lib.php');
 require_once($CFG->dirroot.'/grade/export/grade_export_form.php');
@@ -463,7 +467,7 @@ abstract class grade_export {
 
         if (!$this->userkey) {
             // This button should trigger a download prompt.
-            $url = new moodle_url('/grade/export/'.$this->plugin.'/export.php', $params);
+            $url = new url('/grade/export/'.$this->plugin.'/export.php', $params);
             echo $OUTPUT->single_button($url, get_string('download', 'admin'));
 
         } else {
@@ -491,7 +495,7 @@ abstract class grade_export {
      * @return moodle_url the url of grade publishing export.
      */
     public function get_export_url() {
-        return new moodle_url('/grade/export/'.$this->plugin.'/dump.php', $this->get_export_params());
+        return new url('/grade/export/'.$this->plugin.'/dump.php', $this->get_export_params());
     }
 
     /**

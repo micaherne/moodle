@@ -23,6 +23,9 @@
  */
 
 namespace core\event;
+
+use core\exception\coding_exception;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +81,7 @@ class courses_searched extends base {
      * @return \moodle_url|null
      */
     public function get_url() {
-        return new \moodle_url('/course/search.php', array('search' => $this->other['query']));
+        return new url('/course/search.php', array('search' => $this->other['query']));
     }
 
     /**
@@ -91,7 +94,7 @@ class courses_searched extends base {
         parent::validate_data();
 
         if (!isset($this->other['query'])) {
-            throw new \coding_exception('The \'query\' must be set in other.');
+            throw new coding_exception('The \'query\' must be set in other.');
         }
     }
 

@@ -24,11 +24,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\action_menu;
+use core\output\action_menu\link_secondary;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/lib/filelib.php');
 
 require_login();
-require_capability('moodle/site:configview', context_system::instance());
+require_capability('moodle/site:configview', system::instance());
 
 $relativepath = get_file_argument();
 $args = explode('/', ltrim($relativepath, '/'));
@@ -57,16 +62,16 @@ if (in_array($docs, $validroots)) {
     );
 }
 
-$thispageurl = new moodle_url('/admin/tool/componentlibrary/index.php');
+$thispageurl = new url('/admin/tool/componentlibrary/index.php');
 
 $PAGE->set_pagelayout('base');
 $PAGE->set_url($thispageurl);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $title = get_string('pluginname', 'tool_componentlibrary');
 $PAGE->set_heading($title);
 $PAGE->set_title($title);
 $PAGE->requires->css($cssfile);
-$jsonfile = new moodle_url('/admin/tool/componentlibrary/hugo/site/data/my-index.json');
+$jsonfile = new url('/admin/tool/componentlibrary/hugo/site/data/my-index.json');
 $PAGE->requires->js_call_amd('tool_componentlibrary/loader', 'init', ['jsonfile' => $jsonfile->out()]);
 $PAGE->set_secondary_navigation(false);
 
@@ -75,8 +80,8 @@ if (get_config('core', 'allowthemechangeonurl')) {
     $themes = array_keys($themes);
     $menuthemes = [];
     foreach ($themes as $themename) {
-        $actionurl = new moodle_url($thispageurl . $relativepath, ['theme' => $themename]);
-        $menuthemes[] = new action_menu_link_secondary($actionurl, null, $themename);
+        $actionurl = new url($thispageurl . $relativepath, ['theme' => $themename]);
+        $menuthemes[] = new link_secondary($actionurl, null, $themename);
     }
     $thememenu = new action_menu($menuthemes);
     $thememenu->set_menu_trigger($PAGE->theme->name, 'nav-link');
@@ -93,7 +98,7 @@ if (!is_dir($fulldocsdir)) {
 }
 
 if (!file_exists($docspage)) {
-    $firstpage = new moodle_url('/admin/tool/componentlibrary/index.php/library/getting-started/');
+    $firstpage = new url('/admin/tool/componentlibrary/index.php/library/getting-started/');
     redirect($firstpage);
 }
 
@@ -101,12 +106,12 @@ echo $OUTPUT->header();
 
 // Load the content after the footer that contains the JS for this page.
 $page = file_get_contents($docspage);
-$jsdocurl = new moodle_url('/admin/tool/componentlibrary/jsdocspage.php');
+$jsdocurl = new url('/admin/tool/componentlibrary/jsdocspage.php');
 $page = str_replace('http://JSDOC', $jsdocurl, $page);
 $page = str_replace('http://MOODLEROOT', $thispageurl, $page);
-$page = str_replace('MOODLEIMAGEDIR', new moodle_url('/admin/tool/componentlibrary/content/static'), $page);
+$page = str_replace('MOODLEIMAGEDIR', new url('/admin/tool/componentlibrary/content/static'), $page);
 $filtered = str_replace('MOODLEROOT', $thispageurl, $page);
-$rooturl = new moodle_url('/');
+$rooturl = new url('/');
 $filtered = str_replace('MOODLESITE', $rooturl->out(), $page);
 echo $filtered;
 

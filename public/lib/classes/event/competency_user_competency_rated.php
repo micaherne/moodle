@@ -25,6 +25,7 @@
 namespace core\event;
 
 use core\event\base;
+use core\exception\coding_exception;
 use core_competency\user_competency;
 defined('MOODLE_INTERNAL') || die();
 
@@ -52,7 +53,7 @@ class competency_user_competency_rated extends base {
      */
     public static function create_from_user_competency(user_competency $usercompetency) {
         if (!$usercompetency->get('id')) {
-            throw new \coding_exception('The user competency ID must be set.');
+            throw new coding_exception('The user competency ID must be set.');
         }
 
         $params = array(
@@ -124,11 +125,11 @@ class competency_user_competency_rated extends base {
      */
     protected function validate_data() {
         if (!$this->relateduserid) {
-            throw new \coding_exception('The \'relateduserid\' value must be set.');
+            throw new coding_exception('The \'relateduserid\' value must be set.');
         }
 
         if (!isset($this->other) || !isset($this->other['grade'])) {
-            throw new \coding_exception('The \'grade\' value must be set.');
+            throw new coding_exception('The \'grade\' value must be set.');
         }
     }
 

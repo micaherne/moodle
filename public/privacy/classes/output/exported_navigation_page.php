@@ -24,9 +24,10 @@
 namespace core_privacy\output;
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\html_writer;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Class containing the navigation renderable
@@ -60,28 +61,28 @@ class exported_navigation_page implements renderable, templatable {
      */
     protected function create_navigation(\stdClass $tree) {
         if ($this->firstelement) {
-            $html = \html_writer::start_tag('ul', ['class' => 'treeview parent block_tree list', 'id' => 'my-tree']);
+            $html = html_writer::start_tag('ul', ['class' => 'treeview parent block_tree list', 'id' => 'my-tree']);
             $this->firstelement = false;
         } else {
-            $html = \html_writer::start_tag('ul', ['class' => 'parent', 'role' => 'group']);
+            $html = html_writer::start_tag('ul', ['class' => 'parent', 'role' => 'group']);
         }
         foreach ($tree->children as $child) {
             if (isset($child->children)) {
-                $html .= \html_writer::start_tag('li', ['class' => 'menu-item', 'role' => 'treeitem', 'aria-expanded' => 'false']);
+                $html .= html_writer::start_tag('li', ['class' => 'menu-item', 'role' => 'treeitem', 'aria-expanded' => 'false']);
                 $html .= $child->name;
                 $html .= $this->create_navigation($child);
             } else {
-                $html .= \html_writer::start_tag('li', ['class' => 'item', 'role' => 'treeitem', 'aria-expanded' => 'false']);
+                $html .= html_writer::start_tag('li', ['class' => 'item', 'role' => 'treeitem', 'aria-expanded' => 'false']);
                 // Normal display.
                 if (isset($child->datavar)) {
-                    $html .= \html_writer::link('#', $child->name, ['data-var' => $child->datavar]);
+                    $html .= html_writer::link('#', $child->name, ['data-var' => $child->datavar]);
                 } else {
-                    $html .= \html_writer::link($child->url, $child->name, ['target' => '_blank']);
+                    $html .= html_writer::link($child->url, $child->name, ['target' => '_blank']);
                 }
             }
-            $html .= \html_writer::end_tag('li');
+            $html .= html_writer::end_tag('li');
         }
-        $html .= \html_writer::end_tag('ul');
+        $html .= html_writer::end_tag('ul');
         return $html;
     }
 

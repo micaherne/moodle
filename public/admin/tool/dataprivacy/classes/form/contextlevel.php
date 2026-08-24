@@ -25,6 +25,7 @@
 namespace tool_dataprivacy\form;
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
 use core\form\persistent;
 use tool_dataprivacy\api;
 use tool_dataprivacy\data_registry;
@@ -100,7 +101,7 @@ class contextlevel extends context_instance {
         if ($effectivepurpose) {
 
             $customdata['currentretentionperiod'] = self::get_retention_display_text($effectivepurpose, $contextlevel,
-                \context_system::instance());
+                system::instance());
 
             $customdata['purposeretentionperiods'] = [];
             foreach ($purposeoptions as $optionvalue => $unused) {
@@ -113,7 +114,7 @@ class contextlevel extends context_instance {
                 $retentionperiod = self::get_retention_display_text(
                     $purpose,
                     $contextlevel,
-                    \context_system::instance()
+                    system::instance()
                 );
                 $customdata['purposeretentionperiods'][$optionvalue] = $retentionperiod;
             }

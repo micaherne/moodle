@@ -16,6 +16,7 @@
 
 namespace enrol_lti\local\ltiadvantage\service;
 
+use core\exception\coding_exception;
 use enrol_lti\local\ltiadvantage\entity\deployment;
 use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
 use enrol_lti\local\ltiadvantage\repository\deployment_repository;
@@ -84,7 +85,7 @@ class tool_deployment_service {
 
         $registration = $this->appregistrationrepo->find($registrationid);
         if (is_null($registration)) {
-            throw new \coding_exception("Cannot add deployment to non-existent application registration ".
+            throw new coding_exception("Cannot add deployment to non-existent application registration ".
                 "'$registrationid'");
         }
 

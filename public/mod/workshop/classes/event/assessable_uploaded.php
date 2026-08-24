@@ -24,6 +24,8 @@
 
 namespace mod_workshop\event;
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -68,7 +70,7 @@ class assessable_uploaded extends \core\event\assessable_uploaded {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/workshop/submission.php',
+        return new url('/mod/workshop/submission.php',
             array('cmid' => $this->contextinstanceid, 'id' => $this->objectid));
     }
 

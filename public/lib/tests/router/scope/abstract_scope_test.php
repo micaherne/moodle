@@ -16,6 +16,7 @@
 
 namespace core\router\scope;
 
+use core\exception\coding_exception;
 use core\tests\fake_plugins_test_trait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -49,7 +50,7 @@ final class abstract_scope_test extends \advanced_testcase {
         );
 
         if ($expectedexception !== null) {
-            $this->expectException(\coding_exception::class);
+            $this->expectException(coding_exception::class);
             $this->expectExceptionMessage($expectedexception);
         }
 
@@ -106,7 +107,7 @@ final class abstract_scope_test extends \advanced_testcase {
         );
 
         if ($expectedexception !== null) {
-            $this->expectException(\coding_exception::class);
+            $this->expectException(coding_exception::class);
             $this->expectExceptionMessage($expectedexception);
         }
 

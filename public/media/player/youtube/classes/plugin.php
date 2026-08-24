@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -61,7 +63,7 @@ class media_youtube_plugin extends core_media_player_external {
         return array();
     }
 
-    protected function embed_external(moodle_url $url, $name, $width, $height, $options) {
+    protected function embed_external(url $url, $name, $width, $height, $options) {
         global $OUTPUT;
         $nocookie = get_config('media_youtube', 'nocookie');
 
@@ -88,9 +90,9 @@ class media_youtube_plugin extends core_media_player_external {
 
             // Handle no cookie option.
             if (!$nocookie) {
-                $embedurl = new moodle_url("https://$site/embed/videoseries", $params);
+                $embedurl = new url("https://$site/embed/videoseries", $params);
             } else {
-                $embedurl = new moodle_url('https://www.youtube-nocookie.com/embed/videoseries', $params );
+                $embedurl = new url('https://www.youtube-nocookie.com/embed/videoseries', $params );
             }
             $context['embedurl'] = $embedurl->out(false);
 
@@ -118,9 +120,9 @@ class media_youtube_plugin extends core_media_player_external {
 
             // Handle no cookie option.
             if (!$nocookie) {
-                $embedurl = new moodle_url('https://www.youtube.com/embed/' . $videoid, $params );
+                $embedurl = new url('https://www.youtube.com/embed/' . $videoid, $params );
             } else {
-                $embedurl = new moodle_url('https://www.youtube-nocookie.com/embed/' . $videoid, $params );
+                $embedurl = new url('https://www.youtube-nocookie.com/embed/' . $videoid, $params );
             }
 
             $context['embedurl'] = $embedurl->out(false);

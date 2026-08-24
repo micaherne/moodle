@@ -25,13 +25,14 @@
 
 namespace ltiservice_gradebookservices\local\service;
 
+use core\context\course;
 use ltiservice_gradebookservices\local\resources\lineitem;
 use ltiservice_gradebookservices\local\resources\lineitems;
 use ltiservice_gradebookservices\local\resources\results;
 use ltiservice_gradebookservices\local\resources\scores;
 use mod_lti\local\ltiservice\resource_base;
 use mod_lti\local\ltiservice\service_base;
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -729,7 +730,7 @@ class gradebookservices extends service_base {
      *
      */
     public static function update_coupled_gradebookservices(object $ltiinstance,
-            ?string $resourceid, ?string $tag, ?\moodle_url $subreviewurl, ?string $subreviewparams): void {
+            ?string $resourceid, ?string $tag, ?url $subreviewurl, ?string $subreviewparams): void {
         global $DB;
 
         if ($ltiinstance && $ltiinstance->typeid) {
@@ -770,7 +771,7 @@ class gradebookservices extends service_base {
      */
     public function instance_added(object $lti): void {
         self::update_coupled_gradebookservices($lti, $lti->lineitemresourceid ?? null, $lti->lineitemtag ?? null,
-            isset($lti->lineitemsubreviewurl) ? new moodle_url($lti->lineitemsubreviewurl) : null,
+            isset($lti->lineitemsubreviewurl) ? new url($lti->lineitemsubreviewurl) : null,
             $lti->lineitemsubreviewparams ?? null);
     }
 
@@ -781,7 +782,7 @@ class gradebookservices extends service_base {
      */
     public function instance_updated(object $lti): void {
         self::update_coupled_gradebookservices($lti, $lti->lineitemresourceid ?? null, $lti->lineitemtag ?? null,
-            isset($lti->lineitemsubreviewurl) ? new moodle_url($lti->lineitemsubreviewurl) : null,
+            isset($lti->lineitemsubreviewurl) ? new url($lti->lineitemsubreviewurl) : null,
             $lti->lineitemsubreviewparams ?? null);
     }
 
@@ -835,7 +836,7 @@ class gradebookservices extends service_base {
         global $CFG;
 
         $gradableuser = false;
-        $coursecontext = \context_course::instance($courseid);
+        $coursecontext = course::instance($courseid);
         if (is_enrolled($coursecontext, $userid, '', false)) {
             $roles = get_user_roles($coursecontext, $userid);
             $gradebookroles = explode(',', $CFG->gradebookroles);

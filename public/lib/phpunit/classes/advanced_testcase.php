@@ -14,10 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context_helper;
 use core\di;
+use core\exception\coding_exception;
 use core\hook;
 use core\http_client;
 use core\test\phpunit\phpunit_util;
+use core\user;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -670,10 +673,10 @@ abstract class advanced_testcase extends base_testcase {
             $user = null;
             if ($userid = $task->get_userid()) {
                 // This task has a userid specified.
-                $user = \core_user::get_user($userid);
+                $user = user::get_user($userid);
 
                 // User found. Check that they are suitable.
-                \core_user::require_active_user($user, true, true);
+                user::require_active_user($user, true, true);
             }
 
             $task->set_lock($lock);
@@ -759,7 +762,7 @@ abstract class advanced_testcase extends base_testcase {
         $plugintypes = $mockedcomponent->getStaticPropertyValue($propertyname);
 
         if (array_key_exists($plugintype, $plugintypes)) {
-            throw new \coding_exception("The plugintype '{$plugintype}' already exists.");
+            throw new coding_exception("The plugintype '{$plugintype}' already exists.");
         }
 
         $plugintypes[$plugintype] = $path;

@@ -16,6 +16,8 @@
 
 namespace qbank_bulkmove;
 
+use core\url;
+
 /**
  * Bulk move helper.
  *
@@ -68,7 +70,7 @@ class helper {
         since: '5.0',
         mdl: 'MDL-71378'
     )]
-    public static function get_displaydata(array $addcontexts, \moodle_url $moveurl, \moodle_url $returnurl): array {
+    public static function get_displaydata(array $addcontexts, url $moveurl, url $returnurl): array {
         \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
         $displaydata = [];
         $displaydata ['categorydropdown'] = \qbank_managecategories\helper::question_category_select_menu($addcontexts,

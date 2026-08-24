@@ -28,6 +28,7 @@ namespace core_grades;
 
 use code_grades\local\gradeitem\itemnumber_mapping;
 use code_grades\local\gradeitem\advancedgrading_mapping;
+use core\exception\coding_exception;
 
 /**
  * Helper class to fetch information about component grade items.
@@ -64,7 +65,7 @@ class component_gradeitems {
         }
 
         if (!is_subclass_of($classname, 'core_grades\local\gradeitem\itemnumber_mapping')) {
-            throw new \coding_exception("The {$classname} class does not implement " . itemnumber_mapping::class);
+            throw new coding_exception("The {$classname} class does not implement " . itemnumber_mapping::class);
         }
 
         return $classname::get_itemname_mapping_for_component();
@@ -102,7 +103,7 @@ class component_gradeitems {
     public static function get_advancedgrading_itemnames_for_component(string $component): array {
         $classname = self::get_component_classname($component);
         if (!self::defines_advancedgrading_itemnames_for_component($component)) {
-            throw new \coding_exception("The {$classname} class does not implement " . advancedgrading_mapping::class);
+            throw new coding_exception("The {$classname} class does not implement " . advancedgrading_mapping::class);
         }
 
         return $classname::get_advancedgrading_itemnames();
@@ -197,7 +198,7 @@ class component_gradeitems {
             return '';
         }
 
-        throw new \coding_exception("Unknown itemnumber mapping for {$itemnumber} in {$component}");
+        throw new coding_exception("Unknown itemnumber mapping for {$itemnumber} in {$component}");
     }
 
     /**
@@ -221,6 +222,6 @@ class component_gradeitems {
             return $flipped[$itemname];
         }
 
-        throw new \coding_exception("Unknown itemnumber mapping for {$itemname} in {$component}");
+        throw new coding_exception("Unknown itemnumber mapping for {$itemname} in {$component}");
     }
 }

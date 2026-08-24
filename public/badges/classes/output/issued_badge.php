@@ -32,13 +32,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/badgeslib.php');
 
-use context_course;
-use context_system;
+use core\context\course;
+use core\context\system;
 use stdClass;
-use renderable;
+use core\output\renderable;
 use core_badges\badge;
-use moodle_url;
-use renderer_base;
+use core\url;
+use core\output\renderer_base;
 
 /**
  * An issued badges for badge.php page
@@ -127,11 +127,11 @@ class issued_badge implements renderable {
         $data = new stdClass();
         $badge = new badge($this->badgeid);
         if ($badge->type == BADGE_TYPE_COURSE && isset($badge->courseid)) {
-            $context = context_course::instance($badge->courseid);
+            $context = course::instance($badge->courseid);
             $data->coursefullname = format_string($DB->get_field('course', 'fullname', ['id' => $badge->courseid]),
                 true, ['context' => $context]);
         } else {
-            $context = context_system::instance();
+            $context = system::instance();
             $data->sitefullname = format_string($SITE->fullname, true, ['context' => $context]);
         }
 
@@ -157,7 +157,7 @@ class issued_badge implements renderable {
         if ($this->recipient->deleted) {
             $strdata = new stdClass();
             $strdata->user = fullname($this->recipient);
-            $strdata->site = format_string($SITE->fullname, true, ['context' => context_system::instance()]);
+            $strdata->site = format_string($SITE->fullname, true, ['context' => system::instance()]);
             $data->recipientname = get_string('error:userdeleted', 'badges', $strdata);
         } else {
             $data->recipientname = fullname($this->recipient);
@@ -205,8 +205,8 @@ class issued_badge implements renderable {
             $data->hasrelatedbadges = true;
             $data->relatedbadges = [];
             foreach ($relatedbadges as $related) {
-                if (isloggedin() && ($context instanceof context_course && !is_guest($context))) {
-                    $related->url = (new moodle_url('/badges/overview.php', ['id' => $related->id]))->out(false);
+                if (isloggedin() && ($context instanceof course && !is_guest($context))) {
+                    $related->url = (new url('/badges/overview.php', ['id' => $related->id]))->out(false);
                 }
                 $data->relatedbadges[] = (array)$related;
             }
@@ -225,15 +225,15 @@ class issued_badge implements renderable {
 
         // Buttons to display.
         if ($USER->id == $this->recipient->id && !empty($CFG->enablebadges)) {
-            $data->downloadurl = (new moodle_url('/badges/badge.php', ['hash' => $this->hash, 'bake' => true]))->out(false);
+            $data->downloadurl = (new url('/badges/badge.php', ['hash' => $this->hash, 'bake' => true]))->out(false);
 
             if (!empty($CFG->badges_allowexternalbackpack) && ($expiration > $now)
                 && $userbackpack = badges_get_user_backpack($USER->id)) {
 
                 if (badges_open_badges_backpack_api($userbackpack->id) == OPEN_BADGES_V2P1) {
-                    $addtobackpackurl = new moodle_url('/badges/backpack-export.php', ['hash' => $this->hash]);
+                    $addtobackpackurl = new url('/badges/backpack-export.php', ['hash' => $this->hash]);
                 } else {
-                    $addtobackpackurl = new moodle_url('/badges/backpack-add.php', ['hash' => $this->hash]);
+                    $addtobackpackurl = new url('/badges/backpack-add.php', ['hash' => $this->hash]);
                 }
                 $data->addtobackpackurl = $addtobackpackurl->out(false);
             }

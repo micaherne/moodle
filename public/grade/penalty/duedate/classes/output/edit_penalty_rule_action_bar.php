@@ -16,6 +16,7 @@
 
 namespace gradepenalty_duedate\output;
 
+use core\output\renderer_base;
 use core\output\single_button;
 use core\url;
 
@@ -33,7 +34,7 @@ class edit_penalty_rule_action_bar extends view_penalty_rule_action_bar {
     }
 
     #[\Override]
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
          $data = [];
 
          $contextid = $this->context->id;

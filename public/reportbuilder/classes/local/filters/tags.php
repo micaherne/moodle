@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\filters;
 
 use core_tag_tag;
-use lang_string;
+use core\lang_string;
 use MoodleQuickForm;
 use stdClass;
 use core_reportbuilder\local\helpers\database;

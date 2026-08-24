@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
@@ -38,7 +42,7 @@ $mform = null;
 if ($taskname) {
     $task = \core\task\manager::get_scheduled_task($taskname);
     if (!$task) {
-        throw new \moodle_exception('invaliddata');
+        throw new moodle_exception('invaliddata');
     }
 }
 
@@ -50,7 +54,7 @@ if ($action == 'edit') {
 
 if ($task) {
     $mform = new tool_task_edit_scheduled_task_form(null, $task);
-    $nexturl = new moodle_url($PAGE->url, ['lastchanged' => $taskname]);
+    $nexturl = new url($PAGE->url, ['lastchanged' => $taskname]);
 }
 
 $PAGE->set_primary_active_tab('siteadminnode');

@@ -18,6 +18,7 @@ namespace tool_brickfield\local\areas;
 
 use core\event\course_module_created;
 use core\event\course_module_updated;
+use core\url;
 use tool_brickfield\area_base;
 
 /**
@@ -107,7 +108,7 @@ abstract class module_area_base extends area_base {
      * @param \stdClass $componentinfo
      * @return \moodle_url
      */
-    public static function get_edit_url(\stdClass $componentinfo): \moodle_url {
-        return new \moodle_url('/course/mod.php', ['update' => $componentinfo->cmid, 'sesskey' => sesskey()]);
+    public static function get_edit_url(\stdClass $componentinfo): url {
+        return new url('/course/mod.php', ['update' => $componentinfo->cmid, 'sesskey' => sesskey()]);
     }
 }

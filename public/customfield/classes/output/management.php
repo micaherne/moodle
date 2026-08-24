@@ -24,6 +24,7 @@
 
 namespace core_customfield\output;
 
+use core\output\action_menu\link_secondary;
 use core_customfield\api;
 use core_customfield\customfield\shared_handler;
 use core_customfield\handler;
@@ -190,7 +191,7 @@ class management implements renderable, templatable {
 
         $menu = new action_menu();
         $menu->set_kebab_trigger(triggername: get_string('actions'));
-        $menu->add(new \action_menu_link_secondary(
+        $menu->add(new link_secondary(
             url: new url('#'),
             icon: new pix_icon('t/delete', 'core'),
             text: get_string('delete'),
@@ -201,7 +202,7 @@ class management implements renderable, templatable {
         ));
 
         if ($canconvert) {
-            $menu->add(new \action_menu_link_secondary(
+            $menu->add(new link_secondary(
                 url: new url('#'),
                 icon: new pix_icon('i/siteevent', 'core'),
                 text: get_string('convertcategory', 'core_customfield'),
@@ -233,13 +234,13 @@ class management implements renderable, templatable {
 
         $fieldname = $field->get_formatted_name();
 
-        $menu->add(new \action_menu_link_secondary(
+        $menu->add(new link_secondary(
             url: new url('#'),
             icon: new pix_icon('t/edit', 'core'),
             text: get_string('edit'),
             attributes: ['data-role' => 'editfield', 'data-name' => $fieldname, 'data-id' => $field->get('id')]
         ));
-        $menu->add(new \action_menu_link_secondary(
+        $menu->add(new link_secondary(
             url: new url('#'),
             icon: new pix_icon('t/delete', 'core'),
             text: get_string('delete'),
@@ -275,7 +276,7 @@ class management implements renderable, templatable {
                 'data-type' => $type,
                 'data-typename' => $fieldname,
             ];
-            $action = new \action_menu_link_secondary(new url('#'), null, $fieldname, $params);
+            $action = new link_secondary(new url('#'), null, $fieldname, $params);
             $menu->add($action);
         }
 

@@ -16,6 +16,7 @@
 
 namespace tool_uploadcourse;
 
+use core\context\course;
 use tool_uploadcourse_helper;
 
 /**
@@ -297,7 +298,7 @@ final class helper_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_and_enrol($course, 'manager');
         $this->setUser($user);
 
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $this->assertEquals($expected, tool_uploadcourse_helper::get_custom_course_field_data($data, [], $context));
 

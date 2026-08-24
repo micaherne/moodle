@@ -26,9 +26,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/grade/grade_scale.php");
 
-use context_course;
-use context_system;
-use context_user;
+use core\context\course;
+use core\context\system;
+use core\context\user;
 use core_competency\api;
 use core_competency\external\competency_exporter;
 use core_competency\external\competency_framework_exporter;
@@ -325,7 +325,7 @@ class external extends external_api {
         $results = array();
         $courses = api::list_courses_using_competency($params['id']);
         foreach ($courses as $course) {
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             $exporter = new course_summary_exporter($course, array('context' => $context));
             $result = $exporter->export($output);
             array_push($results, $result);
@@ -377,7 +377,7 @@ class external extends external_api {
             'courseid' => $courseid,
             'moduleid' => $moduleid,
         ));
-        self::validate_context(context_course::instance($params['courseid']));
+        self::validate_context(course::instance($params['courseid']));
 
         $renderable = new output\course_competencies_page($params['courseid'], $params['moduleid']);
         $renderer = $PAGE->get_renderer('tool_lp');
@@ -640,7 +640,7 @@ class external extends external_api {
             'userid' => $userid,
         ));
 
-        $context = context_user::instance($params['userid']);
+        $context = user::instance($params['userid']);
         self::validate_context($context);
         $output = $PAGE->get_renderer('tool_lp');
 
@@ -691,7 +691,7 @@ class external extends external_api {
         $params = self::validate_parameters(self::data_for_user_evidence_list_page_parameters(),
             array('userid' => $userid));
 
-        $context = context_user::instance($params['userid']);
+        $context = user::instance($params['userid']);
         self::validate_context($context);
         $output = $PAGE->get_renderer('tool_lp');
 
@@ -862,7 +862,7 @@ class external extends external_api {
         $limitfrom = $params['limitfrom'];
         $limitnum = $params['limitnum'];
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/competency:templatemanage', $context);
 
@@ -1079,7 +1079,7 @@ class external extends external_api {
             'competencyid' => $competencyid,
             'courseid' => $courseid
         ));
-        $context = context_user::instance($params['userid']);
+        $context = user::instance($params['userid']);
         self::validate_context($context);
         $output = $PAGE->get_renderer('tool_lp');
 

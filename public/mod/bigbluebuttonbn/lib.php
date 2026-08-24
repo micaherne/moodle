@@ -25,8 +25,16 @@
  */
 defined('MOODLE_INTERNAL') || die;
 
+use core\context\module;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\url;
 use core_calendar\action_factory;
 use core_calendar\local\event\entities\action_interface;
+use core_course\cached_cm_info;
+use core_course\cm_info;
 use mod_bigbluebuttonbn\completion\custom_completion;
 use mod_bigbluebuttonbn\extension;
 use mod_bigbluebuttonbn\instance;
@@ -95,7 +103,7 @@ function bigbluebuttonbn_get_course_content_items(
     $serverurl = config::get('server_url');
     $sharedsecret = config::get('shared_secret');
     if (empty($serverurl) || empty($sharedsecret)) {
-        if (has_capability('moodle/site:config', \context_system::instance(), $user)) {
+        if (has_capability('moodle/site:config', system::instance(), $user)) {
             $reason = get_string('unconfigured_chooser_admin', 'mod_bigbluebuttonbn');
         } else {
             $reason = get_string('unconfigured_chooser_user', 'mod_bigbluebuttonbn');
@@ -590,11 +598,11 @@ function mod_bigbluebuttonbn_core_calendar_provide_event_action(
 
     // Action data.
     $string = get_string('view_room', 'bigbluebuttonbn');
-    $url = new moodle_url('/mod/bigbluebuttonbn/view.php', ['id' => $cm->id]);
+    $url = new url('/mod/bigbluebuttonbn/view.php', ['id' => $cm->id]);
     if (groups_get_activity_groupmode($cm) == NOGROUPS) {
         // No groups mode.
         $string = get_string('view_conference_action_join', 'bigbluebuttonbn');
-        $url = new moodle_url('/mod/bigbluebuttonbn/bbb_view.php', [
+        $url = new url('/mod/bigbluebuttonbn/bbb_view.php', [
                 'action' => 'join',
                 'id' => $cm->id,
                 'bn' => $bigbluebuttonbn->id,
@@ -636,7 +644,7 @@ function bigbluebuttonbn_extend_settings_navigation(settings_navigation $setting
 
     // Run core/default logic here.
     global $USER;
-    $context = context_module::instance($settingsnav->get_page()->cm->id);
+    $context = module::instance($settingsnav->get_page()->cm->id);
     // Add validate completion if the callback for meetingevents is enabled and user is allowed to edit the activity.
     if (
         (bool) \mod_bigbluebuttonbn\local\config::get('meetingevents_enabled') &&
@@ -749,7 +757,7 @@ function bigbluebuttonbn_print_recent_mod_activity(stdClass $activity, int $cour
     $template = ['userpicture' => $userpicture,
         'submissiontimestamp' => $activity->timestamp,
         'modinfo' => $modinfo,
-        'userurl' => new moodle_url('/user/view.php', array('id' => $activity->user->id, 'course' => $courseid)),
+        'userurl' => new url('/user/view.php', array('id' => $activity->user->id, 'course' => $courseid)),
         'fullname' => $activity->user->fullname];
     if (isset($activity->eventname)) {
         $template['eventname'] = $activity->eventname;
@@ -784,7 +792,7 @@ function bigbluebuttonbn_print_recent_activity(object $course, bool $viewfullnam
         if ($logs) {
             echo $OUTPUT->heading(get_string('new_bigblubuttonbn_activities', 'bigbluebuttonbn') . ':', 6);
             foreach ($logs as $log) {
-                $activityurl = new moodle_url('/mod/bigbluebuttonbn/index.php', ['id' => $course->id]);
+                $activityurl = new url('/mod/bigbluebuttonbn/index.php', ['id' => $course->id]);
                 print_recent_activity_note($log->timecreated,
                     $log,
                     logger::get_printable_event_name($log) . ' - ' . $instance->get_meeting_name(),

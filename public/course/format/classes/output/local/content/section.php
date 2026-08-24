@@ -24,13 +24,13 @@
 
 namespace core_courseformat\output\local\content;
 
-use context_course;
+use core\context\course;
 use core\output\named_templatable;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use renderable;
-use renderer_base;
-use section_info;
+use core\output\renderable;
+use core\output\renderer_base;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -276,7 +276,7 @@ class section implements named_templatable, renderable {
         if (!$this->section->visible) {
             $data->ishidden = true;
             $course = $this->format->get_course();
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
             if (has_capability('moodle/course:viewhiddensections', $context, $USER)) {
                 $result = true;
             }
@@ -297,7 +297,7 @@ class section implements named_templatable, renderable {
      */
     protected function add_editor_data(stdClass &$data, renderer_base $output): bool {
         $course = $this->format->get_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $editcaps = [];
         if (has_capability('moodle/course:sectionvisibility', $coursecontext)) {
             $editcaps = ['moodle/course:sectionvisibility'];

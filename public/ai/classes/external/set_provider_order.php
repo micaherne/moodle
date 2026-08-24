@@ -16,6 +16,7 @@
 
 namespace core_ai\external;
 
+use core\context\system;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -61,7 +62,7 @@ class set_provider_order extends external_api {
             'direction' => $direction,
         ]);
 
-        $context = \context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
         require_capability('moodle/site:config', $context);
 

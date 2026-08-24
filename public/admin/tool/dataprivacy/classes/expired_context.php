@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace tool_dataprivacy;
+use core\context;
 use dml_exception;
 
 defined('MOODLE_INTERNAL') || die();
@@ -285,7 +286,7 @@ class expired_context extends \core\persistent {
      * @param   boolean         $save
      * @return  expired_context
      */
-    public static function create_from_expiry_info(\context $context, expiry_info $info, bool $save = true): expired_context {
+    public static function create_from_expiry_info(context $context, expiry_info $info, bool $save = true): expired_context {
         $record = (object) [
             'contextid' => $context->id,
             'status' => self::STATUS_EXPIRED,

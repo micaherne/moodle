@@ -16,8 +16,8 @@
 
 namespace mod_bigbluebuttonbn\event;
 
-use coding_exception;
-use moodle_url;
+use core\exception\coding_exception;
+use core\url;
 
 /**
  * The mod_bigbluebuttonbn abstract base event class. Most mod_bigbluebuttonbn events can extend this class.
@@ -80,7 +80,7 @@ abstract class base extends \core\event\base {
      * @return moodle_url
      */
     public function get_url() {
-        return new moodle_url('/mod/bigbluebuttonbn/view.php', ['id' => $this->contextinstanceid]);
+        return new url('/mod/bigbluebuttonbn/view.php', ['id' => $this->contextinstanceid]);
     }
 
     /**

@@ -16,6 +16,8 @@
 
 namespace core\plugininfo;
 
+use core\plugin_manager;
+
 /**
  * Class for availability plugins.
  *
@@ -34,7 +36,7 @@ class availability extends base {
         global $DB;
 
         // Get all available plugins.
-        $plugins = \core_plugin_manager::instance()->get_installed_plugins('availability');
+        $plugins = plugin_manager::instance()->get_installed_plugins('availability');
         if (!$plugins) {
             return [];
         }
@@ -69,7 +71,7 @@ class availability extends base {
 
         if ($haschanged) {
             add_to_config_log('disabled', $oldvalue, $disabled, $plugin);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -99,7 +101,7 @@ class availability extends base {
 
         if ($haschanged) {
             add_to_config_log('defaultdisplaymode', $oldvalue, $disabled, $plugin);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;

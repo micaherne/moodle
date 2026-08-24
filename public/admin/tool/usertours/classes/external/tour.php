@@ -16,6 +16,9 @@
 
 namespace tool_usertours\external;
 
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\url;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -48,7 +51,7 @@ class tour extends external_api {
             'pageurl' => $pageurl,
         ]);
 
-        $context = \context_helper::instance_by_id($params['context']);
+        $context = context_helper::instance_by_id($params['context']);
         self::validate_context($context);
 
         $tour = tourinstance::instance($params['tourid']);
@@ -115,7 +118,7 @@ class tour extends external_api {
             'pageurl' => $pageurl,
         ]);
 
-        $context = \context_helper::instance_by_id($params['context']);
+        $context = context_helper::instance_by_id($params['context']);
         self::validate_context($context);
 
         $tour = tourinstance::instance($params['tourid']);
@@ -123,7 +126,7 @@ class tour extends external_api {
 
         $result = [];
 
-        $matchingtours = \tool_usertours\manager::get_matching_tours(new \moodle_url($params['pageurl']));
+        $matchingtours = \tool_usertours\manager::get_matching_tours(new url($params['pageurl']));
         foreach ($matchingtours as $match) {
             if ($tour->get_id() === $match->get_id()) {
                 $result['startTour'] = $tour->get_id();
@@ -185,7 +188,7 @@ class tour extends external_api {
             'stepindex' => $stepindex,
         ]);
 
-        $context = \context_helper::instance_by_id($params['context']);
+        $context = context_helper::instance_by_id($params['context']);
         self::validate_context($context);
 
         $tour = tourinstance::instance($params['tourid']);
@@ -248,12 +251,12 @@ class tour extends external_api {
             'stepindex' => $stepindex,
         ]);
 
-        $context = \context_helper::instance_by_id($params['context']);
+        $context = context_helper::instance_by_id($params['context']);
         self::validate_context($context);
 
         $step = step::instance($params['stepid']);
         if ($step->get_tourid() != $params['tourid']) {
-            throw new \moodle_exception('Incorrect tour specified.');
+            throw new moodle_exception('Incorrect tour specified.');
         }
 
         \tool_usertours\event\step_shown::create([

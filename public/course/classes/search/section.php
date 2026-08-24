@@ -24,6 +24,10 @@
 
 namespace core_course\search;
 
+use core\context;
+use core\context\course;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -51,7 +55,7 @@ class section extends \core_search\base {
      * @param \context|null $context Restriction context
      * @return \moodle_recordset|null Recordset or null if no change possible
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
 
         list ($contextjoin, $contextparams) = $this->get_course_level_context_restriction_sql($context, 'c');
@@ -90,8 +94,8 @@ class section extends \core_search\base {
 
         // Get the context, modinfo, and section.
         try {
-            $context = \context_course::instance($record->course);
-        } catch (\moodle_exception $ex) {
+            $context = course::instance($record->course);
+        } catch (moodle_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving ' . $this->areaid . ' ' . $record->id .
                     ' document, not all required data is available: ' . $ex->getMessage(),
@@ -130,7 +134,7 @@ class section extends \core_search\base {
         }
         try {
             $modinfo = get_fast_modinfo($sectionrec->course);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             return \core_search\manager::ACCESS_DELETED;
         }
         $section = $modinfo->get_section_info_by_id($sectionrec->id, IGNORE_MISSING);

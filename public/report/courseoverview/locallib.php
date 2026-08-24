@@ -21,6 +21,8 @@
  * @copyright  2016 Simey Lameze <simey@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once('../../config.php');
@@ -54,7 +56,7 @@ function report_courseoverview_print_chart($report, $time, $numcourses) {
 
     if (empty($courses)) {
         $PAGE->set_url('/report/courseoverview/index.php');
-        throw new \moodle_exception('statsnodata', 'error', $PAGE->url->out());
+        throw new moodle_exception('statsnodata', 'error', $PAGE->url->out());
     }
 
     $data = [];

@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_select;
+use core\plugin_manager;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -50,7 +59,7 @@ if ($action == 'newon') {
 admin_externalpage_setup($pagename);
 
 // The URL used for redirection, and that all edit related URLs will be based off.
-$baseurl = new moodle_url('/admin/repository.php');
+$baseurl = new url('/admin/repository.php');
 
 $return = true;
 
@@ -134,10 +143,10 @@ if (($action == 'edit') || ($action == 'new')) {
         }
         if ($success) {
             // configs saved
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
             redirect($baseurl);
         } else {
-            throw new \moodle_exception('instancenotsaved', 'repository', $baseurl);
+            throw new moodle_exception('instancenotsaved', 'repository', $baseurl);
         }
         exit;
     } else {
@@ -162,18 +171,18 @@ if (($action == 'edit') || ($action == 'new')) {
         if ($action == 'edit') {
             $instanceoptionnames = repository::static_function($repository, 'get_instance_option_names');
             if (!empty($instanceoptionnames)) {
-                repository::display_instances_list(context_system::instance(), $repository);
+                repository::display_instances_list(system::instance(), $repository);
             }
         }
     }
 } else if ($action == 'show') {
     require_sesskey();
-    $class = \core_plugin_manager::resolve_plugininfo_class('repository');
+    $class = plugin_manager::resolve_plugininfo_class('repository');
     $class::enable_plugin($repository, 1);
     $return = true;
 } else if ($action == 'hide') {
     require_sesskey();
-    $class = \core_plugin_manager::resolve_plugininfo_class('repository');
+    $class = plugin_manager::resolve_plugininfo_class('repository');
     $class::enable_plugin($repository, 0);
     $return = true;
 } else if ($action == 'delete') {
@@ -185,10 +194,10 @@ if (($action == 'edit') || ($action == 'new')) {
         if ($repositorytype->delete($downloadcontents)) {
             // Include this information into config changes table.
             add_to_config_log('repository_visibility', $repositorytype->get_visible(), '', $repository);
-            core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
             redirect($baseurl);
         } else {
-            throw new \moodle_exception('instancenotdeleted', 'repository', $baseurl);
+            throw new moodle_exception('instancenotdeleted', 'repository', $baseurl);
         }
         exit;
     } else {
@@ -199,13 +208,13 @@ if (($action == 'edit') || ($action == 'new')) {
         $output = $OUTPUT->box_start('generalbox', 'notice');
         $output .= html_writer::tag('p', $message);
 
-        $removeurl = new moodle_url($baseurl, [
+        $removeurl = new url($baseurl, [
             'action' =>'delete',
             'repos' => $repository,
             'sure' => 'yes',
         ]);
 
-        $removeanddownloadurl = new moodle_url($removeurl, [
+        $removeanddownloadurl = new url($removeurl, [
             'downloadcontents' => 1,
         ]);
 
@@ -283,7 +292,7 @@ if (($action == 'edit') || ($action == 'new')) {
                 // Calculate number of instances in order to display them for the Moodle administrator
                 if (!empty($instanceoptionnames)) {
                     $params = array();
-                    $params['context'] = array(context_system::instance());
+                    $params['context'] = array(system::instance());
                     $params['onlyvisible'] = false;
                     $params['type'] = $typename;
                     $admininstancenumber = count(repository::static_function($typename, 'get_instances', $params));
@@ -315,7 +324,7 @@ if (($action == 'edit') || ($action == 'new')) {
                     $userinstancenumbertext = "";
                 }
 
-                $settings = html_writer::link(new moodle_url($baseurl, ['action' => 'edit', 'repos' => $typename]), $settingsstr);
+                $settings = html_writer::link(new url($baseurl, ['action' => 'edit', 'repos' => $typename]), $settingsstr);
                 $settings .= $OUTPUT->container_start('mdl-left');
                 $settings .= '<br/>';
                 $settings .= $admininstancenumbertext;
@@ -333,7 +342,7 @@ if (($action == 'edit') || ($action == 'new')) {
             }
 
             // Active toggle.
-            $selectaction = new moodle_url($baseurl, ['sesskey' => sesskey(), 'repos' => $typename]);
+            $selectaction = new url($baseurl, ['sesskey' => sesskey(), 'repos' => $typename]);
             $select = new single_select($selectaction, 'action', $actionchoicesforexisting, $currentaction, null,
                 'applyto' . basename($typename));
             $select->set_label(get_string('action'), array('class' => 'accesshide'));
@@ -343,7 +352,7 @@ if (($action == 'edit') || ($action == 'new')) {
             $spacer = $OUTPUT->spacer(array('height'=>15, 'width'=>15)); // should be done with CSS instead
 
             if ($updowncount > 1) {
-                $moveupaction = new moodle_url($baseurl, [
+                $moveupaction = new url($baseurl, [
                     'sesskey' => sesskey(),
                     'action' => 'moveup',
                     'repos' => $typename,
@@ -354,7 +363,7 @@ if (($action == 'edit') || ($action == 'new')) {
                 $updown .= $spacer;
             }
             if ($updowncount < $totalrepositorytypes) {
-                $movedownaction = new moodle_url($baseurl, [
+                $movedownaction = new url($baseurl, [
                     'sesskey' => sesskey(),
                     'action' => 'movedown',
                     'repos' => $typename,
@@ -368,7 +377,7 @@ if (($action == 'edit') || ($action == 'new')) {
             $updowncount++;
 
             $uninstall = '';
-            if ($uninstallurl = core_plugin_manager::instance()->get_uninstall_url('repository_' . $typename, 'manage')) {
+            if ($uninstallurl = plugin_manager::instance()->get_uninstall_url('repository_' . $typename, 'manage')) {
                 $uninstall = html_writer::link($uninstallurl, $struninstall);
             }
 
@@ -387,12 +396,12 @@ if (($action == 'edit') || ($action == 'new')) {
         foreach ($plugins as $plugin => $dir) {
             // Check that it has not already been listed
             if (!in_array($plugin, $alreadyplugins)) {
-                $selectaction = new moodle_url($baseurl, ['sesskey' => sesskey(), 'repos' => $plugin]);
+                $selectaction = new url($baseurl, ['sesskey' => sesskey(), 'repos' => $plugin]);
                 $select = new single_select($selectaction, 'action', $actionchoicesfornew, 'delete', null,
                     'applyto' . basename($plugin));
                 $select->set_label(get_string('action'), array('class' => 'accesshide'));
                 $uninstall = '';
-                if ($uninstallurl = core_plugin_manager::instance()->get_uninstall_url('repository_' . $plugin, 'manage')) {
+                if ($uninstallurl = plugin_manager::instance()->get_uninstall_url('repository_' . $plugin, 'manage')) {
                     $uninstall = html_writer::link($uninstallurl, $struninstall);
                 }
                 $table->data[] = array(get_string('pluginname', 'repository_'.$plugin), $OUTPUT->render($select), '', '', $uninstall);

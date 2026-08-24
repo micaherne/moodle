@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\invalid_parameter_exception;
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 

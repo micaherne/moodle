@@ -16,16 +16,19 @@
 
 namespace core_question\local\bank;
 
-use cm_info;
-use context;
-use context_course;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\plugin_manager;
+use core_course\cm_info;
+use core\context;
+use core\context\course as context_course;
 use core\context\course;
 use core\context\module;
 use core\context_helper;
 use core\di;
 use core\task\manager;
 use moodle_database;
-use moodle_url;
+use core\url;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -94,7 +97,7 @@ class question_bank_helper {
             return $sharedmods;
         }
 
-        $manager = \core_plugin_manager::instance();
+        $manager = plugin_manager::instance();
         $plugins = $manager->get_enabled_plugins('mod');
 
         $sharedmods = array_filter(
@@ -118,7 +121,7 @@ class question_bank_helper {
             return $privatemods;
         }
 
-        $manager = \core_plugin_manager::instance();
+        $manager = plugin_manager::instance();
         $plugins = $manager->get_enabled_plugins('mod');
 
         $privatemods = array_filter(
@@ -344,7 +347,7 @@ class question_bank_helper {
                 // We can preload because we made sure that in case of capabilities being passed we have the context joined in the
                 // SQL.
                 context_helper::preload_from_record($cm);
-                $context = \context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 if (!(new question_edit_contexts($context))->have_one_cap($havingcap)) {
                     continue;
                 }
@@ -390,7 +393,7 @@ class question_bank_helper {
                 continue;
             }
             if ($context->contextlevel !== CONTEXT_MODULE) {
-                throw new \moodle_exception('Invalid question bank contextlevel: ' . $context->contextlevel);
+                throw new moodle_exception('Invalid question bank contextlevel: ' . $context->contextlevel);
             }
             [, $cm] = get_module_from_cmid($context->instanceid);
             if (!empty($notincourseid) && $notincourseid == $cm->course) {
@@ -469,7 +472,7 @@ class question_bank_helper {
             return $cat;
         }, $concatedcats);
 
-        $filtercontext ??= context_course::instance($cminfo->get_course()->id);
+        $filtercontext ??= course::instance($cminfo->get_course()->id);
         return new formatted_bank(
             $cminfo,
             $filtercontext,
@@ -557,7 +560,7 @@ class question_bank_helper {
         global $DB;
 
         if (!in_array($subtype, self::SHARED_TYPES)) {
-            throw new \moodle_exception('Invalid question bank type: ' . $subtype);
+            throw new moodle_exception('Invalid question bank type: ' . $subtype);
         }
 
         $modinfo = get_fast_modinfo($course);
@@ -613,25 +616,25 @@ class question_bank_helper {
         }
 
         $module = $DB->get_record('modules', ['name' => self::get_default_question_bank_activity_name()], '*', MUST_EXIST);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         // STANDARD type needs capability checks.
         if ($type === self::TYPE_STANDARD) {
             require_capability('moodle/course:manageactivities', $context);
             if (!course_allowed_module($course, $module->name)) {
-                throw new \moodle_exception('moduledisable', 'error', '', $module->name);
+                throw new moodle_exception('moduledisable', 'error', '', $module->name);
             }
         }
 
         if (\core_text::strlen($bankname) > self::BANK_NAME_MAX_LENGTH) {
-            throw new \coding_exception(
+            throw new coding_exception(
                 'The provided bankname is too long for the database field.',
                 'Use question_bank_helper::get_bank_name_string to get a suitably truncated name.',
             );
         }
 
         if ($bankname === '') {
-            throw new \coding_exception(
+            throw new coding_exception(
                 'The provided bankname is empty. You must provide a name for the question bank.',
             );
         }
@@ -674,8 +677,8 @@ class question_bank_helper {
      * @param bool $createdefault Pass true if you want the URL to create a default qbank instance when referred.
      * @return moodle_url
      */
-    public static function get_url_for_qbank_list(int $courseid, bool $createdefault = false): moodle_url {
-        $url = new moodle_url('/question/banks.php', ['courseid' => $courseid]);
+    public static function get_url_for_qbank_list(int $courseid, bool $createdefault = false): url {
+        $url = new url('/question/banks.php', ['courseid' => $courseid]);
         if ($createdefault) {
             $url->param('createdefault', true);
         }

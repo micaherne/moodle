@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\table;
 
-use moodle_url;
+use core\url;
 
 /**
  * Custom report view dynamic table class
@@ -66,7 +66,7 @@ class custom_report_table_view extends custom_report_table {
         if (!$this->is_downloading()) {
             return $OUTPUT->download_dataformat_selector(
                 get_string('downloadas', 'table'),
-                new moodle_url('/reportbuilder/download.php'),
+                new url('/reportbuilder/download.php'),
                 'download',
                 ['id' => $this->persistent->get('id')]
             );

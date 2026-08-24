@@ -17,6 +17,7 @@
 namespace aiprovider_openai;
 
 use aiprovider_openai\model\base;
+use core\output\html_writer;
 use core_ai\hook\after_ai_action_settings_form_hook;
 use core_ai\hook\after_ai_provider_form_hook;
 
@@ -82,7 +83,7 @@ class hook_listener {
 
             if ($model == 'custom') {
                 $mform->addElement('header', 'modelsettingsheader', get_string('settings', 'aiprovider_openai'));
-                $settingshelp = \html_writer::tag('p', get_string('settings_help', 'aiprovider_openai'));
+                $settingshelp = html_writer::tag('p', get_string('settings_help', 'aiprovider_openai'));
                 $mform->addElement('html', $settingshelp);
                 $mform->addElement(
                     'textarea',
@@ -97,7 +98,7 @@ class hook_listener {
                 if ($targetmodel) {
                     if ($targetmodel->has_model_settings()) {
                         $mform->addElement('header', 'modelsettingsheader', get_string('settings', 'aiprovider_openai'));
-                        $settingshelp = \html_writer::tag('p', get_string('settings_help', 'aiprovider_openai'));
+                        $settingshelp = html_writer::tag('p', get_string('settings_help', 'aiprovider_openai'));
                         $mform->addElement('html', $settingshelp);
                         $targetmodel->add_model_settings($mform);
                     }

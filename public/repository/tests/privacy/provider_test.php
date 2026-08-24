@@ -25,6 +25,8 @@ namespace core_repository\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\approved_contextlist;
@@ -101,7 +103,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Test the repository_instances data is exported at the User context level.
         $user = $approvedcontextlist->get_user();
-        $contextuser = \context_user::instance($user->id);
+        $contextuser = user::instance($user->id);
         $writer = writer::with_context($contextuser);
         $this->assertTrue($writer->has_any_data());
     }
@@ -176,7 +178,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $component = 'core_repository';
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $userlist = new \core_privacy\local\request\userlist($usercontext, $component);
         // The list of users should not return anything yet (related data still haven't been created).
         provider::get_users_in_context($userlist);
@@ -193,7 +195,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // The list of users for system context should not return any users.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist);
         $this->assertCount(0, $userlist);
@@ -209,14 +211,14 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Create user1.
         $user1 = $this->getDataGenerator()->create_user();
         $this->setUser($user1);
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         // Create list of users with a related user data in usercontext1.
         $userlist1 = new \core_privacy\local\request\userlist($usercontext1, $component);
 
         // Create a user2.
         $user2 = $this->getDataGenerator()->create_user();
         $this->setUser($user2);
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext2 = user::instance($user2->id);
         // Create list of users with a related user data in usercontext2.
         $userlist2 = new \core_privacy\local\request\userlist($usercontext2, $component);
 
@@ -248,7 +250,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // User data should be only removed in the user context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Add userlist2 to the approved user list in the system context.
         $approvedlist = new approved_userlist($systemcontext, $component, $userlist2->get_userids());
         // Delete user1 data using delete_data_for_user.

@@ -25,7 +25,7 @@
 
 namespace tool_lp\form;
 
-use coding_exception;
+use core\exception\coding_exception;
 use MoodleQuickForm_autocomplete;
 use \core_competency\competency_framework;
 

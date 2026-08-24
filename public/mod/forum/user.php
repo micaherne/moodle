@@ -23,6 +23,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/mod/forum/lib.php');
 require_once($CFG->dirroot.'/rating/lib.php');
@@ -45,7 +54,7 @@ $discussionsonly = ($mode !== 'posts');
 $isspecificcourse = !is_null($courseid);
 $iscurrentuser = ($USER->id == $userid);
 
-$url = new moodle_url('/mod/forum/user.php', array('id' => $userid));
+$url = new url('/mod/forum/user.php', array('id' => $userid));
 if ($isspecificcourse) {
     $url->param('course', $courseid);
 }
@@ -64,17 +73,17 @@ if ($perpage != 5) {
 }
 
 $user = $DB->get_record("user", array("id" => $userid), '*', MUST_EXIST);
-$usercontext = context_user::instance($user->id, MUST_EXIST);
+$usercontext = user::instance($user->id, MUST_EXIST);
 // Check if the requested user is the guest user
 if (isguestuser($user)) {
     // The guest user cannot post, so it is not possible to view any posts.
     // May as well just bail aggressively here.
-    throw new \moodle_exception('invaliduserid');
+    throw new moodle_exception('invaliduserid');
 }
 // Make sure the user has not been deleted
 if ($user->deleted) {
     $PAGE->set_title(get_string('userdeleted'));
-    $PAGE->set_context(context_system::instance());
+    $PAGE->set_context(system::instance());
     echo $OUTPUT->header();
     echo $OUTPUT->heading($PAGE->title);
     echo $OUTPUT->footer();
@@ -90,7 +99,7 @@ $hasparentaccess = $isparent && has_all_capabilities(array('moodle/user:viewdeta
 if ($isspecificcourse) {
     // Get the requested course and its context
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-    $coursecontext = context_course::instance($courseid, MUST_EXIST);
+    $coursecontext = course::instance($courseid, MUST_EXIST);
     // We have a specific course to search, which we will also assume we are within.
     if ($hasparentaccess) {
         // A `parent` role won't likely have access to the course so we won't attempt
@@ -109,7 +118,7 @@ if ($isspecificcourse) {
     // We are going to search for all of the users posts in all courses!
     // a general require login here as we arn't actually within any course.
     require_login();
-    $PAGE->set_context(context_user::instance($user->id));
+    $PAGE->set_context(user::instance($user->id));
 
     // Now we need to get all of the courses to search.
     // All courses where the user has posted within a forum will be returned.
@@ -169,10 +178,10 @@ if (empty($result->posts)) {
             }
             // Check to see if this is a discussion or a post.
             if ($mode == 'posts') {
-                $navbar = $PAGE->navbar->add(get_string('posts', 'forum'), new moodle_url('/mod/forum/user.php',
+                $navbar = $PAGE->navbar->add(get_string('posts', 'forum'), new url('/mod/forum/user.php',
                         array('id' => $user->id, 'course' => $courseid)));
             } else {
-                $navbar = $PAGE->navbar->add(get_string('discussions', 'forum'), new moodle_url('/mod/forum/user.php',
+                $navbar = $PAGE->navbar->add(get_string('discussions', 'forum'), new url('/mod/forum/user.php',
                         array('id' => $user->id, 'course' => $courseid, 'mode' => 'discussions')));
             }
         }
@@ -188,10 +197,10 @@ if (empty($result->posts)) {
             }
             // Check to see if this is a discussion or a post.
             if ($mode == 'posts') {
-                $navbar = $PAGE->navbar->add(get_string('posts', 'forum'), new moodle_url('/mod/forum/user.php',
+                $navbar = $PAGE->navbar->add(get_string('posts', 'forum'), new url('/mod/forum/user.php',
                         array('id' => $user->id, 'course' => $courseid)));
             } else {
-                $navbar = $PAGE->navbar->add(get_string('discussions', 'forum'), new moodle_url('/mod/forum/user.php',
+                $navbar = $PAGE->navbar->add(get_string('discussions', 'forum'), new url('/mod/forum/user.php',
                         array('id' => $user->id, 'course' => $courseid, 'mode' => 'discussions')));
             }
         }
@@ -207,9 +216,9 @@ if (empty($result->posts)) {
         // the current uesr doesn't have access to.
         $notification = get_string('cannotviewusersposts', 'forum');
         if ($isspecificcourse) {
-            $url = new moodle_url('/course/view.php', array('id' => $courseid));
+            $url = new url('/course/view.php', array('id' => $courseid));
         } else {
-            $url = new moodle_url('/');
+            $url = new url('/');
         }
         navigation_node::override_active_url($url);
     }
@@ -226,7 +235,7 @@ if (empty($result->posts)) {
     }
     echo $OUTPUT->header();
     if (isset($courseid) && $courseid != SITEID) {
-        $backurl = new moodle_url('/user/view.php', ['id' => $userid, 'course' => $courseid]);
+        $backurl = new url('/user/view.php', ['id' => $userid, 'course' => $courseid]);
         echo $OUTPUT->single_button($backurl, get_string('back'), 'get', ['class' => 'mb-3']);
     }
     if (!$isspecificcourse) {
@@ -260,7 +269,7 @@ $postoutput = $postsrenderer->render(
     $USER,
     array_map(function($forum) use ($entityfactory, $result) {
         $cm = $forum->cm;
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $course = $result->courses[$forum->course];
         return $entityfactory->get_forum_from_stdclass($forum, $context, $cm, $course);
     }, $result->forums),
@@ -308,10 +317,10 @@ if (isset($courseid) && $courseid != SITEID) {
 
     // Check to see if this is a discussion or a post.
     if ($mode == 'posts') {
-        $navbar = $PAGE->navbar->add(get_string('posts', 'forum'), new moodle_url('/mod/forum/user.php',
+        $navbar = $PAGE->navbar->add(get_string('posts', 'forum'), new url('/mod/forum/user.php',
                 array('id' => $user->id, 'course' => $courseid)));
     } else {
-        $navbar = $PAGE->navbar->add(get_string('discussions', 'forum'), new moodle_url('/mod/forum/user.php',
+        $navbar = $PAGE->navbar->add(get_string('discussions', 'forum'), new url('/mod/forum/user.php',
                 array('id' => $user->id, 'course' => $courseid, 'mode' => 'discussions')));
     }
     $PAGE->set_secondary_active_tab('participants');
@@ -320,7 +329,7 @@ if (isset($courseid) && $courseid != SITEID) {
 echo $OUTPUT->header();
 
 if (isset($courseid) && $courseid != SITEID) {
-    $backurl = new moodle_url('/user/view.php', ['id' => $userid, 'course' => $courseid]);
+    $backurl = new url('/user/view.php', ['id' => $userid, 'course' => $courseid]);
     echo $OUTPUT->single_button($backurl, get_string('back'), 'get', ['class' => 'mb-3']);
 }
 echo html_writer::start_tag('div', array('class' => 'user-content'));

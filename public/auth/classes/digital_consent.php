@@ -24,6 +24,8 @@
 
 namespace core_auth;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +80,7 @@ class digital_consent {
             $arr = explode(",", $line);
             // Handle if there is more or less than one comma separator.
             if (count($arr) != 2) {
-                throw new \moodle_exception('agedigitalconsentmapinvalidcomma', 'error', '', $line);
+                throw new moodle_exception('agedigitalconsentmapinvalidcomma', 'error', '', $line);
             }
             $country = trim($arr[0]);
             $age = trim($arr[1]);
@@ -88,17 +90,17 @@ class digital_consent {
             }
             // Handle if the presented value for country is not valid.
             if ($country !== "*" && !array_key_exists($country, $countries)) {
-                throw new \moodle_exception('agedigitalconsentmapinvalidcountry', 'error', '', $country);
+                throw new moodle_exception('agedigitalconsentmapinvalidcountry', 'error', '', $country);
             }
             // Handle if the presented value for age is not valid.
             if (!is_numeric($age)) {
-                throw new \moodle_exception('agedigitalconsentmapinvalidage', 'error', '', $age);
+                throw new moodle_exception('agedigitalconsentmapinvalidage', 'error', '', $age);
             }
             $ageconsentmapparsed[$country] = $age;
         }
         // Handle if a default value does not exist.
         if (!$isdefaultvaluepresent) {
-            throw new \moodle_exception('agedigitalconsentmapinvaliddefault');
+            throw new moodle_exception('agedigitalconsentmapinvaliddefault');
         }
 
         return $ageconsentmapparsed;

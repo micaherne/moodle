@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
@@ -61,7 +64,7 @@ class enrol_self_external extends external_api {
             throw new moodle_exception('invaliddata', 'error');
         }
 
-        self::validate_context(context_system::instance());
+        self::validate_context(system::instance());
 
         $enrolinstance = $DB->get_record('enrol', array('id' => $params['instanceid']), '*', MUST_EXIST);
         $course = $DB->get_record('course', array('id' => $enrolinstance->courseid), '*', MUST_EXIST);
@@ -137,8 +140,8 @@ class enrol_self_external extends external_api {
         $warnings = array();
 
         $course = get_course($params['courseid']);
-        $context = context_course::instance($course->id);
-        self::validate_context(context_system::instance());
+        $context = course::instance($course->id);
+        self::validate_context(system::instance());
 
         if (!core_course_category::can_view_course_info($course)) {
             throw new moodle_exception('coursehidden');

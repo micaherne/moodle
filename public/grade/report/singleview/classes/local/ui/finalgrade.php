@@ -26,7 +26,7 @@ namespace gradereport_singleview\local\ui;
 
 defined('MOODLE_INTERNAL') || die;
 
-use context_course;
+use core\context\course;
 use stdClass;
 /**
  * UI element representing the finalgrade column.
@@ -117,7 +117,7 @@ class finalgrade extends grade_attribute_format implements unique_value, be_disa
         global $CFG;
 
         if (($this->grade->is_hidden() || $this->grade->grade_item->is_hidden()) &&
-            !has_capability('moodle/grade:viewhidden', context_course::instance($this->grade->grade_item->courseid))) {
+            !has_capability('moodle/grade:viewhidden', course::instance($this->grade->grade_item->courseid))) {
             return new empty_element();
         }
 
@@ -206,7 +206,7 @@ class finalgrade extends grade_attribute_format implements unique_value, be_disa
         if ($errorstr) {
             $user = get_complete_user_data('id', $userid);
             $gradestr = new stdClass;
-            if (has_capability('moodle/site:viewfullnames', \context_course::instance($gradeitem->courseid))) {
+            if (has_capability('moodle/site:viewfullnames', course::instance($gradeitem->courseid))) {
                 $gradestr->username = fullname($user, true);
             } else {
                 $gradestr->username = fullname($user);

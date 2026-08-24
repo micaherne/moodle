@@ -23,6 +23,9 @@
  */
 
 
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
@@ -107,8 +110,8 @@ class lesson_override_form extends moodleform {
                 $groups = $accessallgroups ? groups_get_all_groups($cm->course) :  groups_get_activity_allowed_groups($cm);
                 if (empty($groups)) {
                     // Generate an error.
-                    $link = new moodle_url('/mod/lesson/overrides.php', array('cmid' => $cm->id));
-                    throw new \moodle_exception('groupsnone', 'lesson', $link);
+                    $link = new url('/mod/lesson/overrides.php', array('cmid' => $cm->id));
+                    throw new moodle_exception('groupsnone', 'lesson', $link);
                 }
 
                 $groupchoices = array();
@@ -159,8 +162,8 @@ class lesson_override_form extends moodleform {
 
                 if (empty($users)) {
                     // Generate an error.
-                    $link = new moodle_url('/mod/lesson/overrides.php', array('cmid' => $cm->id));
-                    throw new \moodle_exception('usersnone', 'lesson', $link);
+                    $link = new url('/mod/lesson/overrides.php', array('cmid' => $cm->id));
+                    throw new moodle_exception('usersnone', 'lesson', $link);
                 }
 
                 $userchoices = array();

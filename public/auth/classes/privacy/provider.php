@@ -26,7 +26,7 @@
 namespace core_auth\privacy;
 defined('MOODLE_INTERNAL') || die();
 
-use context;
+use core\context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;

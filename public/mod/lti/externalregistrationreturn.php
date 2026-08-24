@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/lti/lib.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
@@ -35,10 +38,10 @@ $id = optional_param('id', 0, PARAM_INT);
 require_sesskey();
 require_login(0, false);
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 require_capability('moodle/site:config', $systemcontext);
 
-$pageurl = new moodle_url('/mod/lti/externalregistrationreturn.php');
+$pageurl = new url('/mod/lti/externalregistrationreturn.php');
 $PAGE->set_context($systemcontext);
 $PAGE->set_url($pageurl);
 $PAGE->set_pagelayout('maintenance');

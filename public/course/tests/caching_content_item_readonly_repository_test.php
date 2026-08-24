@@ -26,6 +26,7 @@ namespace core_course;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core_cache\cache;
 use core_course\local\repository\content_item_readonly_repository;
 use core_course\local\repository\caching_content_item_readonly_repository;
 
@@ -47,7 +48,7 @@ final class caching_content_item_readonly_repository_test extends \advanced_test
         $course = $this->getDataGenerator()->create_course();
         $user = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $cir = new content_item_readonly_repository();
-        $ccir = new caching_content_item_readonly_repository(\cache::make('core', 'user_course_content_items'), $cir);
+        $ccir = new caching_content_item_readonly_repository(cache::make('core', 'user_course_content_items'), $cir);
 
         // Get the content items using both the live and the caching repos.
         $items = $cir->find_all_for_course($course, $user);
@@ -94,7 +95,7 @@ final class caching_content_item_readonly_repository_test extends \advanced_test
         $editingteacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
         $cir = new content_item_readonly_repository();
-        $ccir = new caching_content_item_readonly_repository(\cache::make('core', 'user_course_content_items'), $cir);
+        $ccir = new caching_content_item_readonly_repository(cache::make('core', 'user_course_content_items'), $cir);
 
         // Create lti that is only available to editingteacher.
         $type = new \stdClass();

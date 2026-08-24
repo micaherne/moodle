@@ -20,6 +20,8 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/admin/tool/brickfield/tests/area_test_base.php');
 
+use core\context\course;
+use core\context\module;
 use tool_brickfield\area_test_base;
 
 /**
@@ -49,14 +51,14 @@ final class questiontext_test extends area_test_base {
 
         $course = $this->getDataGenerator()->create_course();
         $qbank = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbankcontext = \context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat1 = $generator->create_question_category(['contextid' => $qbankcontext->id]);
         $question1 = $generator->create_question('multichoice', null, ['category' => $cat1->id]);
         $question2 = $generator->create_question('multichoice', null, ['category' => $cat1->id]);
         $questiontext = new questiontext();
         $event = \core\event\question_updated::create_from_question_instance($question1,
-            \context_course::instance($course->id));
+            course::instance($course->id));
         $rs = $questiontext->find_relevant_areas($event);
         $this->assertNotNull($rs);
 
@@ -82,7 +84,7 @@ final class questiontext_test extends area_test_base {
 
         $course = $this->getDataGenerator()->create_course();
         $qbank = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbankcontext = \context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat1 = $generator->create_question_category(['contextid' => $qbankcontext->id]);
         $question1 = $generator->create_question('multichoice', null, ['category' => $cat1->id]);

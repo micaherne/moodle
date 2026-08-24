@@ -24,6 +24,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 
+use core\context\user as context_user;
+use core\exception\moodle_exception;
+use core\output\progress_trace;
+use core\url;
+use core\user as core_user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/authlib.php');
@@ -502,7 +508,7 @@ class auth_plugin_db extends auth_plugin_base {
                                  WHERE {$this->config->fielduser} = ?", [$extusername]);
 
         if (!$rs) {
-            throw new \moodle_exception('auth_dbcantconnect', 'auth_db');
+            throw new moodle_exception('auth_dbcantconnect', 'auth_db');
         } else if (!$rs->EOF) {
             // User exists externally.
             $result = true;
@@ -525,7 +531,7 @@ class auth_plugin_db extends auth_plugin_base {
                                   FROM {$this->config->table} ");
 
         if (!$rs) {
-            throw new \moodle_exception('auth_dbcantconnect', 'auth_db');
+            throw new moodle_exception('auth_dbcantconnect', 'auth_db');
         } else if (!$rs->EOF) {
             while ($rec = $rs->FetchRow()) {
                 $rec = array_change_key_case((array)$rec, CASE_LOWER);
@@ -610,7 +616,7 @@ class auth_plugin_db extends auth_plugin_base {
                        SET ".implode(',', $update)."
                      WHERE {$this->config->fielduser} = ?";
             if (!$authdb->Execute($sql, $params)) {
-                throw new \moodle_exception('auth_dbupdateerror', 'auth_db');
+                throw new moodle_exception('auth_dbupdateerror', 'auth_db');
             }
         }
         $authdb->Close();
@@ -680,7 +686,7 @@ class auth_plugin_db extends auth_plugin_base {
             return null;
         } else {
             // Use admin defined custom url.
-            return new moodle_url($this->config->changepasswordurl);
+            return new url($this->config->changepasswordurl);
         }
     }
 

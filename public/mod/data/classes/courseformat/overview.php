@@ -16,7 +16,7 @@
 
 namespace mod_data\courseformat;
 
-use cm_info;
+use core_course\cm_info;
 use core\url;
 use mod_data\dates;
 use mod_data\manager;

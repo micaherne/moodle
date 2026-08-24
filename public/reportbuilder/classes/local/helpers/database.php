@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\helpers;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core_text;
 
 /**

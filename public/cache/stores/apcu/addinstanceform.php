@@ -20,6 +20,9 @@
  * @copyright  2014 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core_cache\factory;
+use core_cache\form\cachestore_addinstance_form;
+
 class cachestore_apcu_addinstance_form extends cachestore_addinstance_form {
     /**
      * Add the desired form elements.
@@ -52,7 +55,7 @@ class cachestore_apcu_addinstance_form extends cachestore_addinstance_form {
      */
     public function configuration_validation($data, $files, array $errors) {
         if (empty($errors['prefix'])) {
-            $factory = cache_factory::instance();
+            $factory = factory::instance();
             $config = $factory->create_config_instance();
             foreach ($config->get_all_stores() as $store) {
                 if ($store['plugin'] === 'apcu') {

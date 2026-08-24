@@ -16,6 +16,10 @@
 
 namespace core\task;
 
+use core\output\user_picture;
+use core\url;
+use core\user;
+
 /**
  * Adhoc task that send login notifications.
  *
@@ -56,14 +60,14 @@ class send_login_notifications extends adhoc_task {
         $loginip = $customdata->loginip;
         $logintime = userdate($customdata->logintime);
 
-        $changepasswordlink = (new \moodle_url('/user/preferences.php', ['userid' => $USER->id]))->out(false);
+        $changepasswordlink = (new url('/user/preferences.php', ['userid' => $USER->id]))->out(false);
         // Find a better final URL for changing password.
         $userauth = \core\di::get(\core\authentication::class)->get_plugin($USER->auth);
         if ($userauth->can_change_password()) {
             if ($changepwurl = $userauth->change_password_url()) {
                 $changepasswordlink = $changepwurl;
             } else {
-                $changepasswordlink = (new \moodle_url('/login/change_password.php'))->out(false);
+                $changepasswordlink = (new url('/login/change_password.php'))->out(false);
             }
         }
 
@@ -71,7 +75,7 @@ class send_login_notifications extends adhoc_task {
         $eventdata->courseid          = SITEID;
         $eventdata->component         = 'moodle';
         $eventdata->name              = 'newlogin';
-        $eventdata->userfrom          = \core_user::get_noreply_user();
+        $eventdata->userfrom          = user::get_noreply_user();
         $eventdata->userto            = $USER;
         $eventdata->notification      = 1;
         $eventdata->subject           = get_string('newloginnotificationtitle', 'moodle', $sitename);
@@ -82,7 +86,7 @@ class send_login_notifications extends adhoc_task {
         $eventdata->fullmessage       = html_to_text($eventdata->fullmessagehtml);
         $eventdata->smallmessage      = get_string('newloginnotificationbodysmall', 'moodle', $username);
 
-        $userpicture = new \user_picture($USER);
+        $userpicture = new user_picture($USER);
         $userpicture->size = 1; // Use f1 size.
         $userpicture->includetoken = $USER->id; // Generate an out-of-session token for the user receiving the message.
         $eventdata->customdata = ['notificationiconurl' => $userpicture->get_url($PAGE)->out(false)];

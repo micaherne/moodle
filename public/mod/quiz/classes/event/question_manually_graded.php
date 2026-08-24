@@ -23,6 +23,9 @@
  */
 namespace mod_quiz\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +80,7 @@ class question_manually_graded extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/comment.php', ['attempt' => $this->other['attemptid'],
+        return new url('/mod/quiz/comment.php', ['attempt' => $this->other['attemptid'],
             'slot' => $this->other['slot']]);
     }
 
@@ -91,15 +94,15 @@ class question_manually_graded extends \core\event\base {
         parent::validate_data();
 
         if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+            throw new coding_exception('The \'quizid\' value must be set in other.');
         }
 
         if (!isset($this->other['attemptid'])) {
-            throw new \coding_exception('The \'attemptid\' value must be set in other.');
+            throw new coding_exception('The \'attemptid\' value must be set in other.');
         }
 
         if (!isset($this->other['slot'])) {
-            throw new \coding_exception('The \'slot\' value must be set in other.');
+            throw new coding_exception('The \'slot\' value must be set in other.');
         }
     }
 

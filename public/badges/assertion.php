@@ -27,6 +27,7 @@
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
+use core\url;
 use core_badges\local\backpack\helper;
 
 $hash = required_param('b', PARAM_ALPHANUM); // Issued badge unique hash for badge assertion.
@@ -40,15 +41,15 @@ if (!is_null($action)) {
     $badgeid = helper::get_badgeid_from_hash($hash);
     if ($action) {
         // Display only the BadgeClass.
-        redirect(new moodle_url('/badges/json/badge.php', ['id' => $badgeid, 'obversion' => $obversion]));
+        redirect(new url('/badges/json/badge.php', ['id' => $badgeid, 'obversion' => $obversion]));
     } else {
         // Display only the Issuer.
-        redirect(new moodle_url('/badges/json/issuer.php', ['id' => $badgeid, 'obversion' => $obversion]));
+        redirect(new url('/badges/json/issuer.php', ['id' => $badgeid, 'obversion' => $obversion]));
     }
 }
 
 // Display badge assertion.
-redirect(new moodle_url(
+redirect(new url(
     '/badges/json/assertion.php',
     [
         'b' => $hash,

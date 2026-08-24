@@ -24,6 +24,10 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use \core_badges\badge;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 require_once($CFG->dirroot . '/badges/criteria_form.php');
@@ -39,11 +43,11 @@ $submitcourse = optional_param('submitcourse', '', PARAM_TEXT);
 
 require_login();
 
-$return = new moodle_url('/badges/criteria.php', array('id' => $badgeid));
+$return = new url('/badges/criteria.php', array('id' => $badgeid));
 $badge = new badge($badgeid);
 $title = [get_string('addcriterion', 'badges'), $badge->name];
 $context = $badge->get_context();
-$navurl = new moodle_url('/badges/index.php', array('type' => $badge->type));
+$navurl = new url('/badges/index.php', array('type' => $badge->type));
 
 require_capability('moodle/badges:configurecriteria', $context);
 
@@ -67,7 +71,7 @@ if ($badge->type == BADGE_TYPE_COURSE) {
     $course = get_course($badge->courseid);
     $heading = format_string($course->fullname, true, ['context' => $context]);
     $title[] = $heading;
-    $navurl = new moodle_url('/badges/index.php', array('type' => $badge->type, 'id' => $badge->courseid));
+    $navurl = new url('/badges/index.php', array('type' => $badge->type, 'id' => $badge->courseid));
     $PAGE->set_pagelayout('standard');
     navigation_node::override_active_url($navurl);
 } else {
@@ -81,8 +85,8 @@ $PAGE->set_context($context);
 $PAGE->set_url('/badges/criteria_settings.php', $urlparams);
 $PAGE->set_heading($heading);
 $PAGE->set_title(implode(\moodle_page::TITLE_SEPARATOR, $title));
-$PAGE->navbar->add($badge->name, new moodle_url('overview.php', array('id' => $badge->id)))
-    ->add(get_string('bcriteria', 'badges'), new moodle_url('criteria.php', ['id' => $badge->id]))
+$PAGE->navbar->add($badge->name, new url('overview.php', array('id' => $badge->id)))
+    ->add(get_string('bcriteria', 'badges'), new url('criteria.php', ['id' => $badge->id]))
     ->add(get_string('criteria_' . $type, 'badges'));
 
 $cparams = array('criteriatype' => $type, 'badgeid' => $badge->id);
@@ -105,7 +109,7 @@ if (!empty($addcourse)) {
         }
 
         $id = $criteria->add_courses($data->courses);
-        redirect(new moodle_url('/badges/criteria_settings.php',
+        redirect(new url('/badges/criteria_settings.php',
             array('badgeid' => $badgeid, 'edit' => true, 'type' => BADGE_CRITERIA_TYPE_COURSESET, 'crit' => $id)));
     }
 } else if ($data = $mform->get_data()) {

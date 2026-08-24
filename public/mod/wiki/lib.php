@@ -34,6 +34,12 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\navigation\navigation_node;
+use core\url;
+use core_comment\comment_exception;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -181,7 +187,7 @@ function wiki_reset_userdata($data) {
         if (!$cm = get_coursemodule_from_instance('wiki', $wiki->id, $data->courseid)) {
             continue;
         }
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Remove tags or all pages.
         if (!empty($data->reset_wiki_pages) || !empty($data->reset_wiki_tags)) {
@@ -458,7 +464,7 @@ function wiki_search_form($cm, $search = '', $subwiki = null) {
         $hiddenfields[] = (object) ['type' => 'hidden', 'name' => 'subwikiid', 'value' => $subwiki->id];
     }
     $data = [
-        'action' => new moodle_url('/mod/wiki/search.php'),
+        'action' => new url('/mod/wiki/search.php'),
         'hiddenfields' => $hiddenfields,
         'inputname' => 'searchstring',
         'query' => s($search, true),
@@ -483,7 +489,7 @@ function wiki_extend_navigation(navigation_node $navref, stdClass $course, stdCl
 
     require_once($CFG->dirroot . '/mod/wiki/locallib.php');
 
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     $userid = ($instance->wikimode == 'individual') ? $USER->id : 0;
     $gid = groups_get_activity_group($cm) ?: 0;
 
@@ -499,7 +505,7 @@ function wiki_extend_navigation(navigation_node $navref, stdClass $course, stdCl
     }
 
     if (wiki_can_create_pages($context)) {
-        $link = new moodle_url('/mod/wiki/create.php', ['action' => 'new', 'swid' => $subwiki->id]);
+        $link = new url('/mod/wiki/create.php', ['action' => 'new', 'swid' => $subwiki->id]);
         $navref->add(get_string('newpage', 'wiki'), $link, navigation_node::TYPE_SETTING);
     }
 
@@ -510,33 +516,33 @@ function wiki_extend_navigation(navigation_node $navref, stdClass $course, stdCl
     $canviewpage = has_capability('mod/wiki:viewpage', $context);
 
     if ($canviewpage) {
-        $link = new moodle_url('/mod/wiki/view.php', ['pageid' => $pageid]);
+        $link = new url('/mod/wiki/view.php', ['pageid' => $pageid]);
         $navref->add(get_string('view', 'wiki'), $link, navigation_node::TYPE_SETTING);
     }
 
     if (wiki_user_can_edit($subwiki)) {
-        $link = new moodle_url('/mod/wiki/edit.php', ['pageid' => $pageid]);
+        $link = new url('/mod/wiki/edit.php', ['pageid' => $pageid]);
         $navref->add(get_string('edit', 'wiki'), $link, navigation_node::TYPE_SETTING);
     }
 
     if (has_capability('mod/wiki:viewcomment', $context)) {
-        $link = new moodle_url('/mod/wiki/comments.php', ['pageid' => $pageid]);
+        $link = new url('/mod/wiki/comments.php', ['pageid' => $pageid]);
         $navref->add(get_string('comments', 'wiki'), $link, navigation_node::TYPE_SETTING);
     }
 
     if ($canviewpage) {
-        $link = new moodle_url('/mod/wiki/history.php', ['pageid' => $pageid]);
+        $link = new url('/mod/wiki/history.php', ['pageid' => $pageid]);
         $navref->add(get_string('history', 'wiki'), $link, navigation_node::TYPE_SETTING);
 
-        $link = new moodle_url('/mod/wiki/map.php', ['pageid' => $pageid]);
+        $link = new url('/mod/wiki/map.php', ['pageid' => $pageid]);
         $navref->add(get_string('map', 'wiki'), $link, navigation_node::TYPE_SETTING);
 
-        $link = new moodle_url('/mod/wiki/files.php', ['pageid' => $pageid]);
+        $link = new url('/mod/wiki/files.php', ['pageid' => $pageid]);
         $navref->add(get_string('files', 'wiki'), $link, navigation_node::TYPE_SETTING);
     }
 
     if (has_capability('mod/wiki:managewiki', $context)) {
-        $link = new moodle_url('/mod/wiki/admin.php', ['pageid' => $pageid]);
+        $link = new url('/mod/wiki/admin.php', ['pageid' => $pageid]);
         $navref->add(get_string('admin', 'wiki'), $link, navigation_node::TYPE_SETTING);
     }
 }
@@ -612,7 +618,7 @@ function wiki_comment_validate($comment_param) {
     if (!$cm = get_coursemodule_from_instance('wiki', $wiki->id, $course->id)) {
         throw new comment_exception('invalidcoursemodule');
     }
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
     // group access
     if ($subwiki->groupid) {
         $groupmode = groups_get_activity_groupmode($cm, $course);
@@ -817,7 +823,7 @@ function mod_wiki_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('view'),
-        new \moodle_url('/mod/wiki/view.php', ['id' => $cm->id]),
+        new url('/mod/wiki/view.php', ['id' => $cm->id]),
         1,
         true
     );

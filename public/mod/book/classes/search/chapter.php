@@ -24,6 +24,10 @@
 
 namespace mod_book\search;
 
+use core\context;
+use core\context\module;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -46,7 +50,7 @@ class chapter extends \core_search\base_mod {
      * @param \context|null $context Optional context to restrict scope of returned results
      * @return moodle_recordset|null Recordset (or null if no results)
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
 
         list ($contextjoin, $contextparams) = $this->get_context_restriction_sql(
@@ -73,7 +77,7 @@ class chapter extends \core_search\base_mod {
     public function get_document($record, $options = array()) {
         try {
             $cm = $this->get_cm('book', $record->bookid, $record->courseid);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
         } catch (\dml_missing_record_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving ' . $this->areaid . ' ' . $record->id . ' document, not all required data is available: ' .
@@ -130,7 +134,7 @@ class chapter extends \core_search\base_mod {
             return \core_search\manager::ACCESS_DENIED;
         }
 
-        $context = \context_module::instance($cminfo->id);
+        $context = module::instance($cminfo->id);
 
         if (!has_capability('mod/book:read', $context)) {
             return \core_search\manager::ACCESS_DENIED;
@@ -151,9 +155,9 @@ class chapter extends \core_search\base_mod {
      * @return \moodle_url
      */
     public function get_doc_url(\core_search\document $doc) {
-        $contextmodule = \context::instance_by_id($doc->get('contextid'));
+        $contextmodule = context::instance_by_id($doc->get('contextid'));
         $params = array('id' => $contextmodule->instanceid, 'chapterid' => $doc->get('itemid'));
-        return new \moodle_url('/mod/book/view.php', $params);
+        return new url('/mod/book/view.php', $params);
     }
 
     /**
@@ -163,8 +167,8 @@ class chapter extends \core_search\base_mod {
      * @return \moodle_url
      */
     public function get_context_url(\core_search\document $doc) {
-        $contextmodule = \context::instance_by_id($doc->get('contextid'));
-        return new \moodle_url('/mod/book/view.php', array('id' => $contextmodule->instanceid));
+        $contextmodule = context::instance_by_id($doc->get('contextid'));
+        return new url('/mod/book/view.php', array('id' => $contextmodule->instanceid));
     }
 
     /**

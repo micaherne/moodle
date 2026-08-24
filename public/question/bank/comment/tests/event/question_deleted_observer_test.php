@@ -16,6 +16,9 @@
 
 namespace qbank_comment\event;
 
+use core\context\system;
+use core_comment\manager;
+
 /**
  * Tests for question_deleted_observer
  *
@@ -39,7 +42,7 @@ final class question_deleted_observer_test extends \advanced_testcase {
         [, , , $questions] = $questiongenerator->setup_course_and_questions();
         $question = reset($questions);
 
-        $context = \context_system::instance();
+        $context = system::instance();
         $commentgenerator = $this->getDataGenerator()->get_plugin_generator('core_comment');
         /** @var \comment $comment */
         $comment = $commentgenerator->create_comment([
@@ -54,7 +57,7 @@ final class question_deleted_observer_test extends \advanced_testcase {
 
         question_delete_question($question->id);
 
-        $newcomment = new \comment((object)[
+        $newcomment = new manager((object)[
             'context' => $context,
             'component' => 'qbank_comment',
             'area' => 'question',

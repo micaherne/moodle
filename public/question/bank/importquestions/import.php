@@ -28,6 +28,9 @@ require_once($CFG->dirroot . '/question/editlib.php');
 require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/question/renderer.php');
 
+use core\context;
+use core\exception\moodle_exception;
+use core\url;
 use qbank_importquestions\form\question_import_form;
 
 require_login();
@@ -138,7 +141,7 @@ if ($form = $importform->get_data()) {
     $event->trigger();
 
     $params = $thispageurl->params() + ['category' => $qformat->category->id . ',' . $qformat->category->contextid];
-    echo $OUTPUT->continue_button(new moodle_url('/question/edit.php', $params));
+    echo $OUTPUT->continue_button(new url('/question/edit.php', $params));
     echo $OUTPUT->footer();
     exit;
 }

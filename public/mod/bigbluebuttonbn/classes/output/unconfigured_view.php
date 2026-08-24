@@ -16,10 +16,13 @@
 
 namespace mod_bigbluebuttonbn\output;
 
+use core\context\course;
+use core\context\system;
+use core\url;
 use mod_bigbluebuttonbn\instance;
-use renderable;
-use renderer_base;
-use templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 
 /**
  * Renderable for the neutral state page shown when the BBB server is not yet configured.
@@ -58,12 +61,12 @@ class unconfigured_view implements renderable, templatable {
             'heading' => get_string('unconfigured_view_heading', 'mod_bigbluebuttonbn'),
         ];
 
-        if (has_capability('moodle/site:config', \context_system::instance())) {
-            $settingsurl = new \moodle_url('/admin/settings.php', ['section' => 'modsettingbigbluebuttonbn']);
+        if (has_capability('moodle/site:config', system::instance())) {
+            $settingsurl = new url('/admin/settings.php', ['section' => 'modsettingbigbluebuttonbn']);
             $data['message'] = get_string('unconfigured_view_admin', 'mod_bigbluebuttonbn');
             $data['settingsurl'] = $settingsurl->out(false);
             $data['settingslinktext'] = get_string('unconfigured_view_settings_link', 'mod_bigbluebuttonbn');
-        } else if (has_capability('moodle/course:manageactivities', \context_course::instance($course->id))) {
+        } else if (has_capability('moodle/course:manageactivities', course::instance($course->id))) {
             $data['message'] = get_string('unconfigured_view_teacher', 'mod_bigbluebuttonbn');
         } else {
             $data['message'] = get_string('unconfigured_view_student', 'mod_bigbluebuttonbn');

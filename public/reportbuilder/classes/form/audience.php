@@ -18,13 +18,13 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\form;
 
-use context;
+use core\context;
 use core\exception\invalid_parameter_exception;
 use core_form\dynamic_form;
 use core_reportbuilder\local\audiences\base;
 use core_reportbuilder\output\audience_heading_editable;
 use core_reportbuilder\permission;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -176,7 +176,7 @@ class audience extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
-        return new moodle_url('/reportbuilder/edit.php', ['id' => $this->optional_param('reportid', 0, PARAM_INT)]);
+    protected function get_page_url_for_dynamic_submission(): url {
+        return new url('/reportbuilder/edit.php', ['id' => $this->optional_param('reportid', 0, PARAM_INT)]);
     }
 }

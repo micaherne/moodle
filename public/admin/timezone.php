@@ -1,6 +1,9 @@
 <?php
 
-    require_once('../config.php');
+    use core\context\system;
+use core\output\html_writer;
+
+require_once('../config.php');
 
     $zone = optional_param('zone', '', PARAM_RAW);
 
@@ -10,7 +13,7 @@
     }
 
     $PAGE->set_url('/admin/timezone.php');
-    $PAGE->set_context(context_system::instance());
+    $PAGE->set_context(system::instance());
 
     require_admin();
 

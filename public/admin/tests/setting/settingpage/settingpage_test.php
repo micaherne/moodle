@@ -16,6 +16,7 @@
 
 namespace core_admin\setting\settingpage;
 
+use core\exception\coding_exception;
 use core_admin\setting;
 use core_admin\setting\setting\configpasswordunmask;
 use core_admin\setting\setting\configtext;
@@ -182,7 +183,7 @@ final class settingpage_test extends \advanced_testcase {
         $page = new settingpage('page', 'Page');
         $page->add(new configtext('text1', 'Text 1', '', ''));
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $page->add_before(new configtext('text2', 'Text 2', '', ''), '   ');
     }
 

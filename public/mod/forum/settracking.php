@@ -23,6 +23,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -32,18 +36,18 @@ $returnpage = optional_param('returnpage', 'index.php', PARAM_FILE);    // Page 
 require_sesskey();
 
 if (! $forum = $DB->get_record("forum", array("id" => $id))) {
-    throw new \moodle_exception('invalidforumid', 'forum');
+    throw new moodle_exception('invalidforumid', 'forum');
 }
 
 if (! $course = $DB->get_record("course", array("id" => $forum->course))) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 if (! $cm = get_coursemodule_from_instance("forum", $forum->id, $course->id)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 require_login($course, false, $cm);
-$returnpageurl = new moodle_url('/mod/forum/' . $returnpage, array('id' => $course->id, 'f' => $forum->id));
+$returnpageurl = new url('/mod/forum/' . $returnpage, array('id' => $course->id, 'f' => $forum->id));
 $returnto = forum_go_back_to($returnpageurl);
 
 if (!forum_tp_can_track_forums($forum)) {
@@ -55,7 +59,7 @@ $info->name  = fullname($USER);
 $info->forum = format_string($forum->name);
 
 $eventparams = array(
-    'context' => context_module::instance($cm->id),
+    'context' => module::instance($cm->id),
     'relateduserid' => $USER->id,
     'other' => array('forumid' => $forum->id),
 );
@@ -66,7 +70,7 @@ if (forum_tp_is_tracked($forum) ) {
         $event->trigger();
         redirect($returnto, get_string("nownottracking", "forum", $info), 1);
     } else {
-        throw new \moodle_exception('cannottrack', '', get_local_referer(false));
+        throw new moodle_exception('cannottrack', '', get_local_referer(false));
     }
 
 } else { // subscribe
@@ -75,6 +79,6 @@ if (forum_tp_is_tracked($forum) ) {
         $event->trigger();
         redirect($returnto, get_string("nowtracking", "forum", $info), 1);
     } else {
-        throw new \moodle_exception('cannottrack', '', get_local_referer(false));
+        throw new moodle_exception('cannottrack', '', get_local_referer(false));
     }
 }

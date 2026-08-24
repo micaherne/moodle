@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/user/selector/lib.php');
@@ -272,7 +275,7 @@ class enrol_manual_editselectedusers_operation extends enrol_bulk_enrolment_oper
                             array(
                                 'objectid' => $enrolment->id,
                                 'courseid' => $enrolment->courseid,
-                                'context' => context_course::instance($enrolment->courseid),
+                                'context' => course::instance($enrolment->courseid),
                                 'relateduserid' => $user->id,
                                 'other' => array('enrol' => 'manual')
                                 )

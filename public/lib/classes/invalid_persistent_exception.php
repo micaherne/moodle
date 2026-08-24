@@ -24,6 +24,8 @@
 
 namespace core;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -33,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2015 Frédéric Massart - FMCorz.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class invalid_persistent_exception extends \moodle_exception {
+class invalid_persistent_exception extends moodle_exception {
 
     public function __construct(array $errors = array()) {
         $forhumans = array();

@@ -26,6 +26,7 @@ namespace core_favourites\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context as core_context;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\context;
 use \core_privacy\local\request\approved_contextlist;
@@ -142,7 +143,7 @@ class provider implements
      * @param int $itemid The favourite's item ID.
      * @return array|null
      */
-    public static function get_favourites_info_for_user(int $userid, \context $context,
+    public static function get_favourites_info_for_user(int $userid, core_context $context,
                                                         string $component, string $itemtype, int $itemid) {
         global $DB;
 
@@ -175,7 +176,7 @@ class provider implements
      * @param int $itemid Optional itemid associated with component.
      * @throws \dml_exception if any errors are encountered during deletion.
      */
-    public static function delete_favourites_for_all_users(\context $context, string $component, string $itemtype,
+    public static function delete_favourites_for_all_users(core_context $context, string $component, string $itemtype,
                                                            int $itemid = 0) {
         global $DB;
 

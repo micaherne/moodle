@@ -30,10 +30,10 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
 
-use cache;
-use coding_exception;
-use context_system;
-use moodle_url;
+use core_cache\cache;
+use core\exception\coding_exception;
+use core\context\system;
+use core\url;
 use core_badges\backpack_api2p1_mapping;
 use core_badges\oauth2\client;
 use curl;
@@ -259,9 +259,9 @@ class backpack_api2p1 {
         }
 
         $issuer = $this->get_issuer();
-        $client = new client($issuer, new moodle_url('/badges/mybadges.php'), '', $this->externalbackpack);
+        $client = new client($issuer, new url('/badges/mybadges.php'), '', $this->externalbackpack);
         if (!$client->is_logged_in()) {
-            $redirecturl = new moodle_url('/badges/mybadges.php', ['error' => 'backpackexporterror']);
+            $redirecturl = new url('/badges/mybadges.php', ['error' => 'backpackexporterror']);
             redirect($redirecturl);
         }
 

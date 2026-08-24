@@ -16,6 +16,8 @@
 
 namespace factor_webauthn;
 
+use core\output\html_writer;
+use core\url;
 use lbuchs\WebAuthn\Binary\ByteBuffer;
 use lbuchs\WebAuthn\WebAuthn;
 use lbuchs\WebAuthn\WebAuthnException;
@@ -51,7 +53,7 @@ class factor extends object_factor_base {
         global $CFG, $SITE;
         parent::__construct($name);
 
-        $this->rpid = (new \moodle_url($CFG->wwwroot))->get_host();
+        $this->rpid = (new url($CFG->wwwroot))->get_host();
         $this->webauthn = new WebAuthn($SITE->fullname, $this->rpid);
 
         $this->userverification = get_config('factor_webauthn', 'userverification');
@@ -280,25 +282,25 @@ class factor extends object_factor_base {
         $headingstring = $mform->elementExists('replaceid') ? 'replacefactor' : 'setupfactor';
         $mform->addElement('html', $OUTPUT->heading(get_string($headingstring, 'factor_webauthn'), 2));
 
-        $html = \html_writer::tag('p', get_string('setupfactor:intro', 'factor_webauthn'));
+        $html = html_writer::tag('p', get_string('setupfactor:intro', 'factor_webauthn'));
         $mform->addElement('html', $html);
 
         // Security key name.
-        $mform->addElement('html', \html_writer::tag('p', get_string('setupfactor:instructionssecuritykeyname', 'factor_webauthn'),
+        $mform->addElement('html', html_writer::tag('p', get_string('setupfactor:instructionssecuritykeyname', 'factor_webauthn'),
             ['class' => 'bold']));
 
         $mform->addElement('text', 'webauthn_name', get_string('authenticatorname', 'factor_webauthn'));
         $mform->setType('webauthn_name', PARAM_TEXT);
         $mform->addRule('webauthn_name', get_string('required'), 'required', null, 'client');
 
-        $html = \html_writer::tag('p', get_string('setupfactor:securitykeyinfo', 'factor_webauthn'));
+        $html = html_writer::tag('p', get_string('setupfactor:securitykeyinfo', 'factor_webauthn'));
         $mform->addElement('static', 'devicenameinfo', '', $html);
 
         // Register security key.
-        $mform->addElement('html', \html_writer::tag('p',
+        $mform->addElement('html', html_writer::tag('p',
             get_string('setupfactor:instructionsregistersecuritykey', 'factor_webauthn'), ['class' => 'bold']));
 
-        $registerbtn = \html_writer::tag('btn', get_string('register', 'factor_webauthn'), [
+        $registerbtn = html_writer::tag('btn', get_string('register', 'factor_webauthn'), [
             'class' => 'btn btn-primary',
             'type' => 'button',
             'id' => 'factor_webauthn-register',

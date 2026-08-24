@@ -16,6 +16,9 @@
 
 namespace core_admin\setting\setting;
 
+use core\context\system;
+use core\context\user;
+
 /**
  * Setting for uploading a single file into file storage.
  *
@@ -66,7 +69,7 @@ class configstoredfile extends \core_admin\setting {
         $defaults = [
             'mainfile' => '', 'subdirs' => 0, 'maxbytes' => -1, 'maxfiles' => 1,
             'accepted_types' => '*', 'return_types' => FILE_INTERNAL, 'areamaxbytes' => FILE_AREA_MAX_BYTES_UNLIMITED,
-            'context' => \context_system::instance()];
+            'context' => system::instance()];
         foreach ($this->options as $k => $v) {
             $defaults[$k] = $v;
         }
@@ -110,7 +113,7 @@ class configstoredfile extends \core_admin\setting {
             // Make sure the settings form was not open for more than 4 days and draft areas deleted in the meantime.
             // But we can safely ignore that if the destination area is empty, so that the user is not prompt
             // With an error because the draft area does not exist, as he did not use it.
-            $usercontext = \context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             if (!$fs->file_exists($usercontext->id, 'user', 'draft', $data, '/', '.') && $current !== '') {
                 return get_string('errorsetting', 'admin');
             }

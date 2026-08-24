@@ -28,6 +28,10 @@ namespace logstore_standard\privacy;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\user;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
@@ -55,7 +59,7 @@ final class provider_test extends provider_testcase {
     }
 
     public function test_get_contexts_for_userid(): void {
-        $admin = \core_user::get_user(2);
+        $admin = user::get_user(2);
         $u1 = $this->getDataGenerator()->create_user();
         $u2 = $this->getDataGenerator()->create_user();
         $u3 = $this->getDataGenerator()->create_user();
@@ -65,11 +69,11 @@ final class provider_test extends provider_testcase {
         $c2 = $this->getDataGenerator()->create_course();
         $cm2 = $this->getDataGenerator()->create_module('url', ['course' => $c2]);
 
-        $sysctx = \context_system::instance();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
-        $cm1ctx = \context_module::instance($cm1->cmid);
-        $cm2ctx = \context_module::instance($cm2->cmid);
+        $sysctx = system::instance();
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
+        $cm1ctx = module::instance($cm1->cmid);
+        $cm2ctx = module::instance($cm2->cmid);
 
         $this->enable_logging();
         $manager = get_log_manager(true);
@@ -103,7 +107,7 @@ final class provider_test extends provider_testcase {
         $this->assert_contextlist_equals($this->get_contextlist_for_user($u3), [$sysctx, $c1ctx]);
         $this->assert_contextlist_equals($this->get_contextlist_for_user($admin), [$sysctx, $c1ctx]);
         $this->setAdminUser();
-        \core\session\manager::loginas($u1->id, \context_system::instance());
+        \core\session\manager::loginas($u1->id, system::instance());
         $e = \logstore_standard\event\unittest_executed::create(['context' => $c2ctx, 'relateduserid' => $u3->id]);
         $e->trigger();
         $this->assert_contextlist_equals($this->get_contextlist_for_user($u1), [$sysctx, $cm1ctx, $c2ctx]);
@@ -112,7 +116,7 @@ final class provider_test extends provider_testcase {
     }
 
     public function test_add_userids_for_context(): void {
-        $admin = \core_user::get_user(2);
+        $admin = user::get_user(2);
         $u1 = $this->getDataGenerator()->create_user();
         $u2 = $this->getDataGenerator()->create_user();
         $u3 = $this->getDataGenerator()->create_user();
@@ -120,8 +124,8 @@ final class provider_test extends provider_testcase {
 
         $c1 = $this->getDataGenerator()->create_course();
 
-        $sysctx = \context_system::instance();
-        $c1ctx = \context_course::instance($c1->id);
+        $sysctx = system::instance();
+        $c1ctx = course::instance($c1->id);
 
         $this->enable_logging();
         $manager = get_log_manager(true);
@@ -142,7 +146,7 @@ final class provider_test extends provider_testcase {
         $e->trigger();
         // The admin user should be added (realuserid).
         $this->setAdminUser();
-        \core\session\manager::loginas($u2->id, \context_system::instance());
+        \core\session\manager::loginas($u2->id, system::instance());
         $e = \logstore_standard\event\unittest_executed::create(['context' => $sysctx]);
         $e->trigger();
         // Set off an event in a different context. User 4 should not be returned below.
@@ -163,9 +167,9 @@ final class provider_test extends provider_testcase {
         $u2 = $this->getDataGenerator()->create_user();
         $c1 = $this->getDataGenerator()->create_course();
         $c2 = $this->getDataGenerator()->create_course();
-        $sysctx = \context_system::instance();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $sysctx = system::instance();
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         $this->enable_logging();
         $manager = get_log_manager(true);
@@ -204,9 +208,9 @@ final class provider_test extends provider_testcase {
         $u2 = $this->getDataGenerator()->create_user();
         $c1 = $this->getDataGenerator()->create_course();
         $c2 = $this->getDataGenerator()->create_course();
-        $sysctx = \context_system::instance();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
+        $sysctx = system::instance();
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
 
         $this->enable_logging();
         $manager = get_log_manager(true);
@@ -248,8 +252,8 @@ final class provider_test extends provider_testcase {
         $u4 = $this->getDataGenerator()->create_user();
 
         $course = $this->getDataGenerator()->create_course();
-        $sysctx = \context_system::instance();
-        $c1ctx = \context_course::instance($course->id);
+        $sysctx = system::instance();
+        $c1ctx = course::instance($course->id);
 
         $this->enable_logging();
         $manager = get_log_manager(true);
@@ -282,7 +286,7 @@ final class provider_test extends provider_testcase {
     }
 
     public function test_export_data_for_user(): void {
-        $admin = \core_user::get_user(2);
+        $admin = user::get_user(2);
         $u1 = $this->getDataGenerator()->create_user();
         $u2 = $this->getDataGenerator()->create_user();
         $u3 = $this->getDataGenerator()->create_user();
@@ -291,11 +295,11 @@ final class provider_test extends provider_testcase {
         $cm1 = $this->getDataGenerator()->create_module('url', ['course' => $c1]);
         $c2 = $this->getDataGenerator()->create_course();
         $cm2 = $this->getDataGenerator()->create_module('url', ['course' => $c2]);
-        $sysctx = \context_system::instance();
-        $c1ctx = \context_course::instance($c1->id);
-        $c2ctx = \context_course::instance($c2->id);
-        $cm1ctx = \context_module::instance($cm1->cmid);
-        $cm2ctx = \context_module::instance($cm2->cmid);
+        $sysctx = system::instance();
+        $c1ctx = course::instance($c1->id);
+        $c2ctx = course::instance($c2->id);
+        $cm1ctx = module::instance($cm1->cmid);
+        $cm2ctx = module::instance($cm2->cmid);
 
         $path = [get_string('privacy:path:logs', 'tool_log'), get_string('pluginname', 'logstore_standard')];
         $this->enable_logging();

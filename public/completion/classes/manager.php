@@ -26,12 +26,15 @@
 namespace core_completion;
 
 use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
 use core\output\local\properties\iconsize;
 use core_course\output\activity_icon;
 use stdClass;
-use context_course;
-use cm_info;
-use moodle_url;
+use core\context\course;
+use core_course\cm_info;
+use core\url;
 
 /**
  * Bulk activity completion manager class
@@ -65,9 +68,9 @@ class manager {
         global $SITE;
 
         if ($this->courseid && $this->courseid != $SITE->id) {
-            return context_course::instance($this->courseid);
+            return course::instance($this->courseid);
         }
-        return \context_system::instance();
+        return system::instance();
     }
 
     /**
@@ -182,7 +185,7 @@ class manager {
         // Get the descriptions for all the active completion rules for the module.
         if ($ruledescriptions = $this->get_completion_active_rule_descriptions($mod)) {
             foreach ($ruledescriptions as $ruledescription) {
-                $strings['string'] .= \html_writer::empty_tag('br') . $ruledescription;
+                $strings['string'] .= html_writer::empty_tag('br') . $ruledescription;
             }
         }
         return $strings;
@@ -296,7 +299,7 @@ class manager {
             }
             return $cm->uservisible && has_capability('moodle/course:manageactivities', $cm->context);
         }
-        $coursecontext = context_course::instance(is_object($courseorid) ? $courseorid->id : $courseorid);
+        $coursecontext = course::instance(is_object($courseorid) ? $courseorid->id : $courseorid);
         if (has_capability('moodle/course:manageactivities', $coursecontext)) {
             return true;
         }
@@ -316,21 +319,21 @@ class manager {
      * @return array
      */
     public static function get_available_completion_options(int $courseid): array {
-        $coursecontext = context_course::instance($courseid);
+        $coursecontext = course::instance($courseid);
         $options = [];
 
         if (has_capability('moodle/course:update', $coursecontext)) {
-            $completionlink = new moodle_url('/course/completion.php', ['id' => $courseid]);
+            $completionlink = new url('/course/completion.php', ['id' => $courseid]);
             $options[$completionlink->out(false)] = get_string('coursecompletionsettings', 'completion');
         }
 
         if (has_capability('moodle/course:manageactivities', $coursecontext)) {
-            $defaultcompletionlink = new moodle_url('/course/defaultcompletion.php', ['id' => $courseid]);
+            $defaultcompletionlink = new url('/course/defaultcompletion.php', ['id' => $courseid]);
             $options[$defaultcompletionlink->out(false)] = get_string('defaultcompletion', 'completion');
         }
 
         if (self::can_edit_bulk_completion($courseid)) {
-            $bulkcompletionlink = new moodle_url('/course/bulkcompletion.php', ['id' => $courseid]);
+            $bulkcompletionlink = new url('/course/bulkcompletion.php', ['id' => $courseid]);
             $options[$bulkcompletionlink->out(false)] = get_string('bulkactivitycompletion', 'completion');
         }
 
@@ -393,7 +396,7 @@ class manager {
      *      if no module-specific completion rules were added to the form, update of the module table is not needed.
      * @return bool if module was updated
      */
-    protected function apply_completion_cm(\cm_info $cm, $data, $updateinstance) {
+    protected function apply_completion_cm(cm_info $cm, $data, $updateinstance) {
         global $DB;
 
         $defaults = [
@@ -483,7 +486,7 @@ class manager {
         $courseid = $data->id;
         // MDL-72375 Unset the id here, it should not be stored in customrules.
         unset($data->id);
-        $coursecontext = context_course::instance($courseid);
+        $coursecontext = course::instance($courseid);
         if (!$modids = $data->modids) {
             return;
         }
@@ -632,7 +635,7 @@ class manager {
         if (file_exists($modmoodleform)) {
             require_once($modmoodleform);
         } else {
-            throw new \moodle_exception('noformdesc');
+            throw new moodle_exception('noformdesc');
         }
 
         if ($cm) {

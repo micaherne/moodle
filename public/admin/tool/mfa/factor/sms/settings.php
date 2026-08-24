@@ -23,16 +23,24 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core\url;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configduration;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
     // Get the gateway records.
     $manager = \core\di::get(\core_sms\manager::class);
     $gatewayrecords = $manager->get_gateway_records(['enabled' => 1]);
-    $smsconfigureurl = new moodle_url(
+    $smsconfigureurl = new url(
         '/sms/configure.php',
         [
-            'returnurl' => new moodle_url(
+            'returnurl' => new url(
                 '/admin/settings.php',
                 ['section' => 'factor_sms'],
             ),
@@ -41,7 +49,7 @@ if ($ADMIN->fulltree) {
     $smsconfigureurl = $smsconfigureurl->out();
 
     $settings->add(
-        new admin_setting_heading(
+        new heading(
             'factor_sms/heading',
             '',
             new lang_string(
@@ -50,7 +58,7 @@ if ($ADMIN->fulltree) {
             ),
         ),
     );
-    $settings->add(new admin_setting_heading('factor_sms/settings', new lang_string('settings', 'moodle'), ''));
+    $settings->add(new heading('factor_sms/settings', new lang_string('settings', 'moodle'), ''));
 
     // Get available gateways, or link to gateway creation.
     $gateways = [0 => new lang_string('none')];
@@ -65,11 +73,11 @@ if ($ADMIN->fulltree) {
             get_string('settings:setupdesc', 'factor_sms', $smsconfigureurl),
             \core\output\notification::NOTIFY_WARNING
         );
-        $settings->add(new admin_setting_heading('factor_sms/setupdesc', '', $OUTPUT->render($notify)));
+        $settings->add(new heading('factor_sms/setupdesc', '', $OUTPUT->render($notify)));
     }
 
     $settings->add(
-        new admin_setting_configselect(
+        new configselect(
             'factor_sms/smsgateway',
             new lang_string('settings:smsgateway', 'factor_sms'),
             new lang_string('settings:smsgateway_help', 'factor_sms', $smsconfigureurl),
@@ -78,7 +86,7 @@ if ($ADMIN->fulltree) {
         ),
     );
 
-    $enabled = new admin_setting_configcheckbox(
+    $enabled = new configcheckbox(
         'factor_sms/enabled',
         new lang_string('settings:enablefactor', 'tool_mfa'),
         new lang_string('settings:enablefactor_help', 'tool_mfa'),
@@ -93,7 +101,7 @@ if ($ADMIN->fulltree) {
     $settings->add($enabled);
 
     $settings->add(
-        new admin_setting_configtext(
+        new configtext(
             'factor_sms/weight',
             new lang_string('settings:weight', 'tool_mfa'),
             new lang_string('settings:weight_help', 'tool_mfa'),
@@ -103,7 +111,7 @@ if ($ADMIN->fulltree) {
     );
 
     $settings->add(
-        new admin_setting_configduration(
+        new configduration(
             'factor_sms/duration',
             new lang_string('settings:duration', 'tool_mfa'),
             new lang_string('settings:duration_help', 'tool_mfa'),

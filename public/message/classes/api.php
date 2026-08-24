@@ -17,6 +17,16 @@
 namespace core_message;
 
 use core\{clock, di};
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\output\user_picture;
+use core\url;
+use core\user as core_user;
+use core_cache\cache;
 use core_favourites\local\entity\favourite;
 
 defined('MOODLE_INTERNAL') || die();
@@ -191,7 +201,7 @@ class api {
 
         // Check if messaging is enabled.
         if (empty($CFG->messaging)) {
-            throw new \moodle_exception('disabled', 'message');
+            throw new moodle_exception('disabled', 'message');
         }
 
         require_once($CFG->dirroot . '/user/lib.php');
@@ -330,7 +340,7 @@ class api {
                 // Otherwise it means that the $USER was not allowed to search the returned user.
                 if (!empty($userdetails) and !empty($userdetails['fullname'])) {
                     // We know we've matched, but only save the record if it's within the offset area we need.
-                    $user->initials = \core_user::get_initials($user);
+                    $user->initials = core_user::get_initials($user);
                     if ($limitfrom == 0) {
                         // No offset specified, so just save.
                         $returnedusers[$id] = $user;
@@ -457,7 +467,7 @@ class api {
 
         if (!is_null($type) && !in_array($type, [self::MESSAGE_CONVERSATION_TYPE_INDIVIDUAL,
                 self::MESSAGE_CONVERSATION_TYPE_GROUP, self::MESSAGE_CONVERSATION_TYPE_SELF])) {
-            throw new \moodle_exception("Invalid value ($type) for type param, please see api constants.");
+            throw new moodle_exception("Invalid value ($type) for type param, please see api constants.");
         }
 
         self::lazy_create_self_conversation($userid);
@@ -466,7 +476,7 @@ class api {
         // 1) Include the 'isfavourite' attribute on conversations (when $favourite = null and we're including all conversations)
         // 2) Restrict the results to ONLY those conversations which are favourites (when $favourite = true)
         // 3) Restrict the results to ONLY those conversations which are NOT favourites (when $favourite = false).
-        $service = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($userid));
+        $service = \core_favourites\service_factory::get_service_for_user_context(context_user::instance($userid));
         $favouriteconversations = $service->find_favourites_by_type('core_message', 'message_conversations');
         $favouriteconversationids = array_column($favouriteconversations, 'itemid');
         if ($favourites && empty($favouriteconversationids)) {
@@ -713,7 +723,7 @@ class api {
 
         // Because we'll be calling format_string on each conversation name and passing contexts, we preload them here.
         // This warms the cache and saves potentially hitting the DB once for each context fetch below.
-        \context_helper::preload_contexts_by_id(array_column($conversations, 'contextid'));
+        context_helper::preload_contexts_by_id(array_column($conversations, 'contextid'));
 
         // Now, create the final return structure.
         $arrconversations = [];
@@ -735,11 +745,11 @@ class api {
             // Name should be formatted and depends on the context the conversation resides in.
             // If not set, the context is always context_user.
             if (is_null($conversation->contextid)) {
-                $convcontext = \context_user::instance($userid);
+                $convcontext = context_user::instance($userid);
                 // We'll need to check the capability to delete messages for all users in context system when contextid is null.
-                $contexttodeletemessageforall = \context_system::instance();
+                $contexttodeletemessageforall = system::instance();
             } else {
-                $convcontext = \context::instance_by_id($conversation->contextid);
+                $convcontext = context::instance_by_id($conversation->contextid);
                 $contexttodeletemessageforall = $convcontext;
             }
             $conv->name = format_string($conversation->conversationname, true, ['context' => $convcontext, 'escape' => false]);
@@ -835,10 +845,10 @@ class api {
     ) {
         global $USER, $DB;
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $canreadallmessages = has_capability('moodle/site:readallmessages', $systemcontext);
         if (($USER->id != $userid) && !$canreadallmessages) {
-            throw new \moodle_exception('You do not have permission to perform this action.');
+            throw new moodle_exception('You do not have permission to perform this action.');
         }
 
         $conversation = $DB->get_record('message_conversations', ['id' => $conversationid]);
@@ -849,8 +859,8 @@ class api {
         // Get the context of the conversation. This will be used to check whether the conversation is a favourite.
         // This will be either 'user' (for individual conversations) or, in the case of linked conversations,
         // the context stored in the record.
-        $userctx = \context_user::instance($userid);
-        $conversationctx = empty($conversation->contextid) ? $userctx : \context::instance_by_id($conversation->contextid);
+        $userctx = context_user::instance($userid);
+        $conversationctx = empty($conversation->contextid) ? $userctx : context::instance_by_id($conversation->contextid);
 
         $isconversationmember = $DB->record_exists(
             'message_conversation_members',
@@ -861,7 +871,7 @@ class api {
         );
 
         if (!$isconversationmember && !$canreadallmessages) {
-            throw new \moodle_exception('You do not have permission to view this conversation.');
+            throw new moodle_exception('You do not have permission to view this conversation.');
         }
 
         $members = self::get_conversation_members(
@@ -887,7 +897,7 @@ class api {
             $newestmessagesfirst ? 'timecreated DESC' : 'timecreated ASC'
         );
 
-        $service = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($userid));
+        $service = \core_favourites\service_factory::get_service_for_user_context(context_user::instance($userid));
         $isfavourite = $service->favourite_exists('core_message', 'message_conversations', $conversationid, $conversationctx);
 
         $convextrafields = self::get_linked_conversation_extra_fields([$conversation]);
@@ -924,7 +934,7 @@ class api {
         }
 
         // Get the context of the conversation. This will be used to check if the user can delete all messages in the conversation.
-        $deleteallcontext = empty($conversation->contextid) ? $systemcontext : \context::instance_by_id($conversation->contextid);
+        $deleteallcontext = empty($conversation->contextid) ? $systemcontext : context::instance_by_id($conversation->contextid);
 
         return (object) [
             'id' => $conversation->id,
@@ -956,17 +966,17 @@ class api {
         global $DB;
 
         if (!self::is_user_in_conversation($userid, $conversationid)) {
-            throw new \moodle_exception("Conversation doesn't exist or user is not a member");
+            throw new moodle_exception("Conversation doesn't exist or user is not a member");
         }
         // Get the context for this conversation.
         $conversation = $DB->get_record('message_conversations', ['id' => $conversationid]);
-        $userctx = \context_user::instance($userid);
+        $userctx = context_user::instance($userid);
         if (empty($conversation->contextid)) {
             // When the conversation hasn't any contextid value defined, the favourite will be added to the user context.
             $conversationctx = $userctx;
         } else {
             // If the contextid is defined, the favourite will be added there.
-            $conversationctx = \context::instance_by_id($conversation->contextid);
+            $conversationctx = context::instance_by_id($conversation->contextid);
         }
 
         $ufservice = \core_favourites\service_factory::get_service_for_user_context($userctx);
@@ -990,13 +1000,13 @@ class api {
 
         // Get the context for this conversation.
         $conversation = $DB->get_record('message_conversations', ['id' => $conversationid]);
-        $userctx = \context_user::instance($userid);
+        $userctx = context_user::instance($userid);
         if (empty($conversation->contextid)) {
             // When the conversation hasn't any contextid value defined, the favourite will be added to the user context.
             $conversationctx = $userctx;
         } else {
             // If the contextid is defined, the favourite will be added there.
-            $conversationctx = \context::instance_by_id($conversation->contextid);
+            $conversationctx = context::instance_by_id($conversation->contextid);
         }
 
         $ufservice = \core_favourites\service_factory::get_service_for_user_context($userctx);
@@ -1065,7 +1075,7 @@ class api {
 
         if (!empty($timefrom)) {
             // Check the cache to see if we even need to do a DB query.
-            $cache = \cache::make('core', 'message_time_last_message_between_users');
+            $cache = cache::make('core', 'message_time_last_message_between_users');
             $key = helper::get_last_message_time_created_cache_key($convid);
             $lastcreated = $cache->get($key);
 
@@ -1119,7 +1129,7 @@ class api {
             return false;
         }
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         if (has_capability('moodle/site:deleteanymessage', $systemcontext)) {
             return true;
@@ -1217,7 +1227,7 @@ class api {
     public static function can_mark_all_messages_as_read(int $userid, int $conversationid): bool {
         global $USER;
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         if (has_capability('moodle/site:readallmessages', $systemcontext)) {
             return true;
@@ -1257,7 +1267,7 @@ class api {
 
         // First, ask the favourites service to give us the join SQL for favourited conversations,
         // so we can include favourite information in the query.
-        $usercontext = \context_user::instance($userid);
+        $usercontext = context_user::instance($userid);
         $favservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
         list($favsql, $favparams) = $favservice->get_join_sql_by_type('core_message', 'message_conversations', 'fav', 'mc.id');
 
@@ -1467,7 +1477,7 @@ class api {
      * @return bool true if user is permitted, false otherwise.
      */
     public static function can_send_message(int $recipientid, int $senderid, bool $evenifblocked = false): bool {
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         if (!has_capability('moodle/site:sendmessage', $systemcontext, $senderid)) {
             return false;
@@ -1493,7 +1503,7 @@ class api {
     public static function can_send_message_to_conversation(int $userid, int $conversationid): bool {
         global $DB;
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         if (!has_capability('moodle/site:sendmessage', $systemcontext, $userid)) {
             return false;
         }
@@ -1521,7 +1531,7 @@ class api {
             }
             return self::can_contact_user($otheruser->id, $userid);
         } else {
-            throw new \moodle_exception("Invalid conversation type '$conversation->type'.");
+            throw new moodle_exception("Invalid conversation type '$conversation->type'.");
         }
     }
 
@@ -1544,14 +1554,14 @@ class api {
         global $DB, $PAGE;
 
         if (!self::can_send_message_to_conversation($userid, $conversationid)) {
-            throw new \moodle_exception("User $userid cannot send a message to conversation $conversationid");
+            throw new moodle_exception("User $userid cannot send a message to conversation $conversationid");
         }
 
         $eventdata = new \core\message\message();
         $eventdata->courseid         = 1;
         $eventdata->component        = 'moodle';
         $eventdata->name             = 'instantmessage';
-        $eventdata->userfrom         = \core_user::get_user($userid);
+        $eventdata->userfrom         = core_user::get_user($userid);
         $eventdata->convid           = $conversationid;
 
         if ($format == FORMAT_HTML) {
@@ -1579,7 +1589,7 @@ class api {
             ],
         ];
 
-        $userpicture = new \user_picture($eventdata->userfrom);
+        $userpicture = new user_picture($eventdata->userfrom);
         $userpicture->size = 1; // Use f1 size.
         $userpicture = $userpicture->get_url($PAGE)->out(false);
 
@@ -1594,9 +1604,9 @@ class api {
             }
             // Conversation name.
             if (is_null($conv->contextid)) {
-                $convcontext = \context_user::instance($userid);
+                $convcontext = context_user::instance($userid);
             } else {
-                $convcontext = \context::instance_by_id($conv->contextid);
+                $convcontext = context::instance_by_id($conv->contextid);
             }
             $customdata['conversationname'] = format_string($conv->name, true, ['context' => $convcontext]);
         } else if ($conv->type == self::MESSAGE_CONVERSATION_TYPE_INDIVIDUAL) {
@@ -1607,7 +1617,7 @@ class api {
         $messageid = message_send($eventdata);
 
         if (!$messageid) {
-            throw new \moodle_exception('messageundeliveredbynotificationsettings', 'moodle');
+            throw new moodle_exception('messageundeliveredbynotificationsettings', 'moodle');
         }
 
         $messagerecord = $DB->get_record('messages', ['id' => $messageid], 'id, useridfrom, fullmessage,
@@ -1696,7 +1706,7 @@ class api {
      */
     public static function is_processor_enabled($name) {
 
-        $cache = \cache::make('core', 'message_processors_enabled');
+        $cache = cache::make('core', 'message_processors_enabled');
         $status = $cache->get($name);
 
         if ($status === false) {
@@ -1722,7 +1732,7 @@ class api {
      */
     public static function update_processor_status($processor, $enabled) {
         global $DB;
-        $cache = \cache::make('core', 'message_processors_enabled');
+        $cache = cache::make('core', 'message_processors_enabled');
         $cache->delete($processor->name);
         return $DB->set_field('message_processors', 'enabled', $enabled, array('id' => $processor->id));
     }
@@ -1756,7 +1766,7 @@ class api {
                 }
                 $processor->available = 1;
             } else {
-                throw new \moodle_exception('errorcallingprocessor', 'message');
+                throw new moodle_exception('errorcallingprocessor', 'message');
             }
         } else {
             $processor->available = 0;
@@ -1808,10 +1818,10 @@ class api {
         $mua->id = $DB->insert_record('message_user_actions', $mua);
 
         // Get the context for the user who received the message.
-        $context = \context_user::instance($userid, IGNORE_MISSING);
+        $context = context_user::instance($userid, IGNORE_MISSING);
         // If the user no longer exists the context value will be false, in this case use the system context.
         if ($context === false) {
-            $context = \context_system::instance();
+            $context = system::instance();
         }
 
         // Trigger event for reading a message.
@@ -1867,7 +1877,7 @@ class api {
     public static function can_delete_message($userid, $messageid) {
         global $DB, $USER;
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         $conversationid = $DB->get_field('messages', 'conversationid', ['id' => $messageid], MUST_EXIST);
 
@@ -1991,20 +2001,20 @@ class api {
         ];
 
         if (!in_array($type, $validtypes)) {
-            throw new \moodle_exception('An invalid conversation type was specified.');
+            throw new moodle_exception('An invalid conversation type was specified.');
         }
 
         // Sanity check.
         if ($type == self::MESSAGE_CONVERSATION_TYPE_INDIVIDUAL) {
             if (count($userids) > 2) {
-                throw new \moodle_exception('An individual conversation can not have more than two users.');
+                throw new moodle_exception('An individual conversation can not have more than two users.');
             }
             if ($userids[0] == $userids[1]) {
-                throw new \moodle_exception('Trying to create an individual conversation instead of a self conversation.');
+                throw new moodle_exception('Trying to create an individual conversation instead of a self conversation.');
             }
         } else if ($type == self::MESSAGE_CONVERSATION_TYPE_SELF) {
             if (count($userids) != 1) {
-                throw new \moodle_exception('A self conversation can not have more than one user.');
+                throw new moodle_exception('A self conversation can not have more than one user.');
             }
         }
 
@@ -2054,7 +2064,7 @@ class api {
      * @param \context $context The context they are creating the conversation from, most likely course context
      * @return bool
      */
-    public static function can_create_group_conversation(int $userid, \context $context): bool {
+    public static function can_create_group_conversation(int $userid, context $context): bool {
         global $CFG;
 
         // If we can't message at all, then we can't create a conversation.
@@ -2108,13 +2118,13 @@ class api {
         $request->id = $DB->insert_record('message_contact_requests', $request);
 
         // Send a notification.
-        $userfrom = \core_user::get_user($userid);
+        $userfrom = core_user::get_user($userid);
         $userfromfullname = fullname($userfrom);
-        $userto = \core_user::get_user($requesteduserid);
-        $url = new \moodle_url('/message/index.php', ['view' => 'contactrequests']);
+        $userto = core_user::get_user($requesteduserid);
+        $url = new url('/message/index.php', ['view' => 'contactrequests']);
 
         $subject = get_string_manager()->get_string('messagecontactrequestsubject', 'core_message', (object) [
-            'sitename' => format_string($SITE->fullname, true, ['context' => \context_system::instance()]),
+            'sitename' => format_string($SITE->fullname, true, ['context' => system::instance()]),
             'user' => $userfromfullname,
         ], $userto->lang);
 
@@ -2136,7 +2146,7 @@ class api {
         $message->fullmessagehtml = $fullmessage;
         $message->smallmessage = '';
         $message->contexturl = $url->out(false);
-        $userpicture = new \user_picture($userfrom);
+        $userpicture = new user_picture($userfrom);
         $userpicture->size = 1; // Use f1 size.
         $userpicture->includetoken = $userto->id; // Generate an out-of-session token for the user receiving the message.
         $message->customdata = [
@@ -2253,7 +2263,7 @@ class api {
             'objectid' => $messagecontact->id,
             'userid' => $userid,
             'relateduserid' => $contactid,
-            'context' => \context_user::instance($userid)
+            'context' => context_user::instance($userid)
         ];
         $event = \core\event\message_contact_added::create($eventparams);
         $event->add_record_snapshot('message_contacts', $messagecontact);
@@ -2276,7 +2286,7 @@ class api {
                 'objectid' => $contact->id,
                 'userid' => $userid,
                 'relateduserid' => $contactid,
-                'context' => \context_user::instance($userid)
+                'context' => context_user::instance($userid)
             ));
             $event->add_record_snapshot('message_contacts', $contact);
             $event->trigger();
@@ -2303,7 +2313,7 @@ class api {
             'objectid' => $blocked->id,
             'userid' => $userid,
             'relateduserid' => $usertoblockid,
-            'context' => \context_user::instance($userid)
+            'context' => context_user::instance($userid)
         ));
         $event->add_record_snapshot('message_users_blocked', $blocked);
         $event->trigger();
@@ -2327,7 +2337,7 @@ class api {
                 'objectid' => $blockeduser->id,
                 'userid' => $userid,
                 'relateduserid' => $usertounblockid,
-                'context' => \context_user::instance($userid)
+                'context' => context_user::instance($userid)
             ));
             $event->add_record_snapshot('message_users_blocked', $blockeduser);
             $event->trigger();
@@ -2439,7 +2449,7 @@ class api {
      * @return bool true if recipient hasn't blocked sender and sender can contact to recipient, false otherwise.
      */
     protected static function can_contact_user(int $recipientid, int $senderid, bool $evenifblocked = false): bool {
-        if (has_capability('moodle/site:messageanyuser', \context_system::instance(), $senderid) ||
+        if (has_capability('moodle/site:messageanyuser', system::instance(), $senderid) ||
             $recipientid == $senderid) {
             // The sender has the ability to contact any user across the entire site or themselves.
             return true;
@@ -2493,7 +2503,7 @@ class api {
 
             foreach ($sharedcourses as $course) {
                 // Note: enrol_get_shared_courses will preload any shared context.
-                if (has_capability('moodle/site:messageanyuser', \context_course::instance($course->id), $senderid)) {
+                if (has_capability('moodle/site:messageanyuser', course::instance($course->id), $senderid)) {
                     $cancontact = true;
                     break;
                 }
@@ -2519,7 +2529,7 @@ class api {
 
         // We can only add members to a group conversation.
         if ($conversation->type != self::MESSAGE_CONVERSATION_TYPE_GROUP) {
-            throw new \moodle_exception('You can not add members to a non-group conversation.');
+            throw new moodle_exception('You can not add members to a non-group conversation.');
         }
 
         // Be sure we are not trying to add a non existing user to the conversation. Work only with existing users.
@@ -2559,7 +2569,7 @@ class api {
         $conversation = $DB->get_record('message_conversations', ['id' => $convid], '*', MUST_EXIST);
 
         if ($conversation->type != self::MESSAGE_CONVERSATION_TYPE_GROUP) {
-            throw new \moodle_exception('You can not remove members from a non-group conversation.');
+            throw new moodle_exception('You can not remove members from a non-group conversation.');
         }
 
         list($useridcondition, $params) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
@@ -2739,7 +2749,7 @@ class api {
             $userid, $userid]);
 
         // Get favourites, so we can track these separately.
-        $service = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($userid));
+        $service = \core_favourites\service_factory::get_service_for_user_context(context_user::instance($userid));
         $favouriteconversations = $service->find_favourites_by_type('core_message', 'message_conversations');
         $favouriteconvids = array_flip(array_column($favouriteconversations, 'itemid'));
 
@@ -2824,7 +2834,7 @@ class api {
         global $DB;
 
         $conv = $DB->get_record('message_conversations', ['id' => $conversationid], 'id, contextid');
-        $convcontext = !empty($conv->contextid) ? \context::instance_by_id($conv->contextid) : null;
+        $convcontext = !empty($conv->contextid) ? context::instance_by_id($conv->contextid) : null;
 
         $DB->delete_records('message_conversations', ['id' => $conversationid]);
         $DB->delete_records('message_conversation_members', ['conversationid' => $conversationid]);
@@ -2865,10 +2875,10 @@ class api {
 
         if (!empty($conversation->contextid)) {
             return has_capability('moodle/site:deleteanymessage',
-                \context::instance_by_id($conversation->contextid), $userid);
+                context::instance_by_id($conversation->contextid), $userid);
         }
 
-        return has_capability('moodle/site:deleteanymessage', \context_system::instance(), $userid);
+        return has_capability('moodle/site:deleteanymessage', system::instance(), $userid);
     }
     /**
      * Delete a message for all users.

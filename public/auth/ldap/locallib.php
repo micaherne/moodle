@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -34,8 +36,8 @@ defined('MOODLE_INTERNAL') || die();
 function get_ldap_assignable_role_names($user = null) {
     $roles = array();
 
-    if ($assignableroles = get_assignable_roles(context_system::instance(), ROLENAME_SHORT, false, $user)) {
-        $systemroles = role_fix_names(get_all_roles(), context_system::instance(), ROLENAME_ORIGINAL);
+    if ($assignableroles = get_assignable_roles(system::instance(), ROLENAME_SHORT, false, $user)) {
+        $systemroles = role_fix_names(get_all_roles(), system::instance(), ROLENAME_ORIGINAL);
         foreach ($assignableroles as $shortname) {
             foreach ($systemroles as $systemrole) {
                 if ($systemrole->shortname == $shortname) {

@@ -16,6 +16,9 @@
 
 namespace assignfeedback_file\event;
 
+use core\context\module;
+use core\context\system;
+
 /**
  * Tests {@see feedback_downloaded} event.
  *
@@ -41,7 +44,7 @@ final class feedback_downloaded_test extends \advanced_testcase {
         $fs = get_file_storage();
         // We are not creating a real grade item, so I'm using 123 for its id.
         $file = $fs->create_file_from_string([
-            'contextid' => \context_module::instance($assign->cmid)->id,
+            'contextid' => module::instance($assign->cmid)->id,
             'component' => 'assignfeedback_file',
             'filearea' => 'feedback_files',
             'itemid' => 123,
@@ -70,7 +73,7 @@ final class feedback_downloaded_test extends \advanced_testcase {
     public function test_no_fileid(): void {
         $this->expectExceptionMessageMatches('~other\[\'fileid\'\] must be set~');
         feedback_downloaded::create([
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'objectid' => 123,
             'other' => [
                 'filename' => 'testfile.txt',
@@ -84,7 +87,7 @@ final class feedback_downloaded_test extends \advanced_testcase {
     public function test_no_filename(): void {
         $this->expectExceptionMessageMatches('~other\[\'filename\'\] must be set~');
         feedback_downloaded::create([
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
             'objectid' => 123,
             'other' => [
                 'fileid' => 456,

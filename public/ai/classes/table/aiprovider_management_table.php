@@ -16,11 +16,11 @@
 
 namespace core_ai\table;
 
-use context_system;
+use core\context\system;
 use core_table\dynamic as dynamic_table;
-use flexible_table;
-use moodle_url;
-use html_writer;
+use core_table\flexible_table;
+use core\url;
+use core\output\html_writer;
 
 /**
  * Table to manage AI provider plugins.
@@ -69,8 +69,8 @@ class aiprovider_management_table extends flexible_table implements dynamic_tabl
     }
 
     #[\Override]
-    public function get_context(): context_system {
-        return context_system::instance();
+    public function get_context(): system {
+        return system::instance();
     }
 
     #[\Override]
@@ -124,9 +124,9 @@ class aiprovider_management_table extends flexible_table implements dynamic_tabl
      * @deprecated since 5.0
      */
     #[\core\attribute\deprecated(replacement: null, since: '5.0', mdl: 'MDL-82977')]
-    protected function get_action_url(array $params = []): moodle_url {
+    protected function get_action_url(array $params = []): url {
         \core\deprecation::emit_deprecation(__FUNCTION__);
-        return new moodle_url('/admin/ai.php', $params);
+        return new url('/admin/ai.php', $params);
     }
 
     #[\Override]
@@ -157,7 +157,7 @@ class aiprovider_management_table extends flexible_table implements dynamic_tabl
 
     #[\Override]
     public function guess_base_url(): void {
-        $this->define_baseurl(new moodle_url('/admin/ai.php'));
+        $this->define_baseurl(new url('/admin/ai.php'));
     }
 
     /**
@@ -285,8 +285,8 @@ class aiprovider_management_table extends flexible_table implements dynamic_tabl
      * @return string
      */
     public function col_settings(\stdClass $row): string {
-        $settingsurl = new moodle_url('/ai/configure.php', ['id' => $row->id]);
-        return \html_writer::link($settingsurl, get_string('settings'));
+        $settingsurl = new url('/ai/configure.php', ['id' => $row->id]);
+        return html_writer::link($settingsurl, get_string('settings'));
 
     }
 
@@ -415,7 +415,7 @@ class aiprovider_management_table extends flexible_table implements dynamic_tabl
      * @param array $params
      * @return moodle_url
      */
-    protected function get_base_action_url(array $params = []): moodle_url {
-        return new moodle_url('/ai/configure_providers.php', $params);
+    protected function get_base_action_url(array $params = []): url {
+        return new url('/ai/configure_providers.php', $params);
     }
 }

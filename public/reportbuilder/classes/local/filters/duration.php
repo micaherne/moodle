@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\local\filters;
 
-use lang_string;
+use core\lang_string;
 use MoodleQuickForm;
 use core_reportbuilder\local\helpers\database;
 

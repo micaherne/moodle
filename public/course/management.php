@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\coursecat;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\lang_string;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 
@@ -47,14 +54,14 @@ if ($issearching) {
     $viewmode = 'courses';
 }
 
-$url = new moodle_url('/course/management.php');
-$systemcontext = $context = context_system::instance();
+$url = new url('/course/management.php');
+$systemcontext = $context = system::instance();
 if ($courseid) {
     $record = get_course($courseid);
     $course = new core_course_list_element($record);
     $category = core_course_category::get($course->category);
     $categoryid = $category->id;
-    $context = context_coursecat::instance($category->id);
+    $context = coursecat::instance($category->id);
     $url->param('categoryid', $categoryid);
     $url->param('courseid', $course->id);
 
@@ -62,7 +69,7 @@ if ($courseid) {
     $courseid = null;
     $course = null;
     $category = core_course_category::get($categoryid);
-    $context = context_coursecat::instance($category->id);
+    $context = coursecat::instance($category->id);
     $url->param('categoryid', $category->id);
 
 } else {
@@ -74,7 +81,7 @@ if ($courseid) {
     }
     $category = reset($topchildren);
     $categoryid = $category->id;
-    $context = context_coursecat::instance($category->id);
+    $context = coursecat::instance($category->id);
     $url->param('categoryid', $category->id);
 }
 
@@ -115,7 +122,7 @@ require_login();
 
 if (!core_course_category::has_capability_on_any(array('moodle/category:manage', 'moodle/course:create'))) {
     // The user isn't able to manage any categories. Lets redirect them to the relevant course/index.php page.
-    $url = new moodle_url('/course/index.php');
+    $url = new url('/course/index.php');
     if ($categoryid) {
         $url->param('categoryid', $categoryid);
     }
@@ -128,7 +135,7 @@ if (!$issearching && $category !== null) {
     foreach ($parents as $parent) {
         $PAGE->navbar->add(
             $parent->get_formatted_name(),
-            new moodle_url('/course/index.php', array('categoryid' => $parent->id))
+            new url('/course/index.php', array('categoryid' => $parent->id))
         );
     }
     if ($course instanceof core_course_list_element) {
@@ -151,13 +158,13 @@ if ($category && !has_any_capability($capabilities, $systemcontext)) {
     // If the user doesn't poses any of these system capabilities then we're going to mark the category link in the
     // settings block as active, tell the page to ignore the active path and just build what the user would expect.
     // This will at least give the page some relevant navigation.
-    navigation_node::override_active_url(new moodle_url('/course/index.php', array('categoryid' => $category->id)));
+    navigation_node::override_active_url(new url('/course/index.php', array('categoryid' => $category->id)));
     $PAGE->set_category_by_id($category->id);
     $PAGE->navbar->ignore_active(true);
 } else {
     // If user has system capabilities, make sure the "Category" item in Administration block is active.
     navigation_node::require_admin_tree();
-    navigation_node::override_active_url(new moodle_url('/course/index.php'));
+    navigation_node::override_active_url(new url('/course/index.php'));
 }
 $PAGE->navbar->add(get_string('coursemgmt', 'admin'), $PAGE->url->out_omit_querystring());
 $PAGE->set_primary_active_tab('home');
@@ -253,7 +260,7 @@ if ($action !== false && confirm_sesskey()) {
             if ($data = $mform->get_data()) {
                 // The form has been submit handle it.
                 if ($data->fulldelete == 1 && $category->can_delete_full()) {
-                    $continueurl = new moodle_url('/course/management.php');
+                    $continueurl = new url('/course/management.php');
                     if ($category->parent != '0') {
                         $continueurl->param('categoryid', $category->parent);
                     }
@@ -265,7 +272,7 @@ if ($action !== false && confirm_sesskey()) {
                     echo $renderer->notification($notification, 'notifysuccess');
                     echo $renderer->continue_button($continueurl);
                 } else if ($data->fulldelete == 0 && $category->can_move_content_to($data->newparent)) {
-                    $continueurl = new moodle_url('/course/management.php', array('categoryid' => $data->newparent));
+                    $continueurl = new url('/course/management.php', array('categoryid' => $data->newparent));
                     $category->delete_move($data->newparent, true);
                     echo $renderer->continue_button($continueurl);
                 } else {
@@ -411,7 +418,7 @@ if ($action !== false && confirm_sesskey()) {
                 if ($category === null && count($categoryids) === 1) {
                     // They're bulk sorting just a single category and they've not selected a category.
                     // Lets for convenience sake auto-select the category that has been resorted for them.
-                    redirect(new moodle_url($PAGE->url, array('categoryid' => reset($categoryids))));
+                    redirect(new url($PAGE->url, array('categoryid' => reset($categoryids))));
                 }
             }
     }

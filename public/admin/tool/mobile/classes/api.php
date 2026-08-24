@@ -24,12 +24,14 @@
  */
 namespace tool_mobile;
 
+use core_cache\cache;
 use core_component;
-use core_plugin_manager;
-use context_system;
-use moodle_url;
-use moodle_exception;
-use lang_string;
+use core\plugin_manager;
+use core\context\system;
+use core\url;
+use core\exception\moodle_exception;
+use core\lang_string;
+use core_filters\filter_manager;
 use curl;
 use core_qrcode;
 use stdClass;
@@ -167,7 +169,7 @@ class api {
         }
 
         // Check if we can return this from cache.
-        $cache = \cache::make('tool_mobile', 'plugininfo');
+        $cache = cache::make('tool_mobile', 'plugininfo');
         $pluginsinfo = $cache->get($cachekey);
         if ($pluginsinfo !== false) {
             return (array)$pluginsinfo;
@@ -253,7 +255,7 @@ class api {
         global $CFG, $SITE, $PAGE, $OUTPUT;
         require_once($CFG->libdir . '/authlib.php');
 
-        $context = context_system::instance();
+        $context = system::instance();
         // We need this to make work the format text functions.
         $PAGE->set_context($context);
 
@@ -313,14 +315,14 @@ class api {
         // Check if the user can sign-up to return the launch URL in that case.
         $cansignup = signup_is_enabled();
 
-        $url = new moodle_url("/$CFG->admin/tool/mobile/launch.php");
+        $url = new url("/$CFG->admin/tool/mobile/launch.php");
         $settings['launchurl'] = $url->out(false);
 
         // Check that we are receiving a moodle_url object, themes can override get_logo_url and may return incorrect values.
-        if (($logourl = $OUTPUT->get_logo_url()) && $logourl instanceof moodle_url) {
+        if (($logourl = $OUTPUT->get_logo_url()) && $logourl instanceof url) {
             $settings['logourl'] = clean_param($logourl->out(false), PARAM_URL);
         }
-        if (($compactlogourl = $OUTPUT->get_compact_logo_url()) && $compactlogourl instanceof moodle_url) {
+        if (($compactlogourl = $OUTPUT->get_compact_logo_url()) && $compactlogourl instanceof url) {
             $settings['compactlogourl'] = clean_param($compactlogourl->out(false), PARAM_URL);
         }
 
@@ -357,7 +359,7 @@ class api {
         global $CFG, $SITE;
 
         $settings = new \stdClass;
-        $context = context_system::instance();
+        $context = system::instance();
         $isadmin = has_capability('moodle/site:config', $context);
 
         if (empty($section) or $section == 'frontpagesettings') {
@@ -409,9 +411,9 @@ class api {
             // If filtering of the primary custom menu is enabled, apply only the string filters.
             if (!empty($CFG->navfilter && !empty($CFG->stringfilters))) {
                 // Apply filters that are enabled for Content and Headings.
-                $filtermanager = \filter_manager::instance();
-                $custommenuitems = $filtermanager->filter_string($custommenuitems, \context_system::instance());
-                $customusermenuitems = $filtermanager->filter_string($customusermenuitems, \context_system::instance());
+                $filtermanager = filter_manager::instance();
+                $custommenuitems = $filtermanager->filter_string($custommenuitems, system::instance());
+                $customusermenuitems = $filtermanager->filter_string($customusermenuitems, system::instance());
             }
             $settings->tool_mobile_custommenuitems = $custommenuitems;
             $settings->tool_mobile_customusermenuitems = $customusermenuitems;
@@ -526,7 +528,7 @@ class api {
             throw new moodle_exception('httpsrequired', 'tool_mobile');
         }
 
-        if (has_capability('moodle/site:config', context_system::instance(), $userid) or is_siteadmin($userid)) {
+        if (has_capability('moodle/site:config', system::instance(), $userid) or is_siteadmin($userid)) {
             throw new moodle_exception('autologinnotallowedtoadmins', 'tool_mobile');
         }
     }
@@ -590,7 +592,7 @@ class api {
         $siteplugins = new lang_string('siteplugins', 'tool_mobile');
         $identityproviders = new lang_string('oauth2identityproviders', 'tool_mobile');
 
-        $availablemods = core_plugin_manager::instance()->get_plugins_of_type('mod');
+        $availablemods = plugin_manager::instance()->get_plugins_of_type('mod');
         $coursemodules = [];
         $appsupportedmodules = [
             'assign', 'bigbluebuttonbn', 'book', 'choice', 'data', 'feedback', 'folder', 'forum', 'glossary', 'h5pactivity',
@@ -612,12 +614,12 @@ class api {
         $sitepluginslist = [];
         $mobileplugins = self::get_plugins_supporting_mobile();
         foreach ($mobileplugins as $plugin) {
-            $displayname = core_plugin_manager::instance()->plugin_name($plugin['component']) . " - " . $plugin['addon'];
+            $displayname = plugin_manager::instance()->plugin_name($plugin['component']) . " - " . $plugin['addon'];
             $sitepluginslist['sitePlugin_' . $plugin['component'] . '_' . $plugin['addon']] = $displayname;
         }
 
         // Display blocks.
-        $availableblocks = core_plugin_manager::instance()->get_plugins_of_type('block');
+        $availableblocks = plugin_manager::instance()->get_plugins_of_type('block');
         $courseblocks = [];
         $appsupportedblocks = [
             'activity_results' => 'CoreBlockDelegate_AddonBlockActivityResults',
@@ -905,7 +907,7 @@ class api {
 
         $timeout = min(30, $timeout);
         // Manage cache of the subscription information to avoid requesting it too often to the Moodle Apps Portal.
-        $cache = \cache::make('tool_mobile', 'subscriptioninfo');
+        $cache = cache::make('tool_mobile', 'subscriptioninfo');
         $subscriptiondata = $cache->get(0);
 
         // If we must force using cache, return it (or null if not present) and never contact the portal.

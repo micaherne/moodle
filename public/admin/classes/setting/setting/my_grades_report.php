@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+
 /**
  * Provides a selection of grade reports to be used for "grades".
  *
@@ -30,8 +32,8 @@ class my_grades_report extends \core_admin\setting\setting\configselect {
     public function __construct() {
         parent::__construct(
             'grade_mygrades_report',
-            new \lang_string('mygrades', 'grades'),
-            new \lang_string('mygrades_desc', 'grades'),
+            new lang_string('mygrades', 'grades'),
+            new lang_string('mygrades_desc', 'grades'),
             'overview',
             null
         );

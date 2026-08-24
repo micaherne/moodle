@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Tests for application_registration.
  *
@@ -65,11 +68,11 @@ final class application_registration_test extends \advanced_testcase {
                 'args' => [
                     'name' => 'Platform X',
                     'uniqueid' => 'a2c94a2c94',
-                    'platformid' => new \moodle_url('https://lms.example.com'),
+                    'platformid' => new url('https://lms.example.com'),
                     'clientid' => 'client-id-12345',
-                    'authrequesturl' => new \moodle_url('https://lms.example.com/auth'),
-                    'jwksurl' => new \moodle_url('https://lms.example.com/jwks'),
-                    'accesstokenurl' => new \moodle_url('https://lms.example.com/token'),
+                    'authrequesturl' => new url('https://lms.example.com/auth'),
+                    'jwksurl' => new url('https://lms.example.com/jwks'),
+                    'accesstokenurl' => new url('https://lms.example.com/token'),
                 ],
                 'expectations' => [
                     'valid' => true
@@ -79,11 +82,11 @@ final class application_registration_test extends \advanced_testcase {
                 'args' => [
                     'name' => 'Platform X',
                     'uniqueid' => 'a2c94a2c94',
-                    'platformid' => new \moodle_url('https://lms.example.com'),
+                    'platformid' => new url('https://lms.example.com'),
                     'clientid' => 'client-id-12345',
-                    'authrequesturl' => new \moodle_url('https://lms.example.com/auth'),
-                    'jwksurl' => new \moodle_url('https://lms.example.com/jwks'),
-                    'accesstokenurl' => new \moodle_url('https://lms.example.com/token'),
+                    'authrequesturl' => new url('https://lms.example.com/auth'),
+                    'jwksurl' => new url('https://lms.example.com/jwks'),
+                    'accesstokenurl' => new url('https://lms.example.com/token'),
                     'id' => 24
                 ],
                 'expectations' => [
@@ -94,15 +97,15 @@ final class application_registration_test extends \advanced_testcase {
                 'args' => [
                     'name' => '',
                     'uniqueid' => 'a2c94a2c94',
-                    'platformid' => new \moodle_url('https://lms.example.com'),
+                    'platformid' => new url('https://lms.example.com'),
                     'clientid' => 'client-id-12345',
-                    'authrequesturl' => new \moodle_url('https://lms.example.com/auth'),
-                    'jwksurl' => new \moodle_url('https://lms.example.com/jwks'),
-                    'accesstokenurl' => new \moodle_url('https://lms.example.com/token'),
+                    'authrequesturl' => new url('https://lms.example.com/auth'),
+                    'jwksurl' => new url('https://lms.example.com/jwks'),
+                    'accesstokenurl' => new url('https://lms.example.com/token'),
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid 'name' arg. Cannot be an empty string."
                 ]
             ],
@@ -110,15 +113,15 @@ final class application_registration_test extends \advanced_testcase {
                 'args' => [
                     'name' => 'Platform X',
                     'uniqueid' => '',
-                    'platformid' => new \moodle_url('https://lms.example.com'),
+                    'platformid' => new url('https://lms.example.com'),
                     'clientid' => 'client-id-12345',
-                    'authrequesturl' => new \moodle_url('https://lms.example.com/auth'),
-                    'jwksurl' => new \moodle_url('https://lms.example.com/jwks'),
-                    'accesstokenurl' => new \moodle_url('https://lms.example.com/token'),
+                    'authrequesturl' => new url('https://lms.example.com/auth'),
+                    'jwksurl' => new url('https://lms.example.com/jwks'),
+                    'accesstokenurl' => new url('https://lms.example.com/token'),
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid 'uniqueid' arg. Cannot be an empty string."
                 ]
             ],
@@ -126,15 +129,15 @@ final class application_registration_test extends \advanced_testcase {
                 'args' => [
                     'name' => 'Platform X',
                     'uniqueid' => 'a2c94a2c94',
-                    'platformid' => new \moodle_url('https://lms.example.com'),
+                    'platformid' => new url('https://lms.example.com'),
                     'clientid' => '',
-                    'authrequesturl' => new \moodle_url('https://lms.example.com/auth'),
-                    'jwksurl' => new \moodle_url('https://lms.example.com/jwks'),
-                    'accesstokenurl' => new \moodle_url('https://lms.example.com/token'),
+                    'authrequesturl' => new url('https://lms.example.com/auth'),
+                    'jwksurl' => new url('https://lms.example.com/jwks'),
+                    'accesstokenurl' => new url('https://lms.example.com/token'),
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid 'clientid' arg. Cannot be an empty string."
                 ]
             ]
@@ -181,11 +184,11 @@ final class application_registration_test extends \advanced_testcase {
 
         // Add information to the draft, but don't complete it. It should still be incomplete.
         $draft->set_name('Adjusted platform name');
-        $draft->set_platformid(new \moodle_url('https://lms.example.com'));
+        $draft->set_platformid(new url('https://lms.example.com'));
         $draft->set_clientid('bcgd23');
-        $draft->set_authenticationrequesturl(new \moodle_url('https://lms.example.com/auth'));
-        $draft->set_jwksurl(new \moodle_url('https://lms.example.com/jwks'));
-        $draft->set_accesstokenurl(new \moodle_url('https://lms.example.com/token'));
+        $draft->set_authenticationrequesturl(new url('https://lms.example.com/auth'));
+        $draft->set_jwksurl(new url('https://lms.example.com/jwks'));
+        $draft->set_accesstokenurl(new url('https://lms.example.com/token'));
         $this->assertFalse($draft->is_complete());
 
         // Complete the registration. It will now be indicated as complete.
@@ -194,7 +197,7 @@ final class application_registration_test extends \advanced_testcase {
 
         // Now, create another draft registration and try to mark it complete. It should throw.
         $draft2 = application_registration::create_draft('Another platform', '3434bfafas');
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $draft2->complete_registration();
     }
 
@@ -231,7 +234,7 @@ final class application_registration_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid 'uniqueid' arg. Cannot be an empty string."
                 ]
             ]
@@ -275,11 +278,11 @@ final class application_registration_test extends \advanced_testcase {
                     'registration' => [
                         'name' => 'Platform X',
                         'uniqueid' => 'a2c94a2c94',
-                        'platformid' => new \moodle_url('https://lms.example.com'),
+                        'platformid' => new url('https://lms.example.com'),
                         'clientid' => 'client-id-12345',
-                        'authrequesturl' => new \moodle_url('https://lms.example.com/auth'),
-                        'jwksurl' => new \moodle_url('https://lms.example.com/jwks'),
-                        'accesstokenurl' => new \moodle_url('https://lms.example.com/token'),
+                        'authrequesturl' => new url('https://lms.example.com/auth'),
+                        'jwksurl' => new url('https://lms.example.com/jwks'),
+                        'accesstokenurl' => new url('https://lms.example.com/token'),
                         'id' => 24
                     ],
                     'deployment' => [
@@ -296,11 +299,11 @@ final class application_registration_test extends \advanced_testcase {
                     'registration' => [
                         'name' => 'Platform X',
                         'uniqueid' => 'a2c94a2c94',
-                        'platformid' => new \moodle_url('https://lms.example.com'),
+                        'platformid' => new url('https://lms.example.com'),
                         'clientid' => 'client-id-12345',
-                        'authrequesturl' => new \moodle_url('https://lms.example.com/auth'),
-                        'jwksurl' => new \moodle_url('https://lms.example.com/jwks'),
-                        'accesstokenurl' => new \moodle_url('https://lms.example.com/token'),
+                        'authrequesturl' => new url('https://lms.example.com/auth'),
+                        'jwksurl' => new url('https://lms.example.com/jwks'),
+                        'accesstokenurl' => new url('https://lms.example.com/token'),
                     ],
                     'deployment' => [
                         'name' => 'Deployment at site level',
@@ -309,7 +312,7 @@ final class application_registration_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Can't add deployment to a resource_link that hasn't first been saved."
                 ]
             ],
@@ -318,11 +321,11 @@ final class application_registration_test extends \advanced_testcase {
                     'registration' => [
                         'name' => 'Platform X',
                         'uniqueid' => 'a2c94a2c94',
-                        'platformid' => new \moodle_url('https://lms.example.com'),
+                        'platformid' => new url('https://lms.example.com'),
                         'clientid' => 'client-id-12345',
-                        'authrequesturl' => new \moodle_url('https://lms.example.com/auth'),
-                        'jwksurl' => new \moodle_url('https://lms.example.com/jwks'),
-                        'accesstokenurl' => new \moodle_url('https://lms.example.com/token'),
+                        'authrequesturl' => new url('https://lms.example.com/auth'),
+                        'jwksurl' => new url('https://lms.example.com/jwks'),
+                        'accesstokenurl' => new url('https://lms.example.com/token'),
                         'id' => 24
                     ],
                     'deployment' => [
@@ -332,7 +335,7 @@ final class application_registration_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid 'deploymentname' arg. Cannot be an empty string."
                 ]
             ],
@@ -341,11 +344,11 @@ final class application_registration_test extends \advanced_testcase {
                     'registration' => [
                         'name' => 'Platform X',
                         'uniqueid' => 'a2c94a2c94',
-                        'platformid' => new \moodle_url('https://lms.example.com'),
+                        'platformid' => new url('https://lms.example.com'),
                         'clientid' => 'client-id-12345',
-                        'authrequesturl' => new \moodle_url('https://lms.example.com/auth'),
-                        'jwksurl' => new \moodle_url('https://lms.example.com/jwks'),
-                        'accesstokenurl' => new \moodle_url('https://lms.example.com/token'),
+                        'authrequesturl' => new url('https://lms.example.com/auth'),
+                        'jwksurl' => new url('https://lms.example.com/jwks'),
+                        'accesstokenurl' => new url('https://lms.example.com/token'),
                         'id' => 24
                     ],
                     'deployment' => [
@@ -355,7 +358,7 @@ final class application_registration_test extends \advanced_testcase {
                 ],
                 'expectations' => [
                     'valid' => false,
-                    'exception' => \coding_exception::class,
+                    'exception' => coding_exception::class,
                     'exceptionmessage' => "Invalid 'deploymentid' arg. Cannot be an empty string."
                 ]
             ]

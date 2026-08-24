@@ -45,6 +45,10 @@
  * @author     Chris Scribner
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\course;
+use core\output\html_writer;
+use core_table\output\html_table;
+
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lti/lib.php');
 
@@ -56,7 +60,7 @@ require_login($course);
 $PAGE->set_pagelayout('incourse');
 
 $params = array(
-    'context' => context_course::instance($course->id)
+    'context' => course::instance($course->id)
 );
 $event = \mod_lti\event\course_module_instance_list_viewed::create($params);
 $event->add_record_snapshot('course', $course);

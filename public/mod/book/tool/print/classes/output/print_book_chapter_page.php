@@ -25,11 +25,11 @@ namespace booktool_print\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
-use context_module;
+use core\output\templatable;
+use core\context\module;
 
 /**
  * Class containing data for the print book page.
@@ -76,7 +76,7 @@ class print_book_chapter_page implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         global $OUTPUT;
 
-        $context = context_module::instance($this->cm->id);
+        $context = module::instance($this->cm->id);
         $chapters = book_preload_chapters($this->book);
 
         $data = new stdClass();

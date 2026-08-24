@@ -22,10 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configtextarea;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+
 defined('MOODLE_INTERNAL') || die;
 
-$ADMIN->add('editortiny', new admin_category('tiny_equation', new lang_string('pluginname', 'tiny_equation')));
-$settings = new admin_settingpage('tiny_equation_settings', new lang_string('settings', 'tiny_equation'));
+$ADMIN->add('editortiny', new category('tiny_equation', new lang_string('pluginname', 'tiny_equation')));
+$settings = new settingpage('tiny_equation_settings', new lang_string('settings', 'tiny_equation'));
 
 if ($ADMIN->fulltree) {
     // Group 1.
@@ -70,7 +75,7 @@ if ($ADMIN->fulltree) {
 \exists
 \neq
 ';
-    $setting = new admin_setting_configtextarea('tiny_equation/librarygroup1',
+    $setting = new configtextarea('tiny_equation/librarygroup1',
         $name,
         $desc,
         $default);
@@ -95,7 +100,7 @@ if ($ADMIN->fulltree) {
 \Downarrow
 \Leftrightarrow
 ';
-    $setting = new admin_setting_configtextarea('tiny_equation/librarygroup2',
+    $setting = new configtextarea('tiny_equation/librarygroup2',
         $name,
         $desc,
         $default);
@@ -140,7 +145,7 @@ if ($ADMIN->fulltree) {
 \Psi
 \Omega
 ';
-    $setting = new admin_setting_configtextarea('tiny_equation/librarygroup3',
+    $setting = new configtextarea('tiny_equation/librarygroup3',
         $name,
         $desc,
         $default);
@@ -166,7 +171,7 @@ if ($ADMIN->fulltree) {
 {a \brack b}
 {a \brace b}
 ';
-    $setting = new admin_setting_configtextarea('tiny_equation/librarygroup4',
+    $setting = new configtextarea('tiny_equation/librarygroup4',
         $name,
         $desc,
         $default);

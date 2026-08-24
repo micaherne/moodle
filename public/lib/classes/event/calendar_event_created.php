@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -80,7 +83,7 @@ class calendar_event_created extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/calendar/view.php', array('view' => 'day', 'time' => $this->other['timestart']),
+        return new url('/calendar/view.php', array('view' => 'day', 'time' => $this->other['timestart']),
                 'event_' . $this->objectid);
     }
 
@@ -93,13 +96,13 @@ class calendar_event_created extends base {
         parent::validate_data();
 
         if (!isset($this->other['repeatid'])) {
-            throw new \coding_exception('The \'repeatid\' value must be set in other.');
+            throw new coding_exception('The \'repeatid\' value must be set in other.');
         }
         if (!isset($this->other['name'])) {
-            throw new \coding_exception('The \'name\' value must be set in other.');
+            throw new coding_exception('The \'name\' value must be set in other.');
         }
         if (!isset($this->other['timestart'])) {
-            throw new \coding_exception('The \'timestart\' value must be set in other.');
+            throw new coding_exception('The \'timestart\' value must be set in other.');
         }
     }
 

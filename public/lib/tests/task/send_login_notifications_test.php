@@ -16,7 +16,7 @@
 
 namespace core\task;
 
-use moodle_url;
+use core\url;
 
 /**
  * Contains tests for login related notifications.
@@ -156,7 +156,7 @@ final class send_login_notifications_test extends \advanced_testcase {
         $this->setUser(0);
 
         // Set LDAP auth change password URL.
-        $changepasswordurl = (new moodle_url('/changepassword.php'))->out(false);
+        $changepasswordurl = (new url('/changepassword.php'))->out(false);
         set_config('changepasswordurl', $changepasswordurl, 'auth_ldap');
 
         $ldapuser = $this->getDataGenerator()->create_user(['auth' => 'ldap']);

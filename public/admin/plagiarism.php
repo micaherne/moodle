@@ -26,6 +26,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
@@ -62,7 +67,7 @@ foreach ($plagiarismplugins as $plugin => $dir) {
     if (file_exists($dir.'/settings.php')) {
         $displayname = "<span>".get_string($plugin, 'plagiarism_'.$plugin)."</span>";
         // Settings link.
-        $url = new moodle_url("/plagiarism/$plugin/settings.php");
+        $url = new url("/plagiarism/$plugin/settings.php");
         $settings = html_writer::link($url, $txt->settings);
         // Get version.
         $version = get_config('plagiarism_' . $plugin);
@@ -73,7 +78,7 @@ foreach ($plagiarismplugins as $plugin => $dir) {
         }
         // uninstall link.
         $uninstall = '';
-        if ($uninstallurl = core_plugin_manager::instance()->get_uninstall_url('plagiarism_'.$plugin, 'manage')) {
+        if ($uninstallurl = plugin_manager::instance()->get_uninstall_url('plagiarism_'.$plugin, 'manage')) {
             $uninstall = html_writer::link($uninstallurl, $txt->uninstall);
         }
         $table->data[] = array($displayname, $version, $uninstall, $settings);

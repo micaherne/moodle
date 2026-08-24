@@ -24,6 +24,8 @@
 
 namespace report_insights;
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../../../analytics/tests/fixtures/test_indicator_max.php');
@@ -59,7 +61,7 @@ final class externallib_test extends \advanced_testcase {
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course1->id);
+        $context = course::instance($course1->id);
 
         $teacher1 = $this->getDataGenerator()->create_user();
         $teacher2 = $this->getDataGenerator()->create_user();

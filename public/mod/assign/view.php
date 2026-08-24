@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
@@ -31,7 +34,7 @@ list ($course, $cm) = get_course_and_cm_from_cmid($id, 'assign');
 
 require_login($course, true, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 require_capability('mod/assign:view', $context);
 
@@ -41,7 +44,7 @@ $urlparams = array('id' => $id,
                   'rownum' => optional_param('rownum', 0, PARAM_INT),
                   'useridlistid' => optional_param('useridlistid', $assign->get_useridlist_key_id(), PARAM_ALPHANUM));
 
-$url = new moodle_url('/mod/assign/view.php', $urlparams);
+$url = new url('/mod/assign/view.php', $urlparams);
 $PAGE->set_url($url);
 
 // Update module completion status.

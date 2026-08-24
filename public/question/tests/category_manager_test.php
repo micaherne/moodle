@@ -16,10 +16,11 @@
 
 namespace core_question;
 
-use context_course;
-use context_module;
+use core\context\course;
+use core\context\module;
+use core\exception\required_capability_exception;
 use core_question_generator;
-use moodle_url;
+use core\url;
 use core_question\local\bank\question_edit_contexts;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -41,7 +42,7 @@ final class category_manager_test extends \advanced_testcase {
     private function create_course_and_get_qbank_context() {
         $course = self::getDataGenerator()->create_course();
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        return context_module::instance($qbank->cmid);
+        return module::instance($qbank->cmid);
     }
     /**
      * Test creating a category.
@@ -142,7 +143,7 @@ final class category_manager_test extends \advanced_testcase {
         $this->assertSame('Description', $existingcat->info);
         $this->assertSame('frog', $existingcat->idnumber);
 
-        $manager = new category_manager(new moodle_url('/'));
+        $manager = new category_manager(new url('/'));
         $manager->update_category(
             $category->id,
             $topcat->id . ',' . $topcat->contextid,
@@ -181,7 +182,7 @@ final class category_manager_test extends \advanced_testcase {
         $this->assertSame('Description', $existingcat->info);
         $this->assertSame('frog', $existingcat->idnumber);
 
-        $manager = new category_manager(new moodle_url('/'));
+        $manager = new category_manager(new url('/'));
         $manager->update_category(
             $category->id,
             $topcat->id . ',' . $topcat->contextid,
@@ -219,7 +220,7 @@ final class category_manager_test extends \advanced_testcase {
         $this->assertSame('Description', $existingcat->info);
         $this->assertSame('frog', $existingcat->idnumber);
 
-        $manager = new category_manager(new moodle_url('/'));
+        $manager = new category_manager(new url('/'));
         $manager->update_category(
             $category->id,
             $topcat->id . ',' . $topcat->contextid,
@@ -285,9 +286,9 @@ final class category_manager_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $quiz = $generator->get_plugin_generator('mod_quiz')->create_instance(['course' => $course->id]);
-        $context = context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $topcat = question_get_top_category($context->id, true);
-        $manager = new category_manager(new moodle_url('/'));
+        $manager = new category_manager(new url('/'));
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
         $manager->add_category(
@@ -315,7 +316,7 @@ final class category_manager_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $quiz = $generator->get_plugin_generator('mod_quiz')->create_instance(['course' => $course->id]);
-        $contexts = new question_edit_contexts(context_module::instance($quiz->cmid));
+        $contexts = new question_edit_contexts(module::instance($quiz->cmid));
         $defaultcat = question_get_default_category($contexts->lowest()->id, true);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         // Create the category.
@@ -329,7 +330,7 @@ final class category_manager_test extends \advanced_testcase {
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
-        $manager = new category_manager(new moodle_url('/'));
+        $manager = new category_manager(new url('/'));
         $manager->delete_category($category->id);
         $events = $sink->get_events();
         $event = reset($events);
@@ -350,7 +351,7 @@ final class category_manager_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $quiz = $generator->get_plugin_generator('mod_quiz')->create_instance(['course' => $course->id]);
-        $context = context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $topcat = question_get_top_category($context->id, true);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         // Create the category.
@@ -363,7 +364,7 @@ final class category_manager_test extends \advanced_testcase {
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
-        $manager = new category_manager(new moodle_url('/'));
+        $manager = new category_manager(new url('/'));
         $manager->update_category(
             $category->id,
             $topcat->id . ',' . $topcat->contextid,
@@ -391,7 +392,7 @@ final class category_manager_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $quiz = $generator->create_module('quiz', ['course' => $course->id]);
-        $contexts = new question_edit_contexts(context_module::instance($quiz->cmid));
+        $contexts = new question_edit_contexts(module::instance($quiz->cmid));
 
         $defaultcategory = question_get_default_category($contexts->lowest()->id, true);
         $questiongerator = $generator->get_plugin_generator('core_question');
@@ -416,7 +417,7 @@ final class category_manager_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $quiz = $generator->create_module('quiz', ['course' => $course->id]);
-        $contexts = new question_edit_contexts(context_module::instance($quiz->cmid));
+        $contexts = new question_edit_contexts(module::instance($quiz->cmid));
 
         $defaultcategory = question_get_default_category($contexts->lowest()->id, true);
         $questiongerator = $generator->get_plugin_generator('core_question');
@@ -445,7 +446,7 @@ final class category_manager_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $quiz = $generator->create_module('quiz', ['course' => $course->id]);
-        $contexts = new question_edit_contexts(context_module::instance($quiz->cmid));
+        $contexts = new question_edit_contexts(module::instance($quiz->cmid));
 
         $defaultcategory = question_get_default_category($contexts->lowest()->id, true);
         $questiongerator = $generator->get_plugin_generator('core_question');
@@ -477,7 +478,7 @@ final class category_manager_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $quiz = $generator->create_module('quiz', ['course' => $course->id]);
-        $contexts = new question_edit_contexts(context_module::instance($quiz->cmid));
+        $contexts = new question_edit_contexts(module::instance($quiz->cmid));
 
         $defaultcategory = question_get_default_category($contexts->lowest()->id, true);
         $questiongerator = $generator->get_plugin_generator('core_question');
@@ -514,7 +515,7 @@ final class category_manager_test extends \advanced_testcase {
         // Create a category.
         $course = $this->getDataGenerator()->create_course();
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $qcategory1 = $questiongenerator->create_question_category(['contextid' => $context->id]);
 
@@ -537,7 +538,7 @@ final class category_manager_test extends \advanced_testcase {
         // Create a category.
         $course = $this->getDataGenerator()->create_course();
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $qcategory1 = question_get_default_category($context->id);
 
@@ -559,7 +560,7 @@ final class category_manager_test extends \advanced_testcase {
         // Create 2 categories.
         $course = $this->getDataGenerator()->create_course();
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $qcategory1 = $questiongenerator->create_question_category(['contextid' => $context->id]);
         $qcategory2 = $questiongenerator->create_question_category(['contextid' => $context->id, 'parent' => $qcategory1->id]);
@@ -572,7 +573,7 @@ final class category_manager_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $this->expectExceptionMessage(get_string('nopermissions', 'error', get_string('question:managecategory', 'role')));
         $manager->require_can_delete_category($qcategory2->id);
     }
@@ -589,7 +590,7 @@ final class category_manager_test extends \advanced_testcase {
         // Create question categories for a course.
         $course = $this->getDataGenerator()->create_course();
         $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $course->id]);
-        $context = \context_module::instance($quiz->cmid);
+        $context = module::instance($quiz->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $topcategory = question_get_top_category($context->id, true);
         $qcategory1 = question_get_default_category($context->id);
@@ -625,26 +626,26 @@ final class category_manager_test extends \advanced_testcase {
 
         // Add 2 quizzes with question categories.
         $quiz1 = $generator->create_module('quiz', ['course' => $course->id]);
-        $quiz1context = \context_module::instance($quiz1->cmid);
+        $quiz1context = module::instance($quiz1->cmid);
         $quiz1top = question_get_top_category($quiz1context->id);
         $quiz1questioncats = $DB->get_records('question_categories', ['contextid' => $quiz1context->id]);
         $this->assertCount(2, $quiz1questioncats);
 
         $quiz2 = $generator->create_module('quiz', ['course' => $course->id]);
-        $quiz2context = \context_module::instance($quiz2->cmid);
+        $quiz2context = module::instance($quiz2->cmid);
         $quiz2top = question_get_top_category($quiz2context->id);
         $quiz2questioncats = $DB->get_records('question_categories', ['contextid' => $quiz2context->id]);
         $this->assertCount(2, $quiz2questioncats);
 
         // Add 2 question banks with question categories.
         $qbank1 = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbank1context = \context_module::instance($qbank1->cmid);
+        $qbank1context = module::instance($qbank1->cmid);
         $qbank1top = question_get_top_category($qbank1context->id);
         $qbank1questioncats = $DB->get_records('question_categories', ['contextid' => $qbank1context->id]);
         $this->assertCount(2, $qbank1questioncats);
 
         $qbank2 = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbank2context = \context_module::instance($qbank2->cmid);
+        $qbank2context = module::instance($qbank2->cmid);
         $qbank2top = question_get_top_category($qbank2context->id);
         $qbank2questioncats = $DB->get_records('question_categories', ['contextid' => $qbank2context->id]);
         $this->assertCount(2, $qbank2questioncats);

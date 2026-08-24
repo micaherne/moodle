@@ -16,6 +16,8 @@
 
 namespace mod_forum;
 
+use core\context\course;
+use core\context\module;
 use mod_forum_tests_generator_trait;
 
 defined('MOODLE_INTERNAL') || die();
@@ -75,7 +77,7 @@ final class subscriptions_test extends \advanced_testcase {
 
         $options = array('course' => $course->id);
         $forum = $this->getDataGenerator()->create_module('forum', $options);
-        $context = \context_module::instance($forum->cmid);
+        $context = module::instance($forum->cmid);
 
         // Create a user enrolled in the course as a student.
         list($user) = $this->helper_create_users($course, 1);
@@ -200,7 +202,7 @@ final class subscriptions_test extends \advanced_testcase {
 
         // Add the moodle/course:viewhiddenactivities capability to the student user.
         $roleids = $DB->get_records_menu('role', null, '', 'shortname, id');
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         assign_capability('moodle/course:viewhiddenactivities', CAP_ALLOW, $roleids['student'], $context);
 
         // All of the unsubscribable forums should now be listed.
@@ -950,7 +952,7 @@ final class subscriptions_test extends \advanced_testcase {
 
         // Remove the allowforcesubscribe capability from the user.
         $cm = get_coursemodule_from_instance('forum', $forum->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         assign_capability('mod/forum:allowforcesubscribe', CAP_PROHIBIT, $roleids['student'], $context);
         $this->assertFalse(has_capability('mod/forum:allowforcesubscribe', $context, $user->id));
 
@@ -1458,7 +1460,7 @@ final class subscriptions_test extends \advanced_testcase {
 
         // Create a course, with a forum.
         $course = $this->getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $options['course'] = $course->id;
         $forum = $this->getDataGenerator()->create_module('forum', $options);
         $cm = get_coursemodule_from_instance("forum", $forum->id, $course->id);

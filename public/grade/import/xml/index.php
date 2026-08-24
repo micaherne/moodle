@@ -15,6 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../../config.php');
 require_once($CFG->libdir . '/gradelib.php');
 require_once($CFG->dirroot . '/grade/lib.php');
@@ -23,15 +27,15 @@ require_once($CFG->dirroot . '/grade/import/xml/grade_import_form.php');
 
 $id = required_param('id', PARAM_INT); // course id
 
-$PAGE->set_url(new moodle_url('/grade/import/xml/index.php', array('id'=>$id)));
+$PAGE->set_url(new url('/grade/import/xml/index.php', array('id'=>$id)));
 $PAGE->set_pagelayout('admin');
 
 if (!$course = $DB->get_record('course', array('id'=>$id))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($id);
+$context = course::instance($id);
 require_capability('moodle/grade:import', $context);
 require_capability('gradeimport/xml:view', $context);
 

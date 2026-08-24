@@ -21,7 +21,7 @@ namespace core_reportbuilder\external;
 use advanced_testcase;
 use core_reportbuilder\manager;
 use core_reportbuilder_generator;
-use moodle_url;
+use core\url;
 use core_reportbuilder\local\helpers\user_filter_manager;
 use core_reportbuilder\local\filters\text;
 use core_reportbuilder\output\report_action;
@@ -54,7 +54,7 @@ final class custom_report_exporter_test extends advanced_testcase {
         $instance->set_report_info_container('Hello');
         $instance->add_attributes(['data-foo' => 'bar', 'data-another' => '1']);
 
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new url('/'));
 
         $exporter = new custom_report_exporter($report, [], true);
         $export = $exporter->export($PAGE->get_renderer('core_reportbuilder'));
@@ -95,7 +95,7 @@ final class custom_report_exporter_test extends advanced_testcase {
         $instance->set_report_info_container('Hello');
         $instance->add_attributes(['data-foo' => 'bar', 'data-another' => '1']);
 
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new url('/'));
 
         $exporter = new custom_report_exporter($report, ['pagesize' => 10], false);
         $export = $exporter->export($PAGE->get_renderer('core_reportbuilder'));
@@ -135,7 +135,7 @@ final class custom_report_exporter_test extends advanced_testcase {
         $report = $generator->create_report(['name' => 'My report', 'source' => users::class, 'default' => false]);
         $generator->create_filter(['reportid' => $report->get('id'), 'uniqueidentifier' => 'user:email']);
 
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new url('/'));
 
         $exporter = new custom_report_exporter($report, ['pagesize' => 10], false);
         $export = $exporter->export($PAGE->get_renderer('core_reportbuilder'));
@@ -165,7 +165,7 @@ final class custom_report_exporter_test extends advanced_testcase {
         // Apply filter.
         user_filter_manager::set($report->get('id'), ['user:email_operator' => text::IS_NOT_EMPTY]);
 
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new url('/'));
 
         $exporter = new custom_report_exporter($report, ['pagesize' => 10], false);
         $export = $exporter->export($PAGE->get_renderer('core_reportbuilder'));

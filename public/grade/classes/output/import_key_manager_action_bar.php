@@ -16,7 +16,9 @@
 
 namespace core_grades\output;
 
-use moodle_url;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\url;
 
 /**
  * Renderable class for the action bar elements in the gradebook import key manager page.
@@ -42,7 +44,7 @@ class import_key_manager_action_bar extends action_bar {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         if ($this->context->contextlevel !== CONTEXT_COURSE) {
             return [];
         }
@@ -52,9 +54,9 @@ class import_key_manager_action_bar extends action_bar {
         $data = $importnavselectors->export_for_template($output);
 
         // Add a button to the action bar with a link to the 'add user key' page.
-        $adduserkeylink = new moodle_url('/grade/import/key.php', ['courseid' => $courseid]);
-        $adduserkeybutton = new \single_button($adduserkeylink, get_string('adduserkey', 'userkey'),
-            'get', \single_button::BUTTON_PRIMARY);
+        $adduserkeylink = new url('/grade/import/key.php', ['courseid' => $courseid]);
+        $adduserkeybutton = new single_button($adduserkeylink, get_string('adduserkey', 'userkey'),
+            'get', single_button::BUTTON_PRIMARY);
         $data['adduserkeybutton'] = $adduserkeybutton->export_for_template($output);
 
         return $data;

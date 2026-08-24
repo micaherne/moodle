@@ -23,6 +23,11 @@
  */
 
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+use core_cache\cache;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot.'/mod/lesson/lib.php');
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
@@ -38,7 +43,7 @@ $override = null;
 if ($overrideid) {
 
     if (! $override = $DB->get_record('lesson_overrides', array('id' => $overrideid))) {
-        throw new \moodle_exception('invalidoverrideid', 'lesson');
+        throw new moodle_exception('invalidoverrideid', 'lesson');
     }
 
     $lesson = new lesson($DB->get_record('lesson', array('id' => $override->lessonid), '*',  MUST_EXIST));
@@ -50,11 +55,11 @@ if ($overrideid) {
     $lesson = new lesson($DB->get_record('lesson', array('id' => $cm->instance), '*', MUST_EXIST));
 
 } else {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
-$url = new moodle_url('/mod/lesson/overrideedit.php');
+$url = new url('/mod/lesson/overrideedit.php');
 if ($action) {
     $url->param('action', $action);
 }
@@ -69,7 +74,7 @@ $PAGE->set_show_navigation_footer(false);
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 // Add or edit an override.
 require_capability('mod/lesson:manageoverrides', $context);
@@ -80,11 +85,11 @@ if ($overrideid) {
 
     if ($override->groupid) {
         if (!groups_group_visible($override->groupid, $course, $cm)) {
-            throw new \moodle_exception('invalidoverrideid', 'lesson');
+            throw new moodle_exception('invalidoverrideid', 'lesson');
         }
     } else {
         if (!groups_user_groups_visible($course, $override->userid, $cm)) {
-            throw new \moodle_exception('invalidoverrideid', 'lesson');
+            throw new moodle_exception('invalidoverrideid', 'lesson');
         }
     }
 } else {
@@ -119,7 +124,7 @@ if ($action === 'duplicate') {
     $override->groupid = $data->groupid = null;
 }
 
-$overridelisturl = new moodle_url('/mod/lesson/overrides.php', array('cmid' => $cm->id));
+$overridelisturl = new url('/mod/lesson/overrides.php', array('cmid' => $cm->id));
 if (!$groupmode) {
     $overridelisturl->param('mode', 'user');
 }

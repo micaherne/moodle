@@ -16,6 +16,9 @@
 
 namespace mod_book;
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
 use core_external\external_api;
 use mod_book_external;
 
@@ -45,14 +48,14 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         $chapter = $bookgenerator->create_chapter(array('bookid' => $book->id));
         $chapterhidden = $bookgenerator->create_chapter(array('bookid' => $book->id, 'hidden' => 1));
 
-        $context = \context_module::instance($book->cmid);
+        $context = module::instance($book->cmid);
         $cm = get_coursemodule_from_instance('book', $book->id);
 
         // Test invalid instance id.
         try {
             mod_book_external::view_book(0);
             $this->fail('Exception expected due to invalid mod_book instance id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidrecord', $e->errorcode);
         }
 
@@ -62,7 +65,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_book_external::view_book($book->id, 0);
             $this->fail('Exception expected due to not enrolled user.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -83,7 +86,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_book\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/book/view.php', array('id' => $cm->id));
+        $moodleurl = new url('/mod/book/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -103,7 +106,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_book_external::view_book($book->id, $chapterhidden->id);
             $this->fail('Exception expected due to missing capability.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('errorchapter', $e->errorcode);
         }
 
@@ -115,7 +118,7 @@ final class externallib_test extends \core_external\tests\externallib_testcase {
         try {
             mod_book_external::view_book($book->id, 0);
             $this->fail('Exception expected due to missing capability.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 

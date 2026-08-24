@@ -23,17 +23,19 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig and empty($CFG->disableupdateautodeploy)) {
     $installer = tool_installaddon_installer::instance();
-    $ADMIN->add('modules', new admin_externalpage(
+    $ADMIN->add('modules', new externalpage(
         'tool_installaddon_marketplace',
         get_string('marketplaceadminlinktext', 'tool_installaddon'),
         $installer->get_marketplace_url()->out(false)
     ), 'modsettings');
 
-    $ADMIN->add('modules', new admin_externalpage('tool_installaddon_index',
+    $ADMIN->add('modules', new externalpage('tool_installaddon_index',
         get_string('installaddons', 'tool_installaddon'),
         "$CFG->wwwroot/$CFG->admin/tool/installaddon/index.php"), 'modsettings');
 }

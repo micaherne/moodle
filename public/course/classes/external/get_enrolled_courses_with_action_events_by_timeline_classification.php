@@ -18,7 +18,7 @@ namespace core_course\external;
 
 defined('MOODLE_INTERNAL') || die();
 
-use context_user;
+use core\context\user;
 use core_calendar_external;
 use core_course_external;
 use core_external\external_api;
@@ -94,7 +94,7 @@ class get_enrolled_courses_with_action_events_by_timeline_classification extends
     ): array {
         global $USER;
 
-        self::validate_context(context_user::instance($USER->id));
+        self::validate_context(user::instance($USER->id));
 
         $params = self::validate_parameters(
             self::execute_parameters(),

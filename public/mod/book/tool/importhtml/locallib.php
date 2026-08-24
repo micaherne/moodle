@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__.'/lib.php');
@@ -144,7 +146,7 @@ function toolbook_importhtml_import_chapters($package, $type, $book, $context, $
                 $chapterpath = toolbook_importhtml_fix_path($chapterpath);
                 foreach ($allchapters as $target) {
                     if ($target->importsrc === $chapterpath) {
-                        $newcontent = str_replace($match, 'href="' . new moodle_url('/mod/book/view.php',
+                        $newcontent = str_replace($match, 'href="' . new url('/mod/book/view.php',
                             ['id' => $context->instanceid, 'chapterid' => $target->id]) . $anchor . '"', $newcontent);
                     }
                 }

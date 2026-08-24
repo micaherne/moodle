@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
+use core\context;
+use core\context\module;
+use core\context\system;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\contextlist;
 use \core_privacy\local\request\writer;
@@ -389,7 +392,7 @@ class provider implements
      *
      * @param \context $context The module context.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         if ($context->contextlevel == CONTEXT_MODULE) {
@@ -591,7 +594,7 @@ class provider implements
      * @param  \assign $assign The assignment object.
      * @param  int $userid The user ID
      */
-    protected static function store_assign_user_flags(\context $context, \assign $assign, int $userid) {
+    protected static function store_assign_user_flags(context $context, \assign $assign, int $userid) {
         $datatypes = ['locked' => get_string('locksubmissions', 'mod_assign'),
                       'mailed' => get_string('privacy:metadata:mailed', 'mod_assign'),
                       'extensionduedate' => get_string('extensionduedate', 'mod_assign'),
@@ -619,7 +622,7 @@ class provider implements
      * @param  \context $context The context object
      * @param  array $currentpath Current directory path that we are exporting to.
      */
-    protected static function export_grade_data(\stdClass $grade, \context $context, array $currentpath) {
+    protected static function export_grade_data(\stdClass $grade, context $context, array $currentpath) {
         $gradedata = (object)[
             'timecreated' => transform::datetime($grade->timecreated),
             'timemodified' => transform::datetime($grade->timemodified),
@@ -638,7 +641,7 @@ class provider implements
      * @param  \context $context The context object
      * @param  array $currentpath Current directory path that we are exporting to.
      */
-    protected static function export_submission_data(\stdClass $submission, \context $context, array $currentpath) {
+    protected static function export_submission_data(\stdClass $submission, context $context, array $currentpath) {
         $submissiondata = (object)[
             'timecreated' => transform::datetime($submission->timecreated),
             'timemodified' => transform::datetime($submission->timemodified),
@@ -658,7 +661,7 @@ class provider implements
      * @param  int $userid The user ID that we want the preferences for.
      */
     public static function export_user_preferences(int $userid) {
-        $context = \context_system::instance();
+        $context = system::instance();
         $assignpreferences = [
             'assign_perpage' => ['string' => get_string('privacy:metadata:assignperpage', 'mod_assign'), 'bool' => false],
             'assign_filter' => ['string' => get_string('privacy:metadata:assignfilter', 'mod_assign'), 'bool' => false],
@@ -687,7 +690,7 @@ class provider implements
      * @param  \assign $assign The assign object.
      * @param  \stdClass $user The user object.
      */
-    public static function export_overrides(\context $context, \assign $assign, \stdClass $user) {
+    public static function export_overrides(context $context, \assign $assign, \stdClass $user) {
 
         $overrides = $assign->override_exists($user->id);
         // Overrides returns an array with data in it, but an override with actual data will have the assign ID set.
@@ -721,7 +724,7 @@ class provider implements
      * @param  array           $path             The path for exporting data
      * @param  bool|boolean    $exportforteacher A flag for if this is exporting data as a teacher.
      */
-    protected static function export_submission(\assign $assign, \stdClass $user, \context_module $context, array $path,
+    protected static function export_submission(\assign $assign, \stdClass $user, module $context, array $path,
             bool $exportforteacher = false) {
         $submissions = $assign->get_all_submissions($user->id);
         $teacher = ($exportforteacher) ? $user : null;
@@ -815,7 +818,7 @@ class provider implements
      * @param \stdClass $user The user object
      * @param \context $context The context
      */
-    protected static function export_marks(\assign $assign, \stdClass $user, \context $context): void {
+    protected static function export_marks(\assign $assign, \stdClass $user, context $context): void {
         global $DB;
 
         $records = $DB->get_records_sql(
@@ -850,7 +853,7 @@ class provider implements
      * @param \stdClass $user The user object
      * @param \context $context The context
      */
-    protected static function export_allocations(\assign $assign, \stdClass $user, \context $context): void {
+    protected static function export_allocations(\assign $assign, \stdClass $user, context $context): void {
         global $DB;
 
         $records = $DB->get_records_sql(

@@ -23,6 +23,7 @@ require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.ph
 use core\progress\none;
 use mod_quiz\grade_calculator;
 use mod_quiz\quiz_settings;
+use mod_quiz\tests\question_helper_test_trait;
 
 /**
  * Unit tests for quiz_statistics\event\observer\slots_updated
@@ -34,7 +35,7 @@ use mod_quiz\quiz_settings;
  * @covers    \quiz_statistics\quiz_structure_modified
  */
 final class quiz_structure_modified_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use question_helper_test_trait;
 
     /**
      * Clear the statistics cache for a quiz when it structure is modified.

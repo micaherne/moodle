@@ -25,6 +25,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\progress_trace;
+use core\output\progress_trace\combined_progress_trace;
+use core\output\progress_trace\progress_trace_buffer;
+use core\output\progress_trace\text_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -102,7 +108,7 @@ class enrol_flatfile_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/flatfile:manage', $context);
     }
 
@@ -113,7 +119,7 @@ class enrol_flatfile_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/flatfile:manage', $context);
     }
 
@@ -132,7 +138,7 @@ class enrol_flatfile_plugin extends enrol_plugin {
     public function enrol_user(stdClass $instance, $userid, $roleid = null, $timestart = 0, $timeend = 0, $status = null, $recovergrades = null) {
         parent::enrol_user($instance, $userid, null, $timestart, $timeend, $status, $recovergrades);
         if ($roleid) {
-            $context = context_course::instance($instance->courseid, MUST_EXIST);
+            $context = course::instance($instance->courseid, MUST_EXIST);
             role_assign($roleid, $userid, $context->id, 'enrol_'.$this->get_name(), $instance->id);
         }
     }
@@ -403,7 +409,7 @@ class enrol_flatfile_plugin extends enrol_plugin {
             return;
         }
 
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         if ($action === 'add') {
             // Clear the buffer just in case there were some future enrolments.
@@ -601,7 +607,7 @@ class enrol_flatfile_plugin extends enrol_plugin {
             return $this->lasternoller;
         }
 
-        $context = context_course::instance($courseid);
+        $context = course::instance($courseid);
 
         $users = get_enrolled_users($context, 'enrol/flatfile:manage');
         if (!$users) {

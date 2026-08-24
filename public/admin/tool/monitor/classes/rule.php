@@ -24,6 +24,13 @@
 
 namespace tool_monitor;
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+use core\output\single_select;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -58,7 +65,7 @@ class rule {
      */
     public function can_manage_rule($userid = null) {
         $courseid = $this->courseid;
-        $context = empty($courseid) ? \context_system::instance() : \context_course::instance($this->courseid);
+        $context = empty($courseid) ? system::instance() : course::instance($this->courseid);
         return has_capability('tool/monitor:managerules', $context, $userid);
     }
 
@@ -101,7 +108,7 @@ class rule {
     public function get_subscribe_options($courseid) {
         global $CFG;
 
-        $url = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/index.php', array(
+        $url = new url($CFG->wwwroot. '/admin/tool/monitor/index.php', array(
             'courseid' => $courseid,
             'ruleid' => $this->id,
             'action' => 'subscribe',
@@ -131,7 +138,7 @@ class rule {
                 }
             }
 
-            return new \single_select($url, 'cmid', $options);
+            return new single_select($url, 'cmid', $options);
         }
     }
 
@@ -149,14 +156,14 @@ class rule {
 
         if ($this->courseid != $courseid && $this->courseid != 0) {
             // Trying to subscribe to a rule that belongs to a different course. Should never happen.
-            throw new \coding_exception('Can not subscribe to rules from a different course');
+            throw new coding_exception('Can not subscribe to rules from a different course');
         }
         if ($cmid !== 0) {
             $cms = get_fast_modinfo($courseid);
             $cminfo = $cms->get_cm($cmid);
             if (!$cminfo->uservisible || !$cminfo->available) {
                 // Trying to subscribe to a hidden or restricted cm. Should never happen.
-                throw new \coding_exception('You cannot do that');
+                throw new coding_exception('You cannot do that');
             }
         }
         $userid = empty($userid) ? $USER->id : $userid;
@@ -176,7 +183,7 @@ class rule {
         if (property_exists($this->rule, $prop)) {
             return $this->rule->$prop;
         }
-        throw new \coding_exception('Property "' . $prop . '" doesn\'t exist');
+        throw new coding_exception('Property "' . $prop . '" doesn\'t exist');
     }
 
     /**
@@ -191,7 +198,7 @@ class rule {
             $rule->template = array('text' => $rule->template, 'format' => $rule->templateformat);
             return $rule;
         }
-        throw new \coding_exception('Invalid call to get_mform_set_data.');
+        throw new coding_exception('Invalid call to get_mform_set_data.');
     }
 
     /**
@@ -243,7 +250,7 @@ class rule {
      * @param \context $context context where this name would be displayed.
      * @return string Formatted name of the rule.
      */
-    public function get_name(\context $context) {
+    public function get_name(context $context) {
         return format_text($this->name, FORMAT_HTML, array('context' => $context));
     }
 
@@ -253,7 +260,7 @@ class rule {
      * @param \context $context context where this description would be displayed.
      * @return string Formatted description of the rule.
      */
-    public function get_description(\context $context) {
+    public function get_description(context $context) {
         return format_text($this->description, $this->descriptionformat, array('context' => $context));
     }
 

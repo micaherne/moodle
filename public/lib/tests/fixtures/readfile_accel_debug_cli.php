@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 define('CLI_SCRIPT', true);
 
 require_once(__DIR__ . '/../../../config.php');
@@ -69,7 +71,7 @@ try {
     // Populate {files} table.
     $fs = get_file_storage();
     $filerecord = [
-        'contextid' => context_system::instance()->id,
+        'contextid' => system::instance()->id,
         'component' => 'test',
         'filearea' => 'readfile',
         'itemid' => 0,

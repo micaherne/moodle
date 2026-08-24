@@ -25,6 +25,7 @@
 
 namespace core_h5p;
 
+use core\test\testing_util;
 use core_h5p\local\library\autoloader;
 
 /**
@@ -75,7 +76,7 @@ final class editor_framework_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generator.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $h5pgenerator = $generator->get_plugin_generator('core_h5p');
 
         $h5pfilestorage = new file_storage();
@@ -254,7 +255,7 @@ final class editor_framework_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generator.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $h5pgenerator = $generator->get_plugin_generator('core_h5p');
 
         $h5pfilestorage = new file_storage();
@@ -370,7 +371,7 @@ final class editor_framework_test extends \advanced_testcase {
     public function test_getLibraries(): void {
         $this->resetAfterTest(true);
 
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $h5pgenerator = $generator->get_plugin_generator('core_h5p');
 
         // Generate some h5p related data.

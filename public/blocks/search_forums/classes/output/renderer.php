@@ -25,8 +25,8 @@
 namespace block_search_forums\output;
 defined('MOODLE_INTERNAL') || die();
 
-use plugin_renderer_base;
-use renderable;
+use core\output\plugin_renderer_base;
+use core\output\renderable;
 
 /**
  * Block search forums renderer.

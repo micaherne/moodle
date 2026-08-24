@@ -23,6 +23,9 @@
  */
 namespace mod_assign\output;
 
+use core\output\renderable;
+use core\url;
+
 /**
  * This file contains the definition for the renderable assign header.
  *
@@ -30,7 +33,7 @@ namespace mod_assign\output;
  * @copyright 2012 NetSpot {@link http://www.netspot.com.au}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class assign_header implements \renderable {
+class assign_header implements renderable {
     /** @var \stdClass The assign record.  */
     public $assign;
     /** @var mixed \context|null the context record.  */
@@ -71,7 +74,7 @@ class assign_header implements \renderable {
         $subpage = '',
         $preface = '',
         $postfix = '',
-        ?\moodle_url $subpageurl = null,
+        ?url $subpageurl = null,
         bool $activity = false
     ) {
         $this->assign = $assign;

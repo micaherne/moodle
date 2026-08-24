@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
 use core_reportbuilder\system_report_factory;
 use report_themeusage\form\theme_usage_form;
 use report_themeusage\reportbuilder\local\systemreports\theme_usage_report;
@@ -37,13 +40,13 @@ $themechoice = optional_param('themechoice', '', PARAM_TEXT);
 
 // Check the requested theme is a valid one.
 if (!theme_usage_form::validate_theme_choice_param($themechoice)) {
-    throw new \moodle_exception(get_string('invalidparametertheme', 'report_themeusage'));
+    throw new moodle_exception(get_string('invalidparametertheme', 'report_themeusage'));
 }
 
 // Set up the page.
-$pageurl = new moodle_url($CFG->wwwroot . '/report/themeusage/index.php');
+$pageurl = new url($CFG->wwwroot . '/report/themeusage/index.php');
 $PAGE->set_url($pageurl);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_pagelayout('report');
 $PAGE->set_primary_active_tab('siteadminnode');
 echo $OUTPUT->header();
@@ -75,7 +78,7 @@ if (!empty($themechoice) && !empty($typechoice)) {
 
     // Build the report.
     $reportparams = ['themechoice' => $themechoice, 'typechoice' => $typechoice];
-    $report = system_report_factory::create(theme_usage_report::class, context_system::instance(), '', '', 0, $reportparams);
+    $report = system_report_factory::create(theme_usage_report::class, system::instance(), '', '', 0, $reportparams);
     echo $report->output();
 }
 

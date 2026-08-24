@@ -18,10 +18,10 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\form;
 
-use context;
-use core_user;
-use html_writer;
-use moodle_url;
+use core\context;
+use core\user;
+use core\output\html_writer;
+use core\url;
 use core\output\notification;
 use core_form\dynamic_form;
 use core_reportbuilder\{manager, permission};
@@ -133,7 +133,7 @@ class schedule extends dynamic_form {
                 'ajax' => 'core_user/form_user_selector',
                 'multiple' => false,
                 'valuehtmlcallback' => function($userid) use ($context): string {
-                    $user = core_user::get_user($userid);
+                    $user = user::get_user($userid);
                     return fullname($user, has_capability('moodle/site:viewfullnames', $context));
                 }
             ];
@@ -269,7 +269,7 @@ class schedule extends dynamic_form {
      *
      * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): moodle_url {
-        return new moodle_url('/reportbuilder/edit.php', ['id' => $this->optional_param('reportid', 0, PARAM_INT)], 'schedules');
+    protected function get_page_url_for_dynamic_submission(): url {
+        return new url('/reportbuilder/edit.php', ['id' => $this->optional_param('reportid', 0, PARAM_INT)], 'schedules');
     }
 }

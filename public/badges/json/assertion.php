@@ -28,11 +28,12 @@ define('NO_MOODLE_COOKIES', true); // No need for a session here.
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
+use core\exception\moodle_exception;
 use core_badges\local\backpack\helper;
 use core_badges\local\backpack\ob_factory;
 
 if (empty($CFG->enablebadges)) {
-    throw new \moodle_exception('badgesdisabled', 'badges');
+    throw new moodle_exception('badgesdisabled', 'badges');
 }
 
 // Issued badge unique hash for badge assertion.

@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_data;
 
+use core\context\course;
 use mod_data\external\record_exporter;
 
 defined('MOODLE_INTERNAL') || die();
@@ -70,15 +71,15 @@ final class locallib_test extends \advanced_testcase {
         $cm = get_coursemodule_from_id('data', $module->cmid);
         // Search for entries without any search query set, we should return them all.
         list($records, $maxcount, $totalcount, $page, $nowperpage, $sort, $mode) =
-            data_search_entries($module, $cm, \context_course::instance($course->id), 'list', 0);
+            data_search_entries($module, $cm, course::instance($course->id), 'list', 0);
         $this->assertCount(2, $records);
         // Search for entries for "caption" we should return only one of them.
         list($records, $maxcount, $totalcount, $page, $nowperpage, $sort, $mode) =
-            data_search_entries($module, $cm, \context_course::instance($course->id), 'list', 0, 'caption');
+            data_search_entries($module, $cm, course::instance($course->id), 'list', 0, 'caption');
         $this->assertCount(1, $records);
         // Same search but we order by title.
         list($records, $maxcount, $totalcount, $page, $nowperpage, $sort, $mode) =
-            data_search_entries($module, $cm, \context_course::instance($course->id), 'list', 0, 'caption',
+            data_search_entries($module, $cm, course::instance($course->id), 'list', 0, 'caption',
                 $titlefield->field->id, 'ASC');
         $this->assertCount(1, $records);
         $this->assert_record_entries_contains($records, $captionfield->field->id, 'caption');
@@ -90,7 +91,7 @@ final class locallib_test extends \advanced_testcase {
         $_GET['f_' . $captionfield->field->id] = 'caption';
         list($searcharray, $searchtext) = data_build_search_array($module, false, [], $defaults, $fn, $ln);
         list($records, $maxcount, $totalcount, $page, $nowperpage, $sort, $mode) =
-            data_search_entries($module, $cm, \context_course::instance($course->id), 'list', 0, $searchtext,
+            data_search_entries($module, $cm, course::instance($course->id), 'list', 0, $searchtext,
                 $titlefield->field->id, 'ASC', 0, 0, true, $searcharray);
         $this->assertCount(1, $records);
         $this->assert_record_entries_contains($records, $captionfield->field->id, 'caption');
@@ -176,17 +177,17 @@ final class locallib_test extends \advanced_testcase {
         $this->setUser($teacher1);
         // As a non editing teacher in group 1, I should see only the entries for group 1.
         list($records, $maxcount, $totalcount, $page, $nowperpage, $sort, $mode) =
-            data_search_entries($module, $cm, \context_course::instance($course->id), 'list', $group1->id);
+            data_search_entries($module, $cm, course::instance($course->id), 'list', $group1->id);
         $this->assertCount(3, $records); // Record with group 1 and record with no group.
         // As a non editing teacher not in a group, I should see the entry from users not in a group.
         $this->setUser($teacher3);
         list($records, $maxcount, $totalcount, $page, $nowperpage, $sort, $mode) =
-            data_search_entries($module, $cm, \context_course::instance($course->id), 'list', $group2->id);
+            data_search_entries($module, $cm, course::instance($course->id), 'list', $group2->id);
         $this->assertCount(2, $records); // Record with group 2 and record with no group.
         // As a non editing teacher not in a group, I should see the entry from users not in a group.
         $this->setUser($teacher2);
         list($records, $maxcount, $totalcount, $page, $nowperpage, $sort, $mode) =
-            data_search_entries($module, $cm, \context_course::instance($course->id), 'list', 0);
+            data_search_entries($module, $cm, course::instance($course->id), 'list', 0);
         $this->assertCount(1, $records); // Just the record with no group.
         $this->assert_record_entries_contains($records, $titlefield->field->id, 'Entry 3 - no group');
     }

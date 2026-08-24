@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_bigbluebuttonbn\task;
-use core_user;
-use html_writer;
+use core\user;
+use core\output\html_writer;
 
 /**
  * This adhoc task will send emails to guest users with the meeting's details
@@ -43,13 +43,13 @@ class send_guest_emails extends base_send_notification {
         $customdata = $this->get_custom_data();
         if (!empty($customdata->emails)) {
             foreach ($customdata->emails as $email) {
-                $user = core_user::get_noreply_user();
+                $user = user::get_noreply_user();
                 $user->email = $email;
                 $user->mailformat = 1; // HTML format.
 
                 email_to_user(
                         $user,
-                        core_user::get_noreply_user(),
+                        user::get_noreply_user(),
                         $this->get_subject(),
                         $this->get_small_message(),
                         $this->get_html_message()
@@ -75,7 +75,7 @@ class send_guest_emails extends base_send_notification {
      */
     protected function get_string_vars(): array {
         $customdata = $this->get_custom_data();
-        $sender = core_user::get_user($customdata->useridfrom);
+        $sender = user::get_user($customdata->useridfrom);
         return [
                 'course_fullname' => $this->get_instance()->get_course()->fullname,
                 'course_shortname' => $this->get_instance()->get_course()->shortname,

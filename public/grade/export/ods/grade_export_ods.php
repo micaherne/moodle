@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+
 require_once($CFG->dirroot.'/grade/export/lib.php');
 
 class grade_export_ods extends grade_export {
@@ -45,7 +47,7 @@ class grade_export_ods extends grade_export {
 
         $strgrades = get_string('grades');
 
-        $shortname = format_string($this->course->shortname, true, array('context' => context_course::instance($this->course->id)));
+        $shortname = format_string($this->course->shortname, true, array('context' => course::instance($this->course->id)));
 
         // Calculate file name
         $downloadfilename = clean_filename("$shortname $strgrades.ods");

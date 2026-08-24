@@ -16,10 +16,11 @@
 
 namespace core\output;
 
+use core\context\system;
 use core\context\user as context_user;
 use core\exception\coding_exception;
 use moodle_page;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -250,7 +251,7 @@ class user_picture implements renderable {
         if (
             (!empty($CFG->forcelogin) || !empty($CFG->forceloginforprofileimage)) &&
             $USER->id != $imageuserid &&
-            !has_capability('moodle/user:viewprofilepictures', \context_system::instance())
+            !has_capability('moodle/user:viewprofilepictures', system::instance())
         ) {
             return false;
         }
@@ -332,7 +333,7 @@ class user_picture implements renderable {
                 $path .= $page->theme->name . '/';
             }
             // Set the image URL to the URL for the uploaded file and return.
-            $url = moodle_url::make_pluginfile_url(
+            $url = url::make_pluginfile_url(
                 $contextid,
                 'user',
                 'icon',
@@ -370,9 +371,9 @@ class user_picture implements renderable {
             // If the currently requested page is https then we'll return an
             // https gravatar page.
             if (is_https()) {
-                return new moodle_url("https://secure.gravatar.com/avatar/{$md5}", ['s' => $size, 'd' => $gravatardefault]);
+                return new url("https://secure.gravatar.com/avatar/{$md5}", ['s' => $size, 'd' => $gravatardefault]);
             } else {
-                return new moodle_url("http://www.gravatar.com/avatar/{$md5}", ['s' => $size, 'd' => $gravatardefault]);
+                return new url("http://www.gravatar.com/avatar/{$md5}", ['s' => $size, 'd' => $gravatardefault]);
             }
         }
 

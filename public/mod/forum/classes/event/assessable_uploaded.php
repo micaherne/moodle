@@ -24,6 +24,9 @@
 
 namespace mod_forum\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,7 +72,7 @@ class assessable_uploaded extends \core\event\assessable_uploaded {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/forum/discuss.php', array('d' => $this->other['discussionid'], 'parent' => $this->objectid));
+        return new url('/mod/forum/discuss.php', array('d' => $this->other['discussionid'], 'parent' => $this->objectid));
     }
 
     /**
@@ -92,9 +95,9 @@ class assessable_uploaded extends \core\event\assessable_uploaded {
         parent::validate_data();
 
         if (!isset($this->other['discussionid'])) {
-            throw new \coding_exception('The \'discussionid\' value must be set in other.');
+            throw new coding_exception('The \'discussionid\' value must be set in other.');
         } else if (!isset($this->other['triggeredfrom'])) {
-            throw new \coding_exception('The \'triggeredfrom\' value must be set in other.');
+            throw new coding_exception('The \'triggeredfrom\' value must be set in other.');
         }
     }
 

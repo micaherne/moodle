@@ -24,6 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\module;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\url;
+use core_course\cm_info;
 use mod_h5pactivity\local\manager;
 use mod_h5pactivity\local\grader;
 use mod_h5pactivity\xapi\handler;
@@ -137,7 +143,7 @@ function h5pactivity_delete_instance(int $id): bool {
     }
 
     if ($cm = get_coursemodule_from_instance('h5pactivity', $activity->id)) {
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $xapihandler = handler::create('mod_h5pactivity');
         $xapihandler->wipe_states($context->id);
     }
@@ -283,7 +289,7 @@ function h5pactivity_reset_userdata(stdClass $data): array {
                                                      false,
                                                      MUST_EXIST);
                 mod_h5pactivity\local\attempt::delete_all_attempts ($cm);
-                $context = context_module::instance($cm->id);
+                $context = module::instance($cm->id);
                 $xapihandler->wipe_states($context->id);
             }
         }
@@ -488,7 +494,7 @@ function h5pactivity_pluginfile($course, $cm, context $context,
 function h5pactivity_set_mainfile(stdClass $data): void {
     $fs = get_file_storage();
     $cmid = $data->coursemodule;
-    $context = context_module::instance($cmid);
+    $context = module::instance($cmid);
 
     if (!empty($data->packagefile)) {
         $fs = get_file_storage();
@@ -521,7 +527,7 @@ function h5pactivity_dndupload_register(): array {
 function h5pactivity_dndupload_handle($uploadinfo): int {
     global $CFG;
 
-    $context = context_module::instance($uploadinfo->coursemodule);
+    $context = module::instance($uploadinfo->coursemodule);
     file_save_draft_area_files($uploadinfo->draftitemid, $context->id, 'mod_h5pactivity', 'package', 0);
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'mod_h5pactivity', 'package', 0, 'sortorder, itemid, filepath, filename', false);
@@ -669,7 +675,7 @@ function h5pactivity_get_recent_mod_activity(array &$activities, int &$index, in
         return;
     }
 
-    $cmcontext = context_module::instance($cm->id);
+    $cmcontext = module::instance($cm->id);
     $grader = has_capability('mod/h5pactivity:reviewattempts', $cmcontext);
     $viewfullnames = has_capability('moodle/site:viewfullnames', $cmcontext);
 
@@ -734,7 +740,7 @@ function h5pactivity_print_recent_mod_activity(stdClass $activity, int $courseid
     $modinfo = [];
     if ($detail) {
         $modinfo['modname'] = $activity->name;
-        $modinfo['modurl'] = new moodle_url('/mod/h5pactivity/view.php', ['id' => $activity->cmid]);
+        $modinfo['modurl'] = new url('/mod/h5pactivity/view.php', ['id' => $activity->cmid]);
         $modinfo['modicon'] = $OUTPUT->image_icon('monologo', $modnames[$activity->type], 'h5pactivity');
     }
 
@@ -743,7 +749,7 @@ function h5pactivity_print_recent_mod_activity(stdClass $activity, int $courseid
     $template = ['userpicture' => $userpicture,
         'submissiontimestamp' => $activity->timestamp,
         'modinfo' => $modinfo,
-        'userurl' => new moodle_url('/user/view.php', array('id' => $activity->user->id, 'course' => $courseid)),
+        'userurl' => new url('/user/view.php', array('id' => $activity->user->id, 'course' => $courseid)),
         'fullname' => $activity->user->fullname];
     if (isset($activity->grade)) {
         $template['grade'] = get_string('gradenoun_h5p', 'h5pactivity', $activity->grade);
@@ -784,7 +790,7 @@ function h5pactivity_fetch_recent_activity(array $submissions, int $courseid): a
             continue;
         }
 
-        $cmcontext = context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
         // The act of submitting of attempt may be considered private -
         // only graders will see it if specified.
         if (!array_key_exists($cm->id, $grader)) {
@@ -851,12 +857,12 @@ function h5pactivity_extend_settings_navigation(settings_navigation $settingsnav
 
     // Attempts report.
     if ($manager->can_view_all_attempts()) {
-        $attemptsreporturl = new moodle_url('/mod/h5pactivity/report.php',
+        $attemptsreporturl = new url('/mod/h5pactivity/report.php',
             ['a' => $settingsnav->get_page()->cm->instance]);
         $h5pactivitynode->add(get_string('attempts_report', 'h5pactivity'), $attemptsreporturl,
             settings_navigation::TYPE_SETTING, '', 'attemptsreport');
     } else if ($manager->can_view_own_attempts() && $manager->count_attempts($USER->id)) {
-        $attemptsreporturl = new moodle_url('/mod/h5pactivity/report.php',
+        $attemptsreporturl = new url('/mod/h5pactivity/report.php',
             ['a' => $settingsnav->get_page()->cm->instance, 'userid' => $USER->id]);
         $h5pactivitynode->add(get_string('attempts_report', 'h5pactivity'), $attemptsreporturl,
             settings_navigation::TYPE_SETTING, '', 'attemptsreport');

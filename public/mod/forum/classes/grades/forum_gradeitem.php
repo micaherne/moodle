@@ -26,13 +26,14 @@ declare(strict_types = 1);
 
 namespace mod_forum\grades;
 
-use coding_exception;
-use context;
+use core\context\course;
+use core\exception\coding_exception;
+use core\context;
 use core_grades\component_gradeitem;
 use core_grades\local\gradeitem as gradeitem;
 use mod_forum\local\container as forum_container;
 use mod_forum\local\entities\forum as forum_entity;
-use required_capability_exception;
+use core\exception\required_capability_exception;
 use stdClass;
 
 /**
@@ -250,7 +251,7 @@ class forum_gradeitem extends component_gradeitem {
         // course. In cases where the 'grade_report_showonlyactiveenrol' user preference is not set we are falling back
         // to the set value for the 'grade_report_showonlyactiveenrol' config.
         return get_user_preferences('grade_report_showonlyactiveenrol', $showonlyactiveenrolconfig) ||
-            !has_capability('moodle/course:viewsuspendedusers', \context_course::instance($this->forum->get_course_id()));
+            !has_capability('moodle/course:viewsuspendedusers', course::instance($this->forum->get_course_id()));
     }
 
     /**

@@ -16,7 +16,13 @@
 
 namespace core_admin\setting\setting;
 
+use core\exception\coding_exception;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_admin\admin_search;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
 
 /**
  * Authentication plugin administration.
@@ -140,7 +146,7 @@ class manageauths extends \core_admin\setting {
         $return = $OUTPUT->heading(get_string('actauthhdr', 'auth'), 3, 'main');
         $return .= $OUTPUT->box_start('generalbox authsui');
 
-        $table = new \html_table();
+        $table = new html_table();
         $table->head  = [$txt->name, $txt->users, $txt->enable, $txt->updown, $txt->settings, $txt->testsettings, $txt->uninstall];
         $table->colclasses = [
             'leftalign',
@@ -211,31 +217,31 @@ class manageauths extends \core_admin\setting {
             if (file_exists($CFG->dirroot . '/auth/' . $auth . '/settings.php')) {
                 $settings = "<a href=\"settings.php?section=authsetting$auth\">{$txt->settings}</a>";
             } else if (file_exists($CFG->dirroot . '/auth/' . $auth . '/config.html')) {
-                throw new \coding_exception('config.html is no longer supported, please use settings.php instead.');
+                throw new coding_exception('config.html is no longer supported, please use settings.php instead.');
             } else {
                 $settings = '';
             }
 
             // Uninstall link.
             $uninstall = '';
-            if ($uninstallurl = \core_plugin_manager::instance()->get_uninstall_url('auth_' . $auth, 'manage')) {
-                $uninstall = \html_writer::link($uninstallurl, $txt->uninstall);
+            if ($uninstallurl = plugin_manager::instance()->get_uninstall_url('auth_' . $auth, 'manage')) {
+                $uninstall = html_writer::link($uninstallurl, $txt->uninstall);
             }
 
             $test = '';
             if (!empty($authplugins[$auth]) && method_exists($authplugins[$auth], 'test_settings')) {
-                $testurl = new \moodle_url('/auth/test_settings.php', ['auth' => $auth]);
-                $test = \html_writer::link($testurl, $txt->testsettings);
+                $testurl = new url('/auth/test_settings.php', ['auth' => $auth]);
+                $test = html_writer::link($testurl, $txt->testsettings);
             }
 
             // Add a row to the table.
-            $row = new \html_table_row([$displayname, $usercount, $hideshow, $updown, $settings, $test, $uninstall]);
+            $row = new html_table_row([$displayname, $usercount, $hideshow, $updown, $settings, $test, $uninstall]);
             if ($class) {
                 $row->attributes['class'] = $class;
             }
             $table->data[] = $row;
         }
-        $return .= \html_writer::table($table);
+        $return .= html_writer::table($table);
         $return .= get_string('configauthenticationplugins', 'admin') . '<br />' . get_string('tablenosave', 'filters');
         $return .= $OUTPUT->box_end();
         return highlight($query, $return);

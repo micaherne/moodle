@@ -16,7 +16,7 @@
 
 namespace core_badges;
 
-use context_course;
+use core\context\course;
 use core_badges\existing_award_selector;
 use core_badges\tests\badges_testcase;
 
@@ -45,7 +45,7 @@ final class existing_award_selector_test extends badges_testcase {
 
         // Create course.
         $env->course = $this->getDataGenerator()->create_course();
-        $env->context = context_course::instance($env->course->id);
+        $env->context = course::instance($env->course->id);
 
         // Create badge.
         $badgedata = [

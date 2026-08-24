@@ -23,6 +23,9 @@
  */
 namespace repository_nextcloud;
 
+use core\context\system;
+use core\output\html_writer;
+use core\url;
 use repository_nextcloud;
 use webdav_client;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -511,7 +514,7 @@ JSON;
 
         $this->assertEquals($this->repo->print_login(), $this->repo->logout());
 
-        $mock->expects($this->exactly(2))->method('get_login_url')->will($this->returnValue(new \moodle_url('url')));
+        $mock->expects($this->exactly(2))->method('get_login_url')->will($this->returnValue(new url('url')));
 
         $this->repo->options['ajax'] = true;
         $this->assertEquals($this->repo->print_login(), $this->repo->logout());
@@ -567,13 +570,13 @@ JSON;
      */
     public function test_print_login(): void {
         $mock = $this->createMock(\core\oauth2\client::class);
-        $mock->expects($this->exactly(2))->method('get_login_url')->will($this->returnValue(new \moodle_url('url')));
+        $mock->expects($this->exactly(2))->method('get_login_url')->will($this->returnValue(new url('url')));
         $this->set_private_property($mock, 'client');
 
         // Test with ajax activated.
         $this->repo->options['ajax'] = true;
 
-        $url = new \moodle_url('url');
+        $url = new url('url');
         $ret = array();
         $btn = new \stdClass();
         $btn->type = 'popup';
@@ -585,7 +588,7 @@ JSON;
         // Test without ajax.
         $this->repo->options['ajax'] = false;
 
-        $output = \html_writer::link($url, get_string('login', 'repository'),
+        $output = html_writer::link($url, get_string('login', 'repository'),
             array('target' => '_blank',  'rel' => 'noopener noreferrer'));
         $this->expectOutputString($output);
         $this->repo->print_login();
@@ -659,36 +662,36 @@ JSON;
     public function test_reference_file_selected_error(): void {
         $this->repo->disabled = true;
         $this->expectException(\repository_exception::class);
-        $this->repo->reference_file_selected('', \context_system::instance(), '', '', '');
+        $this->repo->reference_file_selected('', system::instance(), '', '', '');
 
         $this->repo->disabled = false;
         $this->expectException(\repository_exception::class);
         $this->expectExceptionMessage('Cannot connect as system user');
-        $this->repo->reference_file_selected('', \context_system::instance(), '', '', '');
+        $this->repo->reference_file_selected('', system::instance(), '', '', '');
 
         $mock = $this->createMock(\core\oauth2\client::class);
         $mock->expects($this->once())->method('get_system_oauth_client')->with($this->issuer)->willReturn(true);
 
         $this->expectException(\repository_exception::class);
         $this->expectExceptionMessage('Cannot connect as current user');
-        $this->repo->reference_file_selected('', \context_system::instance(), '', '', '');
+        $this->repo->reference_file_selected('', system::instance(), '', '', '');
 
         $this->repo->expects($this->once())->method('get_user_oauth_client')->willReturn(true);
         $this->expectException(\repository_exception::class);
         $this->expectExceptionMessage('cannotdownload');
-        $this->repo->reference_file_selected('', \context_system::instance(), '', '', '');
+        $this->repo->reference_file_selected('', system::instance(), '', '', '');
 
         $this->repo->expects($this->once())->method('get_user_oauth_client')->willReturn(true);
         $this->expectException(\repository_exception::class);
         $this->expectExceptionMessage('cannotdownload');
-        $this->repo->reference_file_selected('', \context_system::instance(), '', '', '');
+        $this->repo->reference_file_selected('', system::instance(), '', '', '');
 
         $this->repo->expects($this->once())->method('get_user_oauth_client')->willReturn(true);
         $this->repo->expects($this->once())->method('copy_file_to_path')->willReturn(array('statuscode' =>
             array('success' => 400)));
         $this->expectException(\repository_exception::class);
         $this->expectExceptionMessage('Could not copy file');
-        $this->repo->reference_file_selected('', \context_system::instance(), '', '', '');
+        $this->repo->reference_file_selected('', system::instance(), '', '', '');
 
         $this->repo->expects($this->once())->method('get_user_oauth_client')->willReturn(true);
         $this->repo->expects($this->once())->method('copy_file_to_path')->willReturn(array('statuscode' =>
@@ -697,7 +700,7 @@ JSON;
             array('statuscode' => array('success' => 400)));
         $this->expectException(\repository_exception::class);
         $this->expectExceptionMessage('Share is still present');
-        $this->repo->reference_file_selected('', \context_system::instance(), '', '', '');
+        $this->repo->reference_file_selected('', system::instance(), '', '', '');
 
         $this->repo->expects($this->once())->method('get_user_oauth_client')->willReturn(true);
         $this->repo->expects($this->once())->method('copy_file_to_path')->willReturn(array('statuscode' =>
@@ -709,7 +712,7 @@ JSON;
         $filereturn->name = 'mysource';
         $filereturn->usesystem = true;
         $filereturn = json_encode($filereturn);
-        $return = $this->repo->reference_file_selected('mysource', \context_system::instance(), '', '', '');
+        $return = $this->repo->reference_file_selected('mysource', system::instance(), '', '', '');
         $this->assertEquals($filereturn, $return);
     }
 
@@ -719,7 +722,7 @@ JSON;
     public function test_send_file_errors(): void {
         $fs = get_file_storage();
         $storedfile = $fs->create_file_from_reference([
-            'contextid' => \context_system::instance()->id,
+            'contextid' => system::instance()->id,
             'component' => 'core',
             'filearea'  => 'unittest',
             'itemid'    => 0,
@@ -859,7 +862,7 @@ XML;
             'referecncelastsync done recently' => [
                 [
                     'storedfile_record' => [
-                            'contextid' => \context_system::instance()->id,
+                            'contextid' => system::instance()->id,
                             'component' => 'core',
                             'filearea'  => 'unittest',
                             'itemid'    => 0,
@@ -881,7 +884,7 @@ XML;
             'file without link' => [
                 [
                     'storedfile_record' => [
-                        'contextid' => \context_system::instance()->id,
+                        'contextid' => system::instance()->id,
                         'component' => 'core',
                         'filearea'  => 'unittest',
                         'itemid'    => 0,
@@ -901,7 +904,7 @@ XML;
             'file extenstion to exclude' => [
                 [
                     'storedfile_record' => [
-                        'contextid' => \context_system::instance()->id,
+                        'contextid' => system::instance()->id,
                         'component' => 'core',
                         'filearea'  => 'unittest',
                         'itemid'    => 0,
@@ -922,7 +925,7 @@ XML;
             'file extenstion for image' => [
                 [
                     'storedfile_record' => [
-                        'contextid' => \context_system::instance()->id,
+                        'contextid' => system::instance()->id,
                         'component' => 'core',
                         'filearea'  => 'unittest',
                         'itemid'    => 0,

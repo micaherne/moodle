@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\coding_exception;
 use core_competency\competency;
 use core_competency\competency_framework;
 use core_competency\course_competency;
@@ -175,7 +177,7 @@ class core_competency_generator extends component_generator_base {
             $record->scaleconfiguration = json_encode($record->scaleconfiguration);
         }
         if (!isset($record->contextid)) {
-            $record->contextid = context_system::instance()->id;
+            $record->contextid = system::instance()->id;
         }
 
         $framework = new competency_framework(0, $record);
@@ -227,7 +229,7 @@ class core_competency_generator extends component_generator_base {
             $record->description = "Template $i description ";
         }
         if (!isset($record->contextid)) {
-            $record->contextid = context_system::instance()->id;
+            $record->contextid = system::instance()->id;
         }
 
         $template = new template(0, $record);
@@ -430,7 +432,7 @@ class core_competency_generator extends component_generator_base {
         }
 
         if (!isset($record->contextid)) {
-            $record->contextid = context_system::instance()->id;
+            $record->contextid = system::instance()->id;
         }
         if (!isset($record->descidentifier)) {
             $record->descidentifier = 'invalidevidencedesc';

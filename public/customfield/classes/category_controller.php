@@ -24,6 +24,9 @@
 
 namespace core_customfield;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -95,24 +98,24 @@ class category_controller {
         }
         if ($id) {
             if (!$record = $DB->get_record(category::TABLE, array('id' => $id), '*', IGNORE_MISSING)) {
-                throw new \moodle_exception('categorynotfound', 'core_customfield');
+                throw new moodle_exception('categorynotfound', 'core_customfield');
             }
         }
         if (empty($record->component)) {
             if (!$handler) {
-                throw new \coding_exception('Not enough parameters to initialise category_controller - unknown component');
+                throw new coding_exception('Not enough parameters to initialise category_controller - unknown component');
             }
             $record->component = $handler->get_component();
         }
         if (empty($record->area)) {
             if (!$handler) {
-                throw new \coding_exception('Not enough parameters to initialise category_controller - unknown area');
+                throw new coding_exception('Not enough parameters to initialise category_controller - unknown area');
             }
             $record->area = $handler->get_area();
         }
         if (!isset($record->itemid)) {
             if (!$handler) {
-                throw new \coding_exception('Not enough parameters to initialise category_controller - unknown itemid');
+                throw new coding_exception('Not enough parameters to initialise category_controller - unknown itemid');
             }
             $record->itemid = $handler->get_itemid();
         }
@@ -216,16 +219,16 @@ class category_controller {
     public function set_handler(handler $handler) {
         // Make sure there are no conflicts.
         if ($this->get('component') !== $handler->get_component()) {
-            throw new \coding_exception('Component of the handler does not match the one from the record');
+            throw new coding_exception('Component of the handler does not match the one from the record');
         }
         if ($this->get('area') !== $handler->get_area()) {
-            throw new \coding_exception('Area of the handler does not match the one from the record');
+            throw new coding_exception('Area of the handler does not match the one from the record');
         }
         if ($this->get('itemid') != $handler->get_itemid()) {
-            throw new \coding_exception('Itemid of the handler does not match the one from the record');
+            throw new coding_exception('Itemid of the handler does not match the one from the record');
         }
         if ($this->get('contextid') != $handler->get_configuration_context()->id) {
-            throw new \coding_exception('Context of the handler does not match the one from the record');
+            throw new coding_exception('Context of the handler does not match the one from the record');
         }
         $this->handler = $handler;
 

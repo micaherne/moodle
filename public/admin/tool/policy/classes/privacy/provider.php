@@ -24,6 +24,9 @@
 
 namespace tool_policy\privacy;
 
+use core\context;
+use core\context\system;
+use core\context\user;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -146,14 +149,14 @@ class provider implements
         $context = $userlist->get_context();
 
         // Users that have modified any policies, if fetching for system context.
-        if (is_a($context, \context_system::class)) {
+        if (is_a($context, system::class)) {
             $sql = "SELECT v.usermodified AS userid
                       FROM {tool_policy_versions} v";
             $userlist->add_from_sql('userid', $sql, []);
         }
 
         // Users that have accepted any policies, if fetching for user context.
-        if (is_a($context, \context_user::class)) {
+        if (is_a($context, user::class)) {
             $sql = "SELECT a.userid, a.usermodified
                       FROM {tool_policy_acceptances} a
                      WHERE a.userid = :instanceid";
@@ -190,7 +193,7 @@ class provider implements
      *
      * @param \context $context The context to delete in.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
     }
 
     /**
@@ -220,10 +223,10 @@ class provider implements
      *
      * @param \context_user $context The context to export
      */
-    protected static function export_policy_agreements_for_context(\context_user $context) {
+    protected static function export_policy_agreements_for_context(user $context) {
         global $DB;
 
-        $sysctx = \context_system::instance();
+        $sysctx = system::instance();
         $fs = get_file_storage();
         $agreementsql = "
             SELECT
@@ -301,7 +304,7 @@ class provider implements
         global $DB;
 
         // Authored policies are exported against the system.
-        $context = \context_system::instance();
+        $context = system::instance();
         $basecontext = [
             get_string('policydocuments', 'tool_policy'),
         ];

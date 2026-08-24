@@ -16,9 +16,11 @@
 
 namespace core_courseformat\output\local\content\cm;
 
-use cm_info;
+use core\output\renderer_base;
+use core\url;
+use core_course\cm_info;
 use core_course\output\activity_completion;
-use section_info;
+use core_course\section_info;
 use stdClass;
 use core\output\externable;
 use core\output\named_templatable;
@@ -75,7 +77,7 @@ class completion implements externable, named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass|null data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): ?stdClass {
+    public function export_for_template(renderer_base $output): ?stdClass {
         global $USER;
 
         if (!$this->format->show_activity_editor_options($this->mod)) {
@@ -133,10 +135,10 @@ class completion implements externable, named_templatable, renderable {
      * @param stdClass $completioninfo the completion info
      * @return array the completion dialog exported for template
      */
-    protected function get_completion_dialog(\renderer_base $output, stdClass $completioninfo): array {
+    protected function get_completion_dialog(renderer_base $output, stdClass $completioninfo): array {
         global $PAGE;
 
-        $editurl = new \moodle_url(
+        $editurl = new url(
             '/course/modedit.php',
             ['update' => $this->mod->id, 'showonly' => 'activitycompletionheader']
         );

@@ -16,8 +16,9 @@
 
 namespace tool_admin_presets\local\action;
 
+use core\url;
 use core_adminpresets\manager;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * This class extends base class and handles delete function.
@@ -42,9 +43,9 @@ class delete extends base {
             $deletetext = get_string('deletepreset', 'tool_admin_presets', $presetdata->name);
 
             $params = ['action' => $this->action, 'mode' => 'execute', 'id' => $this->id, 'sesskey' => sesskey()];
-            $confirmurl = new \moodle_url('/admin/tool/admin_presets/index.php', $params);
+            $confirmurl = new url('/admin/tool/admin_presets/index.php', $params);
 
-            $cancelurl = new \moodle_url('/admin/tool/admin_presets/index.php');
+            $cancelurl = new url('/admin/tool/admin_presets/index.php');
 
             // If the preset was applied add a warning text.
             if ($DB->get_records('adminpresets_app', ['adminpresetid' => $this->id])) {
@@ -72,7 +73,7 @@ class delete extends base {
         // Trigger the as it is usually triggered after execute finishes.
         $this->log();
 
-        $url = new \moodle_url('/admin/tool/admin_presets/index.php');
+        $url = new url('/admin/tool/admin_presets/index.php');
         redirect($url);
     }
 }

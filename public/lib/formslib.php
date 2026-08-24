@@ -35,6 +35,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** setup.php includes our hacked pear libs first */
@@ -307,7 +312,7 @@ abstract class moodleform {
         // the _qf__.$this->_formname serves as a marker that form was actually submitted
         if (array_key_exists('_qf__'.$this->_formname, $submission) and $submission['_qf__'.$this->_formname] == 1) {
             if (!confirm_sesskey()) {
-                throw new \moodle_exception('invalidsesskey');
+                throw new moodle_exception('invalidsesskey');
             }
             $files = $_FILES;
         } else {
@@ -433,7 +438,7 @@ abstract class moodleform {
                     if ($rule['type'] == 'required') {
                         $draftid = (int)$mform->getSubmitValue($elementname);
                         $fs = get_file_storage();
-                        $context = context_user::instance($USER->id);
+                        $context = user::instance($USER->id);
                         if (!$files = $fs->get_area_files($context->id, 'user', 'draft', $draftid, 'id DESC', false)) {
                             $errors[$elementname] = $rule['message'];
                         }
@@ -449,7 +454,7 @@ abstract class moodleform {
                 if ($maxfiles > 0) {
                     $draftid = (int)$element->getValue();
                     $fs = get_file_storage();
-                    $context = context_user::instance($USER->id);
+                    $context = user::instance($USER->id);
                     $files = $fs->get_area_files($context->id, 'user', 'draft', $draftid, '', false);
                     if (count($files) > $maxfiles) {
                         $errors[$element->getName()] = get_string('err_maxfiles', 'form', $maxfiles);
@@ -795,7 +800,7 @@ abstract class moodleform {
             }
             $draftid = $values[$elname];
             $fs = get_file_storage();
-            $context = context_user::instance($USER->id);
+            $context = user::instance($USER->id);
             if (!$files = $fs->get_area_files($context->id, 'user', 'draft', $draftid, 'id DESC', false)) {
                 return false;
             }
@@ -843,7 +848,7 @@ abstract class moodleform {
             }
             $draftid = $values[$elname];
             $fs = get_file_storage();
-            $context = context_user::instance($USER->id);
+            $context = user::instance($USER->id);
             if (!$files = $fs->get_area_files($context->id, 'user', 'draft', $draftid, 'id DESC', false)) {
                 return false;
             }
@@ -906,7 +911,7 @@ abstract class moodleform {
             }
             $draftid = $values[$elname];
             $fs = get_file_storage();
-            $context = context_user::instance($USER->id);
+            $context = user::instance($USER->id);
             if (!$files = $fs->get_area_files($context->id, 'user', 'draft', $draftid, 'id DESC', false)) {
                 return null;
             }
@@ -950,7 +955,7 @@ abstract class moodleform {
                 return false;
             }
             $draftid = $values[$elname];
-            $context = context_user::instance($USER->id);
+            $context = user::instance($USER->id);
             if (!$files = $fs->get_area_files($context->id, 'user' ,'draft', $draftid, 'id DESC', false)) {
                 return false;
             }
@@ -1012,7 +1017,7 @@ abstract class moodleform {
             }
             $draftid = $values[$elname];
             $fs = get_file_storage();
-            $context = context_user::instance($USER->id);
+            $context = user::instance($USER->id);
             if (!$files = $fs->get_area_files($context->id, 'user', 'draft', $draftid, 'id DESC', false)) {
                 return false;
             }
@@ -1575,7 +1580,7 @@ abstract class moodleform {
      */
     public static function mock_generate_submit_keys($data = []) {
         if (!defined('PHPUNIT_TEST') || !PHPUNIT_TEST) {
-            throw new \moodle_exception("This function can only be used for unit testing.");
+            throw new moodle_exception("This function can only be used for unit testing.");
         }
 
         $formidentifier = get_called_class();

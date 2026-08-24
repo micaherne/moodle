@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') OR die('not allowed');
 require_once($CFG->dirroot.'/mod/feedback/item/feedback_item_class.php');
 require_once($CFG->libdir.'/formslib.php');
@@ -58,7 +63,7 @@ class feedback_item_label extends feedback_item_base {
                              'items'=>$feedbackitems,
                              'feedback'=>$feedback->id);
 
-        $this->context = context_module::instance($cm->id);
+        $this->context = module::instance($cm->id);
 
         //preparing the editor for new file-api
         $item->presentationformat = FORMAT_HTML;
@@ -135,14 +140,14 @@ class feedback_item_label extends feedback_item_base {
         if (!$item->feedback AND $item->template) {
             $template = $DB->get_record('feedback_template', array('id'=>$item->template));
             if ($template->ispublic) {
-                $context = context_system::instance();
+                $context = system::instance();
             } else {
-                $context = context_course::instance($template->course);
+                $context = course::instance($template->course);
             }
             $filearea = 'template';
         } else {
             $cm = get_coursemodule_from_instance('feedback', $item->feedback);
-            $context = context_module::instance($cm->id);
+            $context = module::instance($cm->id);
             $filearea = 'item';
         }
 
@@ -181,9 +186,9 @@ class feedback_item_label extends feedback_item_base {
             // This is a template.
             $template = $DB->get_record('feedback_template', array('id' => $item->template));
             if ($template->ispublic) {
-                $context = context_system::instance();
+                $context = system::instance();
             } else {
-                $context = context_course::instance($template->course);
+                $context = course::instance($template->course);
             }
             $filearea = 'template';
         } else {
@@ -210,7 +215,7 @@ class feedback_item_label extends feedback_item_base {
     public function postupdate($item) {
         global $DB;
 
-        $context = context_module::instance($item->cmid);
+        $context = module::instance($item->cmid);
         $item = file_postupdate_standard_editor($item,
                                                 'presentation',
                                                 $this->presentationoptions,

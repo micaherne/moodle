@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +81,7 @@ class course_backup_created extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/course/view.php', array('id' => $this->objectid));
+        return new url('/course/view.php', array('id' => $this->objectid));
     }
 
     /**
@@ -91,19 +94,19 @@ class course_backup_created extends base {
         parent::validate_data();
 
         if (!isset($this->other['format'])) {
-            throw new \coding_exception('The \'format\' value must be set in other.');
+            throw new coding_exception('The \'format\' value must be set in other.');
         }
 
         if (!isset($this->other['mode'])) {
-            throw new \coding_exception('The \'mode\' value must be set in other.');
+            throw new coding_exception('The \'mode\' value must be set in other.');
         }
 
         if (!isset($this->other['interactive'])) {
-            throw new \coding_exception('The \'interactive\' value must be set in other.');
+            throw new coding_exception('The \'interactive\' value must be set in other.');
         }
 
         if (!isset($this->other['type'])) {
-            throw new \coding_exception('The \'type\' value must be set in other.');
+            throw new coding_exception('The \'type\' value must be set in other.');
         }
     }
 

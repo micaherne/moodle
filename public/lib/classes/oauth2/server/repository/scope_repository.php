@@ -17,6 +17,7 @@
 namespace core\oauth2\server\repository;
 
 use core\router\scope\abstract_scope;
+use core_cache\cache;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
@@ -115,7 +116,7 @@ class scope_repository implements ScopeRepositoryInterface {
      */
     private function get_scope_map(): array {
         // Look for a cached version of the scope map first.
-        $cache = \cache::make('core', 'oauth2_server');
+        $cache = cache::make('core', 'oauth2_server');
         $scopemapcache = $cache->get('scope_map');
 
         if ($scopemapcache !== false) { // Use the cache if it exists.

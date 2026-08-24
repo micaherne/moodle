@@ -16,6 +16,9 @@
 
 namespace availability_completion;
 
+use core\context\module;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -108,7 +111,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->cm', $e->getMessage());
         }
 
@@ -117,7 +120,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->cm', $e->getMessage());
         }
 
@@ -126,7 +129,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->e', $e->getMessage());
         }
 
@@ -135,7 +138,7 @@ final class condition_test extends \advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('Missing or invalid ->e', $e->getMessage());
         }
 
@@ -205,7 +208,7 @@ final class condition_test extends \advanced_testcase {
                 ['id' => $assignrow->cmid]);
         // As we manually set the field here, we are going to need to reset the modinfo cache.
         rebuild_course_cache($course->id, true);
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
 
         // Get basic details.
         $modinfo = get_fast_modinfo($course);
@@ -428,7 +431,7 @@ final class condition_test extends \advanced_testcase {
         ]);
         $DB->set_field('course_modules', 'completiongradeitemnumber', 0,
                 ['id' => $assignrow->cmid]);
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
 
         // Page 3 (manual completion).
         $page3 = $generator->get_plugin_generator('mod_page')->create_instance(

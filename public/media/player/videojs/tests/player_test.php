@@ -25,9 +25,9 @@
 namespace media_videojs;
 
 use core_media_manager;
-use html_writer;
+use core\output\html_writer;
 use media_videojs_plugin;
-use moodle_url;
+use core\url;
 
 /**
  * Test script for media embedding.
@@ -95,7 +95,7 @@ final class player_test extends \advanced_testcase {
     public function test_embed_url(): void {
         global $CFG;
 
-        $url = new moodle_url('http://example.org/1.webm');
+        $url = new url('http://example.org/1.webm');
 
         $manager = core_media_manager::instance();
         $embedoptions = array(
@@ -130,7 +130,7 @@ final class player_test extends \advanced_testcase {
      */
     public function test_embed_link(): void {
         global $CFG;
-        $url = new moodle_url('http://example.org/some_filename.mp4');
+        $url = new url('http://example.org/some_filename.mp4');
         $text = html_writer::link($url, 'Watch this one');
         $content = format_text($text, FORMAT_HTML);
 
@@ -147,9 +147,9 @@ final class player_test extends \advanced_testcase {
     public function test_fallback(): void {
 
         $urls = [
-            new moodle_url('http://example.org/1.rv'), // Not supported.
-            new moodle_url('http://example.org/2.webm'), // Supported.
-            new moodle_url('http://example.org/3.ogv'), // Supported.
+            new url('http://example.org/1.rv'), // Not supported.
+            new url('http://example.org/2.webm'), // Supported.
+            new url('http://example.org/3.ogv'), // Supported.
         ];
 
         $manager = core_media_manager::instance();
@@ -177,7 +177,7 @@ final class player_test extends \advanced_testcase {
      */
     public function test_prevent_other_players(): void {
         \core\plugininfo\media::set_enabled_plugins('videojs,html5video');
-        $url = new moodle_url('http://example.org/some_filename.webm');
+        $url = new url('http://example.org/some_filename.webm');
         $text = html_writer::link($url, 'Apply one player only');
         $content = format_text($text, FORMAT_HTML);
 
@@ -195,8 +195,8 @@ final class player_test extends \advanced_testcase {
      */
     public function test_embed_media(): void {
         global $CFG;
-        $url = new moodle_url('http://example.org/some_filename.mp4');
-        $trackurl = new moodle_url('http://example.org/some_filename.vtt');
+        $url = new url('http://example.org/some_filename.mp4');
+        $trackurl = new url('http://example.org/some_filename.vtt');
         $text = '<video controls="true"><source src="'.$url.'"/><source src="somethinginvalid"/>' .
             '<track src="'.$trackurl.'">Unsupported text</video>';
         $content = format_text($text, FORMAT_HTML);
@@ -222,8 +222,8 @@ final class player_test extends \advanced_testcase {
         $this->assertDoesNotMatchRegularExpression('~height="~', $content);
 
         // Audio tag.
-        $url = new moodle_url('http://example.org/some_filename.mp3');
-        $trackurl = new moodle_url('http://example.org/some_filename.vtt');
+        $url = new url('http://example.org/some_filename.mp3');
+        $trackurl = new url('http://example.org/some_filename.vtt');
         $text = '<audio controls="true"><source src="'.$url.'"/><source src="somethinginvalid"/>' .
             '<track src="'.$trackurl.'">Unsupported text</audio>';
         $content = format_text($text, FORMAT_HTML);
@@ -259,27 +259,27 @@ final class player_test extends \advanced_testcase {
         $manager = core_media_manager::instance();
 
         // Format: youtube.
-        $url = new moodle_url('http://www.youtube.com/watch?v=vyrwMmsufJc');
+        $url = new url('http://www.youtube.com/watch?v=vyrwMmsufJc');
         $t = $manager->embed_url($url);
         $this->youtube_plugin_engaged($t);
-        $url = new moodle_url('http://www.youtube.com/v/vyrwMmsufJc');
+        $url = new url('http://www.youtube.com/v/vyrwMmsufJc');
         $t = $manager->embed_url($url);
         $this->youtube_plugin_engaged($t);
 
         // Format: youtube video within playlist - this will be played by video.js but without tracks selection.
-        $url = new moodle_url('https://www.youtube.com/watch?v=dv2f_xfmbD8&index=4&list=PLxcO_MFWQBDcyn9xpbmx601YSDlDcTcr0');
+        $url = new url('https://www.youtube.com/watch?v=dv2f_xfmbD8&index=4&list=PLxcO_MFWQBDcyn9xpbmx601YSDlDcTcr0');
         $t = $manager->embed_url($url);
         $this->youtube_plugin_engaged($t);
         $this->assertStringContainsString('list=PLxcO_MFWQBDcyn9xpbmx601YSDlDcTcr0', $t);
 
         // Format: youtube playlist - not supported.
-        $url = new moodle_url('http://www.youtube.com/view_play_list?p=PL6E18E2927047B662');
+        $url = new url('http://www.youtube.com/view_play_list?p=PL6E18E2927047B662');
         $t = $manager->embed_url($url);
         $this->assertStringNotContainsString('mediaplugin_videojs', $t);
-        $url = new moodle_url('http://www.youtube.com/playlist?list=PL6E18E2927047B662');
+        $url = new url('http://www.youtube.com/playlist?list=PL6E18E2927047B662');
         $t = $manager->embed_url($url);
         $this->assertStringNotContainsString('mediaplugin_videojs', $t);
-        $url = new moodle_url('http://www.youtube.com/p/PL6E18E2927047B662');
+        $url = new url('http://www.youtube.com/p/PL6E18E2927047B662');
         $t = $manager->embed_url($url);
         $this->assertStringNotContainsString('mediaplugin_videojs', $t);
     }
@@ -312,7 +312,7 @@ final class player_test extends \advanced_testcase {
     public function test_youtube_start_time(string $url, int $expectedstart): void {
         set_config('youtube', 1, 'media_videojs');
 
-        $embedcode = core_media_manager::instance()->embed_url(new moodle_url($url));
+        $embedcode = core_media_manager::instance()->embed_url(new url($url));
 
         $this->youtube_plugin_engaged($embedcode);
         $this->assertStringContainsString("&quot;youtube&quot;: {&quot;start&quot;: &quot;{$expectedstart}&quot;}", $embedcode);
@@ -330,14 +330,14 @@ final class player_test extends \advanced_testcase {
         $manager = core_media_manager::instance();
 
         // First embed an ogv video to set $this->ogvtech = true on the plugin instance.
-        $ogvurl = new moodle_url('http://example.org/video.ogv');
+        $ogvurl = new url('http://example.org/video.ogv');
         $ogvoutput = $manager->embed_url($ogvurl);
 
         // Verify the ogv video correctly uses OgvJs.
         $this->assertStringContainsString('&quot;techOrder&quot;: [&quot;OgvJS&quot;]', $ogvoutput);
 
         // Now embed a YouTube URL using the same manager plugin instance.
-        $youtubeurl = new moodle_url('http://www.youtube.com/v/vyrwMmsufJc');
+        $youtubeurl = new url('http://www.youtube.com/v/vyrwMmsufJc');
         $youtubeoutput = $manager->embed_url($youtubeurl);
 
         // YouTube embed must have techOrder youtube.
@@ -366,7 +366,7 @@ final class player_test extends \advanced_testcase {
     public function test_flash_behaviour(): void {
         $manager = core_media_manager::instance();
 
-        $url = new moodle_url('http://example.org/some_filename.flv');
+        $url = new url('http://example.org/some_filename.flv');
         $t = $manager->embed_url($url);
         $this->assertStringNotContainsString('mediaplugin_videojs', $t);
         $this->assertMatchesRegularExpression(
@@ -379,7 +379,7 @@ final class player_test extends \advanced_testcase {
     public function test_rtmp_behaviour(): void {
         $manager = core_media_manager::instance();
 
-        $url = new moodle_url('rtmp://example.com/fms&mp4:path/to/file.mp4');
+        $url = new url('rtmp://example.com/fms&mp4:path/to/file.mp4');
         $t = $manager->embed_url($url);
         $this->assertStringNotContainsString('mediaplugin_videojs', $t);
         $this->assertMatchesRegularExpression(

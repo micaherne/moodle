@@ -16,8 +16,9 @@
 
 namespace mod_data;
 
-use cm_info;
-use context_module;
+use core_comment\manager as comment;
+use core_course\cm_info;
+use core\context\module;
 use completion_info;
 use data_field_base;
 use mod_data_renderer;
@@ -84,7 +85,7 @@ class manager {
         global $CFG;
         $this->cm = $cm;
         $this->instance = $instance;
-        $this->context = context_module::instance($cm->id);
+        $this->context = module::instance($cm->id);
         $this->instance->cmidnumber = $cm->idnumber;
         $this->path = $CFG->dirroot . '/mod/' . self::MODULE;
     }
@@ -135,7 +136,7 @@ class manager {
      *
      * @return context_module
      */
-    public function get_context(): context_module {
+    public function get_context(): module {
         return $this->context;
     }
 
@@ -311,7 +312,7 @@ class manager {
 
         foreach ($entries as $entry) {
             $args->itemid = $entry->id;
-            $comment = new \comment($args);
+            $comment = new comment($args);
             $morecomments = $comment->get_comments();
             if ($morecomments) {
                 $comments = array_merge($comments, $morecomments);

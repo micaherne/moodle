@@ -16,6 +16,9 @@
 
 namespace tool_cohortroles;
 
+use core\context\user;
+use core\exception\required_capability_exception;
+
 /**
  * API tests.
  *
@@ -61,7 +64,7 @@ final class api_test extends \advanced_testcase {
             'roleid' => $this->roleid,
             'cohortid' => $this->cohort->id
         );
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         api::create_cohort_role_assignment($params);
     }
 
@@ -99,7 +102,7 @@ final class api_test extends \advanced_testcase {
         );
         $result = api::create_cohort_role_assignment($params);
         $this->setUser($this->userassignto);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         api::delete_cohort_role_assignment($result->get('id'));
     }
 
@@ -268,7 +271,7 @@ final class api_test extends \advanced_testcase {
         $this->assertEquals($sync, $expected);
 
         // Verify roles assigned by any other component are not removed.
-        $usercontext = \context_user::instance($this->userassignover->id);
+        $usercontext = user::instance($this->userassignover->id);
         role_assign($this->roleid, $this->userassignto->id, $usercontext->id);
         $sync = api::sync_all_cohort_roles();
 

@@ -25,6 +25,8 @@
  */
 
 
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 

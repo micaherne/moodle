@@ -23,6 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core_table\output\html_table;
+use core_table\output\html_table_row;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** Multichoice question type */
@@ -102,7 +108,7 @@ class lesson_page_type_multichoice extends lesson_page {
 
         // Trigger an event question viewed.
         $eventparams = array(
-            'context' => context_module::instance($PAGE->cm->id),
+            'context' => module::instance($PAGE->cm->id),
             'objectid' => $this->properties->id,
             'other' => array(
                     'pagetype' => $this->get_typestring()
@@ -238,7 +244,7 @@ class lesson_page_type_multichoice extends lesson_page {
             }
             $result->answerid = $data->answerid;
             if (!$answer = $DB->get_record("lesson_answers", array("id" => $result->answerid))) {
-                throw new \moodle_exception("Continue: answer record not found");
+                throw new moodle_exception("Continue: answer record not found");
             }
             $answer = parent::rewrite_answers_urls($answer);
             if ($this->lesson->jumpto_is_correct($this->properties->id, $answer->jumpto)) {

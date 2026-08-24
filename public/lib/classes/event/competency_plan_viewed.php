@@ -24,6 +24,7 @@
 namespace core\event;
 
 use core\event\base;
+use core\exception\coding_exception;
 use core_competency\plan;
 
 defined('MOODLE_INTERNAL') || die();
@@ -50,7 +51,7 @@ class competency_plan_viewed extends base {
      */
     public static function create_from_plan(plan $plan) {
         if (!$plan->get('id')) {
-            throw new \coding_exception('The plan ID must be set.');
+            throw new coding_exception('The plan ID must be set.');
         }
         $event = static::create(array(
             'contextid'  => $plan->get_context()->id,

@@ -16,6 +16,8 @@
 
 namespace quizaccess_seb;
 
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/test_helper_trait.php');
@@ -128,7 +130,7 @@ final class backup_restore_test extends \advanced_testcase {
      *
      * @param cm_info $newcm Restored course_module object.
      */
-    protected function validate_backup_restore(\cm_info $newcm) {
+    protected function validate_backup_restore(cm_info $newcm) {
         $this->assertEquals(2, seb_quiz_settings::count_records());
         $actual = seb_quiz_settings::get_record(['quizid' => $newcm->instance]);
 

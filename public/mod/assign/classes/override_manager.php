@@ -17,14 +17,14 @@
 namespace mod_assign;
 
 use assign;
-use cache;
+use core_cache\cache;
 use calendar_event;
-use context_module;
+use core\context\module;
 use core\exception\moodle_exception;
 use core_course\cm_info;
-use core_user;
+use core\user;
 use core_user\fields as user_field;
-use invalid_parameter_exception;
+use core\exception\invalid_parameter_exception;
 use mod_assign\event\group_override_created;
 use mod_assign\event\group_override_deleted;
 use mod_assign\event\group_override_updated;
@@ -66,7 +66,7 @@ class override_manager {
         /** @var stdClass The assignment linked to this manager instance **/
         protected readonly stdClass $assign,
         /** @var context_module The context being operated in **/
-        public readonly context_module $context
+        public readonly module $context
     ) {
         global $CFG;
         // Required for assign_* functions.
@@ -141,7 +141,7 @@ class override_manager {
         }
 
         // If user is set, ensure it is a valid user.
-        if (!empty($formdata->userid) && !core_user::is_real_user($formdata->userid, true)) {
+        if (!empty($formdata->userid) && !user::is_real_user($formdata->userid, true)) {
             $errors['userid'][] = get_string('invaliduserid', 'assign');
         }
 

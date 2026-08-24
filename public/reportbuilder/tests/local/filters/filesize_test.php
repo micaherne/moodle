@@ -21,7 +21,7 @@ namespace core_reportbuilder\local\filters;
 use advanced_testcase;
 use core\context\user;
 use core_reportbuilder\local\report\filter;
-use lang_string;
+use core\lang_string;
 
 /**
  * Unit tests for filesize report filter

@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\block;
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -74,7 +78,7 @@ abstract class testing_block_generator extends component_generator_base {
     protected function prepare_record(stdClass $record) {
         $record->blockname = $this->get_blockname();
         if (!isset($record->parentcontextid)) {
-            $record->parentcontextid = context_system::instance()->id;
+            $record->parentcontextid = system::instance()->id;
         }
         if (!isset($record->showinsubcontexts)) {
             $record->showinsubcontexts = 0;
@@ -134,7 +138,7 @@ abstract class testing_block_generator extends component_generator_base {
         }
 
         $id = $DB->insert_record('block_instances', $record);
-        context_block::instance($id);
+        block::instance($id);
 
         $instance = $DB->get_record('block_instances', array('id' => $id), '*', MUST_EXIST);
 

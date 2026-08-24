@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+
 /**
  * Selection of plugins that can work as H5P libraries handlers
  *
@@ -49,10 +51,10 @@ class h5plib_handler_select extends \core_admin\setting\setting\configselect {
 
         $this->choices = \core_h5p\local\library\autoloader::get_all_handlers();
         foreach ($this->choices as $name => $class) {
-            $this->choices[$name] = new \lang_string(
+            $this->choices[$name] = new lang_string(
                 'sitepolicyhandlerplugin',
                 'core_admin',
-                ['name' => new \lang_string('pluginname', $name), 'component' => $name]
+                ['name' => new lang_string('pluginname', $name), 'component' => $name]
             );
         }
 

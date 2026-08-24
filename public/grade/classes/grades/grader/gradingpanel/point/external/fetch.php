@@ -26,8 +26,9 @@ declare(strict_types = 1);
 
 namespace core_grades\grades\grader\gradingpanel\point\external;
 
-use coding_exception;
-use context;
+use core\exception\coding_exception;
+use core\context;
+use core\user;
 use core_grades\component_gradeitem as gradeitem;
 use core_grades\component_gradeitems;
 use core_external\external_api;
@@ -35,7 +36,7 @@ use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 
 /**
@@ -125,7 +126,7 @@ class fetch extends external_api {
         }
 
         // Fetch the actual data.
-        $gradeduser = \core_user::get_user($gradeduserid, '*', MUST_EXIST);
+        $gradeduser = user::get_user($gradeduserid, '*', MUST_EXIST);
 
         // One can access its own grades. Others just if they're graders.
         if ($gradeduserid != $USER->id) {
@@ -138,7 +139,7 @@ class fetch extends external_api {
 
         // Set up some items we need to return on other interfaces.
         $gradegrade = \grade_grade::fetch(['itemid' => $gradeitem->get_grade_item()->id, 'userid' => $gradeduser->id]);
-        $gradername = $gradegrade ? fullname(\core_user::get_user($gradegrade->usermodified)) : null;
+        $gradername = $gradegrade ? fullname(user::get_user($gradegrade->usermodified)) : null;
 
         return self::get_fetch_data($grade, $hasgrade, $gradeitem, $gradername, $isgrading);
     }

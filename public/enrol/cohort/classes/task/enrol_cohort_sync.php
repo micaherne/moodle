@@ -25,6 +25,8 @@
 
 namespace enrol_cohort\task;
 
+use core\output\progress_trace\null_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,7 +55,7 @@ class enrol_cohort_sync extends \core\task\scheduled_task {
         global $CFG;
 
         require_once("$CFG->dirroot/enrol/cohort/locallib.php");
-        $trace = new \null_progress_trace();
+        $trace = new null_progress_trace();
         enrol_cohort_sync($trace);
         $trace->finished();
     }

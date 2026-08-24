@@ -17,7 +17,7 @@
 namespace core;
 
 use stdClass;
-use coding_exception;
+use core\exception\coding_exception;
 
 /**
  * Context maintenance and helper methods.

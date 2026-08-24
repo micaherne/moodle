@@ -23,6 +23,10 @@
  */
 
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
 use core_grades\form\add_item;
 
 require_once '../../../config.php';
@@ -33,21 +37,21 @@ require_once 'item_form.php';
 $courseid = required_param('courseid', PARAM_INT);
 $id       = optional_param('id', 0, PARAM_INT);
 
-$url = new moodle_url('/grade/edit/tree/item.php', array('courseid'=>$courseid));
+$url = new url('/grade/edit/tree/item.php', array('courseid'=>$courseid));
 if ($id !== 0) {
     $url->param('id', $id);
 }
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
-navigation_node::override_active_url(new moodle_url('/grade/edit/tree/index.php',
+navigation_node::override_active_url(new url('/grade/edit/tree/index.php',
     array('id'=>$courseid)));
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('moodle/grade:manage', $context);
 
 // default return url
@@ -59,12 +63,12 @@ $heading = get_string('itemsedit', 'grades');
 if ($grade_item = grade_item::fetch(array('id'=>$id, 'courseid'=>$courseid))) {
     // redirect if outcomeid present
     if (!empty($grade_item->outcomeid) && !empty($CFG->enableoutcomes)) {
-        $url = new moodle_url('/grade/edit/tree/outcomeitem.php', ['id' => $id, 'courseid' => $courseid]);
+        $url = new url('/grade/edit/tree/outcomeitem.php', ['id' => $id, 'courseid' => $courseid]);
         redirect($gpr->add_url_params($url));
     }
     if ($grade_item->is_course_item() or $grade_item->is_category_item()) {
         $grade_category = $grade_item->get_item_category();
-        $url = new moodle_url('/grade/edit/tree/category.php', ['id' => $grade_category->id, 'courseid' => $courseid]);
+        $url = new url('/grade/edit/tree/category.php', ['id' => $grade_category->id, 'courseid' => $courseid]);
         redirect($gpr->add_url_params($url));
     }
 

@@ -16,6 +16,7 @@
 
 namespace core\router;
 
+use core\exception\coding_exception;
 use core\router\middleware\moodle_route_attribute_middleware;
 use core\tests\router\route_testcase;
 use core\url;
@@ -128,7 +129,7 @@ final class util_test extends route_testcase {
 
         $parsedurl = parse_url($url);
         $this->assertEquals(
-            (new \moodle_url('/example/class/path/method/path'))->get_path(),
+            (new url('/example/class/path/method/path'))->get_path(),
             $parsedurl['path'],
         );
     }
@@ -197,7 +198,7 @@ final class util_test extends route_testcase {
      * Test getting the route name for an anonymous callable.
      */
     public function test_get_route_for_callable_not_array_callable(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->assertNull(util::get_route_name_for_callable(fn () => null));
     }
 

@@ -22,6 +22,7 @@
  * @package tool_dataprivacy
  */
 
+use core\user;
 use tool_dataprivacy\api;
 use tool_dataprivacy\data_request;
 use tool_dataprivacy\local\helper;
@@ -65,7 +66,7 @@ class tool_dataprivacy_data_request_form extends \core\form\persistent {
                     $userfieldsapi = \core_user\fields::for_name();
                     $allusernames = $userfieldsapi->get_sql('', false, '', '', false)->selects;
                     $fields = 'id, email, ' . $allusernames;
-                    $user = \core_user::get_user($value, $fields);
+                    $user = user::get_user($value, $fields);
                     $useroptiondata = [
                         'fullname' => fullname($user),
                         'email' => $user->email

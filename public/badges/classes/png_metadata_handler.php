@@ -16,6 +16,8 @@
 
 namespace core_badges;
 
+use core\exception\moodle_exception;
+
 /**
  * Information on PNG file chunks can be found at http://www.w3.org/TR/PNG/#11Chunks
  * Some other info on PNG that I used http://garethrees.org/2007/11/14/pngcrush/
@@ -153,7 +155,7 @@ class png_metadata_handler
             // Text:                n bytes (character string).
             $dataparts[] = $value;
         } else {
-            throw new \moodle_exception('Unsupported chunk type: ' . $type);
+            throw new moodle_exception('Unsupported chunk type: ' . $type);
         }
 
         $data = implode($dataparts);

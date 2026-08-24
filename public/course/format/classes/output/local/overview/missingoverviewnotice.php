@@ -20,6 +20,7 @@ use core\output\action_link;
 use core\output\named_templatable;
 use core\output\renderable;
 use core\output\notification;
+use core\output\renderer_base;
 use core\plugin_manager;
 use core\url;
 use core_courseformat\local\overview\overviewfactory;
@@ -48,7 +49,7 @@ class missingoverviewnotice implements renderable, named_templatable {
     }
 
     #[\Override]
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
         if (!overviewfactory::activity_has_overview_integration($this->modname)) {
             return $this->export_legacy_overview($output);
         }
@@ -65,7 +66,7 @@ class missingoverviewnotice implements renderable, named_templatable {
      * @return stdClass
      */
     private function export_legacy_overview(
-        \renderer_base $output,
+        renderer_base $output,
     ): stdClass {
         $legacyoverview = '/mod/' . $this->modname . '/index.php';
         $name = plugin_manager::instance()->plugin_name($this->modname);
@@ -92,7 +93,7 @@ class missingoverviewnotice implements renderable, named_templatable {
     }
 
     #[\Override]
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core_courseformat/local/overview/missingoverviewnotice';
     }
 }

@@ -25,6 +25,9 @@
 
 namespace core_repository;
 
+use core\context\block;
+use core\context\course;
+use core\context\user;
 use repository_exception;
 
 /**
@@ -185,20 +188,20 @@ final class generator_test extends \advanced_testcase {
 
         // Course context.
         $record = new \stdClass();
-        $record->contextid = \context_course::instance($course->id)->id;
+        $record->contextid = course::instance($course->id)->id;
         $instance = $this->getDataGenerator()->create_repository('webdav', $record);
         $this->assertEquals(2, $DB->count_records('repository_instances', array('typeid' => $type->id)));
         $this->assertEquals($record->contextid, $instance->contextid);
 
         // User context.
-        $record->contextid = \context_user::instance($user->id)->id;
+        $record->contextid = user::instance($user->id)->id;
         $instance = $this->getDataGenerator()->create_repository('webdav', $record);
         $this->assertEquals(3, $DB->count_records('repository_instances', array('typeid' => $type->id)));
         $this->assertEquals($record->contextid, $instance->contextid);
 
         // Invalid context.
         $this->expectException('coding_exception');
-        $record->contextid = \context_block::instance($block->id)->id;
+        $record->contextid = block::instance($block->id)->id;
         $instance = $this->getDataGenerator()->create_repository('webdav', $record);
     }
 

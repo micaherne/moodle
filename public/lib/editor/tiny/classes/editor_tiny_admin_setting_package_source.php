@@ -16,6 +16,8 @@
 
 namespace editor_tiny;
 
+use core\output\html_writer;
+
 /**
  * Class for the TinyMCE package source setting.
  *
@@ -47,7 +49,7 @@ class editor_tiny_admin_setting_package_source extends \core_admin\setting\setti
         ];
 
         if (!empty($CFG->preventexecpath)) {
-            $this->visiblename .= \html_writer::div(
+            $this->visiblename .= html_writer::div(
                 content: get_string('execpathnotallowed', 'admin'),
                 class: 'alert alert-info',
             );

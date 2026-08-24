@@ -16,6 +16,10 @@
 
 namespace core\plugininfo;
 
+use core\context\system;
+use core\output\single_button;
+use core\plugin_manager;
+
 /**
  * Defines classes used for plugin info.
  *
@@ -64,9 +68,9 @@ class enrol extends base {
             add_to_config_log('enrol_plugins_enabled', !$enabled, $enabled, $pluginname);
             set_config('enrol_plugins_enabled', $new);
             // Reset caches.
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
             // Resets all enrol caches.
-            $syscontext = \context_system::instance();
+            $syscontext = system::instance();
             $syscontext->mark_dirty();
         }
 
@@ -146,7 +150,7 @@ class enrol extends base {
         }
 
         $migrateurl = new \core\url('/admin/enrol.php', ['action' => 'migrate', 'enrol' => $this->name, 'sesskey' => sesskey()]);
-        $migrate = new \single_button($migrateurl, get_string('migratetomanual', 'core_enrol'));
+        $migrate = new single_button($migrateurl, get_string('migratetomanual', 'core_enrol'));
         $button = $OUTPUT->render($migrate);
 
         $result = '<p>' . get_string('uninstallextraconfirmenrol', 'core_plugin', ['enrolments' => $count]) . '</p>';

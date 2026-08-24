@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once('../../../config.php');
@@ -62,6 +64,6 @@ echo $OUTPUT->box_end();
 
 // Course caches are now rebuilt on the fly.
 
-echo $OUTPUT->continue_button(new moodle_url('/admin/index.php'));
+echo $OUTPUT->continue_button(new url('/admin/index.php'));
 
 echo $OUTPUT->footer();

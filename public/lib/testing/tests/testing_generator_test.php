@@ -16,6 +16,10 @@
 
 namespace core;
 
+use core\context\course;
+use core\context\system;
+use core\exception\coding_exception;
+
 /**
  * Test data generator
  *
@@ -47,7 +51,7 @@ final class testing_generator_test extends \advanced_testcase {
      * Test plugin generator, with no component directory.
      */
     public function test_get_plugin_generator_no_component_dir(): void {
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage('Component core_cohort does not support generators yet. Missing tests/generator/lib.php.');
         $generator = $this->getDataGenerator()->get_plugin_generator('core_cohort');
     }
@@ -63,8 +67,8 @@ final class testing_generator_test extends \advanced_testcase {
         $this->setCurrentTimeStart();
         $user = $generator->create_user();
         $this->assertEquals($count + 1, $DB->count_records('user'));
-        $this->assertSame($user->username, \core_user::clean_field($user->username, 'username'));
-        $this->assertSame($user->email, \core_user::clean_field($user->email, 'email'));
+        $this->assertSame($user->username, user::clean_field($user->username, 'username'));
+        $this->assertSame($user->email, user::clean_field($user->email, 'email'));
         $this->assertNotEmpty($user->firstnamephonetic);
         $this->assertNotEmpty($user->lastnamephonetic);
         $this->assertNotEmpty($user->alternatename);
@@ -147,7 +151,7 @@ final class testing_generator_test extends \advanced_testcase {
         $count = $DB->count_records('cohort');
         $cohort = $generator->create_cohort();
         $this->assertEquals($count+1, $DB->count_records('cohort'));
-        $this->assertEquals(\context_system::instance()->id, $cohort->contextid);
+        $this->assertEquals(system::instance()->id, $cohort->contextid);
         $this->assertMatchesRegularExpression('/^Cohort \d/', $cohort->name);
         $this->assertSame('', $cohort->idnumber);
         $this->assertMatchesRegularExpression("/^Description for '{$cohort->name}' \\n/", $cohort->description);
@@ -406,9 +410,9 @@ final class testing_generator_test extends \advanced_testcase {
         $course2 = $this->getDataGenerator()->create_course();
         $course3 = $this->getDataGenerator()->create_course();
 
-        $context1 = \context_course::instance($course1->id);
-        $context2 = \context_course::instance($course2->id);
-        $context3 = \context_course::instance($course3->id);
+        $context1 = course::instance($course1->id);
+        $context2 = course::instance($course2->id);
+        $context3 = course::instance($course3->id);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();

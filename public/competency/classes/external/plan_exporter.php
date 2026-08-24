@@ -24,10 +24,10 @@
 namespace core_competency\external;
 defined('MOODLE_INTERNAL') || die();
 
-use core_user;
-use renderer_base;
+use core\user;
+use core\output\renderer_base;
 use stdClass;
-use moodle_url;
+use core\url as moodle_url;
 use core_competency\url;
 use core_comment\external\comment_area_exporter;
 use core_user\external\user_summary_exporter;
@@ -96,7 +96,7 @@ class plan_exporter extends \core\external\persistent_exporter {
 
         if (!empty($values->isinreview)) {
             // TODO Make this more efficient.
-            $userexporter = new user_summary_exporter(core_user::get_user($this->persistent->get('reviewerid'), '*', MUST_EXIST));
+            $userexporter = new user_summary_exporter(user::get_user($this->persistent->get('reviewerid'), '*', MUST_EXIST));
             $values->reviewer = $userexporter->export($output);
         }
 

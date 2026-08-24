@@ -23,7 +23,7 @@
  */
 namespace core\plugininfo;
 
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -92,6 +92,6 @@ class theme extends base {
      * @return moodle_url
      */
     public static function get_manage_url() {
-        return new moodle_url('/admin/themeselector.php');
+        return new url('/admin/themeselector.php');
     }
 }

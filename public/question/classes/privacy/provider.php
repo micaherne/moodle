@@ -25,6 +25,7 @@
 
 namespace core_question\privacy;
 
+use core\context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -154,7 +155,7 @@ class provider implements
      */
     public static function export_question_usage(
             int $userid,
-            \context $context,
+            context $context,
             array $usagecontext,
             int $usage,
             \question_display_options $options,
@@ -243,7 +244,7 @@ class provider implements
      */
     public static function export_question_attempt_steps(
             int $userid,
-            \context $context,
+            context $context,
             array $questionnocontext,
             \question_attempt $qa,
             \question_display_options $options,
@@ -459,7 +460,7 @@ class provider implements
 
         $classname = "qformat_{$format}";
         foreach ($categories as $category) {
-            $context = \context::instance_by_id($category->contextid);
+            $context = context::instance_by_id($category->contextid);
 
             $questions = get_questions_category($category, true);
             $questions = array_filter($questions, function($question) use ($userid) {
@@ -496,7 +497,7 @@ class provider implements
      * @param \context $context The specific context to delete data for.
      * @throws \dml_exception
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
         // Questions are considered to be 'owned' by the institution, even if they were originally written by a specific

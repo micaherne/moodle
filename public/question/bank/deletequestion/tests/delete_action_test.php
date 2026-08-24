@@ -16,6 +16,8 @@
 
 namespace qbank_deletequestion;
 
+use core\context\module;
+use core\output\action_menu\link_secondary;
 use core\url;
 use core_question\local\bank\question_edit_contexts;
 use core_question\local\bank\view;
@@ -42,7 +44,7 @@ final class delete_action_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course(['category' => $category->id]);
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
         [, $qbankcm] = get_course_and_cm_from_cmid($qbank->cmid);
-        $context = \context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $qgenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $qcategory = $qgenerator->create_question_category(['contextid' => $context->id]);
         $question = $qgenerator->create_question('shortanswer', null, ['category' => $qcategory->id,
@@ -66,7 +68,7 @@ final class delete_action_test extends \advanced_testcase {
         $this->setUser($user);
         $deleteaction = new delete_action($qbankview);
         $link = $deleteaction->get_action_menu_link($question);
-        $this->assertInstanceOf(\action_menu_link_secondary::class, $link);
+        $this->assertInstanceOf(link_secondary::class, $link);
         $this->assertInstanceOf(\core\url::class, $link->url);
         $this->assertEquals('Delete', $link->text);
         $this->assertEquals('modal', $link->attributes['data-confirmation']);

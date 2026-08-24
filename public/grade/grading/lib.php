@@ -24,6 +24,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\navigation\global_navigation;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+use core\url;
 use core_grades\component_gradeitems;
 
 /**
@@ -551,7 +559,7 @@ class grading_manager {
      * @param moodle_url $returnurl optional URL of the page where the user should be sent back to
      * @return moodle_url
      */
-    public function get_management_url(?moodle_url $returnurl = null) {
+    public function get_management_url(?url $returnurl = null) {
 
         $this->ensure_isset(array('context', 'component'));
 
@@ -568,7 +576,7 @@ class grading_manager {
             $params['returnurl'] = $returnurl->out(false);
         }
 
-        return new moodle_url('/grade/grading/manage.php', $params);
+        return new url('/grade/grading/manage.php', $params);
     }
 
     /**
@@ -587,7 +595,7 @@ class grading_manager {
         $name = $method . '_' . sha1(rand().uniqid($method, true));
         // create new area record
         $area = array(
-            'contextid'     => context_system::instance()->id,
+            'contextid'     => system::instance()->id,
             'component'     => 'core_grading',
             'areaname'      => $name,
             'activemethod'  => $method);

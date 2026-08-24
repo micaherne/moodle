@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+
 define('DEFAULT_NUMBER_OF_VIDEOS', 5);
 
 class block_tag_youtube extends block_base {
@@ -344,7 +348,7 @@ class block_tag_youtube extends block_base {
                 return $categories;
             }, []);
         } else {
-            throw new \moodle_exception('apierror', 'block_tag_youtube');
+            throw new moodle_exception('apierror', 'block_tag_youtube');
         }
     }
 
@@ -382,7 +386,7 @@ class block_tag_youtube extends block_base {
     public function get_config_for_external() {
         // There is a private key, only admins can see it.
         $pluginconfigs = get_config('block_tag_youtube');
-        if (!has_capability('moodle/site:config', context_system::instance())) {
+        if (!has_capability('moodle/site:config', system::instance())) {
             unset($pluginconfigs->apikey);
         }
         $instanceconfigs = !empty($this->config) ? $this->config : new stdClass();

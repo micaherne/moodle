@@ -16,8 +16,8 @@
 
 namespace mod_wiki;
 
-use cm_info;
-use context_module;
+use core_course\cm_info;
+use core\context\module;
 use stdClass;
 
 /**
@@ -35,7 +35,7 @@ class manager {
     public const PLUGINNAME = 'mod_wiki';
 
     /** @var context_module the current context. */
-    private context_module $context;
+    private module $context;
 
     /** @var stdClass $course record. */
     private stdClass $course;
@@ -60,7 +60,7 @@ class manager {
         /** @var \moodle_database $db the database instance. */
         private readonly \moodle_database $db
     ) {
-        $this->context = context_module::instance($cm->id);
+        $this->context = module::instance($cm->id);
         $this->course = $cm->get_course();
         $this->groupmode = groups_get_activity_groupmode($cm, $this->course);
     }
@@ -98,7 +98,7 @@ class manager {
      *
      * @return context_module
      */
-    public function get_context(): context_module {
+    public function get_context(): module {
         return $this->context;
     }
 

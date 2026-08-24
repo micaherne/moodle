@@ -26,8 +26,8 @@ use core\output\renderer_base;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
 use core\url;
-use section_info;
-use cm_info;
+use core_course\section_info;
+use core_course\cm_info;
 use stdClass;
 
 /**

@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core_table\output\html_table;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/lib/statslib.php');
 require_once($CFG->libdir.'/adminlib.php');
@@ -31,13 +36,13 @@ require_once($CFG->dirroot.'/report/courseoverview/locallib.php');
 $report     = optional_param('report', STATS_REPORT_ACTIVE_COURSES, PARAM_INT);
 $time       = optional_param('time', 0, PARAM_INT);
 $numcourses = optional_param('numcourses', 20, PARAM_INT);
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 
 if (empty($CFG->enablestats)) {
     if (has_capability('moodle/site:config', $systemcontext)) {
         redirect("$CFG->wwwroot/$CFG->admin/search.php?query=enablestats", get_string('mustenablestats', 'admin'), 3);
     } else {
-        throw new \moodle_exception('statsdisable');
+        throw new moodle_exception('statsdisable');
     }
 }
 
@@ -67,7 +72,7 @@ $lastmonthend = stats_get_base_monthly();
 $timeoptions = stats_get_time_options($now,$lastweekend,$lastmonthend,$earliestday,$earliestweek,$earliestmonth);
 
 if (empty($timeoptions)) {
-    throw new \moodle_exception('nostatstodisplay', 'error', $CFG->wwwroot.'/course/view.php?id='.$course->id);
+    throw new moodle_exception('nostatstodisplay', 'error', $CFG->wwwroot.'/course/view.php?id='.$course->id);
 }
 
 echo html_writer::start_tag('form', ['action' => 'index.php', 'method' => 'post',

@@ -24,6 +24,8 @@
 
 declare(strict_types=1);
 
+use core\user;
+
 /**
  * Get the current user preferences that are available
  *
@@ -35,7 +37,7 @@ function qbank_previewquestion_user_preferences(): array {
             'type' => PARAM_BOOL,
             'null' => NULL_NOT_ALLOWED,
             'default' => true,
-            'permissioncallback' => [core_user::class, 'is_current_user'],
+            'permissioncallback' => [user::class, 'is_current_user'],
         ],
     ];
 }

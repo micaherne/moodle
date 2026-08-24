@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\output\progress_bar;
 use tool_customlang\local\importer;
 use core\output\notification;
 
@@ -180,7 +182,7 @@ foreach ($langfiles as $lng => $files) {
             'license'  => $CFG->sitedefaultlicense,
             'author'   => '',
             'filename' => clean_param(basename($file), PARAM_FILE),
-            'contextid' => \context_user::instance($USER->id)->id,
+            'contextid' => user::instance($USER->id)->id,
             'userid' => $USER->id,
         ];
         cli_writeln($file);

@@ -23,7 +23,7 @@
  */
 namespace core\plugininfo;
 
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -42,6 +42,6 @@ class profilefield extends base {
      * @return moodle_url
      */
     public static function get_manage_url() {
-        return new moodle_url('/user/profile/index.php');
+        return new url('/user/profile/index.php');
     }
 }

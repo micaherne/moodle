@@ -22,6 +22,11 @@
  * @subpackage filter
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -37,7 +42,7 @@ require_capability('moodle/filter:manage', $context);
 $PAGE->set_context($context);
 
 $args = ['contextid' => $contextid];
-$baseurl = new moodle_url('/filter/manage.php', $args);
+$baseurl = new url('/filter/manage.php', $args);
 if (!empty($forfilter)) {
     $args['filter'] = $forfilter;
 }
@@ -49,7 +54,7 @@ if ($returnto !== null) {
 
 // This is a policy decision, rather than something that would be impossible to implement.
 if (!in_array($context->contextlevel, [CONTEXT_COURSECAT, CONTEXT_COURSE, CONTEXT_MODULE])) {
-    throw new \moodle_exception('cannotcustomisefiltersblockuser', 'error');
+    throw new moodle_exception('cannotcustomisefiltersblockuser', 'error');
 }
 
 $isfrontpage = ($context->contextlevel == CONTEXT_COURSE && $context->instanceid == SITEID);
@@ -74,13 +79,13 @@ $PAGE->set_context($context);
 // Get the list of available filters.
 $availablefilters = filter_get_available_in_context($context);
 if (!$isfrontpage && empty($availablefilters)) {
-    throw new \moodle_exception('nofiltersenabled', 'error');
+    throw new moodle_exception('nofiltersenabled', 'error');
 }
 
 // If we are handling local settings for a particular filter, start processing.
 if ($forfilter) {
     if (!filter_has_local_settings($forfilter)) {
-        throw new \moodle_exception('filterdoesnothavelocalconfig', 'error', $forfilter);
+        throw new moodle_exception('filterdoesnothavelocalconfig', 'error', $forfilter);
     }
     require_once($CFG->dirroot . '/filter/' . $forfilter . '/filterlocalsettings.php');
     $formname = $forfilter . '_filter_local_settings_form';
@@ -209,7 +214,7 @@ if (empty($availablefilters)) {
 if (!$isfrontpage) {
 
     if ($context->contextlevel === CONTEXT_COURSECAT && $returnto === 'management') {
-        $url = new moodle_url('/course/management.php', ['categoryid' => $context->instanceid]);
+        $url = new url('/course/management.php', ['categoryid' => $context->instanceid]);
     } else {
         $url = $context->get_url();
     }

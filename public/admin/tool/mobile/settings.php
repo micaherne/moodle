@@ -26,19 +26,35 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\system;
+use core\lang_string;
+use core\output\html_writer;
+use core\url;
 use core_admin\local\settings\autocomplete;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configduration;
+use core_admin\setting\setting\configmultiselect;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\configtextarea;
+use core_admin\setting\setting\description;
+use core_admin\setting\setting\enablemobileservice;
+use core_admin\setting\setting\heading;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\category;
+use core_admin\setting\tree\externalpage;
 use tool_mobile\api;
 
 
-if ($hassiteconfig || has_capability('moodle/site:configview', context_system::instance())) {
+if ($hassiteconfig || has_capability('moodle/site:configview', system::instance())) {
     // We should wait to the installation to finish since we depend on some configuration values that are set once
     // the admin user profile is configured.
     if ($hassiteconfig && !during_initial_install()) {
-        $enablemobiledocurl = new moodle_url(get_docs_url('Enable_mobile_web_services'));
+        $enablemobiledocurl = new url(get_docs_url('Enable_mobile_web_services'));
         $enablemobiledoclink = html_writer::link($enablemobiledocurl, new lang_string('documentation'));
         $default = is_https() ? 1 : 0;
         $optionalsubsystems = $ADMIN->locate('optionalsubsystems');
-        $optionalsubsystems->add(new admin_setting_enablemobileservice(
+        $optionalsubsystems->add(new enablemobileservice(
             'enablemobilewebservice',
             new lang_string('enablemobilewebservice', 'admin'),
             new lang_string('configenablemobilewebservice', 'admin', $enablemobiledoclink),
@@ -49,7 +65,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     // Getting information to prepare settings pages.
     $subscriptiondata = api::get_subscription_information(true);
     $ispremiumplan = api::is_premium_or_bma_plan($subscriptiondata, false);
-    $appsportalurl = (new \moodle_url(\tool_mobile\api::MOODLE_APPS_PORTAL_URL))->out(true);
+    $appsportalurl = (new url(\tool_mobile\api::MOODLE_APPS_PORTAL_URL))->out(true);
     if (!$ispremiumplan) {
         $upgradeplanname = new lang_string('enhanced', 'tool_mobile');
         if (is_array($subscriptiondata) && !empty($subscriptiondata['availableplans'])) {
@@ -64,17 +80,17 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         if (is_array($subscriptiondata) && !empty($subscriptiondata['subscription']['name'])) {
             $planname = $subscriptiondata['subscription']['name'];
         }
-        $premiumfeaturesurl = (new moodle_url("/admin/settings.php", ['section' => 'premiumfeatures']))->out(true);
+        $premiumfeaturesurl = (new url("/admin/settings.php", ['section' => 'premiumfeatures']))->out(true);
     }
 
     // Contextual Premium plan promotions at the top of related core settings pages.
     if ($hassiteconfig && !during_initial_install() && !$ispremiumplan) {
-        $subscriptionurl = (new moodle_url('/admin/tool/mobile/subscription.php'))->out(false);
+        $subscriptionurl = (new url('/admin/tool/mobile/subscription.php'))->out(false);
 
         $haslogos = !empty(get_config('core_admin', 'logo')) || !empty(get_config('core_admin', 'logocompact'));
         if ($haslogos && ($logospage = $ADMIN->locate('logos'))) {
             $logospage->add_before(
-                new admin_setting_heading(
+                new heading(
                     'tool_mobile/logospromotion',
                     '',
                     $OUTPUT->render_from_template('tool_mobile/feature_banner', [
@@ -93,7 +109,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
 
         if (api::has_matomo_additional_html() && ($additionalhtmlpage = $ADMIN->locate('additionalhtml'))) {
             $additionalhtmlpage->add_before(
-                new admin_setting_heading(
+                new heading(
                     'tool_mobile/matomopromotion',
                     '',
                     $OUTPUT->render_from_template('tool_mobile/feature_banner', [
@@ -113,7 +129,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     $ismobilewsdisabled = empty($CFG->enablemobilewebservice);
     $ADMIN->add(
         'root',
-        new admin_category('mobileapp', new lang_string('mobileapp', 'tool_mobile'), $ismobilewsdisabled),
+        new category('mobileapp', new lang_string('mobileapp', 'tool_mobile'), $ismobilewsdisabled),
         'development'
     );
 
@@ -125,7 +141,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
 
     $ADMIN->add(
         'mobileapp',
-        new admin_externalpage(
+        new externalpage(
             'mobileappsubscription',
             $mobileappsubscriptionstr,
             "$CFG->wwwroot/$CFG->admin/tool/mobile/subscription.php",
@@ -147,7 +163,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
             $premiumfeaturestitle .= ' ' . get_string('new', 'tool_mobile');
         }
     }
-    $temp = new admin_settingpage(
+    $temp = new settingpage(
         'premiumfeatures',
         $premiumfeaturestitle,
         'moodle/site:config',
@@ -161,7 +177,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
             'icon' => '🚀',
             'message' => clean_text(get_string('upgradeplanlimits', 'tool_mobile', $planname)),
             'buttonstr' => new lang_string('learnmore', 'tool_mobile'),
-            'buttonurl' => (new \moodle_url("/admin/tool/mobile/subscription.php"))->out(true),
+            'buttonurl' => (new url("/admin/tool/mobile/subscription.php"))->out(true),
         ];
         $lastupdated = get_config('tool_mobile', 'subscriptioninfoupdated');
         if (!$lastupdated || time() - $lastupdated > 10 * DAYSECS) {
@@ -172,19 +188,19 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
                 $reloadcachetext = new lang_string('planlastchecked', 'tool_mobile', $lastupdatedstr);
             }
             $templateheadersettings['reloadcache'] = [
-                'url' => (new \moodle_url("/admin/tool/mobile/subscription.php", ['returnto' => $premiumfeaturesurl]))->out(true),
+                'url' => (new url("/admin/tool/mobile/subscription.php", ['returnto' => $premiumfeaturesurl]))->out(true),
                 'text' => $reloadcachetext,
             ];
         }
 
-        $temp->add(new admin_setting_heading(
+        $temp->add(new heading(
             'tool_mobile/moodleappsportalfeatures',
             '',
             $OUTPUT->render_from_template('tool_mobile/settings_alert', $templateheadersettings)
         ));
     }
 
-    $temp->add(new admin_setting_heading(
+    $temp->add(new heading(
         'tool_mobile/branding',
         new lang_string('branding', 'tool_mobile'),
         ''
@@ -193,29 +209,29 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     $brandingsettings = [];
     if ($ispremiumplan) {
         $brandingsettings = [
-            'link' => (new \moodle_url(\tool_mobile\api::MOODLE_APPS_PORTAL_URL
+            'link' => (new url(\tool_mobile\api::MOODLE_APPS_PORTAL_URL
                 . '/local/apps/portal_app.php?option=appearance_branding'))->out(true),
         ];
     } else {
         $brandingsettings = [
-            'link' => (new \moodle_url("/admin/tool/mobile/subscription.php"))->out(true),
+            'link' => (new url("/admin/tool/mobile/subscription.php"))->out(true),
             'learnmore' => 1,
         ];
     }
-    $temp->add(new admin_setting_heading(
+    $temp->add(new heading(
         'tool_mobile/brandingandcustomisation',
         '',
         $OUTPUT->render_from_template('tool_mobile/feature_banner_animated', $brandingsettings)
     ));
 
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'tool_mobile/showlogoinappheader',
         new lang_string('showlogoinappheader', 'tool_mobile'),
         new lang_string('showlogoinappheader_desc', 'tool_mobile'),
         0
     ));
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'mobilecssurl',
         new lang_string('mobilecssurl', 'tool_mobile'),
         new lang_string('configmobilecssurl', 'tool_mobile'),
@@ -223,7 +239,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         PARAM_URL
     ));
 
-    $temp->add(new admin_setting_heading(
+    $temp->add(new heading(
         'tool_mobile/authentication',
         new lang_string('authentication'),
         ''
@@ -269,7 +285,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
             . ' (' . get_string('premiumfeatureonly', 'tool_mobile') . ')';
     }
 
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
         'tool_mobile/qrcodetype',
         new lang_string('qrcodetype', 'tool_mobile'),
         new lang_string('qrcodetype_desc', 'tool_mobile'),
@@ -277,7 +293,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         $options
     ));
 
-    $temp->add(new admin_setting_configduration(
+    $temp->add(new configduration(
         'tool_mobile/qrkeyttl',
         new lang_string('qrkeyttl', 'tool_mobile'),
         new lang_string('qrkeyttl_desc', 'tool_mobile'),
@@ -286,7 +302,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     ));
     $temp->hide_if('tool_mobile/qrkeyttl', 'tool_mobile/qrcodetype', 'neq', tool_mobile\api::QR_CODE_LOGIN);
 
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'tool_mobile/qrsameipcheck',
         new lang_string('qrsameipcheck', 'tool_mobile'),
         new lang_string('qrsameipcheck_desc', 'tool_mobile'),
@@ -298,13 +314,13 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         $featureparams['feature'] = get_string('qrcodetypelogin', 'tool_mobile');
         $templatesubscribe['message'] = clean_text(get_string('qronlypremium', 'tool_mobile', $featureparams));
 
-        $temp->add(new admin_setting_heading(
+        $temp->add(new heading(
             'tool_mobile/qronlypremium',
             '',
             $OUTPUT->render_from_template('tool_mobile/subscribe_alert', $templatesubscribe)
         ));
     }
-    $temp->add(new admin_setting_heading(
+    $temp->add(new heading(
         'tool_mobile/customisation',
         new lang_string('customisation', 'tool_mobile'),
         ''
@@ -312,7 +328,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
 
     $options = tool_mobile\api::get_features_list();
     $featurename = new lang_string('disabledfeatures', 'tool_mobile');
-    $temp->add(new admin_setting_configmultiselect(
+    $temp->add(new configmultiselect(
         'tool_mobile/disabledfeatures',
         $featurename,
         new lang_string('disabledfeatures_desc', 'tool_mobile'),
@@ -324,7 +340,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         $featureparams['feature'] = strtolower($featurename);
         $templatesubscribe['message'] = clean_text(get_string('limiteddisabledfeature', 'tool_mobile', $featureparams));
 
-        $temp->add(new admin_setting_heading(
+        $temp->add(new heading(
             'tool_mobile/disabledfeaturessubscribe',
             '',
             $OUTPUT->render_from_template('tool_mobile/subscribe_alert', $templatesubscribe)
@@ -334,7 +350,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     // Manage disabledfeatures with custommenuitems and customusermenuitems.
     $custommenuitemsstr = new lang_string('custommenuitems', 'tool_mobile');
     $customusermenuitemsstr = new lang_string('customusermenuitems', 'tool_mobile');
-    $temp->add(new admin_setting_configtextarea(
+    $temp->add(new configtextarea(
         'tool_mobile/custommenuitems',
         $custommenuitemsstr,
         new lang_string('custommenuitems_desc', 'tool_mobile'),
@@ -349,14 +365,14 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         $featureparams['feature2'] = strtolower($customusermenuitemsstr);
         $templatesubscribe['message'] = clean_text(get_string('limiteddisabledfeature_related', 'tool_mobile', $featureparams));
 
-        $temp->add(new admin_setting_heading(
+        $temp->add(new heading(
             'tool_mobile/custommenuitemssubscribe',
             '',
             $OUTPUT->render_from_template('tool_mobile/subscribe_alert', $templatesubscribe)
         ));
     }
 
-    $temp->add(new admin_setting_configtextarea(
+    $temp->add(new configtextarea(
         'tool_mobile/customusermenuitems',
         $customusermenuitemsstr,
         new lang_string('customusermenuitems_desc', 'tool_mobile'),
@@ -371,7 +387,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         $featureparams['feature2'] = strtolower($custommenuitemsstr);
         $templatesubscribe['message'] = clean_text(get_string('limiteddisabledfeature_related', 'tool_mobile', $featureparams));
 
-        $temp->add(new admin_setting_heading(
+        $temp->add(new heading(
             'tool_mobile/customusermenuitemssubscribe',
             '',
             $OUTPUT->render_from_template('tool_mobile/subscribe_alert', $templatesubscribe)
@@ -379,7 +395,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     }
 
     $featurename = new lang_string('customlangstrings', 'tool_mobile');
-    $temp->add(new admin_setting_configtextarea(
+    $temp->add(new configtextarea(
         'tool_mobile/customlangstrings',
         $featurename,
         new lang_string('customlangstrings_desc', 'tool_mobile'),
@@ -393,7 +409,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         $featureparams['feature'] = strtolower($featurename);
         $templatesubscribe['message'] = clean_text(get_string('limiteddisabledfeature', 'tool_mobile', $featureparams));
 
-        $temp->add(new admin_setting_heading(
+        $temp->add(new heading(
             'tool_mobile/customlangstringssubscribe',
             '',
             $OUTPUT->render_from_template('tool_mobile/subscribe_alert', $templatesubscribe)
@@ -403,7 +419,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     $ADMIN->add('mobileapp', $temp);
 
     // Appearance features settings page.
-    $temp = new admin_settingpage(
+    $temp = new settingpage(
         'mobileappearance',
         new lang_string('mobileappearance', 'tool_mobile'),
         'moodle/site:config',
@@ -424,7 +440,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
             'extraclasses' => 'alert-info',
         ];
 
-        $temp->add(new admin_setting_heading(
+        $temp->add(new heading(
             'tool_mobile/moodleappsportalfeaturesappearance',
             '',
             $OUTPUT->render_from_template('tool_mobile/settings_alert', $templateheadersettings)
@@ -433,21 +449,21 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
 
     // Reference to Branded Mobile App.
     if (empty($CFG->disableserviceads_branded)) {
-        $temp->add(new admin_setting_description(
+        $temp->add(new description(
             'moodlebrandedappreference',
             new lang_string('moodlebrandedapp', 'admin'),
             new lang_string('moodlebrandedappreference', 'admin')
         ));
     }
 
-    $temp->add(new admin_setting_heading(
+    $temp->add(new heading(
         'tool_mobile/smartappbanners',
         new lang_string('smartappbanners', 'tool_mobile'),
         ''
     ));
 
     $temp->add(
-        new admin_setting_configcheckbox(
+        new configcheckbox(
             'tool_mobile/enablesmartappbanners',
             new lang_string('enablesmartappbanners', 'tool_mobile'),
             new lang_string('enablesmartappbanners_desc', 'tool_mobile'),
@@ -455,7 +471,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         )
     );
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'tool_mobile/iosappid',
         new lang_string('iosappid', 'tool_mobile'),
         new lang_string('iosappid_desc', 'tool_mobile'),
@@ -463,7 +479,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         PARAM_ALPHANUM
     ));
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'tool_mobile/androidappid',
         new lang_string('androidappid', 'tool_mobile'),
         new lang_string('androidappid_desc', 'tool_mobile'),
@@ -471,7 +487,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         PARAM_NOTAGS
     ));
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'tool_mobile/setuplink',
         new lang_string('setuplink', 'tool_mobile'),
         new lang_string('setuplink_desc', 'tool_mobile'),
@@ -482,7 +498,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     $ADMIN->add('mobileapp', $temp);
 
     // Authentication features settings page.
-    $temp = new admin_settingpage(
+    $temp = new settingpage(
         'mobileauthentication',
         new lang_string('mobileauthentication', 'tool_mobile'),
         'moodle/site:config',
@@ -498,7 +514,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         ];
         $featuresnotice = $OUTPUT->render_from_template('tool_mobile/settings_alert', $templateheadersettings);
 
-        $temp->add(new admin_setting_heading(
+        $temp->add(new heading(
             'tool_mobile/moodleappsportalfeaturesauthentication',
             '',
             $featuresnotice
@@ -510,7 +526,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         tool_mobile\api::LOGIN_VIA_BROWSER => new lang_string('logininthebrowser', 'tool_mobile'),
         tool_mobile\api::LOGIN_VIA_EMBEDDED_BROWSER => new lang_string('loginintheembeddedbrowser', 'tool_mobile'),
     ];
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
         'tool_mobile/typeoflogin',
         new lang_string('typeoflogin', 'tool_mobile'),
         new lang_string('typeoflogin_desc', 'tool_mobile'),
@@ -518,7 +534,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         $options
     ));
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'tool_mobile/forcedurlscheme',
         new lang_string('forcedurlscheme_key', 'tool_mobile'),
         new lang_string('forcedurlscheme', 'tool_mobile'),
@@ -526,7 +542,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         PARAM_NOTAGS
     ));
 
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'tool_mobile/forcelogout',
         new lang_string('forcelogout', 'tool_mobile'),
         new lang_string('forcelogout_desc', 'tool_mobile'),
@@ -538,7 +554,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         tool_mobile\api::AUTOLOGOUT_INMEDIATE => new lang_string('autologoutinmediate', 'tool_mobile'),
         tool_mobile\api::AUTOLOGOUT_CUSTOM => new lang_string('autologoutcustom', 'tool_mobile'),
     ];
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
         'tool_mobile/autologout',
         new lang_string('autologout', 'tool_mobile'),
         new lang_string('autologout_desc', 'tool_mobile'),
@@ -546,7 +562,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         $options
     ));
 
-    $temp->add(new admin_setting_configduration(
+    $temp->add(new configduration(
         'tool_mobile/autologouttime',
         new lang_string('autologouttime', 'tool_mobile'),
         '',
@@ -554,7 +570,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     ));
     $temp->hide_if('tool_mobile/autologouttime', 'tool_mobile/autologout', 'neq', tool_mobile\api::AUTOLOGOUT_CUSTOM);
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'tool_mobile/minimumversion',
         new lang_string('minimumversion_key', 'tool_mobile'),
         new lang_string('minimumversion', 'tool_mobile'),
@@ -570,7 +586,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         1800 => new lang_string('numminutes', '', 30),
         3600 => new lang_string('numminutes', '', 60),
     ];
-    $temp->add(new admin_setting_configselect(
+    $temp->add(new configselect(
         'tool_mobile/autologinmintimebetweenreq',
         new lang_string('autologinmintimebetweenreq', 'tool_mobile'),
         new lang_string('autologinmintimebetweenreq_desc', 'tool_mobile'),
@@ -578,7 +594,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         $options
     ));
 
-    $temp->add(new admin_setting_configcheckbox(
+    $temp->add(new configcheckbox(
         'tool_mobile/enabledeeplinkautologin',
         new lang_string('enabledeeplinkautologin', 'tool_mobile'),
         new lang_string('enabledeeplinkautologin_desc', 'tool_mobile'),
@@ -588,7 +604,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     $ADMIN->add('mobileapp', $temp);
 
     // Features settings page.
-    $temp = new admin_settingpage(
+    $temp = new settingpage(
         'mobilefeatures',
         new lang_string('mobilefeatures', 'tool_mobile'),
         'moodle/site:config',
@@ -604,14 +620,14 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
         ];
         $featuresnotice = $OUTPUT->render_from_template('tool_mobile/settings_alert', $templateheadersettings);
 
-        $temp->add(new admin_setting_heading(
+        $temp->add(new heading(
             'tool_mobile/moodleappsportalfeaturesfeatures',
             '',
             $featuresnotice
         ));
     }
 
-    $temp->add(new admin_setting_configtext(
+    $temp->add(new configtext(
         'tool_mobile/apppolicy',
         new lang_string('apppolicy', 'tool_mobile'),
         new lang_string('apppolicy_help', 'tool_mobile'),
@@ -630,7 +646,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     }
 
     $attributes = [
-        'manageurl' => new \moodle_url('/admin/tool/filetypes/index.php'),
+        'manageurl' => new url('/admin/tool/filetypes/index.php'),
         'managetext' => new lang_string('managefiletypes', 'tool_mobile'),
         'multiple' => true,
         'delimiter' => ',',
@@ -646,7 +662,7 @@ if ($hassiteconfig || has_capability('moodle/site:configview', context_system::i
     ));
 
     $temp->add(
-        new admin_setting_configtextarea(
+        new configtextarea(
             'tool_mobile/scriptallowlist',
             new lang_string('scriptallowlist', 'tool_mobile'),
             new lang_string('scriptallowlist_desc', 'tool_mobile'),

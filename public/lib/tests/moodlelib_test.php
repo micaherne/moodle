@@ -16,8 +16,14 @@
 
 namespace core;
 
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core\tests\fake_plugins_test_trait;
 use function PHPUnit\Framework\assertEquals;
+use core\user as core_user;
+use core_cache\cache;
 
 /**
  * Unit tests for (some of) ../moodlelib.php.
@@ -215,7 +221,7 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             optional_param('username', 'default_user', PARAM_RAW);
             $this->fail('coding_exception expected');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
         }
     }
 
@@ -237,7 +243,7 @@ final class moodlelib_test extends \advanced_testcase {
             $_POST['username'] = array('a'=>array('b'=>'post_user'));
             optional_param_array('username', array('a'=>'default_user'), PARAM_RAW);
             $this->fail('coding_exception expected');
-        } catch (\coding_exception $ex) {
+        } catch (coding_exception $ex) {
             $this->assertTrue(true);
         }
 
@@ -264,14 +270,14 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             $this->assertSame('default_user', required_param('username', PARAM_RAW));
             $this->fail('moodle_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('moodle_exception', $ex);
         }
 
         try {
             required_param('', PARAM_RAW);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
         }
 
         // Make sure warning is displayed if array submitted - TODO: throw exception in Moodle 2.3.
@@ -279,7 +285,7 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             required_param('username', PARAM_RAW);
             $this->fail('coding_exception expected');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
         }
     }
 
@@ -298,7 +304,7 @@ final class moodlelib_test extends \advanced_testcase {
             $_POST['username'] = array('a'=>array('b'=>'post_user'));
             required_param_array('username', PARAM_RAW);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
 
@@ -307,7 +313,7 @@ final class moodlelib_test extends \advanced_testcase {
             $_POST['username'] = 'post_user';
             required_param_array('username', PARAM_RAW);
             $this->fail('moodle_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('moodle_exception', $ex);
         }
 
@@ -326,7 +332,7 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             clean_param(array('x', 'y'), PARAM_RAW);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
         try {
@@ -334,7 +340,7 @@ final class moodlelib_test extends \advanced_testcase {
             $param->id = 1;
             clean_param($param, PARAM_RAW);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
 
@@ -342,7 +348,7 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             clean_param('x', 'xxxxxx');
             $this->fail('moodle_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('moodle_exception', $ex);
         }
     }
@@ -360,14 +366,14 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             clean_param_array(array('x'), 'xxxxxx');
             $this->fail('moodle_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('moodle_exception', $ex);
         }
 
         try {
             clean_param_array(array('x', array('y')), PARAM_RAW);
             $this->fail('coding_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
 
@@ -925,7 +931,7 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             $param = validate_param('11a', PARAM_INT);
             $this->fail('invalid_parameter_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('invalid_parameter_exception', $ex);
         }
 
@@ -935,7 +941,7 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             $param = validate_param(null, PARAM_INT, false);
             $this->fail('invalid_parameter_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('invalid_parameter_exception', $ex);
         }
 
@@ -945,13 +951,13 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             $param = validate_param(array(), PARAM_INT);
             $this->fail('invalid_parameter_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('invalid_parameter_exception', $ex);
         }
         try {
             $param = validate_param(new \stdClass, PARAM_INT);
             $this->fail('invalid_parameter_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('invalid_parameter_exception', $ex);
         }
 
@@ -980,31 +986,31 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             $param = validate_param('1,2', PARAM_FLOAT);
             $this->fail('invalid_parameter_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('invalid_parameter_exception', $ex);
         }
         try {
             $param = validate_param('', PARAM_FLOAT);
             $this->fail('invalid_parameter_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('invalid_parameter_exception', $ex);
         }
         try {
             $param = validate_param('.', PARAM_FLOAT);
             $this->fail('invalid_parameter_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('invalid_parameter_exception', $ex);
         }
         try {
             $param = validate_param('e10', PARAM_FLOAT);
             $this->fail('invalid_parameter_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('invalid_parameter_exception', $ex);
         }
         try {
             $param = validate_param('abc', PARAM_FLOAT);
             $this->fail('invalid_parameter_exception expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('invalid_parameter_exception', $ex);
         }
     }
@@ -1542,37 +1548,37 @@ final class moodlelib_test extends \advanced_testcase {
         try {
             set_user_preference('_test_user_preferences_pref', array());
             $this->fail('Exception expected - array not valid preference value');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
         try {
             set_user_preference('_test_user_preferences_pref', new \stdClass);
             $this->fail('Exception expected - class not valid preference value');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
         try {
             set_user_preference('_test_user_preferences_pref', 1, array('xx' => 1));
             $this->fail('Exception expected - user instance expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
         try {
             set_user_preference('_test_user_preferences_pref', 1, 'abc');
             $this->fail('Exception expected - user instance expected');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
         try {
             set_user_preference('', 1);
             $this->fail('Exception expected - invalid name accepted');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
         try {
             set_user_preference('1', 1);
             $this->fail('Exception expected - invalid name accepted');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
     }
@@ -2361,14 +2367,14 @@ EOF;
         try {
             delete_user($record);
             $this->fail('Expecting exception for invalid delete_user() $user parameter');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
         $record->id = 1;
         try {
             delete_user($record);
             $this->fail('Expecting exception for invalid delete_user() $user parameter');
-        } catch (\moodle_exception $ex) {
+        } catch (moodle_exception $ex) {
             $this->assertInstanceOf('coding_exception', $ex);
         }
 
@@ -2478,7 +2484,7 @@ EOF;
         $this->assertEquals(convert_to_array($obj), (array)$obj);
 
         // Check that context object (with iterator) is converted to array properly.
-        $obj = \context_system::instance();
+        $obj = system::instance();
         $ar = array(
             'id'           => $obj->id,
             'contextlevel' => $obj->contextlevel,
@@ -2591,7 +2597,7 @@ EOF;
         $this->assertSame('test a', get_config('core', 'phpunit_test_get_config_1'));
 
         // Test cache invalidation.
-        $cache = \cache::make('core', 'config');
+        $cache = cache::make('core', 'config');
         $this->assertIsArray($cache->get('core'));
         $this->assertIsArray($cache->get('mod_forum'));
         set_config('phpunit_test_get_config_1', 'test b');
@@ -2900,7 +2906,7 @@ EOF;
         $this->assertInstanceOf('\core\event\user_loggedin', $event);
         $this->assertEquals('user', $event->objecttable);
         $this->assertEquals($user->id, $event->objectid);
-        $this->assertEquals(\context_system::instance()->id, $event->contextid);
+        $this->assertEquals(system::instance()->id, $event->contextid);
         $this->assertEventContextNotUsed($event);
 
         $user = $DB->get_record('user', array('id'=>$user->id));
@@ -3252,7 +3258,7 @@ EOF;
         $filepath = ($filedir ?: $CFG->dataroot) . '/hello.txt';
         file_put_contents($filepath, 'Hello');
 
-        $user = \core_user::get_support_user();
+        $user = core_user::get_support_user();
         $message = 'Test attachment path';
 
         // Create sink to catch all sent e-mails.
@@ -3281,7 +3287,7 @@ EOF;
      * Test sending an attachment that doesn't exist to email_to_user
      */
     public function test_email_to_user_attachment_missing(): void {
-        $user = \core_user::get_support_user();
+        $user = core_user::get_support_user();
         $message = 'Test attachment path';
 
         // Create sink to catch all sent e-mails.
@@ -3324,7 +3330,7 @@ EOF;
                        "END:VCALENDAR";
         file_put_contents($filepath, $icalcontent);
 
-        $user = \core_user::get_support_user();
+        $user = core_user::get_support_user();
         $message = 'Test calendar attachment';
 
         // Create sink to catch all sent e-mails.
@@ -3376,7 +3382,7 @@ EOF;
         // Test event.
         $this->assertInstanceOf('\core\event\user_password_updated', $event);
         $this->assertSame($user->id, $event->relateduserid);
-        $this->assertEquals(\context_user::instance($user->id), $event->get_context());
+        $this->assertEquals(context_user::instance($user->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 
@@ -3968,7 +3974,7 @@ EOT;
             // Test that from display is set to show no one.
             [
                 'email' => 'fromuser@example.com',
-                'display' => \core_user::MAILDISPLAY_HIDE,
+                'display' => core_user::MAILDISPLAY_HIDE,
                 'samecourse' => false,
                 'config' => "example.com\r\ntest.com",
                 'result' => false
@@ -3976,7 +3982,7 @@ EOT;
             // Test that from display is set to course members only (course member).
             [
                 'email' => 'fromuser@example.com',
-                'display' => \core_user::MAILDISPLAY_COURSE_MEMBERS_ONLY,
+                'display' => core_user::MAILDISPLAY_COURSE_MEMBERS_ONLY,
                 'samecourse' => true,
                 'config' => "example.com\r\ntest.com",
                 'result' => true
@@ -3984,7 +3990,7 @@ EOT;
             // Test that from display is set to course members only (Non course member).
             [
                 'email' => 'fromuser@example.com',
-                'display' => \core_user::MAILDISPLAY_COURSE_MEMBERS_ONLY,
+                'display' => core_user::MAILDISPLAY_COURSE_MEMBERS_ONLY,
                 'samecourse' => false,
                 'config' => "example.com\r\ntest.com",
                 'result' => false
@@ -3992,7 +3998,7 @@ EOT;
             // Test that from display is set to show everyone.
             [
                 'email' => 'fromuser@example.com',
-                'display' => \core_user::MAILDISPLAY_EVERYONE,
+                'display' => core_user::MAILDISPLAY_EVERYONE,
                 'samecourse' => false,
                 'config' => "example.com\r\ntest.com",
                 'result' => true
@@ -4000,21 +4006,21 @@ EOT;
             // Test a few different config value formats for parsing correctness.
             [
                 'email' => 'fromuser@example.com',
-                'display' => \core_user::MAILDISPLAY_EVERYONE,
+                'display' => core_user::MAILDISPLAY_EVERYONE,
                 'samecourse' => false,
                 'config' => "\n test.com\nexample.com \n",
                 'result' => true
             ],
             [
                 'email' => 'fromuser@example.com',
-                'display' => \core_user::MAILDISPLAY_EVERYONE,
+                'display' => core_user::MAILDISPLAY_EVERYONE,
                 'samecourse' => false,
                 'config' => "\r\n example.com \r\n test.com \r\n",
                 'result' => true
             ],
             [
                 'email' => 'fromuser@EXAMPLE.com',
-                'display' => \core_user::MAILDISPLAY_EVERYONE,
+                'display' => core_user::MAILDISPLAY_EVERYONE,
                 'samecourse' => false,
                 'config' => "example.com\r\ntest.com",
                 'result' => true,
@@ -4022,41 +4028,41 @@ EOT;
             // Test from email is not in allowed domain.
             // Test that from display is set to show no one.
             [   'email' => 'fromuser@moodle.com',
-                'display' => \core_user::MAILDISPLAY_HIDE,
+                'display' => core_user::MAILDISPLAY_HIDE,
                 'samecourse' => false,
                 'config' => "example.com\r\ntest.com",
                 'result' => false
             ],
             // Test that from display is set to course members only (course member).
             [   'email' => 'fromuser@moodle.com',
-                'display' => \core_user::MAILDISPLAY_COURSE_MEMBERS_ONLY,
+                'display' => core_user::MAILDISPLAY_COURSE_MEMBERS_ONLY,
                 'samecourse' => true,
                 'config' => "example.com\r\ntest.com",
                 'result' => false
             ],
             // Test that from display is set to course members only (Non course member.
             [   'email' => 'fromuser@moodle.com',
-                'display' => \core_user::MAILDISPLAY_COURSE_MEMBERS_ONLY,
+                'display' => core_user::MAILDISPLAY_COURSE_MEMBERS_ONLY,
                 'samecourse' => false,
                 'config' => "example.com\r\ntest.com",
                 'result' => false
             ],
             // Test that from display is set to show everyone.
             [   'email' => 'fromuser@moodle.com',
-                'display' => \core_user::MAILDISPLAY_EVERYONE,
+                'display' => core_user::MAILDISPLAY_EVERYONE,
                 'samecourse' => false,
                 'config' => "example.com\r\ntest.com",
                 'result' => false
             ],
             // Test a few erroneous config value and confirm failure.
             [   'email' => 'fromuser@moodle.com',
-                'display' => \core_user::MAILDISPLAY_EVERYONE,
+                'display' => core_user::MAILDISPLAY_EVERYONE,
                 'samecourse' => false,
                 'config' => "\r\n   \r\n",
                 'result' => false
             ],
             [   'email' => 'fromuser@moodle.com',
-                'display' => \core_user::MAILDISPLAY_EVERYONE,
+                'display' => core_user::MAILDISPLAY_EVERYONE,
                 'samecourse' => false,
                 'config' => " \n   \n \n ",
                 'result' => false

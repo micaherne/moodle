@@ -65,7 +65,7 @@ abstract class backup_plan_dbops extends backup_dbops {
         global $DB;
 
         // Get the context of the module
-        $contextid = context_module::instance($moduleid)->id;
+        $contextid = module::instance($moduleid)->id;
 
         // Get all the block instances which parentcontextid is the module contextid
         $blockids = array();
@@ -83,7 +83,7 @@ abstract class backup_plan_dbops extends backup_dbops {
         global $DB;
 
         // Get the context of the course
-        $contextid = context_course::instance($courseid)->id;
+        $contextid = course::instance($courseid)->id;
 
         // Get all the block instances which parentcontextid is the course contextid
         $blockids = array();

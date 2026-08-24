@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
@@ -63,7 +65,7 @@ class mnet_simple_host_form extends moodleform {
             return ['wwwroot' => $securityhelper->get_blocked_url_string()];
         }
         if ($host = $DB->get_record('mnet_host', array('wwwroot' => $wwwroot))) {
-            $str = get_string('hostexists', 'mnet', (new moodle_url('/admin/mnet/peers.php', ['hostid' => $host->id]))->out());
+            $str = get_string('hostexists', 'mnet', (new url('/admin/mnet/peers.php', ['hostid' => $host->id]))->out());
             return array('wwwroot' => $str);
         }
         return array();

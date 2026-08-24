@@ -25,7 +25,7 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_url;
+use core\url as moodle_url;
 
 /**
  * URL manager class.

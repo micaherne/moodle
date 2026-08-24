@@ -19,11 +19,12 @@ declare(strict_types = 1);
 namespace gradingform_rubric\grades\grader\gradingpanel\external;
 
 use advanced_testcase;
-use coding_exception;
+use core\exception\coding_exception;
+use core\test\testing_util;
 use core_grades\component_gradeitem;
 use core_external\external_api;
 use mod_forum\local\entities\forum as forum_entity;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Unit tests for core_grades\component_gradeitems;
@@ -104,7 +105,7 @@ final class store_test extends advanced_testcase {
      */
     public function test_execute_store_graded(): void {
         $this->resetAfterTest();
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         [
@@ -233,7 +234,7 @@ final class store_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
 
         $forum = $this->get_forum_instance();

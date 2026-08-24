@@ -24,6 +24,12 @@
  * @author     Yuliya Bozhko <yuliya.bozhko@totaralms.com>
  */
 
+use \core_badges\badge;
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
 use core_badges\reportbuilder\local\systemreports\badges;
 use core_reportbuilder\system_report_factory;
 
@@ -40,15 +46,15 @@ $msg        = optional_param('msg', '', PARAM_TEXT);
 require_login();
 
 if (empty($CFG->enablebadges)) {
-    throw new \moodle_exception('badgesdisabled', 'badges');
+    throw new moodle_exception('badgesdisabled', 'badges');
 }
 
 if (empty($CFG->badges_allowcoursebadges) && ($type == BADGE_TYPE_COURSE)) {
-    throw new \moodle_exception('coursebadgesdisabled', 'badges');
+    throw new moodle_exception('coursebadgesdisabled', 'badges');
 }
 
 if ($type == BADGE_TYPE_COURSE && !$courseid) {
-    throw new \moodle_exception('courseidnotfound');
+    throw new moodle_exception('courseidnotfound');
 }
 
 $urlparams = ['type' => $type];
@@ -57,19 +63,19 @@ if ($course = $DB->get_record('course', ['id' => $courseid])) {
     $urlparams['id'] = $course->id;
 }
 
-$returnurl = new moodle_url('/badges/index.php', $urlparams);
+$returnurl = new url('/badges/index.php', $urlparams);
 $PAGE->set_url($returnurl);
 $PAGE->add_body_class('limitedwidth');
 
 if ($type == BADGE_TYPE_SITE) {
     $title = get_string('sitebadges', 'badges');
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
     $PAGE->set_context($sitecontext);
     if (badges_can_manage_badges($sitecontext)) {
         // Badge managers reach this page via Site administration, so keep the admin layout and heading.
         $PAGE->set_pagelayout('admin');
         $PAGE->set_heading(get_string('administrationsite'));
-        navigation_node::override_active_url(new moodle_url('/badges/index.php', ['type' => BADGE_TYPE_SITE]), true);
+        navigation_node::override_active_url(new url('/badges/index.php', ['type' => BADGE_TYPE_SITE]), true);
     } else {
         // Non-managers reach this page via the profile "Site badges" link, not site administration.
         $PAGE->set_pagelayout('standard');
@@ -78,13 +84,13 @@ if ($type == BADGE_TYPE_SITE) {
     $eventotherparams = ['badgetype' => BADGE_TYPE_SITE];
 } else {
     require_login($course);
-    $coursecontext = context_course::instance($course->id);
+    $coursecontext = course::instance($course->id);
     $title = get_string('coursebadges', 'badges');
     $PAGE->set_context($coursecontext);
     $PAGE->set_pagelayout('incourse');
     $PAGE->set_heading(format_string($course->fullname, true, ['context' => $coursecontext]));
     navigation_node::override_active_url(
-        new moodle_url('/badges/index.php', ['type' => BADGE_TYPE_COURSE, 'id' => $course->id])
+        new url('/badges/index.php', ['type' => BADGE_TYPE_COURSE, 'id' => $course->id])
     );
     $eventotherparams = ['badgetype' => BADGE_TYPE_COURSE, 'courseid' => $course->id];
 }
@@ -115,14 +121,14 @@ if ($delete || $archive) {
         // Archive this badge?
         echo $output->heading(get_string('archivebadge', 'badges', $badge->name));
         $archivebutton = $output->single_button(
-                            new moodle_url($PAGE->url, ['archive' => $badge->id, 'confirm' => 1]),
+                            new url($PAGE->url, ['archive' => $badge->id, 'confirm' => 1]),
                             get_string('archiveconfirm', 'badges'));
         echo $output->box(get_string('archivehelp', 'badges') . $archivebutton, 'generalbox');
 
         // Delete this badge?
         echo $output->heading(get_string('delbadge', 'badges', $badge->name));
         $deletebutton = $output->single_button(
-                            new moodle_url($PAGE->url, ['delete' => $badge->id, 'confirm' => 1]),
+                            new url($PAGE->url, ['delete' => $badge->id, 'confirm' => 1]),
                             get_string('delconfirm', 'badges'));
         echo $output->box(get_string('deletehelp', 'badges') . $deletebutton, 'generalbox');
 

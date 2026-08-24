@@ -22,6 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 
 $contextid = required_param('contextid', PARAM_INT);
@@ -29,7 +37,7 @@ $returnurl  = optional_param('returnurl', null, PARAM_LOCALURL);
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 
-$url = new moodle_url('/admin/roles/check.php', array('contextid' => $contextid));
+$url = new url('/admin/roles/check.php', array('contextid' => $contextid));
 
 if ($course) {
     $isfrontpage = ($course->id == SITEID);
@@ -48,11 +56,11 @@ if ($course) {
 // Security first.
 require_login($course, false, $cm);
 if (!has_any_capability(array('moodle/role:assign', 'moodle/role:safeoverride', 'moodle/role:override', 'moodle/role:manage'), $context)) {
-    throw new \moodle_exception('nopermissions', 'error', '', get_string('checkpermissions', 'core_role'));
+    throw new moodle_exception('nopermissions', 'error', '', get_string('checkpermissions', 'core_role'));
 }
 
 navigation_node::override_active_url($url);
-$pageurl = new moodle_url($url);
+$pageurl = new url($url);
 if ($returnurl) {
     $pageurl->param('returnurl', $returnurl);
 }
@@ -62,7 +70,7 @@ $PAGE->set_show_navigation_footer(false);
 if ($context->contextlevel == CONTEXT_USER and $USER->id != $context->instanceid) {
     $PAGE->navbar->includesettingsbase = true;
     $PAGE->navigation->extend_for_user($user);
-    $PAGE->set_context(context_course::instance($course->id));
+    $PAGE->set_context(course::instance($course->id));
 } else {
     $PAGE->set_context($context);
 }
@@ -145,14 +153,14 @@ if (!is_null($reportuser)) {
         echo $OUTPUT->heading(get_string('rolesforuser', 'core_role', fullname($reportuser)), 3);
         echo html_writer::start_tag('ul');
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         foreach ($roleassignments as $ra) {
             $racontext = context::instance_by_id($ra->contextid);
             $link = html_writer::link($racontext->get_url(), $racontext->get_context_name());
 
             $rolename = $rolenames[$ra->roleid]->localname;
             if (has_capability('moodle/role:manage', $systemcontext)) {
-                $rolename = html_writer::link(new moodle_url('/admin/roles/define.php',
+                $rolename = html_writer::link(new url('/admin/roles/define.php',
                         array('action' => 'view', 'roleid' => $ra->roleid)), $rolename);
             }
 
@@ -190,7 +198,7 @@ echo $OUTPUT->box_end();
 if (!$PAGE->has_secondary_navigation() && $context->contextlevel > CONTEXT_USER) {
     echo html_writer::start_tag('div', array('class'=>'backlink'));
     if ($returnurl) {
-        $backurl = new moodle_url($returnurl);
+        $backurl = new url($returnurl);
     } else {
         $backurl = $context->get_url();
     }

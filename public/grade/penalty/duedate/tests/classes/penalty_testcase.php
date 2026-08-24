@@ -17,7 +17,7 @@
 namespace gradepenalty_duedate\tests;
 
 use advanced_testcase;
-use context_system;
+use core\context\system;
 
 /**
  * Base test.
@@ -46,7 +46,7 @@ abstract class penalty_testcase extends advanced_testcase {
         global $DB;
 
         // Use system context by default.
-        $contextid ??= context_system::instance()->id;
+        $contextid ??= system::instance()->id;
 
         // Remove initial rule.
         $DB->delete_records('gradepenalty_duedate_rule', ['contextid' => $contextid]);

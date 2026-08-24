@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
+use core\url;
 
 /**
  * Task fail delay check
@@ -43,9 +45,9 @@ class maxfaildelay extends check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
-        $url = new \moodle_url('/admin/tasklogs.php');
-        return new \action_link($url, get_string('tasklogs', 'tool_task'));
+    public function get_action_link(): ?action_link {
+        $url = new url('/admin/tasklogs.php');
+        return new action_link($url, get_string('tasklogs', 'tool_task'));
     }
 
     /**

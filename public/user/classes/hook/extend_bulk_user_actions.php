@@ -16,7 +16,7 @@
 
 namespace core_user\hook;
 
-use action_link;
+use core\output\action_link;
 use core\hook\described_hook;
 use core\hook\deprecated_callback_replacement;
 

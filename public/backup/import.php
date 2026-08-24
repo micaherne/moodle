@@ -24,6 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 // Require both the backup and restore libs
@@ -44,7 +49,7 @@ $restoretarget = optional_param('target', backup::TARGET_CURRENT_ADDING, PARAM_I
 
 // Load the course and context
 $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
-$context = context_course::instance($courseid);
+$context = course::instance($courseid);
 
 // Must pass login
 require_login($course);
@@ -54,7 +59,7 @@ require_capability('moodle/restore:restoretargetimport', $context);
 // Set up the page
 $PAGE->set_title($course->shortname . ': ' . get_string('import'));
 $PAGE->set_heading($course->fullname);
-$PAGE->set_url(new moodle_url('/backup/import.php', array('id'=>$courseid)));
+$PAGE->set_url(new url('/backup/import.php', array('id'=>$courseid)));
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('admin');
 
@@ -64,7 +69,7 @@ $renderer = $PAGE->get_renderer('core','backup');
 // Check if we already have a import course id
 if ($importcourseid === false || $searchcourses) {
     // Obviously not... show the selector so one can be chosen
-    $url = new moodle_url('/backup/import.php', array('id'=>$courseid));
+    $url = new url('/backup/import.php', array('id'=>$courseid));
     $search = new import_course_search(array('url'=>$url));
 
     // show the course selector
@@ -83,7 +88,7 @@ if ($importcourseid === false || $searchcourses) {
 
 // Load the course +context to import from
 $importcourse = $DB->get_record('course', array('id'=>$importcourseid), '*', MUST_EXIST);
-$importcontext = context_course::instance($importcourseid);
+$importcontext = course::instance($importcourseid);
 
 // Make sure the user can backup from that course
 require_capability('moodle/backup:backuptargetimport', $importcontext);
@@ -154,7 +159,7 @@ if ($backup->get_stage() == backup_ui::STAGE_FINAL) {
     // backups don't store resulting files ever
     $tempdestination = make_backup_temp_directory($backupid, false);
     if (!file_exists($tempdestination) || !is_dir($tempdestination)) {
-        throw new \moodle_exception('unknownbackupexporterror'); // Shouldn't happen ever.
+        throw new moodle_exception('unknownbackupexporterror'); // Shouldn't happen ever.
     }
 
     // Prepare the restore controller. We don't need a UI here as we will just use what
@@ -184,7 +189,7 @@ if ($backup->get_stage() == backup_ui::STAGE_FINAL) {
                 fulldelete($tempdestination);
 
                 echo $renderer->precheck_notices($precheckresults);
-                echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id'=>$course->id)));
+                echo $OUTPUT->continue_button(new url('/course/view.php', array('id'=>$course->id)));
                 echo $OUTPUT->footer();
                 die();
             }
@@ -223,7 +228,7 @@ if ($backup->get_stage() == backup_ui::STAGE_FINAL) {
     }
     echo $progressbar;
     echo $OUTPUT->notification(get_string('importsuccess', 'backup'), 'notifysuccess');
-    echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id'=>$course->id)));
+    echo $OUTPUT->continue_button(new url('/course/view.php', array('id'=>$course->id)));
 
     // Get and display log data if there was any.
     $loghtml = $logger->get_html();

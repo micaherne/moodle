@@ -23,6 +23,14 @@
  */
 
 
+use core\context\module;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot.'/mod/lesson/lib.php');
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
@@ -37,7 +45,7 @@ $lesson = $DB->get_record('lesson', array('id' => $cm->instance), '*', MUST_EXIS
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 // Check the user has the required capabilities to list overrides.
 require_capability('mod/lesson:manageoverrides', $context);
@@ -58,7 +66,7 @@ if ($mode != "user" and $mode != "group") {
 }
 $groupmode = ($mode == "group");
 
-$url = new moodle_url('/mod/lesson/overrides.php', array('cmid' => $cm->id, 'mode' => $mode));
+$url = new url('/mod/lesson/overrides.php', array('cmid' => $cm->id, 'mode' => $mode));
 
 $PAGE->set_url($url);
 
@@ -73,7 +81,7 @@ $PAGE->activityheader->set_attrs([
 ]);
 $PAGE->set_show_navigation_footer(false);
 
-navigation_node::override_active_url(new moodle_url('/mod/lesson/overrides.php', ['cmid' => $cmid]));
+navigation_node::override_active_url(new url('/mod/lesson/overrides.php', ['cmid' => $cmid]));
 
 $renderer = $PAGE->get_renderer('mod_lesson');
 
@@ -193,11 +201,11 @@ $table->head = array(
         get_string('action'),
 );
 
-$userurl = new moodle_url('/user/view.php', array());
-$groupurl = new moodle_url('/group/overview.php', array('id' => $cm->course));
+$userurl = new url('/user/view.php', array());
+$groupurl = new url('/group/overview.php', array('id' => $cm->course));
 
-$overridedeleteurl = new moodle_url('/mod/lesson/overridedelete.php');
-$overrideediturl = new moodle_url('/mod/lesson/overrideedit.php');
+$overridedeleteurl = new url('/mod/lesson/overridedelete.php');
+$overrideediturl = new url('/mod/lesson/overrideedit.php');
 
 $hasinactive = false; // Whether there are any inactive overrides.
 

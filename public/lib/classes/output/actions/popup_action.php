@@ -17,7 +17,7 @@
 namespace core\output\actions;
 
 use core\exception\coding_exception;
-use moodle_url;
+use core\url;
 
 /**
  * Component action for a popup window.
@@ -64,7 +64,7 @@ class popup_action extends component_action {
     public function __construct($event, $url, $name = 'popup', $params = []) {
         global $CFG;
 
-        $url = new moodle_url($url);
+        $url = new url($url);
 
         if ($name) {
             $checkname = $name;

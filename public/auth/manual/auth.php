@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/authlib.php');
@@ -160,7 +162,7 @@ class auth_plugin_manual extends auth_plugin_base {
         $result = 0;
 
         if (!empty($this->config->expirationtime)) {
-            $user = core_user::get_user_by_username($username, 'id,timecreated');
+            $user = user::get_user_by_username($username, 'id,timecreated');
             $lastpasswordupdatetime = get_user_preferences('auth_manual_passwordupdatetime', $user->timecreated, $user->id);
             $expiretime = $lastpasswordupdatetime + $this->config->expirationtime * DAYSECS;
             $now = time();

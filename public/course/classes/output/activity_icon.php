@@ -23,7 +23,7 @@ use core\output\renderable;
 use core\output\renderer_base;
 use core\output\templatable;
 use core\url;
-use cm_info;
+use core_course\cm_info;
 
 /**
  * Class activity_icon

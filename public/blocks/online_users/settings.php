@@ -22,13 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext('block_online_users_timetosee', get_string('timetosee', 'block_online_users'),
+    $settings->add(new configtext('block_online_users_timetosee', get_string('timetosee', 'block_online_users'),
                    get_string('configtimetosee', 'block_online_users'), 5, PARAM_INT));
 
-    $settings->add(new admin_setting_configcheckbox('block_online_users_onlinestatushiding',
+    $settings->add(new configcheckbox('block_online_users_onlinestatushiding',
             get_string('onlinestatushiding', 'block_online_users'),
             get_string('onlinestatushiding_desc', 'block_online_users'), 1));
 }

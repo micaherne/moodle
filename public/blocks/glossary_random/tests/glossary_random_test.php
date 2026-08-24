@@ -18,7 +18,8 @@ namespace block_glossary_random;
 
 use advanced_testcase;
 use block_glossary_random;
-use context_course;
+use core\context\course;
+use core\plugin_manager;
 
 /**
  * PHPUnit block_glossary_random tests
@@ -48,11 +49,11 @@ final class glossary_random_test extends advanced_testcase {
         // Create a course and prepare the page where the block will be added.
         $course = $this->getDataGenerator()->create_course();
         $page = new \moodle_page();
-        $page->set_context(context_course::instance($course->id));
+        $page->set_context(course::instance($course->id));
         $page->set_pagelayout('course');
 
         $block = new block_glossary_random();
-        $pluginclass = \core_plugin_manager::resolve_plugininfo_class('mod');
+        $pluginclass = plugin_manager::resolve_plugininfo_class('mod');
 
         // If glossary module is enabled, the method should return true.
         $pluginclass::enable_plugin('glossary', 1);

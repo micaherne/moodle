@@ -48,6 +48,9 @@
  */
 namespace mod_lti;
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\url;
 use mod_lti_external;
 use mod_lti_testcase;
 
@@ -379,7 +382,7 @@ final class locallib_test extends mod_lti_testcase {
         $typeconfig = lti_get_type_config($typeid);
 
         $course = $this->getDataGenerator()->create_course();
-        $returnurl = new \moodle_url('/');
+        $returnurl = new url('/');
 
         // Default parameters.
         $result = lti_build_content_item_selection_request($typeid, $course, $returnurl);
@@ -451,7 +454,7 @@ final class locallib_test extends mod_lti_testcase {
 
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
-        $returnurl = new \moodle_url('/');
+        $returnurl = new url('/');
 
         // Should throw Exception on non-existent tool type.
         $this->expectException('moodle_exception');
@@ -477,7 +480,7 @@ final class locallib_test extends mod_lti_testcase {
 
         $typeid = lti_add_type($type, $data);
         $course = $this->getDataGenerator()->create_course();
-        $returnurl = new \moodle_url('/');
+        $returnurl = new url('/');
 
         // Should throw coding_exception on non-array media types.
         $mediatypes = 'image/*,video/*';
@@ -504,7 +507,7 @@ final class locallib_test extends mod_lti_testcase {
 
         $typeid = lti_add_type($type, $data);
         $course = $this->getDataGenerator()->create_course();
-        $returnurl = new \moodle_url('/');
+        $returnurl = new url('/');
 
         // Should throw coding_exception on non-array presentation targets.
         $targets = 'frame,iframe';
@@ -2009,7 +2012,7 @@ MwIDAQAB
         if ($switchedto) {
             $this->setUser($user);
             $role = $DB->get_record('role', array('shortname' => $switchedto));
-            role_switch($role->id, \context_course::instance($course->id));
+            role_switch($role->id, course::instance($course->id));
         }
 
         $this->assertEquals($expected, lti_get_ims_role($user, 0, $course->id, $islti2));
@@ -2198,7 +2201,7 @@ MwIDAQAB
         // reproducible in real life (only Windows + GHA).
         \curl::mock_response('');
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         lti_load_cartridge('http://example.com/mocked/empty/response', []);
     }
 

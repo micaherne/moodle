@@ -24,6 +24,8 @@
 
 namespace mod_component_broken\privacy;
 
+use core\context;
+use core\exception\coding_exception;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
@@ -46,7 +48,7 @@ class provider implements
      * @return  collection     A listing of user data stored through this system.
      */
     public static function get_metadata(collection $collection): collection {
-        throw new \coding_exception(__FUNCTION__);
+        throw new coding_exception(__FUNCTION__);
     }
 
     /**
@@ -56,7 +58,7 @@ class provider implements
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
      */
     public static function get_contexts_for_userid(int $userid): \core_privacy\local\request\contextlist {
-        throw new \coding_exception(__FUNCTION__);
+        throw new coding_exception(__FUNCTION__);
     }
 
     /**
@@ -65,7 +67,7 @@ class provider implements
      * @param   approved_contextlist    $contextlist    The approved contexts to export information for.
      */
     public static function export_user_data(approved_contextlist $contextlist) {
-        throw new \coding_exception(__FUNCTION__);
+        throw new coding_exception(__FUNCTION__);
     }
 
     /**
@@ -73,8 +75,8 @@ class provider implements
      *
      * @param   context                 $context   The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
-        throw new \coding_exception(__FUNCTION__);
+    public static function delete_data_for_all_users_in_context(context $context) {
+        throw new coding_exception(__FUNCTION__);
     }
 
     /**
@@ -83,6 +85,6 @@ class provider implements
      * @param   approved_contextlist    $contextlist    The approved contexts and user information to delete information for.
      */
     public static function delete_data_for_user(approved_contextlist $contextlist) {
-        throw new \coding_exception(__FUNCTION__);
+        throw new coding_exception(__FUNCTION__);
     }
 }

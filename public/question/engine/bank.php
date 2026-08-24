@@ -27,8 +27,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\exception\coding_exception;
 use core\output\notification;
 use core_cache\application_cache;
+use core_cache\cache;
 use core_cache\data_source_interface;
 use core_cache\definition;
 use core_question\local\bank\question_version_status;
@@ -343,7 +346,7 @@ abstract class question_bank {
         }
 
         $quba = question_engine::make_questions_usage_by_activity(
-            'core_question_preview', context_user::instance($USER->id));
+            'core_question_preview', user::instance($USER->id));
         $options = new question_preview_options($question);
         $quba->set_preferred_behaviour($options->behaviour);
 

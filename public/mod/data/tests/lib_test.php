@@ -24,6 +24,11 @@
  */
 namespace mod_data;
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+use core_course\cm_info;
 use core_courseformat\formatactions;
 use stdClass;
 
@@ -217,7 +222,7 @@ final class lib_test extends \advanced_testcase {
         $contentid = $DB->insert_record('data_content', $datacontent);
         $cm = get_coursemodule_from_instance('data', $module->id, $course->id);
 
-        $context = \context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
         $cmt = new \stdClass();
         $cmt->context = $context;
         $cmt->course = $course;
@@ -238,7 +243,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_data\event\comment_created', $event);
         $this->assertEquals($context, $event->get_context());
-        $url = new \moodle_url('/mod/data/view.php', array('id' => $cm->id));
+        $url = new url('/mod/data/view.php', array('id' => $cm->id));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -279,7 +284,7 @@ final class lib_test extends \advanced_testcase {
         $contentid = $DB->insert_record('data_content', $datacontent);
         $cm = get_coursemodule_from_instance('data', $module->id, $course->id);
 
-        $context = \context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
         $cmt = new \stdClass();
         $cmt->context = $context;
         $cmt->course = $course;
@@ -301,7 +306,7 @@ final class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_data\event\comment_deleted', $event);
         $this->assertEquals($context, $event->get_context());
-        $url = new \moodle_url('/mod/data/view.php', array('id' => $module->cmid));
+        $url = new url('/mod/data/view.php', array('id' => $module->cmid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -555,7 +560,7 @@ final class lib_test extends \advanced_testcase {
 
         $module = $this->getDataGenerator()->create_module('data', $record);
         $cm = get_coursemodule_from_instance('data', $module->id, $course->id);
-        $context = \context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         $this->getDataGenerator()->role_assign($roleid, $user->id, $context->id);
 
@@ -587,7 +592,7 @@ final class lib_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course($course);
         $data = $this->getDataGenerator()->create_module('data', array('course' => $course->id));
         $cm = get_coursemodule_from_instance('data', $data->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Create users.
         $user1 = $this->getDataGenerator()->create_user();
@@ -1122,7 +1127,7 @@ final class lib_test extends \advanced_testcase {
         \core_tag_index_builder::reset_caches();
 
         // User can search data records inside a course.
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $res = mod_data_get_tagged_records($tag, false, 0, 0, 1, 0);
 
         $this->assertStringContainsString('value11', $res->content);
@@ -1221,7 +1226,7 @@ final class lib_test extends \advanced_testcase {
         );
         $data = $this->getDataGenerator()->create_module('data', $record);
         $cm = get_coursemodule_from_instance('data', $data->id, $course->id);
-        $cm = \cm_info::create($cm);
+        $cm = cm_info::create($cm);
         $this->setUser($student);
 
         // Check that upon creation, the updates are only about the new configuration created.
@@ -1646,8 +1651,8 @@ final class lib_test extends \advanced_testcase {
             'completion' => 2,
             'completionentries' => 0
         ]);
-        $cm1 = \cm_info::create(get_coursemodule_from_instance('data', $data1->id));
-        $cm2 = \cm_info::create(get_coursemodule_from_instance('data', $data2->id));
+        $cm1 = cm_info::create(get_coursemodule_from_instance('data', $data1->id));
+        $cm2 = cm_info::create(get_coursemodule_from_instance('data', $data2->id));
 
         // Data for the stdClass input type.
         // This type of input would occur when checking the default completion rules for an activity type, where we don't have
@@ -1953,7 +1958,7 @@ final class lib_test extends \advanced_testcase {
     public function test_creation_with_no_calendar_capabilities(): void {
         $this->resetAfterTest();
         $course = self::getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = self::getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $roleid = self::getDataGenerator()->create_role();
         self::getDataGenerator()->role_assign($roleid, $user->id, $context->id);
@@ -2183,7 +2188,7 @@ final class lib_test extends \advanced_testcase {
 
         $data = $this->getDataGenerator()->create_module('data', ['course' => $course->id]  );
         if ($expected === 'exception') {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         }
         $field = data_get_field_new($type, $data);
         $this->assertStringContainsString($expected, get_class($field));

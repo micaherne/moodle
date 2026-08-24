@@ -24,6 +24,8 @@
 
 namespace core_webservice;
 
+use core\context\system;
+use core\user;
 use moodleform;
 
 /**
@@ -71,9 +73,9 @@ class token_filter extends moodleform {
             'valuehtmlcallback' => function($userid) {
                 global $DB, $OUTPUT;
 
-                $context = \context_system::instance();
+                $context = system::instance();
                 $fields = \core_user\fields::for_name()->with_identity($context, false);
-                $record = \core_user::get_user($userid, 'id' . $fields->get_sql()->selects, MUST_EXIST);
+                $record = user::get_user($userid, 'id' . $fields->get_sql()->selects, MUST_EXIST);
 
                 $user = (object)[
                     'id' => $record->id,

@@ -16,6 +16,8 @@
 
 namespace core\router\scope;
 
+use core\exception\coding_exception;
+
 /**
  * The identifier attribute for a scope.
  *
@@ -38,12 +40,12 @@ class identifier_attribute {
         $identifier = trim($this->identifier);
 
         if ($identifier === '') {
-            throw new \coding_exception('OAuth2 scope identifier cannot be empty.');
+            throw new coding_exception('OAuth2 scope identifier cannot be empty.');
         }
 
         // Validate the scope identifier.
         if (!preg_match('/^[a-z][a-z0-9_]*$/', $identifier)) {
-            throw new \coding_exception(
+            throw new coding_exception(
                 "Invalid OAuth2 scope identifier '{$identifier}'. Scope identifiers must start with a letter and " .
                 "consist of lowercase letters, numbers, and underscores."
             );

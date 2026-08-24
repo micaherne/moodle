@@ -16,6 +16,9 @@
 
 namespace tool_brickfield\local\areas\core_question;
 
+use core\context\course;
+use core\context\module;
+
 /**
  * Tests for questionanswer.
  *
@@ -43,14 +46,14 @@ final class questionanswers_test extends \advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $qbank = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbankcontext = \context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
         $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat1 = $generator->create_question_category(['contextid' => $qbankcontext->id]);
         $question1 = $generator->create_question('multichoice', null, ['category' => $cat1->id]);
         $question2 = $generator->create_question('multichoice', null, ['category' => $cat1->id]);
         $questionanswers = new questionanswers();
         $event = \core\event\question_updated::create_from_question_instance($question1,
-            \context_course::instance($course->id));
+            course::instance($course->id));
         $rs = $questionanswers->find_relevant_areas($event);
         $this->assertNotNull($rs);
 

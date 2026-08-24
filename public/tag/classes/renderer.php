@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +83,7 @@ class core_tag_renderer extends plugin_renderer_base {
         $this->page->requires->js_call_amd('core/tag', 'initTagindexPage');
 
         $tagname = $tag->get_display_name();
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
 
         if ($tag->flag > 0 && has_capability('moodle/tag:manage', $systemcontext)) {
             $tagname = '<span class="flagged-tag">' . $tagname . '</span>';
@@ -162,7 +167,7 @@ class core_tag_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function search_form($query = '', $tagcollid = 0) {
-        $searchurl = new moodle_url('/tag/search.php');
+        $searchurl = new url('/tag/search.php');
         $output = '<form action="' . $searchurl . '" class="d-grid gap-2 d-sm-flex">';
         $output .= '<label class="accesshide" for="searchform_query">' . get_string('searchtags', 'tag') . '</label>';
         $output .= '<input id="searchform_query" name="query" type="text" class="form-control" value="' . s($query) . '" />';

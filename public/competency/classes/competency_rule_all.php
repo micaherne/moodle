@@ -25,7 +25,7 @@
 namespace core_competency;
 defined('MOODLE_INTERNAL') || die();
 
-use lang_string;
+use core\lang_string;
 
 /**
  * Competency rule all class.

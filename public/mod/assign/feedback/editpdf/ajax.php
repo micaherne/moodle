@@ -26,6 +26,9 @@ use \assignfeedback_editpdf\document_services;
 use \assignfeedback_editpdf\combined_document;
 use \assignfeedback_editpdf\page_editor;
 use \assignfeedback_editpdf\comments_quick_list;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
 
 define('AJAX_SCRIPT', true);
 
@@ -47,7 +50,7 @@ if ($markid === 0) {
 }
 
 $cm = \get_coursemodule_from_instance('assign', $assignmentid, 0, false, MUST_EXIST);
-$context = \context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 $assignment = new \assign($context, null, null);
 
@@ -62,7 +65,7 @@ if ($ismarking) {
 }
 
 if (!$assignment->can_view_submission($userid)) {
-    throw new \moodle_exception('nopermission');
+    throw new moodle_exception('nopermission');
 }
 
 if ($action === 'pollconversions') {
@@ -147,7 +150,7 @@ if ($action === 'pollconversions') {
                 $index = count($response->pages);
                 $page = new stdClass();
                 $comments = page_editor::get_comments($grade->id, $index, $draft, $markid);
-                $page->url = moodle_url::make_pluginfile_url(
+                $page->url = url::make_pluginfile_url(
                     $context->id,
                     'assignfeedback_editpdf',
                     $filearea,
@@ -217,7 +220,7 @@ if ($action === 'pollconversions') {
 
     $response->url = '';
     if ($file) {
-        $url = moodle_url::make_pluginfile_url(
+        $url = url::make_pluginfile_url(
             $assignment->get_context()->id,
             'assignfeedback_editpdf',
             $filearea,
@@ -284,7 +287,7 @@ if ($action === 'pollconversions') {
     [$filearea, $fileitemid] = document_services::get_file_area_and_id($assignment, $grade, document_services::PAGE_IMAGE_FILEAREA);
     $pagefile = document_services::rotate_page($assignment, $userid, $attemptnumber, $index, $rotateleft, $markid);
     $page = (object) [
-        'url' => moodle_url::make_pluginfile_url(
+        'url' => url::make_pluginfile_url(
             $context->id,
             document_services::COMPONENT,
             $filearea,

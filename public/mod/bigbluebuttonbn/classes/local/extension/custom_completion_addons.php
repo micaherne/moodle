@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_bigbluebuttonbn\local\extension;
 
-use cm_info;
+use core_course\cm_info;
 
 /**
  * A class to deal with completion rules addons in a subplugin

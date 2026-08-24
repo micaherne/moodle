@@ -24,6 +24,8 @@
 
 namespace mod_assign\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -111,7 +113,7 @@ class assessable_submitted extends base {
         parent::validate_data();
 
         if (!isset($this->other['submission_editable'])) {
-            throw new \coding_exception('The \'submission_editable\' value must be set in other.');
+            throw new coding_exception('The \'submission_editable\' value must be set in other.');
         }
     }
 

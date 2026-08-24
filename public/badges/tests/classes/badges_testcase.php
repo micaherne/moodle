@@ -16,7 +16,7 @@
 
 namespace core_badges\tests;
 
-use badge;
+use \core_badges\badge;
 use core_tag_tag;
 use stdClass;
 

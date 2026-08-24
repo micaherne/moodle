@@ -28,6 +28,8 @@
 
 namespace core_question\local\bank;
 
+use core\exception\moodle_exception;
+
 /**
  * Class helper
  *
@@ -48,7 +50,7 @@ class helper {
      */
     public static function require_plugin_enabled(string $pluginname): void {
         if (!\core\plugininfo\qbank::is_plugin_enabled($pluginname)) {
-            throw new \moodle_exception('The following plugin is either disabled or missing from disk: ' . $pluginname);
+            throw new moodle_exception('The following plugin is either disabled or missing from disk: ' . $pluginname);
         }
     }
 }

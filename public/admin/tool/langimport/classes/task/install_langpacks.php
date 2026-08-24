@@ -16,6 +16,9 @@
 
 namespace tool_langimport\task;
 
+use core\url;
+use core\user;
+
 /**
  * Ad hoc task to install one or more language packs.
  *
@@ -66,10 +69,10 @@ class install_langpacks extends \core\task\adhoc_task {
 
         $message->component = 'moodle';
         $message->name = 'notices';
-        $message->userfrom = \core_user::get_noreply_user();
+        $message->userfrom = user::get_noreply_user();
         $message->userto = $this->get_userid();
         $message->notification = 1;
-        $message->contexturl = (new \moodle_url('/admin/tool/langimport/index.php'))->out(false);
+        $message->contexturl = (new url('/admin/tool/langimport/index.php'))->out(false);
         $message->contexturlname = get_string('pluginname', 'tool_langimport');
 
         $message->subject = get_string('installfinished', 'tool_langimport');
@@ -92,10 +95,10 @@ class install_langpacks extends \core\task\adhoc_task {
 
         $message->component = 'moodle';
         $message->name = 'notices';
-        $message->userfrom = \core_user::get_noreply_user();
+        $message->userfrom = user::get_noreply_user();
         $message->userto = $this->get_userid();
         $message->notification = 1;
-        $message->contexturl = (new \moodle_url('/admin/tool/langimport/index.php'))->out(false);
+        $message->contexturl = (new url('/admin/tool/langimport/index.php'))->out(false);
         $message->contexturlname = get_string('pluginname', 'tool_langimport');
 
         $message->subject = get_string('installfailed', 'tool_langimport');

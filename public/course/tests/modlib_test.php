@@ -16,6 +16,11 @@
 
 namespace core_course;
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
+use core\plugin_manager;
 use core_ai\ai_test_trait;
 use core_courseformat\formatactions;
 
@@ -66,7 +71,7 @@ final class modlib_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $course = self::getDataGenerator()->create_course();
-        $PAGE->set_context(\context_course::instance($course->id));
+        $PAGE->set_context(course::instance($course->id));
 
         $this->create_ai_provider([$actionname], \aiprovider_openai\provider::class);
         set_config('enabled', 1, $placement);
@@ -84,7 +89,7 @@ final class modlib_test extends \advanced_testcase {
 
         // Simulate the placement plugin being uninstalled.
         unset_config('version', $placement);
-        \core_plugin_manager::reset_caches();
+        plugin_manager::reset_caches();
 
         $uninstalled = set_moduleinfo_defaults(clone $moduleinfo);
         $this->assertObjectNotHasProperty('enabledaiactions', $uninstalled);
@@ -130,7 +135,7 @@ final class modlib_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $course = self::getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         // Test with a complex module, like assign.
         $assignmodule = $DB->get_record('modules', array('name' => 'assign'), '*', MUST_EXIST);
         $sectionnumber = 1;
@@ -179,7 +184,7 @@ final class modlib_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $course = self::getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         // Test with a complex module, like assign.
         $assignmodule = $DB->get_record('modules', ['name' => 'assign'], '*', MUST_EXIST);
         $sectionnumber = 1;
@@ -224,7 +229,7 @@ final class modlib_test extends \advanced_testcase {
         $assignmodule = $DB->get_record('modules', array('name' => 'assign'), '*', MUST_EXIST);
         $assign = self::getDataGenerator()->create_module('assign', array('course' => $course->id));
         $assigncm = get_coursemodule_from_id('assign', $assign->cmid);
-        $assigncontext = \context_module::instance($assign->cmid);
+        $assigncontext = module::instance($assign->cmid);
 
         list($cm, $context, $module, $data, $cw) = get_moduleinfo_data($assigncm, $course);
         $this->assertEquals($assigncm, $cm);
@@ -411,7 +416,7 @@ final class modlib_test extends \advanced_testcase {
         $teacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
         role_change_permission(
             $teacherrole->id,
-            \context_course::instance($course->id),
+            course::instance($course->id),
             'mod/label:addinstance',
             CAP_PROHIBIT
         );
@@ -420,7 +425,7 @@ final class modlib_test extends \advanced_testcase {
         $this->getDataGenerator()->enrol_user($user->id, $course->id, 'editingteacher');
         $this->setUser($user);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage('This module (label) has been disabled for this particular course');
         can_add_moduleinfo($course, 'label', $section->section);
     }
@@ -452,14 +457,14 @@ final class modlib_test extends \advanced_testcase {
         $this->setUser($user);
 
         if (!$hascapability) {
-            $this->expectException(\required_capability_exception::class);
+            $this->expectException(required_capability_exception::class);
         }
 
         $result = can_add_moduleinfo($course, 'label', $section->section);
 
         $this->assertEquals($module, $result[0]);
         $this->assertEquals(
-            \context_course::instance($course->id),
+            course::instance($course->id),
             $result[1]
         );
         $this->assertEquals($section->id, $result[2]->id);
@@ -495,14 +500,14 @@ final class modlib_test extends \advanced_testcase {
         $this->setUser($user);
 
         if (!$hascapability) {
-            $this->expectException(\required_capability_exception::class);
+            $this->expectException(required_capability_exception::class);
         }
 
         $result = can_add_moduleinfo($course, 'label', $section->section);
 
         $this->assertEquals($module, $result[0]);
         $this->assertEquals(
-            \context_course::instance($course->id),
+            course::instance($course->id),
             $result[1]
         );
         $this->assertEquals($section->id, $result[2]->id);

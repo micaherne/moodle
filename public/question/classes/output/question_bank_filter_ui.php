@@ -16,8 +16,9 @@
 
 namespace core_question\output;
 
+use core\context;
 use core\output\datafilter;
-use renderer_base;
+use core\output\renderer_base;
 use stdClass;
 
 /**
@@ -59,7 +60,7 @@ class question_bank_filter_ui extends datafilter {
      * @param array $extraparams additional parameters required for a particular view class.
      */
     public function __construct(
-        \context $context,
+        context $context,
         protected array $searchconditions,
         protected array $additionalparams,
         protected string $component,

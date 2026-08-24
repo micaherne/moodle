@@ -29,6 +29,10 @@
  * @copyright 2010 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context_helper;
+use core\output\renderable;
+use core\url;
+
 abstract class restore_search_base implements renderable {
 
     /**
@@ -106,7 +110,7 @@ abstract class restore_search_base implements renderable {
         $params = array(
             $this->get_varsearch()    => $this->get_search()
         );
-        return ($this->url !== null) ? new moodle_url($this->url, $params) : new moodle_url($PAGE->url, $params);
+        return ($this->url !== null) ? new url($this->url, $params) : new url($PAGE->url, $params);
     }
 
     /**
@@ -143,7 +147,7 @@ abstract class restore_search_base implements renderable {
      * Sets the page URL
      * @param moodle_url $url
      */
-    final public function set_url(moodle_url $url) {
+    final public function set_url(url $url) {
         $this->url = $url;
     }
 

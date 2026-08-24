@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\event;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core\event\base;
 use core_reportbuilder\local\models\report;
 

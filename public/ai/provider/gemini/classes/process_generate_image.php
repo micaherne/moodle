@@ -16,6 +16,8 @@
 
 namespace aiprovider_gemini;
 
+use core\context\user;
+use core\exception\coding_exception;
 use core_ai\ai_image;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
@@ -121,7 +123,7 @@ class process_generate_image extends abstract_processor {
         // We put the file in the user draft area initially.
         // Placements (on behalf of the user) can then move it to the correct location.
         $fileinfo = new \stdClass();
-        $fileinfo->contextid = \context_user::instance($userid)->id;
+        $fileinfo->contextid = user::instance($userid)->id;
         $fileinfo->filearea = 'draft';
         $fileinfo->component = 'user';
         $fileinfo->itemid = file_get_unused_draft_itemid();
@@ -145,7 +147,7 @@ class process_generate_image extends abstract_processor {
             case 'hd':
                 return '2k';
             default:
-                throw new \coding_exception('Invalid image quality: ' . $quality);
+                throw new coding_exception('Invalid image quality: ' . $quality);
         }
     }
 
@@ -163,7 +165,7 @@ class process_generate_image extends abstract_processor {
         } else if ($orientation === 'portrait') {
             $ratio = '9:16';
         } else {
-            throw new \coding_exception('Invalid orientation: ' . $orientation);
+            throw new coding_exception('Invalid orientation: ' . $orientation);
         }
         return $ratio;
     }

@@ -16,6 +16,8 @@
 
 namespace message_email\task;
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -65,7 +67,7 @@ final class send_email_test extends \advanced_testcase {
             'core_group',
             'groups',
             $group1->id,
-            \context_course::instance($course->id)->id
+            course::instance($course->id)->id
         );
 
         $conversation2 = \core_message\api::create_conversation(
@@ -76,7 +78,7 @@ final class send_email_test extends \advanced_testcase {
             'core_group',
             'groups',
             $group2->id,
-            \context_course::instance($course->id)->id
+            course::instance($course->id)->id
         );
 
         // Go through each conversation.

@@ -22,7 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 $suffix = get_file_argument();
-redirect(new moodle_url('/admin/tool/componentlibrary/index.php' . $suffix));
+redirect(new url('/admin/tool/componentlibrary/index.php' . $suffix));

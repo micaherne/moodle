@@ -16,6 +16,7 @@
 
 namespace core\oauth2\server\repository;
 
+use core\context\system;
 use PHPUnit\Framework\Attributes\CoversClass;
 use League\OAuth2\Server\Exception\UniqueTokenIdentifierConstraintViolationException;
 use core\oauth2\server\entity\client_entity;
@@ -54,7 +55,7 @@ final class refresh_token_repository_test extends \advanced_testcase {
         $DB->insert_record('oauth2_server_clients', [
             'name' => 'Test client',
             'clientidentifier' => 'client-id',
-            'ownercontext' => \context_system::instance()->id,
+            'ownercontext' => system::instance()->id,
             'status' => client_entity::STATUS_ACTIVE,
             'isconfidential' => 1,
             'timecreated' => time(),
@@ -104,7 +105,7 @@ final class refresh_token_repository_test extends \advanced_testcase {
         $DB->insert_record('oauth2_server_clients', [
             'name' => 'Test client',
             'clientidentifier' => 'client-id',
-            'ownercontext' => \context_system::instance()->id,
+            'ownercontext' => system::instance()->id,
             'status' => client_entity::STATUS_ACTIVE,
             'isconfidential' => 1,
             'timecreated' => time(),

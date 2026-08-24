@@ -16,7 +16,7 @@
 
 namespace qtype_multianswer\task;
 
-use context_system;
+use core\context\system;
 use core\task\stored_progress_task_trait;
 use core_question\local\bank\question_version_status;
 use question_bank;
@@ -140,7 +140,7 @@ class cleanup_duplicate_subquestions extends \core\task\adhoc_task {
                     debugging('Deleting question ' . $duplicate->id . ' which is no longer linked to a context. ' .
                         'Assuming system context to avoid errors, but this may mean that some data like files, ' .
                         'tags, are not cleaned up.');
-                    $questiondata->contextid = context_system::instance()->id;
+                    $questiondata->contextid = system::instance()->id;
                     $questiondata->categoryid = 0;
                 }
 

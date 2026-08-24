@@ -17,6 +17,7 @@
 namespace mod_bigbluebuttonbn\task;
 
 use advanced_testcase;
+use core\exception\coding_exception;
 
 /**
  * Class containing the scheduled task for lti module.
@@ -85,7 +86,7 @@ final class base_send_notification_test extends advanced_testcase {
         $rcm = $this->get_instance_reflection();
 
         // This should throw a coding exception since there is no instanceid set.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $this->expectExceptionMessage("Task custom data was missing instanceid");
         $rcm->invoke($stub);
     }

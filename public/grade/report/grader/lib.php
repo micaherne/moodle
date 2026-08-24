@@ -25,7 +25,17 @@
 require_once($CFG->dirroot . '/grade/report/lib.php');
 require_once($CFG->libdir.'/tablelib.php');
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+use core\user;
+use core_cache\cache;
+use core_cache\store;
 use core_grades\penalty_manager;
+use core_table\output\html_table;
+use core_table\output\html_table_cell;
+use core_table\output\html_table_row;
 
 /**
  * Class providing an API for the grader report building and displaying.
@@ -143,7 +153,7 @@ class grade_report_grader extends grade_report {
         global $CFG;
         parent::__construct($courseid, $gpr, $context, $page);
 
-        $this->canviewhidden = has_capability('moodle/grade:viewhidden', context_course::instance($this->course->id));
+        $this->canviewhidden = has_capability('moodle/grade:viewhidden', course::instance($this->course->id));
 
         // load collapsed settings for this report
         $this->collapsed = static::get_collapsed_preferences($this->course->id);
@@ -167,14 +177,14 @@ class grade_report_grader extends grade_report {
 
         // base url for sorting by first/last name
 
-        $this->baseurl = new moodle_url('index.php', array('id' => $this->courseid));
+        $this->baseurl = new url('index.php', array('id' => $this->courseid));
 
         $studentsperpage = $this->get_students_per_page();
         if (!empty($this->page) && !empty($studentsperpage)) {
             $this->baseurl->params(array('perpage' => $studentsperpage, 'page' => $this->page));
         }
 
-        $this->pbarurl = new moodle_url('/grade/report/grader/index.php', array('id' => $this->courseid));
+        $this->pbarurl = new url('/grade/report/grader/index.php', array('id' => $this->courseid));
 
         $this->setup_groups();
         $this->setup_users();
@@ -262,7 +272,7 @@ class grade_report_grader extends grade_report {
                     }
 
                     if (!$gradeitem = grade_item::fetch(array('id'=>$itemid, 'courseid'=>$this->courseid))) {
-                        throw new \moodle_exception('invalidgradeitemid');
+                        throw new moodle_exception('invalidgradeitemid');
                     }
 
                     // Pre-process grade
@@ -645,7 +655,7 @@ class grade_report_grader extends grade_report {
         global $CFG, $OUTPUT;
 
         // Course context to determine how the user details should be displayed.
-        $coursecontext = context_course::instance($this->courseid);
+        $coursecontext = course::instance($this->courseid);
 
         $rows = [];
 
@@ -733,14 +743,14 @@ class grade_report_grader extends grade_report {
             $usercell->scope = 'row';
 
             if ($showuserimage) {
-                $usercell->text = $OUTPUT->render(\core_user::get_profile_picture($user, $coursecontext, [
+                $usercell->text = $OUTPUT->render(user::get_profile_picture($user, $coursecontext, [
                     'link' => false, 'visibletoscreenreaders' => false
                 ]));
             }
 
             $fullname = fullname($user, $viewfullnames);
             $usercell->text = html_writer::link(
-                \core_user::get_profile_url($user, $coursecontext),
+                user::get_profile_url($user, $coursecontext),
                 $usercell->text . $fullname,
                 ['class' => 'username']
             );
@@ -827,7 +837,7 @@ class grade_report_grader extends grade_report {
             }
         }
 
-        $cache = \cache::make_from_params(\cache_store::MODE_REQUEST, 'gradereport_grader', 'scales');
+        $cache = cache::make_from_params(store::MODE_REQUEST, 'gradereport_grader', 'scales');
         $scalesarray = $cache->get(get_class($this));
         if (!$scalesarray) {
             $scalesarray = $DB->get_records_list('scale', 'id', $scaleslist);
@@ -1747,7 +1757,7 @@ class grade_report_grader extends grade_report {
      *
      * @return string|null
      */
-    public function get_category_view_mode_link(moodle_url $url, string $title, string $action, bool $active = false): ?string {
+    public function get_category_view_mode_link(url $url, string $title, string $action, bool $active = false): ?string {
         $urlnew = $url;
         $urlnew->param('action', $action);
         $active = $active ? 'true' : 'false';
@@ -1763,7 +1773,7 @@ class grade_report_grader extends grade_report {
      * @throws moodle_exception
      */
     public function get_hide_show_link(): string {
-        $link = new moodle_url('#', []);
+        $link = new url('#', []);
         return html_writer::link(
             $link->out(false),
             get_string('collapse'),
@@ -1778,7 +1788,7 @@ class grade_report_grader extends grade_report {
      * @throws moodle_exception
      */
     public function get_default_sortable(): string {
-        $sortlink = new moodle_url('/grade/report/grader/index.php', [
+        $sortlink = new url('/grade/report/grader/index.php', [
             'id' => $this->courseid,
             'sortitemid' => 'firstname',
             'sort' => 'asc'
@@ -1823,7 +1833,7 @@ class grade_report_grader extends grade_report {
                 $textgrade = true;
             }
 
-            $cache = \cache::make_from_params(\cache_store::MODE_REQUEST, 'gradereport_grader', 'scales');
+            $cache = cache::make_from_params(store::MODE_REQUEST, 'gradereport_grader', 'scales');
             $scalesarray = $cache->get(get_class($this));
 
             if ($textgrade || ($item->gradetype == GRADE_TYPE_TEXT)) {
@@ -1853,7 +1863,7 @@ class grade_report_grader extends grade_report {
  * @param stdClass|null $templatecontext Template context
  * @return stdClass|null
  */
-function gradereport_grader_get_report_link(context_course $context, int $courseid,
+function gradereport_grader_get_report_link(course $context, int $courseid,
         array $element, grade_plugin_return $gpr, string $mode, ?stdClass $templatecontext): ?stdClass {
 
     static $report = null;
@@ -1873,7 +1883,7 @@ function gradereport_grader_get_report_link(context_course $context, int $course
         $strswitchplus = get_string('gradesonly', 'grades');
         $strswitchwhole = get_string('fullmode', 'grades');
 
-        $url = new moodle_url($gpr->get_return_url(null, ['target' => $element['eid'], 'sesskey' => sesskey()]));
+        $url = new url($gpr->get_return_url(null, ['target' => $element['eid'], 'sesskey' => sesskey()]));
 
         $gradesonly = false;
         $aggregatesonly = false;

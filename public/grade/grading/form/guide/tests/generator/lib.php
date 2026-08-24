@@ -28,6 +28,10 @@ defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/guide.php');
 require_once(__DIR__ . '/criterion.php');
 
+use core\context;
+use core\context\module;
+use core\exception\coding_exception;
+use core\test\testing_util;
 use tests\gradingform_guide\generator\guide;
 use tests\gradingform_guide\generator\criterion;
 
@@ -63,11 +67,11 @@ class gradingform_guide_generator extends component_generator_base {
         global $USER;
 
         if ($USER->id === 0) {
-            throw new \coding_exception('Creation of a guide must currently be run as a user.');
+            throw new coding_exception('Creation of a guide must currently be run as a user.');
         }
 
         // Fetch the controller for this context/component/area.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $gradinggenerator = $generator->get_plugin_generator('core_grading');
         $controller = $gradinggenerator->create_instance($context, $component, $area, 'guide');
 
@@ -174,15 +178,15 @@ class gradingform_guide_generator extends component_generator_base {
      * @return gradingform_guide_controller
      */
     public function get_test_guide(
-        context_module $context,
+        module $context,
         string $component = 'mod_assign',
         string $areaname = 'submission'
     ): gradingform_guide_controller {
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $gradinggenerator = $generator->get_plugin_generator('core_grading');
         $controller = $gradinggenerator->create_instance($context, $component, $areaname, 'guide');
 
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $guidegenerator = $generator->get_plugin_generator('gradingform_guide');
 
         $guide = $guidegenerator->get_guide('testguide', 'Description text');
@@ -223,7 +227,7 @@ class gradingform_guide_generator extends component_generator_base {
         float $picturescore,
         string $pictureremark
     ): array {
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $guidegenerator = $generator->get_plugin_generator('gradingform_guide');
         return $guidegenerator->get_submitted_form_data($controller, $itemid, [
             'Spelling mistakes' => [

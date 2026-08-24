@@ -25,17 +25,22 @@
  * @package filter_mediaplugin
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 
 // Only available to site admins.
 require_login();
 if (!is_siteadmin()) {
-    throw new \moodle_exception('nopermissions', 'error', '', 'perftest');
+    throw new moodle_exception('nopermissions', 'error', '', 'perftest');
 }
 
 // Set up page.
-$PAGE->set_context(context_system::instance());
-$PAGE->set_url(new moodle_url('/filter/mediaplugin/dev/perftest.php'));
+$PAGE->set_context(system::instance());
+$PAGE->set_url(new url('/filter/mediaplugin/dev/perftest.php'));
 $PAGE->set_heading($SITE->fullname);
 print $OUTPUT->header();
 

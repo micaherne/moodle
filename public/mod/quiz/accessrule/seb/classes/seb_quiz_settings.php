@@ -30,10 +30,13 @@ use CFPropertyList\CFBoolean;
 use CFPropertyList\CFDictionary;
 use CFPropertyList\CFNumber;
 use CFPropertyList\CFString;
+use core\exception\coding_exception;
 use core\persistent;
-use lang_string;
-use moodle_exception;
-use moodle_url;
+use core\lang_string;
+use core\exception\moodle_exception;
+use core\url;
+use core_cache\application_cache;
+use core_cache\cache;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -262,8 +265,8 @@ class seb_quiz_settings extends persistent {
      *
      * @return \cache_application
      */
-    private static function get_config_key_cache(): \cache_application {
-        return \cache::make('quizaccess_seb', 'configkey');
+    private static function get_config_key_cache(): application_cache {
+        return cache::make('quizaccess_seb', 'configkey');
     }
 
     /**
@@ -271,8 +274,8 @@ class seb_quiz_settings extends persistent {
      *
      * @return \cache_application
      */
-    private static function get_config_cache(): \cache_application {
-        return \cache::make('quizaccess_seb', 'config');
+    private static function get_config_cache(): application_cache {
+        return cache::make('quizaccess_seb', 'config');
     }
 
     /**
@@ -280,8 +283,8 @@ class seb_quiz_settings extends persistent {
      *
      * @return \cache_application
      */
-    private static function get_quiz_settings_cache(): \cache_application {
-        return \cache::make('quizaccess_seb', 'quizsettings');
+    private static function get_quiz_settings_cache(): application_cache {
+        return cache::make('quizaccess_seb', 'quizsettings');
     }
 
     /**
@@ -523,7 +526,7 @@ class seb_quiz_settings extends persistent {
     private function process_required_enforced_settings() {
         global $CFG;
 
-        $quizurl = new moodle_url($CFG->wwwroot . "/mod/quiz/view.php", ['id' => $this->get('cmid')]);
+        $quizurl = new url($CFG->wwwroot . "/mod/quiz/view.php", ['id' => $this->get('cmid')]);
         $this->plist->set_or_update_value('startURL', new CFString($quizurl->out(true)));
         $this->plist->set_or_update_value('sendBrowserExamKey', new CFBoolean(true));
 
@@ -555,7 +558,7 @@ class seb_quiz_settings extends persistent {
         $map = $this->get_bool_seb_setting_map();
 
         if (!isset($map[$name])) {
-            throw new \coding_exception('Provided setting name can not be found in known bool settings');
+            throw new coding_exception('Provided setting name can not be found in known bool settings');
         }
 
         $enabled = $this->raw_get($name) == 1 ? true : false;

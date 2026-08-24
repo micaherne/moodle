@@ -25,6 +25,11 @@
 
 namespace core_tag\event;
 
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -51,7 +56,7 @@ final class events_test extends \advanced_testcase {
         $this->setAdminUser();
 
         // Save the system context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         // Create a tag we are going to update.
         $tag = $this->getDataGenerator()->create_tag();
@@ -102,18 +107,18 @@ final class events_test extends \advanced_testcase {
         // Create a course to tag.
         $course = self::getDataGenerator()->create_course();
         $qbank = self::getDataGenerator()->create_module('qbank', ['course' => $course->id]);
-        $qbankcontext = \context_module::instance($qbank->cmid);
+        $qbankcontext = module::instance($qbank->cmid);
 
         // Trigger and capture the event for tagging a course.
         $sink = $this->redirectEvents();
-        \core_tag_tag::set_item_tags('core', 'course', $course->id, \context_course::instance($course->id), array('A tag'));
+        \core_tag_tag::set_item_tags('core', 'course', $course->id, course::instance($course->id), array('A tag'));
         $events = $sink->get_events();
         $event = $events[1];
 
         // Check that the tag was added to the course and that the event data is valid.
         $this->assertEquals(1, $DB->count_records('tag_instance', array('component' => 'core')));
         $this->assertInstanceOf('\core\event\tag_added', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
 
         // Create a question to tag.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -124,7 +129,7 @@ final class events_test extends \advanced_testcase {
         $this->assertEquals(1, $DB->count_records('tag_instance'));
         $sink = $this->redirectEvents();
         \core_tag_tag::set_item_tags('core_question', 'question', $question->id,
-            \context::instance_by_id($cat->contextid), array('A tag'));
+            context::instance_by_id($cat->contextid), array('A tag'));
         $events = $sink->get_events();
         $event = reset($events);
 
@@ -155,7 +160,7 @@ final class events_test extends \advanced_testcase {
         $tag = $this->getDataGenerator()->create_tag();
 
         // Assign a tag to a course.
-        \core_tag_tag::add_item_tag('core', 'course', $course->id, \context_course::instance($course->id), $tag->rawname);
+        \core_tag_tag::add_item_tag('core', 'course', $course->id, course::instance($course->id), $tag->rawname);
 
         // Trigger and capture the event for untagging a course.
         $sink = $this->redirectEvents();
@@ -166,13 +171,13 @@ final class events_test extends \advanced_testcase {
         // Check that the tag was removed from the course and the event data is valid.
         $this->assertEquals(0, $DB->count_records('tag_instance'));
         $this->assertInstanceOf('\core\event\tag_removed', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
 
         // Create the tag.
         $tag = $this->getDataGenerator()->create_tag();
 
         // Assign a tag to a wiki this time.
-        \core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $wikipageid, \context_module::instance($wiki->cmid), $tag->rawname);
+        \core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $wikipageid, module::instance($wiki->cmid), $tag->rawname);
 
         // Trigger and capture the event for deleting this tag instance.
         $sink = $this->redirectEvents();
@@ -183,13 +188,13 @@ final class events_test extends \advanced_testcase {
         // Check that tag was removed from the wiki page and the event data is valid.
         $this->assertEquals(0, $DB->count_records('tag_instance'));
         $this->assertInstanceOf('\core\event\tag_removed', $event);
-        $this->assertEquals(\context_module::instance($wiki->cmid), $event->get_context());
+        $this->assertEquals(module::instance($wiki->cmid), $event->get_context());
 
         // Create a tag again - the other would have been deleted since there were no more instances associated with it.
         $tag = $this->getDataGenerator()->create_tag();
 
         // Assign a tag to the wiki again.
-        \core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $wikipageid, \context_module::instance($wiki->cmid), $tag->rawname);
+        \core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $wikipageid, module::instance($wiki->cmid), $tag->rawname);
 
         // Now we want to delete this tag, and because there is only one tag instance
         // associated with it, it should get deleted as well.
@@ -201,24 +206,24 @@ final class events_test extends \advanced_testcase {
         // Check that tag was removed from the wiki page and the event data is valid.
         $this->assertEquals(0, $DB->count_records('tag_instance'));
         $this->assertInstanceOf('\core\event\tag_removed', $event);
-        $this->assertEquals(\context_module::instance($wiki->cmid), $event->get_context());
+        $this->assertEquals(module::instance($wiki->cmid), $event->get_context());
 
         // Create a tag again - the other would have been deleted since there were no more instances associated with it.
         $tag = $this->getDataGenerator()->create_tag();
 
         // Assign a tag to the wiki again.
-        \core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $wikipageid, \context_module::instance($wiki->cmid), $tag->rawname);
+        \core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $wikipageid, module::instance($wiki->cmid), $tag->rawname);
 
         // Delete all tag instances for this wiki instance.
         $sink = $this->redirectEvents();
-        \core_tag_tag::delete_instances('mod_wiki', 'wiki_pages', \context_module::instance($wiki->cmid)->id);
+        \core_tag_tag::delete_instances('mod_wiki', 'wiki_pages', module::instance($wiki->cmid)->id);
         $events = $sink->get_events();
         $event = reset($events);
 
         // Check that tag was removed from the wiki page and the event data is valid.
         $this->assertEquals(0, $DB->count_records('tag_instance'));
         $this->assertInstanceOf('\core\event\tag_removed', $event);
-        $this->assertEquals(\context_module::instance($wiki->cmid), $event->get_context());
+        $this->assertEquals(module::instance($wiki->cmid), $event->get_context());
 
         // Create another wiki.
         $wiki2 = $wikigenerator->create_instance(array('course' => $course->id));
@@ -226,8 +231,8 @@ final class events_test extends \advanced_testcase {
         $wikipageid2 = wiki_create_page($subwikiid2, 'Title', FORMAT_HTML, '2');
 
         // Assign a tag to both wiki pages.
-        \core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $wikipageid, \context_module::instance($wiki->cmid), $tag->rawname);
-        \core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $wikipageid2, \context_module::instance($wiki2->cmid), $tag->rawname);
+        \core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $wikipageid, module::instance($wiki->cmid), $tag->rawname);
+        \core_tag_tag::add_item_tag('mod_wiki', 'wiki_pages', $wikipageid2, module::instance($wiki2->cmid), $tag->rawname);
 
         // Now remove all tag_instances associated with all wikis.
         $sink = $this->redirectEvents();
@@ -236,7 +241,7 @@ final class events_test extends \advanced_testcase {
 
         // There will be two events - one for each wiki instance removed.
         $this->assertCount(2, $events);
-        $contexts = [\context_module::instance($wiki->cmid), \context_module::instance($wiki2->cmid)];
+        $contexts = [module::instance($wiki->cmid), module::instance($wiki2->cmid)];
         $this->assertNotEquals($events[0]->contextid, $events[1]->contextid);
 
         // Check that the tags were removed from the wiki pages.
@@ -276,7 +281,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\tag_flagged', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
 
         // Unset the flag for both (though by default tag2 should have been created with 0 already).
         foreach ($tags as $t) {
@@ -299,11 +304,11 @@ final class events_test extends \advanced_testcase {
         // Confirm the events.
         $event = $events[0];
         $this->assertInstanceOf('\core\event\tag_flagged', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
 
         $event = $events[1];
         $this->assertInstanceOf('\core\event\tag_flagged', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 
     /**
@@ -334,7 +339,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\tag_unflagged', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
 
         // Set the flag back for both.
         foreach ($tags as $t) {
@@ -357,11 +362,11 @@ final class events_test extends \advanced_testcase {
         // Confirm the events.
         $event = $events[0];
         $this->assertInstanceOf('\core\event\tag_unflagged', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
 
         $event = $events[1];
         $this->assertInstanceOf('\core\event\tag_unflagged', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 
     /**
@@ -388,7 +393,7 @@ final class events_test extends \advanced_testcase {
         // Check that the tag was deleted and the event data is valid.
         $this->assertEquals(0, $DB->count_records('tag'));
         $this->assertInstanceOf('\core\event\tag_deleted', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
 
         // Create two tags we are going to delete to ensure passing multiple tags work.
         $tag = $this->getDataGenerator()->create_tag();
@@ -403,11 +408,11 @@ final class events_test extends \advanced_testcase {
         $this->assertEquals(0, $DB->count_records('tag'));
         foreach ($events as $event) {
             $this->assertInstanceOf('\core\event\tag_deleted', $event);
-            $this->assertEquals(\context_system::instance(), $event->get_context());
+            $this->assertEquals(system::instance(), $event->get_context());
         }
 
         // Add a tag instance to a course.
-        \core_tag_tag::add_item_tag('core', 'course', $course->id, \context_course::instance($course->id), 'cat', $user->id);
+        \core_tag_tag::add_item_tag('core', 'course', $course->id, course::instance($course->id), 'cat', $user->id);
 
         // Trigger and capture the event for deleting a personal tag for a user for a course.
         $sink = $this->redirectEvents();
@@ -418,10 +423,10 @@ final class events_test extends \advanced_testcase {
         // Check that the tag was deleted and the event data is valid.
         $this->assertEquals(0, $DB->count_records('tag'));
         $this->assertInstanceOf('\core\event\tag_deleted', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
 
         // Add the tag instance to the course again as it was deleted.
-        \core_tag_tag::add_item_tag('core', 'course', $course->id, \context_course::instance($course->id), 'dog', $user->id);
+        \core_tag_tag::add_item_tag('core', 'course', $course->id, course::instance($course->id), 'dog', $user->id);
 
         // Trigger and capture the event for deleting all tags in a course.
         $sink = $this->redirectEvents();
@@ -432,10 +437,10 @@ final class events_test extends \advanced_testcase {
         // Check that the tag was deleted and the event data is valid.
         $this->assertEquals(0, $DB->count_records('tag'));
         $this->assertInstanceOf('\core\event\tag_deleted', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
 
         // Add multiple tag instances now and check that it still works.
-        \core_tag_tag::set_item_tags('core', 'course', $course->id, \context_course::instance($course->id),
+        \core_tag_tag::set_item_tags('core', 'course', $course->id, course::instance($course->id),
             array('fish', 'hamster'), $user->id);
 
         // Trigger and capture the event for deleting all tags in a course.
@@ -448,7 +453,7 @@ final class events_test extends \advanced_testcase {
         $this->assertEquals(0, $DB->count_records('tag'));
         foreach ($events as $event) {
             $this->assertInstanceOf('\core\event\tag_deleted', $event);
-            $this->assertEquals(\context_system::instance(), $event->get_context());
+            $this->assertEquals(system::instance(), $event->get_context());
         }
     }
 
@@ -468,6 +473,6 @@ final class events_test extends \advanced_testcase {
         // Check that the tag was created and the event data is valid.
         $this->assertEquals(1, $DB->count_records('tag'));
         $this->assertInstanceOf('\core\event\tag_created', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 }

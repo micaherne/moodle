@@ -16,6 +16,8 @@
 
 namespace core_xapi\privacy;
 
+use core\context\system;
+use core\context\user;
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\transform;
 use core_xapi\privacy\provider;
@@ -53,7 +55,7 @@ final class provider_test extends provider_testcase {
         $user3 = self::getDataGenerator()->create_user();
 
         // Add a few xAPI state records to database.
-        $context = \context_system::instance();
+        $context = system::instance();
         $cid = $context->id;
         $this->setUser($user1);
         test_helper::create_state(['activity' => item_activity::create_from_id($context->id)], true);
@@ -111,7 +113,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals(3, $DB->count_records('xapi_states', ['userid' => $user1->id]));
         $this->assertEquals(4, $DB->count_records('xapi_states', ['userid' => $user2->id]));
         $this->assertEquals(1, $DB->count_records('xapi_states', ['userid' => $user3->id]));
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         // Ask the xapi privacy api to export userids for xapi states of the type we just created, in the system context.
         $userlist = new \core_privacy\local\request\userlist($systemcontext, 'fake_component');
@@ -151,7 +153,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals(3, $DB->count_records('xapi_states', ['userid' => $user1->id]));
         $this->assertEquals(4, $DB->count_records('xapi_states', ['userid' => $user2->id]));
         $this->assertEquals(1, $DB->count_records('xapi_states', ['userid' => $user3->id]));
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         // Get the states info for user1 in the system context.
         $result = provider::get_xapi_states_for_user($user1->id, 'fake_component', $systemcontext->id);
@@ -191,7 +193,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals(1, $DB->count_records('xapi_states', ['userid' => $user3->id]));
 
         // Now, delete the xapistates for user1 only.
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
         $approvedcontextlist = new \core_privacy\local\request\approved_contextlist($user1, 'fake_component', [$user1context->id]);
         provider::delete_states_for_user($approvedcontextlist, 'fake_component');
 
@@ -217,7 +219,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals(1, $DB->count_records('xapi_states', ['userid' => $user3->id]));
 
         // Now, delete all course module xapi states in the 'fake_component' context only.
-        provider::delete_states_for_all_users(\context_system::instance(), 'fake_component');
+        provider::delete_states_for_all_users(system::instance(), 'fake_component');
 
         // Verify that only content with the context_system for the fake_component have been removed.
         $this->assertEquals(2, $DB->count_records('xapi_states', ['userid' => $user1->id]));
@@ -238,7 +240,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals(3, $DB->count_records('xapi_states', ['userid' => $user1->id]));
         $this->assertEquals(4, $DB->count_records('xapi_states', ['userid' => $user2->id]));
         $this->assertEquals(1, $DB->count_records('xapi_states', ['userid' => $user3->id]));
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         // Ask the xapi privacy api to export userids for states of the type we just created, in the system context.
         $userlist1 = new \core_privacy\local\request\userlist($systemcontext, 'fake_component');

@@ -26,14 +26,14 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/tablelib.php');
 
-use coding_exception;
-use context_helper;
+use core\exception\coding_exception;
+use core\context_helper;
 use dml_exception;
 use Exception;
-use html_writer;
-use pix_icon;
+use core\output\html_writer;
+use core\output\pix_icon;
 use stdClass;
-use table_sql;
+use core_table\sql_table;
 use tool_dataprivacy\api;
 use tool_dataprivacy\expired_context;
 use tool_dataprivacy\external\purpose_exporter;
@@ -47,7 +47,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2018 Jun Pataleta <jun@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class expired_contexts_table extends table_sql {
+class expired_contexts_table extends sql_table {
 
     /** @var int The context level acting as a filter for this table. */
     protected $contextlevel = null;
@@ -397,12 +397,12 @@ class expired_contexts_table extends table_sql {
             return;
         }
 
-        $ctxfields = \context_helper::get_preload_record_columns_sql('ctx');
+        $ctxfields = context_helper::get_preload_record_columns_sql('ctx');
         list($insql, $inparams) = $DB->get_in_or_equal($contextids, SQL_PARAMS_NAMED);
         $sql = "SELECT {$ctxfields} FROM {context} ctx WHERE ctx.id {$insql}";
         $contextlist = $DB->get_recordset_sql($sql, $inparams);
         foreach ($contextlist as $contextdata) {
-            \context_helper::preload_from_record($contextdata);
+            context_helper::preload_from_record($contextdata);
         }
         $contextlist->close();
 

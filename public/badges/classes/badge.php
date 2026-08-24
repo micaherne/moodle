@@ -23,14 +23,14 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/badgeslib.php');
 
-use context_system;
-use context_course;
-use context_user;
-use moodle_exception;
+use core\context\system;
+use core\context\course;
+use core\context\user;
+use core\exception\moodle_exception;
 use core_text;
 use award_criteria;
 use core_php_time_limit;
-use html_writer;
+use core\output\html_writer;
 use stdClass;
 
 /**
@@ -163,9 +163,9 @@ class badge {
      */
     public function get_context() {
         if ($this->type == BADGE_TYPE_SITE) {
-            return context_system::instance();
+            return system::instance();
         } else if ($this->type == BADGE_TYPE_COURSE) {
-            return context_course::instance($this->courseid);
+            return course::instance($this->courseid);
         } else {
             debugging('Something is wrong...');
         }
@@ -700,7 +700,7 @@ class badge {
         // Cannot bulk remove area files here because they are issued in user context.
         $awards = $this->get_awards();
         foreach ($awards as $award) {
-            $usercontext = context_user::instance($award->userid);
+            $usercontext = user::instance($award->userid);
             $fs->delete_area_files($usercontext->id, 'badges', 'userbadge', $this->id);
         }
         $DB->delete_records('badge_issued', array('badgeid' => $this->id));
@@ -1000,9 +1000,9 @@ class badge {
 
         if ($courseid) {
             $course = get_course($courseid);
-            $context = context_course::instance($course->id);
+            $context = course::instance($course->id);
         } else {
-            $context = context_system::instance();
+            $context = system::instance();
         }
 
         // Trigger event, badge created.

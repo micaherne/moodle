@@ -25,6 +25,9 @@
 
 namespace mod_glossary\search;
 
+use core\context\course;
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -141,13 +144,13 @@ final class search_test extends \advanced_testcase {
         self::getDataGenerator()->get_plugin_generator('mod_glossary')->create_content($glossary2);
 
         // Test indexing with each activity then combined course context.
-        $rs = $searcharea->get_document_recordset(0, \context_module::instance($glossary1->cmid));
+        $rs = $searcharea->get_document_recordset(0, module::instance($glossary1->cmid));
         $this->assertEquals(2, iterator_count($rs));
         $rs->close();
-        $rs = $searcharea->get_document_recordset(0, \context_module::instance($glossary2->cmid));
+        $rs = $searcharea->get_document_recordset(0, module::instance($glossary2->cmid));
         $this->assertEquals(1, iterator_count($rs));
         $rs->close();
-        $rs = $searcharea->get_document_recordset(0, \context_course::instance($course1->id));
+        $rs = $searcharea->get_document_recordset(0, course::instance($course1->id));
         $this->assertEquals(3, iterator_count($rs));
         $rs->close();
     }

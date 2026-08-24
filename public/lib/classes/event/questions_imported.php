@@ -24,6 +24,9 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -78,7 +81,7 @@ class questions_imported extends question_base {
     public function get_url() {
         $cat = $this->other['categoryid'] . ',' . $this->contextid;
 
-        return new \moodle_url('/question/edit.php', ['cmid' => $this->contextinstanceid, 'cat' => $cat]);
+        return new url('/question/edit.php', ['cmid' => $this->contextinstanceid, 'cat' => $cat]);
     }
 
     /**
@@ -93,7 +96,7 @@ class questions_imported extends question_base {
         parent::validate_data();
 
         if (!isset($this->other['format'])) {
-            throw new \coding_exception('The \'format\' must be set in \'other\'.');
+            throw new coding_exception('The \'format\' must be set in \'other\'.');
         }
     }
 

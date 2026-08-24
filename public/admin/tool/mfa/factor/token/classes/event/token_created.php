@@ -16,6 +16,7 @@
 
 namespace factor_token\event;
 
+use core\context\user;
 use stdClass;
 
 /**
@@ -41,7 +42,7 @@ class token_created extends \core\event\base {
     public static function token_created_event(stdClass $user, array $state): \core\event\base {
         $data = [
             'relateduserid' => $user->id,
-            'context' => \context_user::instance($user->id),
+            'context' => user::instance($user->id),
             'other' => [
                 'userid' => $user->id,
                 'state' => json_encode($state),

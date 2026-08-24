@@ -16,6 +16,8 @@
 
 namespace qtype_missingtype;
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
 use qbehaviour_deferredfeedback;
 use qtype_missingtype;
 use qtype_missingtype_question;
@@ -74,12 +76,12 @@ final class missingtype_test extends \question_testcase {
 
     public function test_cannot_grade(): void {
         $q = new qtype_missingtype_question();
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $q->grade_response(array());
     }
 
     public function test_load_qtype_strict(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $qtype = question_bank::get_qtype('strange_unknown');
     }
 
@@ -92,7 +94,7 @@ final class missingtype_test extends \question_testcase {
         $questiondata = $this->get_unknown_questiondata();
         $q = question_bank::make_question($questiondata);
         $this->assertInstanceOf('qtype_missingtype_question', $q);
-        $this->assertEquals($q->questiontext, \html_writer::tag('div',
+        $this->assertEquals($q->questiontext, html_writer::tag('div',
                 get_string('missingqtypewarning', 'qtype_missingtype'),
                 array('class' => 'warning missingqtypewarning')) .
                 $questiondata->questiontext);

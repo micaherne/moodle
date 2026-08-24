@@ -26,6 +26,8 @@
 // Note: You cannot use MOODLE_INTERNAL test here, or include files which do so.
 // This file is required by behat before including /config.php.
 
+use core\exception\coding_exception;
+
 require_once(__DIR__ . '/../../behat/behat_base.php');
 
 /**

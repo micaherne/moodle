@@ -21,5 +21,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package mod_subsection
  */
+use core\output\plugin_renderer_base;
+
 class mod_subsection_renderer extends plugin_renderer_base {
 }

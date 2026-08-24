@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -41,7 +43,7 @@ function qbank_usage_output_fragment_question_usage(array $args): string {
 
     $specificversion = clean_param($args['specificversion'] ?? false, PARAM_BOOL);
     $questionusagetable = new \qbank_usage\tables\question_usage_table('question_usage_table', $question, $specificversion);
-    $questionusagetable->baseurl = new moodle_url('');
+    $questionusagetable->baseurl = new url('');
     if (isset($args['querystring'])) {
         $querystring = preg_replace('/^\?/', '', $args['querystring']);
         $params = [];

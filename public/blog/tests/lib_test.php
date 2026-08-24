@@ -25,6 +25,9 @@
 namespace core_blog;
 
 use blog_listing;
+use core\context\course;
+use core\context\module;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -182,14 +185,14 @@ final class lib_test extends \advanced_testcase {
         $this->assertArrayHasKey('blogs', $nodes);
         $this->assertSame('View my blog entries', $nodes['blogs']->title);
         $this->assertSame(
-            (new \moodle_url('/blog/index.php', ['userid' => $USER->id]))->out(false),
+            (new url('/blog/index.php', ['userid' => $USER->id]))->out(false),
             $nodes['blogs']->url->out(false)
         );
 
         $this->assertArrayHasKey('siteblogs', $nodes);
         $this->assertSame('View site blog entries', $nodes['siteblogs']->title);
         $this->assertSame('blogs', $nodes['siteblogs']->after);
-        $this->assertSame((new \moodle_url('/blog/index.php'))->out(false), $nodes['siteblogs']->url->out(false));
+        $this->assertSame((new url('/blog/index.php'))->out(false), $nodes['siteblogs']->url->out(false));
     }
 
     /**
@@ -216,10 +219,10 @@ final class lib_test extends \advanced_testcase {
         $nodes = $nodes->getValue($tree);
 
         $this->assertSame(
-            (new \moodle_url('/blog/index.php', ['userid' => $USER->id, 'courseid' => $course->id]))->out(false),
+            (new url('/blog/index.php', ['userid' => $USER->id, 'courseid' => $course->id]))->out(false),
             $nodes['blogs']->url->out(false)
         );
-        $this->assertSame((new \moodle_url('/blog/index.php'))->out(false), $nodes['siteblogs']->url->out(false));
+        $this->assertSame((new url('/blog/index.php'))->out(false), $nodes['siteblogs']->url->out(false));
     }
 
     /**
@@ -301,7 +304,7 @@ final class lib_test extends \advanced_testcase {
 
         // URL should reference the profile owner's userid, not the viewer's.
         $this->assertSame(
-            (new \moodle_url('/blog/index.php', ['userid' => $otheruser->id]))->out(false),
+            (new url('/blog/index.php', ['userid' => $otheruser->id]))->out(false),
             $nodes['blogs']->url->out(false)
         );
 
@@ -371,12 +374,12 @@ final class lib_test extends \advanced_testcase {
         $nodes = $nodes->getValue($tree);
 
         $this->assertArrayHasKey('siteblogs', $nodes);
-        $this->assertSame((new \moodle_url('/blog/index.php'))->out(false), $nodes['siteblogs']->url->out(false));
+        $this->assertSame((new url('/blog/index.php'))->out(false), $nodes['siteblogs']->url->out(false));
     }
 
     public function test_blog_get_listing_course(): void {
         $this->setAdminUser();
-        $coursecontext = \context_course::instance($this->courseid);
+        $coursecontext = course::instance($this->courseid);
         $anothercourse = $this->getDataGenerator()->create_course();
 
         // Add blog associations with a course.
@@ -406,8 +409,8 @@ final class lib_test extends \advanced_testcase {
 
     public function test_blog_get_listing_module(): void {
         $this->setAdminUser();
-        $coursecontext = \context_course::instance($this->courseid);
-        $contextmodule = \context_module::instance($this->cmid);
+        $coursecontext = course::instance($this->courseid);
+        $contextmodule = module::instance($this->cmid);
         $anothermodule = $this->getDataGenerator()->create_module('page', array('course' => $this->courseid));
 
         // Add blog associations with a course.

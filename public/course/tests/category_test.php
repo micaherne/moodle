@@ -16,7 +16,16 @@
 
 namespace core_course;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core_cache\cache;
+use core_cache\helper;
 use core_course_category;
+use core_filters\filter_manager;
 
 /**
  * Tests for class core_course_category
@@ -41,7 +50,7 @@ final class category_test extends \advanced_testcase {
     protected function get_roleid($context = null) {
         global $USER;
         if ($context === null) {
-            $context = \context_system::instance();
+            $context = system::instance();
         }
         if (is_object($context)) {
             $context = $context->id;
@@ -61,7 +70,7 @@ final class category_test extends \advanced_testcase {
 
     protected function assign_capability($capability, $permission = CAP_ALLOW, $contextid = null) {
         if ($contextid === null) {
-            $contextid = \context_system::instance();
+            $contextid = system::instance();
         }
         if (is_object($contextid)) {
             $contextid = $contextid->id;
@@ -101,27 +110,27 @@ final class category_test extends \advanced_testcase {
         try {
             core_course_category::create(array('name' => ''));
             $this->fail('Missing category name exception expected in core_course_category::create');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('moodle_exception', $e);
         }
         $cat1 = core_course_category::create(array('name' => 'Cat1', 'idnumber' => '1'));
         try {
             $cat1->update(array('name' => ''));
             $this->fail('Missing category name exception expected in core_course_category::update');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('moodle_exception', $e);
         }
         try {
             core_course_category::create(array('name' => 'Cat2', 'idnumber' => '1'));
             $this->fail('Duplicate idnumber exception expected in core_course_category::create');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('moodle_exception', $e);
         }
         $cat2 = core_course_category::create(array('name' => 'Cat2', 'idnumber' => '2'));
         try {
             $cat2->update(array('idnumber' => '1'));
             $this->fail('Duplicate idnumber exception expected in core_course_category::update');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('moodle_exception', $e);
         }
         // Test that duplicates with an idnumber of 0 cannot be created.
@@ -129,7 +138,7 @@ final class category_test extends \advanced_testcase {
         try {
             core_course_category::create(array('name' => 'Cat4', 'idnumber' => '0'));
             $this->fail('Duplicate idnumber "0" exception expected in core_course_category::create');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('moodle_exception', $e);
         }
         // Test an update cannot make a duplicate idnumber of 0.
@@ -232,7 +241,7 @@ final class category_test extends \advanced_testcase {
         try {
             $category2->change_parent($category4->id);
             $this->fail('Exception expected - can not move category');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertInstanceOf('moodle_exception', $e);
         }
 
@@ -253,7 +262,7 @@ final class category_test extends \advanced_testcase {
         $this->assertSame($testdescription, $category1->description);
         $category1 = core_course_category::get($category1->id);
         $this->assertSame($testdescription, $category1->description);
-        \cache_helper::purge_by_event('changesincoursecat');
+        helper::purge_by_event('changesincoursecat');
         $category1 = core_course_category::get($category1->id);
         $this->assertSame($testdescription, $category1->description);
 
@@ -295,7 +304,7 @@ final class category_test extends \advanced_testcase {
         // Delete category 2 and move content to category 3.
         $this->assertFalse($category2->can_move_content_to($category3->id)); // No luck!
         // Add necessary capabilities.
-        $this->assign_capability('moodle/course:create', CAP_ALLOW, \context_coursecat::instance($category3->id));
+        $this->assign_capability('moodle/course:create', CAP_ALLOW, coursecat::instance($category3->id));
         $this->assign_capability('moodle/category:manage');
         $this->assertTrue($category2->can_move_content_to($category3->id)); // Hurray!
         $category2->delete_move($category3->id);
@@ -322,7 +331,7 @@ final class category_test extends \advanced_testcase {
         // Delete category 3 completely.
         $this->assertFalse($category3->can_delete_full()); // No luck!
         // Add necessary capabilities.
-        $this->assign_capability('moodle/course:delete', CAP_ALLOW, \context_coursecat::instance($category3->id));
+        $this->assign_capability('moodle/course:delete', CAP_ALLOW, coursecat::instance($category3->id));
         $this->assertTrue($category3->can_delete_full()); // Hurray!
         $category3->delete_full();
 
@@ -384,7 +393,7 @@ final class category_test extends \advanced_testcase {
         $this->assertEmpty($children);
 
         // Check that everything is all right after purging the caches.
-        \cache_helper::purge_by_event('changesincoursecat');
+        helper::purge_by_event('changesincoursecat');
         $children = $category1->get_children();
         $this->assertEquals(array($category2->id, $category4->id, $category6->id, $category7->id), array_keys($children));
         $this->assertEquals(4, $category1->get_children_count());
@@ -438,7 +447,7 @@ final class category_test extends \advanced_testcase {
         $this->assertEquals($numcategories + 3, core_course_category::count_all());
         $this->assertDebuggingCalled('Method core_course_category::count_all() is deprecated. Please use ' .
             'core_course_category::is_simple_site()', DEBUG_DEVELOPER);
-        \cache_helper::purge_by_event('changesincoursecat');
+        helper::purge_by_event('changesincoursecat');
         // We should still have 4.
         $this->assertEquals($numcategories + 3, core_course_category::count_all());
         $this->assertDebuggingCalled('Method core_course_category::count_all() is deprecated. Please use ' .
@@ -514,11 +523,11 @@ final class category_test extends \advanced_testcase {
 
         try {
             // Enable the multilang filter and set it to apply to headings and content.
-            \filter_manager::reset_caches();
+            filter_manager::reset_caches();
             filter_set_global_state('multilang', TEXTFILTER_ON);
             filter_set_applies_to_strings('multilang', true);
             $expected = array($c3, $c4, $c1, $c2);
-        } catch (\coding_exception $ex) {
+        } catch (coding_exception $ex) {
             $expected = array($c3, $c4, $c2, $c1);
         }
         $this->assertTrue($coursecat->resort_courses('fullname'));
@@ -604,7 +613,7 @@ final class category_test extends \advanced_testcase {
         $this->setUser($user);
 
         // Add necessary capabilities.
-        $this->assign_capability('moodle/course:create', CAP_ALLOW, \context_coursecat::instance($cat2->id));
+        $this->assign_capability('moodle/course:create', CAP_ALLOW, coursecat::instance($cat2->id));
         // Do another search with restricted capabilities.
         $reqcaps = array('moodle/course:create');
         $res = core_course_category::search_courses(array('search' => 'test'), array(), $reqcaps);
@@ -628,7 +637,7 @@ final class category_test extends \advanced_testcase {
         $manual->enrol_user($enrol, $user->id, $teacherrole->id);
 
         // Avoid using the cached values from previous method call.
-        \cache::make('core', 'coursecat')->purge();
+        cache::make('core', 'coursecat')->purge();
 
         // As the user is now enrolled, we should get this one course.
         $res = core_course_category::search_courses([
@@ -708,27 +717,27 @@ final class category_test extends \advanced_testcase {
         }
 
         // Cat1 (user2 has teacher role)
-        role_assign($teacherrole->id, $user[2], \context_coursecat::instance($category[1]));
+        role_assign($teacherrole->id, $user[2], coursecat::instance($category[1]));
         // course21 (user2 is enrolled as manager)
         $manual->enrol_user($enrol[2][1], $user[2], $managerrole->id);
         // course22 (user2 is enrolled as student)
         $manual->enrol_user($enrol[2][2], $user[2], $studentrole->id);
         // Cat4 (user2 has manager role)
-        role_assign($managerrole->id, $user[2], \context_coursecat::instance($category[4]));
+        role_assign($managerrole->id, $user[2], coursecat::instance($category[4]));
         // course41 (user4 is enrolled as teacher, user5 is enrolled as manager)
         $manual->enrol_user($enrol[4][1], $user[4], $teacherrole->id);
         $manual->enrol_user($enrol[4][1], $user[5], $managerrole->id);
         // course42 (user2 is enrolled as teacher)
         $manual->enrol_user($enrol[4][2], $user[2], $teacherrole->id);
         // Cat3 (user3 has manager role)
-        role_assign($managerrole->id, $user[3], \context_coursecat::instance($category[3]));
+        role_assign($managerrole->id, $user[3], coursecat::instance($category[3]));
         // course31 (user3 is enrolled as student)
         $manual->enrol_user($enrol[3][1], $user[3], $studentrole->id);
         // course11 (user1 is enrolled as teacher)
         $manual->enrol_user($enrol[1][1], $user[1], $teacherrole->id);
         // -- course12 (user1 has teacher role)
         //                also user4 is enrolled as teacher but enrolment is not active
-        role_assign($teacherrole->id, $user[1], \context_course::instance($course[1][2]));
+        role_assign($teacherrole->id, $user[1], course::instance($course[1][2]));
         $manual->enrol_user($enrol[1][2], $user[4], $teacherrole->id, 0, 0, ENROL_USER_SUSPENDED);
 
         $allcourses = core_course_category::get(0)->get_courses(
@@ -856,29 +865,29 @@ final class category_test extends \advanced_testcase {
         }
 
         // Cat1: user2 has teacher role.
-        role_assign($teacherrole->id, $user[2], \context_coursecat::instance($category[1]));
+        role_assign($teacherrole->id, $user[2], coursecat::instance($category[1]));
         // Course21: user2 is enrolled as manager.
         $manual->enrol_user($enrol[2][1], $user[2], $managerrole->id);
         // Course22: user2 is enrolled as student.
         $manual->enrol_user($enrol[2][2], $user[2], $studentrole->id);
         // Cat4: user2 has manager role.
-        role_assign($managerrole->id, $user[2], \context_coursecat::instance($category[4]));
+        role_assign($managerrole->id, $user[2], coursecat::instance($category[4]));
         // Course41: user4 is enrolled as teacher, user5 is enrolled as manager.
         $manual->enrol_user($enrol[4][1], $user[4], $teacherrole->id);
         $manual->enrol_user($enrol[4][1], $user[5], $managerrole->id);
         // Course42: user2 is enrolled as teacher.
         $manual->enrol_user($enrol[4][2], $user[2], $teacherrole->id);
         // Cat3: user3 has manager role.
-        role_assign($managerrole->id, $user[3], \context_coursecat::instance($category[3]));
+        role_assign($managerrole->id, $user[3], coursecat::instance($category[3]));
         // Course31: user3 is enrolled as student.
         $manual->enrol_user($enrol[3][1], $user[3], $studentrole->id);
         // Course11: user1 is enrolled as teacher and user4 is enrolled as teacher and has manager role.
         $manual->enrol_user($enrol[1][1], $user[1], $teacherrole->id);
         $manual->enrol_user($enrol[1][1], $user[4], $teacherrole->id);
-        role_assign($managerrole->id, $user[4], \context_course::instance($course[1][1]));
+        role_assign($managerrole->id, $user[4], course::instance($course[1][1]));
         // Course12: user1 has teacher role, but is not enrolled, as well as user4 is enrolled as teacher, but user4's enrolment is
         // not active.
-        role_assign($teacherrole->id, $user[1], \context_course::instance($course[1][2]));
+        role_assign($teacherrole->id, $user[1], course::instance($course[1][2]));
         $manual->enrol_user($enrol[1][2], $user[4], $teacherrole->id, 0, 0, ENROL_USER_SUSPENDED);
 
         $allcourses = core_course_category::get(0)->get_courses(
@@ -1126,7 +1135,7 @@ final class category_test extends \advanced_testcase {
      */
     protected function fill_draft_area(array $files) {
         global $USER;
-        $usercontext = \context_user::instance($USER->id);
+        $usercontext = user::instance($USER->id);
         $draftid = file_get_unused_draft_itemid();
         foreach ($files as $filename => $filecontents) {
             // Add actual file there.
@@ -1417,7 +1426,7 @@ final class category_test extends \advanced_testcase {
         $this->getDataGenerator()->create_category(['name' => 'cat1']);
         $this->getDataGenerator()->create_category(['name' => 'cat2']);
         $this->getDataGenerator()->create_category(['name' => 'cat3']);
-        $filtermanager = \filter_manager::instance();
+        $filtermanager = filter_manager::instance();
 
         // Configure a filter to apply to all content and headings.
         filter_set_global_state('multilang', TEXTFILTER_ON);
@@ -1436,8 +1445,8 @@ final class category_test extends \advanced_testcase {
         $this->assertEquals(3, $perf[0]['contextswithfilters']);
         $filtermanager->reset_caches();
         // We need to refresh the instance, resetting caches unloads the singleton.
-        $filtermanager = \filter_manager::instance();
-        \cache_helper::purge_by_definition('core', 'coursecat');
+        $filtermanager = filter_manager::instance();
+        helper::purge_by_definition('core', 'coursecat');
 
         // Now flip the bit on the filter context.
         set_config('filternavigationwithsystemcontext', 1);

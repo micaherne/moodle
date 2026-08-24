@@ -28,6 +28,11 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/mod/workshop/locallib.php');
 
+use core\context\module;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\url;
+use core\user;
 use core_external\external_api;
 use core_external\external_files;
 use core_external\external_function_parameters;
@@ -103,7 +108,7 @@ class mod_workshop_external extends external_api {
             $workshops = get_all_instances_in_courses("workshop", $courses);
             foreach ($workshops as $workshop) {
 
-                $context = context_module::instance($workshop->coursemodule);
+                $context = module::instance($workshop->coursemodule);
                 // Remove fields that are not from the workshop (added by get_all_instances_in_courses).
                 unset($workshop->coursemodule, $workshop->context, $workshop->visible, $workshop->section, $workshop->groupmode,
                         $workshop->groupingid);
@@ -151,7 +156,7 @@ class mod_workshop_external extends external_api {
         $workshop = $DB->get_record('workshop', array('id' => $workshopid), '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($workshop, 'workshop');
 
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         self::validate_context($context);
 
         $workshop = new workshop($workshop, $cm, $course);
@@ -289,8 +294,8 @@ class mod_workshop_external extends external_api {
             $userid = $USER->id;
         } else {
             require_capability('moodle/course:manageactivities', $context);
-            $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($params['userid'], '*', MUST_EXIST);
+            user::require_active_user($user);
             if (!$workshop->check_group_membership($user->id)) {
                 throw new moodle_exception('notingroup');
             }
@@ -305,13 +310,13 @@ class mod_workshop_external extends external_api {
             $userplan['phases'][$phasecode] = (array) $phase;
             foreach ($userplan['phases'][$phasecode]['tasks'] as $taskcode => $task) {
                 $task->code = $taskcode;
-                if ($task->link instanceof moodle_url) {
+                if ($task->link instanceof url) {
                     $task->link = $task->link->out(false);
                 }
                 $userplan['phases'][$phasecode]['tasks'][$taskcode] = (array) $task;
             }
             foreach ($userplan['phases'][$phasecode]['actions'] as $actioncode => $action) {
-                if ($action->url instanceof moodle_url) {
+                if ($action->url instanceof url) {
                     $action->url = $action->url->out(false);
                 }
                 $userplan['phases'][$phasecode]['actions'][$actioncode] = (array) $action;
@@ -830,8 +835,8 @@ class mod_workshop_external extends external_api {
         }
 
         if (!empty($params['userid']) && $params['userid'] != $USER->id) {
-            $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($params['userid'], '*', MUST_EXIST);
+            user::require_active_user($user);
             if (!$workshop->check_group_membership($user->id)) {
                 throw new moodle_exception('notingroup');
             }
@@ -1399,8 +1404,8 @@ class mod_workshop_external extends external_api {
             }
         } else {
             require_capability('mod/workshop:viewallassessments', $context);
-            $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($params['userid'], '*', MUST_EXIST);
+            user::require_active_user($user);
             if (!$workshop->check_group_membership($user->id)) {
                 throw new moodle_exception('notingroup');
             }
@@ -1611,8 +1616,8 @@ class mod_workshop_external extends external_api {
             $userid = $USER->id;
         } else {
             require_capability('mod/workshop:viewallassessments', $context);
-            $user = core_user::get_user($params['userid'], '*', MUST_EXIST);
-            core_user::require_active_user($user);
+            $user = user::get_user($params['userid'], '*', MUST_EXIST);
+            user::require_active_user($user);
             if (!$workshop->check_group_membership($user->id)) {
                 throw new moodle_exception('notingroup');
             }

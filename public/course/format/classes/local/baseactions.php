@@ -17,8 +17,8 @@
 namespace core_courseformat\local;
 
 use core_courseformat\base as course_format;
-use section_info;
-use cm_info;
+use core_course\section_info;
+use core_course\cm_info;
 use stdClass;
 
 /**

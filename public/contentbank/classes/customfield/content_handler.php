@@ -16,6 +16,9 @@
 
 namespace core_contentbank\customfield;
 
+use core\context;
+use core\context\system;
+use core\url;
 use core_customfield\api;
 use core_customfield\field_controller;
 
@@ -80,8 +83,8 @@ class content_handler extends \core_customfield\handler {
      *
      * @return \context the context for configuration
      */
-    public function get_configuration_context(): \context {
-        return \context_system::instance();
+    public function get_configuration_context(): context {
+        return system::instance();
     }
 
     /**
@@ -89,8 +92,8 @@ class content_handler extends \core_customfield\handler {
      *
      * @return \moodle_url The URL to configure custom fields for this component
      */
-    public function get_configuration_url(): \moodle_url {
-        return new \moodle_url('/contentbank/customfield.php');
+    public function get_configuration_url(): url {
+        return new url('/contentbank/customfield.php');
     }
 
     /**
@@ -99,13 +102,13 @@ class content_handler extends \core_customfield\handler {
      * @param int $instanceid id of the record to get the context for
      * @return \context the context for the given record
      */
-    public function get_instance_context(int $instanceid = 0): \context {
+    public function get_instance_context(int $instanceid = 0): context {
         global $DB;
         $contextid = $DB->get_field('contentbank_content', 'contextid', ['id' => $instanceid]);
         if (!$contextid || $contextid == SITEID) {
-            return \context_system::instance();
+            return system::instance();
         } else {
-            return \context::instance_by_id($contextid);
+            return context::instance_by_id($contextid);
         }
     }
 

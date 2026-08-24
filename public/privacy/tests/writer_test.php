@@ -27,6 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\context\system;
+use core\context\user as context_user;
+use core\user as core_user;
 use \core_privacy\local\request\writer;
 
 /**
@@ -56,9 +59,9 @@ final class writer_test extends advanced_testcase {
      * @covers ::with_context
      */
     public function test_with_context(): void {
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
 
-        $this->assertSame($writer, writer::with_context(\context_system::instance()));
+        $this->assertSame($writer, writer::with_context(system::instance()));
     }
 
     /**
@@ -67,9 +70,9 @@ final class writer_test extends advanced_testcase {
      * @covers ::with_context
      */
     public function test_with_context_different_context_same_instance(): void {
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
 
-        $this->assertSame($writer, writer::with_context(\context_user::instance(\core_user::get_user_by_username('admin')->id)));
+        $this->assertSame($writer, writer::with_context(context_user::instance(core_user::get_user_by_username('admin')->id)));
     }
 
     /**
@@ -78,10 +81,10 @@ final class writer_test extends advanced_testcase {
      * @covers ::reset
      */
     public function test_reset(): void {
-        $writer = writer::with_context(\context_system::instance());
+        $writer = writer::with_context(system::instance());
         writer::reset();
 
-        $this->assertNotSame($writer, writer::with_context(\context_system::instance()));
+        $this->assertNotSame($writer, writer::with_context(system::instance()));
     }
 
     /**
@@ -90,10 +93,10 @@ final class writer_test extends advanced_testcase {
      * @covers ::export_user_preference
      */
     public function test_export_user_preference_sets_system_context(): void {
-        $writer = writer::with_context(\context_user::instance(\core_user::get_user_by_username('admin')->id));
+        $writer = writer::with_context(context_user::instance(core_user::get_user_by_username('admin')->id));
 
         writer::export_user_preference('core_test', 'key', 'value', 'description');
 
-        $this->assertSame(\context_system::instance(), $writer->get_current_context());
+        $this->assertSame(system::instance(), $writer->get_current_context());
     }
 }

@@ -16,6 +16,8 @@
 
 namespace tool_usertours\hook;
 
+use core\exception\coding_exception;
+
 /**
  * Provides the ability to add and remove custom client-side filters to the user tour filter list.
  *
@@ -45,7 +47,7 @@ class before_clientside_filter_fetch {
      */
     public function add_filter_by_classname(string $classname): self {
         if (!\is_a($classname, \tool_usertours\local\clientside_filter\clientside_filter::class, true)) {
-            throw new \coding_exception("Invalid clientside filter class {$classname}");
+            throw new coding_exception("Invalid clientside filter class {$classname}");
         }
         $this->filters[] = $classname;
 

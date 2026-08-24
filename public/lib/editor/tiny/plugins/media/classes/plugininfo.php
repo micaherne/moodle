@@ -16,7 +16,8 @@
 
 namespace tiny_media;
 
-use context;
+use core\context;
+use core\context\user;
 use editor_tiny\editor;
 use editor_tiny\plugin;
 use editor_tiny\plugin_with_buttons;
@@ -101,7 +102,7 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_menu
 
         $params = [
             'area' => [],
-            'usercontext' => \context_user::instance($USER->id)->id,
+            'usercontext' => user::instance($USER->id)->id,
         ];
 
         $keys = [

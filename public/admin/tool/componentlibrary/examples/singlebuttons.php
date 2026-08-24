@@ -24,19 +24,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\single_button;
+use core\url;
+
 require_once(__DIR__ . '/../../../../config.php');
 require_once($CFG->dirroot . '/lib/formslib.php');
 
 require_login();
-require_capability('moodle/site:configview', context_system::instance());
+require_capability('moodle/site:configview', system::instance());
 
 $repeatcount = optional_param('test_repeat', 1, PARAM_INT);
 
 $PAGE->set_pagelayout('embedded');
 
-$url = new moodle_url('/admin/tool/componentlibrary/examples/singlebuttons.php');
+$url = new url('/admin/tool/componentlibrary/examples/singlebuttons.php');
 $PAGE->set_url($url);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 $PAGE->set_heading('Moodle single buttons');
 $PAGE->set_title('Moodle single buttons');

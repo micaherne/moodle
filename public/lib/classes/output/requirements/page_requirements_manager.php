@@ -23,9 +23,9 @@ use core\output\core_renderer;
 use core\output\js_writer;
 use core\output\html_writer;
 use core\output\renderer_base;
-use lang_string;
+use core\lang_string;
 use moodle_page;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -606,7 +606,7 @@ class page_requirements_manager {
                 continue;
             }
             if (!empty($CFG->slasharguments)) {
-                $url = new moodle_url("/theme/jquery.php");
+                $url = new url("/theme/jquery.php");
                 $url->set_slashargument("/$component/$file");
             } else {
                 // This is not really good, we need slasharguments for relative links, this means no caching...
@@ -615,7 +615,7 @@ class page_requirements_manager {
                     $url = $CFG->wwwroot . preg_replace('/^' . preg_quote($CFG->dirroot, '/') . '/', '', $path);
                     // Replace all occurences of backslashes characters in url to forward slashes.
                     $url = str_replace('\\', '/', $url);
-                    $url = new moodle_url($url);
+                    $url = new url($url);
                 } else {
                     // Bad luck, fix your server!
                     debugging("Moodle jQuery integration requires 'slasharguments' setting to be enabled.");
@@ -739,7 +739,7 @@ class page_requirements_manager {
     protected function js_fix_url($url) {
         global $CFG;
 
-        if ($url instanceof moodle_url) {
+        if ($url instanceof url) {
             // If the URL is external to Moodle, it won't be handled by Moodle (!).
             if ($url->is_local_url()) {
                 $localurl = $url->out_as_local_url();
@@ -769,14 +769,14 @@ class page_requirements_manager {
             if (substr($url, -3) === '.js') {
                 $jsrev = $this->get_jsrev();
                 if (empty($CFG->slasharguments)) {
-                    return new moodle_url('/lib/javascript.php', ['rev' => $jsrev, 'jsfile' => $url]);
+                    return new url('/lib/javascript.php', ['rev' => $jsrev, 'jsfile' => $url]);
                 } else {
-                    $returnurl = new moodle_url('/lib/javascript.php');
+                    $returnurl = new url('/lib/javascript.php');
                     $returnurl->set_slashargument('/' . $jsrev . $url);
                     return $returnurl;
                 }
             } else {
-                return new moodle_url($url);
+                return new url($url);
             }
         } else {
             throw new coding_exception('Invalid JS url, it has to be shortened url starting with / or moodle_url instance.', $url);
@@ -996,10 +996,10 @@ class page_requirements_manager {
         }
 
         // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
-        if ($stylesheet instanceof moodle_url) {
+        if ($stylesheet instanceof url) {
             // Ok.
         } else if (strpos($stylesheet, '/') === 0) {
-            $stylesheet = new moodle_url($stylesheet);
+            $stylesheet = new url($stylesheet);
         } else {
             throw new coding_exception('Invalid stylesheet parameter.', $stylesheet);
         }
@@ -1014,7 +1014,7 @@ class page_requirements_manager {
      * @param moodle_url $stylesheet
      * @return void
      */
-    public function css_theme(moodle_url $stylesheet) {
+    public function css_theme(url $stylesheet) {
         $this->cssthemeurls[] = $stylesheet;
     }
 
@@ -1509,9 +1509,9 @@ class page_requirements_manager {
         $cachejs = !isset($CFG->cachejs) || $CFG->cachejs;
         $jsrev = $this->get_jsrev();
 
-        $jsloader = new moodle_url('/lib/javascript.php');
+        $jsloader = new url('/lib/javascript.php');
         $jsloader->set_slashargument('/' . $jsrev . '/');
-        $requirejsloader = new moodle_url('/lib/requirejs.php');
+        $requirejsloader = new url('/lib/requirejs.php');
         $requirejsloader->set_slashargument('/' . $jsrev . '/');
 
         $requirejsconfig = file_get_contents($CFG->dirroot . '/lib/requirejs/moodle-config.js');

@@ -21,6 +21,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context_helper;
+use core\url;
 use core_user\output\myprofile\tree;
 use tool_dataprivacy\form\exportfilter_form;
 
@@ -60,7 +63,7 @@ function tool_dataprivacy_myprofile_navigation(tree $tree, $user, $iscurrentuser
         // Require our Javascript module to handle contact DPO interaction.
         $PAGE->requires->js_call_amd('tool_dataprivacy/contactdpo', 'init');
 
-        $url = new moodle_url('/admin/tool/dataprivacy/mydatarequests.php');
+        $url = new url('/admin/tool/dataprivacy/mydatarequests.php');
         $node = new core_user\output\myprofile\node('privacyandpolicies', 'datarequests',
             get_string('datarequests', 'tool_dataprivacy'), null, $url);
         $category->add_node($node);
@@ -71,7 +74,7 @@ function tool_dataprivacy_myprofile_navigation(tree $tree, $user, $iscurrentuser
         // to download own data.
         if (!$hasexportrequest && \tool_dataprivacy\api::can_create_data_download_request_for_self()) {
             $exportparams = ['type' => \tool_dataprivacy\api::DATAREQUEST_TYPE_EXPORT];
-            $exporturl = new moodle_url('/admin/tool/dataprivacy/createdatarequest.php', $exportparams);
+            $exporturl = new url('/admin/tool/dataprivacy/createdatarequest.php', $exportparams);
             $exportnode = new core_user\output\myprofile\node('privacyandpolicies', 'requestdataexport',
                 get_string('requesttypeexport', 'tool_dataprivacy'), null, $exporturl);
             $category->add_node($exportnode);
@@ -83,7 +86,7 @@ function tool_dataprivacy_myprofile_navigation(tree $tree, $user, $iscurrentuser
         // to create data deletion request.
         if (!$hasdeleterequest && \tool_dataprivacy\api::can_create_data_deletion_request_for_self()) {
             $deleteparams = ['type' => \tool_dataprivacy\api::DATAREQUEST_TYPE_DELETE];
-            $deleteurl = new moodle_url('/admin/tool/dataprivacy/createdatarequest.php', $deleteparams);
+            $deleteurl = new url('/admin/tool/dataprivacy/createdatarequest.php', $deleteparams);
             $deletenode = new core_user\output\myprofile\node('privacyandpolicies', 'requestdatadeletion',
                 get_string('deletemyaccount', 'tool_dataprivacy'), null, $deleteurl);
             $category->add_node($deletenode);
@@ -98,7 +101,7 @@ function tool_dataprivacy_myprofile_navigation(tree $tree, $user, $iscurrentuser
     }
 
     if ($showsummary && $iscurrentuser) {
-        $summaryurl = new moodle_url('/admin/tool/dataprivacy/summary.php');
+        $summaryurl = new url('/admin/tool/dataprivacy/summary.php');
         $summarynode = new core_user\output\myprofile\node('privacyandpolicies', 'retentionsummary',
             get_string('dataretentionsummary', 'tool_dataprivacy'), null, $summaryurl);
         $category->add_node($summarynode);
@@ -179,7 +182,7 @@ function tool_dataprivacy_output_fragment_context_form($args) {
 
     $contextid = $args[0];
 
-    $context = \context_helper::instance_by_id($contextid);
+    $context = context_helper::instance_by_id($contextid);
     $customdata = \tool_dataprivacy\form\context_instance::get_context_instance_customdata($context);
 
     if (!empty($customdata['purposeretentionperiods'])) {
@@ -265,7 +268,7 @@ function tool_dataprivacy_pluginfile($course, $cm, $context, $filearea, $args, $
 function tool_dataprivacy_output_fragment_selectcourses_form(array $args): string {
     $args = (object)$args;
 
-    $context = context_system::instance();
+    $context = system::instance();
     require_capability('tool/dataprivacy:managedatarequests', $context);
 
     if (!empty($args->jsonformdata)) {

@@ -24,6 +24,10 @@
 
 namespace core_analytics;
 
+use core\context;
+use core\context\user as context_user;
+use core\user as core_user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -77,7 +81,7 @@ class user implements \core_analytics\analysable {
      * @param \context|null $context
      * @return void
      */
-    public function __construct($user, ?\context $context = null) {
+    public function __construct($user, ?context $context = null) {
 
         if (is_scalar($user)) {
             $this->user = new \stdClass();
@@ -100,7 +104,7 @@ class user implements \core_analytics\analysable {
      * @param \context|null $context
      * @return \core_analytics\user
      */
-    public static function instance($user, ?\context $context = null) {
+    public static function instance($user, ?context $context = null) {
 
         $userid = $user;
         if (!is_scalar($userid)) {
@@ -136,7 +140,7 @@ class user implements \core_analytics\analysable {
         // The instance constructor could be already loaded with the full user object. Using email
         // because it is a required user field.
         if (empty($this->user->email)) {
-            $this->user = \core_user::get_user($this->user->id);
+            $this->user = core_user::get_user($this->user->id);
         }
 
         $this->usercontext = $this->get_context();
@@ -167,7 +171,7 @@ class user implements \core_analytics\analysable {
      */
     public function get_context() {
         if ($this->usercontext === null) {
-            $this->usercontext = \context_user::instance($this->user->id);
+            $this->usercontext = context_user::instance($this->user->id);
         }
         return $this->usercontext;
     }

@@ -16,6 +16,7 @@
 
 namespace core_courseformat\external;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use stdClass;
 
@@ -128,7 +129,7 @@ final class get_overview_information_test extends \core_external\tests\externall
     public function test_get_overview_information_site(): void {
         $this->resetAfterTest();
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $this->expectExceptionMessage('The site home course overview page is not supported.');
 
         get_overview_information::execute(SITEID, 'assign');

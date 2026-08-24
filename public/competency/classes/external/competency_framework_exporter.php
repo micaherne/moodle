@@ -24,8 +24,9 @@
 namespace core_competency\external;
 defined('MOODLE_INTERNAL') || die();
 
+use core\exception\required_capability_exception;
 use core_competency\api;
-use renderer_base;
+use core\output\renderer_base;
 
 /**
  * Class for exporting competency_framework data.
@@ -56,7 +57,7 @@ class competency_framework_exporter extends \core\external\persistent_exporter {
         $competenciescount = 0;
         try {
             $competenciescount = api::count_competencies($filters);
-        } catch (\required_capability_exception $re) {
+        } catch (required_capability_exception $re) {
             $competenciescount = 0;
         }
         return array(

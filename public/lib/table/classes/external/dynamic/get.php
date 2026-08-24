@@ -16,6 +16,7 @@
 
 namespace core_table\external\dynamic;
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -229,7 +230,7 @@ class get extends external_api {
         $instance->set_filterset($filterset);
         self::validate_context($instance->get_context());
         if (!$instance->has_capability()) {
-            throw new \moodle_exception('nopermissiontoaccesspage');
+            throw new moodle_exception('nopermissiontoaccesspage');
         }
 
         $instance->set_sortdata($sortdata);

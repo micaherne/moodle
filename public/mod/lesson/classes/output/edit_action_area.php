@@ -24,9 +24,11 @@
 
 namespace mod_lesson\output;
 
-use moodle_url;
-use templatable;
-use renderable;
+use core\output\renderer_base;
+use core\output\url_select;
+use core\url;
+use core\output\templatable;
+use core\output\renderable;
 
 /**
  * Output the actionbar for this activity.
@@ -48,7 +50,7 @@ class edit_action_area implements templatable, renderable {
      * @param int        $cmid       The course module ID.
      * @param moodle_url $currenturl The current url for the page.
      */
-    public function __construct(int $cmid, moodle_url $currenturl) {
+    public function __construct(int $cmid, url $currenturl) {
         $this->cmid = $cmid;
         $this->currenturl = $currenturl;
     }
@@ -59,17 +61,17 @@ class edit_action_area implements templatable, renderable {
      * @param \renderer_base $output render base output.
      * @return array Said data.
      */
-    public function export_for_template(\renderer_base $output): array {
+    public function export_for_template(renderer_base $output): array {
         global $PAGE;
 
-        $viewurl = new moodle_url('/mod/lesson/edit.php', ['id' => $this->cmid, 'mode' => 'collapsed']);
-        $fullviewurl = new moodle_url('/mod/lesson/edit.php', ['id' => $this->cmid, 'mode' => 'full']);
+        $viewurl = new url('/mod/lesson/edit.php', ['id' => $this->cmid, 'mode' => 'collapsed']);
+        $fullviewurl = new url('/mod/lesson/edit.php', ['id' => $this->cmid, 'mode' => 'full']);
         $menu = [
             $viewurl->out(false) => get_string('collapsed', 'mod_lesson'),
             $fullviewurl->out(false) => get_string('full', 'mod_lesson')
         ];
 
-        $selectmenu = new \url_select($menu, $this->currenturl->out(false), null, 'mod_lesson_navigation_select');
+        $selectmenu = new url_select($menu, $this->currenturl->out(false), null, 'mod_lesson_navigation_select');
         $selectmenu->label = get_string('displaymode', 'mod_lesson');
         $selectmenu->labelattributes = ['class' => 'visually-hidden'];
 
@@ -77,7 +79,7 @@ class edit_action_area implements templatable, renderable {
         return [
             'back' => [
                 'text' => get_string('back', 'core'),
-                'link' => (new moodle_url('/mod/lesson/view.php', ['id' => $this->cmid]))->out(false)
+                'link' => (new url('/mod/lesson/view.php', ['id' => $this->cmid]))->out(false)
             ],
             'viewselect' => $selectmenu->export_for_template($output),
             'heading' => get_string('editinglesson', 'mod_lesson'),

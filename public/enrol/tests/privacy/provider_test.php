@@ -25,6 +25,9 @@ namespace core_enrol\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
 use core_enrol\privacy\provider;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
@@ -55,7 +58,7 @@ final class provider_test extends provider_testcase {
         // Check that we only get back two context.
         $this->assertCount(1, $contextlist);
         // Check that the context is returned is the expected.
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         $this->assertEquals($coursecontext1->id, $contextlist->get_contextids()[0]);
     }
     /**
@@ -74,8 +77,8 @@ final class provider_test extends provider_testcase {
         $subcontexts = [
             get_string('privacy:metadata:user_enrolments', 'core_enrol')
         ];
-        $coursecontext1 = \context_course::instance($course1->id);
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext1 = course::instance($course1->id);
+        $coursecontext2 = course::instance($course2->id);
         $this->setUser($user1);
         $writer = writer::with_context($coursecontext1);
         $this->assertFalse($writer->has_any_data());
@@ -134,7 +137,7 @@ final class provider_test extends provider_testcase {
         $userenrolments = $DB->get_records_sql($sql, array('courseid' => $course1->id));
         $this->assertCount(3, $userenrolments);
         // Delete everything for the first course context.
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         provider::delete_data_for_all_users_in_context($coursecontext1);
         // Get all user enrolments match with this course contest.
         $userenrolments = $DB->get_records_sql($sql, array('courseid' => $course1->id));
@@ -167,7 +170,7 @@ final class provider_test extends provider_testcase {
         $userenrolments = $DB->get_records('user_enrolments', array('userid' => $user1->id));
         $this->assertCount(2, $userenrolments);
         // Delete everything for the user1 in the context course 1.
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         $approvedlist = new approved_contextlist($user1, 'core_enrol', [$coursecontext1->id]);
         provider::delete_data_for_user($approvedlist);
         // Get all user enrolments match with user.
@@ -187,9 +190,9 @@ final class provider_test extends provider_testcase {
         $component = 'core_enrol';
 
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $userlist1 = new \core_privacy\local\request\userlist($coursecontext, $component);
         provider::get_users_in_context($userlist1);
@@ -224,9 +227,9 @@ final class provider_test extends provider_testcase {
         $user3 = $this->getDataGenerator()->create_user();
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
-        $coursecontext2 = \context_course::instance($course2->id);
-        $systemcontext = \context_system::instance();
+        $coursecontext1 = course::instance($course1->id);
+        $coursecontext2 = course::instance($course2->id);
+        $systemcontext = system::instance();
 
         // Enrol user1 into course1.
         $this->getDataGenerator()->enrol_user($user1->id, $course1->id,  null, 'manual');

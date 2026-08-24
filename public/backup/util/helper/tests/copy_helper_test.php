@@ -17,8 +17,11 @@
 namespace core_backup;
 
 use backup;
+use core\context\course;
+use core\context\module;
 use core\di;
 use copy_helper;
+use core\exception\moodle_exception;
 use core\hook\manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -89,7 +92,7 @@ final class copy_helper_test extends \advanced_testcase {
         // We need a grade, easiest is to add an assignment.
         $assignrow = $generator->create_module('assign', array(
             'course' => $course->id));
-        $assign = new \assign(\context_module::instance($assignrow->cmid), false, false);
+        $assign = new \assign(module::instance($assignrow->cmid), false, false);
         $item = $assign->get_grade_item();
 
         // Make a test grouping as well.
@@ -154,7 +157,7 @@ final class copy_helper_test extends \advanced_testcase {
      * @covers ::process_formdata
      */
     public function test_process_formdata_missing_fields(): void {
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         \copy_helper::process_formdata(new \stdClass);
     }
 
@@ -593,7 +596,7 @@ final class copy_helper_test extends \advanced_testcase {
         $this->assertEquals(1.0, $postrestorerec->progress);
 
         // Check the restored course itself.
-        $coursecontext = \context_course::instance($postrestorerec->itemid);
+        $coursecontext = course::instance($postrestorerec->itemid);
         $users = get_enrolled_users($coursecontext);
 
         $modinfo = get_fast_modinfo($postrestorerec->itemid);
@@ -661,7 +664,7 @@ final class copy_helper_test extends \advanced_testcase {
         $postrestorerec = $DB->get_record('backup_controllers', array('backupid' => $copyids['restoreid']));
 
         // Check the restored course itself.
-        $coursecontext = \context_course::instance($postrestorerec->itemid);
+        $coursecontext = course::instance($postrestorerec->itemid);
         $users = get_enrolled_users($coursecontext);
 
         $modinfo = get_fast_modinfo($postrestorerec->itemid);
@@ -730,7 +733,7 @@ final class copy_helper_test extends \advanced_testcase {
         $postrestorerec = $DB->get_record('backup_controllers', array('backupid' => $copyids['restoreid']));
 
         // Check the restored course itself.
-        $coursecontext = \context_course::instance($postrestorerec->itemid);
+        $coursecontext = course::instance($postrestorerec->itemid);
         $users = get_enrolled_users($coursecontext);
 
         $modinfo = get_fast_modinfo($postrestorerec->itemid);
@@ -799,7 +802,7 @@ final class copy_helper_test extends \advanced_testcase {
         $postrestorerec = $DB->get_record('backup_controllers', array('backupid' => $copyids['restoreid']));
 
         // Check the restored course itself.
-        $coursecontext = \context_course::instance($postrestorerec->itemid);
+        $coursecontext = course::instance($postrestorerec->itemid);
         $users = get_enrolled_users($coursecontext);
 
         get_fast_modinfo($postrestorerec->itemid, 0, true);
@@ -839,7 +842,7 @@ final class copy_helper_test extends \advanced_testcase {
         $formdata->category = 1;
 
         // Expect and exception as form data is incomplete.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $copydata = \copy_helper::process_formdata($formdata);
         \copy_helper::create_copy($copydata);
     }

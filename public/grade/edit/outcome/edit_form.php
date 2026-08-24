@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -121,7 +123,7 @@ class edit_outcome_form extends moodleform {
             if (empty($courseid)) {
                 $mform->hardFreeze('standard');
 
-            } else if (!has_capability('moodle/grade:manage', context_system::instance())) {
+            } else if (!has_capability('moodle/grade:manage', system::instance())) {
                 $mform->hardFreeze('standard');
 
             } else if ($coursecount and empty($outcome->courseid)) {
@@ -130,7 +132,7 @@ class edit_outcome_form extends moodleform {
 
 
         } else {
-            if (empty($courseid) or !has_capability('moodle/grade:manage', context_system::instance())) {
+            if (empty($courseid) or !has_capability('moodle/grade:manage', system::instance())) {
                 $mform->hardFreeze('standard');
             }
         }

@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once('../../../config.php');
 require_once($CFG->libdir.'/gradelib.php');
 require_once($CFG->dirroot.'/user/renderer.php');
@@ -49,14 +54,14 @@ $graderreportsifirst  = optional_param('sifirst', null, PARAM_NOTAGS);
 $graderreportsilast   = optional_param('silast', null, PARAM_NOTAGS);
 
 $studentsperpage = optional_param('perpage', null, PARAM_INT);
-$baseurl = new moodle_url('/grade/report/grader/index.php', ['id' => $courseid]);
+$baseurl = new url('/grade/report/grader/index.php', ['id' => $courseid]);
 
-$PAGE->set_url(new moodle_url('/grade/report/grader/index.php', array('id'=>$courseid)));
+$PAGE->set_url(new url('/grade/report/grader/index.php', array('id'=>$courseid)));
 $PAGE->set_pagelayout('report');
 
 // basic access checks
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 // Conditionally add the group JS if we have groups enabled.
@@ -65,7 +70,7 @@ if ($course->groupmode) {
 }
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 // The report object is recreated each time, save search information to SESSION object for future use.
 if (isset($graderreportsifirst)) {
@@ -109,7 +114,7 @@ if ($PAGE->user_allowed_editing() && !$PAGE->theme->haseditswitch) {
 
     // Page params for the turn editing on button.
     $options = $gpr->get_options();
-    $buttons = $OUTPUT->edit_button(new moodle_url($PAGE->url, $options), 'get');
+    $buttons = $OUTPUT->edit_button(new url($PAGE->url, $options), 'get');
 }
 
 $gradeserror = array();
@@ -215,7 +220,7 @@ if ($numusers > $maxusers) {
 }
 
 $perpagedata = [
-    'baseurl' => (new moodle_url('/grade/report/grader/index.php', ['id' => s($courseid), 'report' => 'grader']))->out(false),
+    'baseurl' => (new url('/grade/report/grader/index.php', ['id' => s($courseid), 'report' => 'grader']))->out(false),
     'options' => []
 ];
 foreach ($pagingoptions as $key => $name) {

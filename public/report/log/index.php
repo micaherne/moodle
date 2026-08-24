@@ -22,7 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
 use core\report_helper;
+use core\url;
 
 require('../../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
@@ -96,7 +100,7 @@ if (($edulevel != -1)) {
 if ($origin !== '') {
     $params['origin'] = $origin;
 }
-$url = new moodle_url("/report/log/index.php", $params);
+$url = new url("/report/log/index.php", $params);
 
 $PAGE->set_show_navigation_footer(false);
 $PAGE->set_url('/report/log/index.php', array('id' => $id));
@@ -120,7 +124,7 @@ if ($id != $SITE->id) {
     $course = $DB->get_record('course', ['id' => $id], '*');
     if ($course) {
         require_login($course);
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
         if ($cminfo !== null) {
             $context = $cminfo->context;
             $PAGE->set_cm($cminfo);
@@ -134,7 +138,7 @@ if ($id != $SITE->id) {
 if (empty($course)) {
     $course = $SITE;
     require_login();
-    $context = context_system::instance();
+    $context = system::instance();
     $PAGE->set_context($context);
 }
 

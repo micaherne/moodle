@@ -16,6 +16,8 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+
 /**
  * Class context, instances of which represent a context in the platform.
  *
@@ -76,7 +78,7 @@ class context {
      */
     private function __construct(int $deploymentid, string $contextid, array $types, ?int $id) {
         if (!is_null($id) && $id <= 0) {
-            throw new \coding_exception('id must be a positive int');
+            throw new coding_exception('id must be a positive int');
         }
         $this->deploymentid = $deploymentid;
         $this->contextid = $contextid;
@@ -171,7 +173,7 @@ class context {
     public function set_types(array $types): void {
         foreach ($types as $type) {
             if (!$this->is_valid_type($type, true)) {
-                throw new \coding_exception("Cannot set invalid context type '{$type}'.");
+                throw new coding_exception("Cannot set invalid context type '{$type}'.");
             }
         }
         $this->types = $types;

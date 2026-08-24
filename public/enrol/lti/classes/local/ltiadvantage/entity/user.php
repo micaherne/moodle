@@ -16,6 +16,8 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+
 /**
  * Class user, instances of which represent a specific lti user in the tool.
  *
@@ -106,7 +108,7 @@ class user {
         $this->localid = $userid;
         $this->deploymentid = $deploymentid;
         if (empty($sourceid)) {
-            throw new \coding_exception('Invalid sourceid value. Cannot be an empty string.');
+            throw new coding_exception('Invalid sourceid value. Cannot be an empty string.');
         }
         $this->sourceid = $sourceid;
         $this->set_lang($lang);
@@ -200,7 +202,7 @@ class user {
      */
     public function set_resourcelinkid(int $resourcelinkid): void {
         if ($resourcelinkid <= 0) {
-            throw new \coding_exception("Invalid resourcelinkid '$resourcelinkid' provided. Must be > 0.");
+            throw new coding_exception("Invalid resourcelinkid '$resourcelinkid' provided. Must be > 0.");
         }
         $this->resourcelinkid = $resourcelinkid;
     }
@@ -278,7 +280,7 @@ class user {
         require_once($CFG->libdir . '/moodlelib.php');
         $validcountrycodes = array_merge([''], array_keys(get_string_manager()->get_list_of_countries(true)));
         if (!in_array($countrycode, $validcountrycodes)) {
-            throw new \coding_exception("Invalid country code '$countrycode'.");
+            throw new coding_exception("Invalid country code '$countrycode'.");
         }
         $this->country = $countrycode;
     }
@@ -317,11 +319,11 @@ class user {
      */
     public function set_timezone(string $timezone): void {
         if (empty($timezone)) {
-            throw new \coding_exception('Invalid timezone value. Cannot be an empty string.');
+            throw new coding_exception('Invalid timezone value. Cannot be an empty string.');
         }
         $validtimezones = array_keys(\core_date::get_list_of_timezones(null, true));
         if (!in_array($timezone, $validtimezones)) {
-            throw new \coding_exception("Invalid timezone '$timezone' provided.");
+            throw new coding_exception("Invalid timezone '$timezone' provided.");
         }
         $this->timezone = $timezone;
     }
@@ -346,7 +348,7 @@ class user {
      */
     public function set_maildisplay(int $maildisplay): void {
         if (!in_array($maildisplay, range(0, 2))) {
-            throw new \coding_exception("Invalid maildisplay value '$maildisplay'. Must be in the range {0..2}.");
+            throw new coding_exception("Invalid maildisplay value '$maildisplay'. Must be in the range {0..2}.");
         }
         $this->maildisplay = $maildisplay;
     }
@@ -367,11 +369,11 @@ class user {
      */
     public function set_lang(string $langcode): void {
         if (empty($langcode)) {
-            throw new \coding_exception('Invalid lang value. Cannot be an empty string.');
+            throw new coding_exception('Invalid lang value. Cannot be an empty string.');
         }
         $validlangcodes = array_keys(get_string_manager()->get_list_of_translations());
         if (!in_array($langcode, $validlangcodes)) {
-            throw new \coding_exception("Invalid lang '$langcode' provided.");
+            throw new coding_exception("Invalid lang '$langcode' provided.");
         }
         $this->lang = $langcode;
     }
@@ -413,7 +415,7 @@ class user {
      */
     public function set_lastaccess(int $time): void {
         if ($time < 0) {
-            throw new \coding_exception('Cannot set negative access time');
+            throw new coding_exception('Cannot set negative access time');
         }
         $this->lastaccess = $time;
     }

@@ -16,8 +16,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\exception\coding_exception;
 use core\output\choicelist;
 use core\output\local\dropdown\status;
+use core\output\renderer_base;
+use core\output\templatable;
 
 require_once('HTML/QuickForm/select.php');
 require_once('templatable_form_element.php');

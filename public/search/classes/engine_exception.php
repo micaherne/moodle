@@ -24,6 +24,8 @@
 
 namespace core_search;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -33,6 +35,6 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright David Monllao {@link http://www.davidmonllao.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class engine_exception extends \moodle_exception {
+class engine_exception extends moodle_exception {
 }
 

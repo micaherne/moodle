@@ -34,11 +34,11 @@ use mod_forum\local\entities\post as post_entity;
 use mod_forum\local\entities\post_read_receipt_collection as post_read_receipt_collection_entity;
 use mod_forum\local\entities\sorter as sorter_entity;
 use stdClass;
-use context;
-use cm_info;
-use user_picture;
-use moodle_url;
-use core_user;
+use core\context;
+use core_course\cm_info;
+use core\output\user_picture;
+use core\url;
+use core\user;
 
 /**
  * Entity factory to create the forum entities.
@@ -69,7 +69,7 @@ class entity {
         // creates hidden dependency on the logged in user (very bad) however it's the best
         // option to load some data we need which doesn't require the logged in user.
         // Only use properties which do not require the logged in user.
-        $cm = \cm_info::create($coursemodule);
+        $cm = cm_info::create($coursemodule);
 
         return new forum_entity(
             $context,
@@ -171,7 +171,7 @@ class entity {
      * @return author_entity
      */
     public function get_author_from_stdclass(stdClass $record): author_entity {
-        $initials = core_user::get_initials($record);
+        $initials = user::get_initials($record);
         return new author_entity(
             $record->id,
             $record->picture,

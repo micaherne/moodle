@@ -19,6 +19,13 @@
 //                                                                       //
 ///////////////////////////////////////////////////////////////////////////
 
+use core\context;
+use core\output\html_writer;
+use core\output\plugin_renderer_base;
+use core\output\renderable;
+use core\url;
+use core_table\output\html_table;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -84,7 +91,7 @@ class core_files_renderer extends plugin_renderer_base {
         }
 
         $html .= html_writer::table($table);
-        $html .= $this->output->single_button(new moodle_url('/files/coursefilesedit.php', array('contextid'=>$tree->context->id)), get_string('coursefilesedit'), 'get');
+        $html .= $this->output->single_button(new url('/files/coursefilesedit.php', array('contextid'=>$tree->context->id)), get_string('coursefilesedit'), 'get');
         $html .= $this->output->box_end();
         return $html;
     }
@@ -606,7 +613,7 @@ class files_tree_viewer implements renderable {
             unset($params['filearea']);
             unset($params['filename']);
             unset($params['itemid']);
-            $url = new moodle_url('/files/index.php', $params);
+            $url = new url('/files/index.php', $params);
             $this->path[] = html_writer::link($url, $level->get_visible_name());
             $level = $level->get_parent();
         }
@@ -631,7 +638,7 @@ class files_tree_viewer implements renderable {
                     'filedate' => $filedate ? $filedate : '',
                     'filesize' => $filesize ? $filesize : ''
                     );
-            $url = new moodle_url('/files/index.php', $params);
+            $url = new url('/files/index.php', $params);
             if ($child->is_directory()) {
                 $fileitem['isdir'] = true;
                 $fileitem['url'] = $url->out(false);

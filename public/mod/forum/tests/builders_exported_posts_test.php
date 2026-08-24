@@ -16,6 +16,7 @@
 
 namespace mod_forum;
 
+use core\context\module;
 use mod_forum_tests_generator_trait;
 
 defined('MOODLE_INTERNAL') || die();
@@ -76,7 +77,7 @@ final class builders_exported_posts_test extends \advanced_testcase {
             array_map(function($forum) use ($entityfactory, $DB) {
                 $course = $DB->get_record('course', ['id' => $forum->course]);
                 $coursemodule = get_coursemodule_from_instance('forum', $forum->id);
-                $context = \context_module::instance($coursemodule->id);
+                $context = module::instance($coursemodule->id);
                 return $entityfactory->get_forum_from_stdClass($forum, $context, $coursemodule, $course);
             }, $forums),
             // Discussions.

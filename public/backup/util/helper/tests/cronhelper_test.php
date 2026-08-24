@@ -27,6 +27,7 @@ namespace core_backup;
 
 use backup;
 use backup_cron_automated_helper;
+use core\context\course;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -359,7 +360,7 @@ final class cronhelper_test extends \advanced_testcase {
         ];
         $event = \core\event\course_backup_created::create([
             'objectid' => $course->id,
-            'context'  => \context_course::instance($course->id),
+            'context'  => course::instance($course->id),
             'other'    => $otherarray
         ]);
         $event->trigger();

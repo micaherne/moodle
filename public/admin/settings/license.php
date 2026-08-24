@@ -22,22 +22,27 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\settingpage\settingpage;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/licenselib.php');
 
 if ($hassiteconfig) {
 
-    $temp = new admin_settingpage('licensesettings', new lang_string('licensesettings', 'admin'));
+    $temp = new settingpage('licensesettings', new lang_string('licensesettings', 'admin'));
 
     $licenses = license_manager::get_active_licenses_as_array();
 
-    $temp->add(new admin_setting_configselect('sitedefaultlicense',
+    $temp->add(new configselect('sitedefaultlicense',
         new lang_string('configsitedefaultlicense', 'admin'),
         new lang_string('configsitedefaultlicensehelp', 'admin'),
         'unknown',
         $licenses));
-    $temp->add(new admin_setting_configcheckbox('rememberuserlicensepref',
+    $temp->add(new configcheckbox('rememberuserlicensepref',
         new lang_string('rememberuserlicensepref', 'admin'),
         new lang_string('rememberuserlicensepref_help', 'admin'),
         1));

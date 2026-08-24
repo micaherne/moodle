@@ -24,6 +24,8 @@
  */
 namespace core\task;
 
+use core\exception\coding_exception;
+
 /**
  * Abstract class defining a scheduled task.
  * @copyright  2013 Damyon Wiese
@@ -391,7 +393,7 @@ abstract class scheduled_task extends task_base {
                 $max = self::DAYOFWEEKMAXINPUT;
                 break;
             default:
-                throw new \coding_exception("Field '$field' is not a valid crontab identifier.");
+                throw new coding_exception("Field '$field' is not a valid crontab identifier.");
         }
 
         $result = $this->eval_cron_field($this->{$field}, $min, $max);

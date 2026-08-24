@@ -27,6 +27,9 @@
  *
  * TODO: Finish phpdocs
  */
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 abstract class base_plan implements checksumable, executable {
 
     protected $name;      // One simple name for identification purposes

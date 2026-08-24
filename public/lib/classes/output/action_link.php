@@ -18,7 +18,7 @@ namespace core\output;
 
 use core\external\action_link_exporter;
 use core\output\actions\component_action;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -65,7 +65,7 @@ class action_link implements externable, renderable {
      * @param null|pix_icon $icon optional pix_icon to render with the link text
      */
     public function __construct(
-        moodle_url $url,
+        url $url,
         $text,
         ?component_action $action = null,
         ?array $attributes = null,

@@ -25,8 +25,8 @@ namespace mod_data\external;
 defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
-use renderer_base;
-use core_user;
+use core\output\renderer_base;
+use core\user;
 use core_tag\external\tag_item_exporter;
 
 /**
@@ -122,7 +122,7 @@ class record_exporter extends exporter {
         if (!empty($this->related['user']) and !empty($this->related['user']->id)) {
             $values['fullname'] = fullname($this->related['user']);
         } else if ($this->data->userid) {
-            $user = core_user::get_user($this->data->userid);
+            $user = user::get_user($this->data->userid);
             $values['fullname'] = fullname($user);
         }
 

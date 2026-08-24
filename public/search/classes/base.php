@@ -24,6 +24,10 @@
 
 namespace core_search;
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -85,9 +89,9 @@ abstract class base {
 
         // Detect possible issues when defining the class.
         if (strpos($classname, '\search') === false) {
-            throw new \coding_exception('Search area classes should be located in \PLUGINTYPE_PLUGINNAME\search\AREANAME.');
+            throw new coding_exception('Search area classes should be located in \PLUGINTYPE_PLUGINNAME\search\AREANAME.');
         } else if (strpos($classname, '_') === false) {
-            throw new \coding_exception($classname . ' class namespace level 1 should be its component frankenstyle name');
+            throw new coding_exception($classname . ' class namespace level 1 should be its component frankenstyle name');
         }
 
         $this->areaname = substr(strrchr($classname, '\\'), 1);
@@ -272,7 +276,7 @@ abstract class base {
     public function get_recordset_by_timestamp($modifiedfrom = 0) {
         $result = $this->get_document_recordset($modifiedfrom);
         if ($result === false) {
-            throw new \coding_exception(
+            throw new coding_exception(
                     'Search area must implement get_document_recordset or get_recordset_by_timestamp');
         }
         return $result;
@@ -314,7 +318,7 @@ abstract class base {
      * @return \moodle_recordset|null|false Recordset / null if no results / false if not supported
      * @since Moodle 3.4
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         return false;
     }
 
@@ -459,7 +463,7 @@ abstract class base {
      * @return array Array with SQL and parameters; both null if no need to query
      * @throws \coding_exception If called with invalid params
      */
-    protected function get_course_level_context_restriction_sql(?\context $context,
+    protected function get_course_level_context_restriction_sql(?context $context,
             $coursetable, $paramtype = SQL_PARAMS_QM) {
         global $DB;
 
@@ -481,7 +485,7 @@ abstract class base {
                 $key2 = 'gclcrs1';
                 break;
             default:
-                throw new \coding_exception('Unexpected $paramtype: ' . $paramtype);
+                throw new coding_exception('Unexpected $paramtype: ' . $paramtype);
         }
 
         $params = [];
@@ -519,7 +523,7 @@ abstract class base {
                 return [null, null];
 
             default:
-                throw new \coding_exception('Unexpected contextlevel: ' . $context->contextlevel);
+                throw new coding_exception('Unexpected contextlevel: ' . $context->contextlevel);
         }
 
         return [$sql, $params];
@@ -536,7 +540,7 @@ abstract class base {
      * @return \Iterator Iterator of contexts to reindex
      */
     public function get_contexts_to_reindex() {
-        return new \ArrayIterator([\context_system::instance()]);
+        return new \ArrayIterator([system::instance()]);
     }
 
     /**

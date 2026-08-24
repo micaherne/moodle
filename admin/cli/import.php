@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 define('CLI_SCRIPT', 1);
 
 require(__DIR__ . '/../../config.php');
@@ -76,16 +78,16 @@ if ($options['showdebugging']) {
 }
 
 if (!$admin = get_admin()) {
-    throw new \moodle_exception('noadmins');
+    throw new moodle_exception('noadmins');
 }
 
 if (!empty($options['srccourseid']) && !empty($options['dstcourseid'])) {
     // Import from course into course.
     if (!$srccourse = $DB->get_record('course', ['id' => $options['srccourseid']], 'id')) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
     if (!$dstcourse = $DB->get_record('course', ['id' => $options['dstcourseid']], 'id')) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
 
     cli_heading(get_string('importfromcoursetocourse', 'backup', (object)$options));
@@ -105,10 +107,10 @@ if (!empty($options['srccourseid']) && !empty($options['dstcourseid'])) {
 } else if (!empty($options['srccmid']) && !empty($options['dstcourseid'])) {
     // Import from course module into course.
     if (!$cm = $DB->get_record('course_modules', ['id' => $options['srccmid']], 'id')) {
-        throw new \moodle_exception('invalidcoursemoduleid', 'error', '', $options['srccmid']);
+        throw new moodle_exception('invalidcoursemoduleid', 'error', '', $options['srccmid']);
     }
     if (!$course = $DB->get_record('course', ['id' => $options['dstcourseid']], 'id')) {
-        throw new \moodle_exception('invalidcourseid');
+        throw new moodle_exception('invalidcourseid');
     }
 
     cli_heading(get_string('importfromccmidtocourse', 'backup', (object)$options));
@@ -126,7 +128,7 @@ if (!empty($options['srccourseid']) && !empty($options['dstcourseid'])) {
     $rc->destroy();
     cli_heading(get_string('restoredcourseid', 'backup', $course->id));
 } else {
-    throw new \moodle_exception('invalidoption');
+    throw new moodle_exception('invalidoption');
 }
 
 exit(0);

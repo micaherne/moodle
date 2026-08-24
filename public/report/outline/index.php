@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
 use core\report_helper;
 
 require('../../config.php');
@@ -46,7 +47,7 @@ $PAGE->set_url('/report/outline/index.php', $pageparams);
 $PAGE->set_pagelayout('report');
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 require_capability('report/outline:view', $context);
 
 // Handle form to filter access logs by date.

@@ -22,9 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
-$ADMIN->add('reports', new admin_externalpage('reportsecurity', get_string('pluginname', 'report_security'),
+$ADMIN->add('reports', new externalpage('reportsecurity', get_string('pluginname', 'report_security'),
     "$CFG->wwwroot/report/security/index.php", 'report/security:view'));
 
 // No report settings.

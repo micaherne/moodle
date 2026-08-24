@@ -24,6 +24,12 @@
 
 namespace core_analytics\local\target;
 
+use core\context;
+use core\exception\coding_exception;
+use core\output\pix_icon;
+use core\url;
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -157,11 +163,11 @@ abstract class base extends \core_analytics\calculable {
 
         if ($this->link_insights_report() && $includedetailsaction) {
 
-            $predictionurl = new \moodle_url('/report/insights/prediction.php', array('id' => $predictionid));
+            $predictionurl = new url('/report/insights/prediction.php', array('id' => $predictionid));
             $detailstext = $this->get_view_details_text();
 
             $actions[] = new \core_analytics\prediction_action(\core_analytics\prediction::ACTION_PREDICTION_DETAILS, $prediction,
-                $predictionurl, new \pix_icon('t/preview', $detailstext),
+                $predictionurl, new pix_icon('t/preview', $detailstext),
                 $detailstext, false, [], \core_analytics\action::TYPE_NEUTRAL);
         }
 
@@ -241,7 +247,7 @@ abstract class base extends \core_analytics\calculable {
      * @param float $predictionscore
      * @return void
      */
-    public function prediction_callback($modelid, $sampleid, $rangeindex, \context $samplecontext, $prediction, $predictionscore) {
+    public function prediction_callback($modelid, $sampleid, $rangeindex, context $samplecontext, $prediction, $predictionscore) {
         return;
     }
 
@@ -268,12 +274,12 @@ abstract class base extends \core_analytics\calculable {
      * @param \context $context
      * @return array
      */
-    public function get_insights_users(\context $context) {
+    public function get_insights_users(context $context) {
         if ($context->contextlevel === CONTEXT_USER) {
             if (!has_capability('moodle/analytics:listowninsights', $context, $context->instanceid)) {
                 $users = [];
             } else {
-                $users = [$context->instanceid => \core_user::get_user($context->instanceid)];
+                $users = [$context->instanceid => user::get_user($context->instanceid)];
             }
 
         } else if ($context->contextlevel >= CONTEXT_COURSE) {
@@ -294,7 +300,7 @@ abstract class base extends \core_analytics\calculable {
      * @return \moodle_url
      */
     public function get_insight_context_url($modelid, $context) {
-        return new \moodle_url('/report/insights/insights.php?modelid=' . $modelid . '&contextid=' . $context->id);
+        return new url('/report/insights/insights.php?modelid=' . $modelid . '&contextid=' . $context->id);
     }
 
     /**
@@ -306,7 +312,7 @@ abstract class base extends \core_analytics\calculable {
      * @param  \context $context
      * @return string
      */
-    public function get_insight_subject(int $modelid, \context $context) {
+    public function get_insight_subject(int $modelid, context $context) {
         return get_string('insightmessagesubject', 'analytics', $context->get_context_name());
     }
 
@@ -322,7 +328,7 @@ abstract class base extends \core_analytics\calculable {
      * @param  \moodle_url  $insighturl
      * @return string[]                     The plain text message and the HTML message
      */
-    public function get_insight_body(\context $context, string $contextname, \stdClass $user, \moodle_url $insighturl): array {
+    public function get_insight_body(context $context, string $contextname, \stdClass $user, url $insighturl): array {
         global $OUTPUT;
 
         $fullmessage = get_string('insightinfomessageplain', 'analytics', $insighturl->out(false));
@@ -347,7 +353,7 @@ abstract class base extends \core_analytics\calculable {
      *                                                              insight (you can return null if you are happy with the
      *                                                              default insight URL calculated in prediction_info())
      */
-    public function get_insight_body_for_prediction(\context $context, \stdClass $user, \core_analytics\prediction $prediction,
+    public function get_insight_body_for_prediction(context $context, \stdClass $user, \core_analytics\prediction $prediction,
             array &$actions) {
         // No extra message by default.
         return [FORMAT_PLAIN => '', FORMAT_HTML => '', 'url' => null];
@@ -428,10 +434,10 @@ abstract class base extends \core_analytics\calculable {
             if (!is_null($calculatedvalue)) {
                 if ($this->is_linear() &&
                         ($calculatedvalue > static::get_max_value() || $calculatedvalue < static::get_min_value())) {
-                    throw new \coding_exception('Calculated values should be higher than ' . static::get_min_value() .
+                    throw new coding_exception('Calculated values should be higher than ' . static::get_min_value() .
                         ' and lower than ' . static::get_max_value() . '. ' . $calculatedvalue . ' received');
                 } else if (!$this->is_linear() && static::is_a_class($calculatedvalue) === false) {
-                    throw new \coding_exception('Calculated values should be one of the target classes (' .
+                    throw new coding_exception('Calculated values should be one of the target classes (' .
                         json_encode(static::get_classes()) . '). ' . $calculatedvalue . ' received');
                 }
             }

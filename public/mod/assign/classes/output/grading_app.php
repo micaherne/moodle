@@ -26,9 +26,10 @@ namespace mod_assign\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderer_base;
-use renderable;
-use templatable;
+use core\output\help_icon;
+use core\output\renderer_base;
+use core\output\renderable;
+use core\output\templatable;
 use stdClass;
 
 /**
@@ -183,7 +184,7 @@ class grading_app implements templatable, renderable {
         // TODO Does not support custom user profile fields (MDL-70456).
         $export->showuseridentity = implode(',', \core_user\fields::get_identity_fields(null, false));
         $export->currentuserid = $USER->id;
-        $helpicon = new \help_icon('sendstudentnotifications', 'assign');
+        $helpicon = new help_icon('sendstudentnotifications', 'assign');
         $export->helpicon = $helpicon->export_for_template($output);
         return $export;
     }

@@ -24,6 +24,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
 
@@ -48,7 +49,7 @@ if (empty($reportlist) || $userid == $USER->id) {
     // (The looking at their own grades case is unlikely, since users who
     // appear in the gradebook are unlikely to be able to see quiz reports,
     // but it is possible.)
-    redirect(new moodle_url('/mod/quiz/view.php', ['id' => $cm->id]));
+    redirect(new url('/mod/quiz/view.php', ['id' => $cm->id]));
 }
 
 // Now we know the user is interested in reports. If they are interested in a
@@ -93,5 +94,5 @@ if ($userid) {
 }
 
 // Send the user to the first report they can see.
-redirect(new moodle_url('/mod/quiz/report.php', [
+redirect(new url('/mod/quiz/report.php', [
         'id' => $cm->id, 'mode' => reset($reportlist)]));

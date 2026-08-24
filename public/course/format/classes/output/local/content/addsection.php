@@ -25,11 +25,12 @@
 namespace core_courseformat\output\local\content;
 
 use core\output\named_templatable;
+use core\output\renderer_base;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use moodle_url;
-use renderable;
-use section_info;
+use core\url;
+use core\output\renderable;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -66,7 +67,7 @@ class addsection implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
 
         // If no editor must be displayed, just return an empty structure.
         if (!$this->format->show_editor(['moodle/course:update'])) {
@@ -115,14 +116,14 @@ class addsection implements named_templatable, renderable {
         since: '5.1',
         mdl: 'MDL-85284',
     )]
-    protected function get_num_sections_data(\renderer_base $output, int $lastsection, int $maxsections = 0): stdClass {
+    protected function get_num_sections_data(renderer_base $output, int $lastsection, int $maxsections = 0): stdClass {
         \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
         $format = $this->format;
         $course = $format->get_course();
         $data = new stdClass();
 
         $data->increase = (object) [
-            'url' => new moodle_url(
+            'url' => new url(
                 '/course/changenumsections.php',
                 ['courseid' => $course->id, 'increase' => true, 'sesskey' => sesskey()]
             ),
@@ -130,7 +131,7 @@ class addsection implements named_templatable, renderable {
 
         if ($course->numsections > 0) {
             $data->decrease = (object) [
-                'url' => new moodle_url(
+                'url' => new url(
                     '/course/changenumsections.php',
                     ['courseid' => $course->id, 'increase' => false, 'sesskey' => sesskey()]
                 ),
@@ -152,7 +153,7 @@ class addsection implements named_templatable, renderable {
      * @param int $maxsections unused (max sections is not needed anymore)
      * @return stdClass data context for a mustache template
      */
-    protected function get_add_section_data(\renderer_base $output, int $lastsection, int $maxsections = 0): stdClass {
+    protected function get_add_section_data(renderer_base $output, int $lastsection, int $maxsections = 0): stdClass {
         $format = $this->format;
         $course = $format->get_course();
         $data = new stdClass();

@@ -25,6 +25,8 @@
 
 namespace core_search\event;
 
+use core\context\system;
+
 /**
  * Unit tests for search events.
  *
@@ -59,7 +61,7 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
         $sink->clear();
 
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
 
         $urlparams = ['q' => 'I am a query', 'page' => 0];
         $this->assertEquals($urlparams, $event->get_url()->params());
@@ -76,7 +78,7 @@ final class events_test extends \advanced_testcase {
 
         $events = $sink->get_events();
         $event = reset($events);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
 
         $urlparams = ['q' => 'I am a query', 'page' => 2, 'title' => 'I am the title', 'timestart' => 1445644800, 'timeend' => 1477267200];
         $this->assertEquals($urlparams, $event->get_url()->params());

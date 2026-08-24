@@ -24,21 +24,24 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/lib/filelib.php');
 
 require_login();
-require_capability('moodle/site:configview', context_system::instance());
+require_capability('moodle/site:configview', system::instance());
 
 $jsdocdir = "{$CFG->dirroot}/jsdoc";
 if (file_exists($jsdocdir) && is_dir($jsdocdir)) {
     $relativepath = get_file_argument();
-    redirect(new moodle_url("/jsdoc/{$relativepath}"));
+    redirect(new url("/jsdoc/{$relativepath}"));
 }
 
 $PAGE->set_pagelayout('base');
-$PAGE->set_url(new moodle_url('/admin/tool/componentlibrary/jsdocspage.php'));
-$PAGE->set_context(context_system::instance());
+$PAGE->set_url(new url('/admin/tool/componentlibrary/jsdocspage.php'));
+$PAGE->set_context(system::instance());
 $title = get_string('pluginname', 'tool_componentlibrary');
 $PAGE->set_heading($title);
 $PAGE->set_title($title);

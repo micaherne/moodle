@@ -23,11 +23,14 @@
  * @copyright  2021 Bas Brands <bas@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\url;
+use core_admin\setting\tree\externalpage;
+
 defined('MOODLE_INTERNAL') || die;
 
-$temp = new admin_externalpage(
+$temp = new externalpage(
     'toolcomponentlibrary',
     get_string('pluginname', 'tool_componentlibrary'),
-    new moodle_url('/admin/tool/componentlibrary/index.php')
+    new url('/admin/tool/componentlibrary/index.php')
 );
 $ADMIN->add('development', $temp);

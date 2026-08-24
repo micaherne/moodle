@@ -23,19 +23,22 @@
  */
 namespace tool_dataprivacy;
 
-use coding_exception;
-use context_helper;
-use context_system;
+use core\context;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\context_helper;
+use core\context\system;
 use core\invalid_persistent_exception;
 use core\message\message;
+use core\output\action_menu\link_secondary;
 use core\task\manager;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\contextlist_collection;
-use core_user;
+use core\user;
 use dml_exception;
-use moodle_exception;
-use moodle_url;
-use required_capability_exception;
+use core\exception\moodle_exception;
+use core\url;
+use core\exception\required_capability_exception;
 use stdClass;
 use tool_dataprivacy\external\data_request_exporter;
 use tool_dataprivacy\local\helper;
@@ -130,9 +133,9 @@ class api {
      */
     public static function check_can_manage_data_registry($contextid = false) {
         if ($contextid) {
-            $context = \context_helper::instance_by_id($contextid);
+            $context = context_helper::instance_by_id($contextid);
         } else {
-            $context = \context_system::instance();
+            $context = system::instance();
         }
 
         require_capability('tool/dataprivacy:managedataregistry', $context);
@@ -190,7 +193,7 @@ class api {
         $dporoles = self::get_assigned_privacy_officer_roles();
 
         $dpos = [];
-        $context = context_system::instance();
+        $context = system::instance();
         foreach ($dporoles as $roleid) {
             $userfieldsapi = \core_user\fields::for_name();
             $allnames = $userfieldsapi->get_sql('u', false, '', '', false)->selects;
@@ -644,7 +647,7 @@ class api {
 
         // Check first whether the user can manage data requests.
         if (!self::can_manage_data_requests($USER->id)) {
-            $context = context_system::instance();
+            $context = system::instance();
             throw new required_capability_exception($context, 'tool/dataprivacy:managedatarequests', 'nopermissions', '');
         }
 
@@ -656,7 +659,7 @@ class api {
 
         // Check if current user has permission to approve delete data request.
         if ($request->get('type') == self::DATAREQUEST_TYPE_DELETE && !self::can_create_data_deletion_request_for_other()) {
-            throw new required_capability_exception(context_system::instance(),
+            throw new required_capability_exception(system::instance(),
                 'tool/dataprivacy:requestdeleteforotheruser', 'nopermissions', '');
         }
 
@@ -700,7 +703,7 @@ class api {
         global $USER;
 
         if (!self::can_manage_data_requests($USER->id)) {
-            $context = context_system::instance();
+            $context = system::instance();
             throw new required_capability_exception($context, 'tool/dataprivacy:managedatarequests', 'nopermissions', '');
         }
 
@@ -712,7 +715,7 @@ class api {
 
         // Check if current user has permission to reject delete data request.
         if ($request->get('type') == self::DATAREQUEST_TYPE_DELETE && !self::can_create_data_deletion_request_for_other()) {
-            throw new required_capability_exception(context_system::instance(),
+            throw new required_capability_exception(system::instance(),
                 'tool/dataprivacy:requestdeleteforotheruser', 'nopermissions', '');
         }
 
@@ -734,7 +737,7 @@ class api {
 
         $output = $PAGE->get_renderer('tool_dataprivacy');
 
-        $usercontext = \context_user::instance($request->get('requestedby'));
+        $usercontext = context_user::instance($request->get('requestedby'));
         $requestexporter = new data_request_exporter($request, ['context' => $usercontext]);
         $requestdata = $requestexporter->export($output);
 
@@ -744,7 +747,7 @@ class api {
         $subject = get_string('datarequestemailsubject', 'tool_dataprivacy', $typetext);
 
         $requestedby = $requestdata->requestedbyuser;
-        $datarequestsurl = new moodle_url('/admin/tool/dataprivacy/datarequests.php');
+        $datarequestsurl = new url('/admin/tool/dataprivacy/datarequests.php');
         $message = new message();
         $message->courseid          = $SITE->id;
         $message->component         = 'tool_dataprivacy';
@@ -763,8 +766,8 @@ class api {
             'requestedby' => $requestedby->fullname,
             'requesttype' => $typetext,
             'requestdate' => userdate($requestdata->timecreated),
-            'requestorigin' => format_string($SITE->fullname, true, ['context' => context_system::instance()]),
-            'requestoriginurl' => new moodle_url('/'),
+            'requestorigin' => format_string($SITE->fullname, true, ['context' => system::instance()]),
+            'requestoriginurl' => new url('/'),
             'requestcomments' => $requestdata->messagehtml,
             'datarequestsurl' => $datarequestsurl
         ];
@@ -795,7 +798,7 @@ class api {
      * @return  bool
      */
     public static function can_create_data_request_for_user($user, $requester = null) {
-        $usercontext = \context_user::instance($user);
+        $usercontext = context_user::instance($user);
 
         return has_capability('tool/dataprivacy:makedatarequestsforchildren', $usercontext, $requester);
     }
@@ -808,7 +811,7 @@ class api {
      * @return  bool
      */
     public static function require_can_create_data_request_for_user($user, $requester = null) {
-        $usercontext = \context_user::instance($user);
+        $usercontext = context_user::instance($user);
 
         require_capability('tool/dataprivacy:makedatarequestsforchildren', $usercontext, $requester);
 
@@ -824,7 +827,7 @@ class api {
     public static function can_create_data_download_request_for_self(?int $userid = null): bool {
         global $USER;
         $userid = $userid ?: $USER->id;
-        return has_capability('tool/dataprivacy:downloadownrequest', \context_user::instance($userid), $userid);
+        return has_capability('tool/dataprivacy:downloadownrequest', context_user::instance($userid), $userid);
     }
 
     /**
@@ -837,7 +840,7 @@ class api {
     public static function can_create_data_deletion_request_for_self(?int $userid = null): bool {
         global $USER;
         $userid = $userid ?: $USER->id;
-        return has_capability('tool/dataprivacy:requestdelete', \context_user::instance($userid), $userid)
+        return has_capability('tool/dataprivacy:requestdelete', context_user::instance($userid), $userid)
             && !is_primary_admin($userid);
     }
 
@@ -852,7 +855,7 @@ class api {
     public static function can_create_data_deletion_request_for_other(?int $userid = null): bool {
         global $USER;
         $userid = $userid ?: $USER->id;
-        return has_capability('tool/dataprivacy:requestdeleteforotheruser', context_system::instance(), $userid);
+        return has_capability('tool/dataprivacy:requestdeleteforotheruser', system::instance(), $userid);
     }
 
     /**
@@ -866,7 +869,7 @@ class api {
     public static function can_create_data_deletion_request_for_children(int $userid, ?int $requesterid = null): bool {
         global $USER;
         $requesterid = $requesterid ?: $USER->id;
-        return has_capability('tool/dataprivacy:makedatadeletionrequestsforchildren', \context_user::instance($userid),
+        return has_capability('tool/dataprivacy:makedatadeletionrequestsforchildren', context_user::instance($userid),
             $requesterid) && !is_primary_admin($userid);
     }
 
@@ -886,7 +889,7 @@ class api {
             $downloaderid = $USER->id;
         }
 
-        $usercontext = \context_user::instance($userid);
+        $usercontext = context_user::instance($userid);
         // If it's your own and you have the right capability, you can download it.
         if ($userid == $downloaderid && self::can_create_data_download_request_for_self($downloaderid)) {
             return true;
@@ -911,11 +914,11 @@ class api {
      * @return \action_menu_link_secondary Action menu link
      * @throws coding_exception
      */
-    public static function get_download_link(\context_user $usercontext, $requestid) {
-        $downloadurl = moodle_url::make_pluginfile_url($usercontext->id,
+    public static function get_download_link(context_user $usercontext, $requestid) {
+        $downloadurl = url::make_pluginfile_url($usercontext->id,
                 'tool_dataprivacy', 'export', $requestid, '/', 'export.zip', true);
         $downloadtext = get_string('download', 'tool_dataprivacy');
-        return new \action_menu_link_secondary($downloadurl, null, $downloadtext);
+        return new link_secondary($downloadurl, null, $downloadtext);
     }
 
     /**
@@ -959,7 +962,7 @@ class api {
     public static function delete_purpose($id) {
         $purpose = new purpose($id);
         if ($purpose->is_used()) {
-            throw new \moodle_exception('Purpose with id ' . $id . ' can not be deleted because it is used.');
+            throw new moodle_exception('Purpose with id ' . $id . ' can not be deleted because it is used.');
         }
         return $purpose->delete();
     }
@@ -1011,7 +1014,7 @@ class api {
     public static function delete_category($id) {
         $category = new category($id);
         if ($category->is_used()) {
-            throw new \moodle_exception('Category with id ' . $id . ' can not be deleted because it is used.');
+            throw new moodle_exception('Category with id ' . $id . ' can not be deleted because it is used.');
         }
         return $category->delete();
     }
@@ -1073,7 +1076,7 @@ class api {
         global $DB;
 
         if ($record->contextlevel != CONTEXT_SYSTEM && $record->contextlevel != CONTEXT_USER) {
-            throw new \coding_exception('Only context system and context user can set a contextlevel ' .
+            throw new coding_exception('Only context system and context user can set a contextlevel ' .
                 'purpose and retention');
         }
 
@@ -1087,7 +1090,7 @@ class api {
         $contextlevel->save();
 
         // We sync with their defaults as we removed these options from the defaults page.
-        $classname = \context_helper::get_class_for_level($record->contextlevel);
+        $classname = context_helper::get_class_for_level($record->contextlevel);
         list($purposevar, $categoryvar) = data_registry::var_names_from_context($classname);
         set_config($purposevar, $record->purposeid, 'tool_dataprivacy');
         set_config($categoryvar, $record->categoryid, 'tool_dataprivacy');
@@ -1102,7 +1105,7 @@ class api {
      * @param int $forcedvalue Use this categoryid value as if this was this context instance category.
      * @return category|false
      */
-    public static function get_effective_context_category(\context $context, $forcedvalue = false) {
+    public static function get_effective_context_category(context $context, $forcedvalue = false) {
         if (!data_registry::defaults_set()) {
             return false;
         }
@@ -1117,7 +1120,7 @@ class api {
      * @param int $forcedvalue Use this purposeid value as if this was this context instance purpose.
      * @return purpose|false
      */
-    public static function get_effective_context_purpose(\context $context, $forcedvalue = false) {
+    public static function get_effective_context_purpose(context $context, $forcedvalue = false) {
         if (!data_registry::defaults_set()) {
             return false;
         }
@@ -1396,7 +1399,7 @@ class api {
 
             // Store the associated contexts in the contextlist.
             foreach ($contextlist->get_contextids() as $contextid) {
-                mtrace('Pushing data for ' . \context::instance_by_id($contextid)->get_context_name());
+                mtrace('Pushing data for ' . context::instance_by_id($contextid)->get_context_name());
                 $context = new contextlist_context();
                 $context->set('contextid', $contextid)
                     ->set('contextlistid', $contextlistid)
@@ -1424,7 +1427,7 @@ class api {
      */
     public static function get_approved_contextlist_collection_for_request(data_request $request): contextlist_collection {
         global $DB;
-        $foruser = core_user::get_user($request->get('userid'));
+        $foruser = user::get_user($request->get('userid'));
 
         // Fetch all approved contextlists and create the core_privacy\local\request\contextlist objects here.
         $sql = "SELECT cl.component, ctx.contextid
@@ -1627,7 +1630,7 @@ class api {
         foreach ($result as $item) {
             $ctxid = $item->ctxid;
             context_helper::preload_from_record($item);
-            $contexts[$ctxid] = \context::instance_by_id($ctxid);
+            $contexts[$ctxid] = context::instance_by_id($ctxid);
         }
 
         return $contexts;

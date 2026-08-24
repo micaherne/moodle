@@ -26,6 +26,7 @@ namespace core_course\local\factory;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core_cache\cache;
 use core_course\local\repository\caching_content_item_readonly_repository;
 use core_course\local\repository\content_item_readonly_repository;
 use core_course\local\service\content_item_service;
@@ -48,7 +49,7 @@ class content_item_service_factory {
     public static function get_content_item_service(): content_item_service {
         return new content_item_service(
             new caching_content_item_readonly_repository(
-                \cache::make('core', 'user_course_content_items'),
+                cache::make('core', 'user_course_content_items'),
                 new content_item_readonly_repository()
             )
         );

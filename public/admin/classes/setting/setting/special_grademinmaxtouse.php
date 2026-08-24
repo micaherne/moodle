@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+
 /**
  * Special setting for $CFG->grade_minmaxtouse.
  *
@@ -30,8 +32,8 @@ class special_grademinmaxtouse extends \core_admin\setting\setting\configselect 
     public function __construct() {
         parent::__construct(
             'grade_minmaxtouse',
-            new \lang_string('minmaxtouse', 'grades'),
-            new \lang_string('minmaxtouse_desc', 'grades'),
+            new lang_string('minmaxtouse', 'grades'),
+            new lang_string('minmaxtouse_desc', 'grades'),
             GRADE_MIN_MAX_FROM_GRADE_ITEM,
             [
                 GRADE_MIN_MAX_FROM_GRADE_ITEM => get_string('gradeitemminmax', 'grades'),

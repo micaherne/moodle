@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_bigbluebuttonbn\form;
+
+use core\context\course;
 defined('MOODLE_INTERNAL') || die;
 global $CFG;
 require_once($CFG->libdir . '/formslib.php');
@@ -37,7 +39,7 @@ class guest_login extends \moodleform {
 
         $mform = $this->_form;
         $instance = $this->_customdata['instance'];
-        $coursecontext = \context_course::instance($instance->get_course()->id);
+        $coursecontext = course::instance($instance->get_course()->id);
         $shouldfreezeusername = isloggedin()
             && !isguestuser()
             && is_enrolled($coursecontext, $USER, '', true);

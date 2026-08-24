@@ -27,8 +27,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/tablelib.php');
 
-use coding_exception;
-use table_sql;
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
+use core\output\single_select;
+use core\url;
+use core_course\cm_info;
+use core_table\sql_table;
 
 /**
  * The class for displaying the forum report table.
@@ -36,7 +41,7 @@ use table_sql;
  * @copyright  2019 Michael Hawkins <michaelh@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class summary_table extends table_sql {
+class summary_table extends sql_table {
 
     /** Forum filter type */
     const FILTER_FORUM = 1;
@@ -204,13 +209,13 @@ class summary_table extends table_sql {
 
         // Course context if reporting on all forums in the course the user has access to.
         if ($this->iscoursereport) {
-            $this->userfieldscontext = \context_course::instance($this->courseid);
+            $this->userfieldscontext = course::instance($this->courseid);
         }
 
         foreach ($forumids as $forumid) {
             $cm = get_coursemodule_from_instance('forum', $forumid, $this->courseid);
             $this->cms[] = $cm;
-            $this->forumcontexts[$cm->id] = \context_module::instance($cm->id);
+            $this->forumcontexts[$cm->id] = module::instance($cm->id);
 
             // Set forum context if not reporting on course.
             if (!isset($this->userfieldscontext)) {
@@ -362,7 +367,7 @@ class summary_table extends table_sql {
         }
 
         $buttoncontext = [
-            'url' => new \moodle_url('/mod/forum/export.php', $params),
+            'url' => new url('/mod/forum/export.php', $params),
             'label' => get_string('exportpostslabel', 'forumreport_summary', fullname($data)),
         ];
 
@@ -572,7 +577,7 @@ class summary_table extends table_sql {
             $course = get_course($this->courseid);
             $groupmode = groups_get_course_groupmode($course);
         } else {
-            $cm = \cm_info::create($this->cms[0]);
+            $cm = cm_info::create($this->cms[0]);
             $groupmode = $cm->effectivegroupmode;
         }
 
@@ -1020,7 +1025,7 @@ class summary_table extends table_sql {
         // Include the pagination size selector.
         $perpageoptions = array_combine($this->perpageoptions, $this->perpageoptions);
         $selected = in_array($this->perpage, $this->perpageoptions) ? $this->perpage : $this->perpageoptions[0];
-        $perpageselect = new \single_select(new \moodle_url(''), 'perpage',
+        $perpageselect = new single_select(new url(''), 'perpage',
                 $perpageoptions, $selected, null, 'selectperpage');
         $perpageselect->set_label(get_string('perpage', 'moodle'));
 

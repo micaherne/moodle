@@ -16,6 +16,9 @@
 
 namespace mod_bigbluebuttonbn\local\extension;
 
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
+
 /**
  * Interface for overriding the settings navigation in BigBlueButtonBN subplugins.
  *
@@ -35,5 +38,5 @@ interface navigation_override_addon {
      * @param \navigation_node $nodenav
      * @return void
      */
-    public function override_settings_navigation(\settings_navigation $settingsnav, \navigation_node $nodenav): void;
+    public function override_settings_navigation(settings_navigation $settingsnav, navigation_node $nodenav): void;
 }

@@ -16,7 +16,7 @@
 
 namespace mod_quiz\output;
 
-use html_writer;
+use core\output\html_writer;
 
 /**
  * Specialisation of {@see navigation_panel_base} for the attempt quiz page.

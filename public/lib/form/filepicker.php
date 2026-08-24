@@ -25,6 +25,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\output\file_picker;
+use core\output\html_writer;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\url;
+
 global $CFG;
 
 require_once("HTML/QuickForm/button.php");
@@ -130,9 +139,9 @@ class MoodleQuickForm_filepicker extends HTML_QuickForm_input implements templat
         }
 
         if ($COURSE->id == SITEID) {
-            $context = context_system::instance();
+            $context = system::instance();
         } else {
-            $context = context_course::instance($COURSE->id);
+            $context = course::instance($COURSE->id);
         }
 
         $client_id = uniqid();
@@ -157,7 +166,7 @@ class MoodleQuickForm_filepicker extends HTML_QuickForm_input implements templat
         $module = array('name'=>'form_filepicker', 'fullpath'=>'/lib/form/filepicker.js', 'requires'=>array('core_filepicker', 'node', 'node-event-simulate', 'core_dndupload'));
         $PAGE->requires->js_init_call('M.form_filepicker.init', array($fp->options), true, $module);
 
-        $nonjsfilepicker = new moodle_url('/repository/draftfiles_manager.php', array(
+        $nonjsfilepicker = new url('/repository/draftfiles_manager.php', array(
             'env'=>'filepicker',
             'action'=>'browse',
             'itemid'=>$draftitemid,
@@ -208,7 +217,7 @@ class MoodleQuickForm_filepicker extends HTML_QuickForm_input implements templat
         // make sure max one file is present and it is not too big
         if (!is_null($draftitemid)) {
             $fs = get_file_storage();
-            $usercontext = context_user::instance($USER->id);
+            $usercontext = user::instance($USER->id);
             if ($files = $fs->get_area_files($usercontext->id, 'user', 'draft', $draftitemid, 'id DESC', false)) {
                 $file = array_shift($files);
                 if ($this->_options['maxbytes']

@@ -26,7 +26,10 @@
 
 namespace core\check\access;
 
-use context;
+use core\context;
+use core\context\system;
+use core\output\html_writer;
+use core\url;
 use stdClass;
 use core\check\result;
 
@@ -54,7 +57,7 @@ class riskbackup_result extends \core\check\result {
     public function __construct() {
         global $DB;
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $params = array('capability' => 'moodle/backup:userinfo', 'permission' => CAP_ALLOW, 'contextid' => $syscontext->id);
         $sql = "SELECT DISTINCT r.id, r.name, r.shortname, r.sortorder, r.archetype
@@ -137,10 +140,10 @@ class riskbackup_result extends \core\check\result {
             $links = array();
             foreach ($this->systemroles as $role) {
                 $role->name = role_get_name($role);
-                $role->url = (new \moodle_url('/admin/roles/manage.php', ['action' => 'edit', 'roleid' => $role->id]))->out();
-                $links[] = \html_writer::tag('li', get_string('check_riskbackup_editrole', 'report_security', $role));
+                $role->url = (new url('/admin/roles/manage.php', ['action' => 'edit', 'roleid' => $role->id]))->out();
+                $links[] = html_writer::tag('li', get_string('check_riskbackup_editrole', 'report_security', $role));
             }
-            $links = \html_writer::tag('ul', implode('', $links));
+            $links = html_writer::tag('ul', implode('', $links));
             $details .= get_string('check_riskbackup_details_systemroles', 'report_security', $links);
         }
 
@@ -151,11 +154,11 @@ class riskbackup_result extends \core\check\result {
                 $context = context::instance_by_id($role->contextid);
                 $role->name = role_get_name($role, $context, ROLENAME_BOTH);
                 $role->contextname = $context->get_context_name();
-                $role->url = (new \moodle_url('/admin/roles/override.php',
+                $role->url = (new url('/admin/roles/override.php',
                     ['contextid' => $role->contextid, 'roleid' => $role->id]))->out();
-                $links[] = \html_writer::tag('li', get_string('check_riskbackup_editoverride', 'report_security', $role));
+                $links[] = html_writer::tag('li', get_string('check_riskbackup_editoverride', 'report_security', $role));
             }
-            $links = \html_writer::tag('ul', implode('', $links));
+            $links = html_writer::tag('ul', implode('', $links));
             $details .= get_string('check_riskbackup_details_overriddenroles', 'report_security', $links);
         }
 
@@ -179,19 +182,19 @@ class riskbackup_result extends \core\check\result {
                    ORDER BY $sort", array_merge($params, $sortparams));
 
         foreach ($rs as $user) {
-            $context = \context::instance_by_id($user->contextid);
-            $url = new \moodle_url('/admin/roles/assign.php', ['contextid' => $user->contextid, 'roleid' => $user->roleid]);
+            $context = context::instance_by_id($user->contextid);
+            $url = new url('/admin/roles/assign.php', ['contextid' => $user->contextid, 'roleid' => $user->roleid]);
             $a = (object)array(
                 'fullname' => fullname($user),
                 'url' => $url->out(),
                 'email' => s($user->email),
                 'contextname' => $context->get_context_name(),
             );
-            $users[] = \html_writer::tag('li', get_string('check_riskbackup_unassign', 'report_security', $a));
+            $users[] = html_writer::tag('li', get_string('check_riskbackup_unassign', 'report_security', $a));
         }
         $rs->close();
         if (!empty($users)) {
-            $users = \html_writer::tag('ul', implode('', $users));
+            $users = html_writer::tag('ul', implode('', $users));
             $details .= get_string('check_riskbackup_details_users', 'report_security', $users);
         }
 

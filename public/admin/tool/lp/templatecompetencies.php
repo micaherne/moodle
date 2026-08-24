@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\exception\required_capability_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -42,7 +46,7 @@ if (!$template->can_read()) {
 \core_competency\api::template_viewed($template);
 
 // Set up the page.
-$url = new moodle_url('/admin/tool/lp/templatecompetencies.php', array('templateid' => $template->get('id'),
+$url = new url('/admin/tool/lp/templatecompetencies.php', array('templateid' => $template->get('id'),
     'pagecontextid' => $pagecontextid));
 list($title, $subtitle) = \tool_lp\page_helper::setup_for_template($pagecontextid, $url, $template);
 

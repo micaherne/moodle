@@ -15,7 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_bigbluebuttonbn\plugininfo;
 
+use core\plugin_manager;
 use core\plugininfo\base;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
 use mod_bigbluebuttonbn\extension;
 
 /**
@@ -48,7 +51,7 @@ class bbbext extends base {
             return [];
         }
         // Get all available plugins.
-        $plugins = \core_plugin_manager::instance()->get_installed_plugins(extension::BBB_EXTENSION_PLUGIN_NAME);
+        $plugins = plugin_manager::instance()->get_installed_plugins(extension::BBB_EXTENSION_PLUGIN_NAME);
         if (!$plugins) {
             return [];
         }
@@ -93,7 +96,7 @@ class bbbext extends base {
 
         if ($haschanged) {
             add_to_config_log('disabled', $oldvalue, $disabled, $plugin);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -109,7 +112,7 @@ class bbbext extends base {
      * @param string $parentnodename
      * @param bool $hassiteconfig whether the current user has moodle/site:config capability
      */
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
         // If the mod_bigbluebuttonbn is not enabled, then all subplugin are disabled.
         if (!self::is_bbb_enabled()) {
             return;
@@ -127,7 +130,7 @@ class bbbext extends base {
 
         $section = $this->get_settings_section_name();
 
-        $settings = new \admin_settingpage($section, $this->displayname, 'moodle/site:config',
+        $settings = new settingpage($section, $this->displayname, 'moodle/site:config',
             $this->is_enabled() === false);
 
         if ($adminroot->fulltree) {

@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use core\exception\moodle_exception;
+use core\user;
 use \core_privacy\local\request\contextlist_collection;
 use \core_privacy\local\request\contextlist;
 use \core_privacy\local\request\approved_contextlist;
@@ -60,7 +62,7 @@ final class contextlist_collection_test extends advanced_testcase {
      */
     public function test_supports_approved_contextlist(): void {
         $uit = new contextlist_collection(1);
-        $testuser = \core_user::get_user_by_username('admin');
+        $testuser = user::get_user_by_username('admin');
         $contextids = [3, 2, 1];
         $uit->add_contextlist(new approved_contextlist($testuser, 'core_privacy', $contextids));
 

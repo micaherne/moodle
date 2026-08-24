@@ -23,7 +23,10 @@
  * @author    Jesus Federico  (jesus [at] blindsidenetworks [dt] com)
  */
 
+use core\exception\moodle_exception;
 use core\notification;
+use core\output\html_writer;
+use core\url;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\local\exceptions\server_not_available_exception;
 use mod_bigbluebuttonbn\local\proxy\bigbluebutton_proxy;
@@ -58,7 +61,7 @@ if ($id) {
 if (!$instance) {
     $courseid = optional_param('courseid', 1, PARAM_INT);
     \core\notification::error(get_string('general_error_not_found', 'mod_bigbluebuttonbn', $id));
-    redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
+    redirect(new url('/course/view.php', ['id' => $courseid]));
 }
 
 $cm = $instance->get_cm();

@@ -25,6 +25,9 @@
 
 namespace core_grades\event;
 
+use core\context\course;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -66,7 +69,7 @@ final class events_test extends \advanced_testcase {
         // Create a grade letter created event.
         $event = \core\event\grade_letter_created::create(array(
             'objectid' => 10,
-            'context' => \context_course::instance($this->course->id)
+            'context' => course::instance($this->course->id)
         ));
 
         // Trigger and capture the event.
@@ -77,7 +80,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\grade_letter_created', $event);
-        $this->assertEquals(\context_course::instance($this->course->id), $event->get_context());
+        $this->assertEquals(course::instance($this->course->id), $event->get_context());
     }
 
     /**
@@ -90,7 +93,7 @@ final class events_test extends \advanced_testcase {
         // Create a grade letter deleted event.
         $event = \core\event\grade_letter_deleted::create(array(
             'objectid' => 10,
-            'context' => \context_course::instance($this->course->id)
+            'context' => course::instance($this->course->id)
         ));
 
         // Trigger and capture the event.
@@ -101,7 +104,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\grade_letter_deleted', $event);
-        $this->assertEquals(\context_course::instance($this->course->id), $event->get_context());
+        $this->assertEquals(course::instance($this->course->id), $event->get_context());
     }
 
     /**
@@ -114,7 +117,7 @@ final class events_test extends \advanced_testcase {
         // Create a grade letter updated event.
         $event = \core\event\grade_letter_updated::create(array(
             'objectid' => 10,
-            'context' => \context_course::instance($this->course->id)
+            'context' => course::instance($this->course->id)
         ));
 
         // Trigger and capture the event.
@@ -125,7 +128,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\grade_letter_updated', $event);
-        $this->assertEquals(\context_course::instance($this->course->id), $event->get_context());
+        $this->assertEquals(course::instance($this->course->id), $event->get_context());
     }
 
     /**
@@ -139,7 +142,7 @@ final class events_test extends \advanced_testcase {
         $gradescale->scale       = 'Distinction, Very Good, Good, Pass, Fail';
         $gradescale->description = 'This scale is used to mark standard assignments.';
 
-        $url = new \moodle_url('/grade/edit/scale/index.php', array('id' => $this->course->id));
+        $url = new url('/grade/edit/scale/index.php', array('id' => $this->course->id));
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -151,7 +154,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\core\event\scale_created', $event);
         $this->assertEquals($id, $event->objectid);
         $this->assertEquals($url, $event->get_url());
-        $this->assertEquals(\context_course::instance($this->course->id), $event->get_context());
+        $this->assertEquals(course::instance($this->course->id), $event->get_context());
     }
 
     /**
@@ -174,7 +177,7 @@ final class events_test extends \advanced_testcase {
 
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\scale_deleted', $event);
-        $this->assertEquals(\context_course::instance($this->course->id), $event->get_context());
+        $this->assertEquals(course::instance($this->course->id), $event->get_context());
     }
 
     /**
@@ -190,7 +193,7 @@ final class events_test extends \advanced_testcase {
         $id = $gradescale->insert();
 
         $gradescale->name = 'Updated info for this unittest grade_scale';
-        $url = new \moodle_url('/grade/edit/scale/index.php', array('id' => $this->course->id));
+        $url = new url('/grade/edit/scale/index.php', array('id' => $this->course->id));
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -202,6 +205,6 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\core\event\scale_updated', $event);
         $this->assertEquals($id, $event->objectid);
         $this->assertEquals($url, $event->get_url());
-        $this->assertEquals(\context_course::instance($this->course->id), $event->get_context());
+        $this->assertEquals(course::instance($this->course->id), $event->get_context());
     }
 }

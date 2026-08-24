@@ -22,6 +22,9 @@
  * @copyright 2009 Moodle Pty Ltd (http://moodle.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/' . $CFG->admin . '/webservice/lib.php');
@@ -38,7 +41,7 @@ if ($node) {
     $node->make_active();
 }
 $PAGE->navbar->add(get_string('serviceusers', 'webservice'),
-        new moodle_url('/' . $CFG->admin . '/webservice/service_users.php', array('id' => $id)));
+        new url('/' . $CFG->admin . '/webservice/service_users.php', array('id' => $id)));
 
 $webservicemanager = new webservice();
 

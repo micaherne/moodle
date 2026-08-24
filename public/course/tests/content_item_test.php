@@ -18,6 +18,7 @@ namespace core_course;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\url;
 use core_course\local\entity\content_item;
 use core_course\local\entity\lang_string_title;
 use core_course\local\entity\string_title;
@@ -43,7 +44,7 @@ final class content_item_test extends \advanced_testcase {
             id: 22,
             name: 'Item name',
             title: new lang_string_title('modulename', 'mod_assign'),
-            link: new \moodle_url('mod_edit.php'),
+            link: new url('mod_edit.php'),
             icon: '<img src="test">',
             help: 'Description of the module',
             archetype: MOD_ARCHETYPE_RESOURCE,
@@ -57,7 +58,7 @@ final class content_item_test extends \advanced_testcase {
         $this->assertEquals(22, $contentitem->get_id());
         $this->assertEquals('Item name', $contentitem->get_name());
         $this->assertEquals('Assignment', $contentitem->get_title()->get_value());
-        $this->assertEquals(new \moodle_url('mod_edit.php'), $contentitem->get_link());
+        $this->assertEquals(new url('mod_edit.php'), $contentitem->get_link());
         $this->assertEquals('<img src="test">', $contentitem->get_icon());
         $this->assertEquals('Description of the module', $contentitem->get_help());
         $this->assertEquals(MOD_ARCHETYPE_RESOURCE, $contentitem->get_archetype());
@@ -78,7 +79,7 @@ final class content_item_test extends \advanced_testcase {
             id: 22,
             name: 'Item name',
             title: new lang_string_title('modulename', 'mod_assign'),
-            link: new \moodle_url('mod_edit.php'),
+            link: new url('mod_edit.php'),
             icon: '<img src="test">',
             help: 'Description of the module',
             archetype: MOD_ARCHETYPE_RESOURCE,
@@ -89,7 +90,7 @@ final class content_item_test extends \advanced_testcase {
         $this->assertEquals(22, $contentitem->get_id());
         $this->assertEquals('Item name', $contentitem->get_name());
         $this->assertEquals('Assignment', $contentitem->get_title()->get_value());
-        $this->assertEquals(new \moodle_url('mod_edit.php'), $contentitem->get_link());
+        $this->assertEquals(new url('mod_edit.php'), $contentitem->get_link());
         $this->assertEquals('<img src="test">', $contentitem->get_icon());
         $this->assertEquals('Description of the module', $contentitem->get_help());
         $this->assertEquals(MOD_ARCHETYPE_RESOURCE, $contentitem->get_archetype());
@@ -110,7 +111,7 @@ final class content_item_test extends \advanced_testcase {
             id: 22,
             name: 'Item name',
             title: new lang_string_title('modulename', 'mod_assign'),
-            link: new \moodle_url('mod_edit.php'),
+            link: new url('mod_edit.php'),
             icon: '<img src="test">',
             help: 'Description of the module',
             archetype: MOD_ARCHETYPE_RESOURCE,
@@ -132,7 +133,7 @@ final class content_item_test extends \advanced_testcase {
             id: 22,
             name: 'Item name',
             title: new lang_string_title('modulename', 'mod_assign'),
-            link: new \moodle_url('mod_edit.php'),
+            link: new url('mod_edit.php'),
             icon: '<img src="test">',
             help: 'Description of the module',
             archetype: MOD_ARCHETYPE_RESOURCE,
@@ -153,7 +154,7 @@ final class content_item_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $contentitem = new content_item(22, 'Item name', new string_title('My custom string'),
-            new \moodle_url('mod_edit.php'), '<img src="test">', 'Description of the module', MOD_ARCHETYPE_RESOURCE, 'mod_page',
+            new url('mod_edit.php'), '<img src="test">', 'Description of the module', MOD_ARCHETYPE_RESOURCE, 'mod_page',
                 MOD_PURPOSE_CONTENT);
 
         $this->assertEquals('My custom string', $contentitem->get_title()->get_value());

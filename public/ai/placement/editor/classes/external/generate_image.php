@@ -17,6 +17,9 @@
 namespace aiplacement_editor\external;
 
 use aiplacement_editor\utils;
+use core\context;
+use core\exception\moodle_exception;
+use core\url;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -111,7 +114,7 @@ class generate_image extends external_api {
         ]);
         // Context validation and permission check.
         // Get the context from the passed in ID.
-        $context = \context::instance_by_id($contextid);
+        $context = context::instance_by_id($contextid);
 
         // Check the user has permission to use the AI service.
         self::validate_context($context);
@@ -120,7 +123,7 @@ class generate_image extends external_api {
             'generate_image',
             \core_ai\aiactions\generate_image::class,
         )) {
-            throw new \moodle_exception('noeditor', 'aiplacement_editor');
+            throw new moodle_exception('noeditor', 'aiplacement_editor');
         }
 
         // Prepare the action.
@@ -141,7 +144,7 @@ class generate_image extends external_api {
         // If we have a successful response, generate the URL for the draft file.
         if ($response->get_success()) {
             $draftfile = $response->get_response_data()['draftfile'];
-            $drafturl = \moodle_url::make_draftfile_url(
+            $drafturl = url::make_draftfile_url(
                 $draftfile->get_itemid(),
                 $draftfile->get_filepath(),
                 $draftfile->get_filename(),

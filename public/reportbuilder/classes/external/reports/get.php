@@ -26,7 +26,7 @@ use core_reportbuilder\manager;
 use core_reportbuilder\permission;
 use core_reportbuilder\output\custom_report;
 use core_reportbuilder\external\custom_report_exporter;
-use moodle_url;
+use core\url;
 
 /**
  * External method for getting a custom report
@@ -84,7 +84,7 @@ class get extends external_api {
         }
 
         // Set current URL and force bootstrap_renderer to initiate moodle page.
-        $PAGE->set_url(new moodle_url('/'));
+        $PAGE->set_url(new url('/'));
         $OUTPUT->header();
         $PAGE->start_collecting_javascript_requirements();
 

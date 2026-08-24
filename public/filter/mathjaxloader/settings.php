@@ -22,17 +22,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configtext;
+use core_admin\setting\setting\configtextarea;
+use core_admin\setting\setting\heading;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $item = new admin_setting_heading(
+    $item = new heading(
         'filter_mathjaxloader/localinstall',
         new lang_string('localinstall', 'filter_mathjaxloader'),
         new lang_string('localinstall_help', 'filter_mathjaxloader')
     );
     $settings->add($item);
 
-    $item = new admin_setting_configtext(
+    $item = new configtext(
         'filter_mathjaxloader/httpsurl',
         new lang_string('httpsurl', 'filter_mathjaxloader'),
         new lang_string('httpsurl_help', 'filter_mathjaxloader'),
@@ -41,7 +47,7 @@ if ($ADMIN->fulltree) {
     );
     $settings->add($item);
 
-    $item = new admin_setting_configcheckbox(
+    $item = new configcheckbox(
         'filter_mathjaxloader/texfiltercompatibility',
         new lang_string('texfiltercompatibility', 'filter_mathjaxloader'),
         new lang_string('texfiltercompatibility_help', 'filter_mathjaxloader'),
@@ -49,7 +55,7 @@ if ($ADMIN->fulltree) {
     );
     $settings->add($item);
 
-    $item = new admin_setting_configtextarea(
+    $item = new configtextarea(
         'filter_mathjaxloader/mathjaxconfig',
         new lang_string('mathjaxsettings', 'filter_mathjaxloader'),
         new lang_string('mathjaxsettings_desc', 'filter_mathjaxloader'),
@@ -58,7 +64,7 @@ if ($ADMIN->fulltree) {
 
     $settings->add($item);
 
-    $item = new admin_setting_configtext(
+    $item = new configtext(
         'filter_mathjaxloader/additionaldelimiters',
         new lang_string('additionaldelimiters', 'filter_mathjaxloader'),
         new lang_string('additionaldelimiters_help', 'filter_mathjaxloader'),

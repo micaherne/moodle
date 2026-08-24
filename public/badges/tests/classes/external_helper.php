@@ -16,6 +16,10 @@
 
 namespace core_badges\tests;
 
+use core\context\course;
+use core\context\system;
+use core\url;
+
 /**
  * Helper trait for external function tests.
  *
@@ -35,7 +39,7 @@ trait external_helper {
      */
     private function assert_badge_class(array $expected, array $actual, bool $canconfiguredetails): void {
         $this->assertEquals('BadgeClass', $actual['type']);
-        $badgeurl = new \moodle_url('/badges/badgeclass.php', ['id' => $expected['id']]);
+        $badgeurl = new url('/badges/badgeclass.php', ['id' => $expected['id']]);
         $this->assertEquals($badgeurl->out(false), $actual['id']);
         $this->assertEquals($expected['issuername'], $actual['issuer']);
         $this->assertEquals($expected['name'], $actual['name']);
@@ -179,8 +183,8 @@ trait external_helper {
         $teacher = $generator->create_and_enrol($course, 'editingteacher');
         $badgegenerator = $generator->get_plugin_generator('core_badges');
 
-        $systemcontext = \context_system::instance();
-        $coursecontext = \context_course::instance($course->id);
+        $systemcontext = system::instance();
+        $coursecontext = course::instance($course->id);
 
         // Create a site badge.
         $now = time();
@@ -210,7 +214,7 @@ trait external_helper {
             'dateissued' => (int) $siteissuedbadge->dateissued,
             'dateexpire' => $siteissuedbadge->dateexpire,
             'visible' => (int) $siteissuedbadge->visible,
-            'badgeurl' => \moodle_url::make_webservice_pluginfile_url($systemcontext->id, 'badges', 'badgeimage',
+            'badgeurl' => url::make_webservice_pluginfile_url($systemcontext->id, 'badges', 'badgeimage',
                                                                       $sitebadge->id, '/', 'f3')->out(false),
             'recipientid' => $student->id,
             'recipientfullname' => fullname($student),
@@ -293,7 +297,7 @@ trait external_helper {
             'dateissued' => (int) $courseissuedbadge->dateissued,
             'dateexpire' => $courseissuedbadge->dateexpire,
             'visible' => (int) $courseissuedbadge->visible,
-            'badgeurl' => \moodle_url::make_webservice_pluginfile_url($coursecontext->id, 'badges', 'badgeimage',
+            'badgeurl' => url::make_webservice_pluginfile_url($coursecontext->id, 'badges', 'badgeimage',
                                                                       $coursebadge->id, '/', 'f3')->out(false),
             'recipientid' => $student->id,
             'recipientfullname' => fullname($student),

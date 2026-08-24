@@ -18,7 +18,7 @@ namespace tool_cohortroles\form;
 defined('MOODLE_INTERNAL') || die();
 
 use moodleform;
-use context_system;
+use core\context\system;
 
 require_once($CFG->libdir . '/formslib.php');
 

@@ -24,6 +24,13 @@
 
 namespace core_competency\external;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
 use core\invalid_persistent_exception;
 use core_competency\api;
 use core_competency\course_competency_settings;
@@ -110,9 +117,9 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $othercategory = $this->getDataGenerator()->create_category();
         $catcreator = $this->getDataGenerator()->create_user();
 
-        $syscontext = \context_system::instance();
-        $catcontext = \context_coursecat::instance($category->id);
-        $othercatcontext = \context_coursecat::instance($othercategory->id);
+        $syscontext = system::instance();
+        $catcontext = coursecat::instance($category->id);
+        $othercatcontext = coursecat::instance($othercategory->id);
 
         // Fetching default authenticated user role.
         $authrole = $DB->get_record('role', array('id' => $CFG->defaultuserroleid));
@@ -196,7 +203,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             'scaleid' => $this->$scalename->id,
             'scaleconfiguration' => $this->$scalepropname,
             'visible' => true,
-            'contextid' => $system ? \context_system::instance()->id : \context_coursecat::instance($this->category->id)->id
+            'contextid' => $system ? system::instance()->id : coursecat::instance($this->category->id)->id
         );
         $result = external::create_competency_framework($framework);
         return (object) external_api::clean_returnvalue(external::create_competency_framework_returns(), $result);
@@ -223,7 +230,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             'descriptionformat' => FORMAT_HTML,
             'duedate' => 0,
             'visible' => true,
-            'contextid' => $system ? \context_system::instance()->id : \context_coursecat::instance($this->category->id)->id
+            'contextid' => $system ? system::instance()->id : coursecat::instance($this->category->id)->id
         );
         $result = external::create_template($template);
         return (object) external_api::clean_returnvalue(external::create_template_returns(), $result);
@@ -268,7 +275,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             'scaleid' => $this->$scalename->id,
             'scaleconfiguration' => $this->$scalepropname,
             'visible' => true,
-            'contextid' => $system ? \context_system::instance()->id : \context_coursecat::instance($this->category->id)->id
+            'contextid' => $system ? system::instance()->id : coursecat::instance($this->category->id)->id
         );
         $result = external::update_competency_framework($framework);
         return external_api::clean_returnvalue(external::update_competency_framework_returns(), $result);
@@ -304,7 +311,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_create_competency_frameworks_with_read_permissions(): void {
         $this->setUser($this->user);
 
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = $this->create_competency_framework(1, true);
     }
 
@@ -313,7 +320,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
      */
     public function test_create_competency_frameworks_with_read_permissions_in_category(): void {
         $this->setUser($this->catuser);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = $this->create_competency_framework(1, false);
     }
 
@@ -357,7 +364,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $result = $this->create_competency_framework(1, true);
             $this->fail('User cannot create a framework at system level.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
     }
@@ -375,9 +382,9 @@ final class external_test extends \core_external\tests\externallib_testcase {
             'scaleid' => $this->scale1->id,
             'scaleconfiguration' => $this->scaleconfiguration1,
             'visible' => true,
-            'contextid' => \context_system::instance()->id
+            'contextid' => system::instance()->id
         );
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $result = external::create_competency_framework($framework);
     }
 
@@ -434,7 +441,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             $result = external::read_competency_framework($id);
             $result = (object) external_api::clean_returnvalue(external::read_competency_framework_returns(), $result);
             $this->fail('User cannot read a framework at system level.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
     }
@@ -493,7 +500,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $result = external::read_competency_framework($insystem->id);
             $this->fail('Current user cannot should not be able to read the framework.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
     }
@@ -533,7 +540,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             $result = external::delete_competency_framework($id);
             $result = external_api::clean_returnvalue(external::delete_competency_framework_returns(), $result);
             $this->fail('Current user cannot should not be able to delete the framework.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
     }
@@ -548,7 +555,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $id = $result->id;
         // Switch users to someone with less permissions.
         $this->setUser($this->user);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = external::delete_competency_framework($id);
     }
 
@@ -583,7 +590,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $result = $this->update_competency_framework($insystem->id, 4, true);
             $this->fail('Current user should not be able to update the framework.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
     }
@@ -627,7 +634,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $result = $this->create_competency_framework(1, true);
 
         $this->setUser($this->user);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = $this->update_competency_framework($result->id, 2, true);
     }
 
@@ -641,13 +648,13 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $result = $this->create_competency_framework(3, true);
         $result = $this->create_competency_framework(4, false);
 
-        $result = external::count_competency_frameworks(array('contextid' => \context_system::instance()->id), 'self');
+        $result = external::count_competency_frameworks(array('contextid' => system::instance()->id), 'self');
         $result = external_api::clean_returnvalue(external::count_competency_frameworks_returns(), $result);
 
         $this->assertEquals($result, 3);
 
         $result = external::list_competency_frameworks('shortname', 'ASC', 0, 10,
-            array('contextid' => \context_system::instance()->id), 'self', false);
+            array('contextid' => system::instance()->id), 'self', false);
         $result = external_api::clean_returnvalue(external::list_competency_frameworks_returns(), $result);
 
         $this->assertEquals(count($result), 3);
@@ -674,7 +681,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             'description' => 'description',
             'descriptionformat' => FORMAT_HTML,
             'visible' => true,
-            'contextid' => \context_system::instance()->id
+            'contextid' => system::instance()->id
         ));
         $framework2 = $lpg->create_framework(array(
             'shortname' => 'shortname_citrus',
@@ -682,12 +689,12 @@ final class external_test extends \core_external\tests\externallib_testcase {
             'description' => 'description',
             'descriptionformat' => FORMAT_HTML,
             'visible' => true,
-            'contextid' => \context_system::instance()->id
+            'contextid' => system::instance()->id
         ));
 
         // Search on both ID number and shortname.
         $result = external::list_competency_frameworks('shortname', 'ASC', 0, 10,
-            array('contextid' => \context_system::instance()->id), 'self', false, 'bee');
+            array('contextid' => system::instance()->id), 'self', false, 'bee');
         $result = external_api::clean_returnvalue(external::list_competency_frameworks_returns(), $result);
         $this->assertCount(2, $result);
         $f = (object) array_shift($result);
@@ -697,7 +704,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Search on ID number.
         $result = external::list_competency_frameworks('shortname', 'ASC', 0, 10,
-            array('contextid' => \context_system::instance()->id), 'self', false, 'beer');
+            array('contextid' => system::instance()->id), 'self', false, 'beer');
         $result = external_api::clean_returnvalue(external::list_competency_frameworks_returns(), $result);
         $this->assertCount(1, $result);
         $f = (object) array_shift($result);
@@ -705,7 +712,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // Search on shortname.
         $result = external::list_competency_frameworks('shortname', 'ASC', 0, 10,
-            array('contextid' => \context_system::instance()->id), 'self', false, 'cinnamon');
+            array('contextid' => system::instance()->id), 'self', false, 'cinnamon');
         $result = external_api::clean_returnvalue(external::list_competency_frameworks_returns(), $result);
         $this->assertCount(1, $result);
         $f = (object) array_shift($result);
@@ -713,7 +720,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         // No match.
         $result = external::list_competency_frameworks('shortname', 'ASC', 0, 10,
-            array('contextid' => \context_system::instance()->id), 'self', false, 'pwnd!');
+            array('contextid' => system::instance()->id), 'self', false, 'pwnd!');
         $result = external_api::clean_returnvalue(external::list_competency_frameworks_returns(), $result);
         $this->assertCount(0, $result);
     }
@@ -729,12 +736,12 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $result = $this->create_competency_framework(4, false);
 
         $this->setUser($this->user);
-        $result = external::count_competency_frameworks(array('contextid' => \context_system::instance()->id), 'self');
+        $result = external::count_competency_frameworks(array('contextid' => system::instance()->id), 'self');
         $result = external_api::clean_returnvalue(external::count_competency_frameworks_returns(), $result);
         $this->assertEquals($result, 3);
 
         $result = external::list_competency_frameworks('shortname', 'ASC', 0, 10,
-            array('contextid' => \context_system::instance()->id), 'self', false);
+            array('contextid' => system::instance()->id), 'self', false);
         $result = external_api::clean_returnvalue(external::list_competency_frameworks_returns(), $result);
 
         $this->assertEquals(count($result), 3);
@@ -758,7 +765,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_create_competency_with_read_permissions(): void {
         $framework = $this->getDataGenerator()->get_plugin_generator('core_competency')->create_framework();
         $this->setUser($this->user);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $competency = $this->create_competency(1, $framework->get('id'));
     }
 
@@ -808,7 +815,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $competency = $this->create_competency(2, $insystem->id);
             $this->fail('User should not be able to create a competency in system context.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
     }
@@ -828,7 +835,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             'sortorder' => 0
         );
 
-        $this->expectException(\invalid_parameter_exception::class);
+        $this->expectException(invalid_parameter_exception::class);
         $this->expectExceptionMessage('Invalid external api parameter');
         $result = external::create_competency($competency);
     }
@@ -886,7 +893,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::read_competency($insystem->id);
             $this->fail('User should not be able to read a competency in system context.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
     }
@@ -945,7 +952,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::read_competency($insystem->id);
             $this->fail('User should not be able to read a competency in system context.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
     }
@@ -986,7 +993,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $result = external::delete_competency($insystem->id);
             $this->fail('User should not be able to delete a competency in system context.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
     }
@@ -1002,7 +1009,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $id = $result->id;
         // Switch users to someone with less permissions.
         $this->setUser($this->user);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = external::delete_competency($id);
     }
 
@@ -1039,7 +1046,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $result = $this->update_competency($insystem->id, 3);
             $this->fail('User should not be able to update a competency in system context.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
     }
@@ -1053,7 +1060,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $result = $this->create_competency(1, $framework->id);
 
         $this->setUser($this->user);
-        $this->expectException(\required_capability_exception::class);
+        $this->expectException(required_capability_exception::class);
         $result = $this->update_competency($result->id, 2);
     }
 
@@ -1100,7 +1107,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         $this->assertEquals($result, 3);
 
-        array('id' => $result = external::list_competencies(array(), 'shortname', 'ASC', 0, 10, \context_system::instance()->id));
+        array('id' => $result = external::list_competencies(array(), 'shortname', 'ASC', 0, 10, system::instance()->id));
         $result = external_api::clean_returnvalue(external::list_competencies_returns(), $result);
 
         $this->assertEquals(count($result), 3);
@@ -1131,7 +1138,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
 
         $this->assertEquals($result, 3);
 
-        array('id' => $result = external::list_competencies(array(), 'shortname', 'ASC', 0, 10, \context_system::instance()->id));
+        array('id' => $result = external::list_competencies(array(), 'shortname', 'ASC', 0, 10, system::instance()->id));
         $result = external_api::clean_returnvalue(external::list_competencies_returns(), $result);
 
         $this->assertEquals(count($result), 3);
@@ -1175,7 +1182,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
      * Test plans creation and updates.
      */
     public function test_create_and_update_plans(): void {
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $this->setUser($this->creator);
         $plan0 = $this->create_plan(1, $this->creator->id, 0, plan::STATUS_ACTIVE, 0);
@@ -1185,7 +1192,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $plan1 = $this->create_plan(2, $this->user->id, 0, plan::STATUS_DRAFT, 0);
             $this->fail('Exception expected due to not permissions to create draft plans');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -1204,13 +1211,13 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $plan3 = $this->create_plan(4, $this->user->id, 0, plan::STATUS_ACTIVE, 0);
             $this->fail('Exception expected due to not permissions to create active plans');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
         try {
             $plan3 = $this->update_plan($plan2->id, 4, $this->user->id, 0, plan::STATUS_COMPLETE, 0);
             $this->fail('We cannot complete a plan using api::update_plan().');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertTrue(true);
         }
 
@@ -1221,13 +1228,13 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $plan4 = $this->create_plan(6, $this->creator->id, 0, plan::STATUS_COMPLETE, 0);
             $this->fail('Plans cannot be created as complete.');
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertMatchesRegularExpression('/A plan cannot be created as complete./', $e->getMessage());
         }
 
         try {
             $plan0 = $this->update_plan($plan0->id, 1, $this->user->id, 0, plan::STATUS_ACTIVE, 0);
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -1239,7 +1246,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
             // Cannot be updated even if they created it.
             $this->update_plan($plan2->id, 1, $this->user->id, 0, plan::STATUS_ACTIVE, 0);
             $this->fail('The user can not update their own plan without permissions.');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             $this->assertMatchesRegularExpression('/Manage learning plans./', $e->getMessage());
         }
     }
@@ -1248,7 +1255,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
      * Test complete plan.
      */
     public function test_complete_plan(): void {
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $this->setUser($this->creator);
 
@@ -1270,7 +1277,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
      * Test reopen plan.
      */
     public function test_reopen_plan(): void {
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $this->setUser($this->creator);
 
@@ -1296,7 +1303,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         global $OUTPUT;
         $this->setUser($this->creator);
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $plan1 = $this->create_plan(1, $this->user->id, 0, plan::STATUS_DRAFT, 0);
         $plan2 = $this->create_plan(2, $this->user->id, 0, plan::STATUS_ACTIVE, 0);
@@ -1353,13 +1360,13 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::read_plan($plan2->id);
             $this->fail('Exception expected due to not permissions to read plan');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
         try {
             external::read_plan($plan3->id);
             $this->fail('Exception expected due to not permissions to read plan');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -1397,13 +1404,13 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::read_plan($plan2->id);
             $this->fail('Exception expected due to not permissions to read plan');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
         try {
             external::read_plan($plan3->id);
             $this->fail('Exception expected due to not permissions to read plan');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -1439,7 +1446,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_delete_plans(): void {
         $this->setUser($this->creator);
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         $plan1 = $this->create_plan(1, $this->user->id, 0, plan::STATUS_ACTIVE, 0);
         $plan2 = $this->create_plan(2, $this->user->id, 0, plan::STATUS_ACTIVE, 0);
@@ -1453,7 +1460,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::delete_plan($plan2->id);
             $this->fail('Exception expected due to not permissions to manage plans');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -1463,7 +1470,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::delete_plan($plan2->id);
             $this->fail('Exception expected due to not permissions to manage plans');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -1476,7 +1483,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::delete_plan($plan3->id);
             $this->fail('Exception expected due to not permissions to manage plans');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -1593,7 +1600,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_add_competency_to_template(): void {
         $this->setUser($this->creator);
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         // Create a template.
         $template = $this->create_template(1, true);
@@ -1616,13 +1623,13 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::add_competency_to_template($template->id, $competency->id);
             $this->fail('Exception expected due to not permissions to manage template competencies');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
     }
 
     public function test_remove_competency_from_template(): void {
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $this->setUser($this->creator);
         $lpg = $this->getDataGenerator()->get_plugin_generator('core_competency');
 
@@ -1653,7 +1660,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::add_competency_to_template($template->id, $competency->get('id'));
             $this->fail('Exception expected due to not permissions to manage template competencies');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
     }
@@ -1664,7 +1671,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_reorder_template_competencies(): void {
         $this->setUser($this->creator);
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $onehour = time() + 60 * 60;
 
         // Create a template.
@@ -1731,7 +1738,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
     public function test_duplicate_learning_plan_template(): void {
         $this->setUser($this->creator);
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $onehour = time() + 60 * 60;
 
         // Create a template.
@@ -1808,15 +1815,15 @@ final class external_test extends \core_external\tests\externallib_testcase {
      * Create a template.
      */
     public function test_create_template(): void {
-        $syscontextid = \context_system::instance()->id;
-        $catcontextid = \context_coursecat::instance($this->category->id)->id;
+        $syscontextid = system::instance()->id;
+        $catcontextid = coursecat::instance($this->category->id)->id;
 
         // A user without permission.
         $this->setUser($this->user);
         try {
             $result = $this->create_template(1, true);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -1825,7 +1832,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $result = $this->create_template(1, false);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -1846,7 +1853,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $result = $this->create_template(3, true);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -1860,8 +1867,8 @@ final class external_test extends \core_external\tests\externallib_testcase {
      * Read a template.
      */
     public function test_read_template(): void {
-        $syscontextid = \context_system::instance()->id;
-        $catcontextid = \context_coursecat::instance($this->category->id)->id;
+        $syscontextid = system::instance()->id;
+        $catcontextid = coursecat::instance($this->category->id)->id;
 
         // Set a due date for the next year.
         $date = new \DateTime('now');
@@ -1877,17 +1884,17 @@ final class external_test extends \core_external\tests\externallib_testcase {
         assign_capability('moodle/competency:templateview', CAP_PROHIBIT, $this->userrole, $syscontextid, true);
         accesslib_clear_all_caches_for_unit_testing();
         $this->setUser($this->user);
-        $this->assertFalse(has_capability('moodle/competency:templateview', \context_system::instance()));
+        $this->assertFalse(has_capability('moodle/competency:templateview', system::instance()));
         try {
             external::read_template($systemplate->id);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
         try {
             external::read_template($cattemplate->id);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -1895,12 +1902,12 @@ final class external_test extends \core_external\tests\externallib_testcase {
         assign_capability('moodle/competency:templateview', CAP_PREVENT, $this->userrole, $syscontextid, true);
         assign_capability('moodle/competency:templateview', CAP_ALLOW, $this->userrole, $catcontextid, true);
         accesslib_clear_all_caches_for_unit_testing();
-        $this->assertFalse(has_capability('moodle/competency:templateview', \context_system::instance()));
-        $this->assertTrue(has_capability('moodle/competency:templateview', \context_coursecat::instance($this->category->id)));
+        $this->assertFalse(has_capability('moodle/competency:templateview', system::instance()));
+        $this->assertTrue(has_capability('moodle/competency:templateview', coursecat::instance($this->category->id)));
         try {
             external::read_template($systemplate->id);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -1917,7 +1924,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         // User with permissions to read in the system.
         assign_capability('moodle/competency:templateview', CAP_ALLOW, $this->userrole, $syscontextid, true);
         accesslib_clear_all_caches_for_unit_testing();
-        $this->assertTrue(has_capability('moodle/competency:templateview', \context_system::instance()));
+        $this->assertTrue(has_capability('moodle/competency:templateview', system::instance()));
         $result = external::read_template($systemplate->id);
         $result = external_api::clean_returnvalue(external::read_template_returns(), $result);
         $this->assertEquals($systemplate->id, $result['id']);
@@ -1943,8 +1950,8 @@ final class external_test extends \core_external\tests\externallib_testcase {
      * Update a template.
      */
     public function test_update_template(): void {
-        $syscontextid = \context_system::instance()->id;
-        $catcontextid = \context_coursecat::instance($this->category->id)->id;
+        $syscontextid = system::instance()->id;
+        $catcontextid = coursecat::instance($this->category->id)->id;
 
         // Set a due date for the next year.
         $date = new \DateTime('now');
@@ -1961,14 +1968,14 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $this->update_template($systemplate->id, 3);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
         try {
             $this->update_template($cattemplate->id, 3);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -1977,7 +1984,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             $this->update_template($systemplate->id, 3);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -2025,8 +2032,8 @@ final class external_test extends \core_external\tests\externallib_testcase {
      */
     public function test_delete_template(): void {
         global $DB;
-        $syscontextid = \context_system::instance()->id;
-        $catcontextid = \context_coursecat::instance($this->category->id)->id;
+        $syscontextid = system::instance()->id;
+        $catcontextid = coursecat::instance($this->category->id)->id;
 
         // Creating a few templates.
         $this->setUser($this->creator);
@@ -2042,13 +2049,13 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::delete_template($sys1->id);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
         try {
             external::delete_template($cat1->id);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -2057,7 +2064,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::delete_template($sys1->id);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -2082,8 +2089,8 @@ final class external_test extends \core_external\tests\externallib_testcase {
      * List templates.
      */
     public function test_list_templates(): void {
-        $syscontextid = \context_system::instance()->id;
-        $catcontextid = \context_coursecat::instance($this->category->id)->id;
+        $syscontextid = system::instance()->id;
+        $catcontextid = coursecat::instance($this->category->id)->id;
 
         // Creating a few templates.
         $this->setUser($this->creator);
@@ -2099,7 +2106,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::list_templates('id', 'ASC', 0, 10, array('contextid' => $syscontextid), 'children', false);
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -2172,8 +2179,8 @@ final class external_test extends \core_external\tests\externallib_testcase {
     }
 
     public function test_count_templates(): void {
-        $syscontextid = \context_system::instance()->id;
-        $catcontextid = \context_coursecat::instance($this->category->id)->id;
+        $syscontextid = system::instance()->id;
+        $catcontextid = coursecat::instance($this->category->id)->id;
 
         // Creating a few templates.
         $this->setUser($this->creator);
@@ -2190,7 +2197,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::count_templates(array('contextid' => $syscontextid), 'children');
             $this->fail('Invalid permissions');
-        } catch (\required_capability_exception $e) {
+        } catch (required_capability_exception $e) {
             // All good.
         }
 
@@ -2296,7 +2303,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::add_related_competency($competency1->get('id'), $competency3->get('id'));
             $this->fail('Exception expected due to not permissions to manage template competencies');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('nopermissions', $e->errorcode);
         }
 
@@ -2378,7 +2385,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $usermanage = $dg->create_user();
         $user = $dg->create_user();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         // Creating specific roles.
         $managerole = $dg->create_role(array(
@@ -2414,7 +2421,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::add_competency_to_plan($pl2->get('id'), $competency->get('id'));
             $this->fail('A competency cannot be added to plan based on template');
-        } catch (\coding_exception $ex) {
+        } catch (coding_exception $ex) {
             $this->assertTrue(true);
         }
 
@@ -2423,7 +2430,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         try {
             external::add_competency_to_plan($pl1->get('id'), $competency->get('id'));
             $this->fail('User without capability cannot add competency to a plan');
-        } catch (\required_capability_exception $ex) {
+        } catch (required_capability_exception $ex) {
             $this->assertTrue(true);
         }
     }
@@ -2440,7 +2447,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $usermanage = $dg->create_user();
         $user = $dg->create_user();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         // Creating specific roles.
         $managerole = $dg->create_role(array(
@@ -2485,7 +2492,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $usermanage = $dg->create_user();
         $user = $dg->create_user();
 
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
 
         // Creating specific roles.
         $managerole = $dg->create_role(array(
@@ -2763,7 +2770,7 @@ final class external_test extends \core_external\tests\externallib_testcase {
         $course = $dg->create_course();
         $roleid = $dg->create_role();
         $noobroleid = $dg->create_role();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $compmanager = $this->getDataGenerator()->create_user();
         $compnoob = $this->getDataGenerator()->create_user();
 

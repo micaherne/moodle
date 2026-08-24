@@ -22,13 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 
 require_login(null, false);
 
 $id = optional_param('id', 0, PARAM_INT);
 
-$url = new \moodle_url('/admin/tool/dataprivacy/editpurpose.php', array('id' => $id));
+$url = new url('/admin/tool/dataprivacy/editpurpose.php', array('id' => $id));
 if ($id) {
     $title = get_string('editpurpose', 'tool_dataprivacy');
 } else {
@@ -41,7 +43,7 @@ $purpose = new \tool_dataprivacy\purpose($id);
 $form = new \tool_dataprivacy\form\purpose($PAGE->url->out(false),
     array('persistent' => $purpose, 'showbuttons' => true));
 
-$returnurl = new \moodle_url('/admin/tool/dataprivacy/purposes.php');
+$returnurl = new url('/admin/tool/dataprivacy/purposes.php');
 if ($form->is_cancelled()) {
     redirect($returnurl);
 } else if ($alldata = $form->get_data()) {

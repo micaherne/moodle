@@ -24,6 +24,9 @@
 
 namespace core_backup\privacy;
 
+use core\context;
+use core\context\course;
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\contextlist;
@@ -141,7 +144,7 @@ class provider implements
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
-        if ($context instanceof \context_course) {
+        if ($context instanceof course) {
             $params = ['courseid' => $context->instanceid];
 
             $sql = "SELECT bc.userid
@@ -165,7 +168,7 @@ class provider implements
             $userlist->add_from_sql('userid', $sql, $sectionparams);
         }
 
-        if ($context instanceof \context_module) {
+        if ($context instanceof module) {
             $params = [
                 'cmid' => $context->instanceid,
                 'typeactivity' => 'activity'
@@ -215,7 +218,7 @@ class provider implements
             ];
             return $carry;
         }, function($courseid, $data) {
-            $context = \context_course::instance($courseid);
+            $context = course::instance($courseid);
             $finaldata = (object) $data;
             writer::with_context($context)->export_data([get_string('backup'), $courseid], $finaldata);
         });
@@ -227,15 +230,15 @@ class provider implements
      *
      * @param \context $context A user context.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
-        if ($context instanceof \context_course) {
+        if ($context instanceof course) {
             $sectionsql = "itemid IN (SELECT id FROM {course_sections} WHERE course = ?) AND type = ?";
             $DB->delete_records_select('backup_controllers', $sectionsql, [$context->instanceid, \backup::TYPE_1SECTION]);
             $DB->delete_records('backup_controllers', ['itemid' => $context->instanceid, 'type' => \backup::TYPE_1COURSE]);
         }
-        if ($context instanceof \context_module) {
+        if ($context instanceof module) {
             $DB->delete_records('backup_controllers', ['itemid' => $context->instanceid, 'type' => \backup::TYPE_1ACTIVITY]);
         }
         return;
@@ -255,7 +258,7 @@ class provider implements
         }
 
         $context = $userlist->get_context();
-        if ($context instanceof \context_course) {
+        if ($context instanceof course) {
             list($usersql, $userparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
             $select = "itemid = :itemid AND userid {$usersql} AND type = :type";
             $params = $userparams;
@@ -271,7 +274,7 @@ class provider implements
             $select = $sectionsql . " AND userid {$usersql} AND type = :type";
             $DB->delete_records_select('backup_controllers', $select, $params);
         }
-        if ($context instanceof \context_module) {
+        if ($context instanceof module) {
             list($usersql, $userparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
             $select = "itemid = :itemid AND userid {$usersql} AND type = :type";
             $params = $userparams;
@@ -300,7 +303,7 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
-            if ($context instanceof \context_course) {
+            if ($context instanceof course) {
                 $select = "itemid = :itemid AND userid = :userid AND type = :type";
                 $params = [
                     'userid' => $userid,
@@ -319,7 +322,7 @@ class provider implements
                 $select = $sectionsql . " AND userid = :userid AND type = :type";
                 $DB->delete_records_select('backup_controllers', $select, $params);
             }
-            if ($context instanceof \context_module) {
+            if ($context instanceof module) {
                 list($usersql, $userparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
                 $select = "itemid = :itemid AND userid = :userid AND type = :type";
                 $params = [

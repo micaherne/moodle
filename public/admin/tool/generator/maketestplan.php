@@ -22,6 +22,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\output\html_writer;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -33,7 +37,7 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('maketestplan', 'tool_generator'));
 
 // Information message.
-$context = context_system::instance();
+$context = system::instance();
 $markdownlink = '[' . tool_generator_testplan_backend::get_repourl() . '](' . tool_generator_testplan_backend::get_repourl() . ')';
 echo $OUTPUT->box(format_text(get_string('testplanexplanation', 'tool_generator', $markdownlink),
         FORMAT_MARKDOWN, array('context' => $context)));
@@ -54,7 +58,7 @@ if ($data = $mform->get_data()) {
     $usersfile = tool_generator_testplan_backend::create_users_file($data->courseid, $data->updateuserspassword, $data->size);
 
     // Test plan link.
-    $testplanurl = moodle_url::make_pluginfile_url(
+    $testplanurl = url::make_pluginfile_url(
         $testplanfile->get_contextid(),
         $testplanfile->get_component(),
         $testplanfile->get_filearea(),
@@ -67,7 +71,7 @@ if ($data = $mform->get_data()) {
     );
 
     // Users file link.
-    $usersfileurl = moodle_url::make_pluginfile_url(
+    $usersfileurl = url::make_pluginfile_url(
         $usersfile->get_contextid(),
         $usersfile->get_component(),
         $usersfile->get_filearea(),

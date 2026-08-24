@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once '../../../config.php';
 require_once $CFG->libdir . '/gradelib.php';
 require_once '../../lib.php';
@@ -29,19 +34,19 @@ core_php_time_limit::raise();
 
 $courseid      = required_param('id', PARAM_INT);
 
-$PAGE->set_url(new moodle_url('/grade/report/grader/preferences.php', array('id'=>$courseid)));
+$PAGE->set_url(new url('/grade/report/grader/preferences.php', array('id'=>$courseid)));
 $PAGE->set_pagelayout('admin');
 
 /// Make sure they can even access this course
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_login($course);
 
-$context = context_course::instance($course->id);
-$systemcontext = context_system::instance();
+$context = course::instance($course->id);
+$systemcontext = system::instance();
 require_capability('gradereport/grader:view', $context);
 
 require('preferences_form.php');

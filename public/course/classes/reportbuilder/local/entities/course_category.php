@@ -20,10 +20,10 @@ namespace core_course\reportbuilder\local\entities;
 
 use core\{context, context_helper};
 use core\url;
-use html_writer;
-use lang_string;
+use core\output\html_writer;
+use core\lang_string;
 use stdClass;
-use theme_config;
+use core\output\theme_config;
 use core_course_category;
 use core_reportbuilder\local\aggregation\{groupconcat, groupconcatdistinct};
 use core_reportbuilder\local\entities\base;

@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Class application_registration.
  *
@@ -74,14 +77,14 @@ class application_registration {
      * @param \moodle_url|null $accesstokenurl URL to use to get an access token from the application, used in service calls.
      * @param int|null $id the id of the object instance, if being created from an existing store item.
      */
-    private function __construct(string $name, string $uniqueid, ?\moodle_url $platformid, ?string $clientid,
-            ?\moodle_url $authenticationrequesturl, ?\moodle_url $jwksurl, ?\moodle_url $accesstokenurl, ?int $id = null) {
+    private function __construct(string $name, string $uniqueid, ?url $platformid, ?string $clientid,
+            ?url $authenticationrequesturl, ?url $jwksurl, ?url $accesstokenurl, ?int $id = null) {
 
         if (empty($name)) {
-            throw new \coding_exception("Invalid 'name' arg. Cannot be an empty string.");
+            throw new coding_exception("Invalid 'name' arg. Cannot be an empty string.");
         }
         if (empty($uniqueid)) {
-            throw new \coding_exception("Invalid 'uniqueid' arg. Cannot be an empty string.");
+            throw new coding_exception("Invalid 'uniqueid' arg. Cannot be an empty string.");
         }
 
         // Resolve the registration status.
@@ -113,12 +116,12 @@ class application_registration {
      * @return application_registration the application_registration instance.
      * @throws \coding_exception if an invalid clientid is provided.
      */
-    public static function create(string $name, string $uniqueid, \moodle_url $platformid, string $clientid,
-            \moodle_url $authenticationrequesturl, \moodle_url $jwksurl, \moodle_url $accesstokenurl,
+    public static function create(string $name, string $uniqueid, url $platformid, string $clientid,
+            url $authenticationrequesturl, url $jwksurl, url $accesstokenurl,
             ?int $id = null): application_registration {
 
         if (empty($clientid)) {
-            throw new \coding_exception("Invalid 'clientid' arg. Cannot be an empty string.");
+            throw new coding_exception("Invalid 'clientid' arg. Cannot be an empty string.");
         }
 
         return new self($name, $uniqueid, $platformid, $clientid, $authenticationrequesturl, $jwksurl, $accesstokenurl, $id);
@@ -164,7 +167,7 @@ class application_registration {
      */
     public function set_name(string $name): void {
         if (empty($name)) {
-            throw new \coding_exception("Invalid 'name' arg. Cannot be an empty string.");
+            throw new coding_exception("Invalid 'name' arg. Cannot be an empty string.");
         }
         $this->name = $name;
     }
@@ -183,7 +186,7 @@ class application_registration {
      *
      * @return \moodle_url|null the platformid/issuer URL.
      */
-    public function get_platformid(): ?\moodle_url {
+    public function get_platformid(): ?url {
         return $this->platformid;
     }
 
@@ -192,7 +195,7 @@ class application_registration {
      *
      * @param \moodle_url $platformid the platform id / iss to set.
      */
-    public function set_platformid(\moodle_url $platformid): void {
+    public function set_platformid(url $platformid): void {
         $this->platformid = $platformid;
     }
 
@@ -213,7 +216,7 @@ class application_registration {
      */
     public function set_clientid(string $clientid): void {
         if (empty($clientid)) {
-            throw new \coding_exception("Invalid 'clientid' arg. Cannot be an empty string.");
+            throw new coding_exception("Invalid 'clientid' arg. Cannot be an empty string.");
         }
         $this->clientid = $clientid;
     }
@@ -223,7 +226,7 @@ class application_registration {
      *
      * @return \moodle_url|null the authentication request URL.
      */
-    public function get_authenticationrequesturl(): ?\moodle_url {
+    public function get_authenticationrequesturl(): ?url {
         return $this->authenticationrequesturl;
     }
 
@@ -232,7 +235,7 @@ class application_registration {
      *
      * @param \moodle_url $authenticationrequesturl the authentication request URL.
      */
-    public function set_authenticationrequesturl(\moodle_url $authenticationrequesturl): void {
+    public function set_authenticationrequesturl(url $authenticationrequesturl): void {
         $this->authenticationrequesturl = $authenticationrequesturl;
     }
 
@@ -241,7 +244,7 @@ class application_registration {
      *
      * @return \moodle_url|null the JWKS URL.
      */
-    public function get_jwksurl(): ?\moodle_url {
+    public function get_jwksurl(): ?url {
         return $this->jwksurl;
     }
 
@@ -250,7 +253,7 @@ class application_registration {
      *
      * @param \moodle_url $jwksurl the JWKS URL.
      */
-    public function set_jwksurl(\moodle_url $jwksurl): void {
+    public function set_jwksurl(url $jwksurl): void {
         $this->jwksurl = $jwksurl;
     }
 
@@ -259,7 +262,7 @@ class application_registration {
      *
      * @return \moodle_url|null the access token URL.
      */
-    public function get_accesstokenurl(): ?\moodle_url {
+    public function get_accesstokenurl(): ?url {
         return $this->accesstokenurl;
     }
 
@@ -268,7 +271,7 @@ class application_registration {
      *
      * @param \moodle_url $accesstokenurl the access token URL.
      */
-    public function set_accesstokenurl(\moodle_url $accesstokenurl): void {
+    public function set_accesstokenurl(url $accesstokenurl): void {
         $this->accesstokenurl = $accesstokenurl;
     }
 
@@ -283,7 +286,7 @@ class application_registration {
     public function add_tool_deployment(string $name, string $deploymentid): deployment {
 
         if (empty($this->get_id())) {
-            throw new \coding_exception("Can't add deployment to a resource_link that hasn't first been saved.");
+            throw new coding_exception("Can't add deployment to a resource_link that hasn't first been saved.");
         }
 
         return deployment::create(
@@ -310,19 +313,19 @@ class application_registration {
     public function complete_registration(): void {
         // Check completeness of registration.
         if (is_null($this->platformid)) {
-            throw new \coding_exception("Unable to complete registration. Platform ID is missing.");
+            throw new coding_exception("Unable to complete registration. Platform ID is missing.");
         }
         if (is_null($this->clientid)) {
-            throw new \coding_exception("Unable to complete registration. Client ID is missing.");
+            throw new coding_exception("Unable to complete registration. Client ID is missing.");
         }
         if (is_null($this->accesstokenurl)) {
-            throw new \coding_exception("Unable to complete registration. Access token URL is missing.");
+            throw new coding_exception("Unable to complete registration. Access token URL is missing.");
         }
         if (is_null($this->authenticationrequesturl)) {
-            throw new \coding_exception("Unable to complete registration. Authentication request URL is missing.");
+            throw new coding_exception("Unable to complete registration. Authentication request URL is missing.");
         }
         if (is_null($this->jwksurl)) {
-            throw new \coding_exception("Unable to complete registration. JWKS URL is missing.");
+            throw new coding_exception("Unable to complete registration. JWKS URL is missing.");
         }
         $this->status = self::REGISTRATION_STATUS_COMPLETE;
     }

@@ -24,8 +24,8 @@
 namespace tool_lp\external;
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_url;
-use renderer_base;
+use core\url;
+use core\output\renderer_base;
 use core_files\external\stored_file_exporter;
 use core_competency\external\performance_helper;
 
@@ -77,7 +77,7 @@ class user_evidence_summary_exporter extends \core\external\persistent_exporter 
         $urlshort = '';
         $url = $this->persistent->get('url');
         if (!empty($url)) {
-            $murl = new moodle_url($url);
+            $murl = new url($url);
             $shorturl = preg_replace('@^https?://(www\.)?@', '', $murl->out(false));
             $urlshort = shorten_text($shorturl, 30, true);
         }

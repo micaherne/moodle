@@ -33,6 +33,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+
 require('../config.php');
 require_once($CFG->libdir.'/authlib.php');
 require_once(__DIR__ . '/lib.php');
@@ -42,7 +44,7 @@ require_once('set_password_form.php');
 $token = optional_param('token', false, PARAM_ALPHANUM);
 
 $PAGE->set_url('/login/forgot_password.php');
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 $PAGE->set_context($systemcontext);
 
 // setup text strings

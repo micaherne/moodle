@@ -16,6 +16,9 @@
 
 namespace enrol_lti\local\ltiadvantage\entity;
 
+use core\exception\coding_exception;
+use core\url;
+
 /**
  * Class nrps_info, instances of which represent a names and roles provisioning service for a resource.
  *
@@ -51,7 +54,7 @@ class nrps_info {
      * @param \moodle_url $contextmembershipsurl the memberships URL.
      * @param string[] $serviceversions the supported service versions.
      */
-    private function __construct(\moodle_url $contextmembershipsurl, array $serviceversions = [self::SERVICE_VERSION_2]) {
+    private function __construct(url $contextmembershipsurl, array $serviceversions = [self::SERVICE_VERSION_2]) {
         $this->contextmembershipsurl = $contextmembershipsurl;
         $this->set_service_versions($serviceversions);
     }
@@ -63,7 +66,7 @@ class nrps_info {
      * @param string[] $serviceversions the supported service versions.
      * @return nrps_info the object instance.
      */
-    public static function create(\moodle_url $contextmembershipsurl,
+    public static function create(url $contextmembershipsurl,
             array $serviceversions = [self::SERVICE_VERSION_2]): nrps_info {
         return new self($contextmembershipsurl, $serviceversions);
     }
@@ -91,12 +94,12 @@ class nrps_info {
      */
     private function set_service_versions(array $serviceversions): void {
         if (empty($serviceversions)) {
-            throw new \coding_exception('Service versions array cannot be empty');
+            throw new coding_exception('Service versions array cannot be empty');
         }
         $serviceversions = array_unique($serviceversions);
         foreach ($serviceversions as $serviceversion) {
             if (!$this->is_valid_service_version($serviceversion)) {
-                throw new \coding_exception("Invalid Names and Roles service version '{$serviceversion}'");
+                throw new coding_exception("Invalid Names and Roles service version '{$serviceversion}'");
             }
         }
         $this->serviceversions = $serviceversions;
@@ -107,7 +110,7 @@ class nrps_info {
      *
      * @return \moodle_url the service URL.
      */
-    public function get_context_memberships_url(): \moodle_url {
+    public function get_context_memberships_url(): url {
         return clone $this->contextmembershipsurl;
     }
 

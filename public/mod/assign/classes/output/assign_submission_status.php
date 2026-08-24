@@ -23,6 +23,8 @@
  */
 namespace mod_assign\output;
 
+use core\output\renderable;
+
 /**
  * This file contains the definition for the renderable assign submission status.
  *
@@ -30,7 +32,7 @@ namespace mod_assign\output;
  * @copyright 2012 NetSpot {@link http://www.netspot.com.au}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class assign_submission_status implements \renderable {
+class assign_submission_status implements renderable {
     /** @var int STUDENT_VIEW */
     const STUDENT_VIEW     = 10;
     /** @var int GRADER_VIEW */

@@ -26,6 +26,8 @@ namespace auth_oauth2\privacy;
 defined('MOODLE_INTERNAL') || die();
 
 use auth_oauth2\privacy\provider;
+use core\context\system;
+use core\context\user;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
 use core_privacy\tests\provider_testcase;
@@ -67,7 +69,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $contextlist);
 
         // Check that a context is returned is the expected.
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
         $this->assertEquals($usercontext->id, $contextlist->get_contextids()[0]);
     }
 
@@ -81,7 +83,7 @@ final class provider_test extends provider_testcase {
         $info['username'] = 'gina';
         $info['email'] = 'gina@example.com';
         \auth_oauth2\api::link_login($info, $issuer, $user->id, false);
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         $writer = writer::with_context($usercontext);
         $this->assertFalse($writer->has_any_data());
@@ -104,7 +106,7 @@ final class provider_test extends provider_testcase {
         $info['username'] = 'gina';
         $info['email'] = 'gina@example.com';
         \auth_oauth2\api::link_login($info, $issuer1, $user1->id, false);
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
 
         $user2 = $this->getDataGenerator()->create_user();
         $issuer2 = \core\oauth2\api::create_standard_issuer('microsoft');
@@ -112,7 +114,7 @@ final class provider_test extends provider_testcase {
         $info['username'] = 'jerry';
         $info['email'] = 'jerry@example.com';
         \auth_oauth2\api::link_login($info, $issuer2, $user2->id, false);
-        $user2context = \context_user::instance($user2->id);
+        $user2context = user::instance($user2->id);
 
         // Get all oauth2 accounts.
         $oauth2accounts = $DB->get_records('auth_oauth2_linked_login', array());
@@ -144,7 +146,7 @@ final class provider_test extends provider_testcase {
         $info['username'] = 'gina';
         $info['email'] = 'gina@example.com';
         \auth_oauth2\api::link_login($info, $issuer1, $user1->id, false);
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
 
         $user2 = $this->getDataGenerator()->create_user();
         $issuer2 = \core\oauth2\api::create_standard_issuer('microsoft');
@@ -152,7 +154,7 @@ final class provider_test extends provider_testcase {
         $info['username'] = 'jerry';
         $info['email'] = 'jerry@example.com';
         \auth_oauth2\api::link_login($info, $issuer2, $user2->id, false);
-        $user2context = \context_user::instance($user2->id);
+        $user2context = user::instance($user2->id);
 
         // Get all oauth2 accounts.
         $oauth2accounts = $DB->get_records('auth_oauth2_linked_login', array());
@@ -182,7 +184,7 @@ final class provider_test extends provider_testcase {
         $component = 'auth_oauth2';
         // Create a user.
         $user = $this->getDataGenerator()->create_user();
-        $usercontext = \context_user::instance($user->id);
+        $usercontext = user::instance($user->id);
 
         // The list of users should not return anything yet (related data still haven't been created).
         $userlist = new \core_privacy\local\request\userlist($usercontext, $component);
@@ -203,7 +205,7 @@ final class provider_test extends provider_testcase {
         $this->assertEquals($expected, $actual);
 
         // The list of users for system context should not return any users.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $userlist = new \core_privacy\local\request\userlist($systemcontext, $component);
         provider::get_users_in_context($userlist);
         $this->assertCount(0, $userlist);
@@ -218,10 +220,10 @@ final class provider_test extends provider_testcase {
         $component = 'auth_oauth2';
         // Create user1.
         $user1 = $this->getDataGenerator()->create_user();
-        $usercontext1 = \context_user::instance($user1->id);
+        $usercontext1 = user::instance($user1->id);
         // Create user2.
         $user2 = $this->getDataGenerator()->create_user();
-        $usercontext2 = \context_user::instance($user2->id);
+        $usercontext2 = user::instance($user2->id);
 
         $issuer1 = \core\oauth2\api::create_standard_issuer('google');
         $info1 = [];
@@ -267,7 +269,7 @@ final class provider_test extends provider_testcase {
         $this->assertCount(1, $userlist2);
 
         // User data should be only removed in the user context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Add userlist2 to the approved user list in the system context.
         $approvedlist = new approved_userlist($systemcontext, $component, $userlist2->get_userids());
         // Delete user1 data using delete_data_for_user.

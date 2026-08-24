@@ -25,6 +25,8 @@
 
 namespace mod_book\event;
 
+use core\context\module;
+
 /**
  * Events tests class.
  *
@@ -47,7 +49,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $book = $this->getDataGenerator()->create_module('book', array('course' => $course->id));
         $bookgenerator = $this->getDataGenerator()->get_plugin_generator('mod_book');
-        $context = \context_module::instance($book->cmid);
+        $context = module::instance($book->cmid);
 
         $chapter = $bookgenerator->create_chapter(array('bookid' => $book->id));
 
@@ -62,7 +64,7 @@ final class events_test extends \advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_book\event\chapter_created', $event);
-        $this->assertEquals(\context_module::instance($book->cmid), $event->get_context());
+        $this->assertEquals(module::instance($book->cmid), $event->get_context());
         $this->assertEquals($chapter->id, $event->objectid);
     }
 
@@ -73,7 +75,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $book = $this->getDataGenerator()->create_module('book', array('course' => $course->id));
         $bookgenerator = $this->getDataGenerator()->get_plugin_generator('mod_book');
-        $context = \context_module::instance($book->cmid);
+        $context = module::instance($book->cmid);
 
         $chapter = $bookgenerator->create_chapter(array('bookid' => $book->id));
 
@@ -88,7 +90,7 @@ final class events_test extends \advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_book\event\chapter_updated', $event);
-        $this->assertEquals(\context_module::instance($book->cmid), $event->get_context());
+        $this->assertEquals(module::instance($book->cmid), $event->get_context());
         $this->assertEquals($chapter->id, $event->objectid);
     }
 
@@ -99,7 +101,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $book = $this->getDataGenerator()->create_module('book', array('course' => $course->id));
         $bookgenerator = $this->getDataGenerator()->get_plugin_generator('mod_book');
-        $context = \context_module::instance($book->cmid);
+        $context = module::instance($book->cmid);
 
         $chapter = $bookgenerator->create_chapter(array('bookid' => $book->id));
 
@@ -115,7 +117,7 @@ final class events_test extends \advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_book\event\chapter_deleted', $event);
-        $this->assertEquals(\context_module::instance($book->cmid), $event->get_context());
+        $this->assertEquals(module::instance($book->cmid), $event->get_context());
         $this->assertEquals($chapter->id, $event->objectid);
         $this->assertEquals($chapter, $event->get_record_snapshot('book_chapters', $chapter->id));
     }
@@ -128,7 +130,7 @@ final class events_test extends \advanced_testcase {
         $book = $this->getDataGenerator()->create_module('book', array('course' => $course->id));
 
         $params = array(
-            'context' => \context_module::instance($book->cmid),
+            'context' => module::instance($book->cmid),
             'objectid' => $book->id
         );
         $event = \mod_book\event\course_module_viewed::create($params);
@@ -142,7 +144,7 @@ final class events_test extends \advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_book\event\course_module_viewed', $event);
-        $this->assertEquals(\context_module::instance($book->cmid), $event->get_context());
+        $this->assertEquals(module::instance($book->cmid), $event->get_context());
         $this->assertEquals($book->id, $event->objectid);
     }
 
@@ -153,7 +155,7 @@ final class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $book = $this->getDataGenerator()->create_module('book', array('course' => $course->id));
         $bookgenerator = $this->getDataGenerator()->get_plugin_generator('mod_book');
-        $context = \context_module::instance($book->cmid);
+        $context = module::instance($book->cmid);
 
         $chapter = $bookgenerator->create_chapter(array('bookid' => $book->id));
 
@@ -168,7 +170,7 @@ final class events_test extends \advanced_testcase {
 
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_book\event\chapter_viewed', $event);
-        $this->assertEquals(\context_module::instance($book->cmid), $event->get_context());
+        $this->assertEquals(module::instance($book->cmid), $event->get_context());
         $this->assertEquals($chapter->id, $event->objectid);
     }
 

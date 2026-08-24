@@ -25,6 +25,10 @@
 
 namespace tool_monitor\event;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+
 /**
  * Tests that the tool_monitor events are valid and triggered correctly.
  */
@@ -69,7 +73,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event contains the expected values.
         $this->assertInstanceOf('\tool_monitor\event\rule_created', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($rule->id, $event->objectid);
         $this->assertEventContextNotUsed($event);
 
@@ -85,7 +89,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event uses the system context.
         $this->assertInstanceOf('\tool_monitor\event\rule_created', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 
     /**
@@ -112,7 +116,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event contains the expected values.
         $this->assertInstanceOf('\tool_monitor\event\rule_updated', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($rule->id, $event->objectid);
         $this->assertEventContextNotUsed($event);
 
@@ -131,7 +135,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event uses the system context.
         $this->assertInstanceOf('\tool_monitor\event\rule_updated', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 
     /**
@@ -156,7 +160,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event contains the expected values.
         $this->assertInstanceOf('\tool_monitor\event\rule_deleted', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($rule->id, $event->objectid);
         $this->assertEventContextNotUsed($event);
 
@@ -174,7 +178,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event uses the system context.
         $this->assertInstanceOf('\tool_monitor\event\rule_deleted', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 
     /**
@@ -198,7 +202,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event contains the expected values.
         $this->assertInstanceOf('\tool_monitor\event\subscription_created', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($subscriptionid, $event->objectid);
         $this->assertEventContextNotUsed($event);
 
@@ -211,7 +215,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event uses the system context.
         $this->assertInstanceOf('\tool_monitor\event\subscription_created', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
     }
 
     /**
@@ -243,7 +247,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event contains the expected values.
         $this->assertInstanceOf('\tool_monitor\event\subscription_deleted', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($subscription->id, $event->objectid);
         $this->assertEventContextNotUsed($event);
 
@@ -265,7 +269,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event uses the system context.
         $this->assertInstanceOf('\tool_monitor\event\subscription_deleted', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
 
         // Now, create a bunch of subscriptions for the rule we created.
         $subids = array();
@@ -287,7 +291,7 @@ final class events_test extends \advanced_testcase {
         // Get all the events and ensure they are valid.
         foreach ($events as $event) {
             $this->assertInstanceOf('\tool_monitor\event\subscription_deleted', $event);
-            $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+            $this->assertEquals(course::instance($course->id), $event->get_context());
             $this->assertEventContextNotUsed($event);
             $this->assertArrayHasKey($event->objectid, $subids);
             unset($subids[$event->objectid]);
@@ -327,7 +331,7 @@ final class events_test extends \advanced_testcase {
         $monitorgenerator->create_subscription($sub);
 
         // Now create the \mod_book\event\chapter_viewed event we are listening for.
-        $context = \context_module::instance($book->cmid);
+        $context = module::instance($book->cmid);
         $event = \mod_book\event\chapter_viewed::create_from_chapter($book, $context, $chapter);
 
         // Trigger and capture the event.
@@ -339,7 +343,7 @@ final class events_test extends \advanced_testcase {
 
         // Confirm that the event contains the expected values.
         $this->assertInstanceOf('\tool_monitor\event\subscription_criteria_met', $event);
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
 }

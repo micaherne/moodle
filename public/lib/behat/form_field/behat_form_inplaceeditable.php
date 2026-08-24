@@ -25,6 +25,8 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
+use Facebook\WebDriver\WebDriverKeys;
+
 require_once(__DIR__  . '/behat_form_text.php');
 
 /**
@@ -63,12 +65,12 @@ class behat_form_inplaceeditable extends behat_form_text {
 
         // The inplace editable selects all existing content on focus.
         // Clear the existing value.
-        self::type_keys($this->session, [behat_keys::BACKSPACE]);
+        self::type_keys($this->session, [WebDriverKeys::BACKSPACE]);
 
         // Type in the new value, followed by ENTER to save the value.
         self::type_keys($this->session, array_merge(
             str_split($value),
-            [behat_keys::ENTER]
+            [WebDriverKeys::ENTER]
         ));
     }
 }

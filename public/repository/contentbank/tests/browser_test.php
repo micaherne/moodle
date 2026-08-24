@@ -16,6 +16,10 @@
 
 namespace repository_contentbank;
 
+use core\context\course;
+use core\context\coursecat;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -41,10 +45,10 @@ final class browser_test extends \advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Create a course category $coursecategory.
         $coursecategory = $this->getDataGenerator()->create_category(['name' => 'Category']);
-        $coursecatcontext = \context_coursecat::instance($coursecategory->id);
+        $coursecatcontext = coursecat::instance($coursecategory->id);
 
         $admin = get_admin();
         // Log in as admin.
@@ -52,7 +56,7 @@ final class browser_test extends \advanced_testcase {
 
         // Get the default course category.
         $defaultcat = \core_course_category::get(1);
-        $defaultcatcontext = \context_coursecat::instance($defaultcat->id);
+        $defaultcatcontext = coursecat::instance($defaultcat->id);
 
         // Create course.
         $course = $this->getDataGenerator()->create_course(['category' => $coursecategory->id]);
@@ -128,7 +132,7 @@ final class browser_test extends \advanced_testcase {
     public function test_get_content_system_context_user_missing_capabilities(): void {
         $this->resetAfterTest(true);
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         $admin = get_admin();
         // Add some content to the content bank.
@@ -157,13 +161,13 @@ final class browser_test extends \advanced_testcase {
 
         // Create a course category.
         $category = $this->getDataGenerator()->create_category(['name' => 'Category']);
-        $coursecatcontext = \context_coursecat::instance($category->id);
+        $coursecatcontext = coursecat::instance($category->id);
         // Create course1.
         $course1 = $this->getDataGenerator()->create_course(['fullname' => 'Course1', 'category' => $category->id]);
-        $course1context = \context_course::instance($course1->id);
+        $course1context = course::instance($course1->id);
         // Create course2.
         $course2 = $this->getDataGenerator()->create_course(['fullname' => 'Course2', 'category' => $category->id]);
-        $course2context = \context_course::instance($course2->id);
+        $course2context = course::instance($course2->id);
 
         $admin = get_admin();
         // Create editing teacher enrolled in course1.
@@ -240,7 +244,7 @@ final class browser_test extends \advanced_testcase {
         // Add some content to the content bank.
         $generator = $this->getDataGenerator()->get_plugin_generator('core_contentbank');
         // Add some content bank files in the 'Category' context.
-        $coursecatcontext = \context_coursecat::instance($category->id);
+        $coursecatcontext = coursecat::instance($category->id);
         $generator->generate_contentbank_data('contenttype_h5p', 3, $admin->id,
             $coursecatcontext, true);
 
@@ -281,7 +285,7 @@ final class browser_test extends \advanced_testcase {
 
         // Create course1.
         $course = $this->getDataGenerator()->create_course(['fullname' => 'Course']);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $admin = get_admin();
         // Create editing teacher enrolled in course.
@@ -328,10 +332,10 @@ final class browser_test extends \advanced_testcase {
 
         // Create course1.
         $course1 = $this->getDataGenerator()->create_course(['fullname' => 'Course1']);
-        $course1context = \context_course::instance($course1->id);
+        $course1context = course::instance($course1->id);
         // Create course2.
         $course2 = $this->getDataGenerator()->create_course(['fullname' => 'Course2']);
-        $course2context = \context_course::instance($course2->id);
+        $course2context = course::instance($course2->id);
 
         $admin = get_admin();
         // Create non-editing teacher enrolled in course1.
@@ -372,7 +376,7 @@ final class browser_test extends \advanced_testcase {
     public function test_get_navigation_system_context(): void {
         $this->resetAfterTest(true);
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
 
         $browser = new \repository_contentbank\browser\contentbank_browser_context_system($systemcontext);
         $navigation = $browser->get_navigation();
@@ -390,13 +394,13 @@ final class browser_test extends \advanced_testcase {
     public function test_get_navigation_course_category_context(): void {
         $this->resetAfterTest(true);
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Create a course category.
         $category = $this->getDataGenerator()->create_category(['name' => 'category']);
-        $categorycontext = \context_coursecat::instance($category->id);
+        $categorycontext = coursecat::instance($category->id);
         // Create a course subcategory.
         $subcategory = $this->getDataGenerator()->create_category(['name' => 'subcategory', 'parent' => $category->id]);
-        $subcategorytcontext = \context_coursecat::instance($subcategory->id);
+        $subcategorytcontext = coursecat::instance($subcategory->id);
 
         // Get navigation nodes in the category context.
         $browser = new \repository_contentbank\browser\contentbank_browser_context_coursecat($categorycontext);
@@ -430,19 +434,19 @@ final class browser_test extends \advanced_testcase {
     public function test_get_navigation_course_context(): void {
         $this->resetAfterTest(true);
 
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         // Create a category.
         $category = $this->getDataGenerator()->create_category(['name' => 'category']);
-        $categorycontext = \context_coursecat::instance($category->id);
+        $categorycontext = coursecat::instance($category->id);
         // Create a subcategory.
         $subcategory = $this->getDataGenerator()->create_category(['name' => 'category', 'parent' => $category->id]);
-        $subcategorycontext = \context_coursecat::instance($subcategory->id);
+        $subcategorycontext = coursecat::instance($subcategory->id);
         // Create a course in category.
         $categorycourse = $this->getDataGenerator()->create_course(['category' => $category->id]);
-        $categorycoursecontext = \context_course::instance($categorycourse->id);
+        $categorycoursecontext = course::instance($categorycourse->id);
         // Create a course in subcategory.
         $subcategorycourse = $this->getDataGenerator()->create_course(['category' => $subcategory->id]);
-        $subcategorycoursecontext = \context_course::instance($subcategorycourse->id);
+        $subcategorycoursecontext = course::instance($subcategorycourse->id);
 
         // Get navigation nodes in the category course context.
         $browser = new \repository_contentbank\browser\contentbank_browser_context_course($categorycoursecontext);

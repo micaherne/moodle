@@ -17,6 +17,7 @@
 
 namespace mod_forum;
 
+use core\context\course;
 use mod_forum_tests_cron_trait;
 use mod_forum_tests_generator_trait;
 
@@ -437,7 +438,7 @@ final class maildigest_test extends \advanced_testcase {
             'moodle/site:viewfullnames',
             CAP_ALLOW,
             $DB->get_field('role', 'id', ['shortname' => 'student']),
-            \context_course::instance($course1->id)
+            course::instance($course1->id)
         );
 
         // Add 1 discussions to forum 1.

@@ -16,6 +16,7 @@
 
 namespace enrol_lti\local\ltiadvantage\task;
 
+use core\context;
 use enrol_lti\helper;
 use Packback\Lti1p3\LtiAssignmentsGradesService;
 use Packback\Lti1p3\LtiGrade;
@@ -78,7 +79,7 @@ final class sync_tool_grades_test extends \lti_advantage_testcase {
         global $CFG;
         require_once($CFG->libdir . '/accesslib.php');
         require_once($CFG->libdir . '/gradelib.php');
-        $context = \context::instance_by_id($resource->contextid);
+        $context = context::instance_by_id($resource->contextid);
 
         if ($context->contextlevel == CONTEXT_COURSE) {
             $gi = \grade_item::fetch_course_item($resource->courseid);
@@ -127,7 +128,7 @@ final class sync_tool_grades_test extends \lti_advantage_testcase {
         require_once($CFG->libdir . '/completionlib.php');
         require_once($CFG->libdir . '/datalib.php');
         $this->setAdminUser();
-        $context = \context::instance_by_id($resource->contextid);
+        $context = context::instance_by_id($resource->contextid);
         $completion = new \completion_info(get_course($resource->courseid));
         if ($context->contextlevel == CONTEXT_COURSE) {
             $ccompletion = new \completion_completion(['userid' => $userid, 'course' => $resource->courseid]);
@@ -429,7 +430,7 @@ final class sync_tool_grades_test extends \lti_advantage_testcase {
         $DB->update_record('enrol', $enrol);
 
         // Delete the activity being shared by resource 2, leaving resource 2 disabled as a result.
-        $modcontext = \context::instance_by_id($resource2->contextid);
+        $modcontext = context::instance_by_id($resource2->contextid);
         \core_courseformat\formatactions::cm($course->id)->delete($modcontext->instanceid);
 
         // Only the enabled resource 3 should sync grades.
@@ -461,7 +462,7 @@ final class sync_tool_grades_test extends \lti_advantage_testcase {
         [$userid] = $launchservice->user_launches_tool($instructoruser, $teachermocklaunch);
 
         // Delete the activity, then enable the enrolment method (it is disabled during activity deletion).
-        $modcontext = \context::instance_by_id($resource->contextid);
+        $modcontext = context::instance_by_id($resource->contextid);
         \core_courseformat\formatactions::cm($course->id)->delete($modcontext->instanceid);
         $enrol = (object) ['id' => $resource->enrolid, 'status' => ENROL_INSTANCE_ENABLED];
         $DB->update_record('enrol', $enrol);

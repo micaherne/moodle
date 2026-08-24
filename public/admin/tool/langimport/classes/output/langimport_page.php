@@ -24,11 +24,11 @@
 namespace tool_langimport\output;
 
 use core_collator;
-use moodle_url;
-use renderable;
-use renderer_base;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Language import page class.

@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once('edit_form.php');
@@ -33,11 +38,11 @@ $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 require_login();
 
 if (empty($CFG->usetags)) {
-    throw new \moodle_exception('tagsaredisabled', 'tag');
+    throw new moodle_exception('tagsaredisabled', 'tag');
 }
 
 //Editing a tag requires moodle/tag:edit capability
-$systemcontext   = context_system::instance();
+$systemcontext   = system::instance();
 require_capability('moodle/tag:edit', $systemcontext);
 
 if ($tagname) {
@@ -47,13 +52,13 @@ if ($tagname) {
         $tags = core_tag_tag::guess_by_name($tagname, '*');
         if (count($tags) > 1) {
             // This tag was found in more than one collection, redirect to search.
-            redirect(new moodle_url('/tag/search.php', array('tag' => $tagname)));
+            redirect(new url('/tag/search.php', array('tag' => $tagname)));
         } else if (count($tags) == 1) {
             $tag = reset($tags);
         }
     } else {
         if (!$tag = core_tag_tag::get_by_name($tagcollid, $tagname, '*')) {
-            redirect(new moodle_url('/tag/search.php', array('tagcollid' => $tagcollid)));
+            redirect(new url('/tag/search.php', array('tagcollid' => $tagcollid)));
         }
     }
 } else if ($tagid) {
@@ -61,7 +66,7 @@ if ($tagname) {
 }
 
 if (empty($tag)) {
-    redirect(new moodle_url('/tag/search.php'));
+    redirect(new url('/tag/search.php'));
 }
 
 $PAGE->set_url($tag->get_view_url());
@@ -101,7 +106,7 @@ $data->returnurl = $returnurl;
 $tagform->set_data($data);
 
 if ($tagform->is_cancelled()) {
-    redirect($returnurl ? new moodle_url($returnurl) : $tag->get_view_url());
+    redirect($returnurl ? new url($returnurl) : $tag->get_view_url());
 } else if ($tagnew = $tagform->get_data()) {
     // If new data has been sent, update the tag record.
     $updatedata = array();
@@ -122,10 +127,10 @@ if ($tagform->is_cancelled()) {
     // Updated related tags.
     $tag->set_related_tags($tagnew->relatedtags);
 
-    redirect($returnurl ? new moodle_url($returnurl) : $tag->get_view_url());
+    redirect($returnurl ? new url($returnurl) : $tag->get_view_url());
 }
 
-navigation_node::override_active_url(new moodle_url('/tag/search.php'));
+navigation_node::override_active_url(new url('/tag/search.php'));
 $PAGE->navbar->add($tagname);
 $PAGE->navbar->add(get_string('edit'));
 $PAGE->set_title(get_string('tag', 'tag') . ' - '. $tagname);

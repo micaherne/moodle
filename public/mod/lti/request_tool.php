@@ -23,6 +23,10 @@
  * @author     Chris Scribner
  */
 
+use core\context\course;
+use core\context\module;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/lti/lib.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
@@ -32,17 +36,17 @@ $instanceid = required_param('instanceid', PARAM_INT);
 $lti = $DB->get_record('lti', array('id' => $instanceid));
 $course = $DB->get_record('course', array('id' => $lti->course));
 $cm = get_coursemodule_from_instance('lti', $lti->id, $lti->course, false, MUST_EXIST);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 require_login($course);
 
 require_sesskey();
 
-require_capability('mod/lti:requesttooladd', context_course::instance($lti->course));
+require_capability('mod/lti:requesttooladd', course::instance($lti->course));
 
 $baseurl = lti_get_domain_from_url($lti->toolurl);
 
-$url = new moodle_url('/mod/lti/request_tool.php', array('instanceid' => $instanceid));
+$url = new url('/mod/lti/request_tool.php', array('instanceid' => $instanceid));
 $PAGE->set_url($url);
 
 $pagetitle = strip_tags($course->shortname);

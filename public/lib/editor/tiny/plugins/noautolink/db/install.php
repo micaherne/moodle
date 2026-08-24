@@ -25,8 +25,10 @@
 /**
  * Install the Tiny noautolink plugin in a disabled state.
  */
+use core\plugin_manager;
+
 function xmldb_tiny_noautolink_install() {
-    $tinymanager = \core_plugin_manager::resolve_plugininfo_class('tiny');
+    $tinymanager = plugin_manager::resolve_plugininfo_class('tiny');
     // Disabled the plugin.
     $tinymanager::enable_plugin('noautolink', 0);
 }

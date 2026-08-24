@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir . '/badgeslib.php');
 
-use html_writer;
+use core\output\html_writer;
 use moodleform;
 use stdClass;
 

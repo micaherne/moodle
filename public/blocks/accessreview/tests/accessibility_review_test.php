@@ -19,7 +19,7 @@ namespace block_accessreview;
 use ReflectionClass;
 use advanced_testcase;
 use block_accessreview;
-use context_course;
+use core\context\course;
 
 /**
  * PHPUnit block_accessibility_review tests
@@ -63,11 +63,11 @@ final class accessibility_review_test extends advanced_testcase {
         $block = new block_accessreview();
 
         $this->setUser($user1);
-        $result = $rm->invoke($block, context_course::instance($course->id));
+        $result = $rm->invoke($block, course::instance($course->id));
         $this->assertNotEmpty($result);
 
         $this->setUser($user2);
-        $result = $rm->invoke($block, context_course::instance($course->id));
+        $result = $rm->invoke($block, course::instance($course->id));
         $this->assertEmpty($result);
     }
 
@@ -88,11 +88,11 @@ final class accessibility_review_test extends advanced_testcase {
         $block = new block_accessreview();
 
         $this->setUser($user1);
-        $result = $rm->invoke($block, context_course::instance($course->id));
+        $result = $rm->invoke($block, course::instance($course->id));
         $this->assertNotEmpty($result);
 
         $this->setUser($user2);
-        $result = $rm->invoke($block, context_course::instance($course->id));
+        $result = $rm->invoke($block, course::instance($course->id));
         $this->assertEmpty($result);
     }
 
@@ -108,7 +108,7 @@ final class accessibility_review_test extends advanced_testcase {
         // Create a course and prepare the page where the block will be added.
         $course = $this->getDataGenerator()->create_course();
         $page = new \moodle_page();
-        $page->set_context(context_course::instance($course->id));
+        $page->set_context(course::instance($course->id));
         $page->set_pagelayout('course');
 
         $block = new block_accessreview();

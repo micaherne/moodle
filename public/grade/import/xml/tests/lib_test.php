@@ -16,6 +16,8 @@
 
 namespace gradeimport_xml;
 
+use core\exception\moodle_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -45,7 +47,7 @@ final class lib_test extends \advanced_testcase {
         try {
             gradeimport_xml_fetch_and_commit($course, $missingurl, false, false);
             $this->fail();
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertSame('cannotreadfile', $e->errorcode);
         }
     }
@@ -65,7 +67,7 @@ final class lib_test extends \advanced_testcase {
         try {
             gradeimport_xml_fetch_and_commit($course, $xmlurl, false, false);
             $this->fail();
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertSame('errorduringimport', $e->errorcode);
         }
     }

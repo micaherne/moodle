@@ -25,6 +25,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -43,7 +45,7 @@ class backup_final_task extends backup_task {
         global $CFG;
 
         // Set the backup::VAR_CONTEXTID setting to course context as far as next steps require that
-        $coursectxid = context_course::instance($this->get_courseid())->id;
+        $coursectxid = course::instance($this->get_courseid())->id;
         $this->add_setting(new backup_activity_generic_setting(backup::VAR_CONTEXTID, base_setting::IS_INTEGER, $coursectxid));
 
         // Set the backup::VAR_COURSEID setting to course, we'll need that in some steps

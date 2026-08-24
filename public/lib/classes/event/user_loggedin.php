@@ -24,6 +24,10 @@
 
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -66,7 +70,7 @@ class user_loggedin extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/user/profile.php', array('id' => $this->data['objectid']));
+        return new url('/user/profile.php', array('id' => $this->data['objectid']));
     }
 
     /**
@@ -84,7 +88,7 @@ class user_loggedin extends base {
      * @return void
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = 'user';
@@ -100,7 +104,7 @@ class user_loggedin extends base {
         parent::validate_data();
 
         if (!isset($this->other['username'])) {
-            throw new \coding_exception('The \'username\' value must be set in other.');
+            throw new coding_exception('The \'username\' value must be set in other.');
         }
     }
 

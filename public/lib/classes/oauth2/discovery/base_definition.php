@@ -18,7 +18,7 @@ namespace core\oauth2\discovery;
 
 use curl;
 use stdClass;
-use moodle_exception;
+use core\exception\moodle_exception;
 use core\oauth2\issuer;
 use core\oauth2\endpoint;
 

@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /** THESE CONSTANTS ARE USED FOR THE REPORTING PAGE. */
@@ -130,7 +133,7 @@ function stats_cron_daily($maxdays=1) {
 
     $now = time();
 
-    $fpcontext = context_course::instance(SITEID, MUST_EXIST);
+    $fpcontext = course::instance(SITEID, MUST_EXIST);
 
     // read last execution date from db
     if (!$timestart = get_config(NULL, 'statslastdaily')) {
@@ -1165,7 +1168,7 @@ function stats_get_parameters($time,$report,$courseid,$mode,$roleid=0) {
         $rolename = '';
         if ($roleid <> 0) {
             if ($role = $DB->get_record('role', ['id' => $roleid])) {
-                $rolename = role_get_name($role, context_course::instance($courseid)) . ' ';
+                $rolename = role_get_name($role, course::instance($courseid)) . ' ';
             }
         }
         $param->line1 = $rolename . get_string('statsreads');
@@ -1409,7 +1412,7 @@ function stats_get_report_options($courseid,$mode) {
     switch ($mode) {
     case STATS_MODE_GENERAL:
         $reportoptions[STATS_REPORT_ACTIVITY] = get_string('statsreport'.STATS_REPORT_ACTIVITY);
-        if ($courseid != SITEID && $context = context_course::instance($courseid)) {
+        if ($courseid != SITEID && $context = course::instance($courseid)) {
             $sql = 'SELECT r.id, r.name, r.shortname FROM {role} r JOIN {stats_daily} s ON s.roleid = r.id
                  WHERE s.courseid = :courseid GROUP BY r.id, r.name, r.shortname';
             if ($roles = $DB->get_records_sql($sql, array('courseid' => $courseid))) {
@@ -1430,13 +1433,13 @@ function stats_get_report_options($courseid,$mode) {
     case STATS_MODE_DETAILED:
         $reportoptions[STATS_REPORT_USER_ACTIVITY] = get_string('statsreport'.STATS_REPORT_USER_ACTIVITY);
         $reportoptions[STATS_REPORT_USER_ALLACTIVITY] = get_string('statsreport'.STATS_REPORT_USER_ALLACTIVITY);
-        if (has_capability('report/stats:view', context_system::instance())) {
+        if (has_capability('report/stats:view', system::instance())) {
             $site = get_site();
             $reportoptions[STATS_REPORT_USER_LOGINS] = get_string('statsreport'.STATS_REPORT_USER_LOGINS);
         }
         break;
     case STATS_MODE_RANKED:
-        if (has_capability('report/stats:view', context_system::instance())) {
+        if (has_capability('report/stats:view', system::instance())) {
             $reportoptions[STATS_REPORT_ACTIVE_COURSES] = get_string('statsreport'.STATS_REPORT_ACTIVE_COURSES);
             $reportoptions[STATS_REPORT_ACTIVE_COURSES_WEIGHTED] = get_string('statsreport'.STATS_REPORT_ACTIVE_COURSES_WEIGHTED);
             $reportoptions[STATS_REPORT_PARTICIPATORY_COURSES] = get_string('statsreport'.STATS_REPORT_PARTICIPATORY_COURSES);

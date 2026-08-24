@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -100,7 +102,7 @@ function filter_tex_updatedcallback($name) {
 
     $syscontext = \core\context\system::instance();
     get_file_storage()->delete_area_files($syscontext->id, 'filter_tex', 'rendered_images');
-    \cache_helper::purge_by_definition('filter_tex', 'rendered_images');
+    helper::purge_by_definition('filter_tex', 'rendered_images');
 
     if (file_exists("$CFG->tempdir/latex")) {
         remove_dir("$CFG->tempdir/latex");

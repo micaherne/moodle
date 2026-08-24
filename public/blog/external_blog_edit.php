@@ -24,13 +24,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once('../config.php');
 require_once('lib.php');
 require_once('external_blog_edit_form.php');
 require_once($CFG->libdir . '/simplepie/moodle_simplepie.php');
 
 require_login();
-$context = context_system::instance();
+$context = system::instance();
 require_capability('moodle/blog:manageexternal', $context);
 
 // TODO redirect if $CFG->useexternalblogs is off,
@@ -38,15 +44,15 @@ require_capability('moodle/blog:manageexternal', $context);
 //                  or if user doesn't have caps to manage external blogs.
 
 $id = optional_param('id', null, PARAM_INT);
-$url = new moodle_url('/blog/external_blog_edit.php');
+$url = new url('/blog/external_blog_edit.php');
 if ($id !== null) {
     $url->param('id', $id);
 }
 $PAGE->set_url($url);
-$PAGE->set_context(context_user::instance($USER->id));
+$PAGE->set_context(user::instance($USER->id));
 $PAGE->set_pagelayout('admin');
 
-$returnurl = new moodle_url('/blog/external_blogs.php');
+$returnurl = new url('/blog/external_blogs.php');
 
 $action = (empty($id)) ? 'add' : 'edit';
 
@@ -55,7 +61,7 @@ $external = new stdClass();
 // Retrieve the external blog record.
 if (!empty($id)) {
     if (!$external = $DB->get_record('blog_external', array('id' => $id, 'userid' => $USER->id))) {
-        throw new \moodle_exception('wrongexternalid', 'blog');
+        throw new moodle_exception('wrongexternalid', 'blog');
     }
     $external->autotags = core_tag_tag::get_item_tags_array('core', 'blog_external', $id);
 }
@@ -85,7 +91,7 @@ if ($externalblogform->is_cancelled()) {
 
             $newexternal->id = $DB->insert_record('blog_external', $newexternal);
             core_tag_tag::set_item_tags('core', 'blog_external', $newexternal->id,
-                    context_user::instance($newexternal->userid), $data->autotags);
+                    user::instance($newexternal->userid), $data->autotags);
             blog_sync_external_entries($newexternal);
 
             // Log this action.
@@ -120,21 +126,21 @@ if ($externalblogform->is_cancelled()) {
                 $event->trigger();
 
                 core_tag_tag::set_item_tags('core', 'blog_external', $external->id,
-                        context_user::instance($external->userid), $data->autotags);
+                        user::instance($external->userid), $data->autotags);
             } else {
-                throw new \moodle_exception('wrongexternalid', 'blog');
+                throw new moodle_exception('wrongexternalid', 'blog');
             }
 
             break;
 
         default :
-            throw new \moodle_exception('invalidaction');
+            throw new moodle_exception('invalidaction');
     }
 
     redirect($returnurl);
 }
 
-navigation_node::override_active_url(new moodle_url('/blog/external_blogs.php'));
+navigation_node::override_active_url(new url('/blog/external_blogs.php'));
 $PAGE->navbar->add(get_string('addnewexternalblog', 'blog'));
 
 $PAGE->set_heading(fullname($USER));

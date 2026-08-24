@@ -21,6 +21,8 @@
  * @copyright 2018 Peter Dias
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,7 +55,7 @@ function block_timeline_user_preferences(): array {
         'default' => BLOCK_TIMELINE_SORT_BY_DATES,
         'type' => PARAM_ALPHA,
         'choices' => array(BLOCK_TIMELINE_SORT_BY_DATES, BLOCK_TIMELINE_SORT_BY_COURSES),
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
 
     $preferences['block_timeline_user_filter_preference'] = array(
@@ -68,14 +70,14 @@ function block_timeline_user_preferences(): array {
                 BLOCK_TIMELINE_FILTER_BY_3_MONTHS,
                 BLOCK_TIMELINE_FILTER_BY_6_MONTHS
         ),
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
 
     $preferences['block_timeline_user_limit_preference'] = array(
         'null' => NULL_NOT_ALLOWED,
         'default' => BLOCK_TIMELINE_ACTIVITIES_LIMIT_DEFAULT,
         'type' => PARAM_INT,
-        'permissioncallback' => [core_user::class, 'is_current_user'],
+        'permissioncallback' => [user::class, 'is_current_user'],
     );
 
     return $preferences;

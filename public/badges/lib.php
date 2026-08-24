@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\context\user;
+use core\output\html_writer;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -45,7 +50,7 @@ function core_badges_myprofile_navigation(\core_user\output\myprofile\tree $tree
     // Add category. This node should appear after 'contact' so that administration block appears towards the end. Refer MDL-49928.
     $category = new core_user\output\myprofile\category('badges', get_string('badges', 'badges'), 'contact');
     $tree->add_category($category);
-    $context = context_user::instance($user->id);
+    $context = user::instance($user->id);
     $courseid = empty($course) ? 0 : $course->id;
 
     // Site badges link - shown on site profile once a site badge exists. Badge managers (who can
@@ -53,7 +58,7 @@ function core_badges_myprofile_navigation(\core_user\output\myprofile\tree $tree
     // reach it to manage inactive or archived badges. Other users need moodle/badges:viewbadges
     // and at least one active badge, since that is all they could see on the site badges page.
     if ($courseid == 0) {
-        $sitecontext = context_system::instance();
+        $sitecontext = system::instance();
         $ismanager = badges_can_manage_badges($sitecontext);
         $showsitebadges = false;
         if ($ismanager || has_capability('moodle/badges:viewbadges', $sitecontext)) {
@@ -67,7 +72,7 @@ function core_badges_myprofile_navigation(\core_user\output\myprofile\tree $tree
             $showsitebadges = $DB->record_exists_select('badge', $sql, $params);
         }
         if ($showsitebadges) {
-            $url = new moodle_url('/badges/index.php', ['type' => BADGE_TYPE_SITE]);
+            $url = new url('/badges/index.php', ['type' => BADGE_TYPE_SITE]);
             $sitebadgesnode = new core_user\output\myprofile\node(
                 'badges',
                 'sitebadges',
@@ -143,7 +148,7 @@ function badge_get_tagged_badges(
         $badges = $tag->get_tagged_items('core_badges', 'badge', $page * $perpage, $perpage);
         $tagfeed = new core_tag\output\tagfeed();
         foreach ($badges as $badge) {
-            $badgelink = new moodle_url('/badges/badgeclass.php', ['id' => $badge->id]);
+            $badgelink = new url('/badges/badgeclass.php', ['id' => $badge->id]);
             $fullname = html_writer::link($badgelink, $badge->name);
             $icon = html_writer::link($badgelink, html_writer::empty_tag(
                 'img',

@@ -16,10 +16,10 @@
 
 namespace qbank_managecategories\external;
 
-use context;
-use context_module;
+use core\context;
+use core\context\module as context_module;
 use core\context\module;
-use moodle_url;
+use core\url;
 use qbank_managecategories\question_categories;
 
 defined('MOODLE_INTERNAL') || die();
@@ -44,7 +44,7 @@ final class move_category_test extends \qbank_managecategories\manage_category_t
      * @return array Nested array, keyed by category IDs.
      */
     private function get_current_order(module $context): array {
-        $categories = new question_categories(new moodle_url('/'), cmid: $context->instanceid);
+        $categories = new question_categories(new url('/'), cmid: $context->instanceid);
         return $this->reduce_tree($categories->editlist->items);
     }
 
@@ -77,7 +77,7 @@ final class move_category_test extends \qbank_managecategories\manage_category_t
         // Create context for question categories.
         $course = $this->create_course();
         $qbank = $this->create_qbank($course);
-        $context = context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $this->create_course_category();
 
         // Question categories.
@@ -143,7 +143,7 @@ final class move_category_test extends \qbank_managecategories\manage_category_t
 
         // Create context for question categories.
         $qbank = $this->create_qbank($this->create_course());
-        $context = context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $this->create_course_category();
 
         // Question categories.
@@ -212,7 +212,7 @@ final class move_category_test extends \qbank_managecategories\manage_category_t
 
         // Create context for question categories.
         $qbank = $this->create_qbank($this->create_course());
-        $context = context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $this->create_course_category();
 
         // Question categories.
@@ -285,7 +285,7 @@ final class move_category_test extends \qbank_managecategories\manage_category_t
 
         // Create context for question categories.
         $qbank = $this->create_qbank($this->create_course());
-        $context = context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $this->create_course_category();
 
         // Question categories.
@@ -348,7 +348,7 @@ final class move_category_test extends \qbank_managecategories\manage_category_t
 
         // Create context for question categories.
         $qbank = $this->create_qbank($this->create_course());
-        $context = context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $this->create_course_category();
 
         // Question categories.
@@ -418,7 +418,7 @@ final class move_category_test extends \qbank_managecategories\manage_category_t
 
         // Create context for question categories.
         $qbank = $this->create_qbank($this->create_course());
-        $context = context_module::instance($qbank->cmid);
+        $context = module::instance($qbank->cmid);
         $this->create_course_category();
 
         // Question categories.

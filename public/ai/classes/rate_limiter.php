@@ -16,6 +16,8 @@
 
 namespace core_ai;
 
+use core_cache\application_cache;
+use core_cache\cache;
 use Psr\Clock\ClockInterface;
 
 /**
@@ -33,7 +35,7 @@ class rate_limiter {
     private static ?rate_limiter $instance = null;
 
     /** @var \cache_application Cache instance for rate limiter. */
-    private \cache_application $cache;
+    private application_cache $cache;
 
     /**
      * Constructor.
@@ -44,7 +46,7 @@ class rate_limiter {
         /** @var ClockInterface Clock instance for time management. */
         private ClockInterface $clock,
     ) {
-        $this->cache = \cache::make('core', 'ai_ratelimit');
+        $this->cache = cache::make('core', 'ai_ratelimit');
     }
 
     /**

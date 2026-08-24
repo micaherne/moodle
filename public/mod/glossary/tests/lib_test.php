@@ -23,6 +23,11 @@
  */
 namespace mod_glossary;
 
+use core\context\course;
+use core\context\module;
+use core_course\cm_info;
+use core_course\modinfo;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -58,7 +63,7 @@ final class lib_test extends \advanced_testcase {
         ));
         $u1 = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
-        $modinfo = \course_modinfo::instance($c1->id);
+        $modinfo = modinfo::instance($c1->id);
         $cm1 = $modinfo->get_cm($g1->cmid);
         $cm2 = $modinfo->get_cm($g2->cmid);
         $ctx1 = $cm1->context;
@@ -103,7 +108,7 @@ final class lib_test extends \advanced_testcase {
         $g1 = $this->getDataGenerator()->create_module('glossary', array('course' => $c1->id));
         $e1 = $gg->create_content($g1);
         $u1 = $this->getDataGenerator()->create_user();
-        $ctx = \context_module::instance($g1->cmid);
+        $ctx = module::instance($g1->cmid);
         $this->getDataGenerator()->enrol_user($u1->id, $c1->id);
 
         // Assertions.
@@ -353,8 +358,8 @@ final class lib_test extends \advanced_testcase {
             'completion' => 2,
             'completionentries' => 0
         ]);
-        $cm1 = \cm_info::create(get_coursemodule_from_instance('glossary', $glossary1->id));
-        $cm2 = \cm_info::create(get_coursemodule_from_instance('glossary', $glossary2->id));
+        $cm1 = cm_info::create(get_coursemodule_from_instance('glossary', $glossary1->id));
+        $cm2 = cm_info::create(get_coursemodule_from_instance('glossary', $glossary2->id));
 
         // Data for the stdClass input type.
         // This type of input would occur when checking the default completion rules for an activity type, where we don't have
@@ -451,7 +456,7 @@ final class lib_test extends \advanced_testcase {
         $this->assertDoesNotMatchRegularExpression('/'.$entry31->concept.'/', $res->content);
 
         // User can search glossary entries inside a course.
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $res = mod_glossary_get_tagged_entries($tag, /*$exclusivemode = */false,
             /*$fromctx = */0, /*$ctx = */$coursecontext->id, /*$rec = */1, /*$entry = */0);
         $this->assertMatchesRegularExpression('/'.$entry11->concept.'/', $res->content);
@@ -518,7 +523,7 @@ final class lib_test extends \advanced_testcase {
         $glossarygenerator = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
         $course = $this->getDataGenerator()->create_course();
         $glossary = $this->getDataGenerator()->create_module('glossary', ['course' => $course->id]);
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         // The concepts are intentionally mixed-case to validate case-insensitive alphabetical sorting.
         $glossarygenerator->create_content($glossary, ['concept' => 'Apple']);
@@ -560,7 +565,7 @@ final class lib_test extends \advanced_testcase {
         $gg = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
         $this->setUser($student);
         $entry = $gg->create_content($glossary);
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         // Test student can delete.
         $this->assertTrue(mod_glossary_can_delete_entry($entry, $glossary, $context));
@@ -594,7 +599,7 @@ final class lib_test extends \advanced_testcase {
         $gg = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
         $this->setUser($student);
         $entry = $gg->create_content($glossary);
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
 
         // Test student can always delete when edit always is set to 1.
         $entry->timecreated = time() - 2 * $CFG->maxeditingtime;
@@ -630,7 +635,7 @@ final class lib_test extends \advanced_testcase {
         $scale = $this->getDataGenerator()->create_scale(['scale' => 'A,B,C,D']);
         $record->scale = "-$scale->id";
         $glossary = $this->getDataGenerator()->create_module('glossary', $record);
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
         $cm = get_coursemodule_from_instance('glossary', $glossary->id);
 
         $gg = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
@@ -684,7 +689,7 @@ final class lib_test extends \advanced_testcase {
         $glossary1 = $this->getDataGenerator()->create_module('glossary', ['course' => $course->id]);
         $glossary2 = $this->getDataGenerator()->create_module('glossary', ['course' => $course->id]);
 
-        $context = \context_module::instance($glossary2->cmid);
+        $context = module::instance($glossary2->cmid);
         $cm = get_coursemodule_from_instance('glossary', $glossary2->id);
 
         $gg = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
@@ -727,7 +732,7 @@ final class lib_test extends \advanced_testcase {
         $gg = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
         $this->setUser($student);
         $entry = $gg->create_content($glossary);
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
         $cm = get_coursemodule_from_instance('glossary', $glossary->id);
 
         // Test student can update.
@@ -762,7 +767,7 @@ final class lib_test extends \advanced_testcase {
         $gg = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
         $this->setUser($student);
         $entry = $gg->create_content($glossary);
-        $context = \context_module::instance($glossary->cmid);
+        $context = module::instance($glossary->cmid);
         $cm = get_coursemodule_from_instance('glossary', $glossary->id);
 
         // Test student can always update when edit always is set to 1.
@@ -854,7 +859,7 @@ final class lib_test extends \advanced_testcase {
 
         if (!$commentcapability) {
             $userrole = $DB->get_field('role', 'id', ['shortname' => 'user'], MUST_EXIST);
-            assign_capability('mod/glossary:comment', CAP_PROHIBIT, $userrole, \context_module::instance($activity->cmid));
+            assign_capability('mod/glossary:comment', CAP_PROHIBIT, $userrole, module::instance($activity->cmid));
         }
 
         if ($hasentries) {
@@ -889,7 +894,7 @@ final class lib_test extends \advanced_testcase {
             /** @var \core_comment_generator $generator */
             $generator = $this->getDataGenerator()->get_plugin_generator('core_comment');
             $cmtoptions = new \stdClass();
-            $cmtoptions->context = \context_module::instance($activity->cmid);
+            $cmtoptions->context = module::instance($activity->cmid);
             $cmtoptions->instanceid = $activity->cmid;
             $cmtoptions->component = 'mod_glossary';
             $cmtoptions->area = 'glossary_entry';

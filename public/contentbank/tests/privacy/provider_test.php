@@ -26,10 +26,10 @@
 namespace core_contentbank\privacy;
 
 use stdClass;
-use context_system;
-use context_coursecat;
-use context_course;
-use context_user;
+use core\context\system;
+use core\context\coursecat;
+use core\context\course;
+use core\context\user;
 use core_contentbank\privacy\provider;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
@@ -313,16 +313,16 @@ final class provider_test extends provider_testcase {
     protected function setup_scenario() {
         global $DB;
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         $manager = $this->getDataGenerator()->create_user();
         $managerroleid = $DB->get_field('role', 'id', ['shortname' => 'manager']);
         $this->getDataGenerator()->role_assign($managerroleid, $manager->id);
 
         $coursecategory = $this->getDataGenerator()->create_category();
-        $coursecategorycontext = context_coursecat::instance($coursecategory->id);
+        $coursecategorycontext = coursecat::instance($coursecategory->id);
 
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $teacher = $this->getDataGenerator()->create_and_enrol($course,
             'editingteacher');
 
@@ -375,7 +375,7 @@ final class provider_test extends provider_testcase {
         $this->getDataGenerator()->role_assign($managerroleid, $user->id);
 
         provider::export_user_preferences($user->id);
-        $writer = writer::with_context(context_system::instance());
+        $writer = writer::with_context(system::instance());
         $this->assertFalse($writer->has_any_data());
     }
 
@@ -393,7 +393,7 @@ final class provider_test extends provider_testcase {
         set_user_preference('core_contentbank_view_list', 1);
         // Test the user preferences export contains 1 user preference record for the User.
         provider::export_user_preferences($user->id);
-        $contextuser = context_user::instance($user->id);
+        $contextuser = user::instance($user->id);
         $writer = writer::with_context($contextuser);
         $this->assertTrue($writer->has_any_data());
 

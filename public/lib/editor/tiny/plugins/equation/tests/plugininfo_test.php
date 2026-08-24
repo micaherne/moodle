@@ -19,6 +19,8 @@ declare(strict_types=1);
 namespace tiny_equation;
 
 use advanced_testcase;
+use core\context\system;
+use core\plugin_manager;
 
 /**
  * Unit tests for the \tiny_equation\plugininfo class.
@@ -49,12 +51,12 @@ final class plugininfo_test extends advanced_testcase {
     public function test_get_plugin_configuration_for_external(bool $enabled, array $expectedconfiguration): void {
         global $CFG;
 
-        $filtermanager = \core_plugin_manager::resolve_plugininfo_class('filter');
+        $filtermanager = plugin_manager::resolve_plugininfo_class('filter');
         $filtermanager::enable_plugin('mathjaxloader', $enabled ? TEXTFILTER_ON : TEXTFILTER_OFF);
 
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
-        $context = \context_system::instance();
+        $context = system::instance();
         $this->setUser($user);
 
         $this->assertEquals($expectedconfiguration, plugininfo::get_plugin_configuration_for_external($context));

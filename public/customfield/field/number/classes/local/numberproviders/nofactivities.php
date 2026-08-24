@@ -18,9 +18,10 @@ declare(strict_types=1);
 
 namespace customfield_number\local\numberproviders;
 
-use context_course;
+use core\context;
+use core\context\course;
 use core\exception\coding_exception;
-use core_plugin_manager;
+use core\plugin_manager;
 use customfield_number\data_controller;
 use customfield_number\provider_base;
 use MoodleQuickForm;
@@ -60,7 +61,7 @@ class nofactivities extends provider_base {
      */
     public function config_form_definition(MoodleQuickForm $mform): void {
         $options = [];
-        $plugins = core_plugin_manager::instance()->get_plugins_of_type('mod');
+        $plugins = plugin_manager::instance()->get_plugins_of_type('mod');
         foreach ($plugins as $plugin) {
             $options[$plugin->name] = $plugin->displayname;
         }
@@ -144,7 +145,7 @@ class nofactivities extends provider_base {
                 // Stored value is out of date.
                 $data = $this->field->get_handler()->get_instance_fields_data(
                     [$fieldid => $this->field], (int)$record->id)[$fieldid];
-                $data->set('contextid', context_course::instance($record->id)->id);
+                $data->set('contextid', course::instance($record->id)->id);
                 $data->set('decvalue', $value);
                 $data->save();
             }
@@ -173,7 +174,7 @@ class nofactivities extends provider_base {
      * @param \context|null $context Context
      * @return ?string
      */
-    public function prepare_export_value(mixed $value, ?\context $context = null): ?string {
+    public function prepare_export_value(mixed $value, ?context $context = null): ?string {
         if ($value === null) {
             return null;
         } else if (round((float)$value) == 0) {

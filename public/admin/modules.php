@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\plugin_manager;
+use core\url;
+
 require_once('../config.php');
 require_once('../course/lib.php');
 require_once("{$CFG->libdir}/adminlib.php");
@@ -36,7 +39,7 @@ $action = optional_param('action', '', PARAM_ALPHA);
 
 // If data submitted, then process and store.
 if (!empty($action) && !empty($plugin) && confirm_sesskey()) {
-    $manager = \core_plugin_manager::resolve_plugininfo_class('mod');
+    $manager = plugin_manager::resolve_plugininfo_class('mod');
     $pluginname = get_string('pluginname', $plugin);
 
     if ($action === 'disable' && $manager::enable_plugin($plugin, 0)) {
@@ -57,7 +60,7 @@ if (!empty($action) && !empty($plugin) && confirm_sesskey()) {
     }
 
     // Redirect back to the modules page with out any params.
-    redirect(new moodle_url('/admin/modules.php'));
+    redirect(new url('/admin/modules.php'));
 }
 
 echo $OUTPUT->header();

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\plugin_manager;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -34,7 +36,7 @@ function xmldb_fileconverter_unoconv_install() {
     if ($unoconvpresent) {
         // Unoconv is currently configured correctly.
         // Enable it.
-        $plugins = \core_plugin_manager::instance()->get_plugins_of_type('fileconverter');
+        $plugins = plugin_manager::instance()->get_plugins_of_type('fileconverter');
         $plugins['unoconv']->set_enabled(true);
     }
 }

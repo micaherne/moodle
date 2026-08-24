@@ -22,6 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\output\single_button;
+use core\output\single_select;
+use core\url;
+
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
@@ -48,7 +54,7 @@ if (!empty($reset) && confirm_sesskey()) {
         // Just reset the factor and reload.
         $DB->delete_records('tool_mfa', ['factor' => $factor->name, 'userid' => $userid]);
         $stringarr = ['factor' => $factor->name, 'username' => $userid];
-        redirect(new moodle_url($PAGE->url, ['view' => $factor->name]), get_string('resetsuccess', 'tool_mfa', $stringarr));
+        redirect(new url($PAGE->url, ['view' => $factor->name]), get_string('resetsuccess', 'tool_mfa', $stringarr));
     }
 
     // Bulk action for locked users.
@@ -63,7 +69,7 @@ if (!empty($reset) && confirm_sesskey()) {
         return $el->userid;
     }, (array) $lockedusers);
     $SESSION->bulk_users = $lockedusers;
-    redirect(new moodle_url('/admin/user/user_bulk.php'));
+    redirect(new url('/admin/user/user_bulk.php'));
 }
 
 // Configure the lookback period for the report.
@@ -95,9 +101,9 @@ if (!empty($view)) {
         throw new moodle_exception('error:factornotfound', 'tool_mfa');
     }
 
-    $backbutton = new single_button(new moodle_url($PAGE->url), get_string('back'));
+    $backbutton = new single_button(new url($PAGE->url), get_string('back'));
     echo $renderer->heading(get_string('lockedusersforfactor', 'tool_mfa', $factor->get_display_name()));
-    echo \html_writer::tag('p', $renderer->factor_locked_users_table($factor));
+    echo html_writer::tag('p', $renderer->factor_locked_users_table($factor));
     echo $renderer->render($backbutton);
 } else {
     echo $renderer->heading(get_string('factorreport', 'tool_mfa'));

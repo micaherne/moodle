@@ -23,6 +23,8 @@
  */
 namespace mod_glossary\privacy;
 
+use core\context;
+use core\context\module;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\deletion_criteria;
@@ -75,7 +77,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->glossary = $glossary;
 
         $cm = get_coursemodule_from_instance('glossary', $glossary->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Create a student which will add an entry to a glossary.
         $student = $generator->create_user();
@@ -130,7 +132,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $contextlist = provider::get_contexts_for_userid($this->student->id);
         $this->assertCount(1, $contextlist);
         $contextforuser = $contextlist->current();
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
         $this->assertEquals($cmcontext->id, $contextforuser->id);
     }
 
@@ -140,7 +142,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
     public function test_get_users_in_context(): void {
         $component = 'mod_glossary';
         $cm = get_coursemodule_from_instance('glossary', $this->glossary->id);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         $userlist = new \core_privacy\local\request\userlist($cmcontext, $component);
         provider::get_users_in_context($userlist);
@@ -160,7 +162,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      */
     public function test_export_for_context(): void {
         $cm = get_coursemodule_from_instance('glossary', $this->glossary->id);
-        $cmcontext = \context_module::instance($cm->id);
+        $cmcontext = module::instance($cm->id);
 
         // Export all of the data for the context.
         $writer = \core_privacy\local\request\writer::with_context($cmcontext);
@@ -182,7 +184,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         $generator = $this->getDataGenerator();
         $cm = get_coursemodule_from_instance('glossary', $this->glossary->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         // Create another student who will add an entry the glossary activity.
         $student2 = $generator->create_user();
         $generator->enrol_user($student2->id, $this->course->id, 'student');
@@ -247,8 +249,8 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $ge1 = $this->plugingenerator->create_content($this->glossary, ['concept' => 'first user glossary entry', 'approved' => 1]);
         $this->plugingenerator->create_content($glossary2, ['concept' => 'first user second glossary entry', 'approved' => 1]);
 
-        $context1 = \context_module::instance($cm1->id);
-        $context2 = \context_module::instance($cm2->id);
+        $context1 = module::instance($cm1->id);
+        $context2 = module::instance($cm2->id);
         \core_tag_tag::set_item_tags('mod_glossary', 'glossary_entries', $ge1->id, $context1, ['Parmi', 'Sushi']);
 
         $this->setUser($student2);
@@ -331,8 +333,8 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $ge2 = $this->plugingenerator->create_content($glossary2, ['concept' => 'first user second glossary entry',
                 'approved' => 1], ['two']);
 
-        $context1 = \context_module::instance($cm1->id);
-        $context2 = \context_module::instance($cm2->id);
+        $context1 = module::instance($cm1->id);
+        $context2 = module::instance($cm2->id);
         \core_tag_tag::set_item_tags('mod_glossary', 'glossary_entries', $ge1->id, $context1, ['Parmi', 'Sushi']);
 
         $this->setUser($student2);
@@ -430,7 +432,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      * @param int $itemid The item ID.
      * @return \core_comment\manager
      */
-    protected function get_comment_object(\context $context, $itemid): \core_comment\manager {
+    protected function get_comment_object(context $context, $itemid): \core_comment\manager {
         $args = new \stdClass();
 
         $args->context = $context;
@@ -451,7 +453,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      * @param int $itemid The item ID.
      * @return rating object
      */
-    protected function get_rating_object(\context $context, $itemid) {
+    protected function get_rating_object(context $context, $itemid) {
         global $USER;
 
         $ratingoptions = new \stdClass;

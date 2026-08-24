@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
  /** End of Branch page */
@@ -95,7 +98,7 @@ class lesson_page_type_endofbranch extends lesson_page {
         }
 
         if ($redirect) {
-            redirect(new moodle_url('/mod/lesson/view.php', array('id' => $PAGE->cm->id, 'pageid' => $jumpto)));
+            redirect(new url('/mod/lesson/view.php', array('id' => $PAGE->cm->id, 'pageid' => $jumpto)));
             die;
         }
         return $jumpto;
@@ -107,7 +110,7 @@ class lesson_page_type_endofbranch extends lesson_page {
     public function add_page_link($previd) {
         global $PAGE, $CFG;
         if ($previd != 0) {
-            $addurl = new moodle_url('/mod/lesson/editpage.php', array('id'=>$PAGE->cm->id, 'pageid'=>$previd, 'sesskey'=>sesskey(), 'qtype'=>LESSON_PAGE_ENDOFBRANCH));
+            $addurl = new url('/mod/lesson/editpage.php', array('id'=>$PAGE->cm->id, 'pageid'=>$previd, 'sesskey'=>sesskey(), 'qtype'=>LESSON_PAGE_ENDOFBRANCH));
             return array('addurl'=>$addurl, 'type'=>LESSON_PAGE_ENDOFBRANCH, 'name'=>get_string('addanendofbranch', 'lesson'));
         }
         return false;
@@ -184,7 +187,7 @@ class lesson_add_page_form_endofbranch extends lesson_add_page_form_base {
 
         // the new page is not the first page (end of branch always comes after an existing page)
         if (!$page = $DB->get_record("lesson_pages", array("id" => $pageid))) {
-            throw new \moodle_exception('cannotfindpagerecord', 'lesson');
+            throw new moodle_exception('cannotfindpagerecord', 'lesson');
         }
         // chain back up to find the (nearest branch table)
         $btpage = clone($page);
@@ -192,7 +195,7 @@ class lesson_add_page_form_endofbranch extends lesson_add_page_form_base {
         while (($btpage->qtype != LESSON_PAGE_BRANCHTABLE) && ($btpage->prevpageid > 0)) {
             $btpageid = $btpage->prevpageid;
             if (!$btpage = $DB->get_record("lesson_pages", array("id" => $btpageid))) {
-                throw new \moodle_exception('cannotfindpagerecord', 'lesson');
+                throw new moodle_exception('cannotfindpagerecord', 'lesson');
             }
         }
 

@@ -23,7 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core\output\html_writer;
 use core\report_helper;
+use core\url;
+use core\user;
 use \report_progress\local\helper;
 
 require('../../config.php');
@@ -33,9 +38,9 @@ require_once($CFG->libdir . '/completionlib.php');
 $id = required_param('course',PARAM_INT);
 $course = $DB->get_record('course',array('id'=>$id));
 if (!$course) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
-$context = context_course::instance($course->id);
+$context = course::instance($course->id);
 
 // Sort (default lastname, optionally firstname)
 $sort = optional_param('sort','',PARAM_ALPHA);
@@ -57,7 +62,7 @@ $activitysection = optional_param('activitysection', -1, PARAM_INT);
 $userfields = \core_user\fields::for_identity($context);
 $extrafields = $userfields->get_required_fields([\core_user\fields::PURPOSE_IDENTITY]);
 $leftcols = 1 + count($extrafields);
-$url = new moodle_url('/report/progress/index.php', array('course'=>$id));
+$url = new url('/report/progress/index.php', array('course'=>$id));
 $PAGE->navigation->override_active_url($url);
 if ($sort !== '') {
     $url->param('sort', $sort);
@@ -236,7 +241,7 @@ if ($dataformat !== '' && $grandtotal && count($activities) > 0) {
 
             // Describe the completion status.
             if ($overrideby) {
-                $overridebyuser = \core_user::get_user($overrideby, '*', MUST_EXIST);
+                $overridebyuser = user::get_user($overrideby, '*', MUST_EXIST);
                 $describe = get_string('completion-' . $completiontype, 'completion', fullname($overridebyuser));
             } else {
                 $describe = get_string('completion-' . $completiontype, 'completion');
@@ -469,7 +474,7 @@ foreach($progress as $user) {
         $completionicon = 'completion-' . $completiontrackingstring. '-' . $completiontype;
 
         if ($overrideby) {
-            $overridebyuser = \core_user::get_user($overrideby, '*', MUST_EXIST);
+            $overridebyuser = user::get_user($overrideby, '*', MUST_EXIST);
             $describe = get_string('completion-' . $completiontype, 'completion', fullname($overridebyuser));
         } else {
             $describe = get_string('completion-' . $completiontype, 'completion');
@@ -488,7 +493,7 @@ foreach($progress as $user) {
         ) {
             $newstate = ($state == COMPLETION_COMPLETE) ? COMPLETION_INCOMPLETE : COMPLETION_COMPLETE;
             $changecompl = $user->id . '-' . $activity->id . '-' . $newstate;
-            $url = new moodle_url($PAGE->url, ['sesskey' => sesskey()]);
+            $url = new url($PAGE->url, ['sesskey' => sesskey()]);
             $celltext = html_writer::link($url, $celltext, ['class' => 'changecompl', 'data-changecompl' => $changecompl,
                                                                  'data-activityname' => $a->activity,
                                                                  'data-userfullname' => $a->user,

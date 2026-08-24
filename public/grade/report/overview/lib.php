@@ -22,6 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\output\html_writer;
+use core\url;
+use core_table\flexible_table;
+use core_table\output\html_table;
+
 require_once($CFG->dirroot . '/grade/report/lib.php');
 require_once($CFG->libdir.'/tablelib.php');
 
@@ -99,7 +107,7 @@ class grade_report_overview extends grade_report {
 
                 $this->showtotalsifcontainhidden[$course->id] = grade_get_setting($course->id, 'report_overview_showtotalsifcontainhidden', $CFG->grade_report_overview_showtotalsifcontainhidden);
 
-                $coursecontext = context_course::instance($course->id);
+                $coursecontext = course::instance($course->id);
 
                 foreach ($roleids as $roleid) {
                     if (user_has_role_assignment($userid, $roleid, $coursecontext->id)) {
@@ -197,14 +205,14 @@ class grade_report_overview extends grade_report {
                 continue;
             }
 
-            $coursecontext = context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
 
             if (!$course->visible && !has_capability('moodle/course:viewhiddencourses', $coursecontext)) {
                 // The course is hidden and the user isn't allowed to see it.
                 continue;
             }
 
-            if (!has_capability('moodle/user:viewuseractivitiesreport', context_user::instance($this->user->id)) &&
+            if (!has_capability('moodle/user:viewuseractivitiesreport', user::instance($this->user->id)) &&
                     ((!has_capability('moodle/grade:view', $coursecontext) || $this->user->id != $USER->id) &&
                     !has_capability('moodle/grade:viewall', $coursecontext))) {
                 continue;
@@ -287,7 +295,7 @@ class grade_report_overview extends grade_report {
             $viewasuser = $this->course->showgrades && has_any_capability([
                 'moodle/grade:viewall',
                 'moodle/user:viewuseractivitiesreport',
-            ], context_user::instance($this->user->id));
+            ], user::instance($this->user->id));
 
             foreach ($coursesdata as $coursedata) {
 
@@ -302,13 +310,13 @@ class grade_report_overview extends grade_report {
                 if ($activitylink &&
                         (has_capability('gradereport/' . $CFG->grade_profilereport .':view', $coursecontext) || $viewasuser)) {
 
-                    $coursenamelink = html_writer::link(new moodle_url('/course/user.php', [
+                    $coursenamelink = html_writer::link(new url('/course/user.php', [
                         'mode' => 'grade',
                         'id' => $course->id,
                         'user' => $this->user->id,
                     ]), $coursenamelink);
                 } else if (!$activitylink && (has_capability('gradereport/user:view', $coursecontext) || $viewasuser)) {
-                    $coursenamelink = html_writer::link(new moodle_url('/grade/report/user/index.php', [
+                    $coursenamelink = html_writer::link(new url('/grade/report/user/index.php', [
                         'id' => $course->id,
                         'userid' => $this->user->id,
                         'group' => $this->gpr->groupid,
@@ -363,9 +371,9 @@ class grade_report_overview extends grade_report {
         $table->head = array(get_string('coursename', 'grades'));
         $table->data = null;
         foreach ($this->teachercourses as $courseid => $course) {
-            $coursecontext = context_course::instance($course->id);
+            $coursecontext = course::instance($course->id);
             $coursenamelink = format_string($course->fullname, true, ['context' => $coursecontext]);
-            $url = new moodle_url('/grade/report/index.php', array('id' => $courseid));
+            $url = new url('/grade/report/index.php', array('id' => $courseid));
             $table->data[] = array(html_writer::link($url, $coursenamelink));
         }
         echo html_writer::table($table);
@@ -492,11 +500,11 @@ function gradereport_overview_myprofile_navigation(core_user\output\myprofile\tr
         // We want to display these reports under the site context.
         $course = get_fast_modinfo(SITEID)->get_course();
     }
-    $systemcontext = context_system::instance();
-    $usercontext = context_user::instance($user->id);
-    $coursecontext = context_course::instance($course->id);
+    $systemcontext = system::instance();
+    $usercontext = user::instance($user->id);
+    $coursecontext = course::instance($course->id);
     if (grade_report_overview::check_access($systemcontext, $coursecontext, $usercontext, $course, $user->id)) {
-        $url = new moodle_url('/grade/report/overview/index.php', array('userid' => $user->id, 'id' => $course->id));
+        $url = new url('/grade/report/overview/index.php', array('userid' => $user->id, 'id' => $course->id));
         $node = new core_user\output\myprofile\node('reports', 'grades', get_string('gradesoverview', 'gradereport_overview'),
                 null, $url);
         $tree->add_node($node);

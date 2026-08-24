@@ -24,6 +24,9 @@
 
 namespace report_questioninstances\event;
 
+use core\context\system;
+use core\url;
+
 /**
  * Class for question instances events.
  *
@@ -56,9 +59,9 @@ final class events_test extends \advanced_testcase {
         $event = reset($events);
 
         $this->assertInstanceOf('\report_questioninstances\event\report_viewed', $event);
-        $this->assertEquals(\context_system::instance(), $event->get_context());
+        $this->assertEquals(system::instance(), $event->get_context());
         $this->assertEventContextNotUsed($event);
-        $url = new \moodle_url('/report/questioninstances/index.php', array('qtype' => $requestedqtype));
+        $url = new url('/report/questioninstances/index.php', array('qtype' => $requestedqtype));
         $this->assertEquals($url, $event->get_url());
         $event->get_name();
     }

@@ -22,6 +22,9 @@
  */
 namespace core\event;
 
+use core\context\system;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -44,7 +47,7 @@ class blog_entry_deleted extends base {
      * Set basic event properties.
      */
     protected function init() {
-        $this->context = \context_system::instance();
+        $this->context = system::instance();
         $this->data['objecttable'] = 'post';
         $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
@@ -76,7 +79,7 @@ class blog_entry_deleted extends base {
      */
     public function get_blog_entry() {
         if ($this->is_restored()) {
-            throw new \coding_exception('Function get_blog_entry() can not be used on restored events.');
+            throw new coding_exception('Function get_blog_entry() can not be used on restored events.');
         }
         return $this->blogentry;
     }
@@ -100,7 +103,7 @@ class blog_entry_deleted extends base {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
-            throw new \coding_exception('The \'relateduserid\' must be set.');
+            throw new coding_exception('The \'relateduserid\' must be set.');
         }
     }
 

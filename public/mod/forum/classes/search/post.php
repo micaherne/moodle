@@ -24,6 +24,10 @@
 
 namespace mod_forum\search;
 
+use core\context;
+use core\context\module;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');
@@ -59,7 +63,7 @@ class post extends \core_search\base_mod {
      * @param \context|null $context Optional context to restrict scope of returned results
      * @return moodle_recordset|null Recordset (or null if no results)
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
 
         list ($contextjoin, $contextparams) = $this->get_context_restriction_sql(
@@ -88,7 +92,7 @@ class post extends \core_search\base_mod {
 
         try {
             $cm = $this->get_cm('forum', $record->forumid, $record->courseid);
-            $context = \context_module::instance($cm->id);
+            $context = module::instance($cm->id);
         } catch (\dml_missing_record_exception $ex) {
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving ' . $this->areaid . ' ' . $record->id . ' document, not all required data is available: ' .
@@ -171,7 +175,7 @@ class post extends \core_search\base_mod {
         unset($this->postsdata[$postid]);
 
         $cm = $this->get_cm($this->get_module_name(), $post->forum, $document->get('courseid'));
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $contextid = $context->id;
 
         $fileareas = $this->get_search_fileareas();
@@ -232,7 +236,7 @@ class post extends \core_search\base_mod {
     public function get_doc_url(\core_search\document $doc) {
         // The post is already in static cache, we fetch it in self::search_access.
         $post = $this->get_post($doc->get('itemid'));
-        return new \moodle_url('/mod/forum/discuss.php', array('d' => $post->discussion));
+        return new url('/mod/forum/discuss.php', array('d' => $post->discussion));
     }
 
     /**
@@ -242,8 +246,8 @@ class post extends \core_search\base_mod {
      * @return \moodle_url
      */
     public function get_context_url(\core_search\document $doc) {
-        $contextmodule = \context::instance_by_id($doc->get('contextid'));
-        return new \moodle_url('/mod/forum/view.php', array('id' => $contextmodule->instanceid));
+        $contextmodule = context::instance_by_id($doc->get('contextid'));
+        return new url('/mod/forum/view.php', array('id' => $contextmodule->instanceid));
     }
 
     /**

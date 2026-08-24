@@ -16,13 +16,13 @@
 
 namespace mod_glossary\output;
 
-use moodle_url;
-use context_module;
-use renderable;
-use renderer_base;
-use single_button;
-use templatable;
-use url_select;
+use core\url;
+use core\context\module;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\templatable;
+use core\output\url_select;
 
 /**
  * Class standard_action_bar - Display the action bar
@@ -88,7 +88,7 @@ class standard_action_bar implements renderable, templatable {
         $this->offset = $offset;
         $this->pagelimit = $pagelimit;
         $this->fullsearch = $fullsearch;
-        $this->context = context_module::instance($this->cm->id);
+        $this->context = module::instance($this->cm->id);
 
         if (!has_capability('mod/glossary:approve', $this->context) && $this->tab == GLOSSARY_APPROVAL_VIEW) {
             // Non-teachers going to approval view go to defaulttab.
@@ -138,7 +138,7 @@ class standard_action_bar implements renderable, templatable {
             (object) ['name' => 'mode', 'value' => 'search'],
         ];
         $data = [
-            'action' => new moodle_url('/mod/glossary/view.php'),
+            'action' => new url('/mod/glossary/view.php'),
             'hiddenfields' => $hiddenfields,
             'otherfields' => $checkbox,
             'inputname' => 'hook',
@@ -159,7 +159,7 @@ class standard_action_bar implements renderable, templatable {
         if (!has_capability('mod/glossary:write', $this->context)) {
             return null;
         }
-        $btn = new single_button(new moodle_url('/mod/glossary/edit.php', ['cmid' => $this->cm->id]),
+        $btn = new single_button(new url('/mod/glossary/edit.php', ['cmid' => $this->cm->id]),
             get_string('addsingleentry', 'glossary'), 'post', single_button::BUTTON_PRIMARY);
 
         return $btn->export_for_template($output);
@@ -179,13 +179,13 @@ class standard_action_bar implements renderable, templatable {
 
         if (has_capability('mod/glossary:import', $this->context)) {
             $items['button'] = new single_button(
-                new moodle_url('/mod/glossary/import.php', ['id' => $this->cm->id]),
+                new url('/mod/glossary/import.php', ['id' => $this->cm->id]),
                 get_string('importentries', 'glossary')
             );
         }
 
         if (has_capability('mod/glossary:export', $this->context)) {
-            $url = new moodle_url('/mod/glossary/export.php', [
+            $url = new url('/mod/glossary/export.php', [
                 'id' => $this->cm->id,
                 'mode' => $this->mode,
                 'hook' => $this->hook
@@ -204,7 +204,7 @@ class standard_action_bar implements renderable, templatable {
                 'pagelimit' => $this->pagelimit,
                 'fullsearch'  => $this->fullsearch,
             ];
-            $printurl = new moodle_url('/mod/glossary/print.php', $params);
+            $printurl = new url('/mod/glossary/print.php', $params);
             $buttons[get_string('printerfriendly', 'glossary')] = $printurl->out(false);
             $openinnewwindow[] = $printurl->out(false);
         }
@@ -214,7 +214,7 @@ class standard_action_bar implements renderable, templatable {
                 && has_capability('mod/glossary:view', $this->context)) {
             require_once("$CFG->libdir/rsslib.php");
             $string = get_string('rssfeed', 'glossary');
-            $url = new moodle_url(rss_get_url($this->context->id, $USER->id, 'mod_glossary', $this->cm->instance));
+            $url = new url(rss_get_url($this->context->id, $USER->id, 'mod_glossary', $this->cm->instance));
             $buttons[$string] = $url->out(false);
             $openinnewwindow[] = $url->out(false);
         }
@@ -263,7 +263,7 @@ class standard_action_bar implements renderable, templatable {
             ],
         ];
 
-        $baseurl = new moodle_url('/mod/glossary/view.php', ['id' => $this->cm->id]);
+        $baseurl = new url('/mod/glossary/view.php', ['id' => $this->cm->id]);
         $active = null;
         $options = [];
         foreach ($validtabs as $key => $tabinfo) {

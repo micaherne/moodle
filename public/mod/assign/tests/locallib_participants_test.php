@@ -16,6 +16,9 @@
 
 namespace mod_assign;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
 use mod_assign_test_generator;
 
 defined('MOODLE_INTERNAL') || die();
@@ -63,7 +66,7 @@ final class locallib_participants_test extends \advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
         $instance = $generator->create_instance(['course' => $course->id, 'blindmarking' => 1]);
         $cm = get_coursemodule_from_instance('assign', $instance->id);
-        $context = \context_module::instance($cm->id);
+        $context = module::instance($cm->id);
         $assign = new \assign($context, $cm, $course);
 
         // Allocate IDs now.
@@ -131,10 +134,10 @@ final class locallib_participants_test extends \advanced_testcase {
         $this->resetAfterTest(true);
         // Create a role that will prevent users submitting.
         $role = self::getDataGenerator()->create_role();
-        assign_capability('mod/assign:submit', CAP_PROHIBIT, $role, \context_system::instance());
+        assign_capability('mod/assign:submit', CAP_PROHIBIT, $role, system::instance());
         // Create the test data.
         $course = self::getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $assign = $this->create_instance($course);
         self::getDataGenerator()->create_and_enrol($course, 'teacher');
         $student1 = self::getDataGenerator()->create_and_enrol($course, 'student');

@@ -25,6 +25,9 @@
 
 namespace block_rss_client\output;
 
+use core\output\plugin_renderer_base;
+use core\output\templatable;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -35,7 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * @author    Brendan Anderson <brendan_anderson@hcpss.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends \plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Render an RSS Item
@@ -43,7 +46,7 @@ class renderer extends \plugin_renderer_base {
      * @param \templatable $item
      * @return string
      */
-    public function render_item(\templatable $item) {
+    public function render_item(templatable $item) {
         $data = $item->export_for_template($this);
 
         return $this->render_from_template('block_rss_client/item', $data);
@@ -55,7 +58,7 @@ class renderer extends \plugin_renderer_base {
      * @param \templatable $feed
      * @return string
      */
-    public function render_feed(\templatable $feed) {
+    public function render_feed(templatable $feed) {
         $data = $feed->export_for_template($this);
 
         return $this->render_from_template('block_rss_client/feed', $data);
@@ -67,7 +70,7 @@ class renderer extends \plugin_renderer_base {
      * @param \templatable $block
      * @return string
      */
-    public function render_block(\templatable $block) {
+    public function render_block(templatable $block) {
         $data = $block->export_for_template($this);
 
         return $this->render_from_template('block_rss_client/block', $data);
@@ -79,7 +82,7 @@ class renderer extends \plugin_renderer_base {
      * @param \templatable $footer
      * @return string
      */
-    public function render_footer(\templatable $footer) {
+    public function render_footer(templatable $footer) {
         $data = $footer->export_for_template($this);
 
         return $this->render_from_template('block_rss_client/footer', $data);

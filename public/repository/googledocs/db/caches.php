@@ -25,6 +25,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 $definitions = array(
@@ -33,7 +35,7 @@ $definitions = array(
     // The keys used are full path to the folder, the values are the id in google drive.
     // The static acceleration size has been based upon the depths of a single path.
     'folder' => array(
-        'mode' => cache_store::MODE_APPLICATION,
+        'mode' => store::MODE_APPLICATION,
         'simplekeys' => false,
         'simpledata' => true,
         'staticacceleration' => true,

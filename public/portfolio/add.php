@@ -22,10 +22,15 @@
  *            Martin Dougiamas <http://dougiamas.com>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL
  */
+use core\context\system;
+use core\exception\moodle_exception;
+use core\output\single_button;
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 
 if (empty($CFG->enableportfolios)) {
-    throw new \moodle_exception('disabled', 'portfolio');
+    throw new moodle_exception('disabled', 'portfolio');
 }
 
 require_once($CFG->libdir . '/portfoliolib.php');
@@ -47,7 +52,7 @@ $callbackclass = optional_param('callbackclass', null, PARAM_ALPHAEXT); // Callb
 $callerformats = optional_param('callerformats', null, PARAM_TAGLIST); // Comma separated list of formats the specific place exporting content supports.
 
 require_login();  // this is selectively called again with $course later when we know for sure which one we're in.
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 $PAGE->set_url('/portfolio/add.php', array('id' => $dataid, 'sesskey' => sesskey()));
 $PAGE->set_pagelayout('admin');
 $PAGE->set_show_navigation_footer(false);
@@ -95,11 +100,11 @@ if (!empty($dataid)) {
             portfolio_export_pagesetup($PAGE, $exporter->get('caller'));
             $exporter->print_header(get_string('confirmcancel', 'portfolio'));
             echo $OUTPUT->box_start();
-            $yesbutton = new single_button(new moodle_url('/portfolio/add.php', array('id' => $dataid, 'cancel' => 1, 'cancelsure' => 1, 'logreturn' => $logreturn)), get_string('yes'));
+            $yesbutton = new single_button(new url('/portfolio/add.php', array('id' => $dataid, 'cancel' => 1, 'cancelsure' => 1, 'logreturn' => $logreturn)), get_string('yes'));
             if ($logreturn) {
-                $nobutton  = new single_button(new moodle_url('/user/portfoliologs.php'), get_string('no'));
+                $nobutton  = new single_button(new url('/user/portfoliologs.php'), get_string('no'));
             } else {
-                $nobutton  = new single_button(new moodle_url('/portfolio/add.php', array('id' => $dataid)), get_string('no'));
+                $nobutton  = new single_button(new url('/portfolio/add.php', array('id' => $dataid)), get_string('no'));
             }
             echo $OUTPUT->confirm(get_string('confirmcancel', 'portfolio'), $yesbutton, $nobutton);
             echo $OUTPUT->box_end();

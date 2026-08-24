@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -118,7 +121,7 @@ class core_search_generator extends component_generator_base {
         }
 
         if (!isset($options->contextid)) {
-            $info->contextid = \context_course::instance(SITEID)->id;
+            $info->contextid = course::instance(SITEID)->id;
         } else {
             $info->contextid = $options->contextid;
         }
@@ -174,7 +177,7 @@ class core_search_generator extends component_generator_base {
      */
     public function create_file($options = null) {
         // Add the searchable file fixture.
-        $syscontext = \context_system::instance();
+        $syscontext = system::instance();
         $filerecord = array(
             'contextid' => $syscontext->id,
             'component' => 'core',

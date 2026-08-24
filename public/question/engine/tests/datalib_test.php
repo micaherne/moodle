@@ -16,6 +16,8 @@
 
 namespace core_question;
 
+use core\context\module;
+use core\context\system;
 use qubaid_join;
 use qubaid_list;
 use question_bank;
@@ -81,7 +83,7 @@ final class datalib_test extends \qbehaviour_walkthrough_test_base {
 
         // Create the second usage.
         $this->quba = question_engine::make_questions_usage_by_activity('unit_test',
-                \context_system::instance());
+                system::instance());
 
         $q = question_bank::load_question($sa->id);
         $this->start_attempt_at_question($q, 'interactive', 5);
@@ -136,7 +138,7 @@ final class datalib_test extends \qbehaviour_walkthrough_test_base {
         $questiondata2 = $generator->create_question('shortanswer', null, array('category' => $cat->id));
         $questiondata3 = $generator->create_question('shortanswer', null, array('category' => $cat->id));
 
-        $quba = question_engine::make_questions_usage_by_activity('test', \context_system::instance());
+        $quba = question_engine::make_questions_usage_by_activity('test', system::instance());
         $quba->set_preferred_behaviour('deferredfeedback');
         $question1 = question_bank::load_question($questiondata1->id);
         $question3 = question_bank::load_question($questiondata3->id);
@@ -168,7 +170,7 @@ final class datalib_test extends \qbehaviour_walkthrough_test_base {
         $cat = $generator->create_question_category();
         $questiondata1 = $generator->create_question('shortanswer', null, array('category' => $cat->id));
 
-        $quba = question_engine::make_questions_usage_by_activity('test', \context_system::instance());
+        $quba = question_engine::make_questions_usage_by_activity('test', system::instance());
         $quba->set_preferred_behaviour('deferredfeedback');
         $quba->add_question(question_bank::load_question($questiondata1->id));
         $quba->start_all_questions();
@@ -201,7 +203,7 @@ final class datalib_test extends \qbehaviour_walkthrough_test_base {
         $cat = $generator->create_question_category();
         $questiondata1 = $generator->create_question('shortanswer', null, array('category' => $cat->id));
 
-        $initquba = question_engine::make_questions_usage_by_activity('test', \context_system::instance());
+        $initquba = question_engine::make_questions_usage_by_activity('test', system::instance());
         $initquba->set_preferred_behaviour('deferredfeedback');
         $slot = $initquba->add_question(question_bank::load_question($questiondata1->id));
         $initquba->start_all_questions();
@@ -238,7 +240,7 @@ final class datalib_test extends \qbehaviour_walkthrough_test_base {
         $this->resetAfterTest();
 
         // Create a new usage.
-        $quba = question_engine::make_questions_usage_by_activity('test', \context_system::instance());
+        $quba = question_engine::make_questions_usage_by_activity('test', system::instance());
         $quba->set_preferred_behaviour('deferredfeedback');
 
         // Save it.
@@ -263,7 +265,7 @@ final class datalib_test extends \qbehaviour_walkthrough_test_base {
         $questiondata = $generator->create_question('shortanswer', null, ['category' => $cat->id]);
 
         // Create a usage.
-        $quba = question_engine::make_questions_usage_by_activity('test', \context_system::instance());
+        $quba = question_engine::make_questions_usage_by_activity('test', system::instance());
         $quba->set_preferred_behaviour('deferredfeedback');
         $slot = $quba->add_question(question_bank::load_question($questiondata->id));
         $quba->start_all_questions();
@@ -292,11 +294,11 @@ final class datalib_test extends \qbehaviour_walkthrough_test_base {
         $course = $this->getDataGenerator()->create_course();
         $qbank = $this->getDataGenerator()->create_module('qbank', ['course' => $course->id]);
         $category = $generator->create_question_category(
-            ['contextid' => \context_module::instance($qbank->cmid)->id]
+            ['contextid' => module::instance($qbank->cmid)->id]
         );
         // Create and add the initial question (true/false) to a new usage.
         $truefalse = $generator->create_question('truefalse', null, ['category' => $category->id]);
-        $usage = \question_engine::make_questions_usage_by_activity('test', \context_module::instance($qbank->cmid));
+        $usage = \question_engine::make_questions_usage_by_activity('test', module::instance($qbank->cmid));
         $usage->set_preferred_behaviour('deferredfeedback');
         $slot = $usage->add_question(question_bank::load_question($truefalse->id));
         $usage->start_all_questions();

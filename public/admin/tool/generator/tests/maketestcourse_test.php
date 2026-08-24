@@ -16,6 +16,9 @@
 
 namespace tool_generator;
 
+use core\context\course;
+use core\context\module;
+use core\user;
 use tool_generator_course_backend;
 
 /**
@@ -54,7 +57,7 @@ final class maketestcourse_test extends \advanced_testcase {
 
         // Get course details.
         $course = get_course($courseid);
-        $context = \context_course::instance($courseid);
+        $context = course::instance($courseid);
         $modinfo = get_fast_modinfo($course);
 
         // Check course names.
@@ -95,7 +98,7 @@ final class maketestcourse_test extends \advanced_testcase {
 
         // Check it contains 2 files (the default txt and a dat file).
         $fs = get_file_storage();
-        $resourcecontext = \context_module::instance($resource->id);
+        $resourcecontext = module::instance($resource->id);
         $files = $fs->get_area_files($resourcecontext->id, 'mod_resource', 'content', false, 'filename', false);
         $files = array_values($files);
         $this->assertEquals(2, count($files));
@@ -113,7 +116,7 @@ final class maketestcourse_test extends \advanced_testcase {
         $this->assertTrue($ok);
 
         // Check it contains 2 files.
-        $resourcecontext = \context_module::instance($resource->id);
+        $resourcecontext = module::instance($resource->id);
         $files = $fs->get_area_files($resourcecontext->id, 'mod_resource', 'content', false, 'filename', false);
         $files = array_values($files);
         $this->assertEquals(2, count($files));
@@ -162,7 +165,7 @@ final class maketestcourse_test extends \advanced_testcase {
         $lastusernumber = 0;
         $discussionstarters = array();
         foreach ($discussions as $discussion) {
-            $usernumber = \core_user::get_user($discussion->userid, 'id, idnumber')->idnumber;
+            $usernumber = user::get_user($discussion->userid, 'id, idnumber')->idnumber;
 
             // Checks that the users are odd numbers.
             $this->assertEquals(1, $usernumber % 2);
@@ -197,7 +200,7 @@ final class maketestcourse_test extends \advanced_testcase {
         $fs = get_file_storage();
         $resources = $modinfo->get_instances_of('resource');
         foreach ($resources as $resource) {
-            $resourcecontext = \context_module::instance($resource->id);
+            $resourcecontext = module::instance($resource->id);
             $files = $fs->get_area_files($resourcecontext->id, 'mod_resource', 'content', false, 'filename', false);
             foreach ($files as $file) {
                 if ($file->get_mimetype() == 'application/octet-stream') {
@@ -217,7 +220,7 @@ final class maketestcourse_test extends \advanced_testcase {
         $fs = get_file_storage();
         $resources = $modinfo->get_instances_of('resource');
         foreach ($resources as $resource) {
-            $resourcecontext = \context_module::instance($resource->id);
+            $resourcecontext = module::instance($resource->id);
             $files = $fs->get_area_files($resourcecontext->id, 'mod_resource', 'content', false, 'filename', false);
             foreach ($files as $file) {
                 if ($file->get_mimetype() == 'application/octet-stream') {

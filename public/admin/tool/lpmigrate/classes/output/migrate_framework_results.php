@@ -24,12 +24,14 @@
 namespace tool_lpmigrate\output;
 defined('MOODLE_INTERNAL') || die();
 
-use context;
-use context_course;
-use context_module;
-use moodle_url;
-use renderable;
-use templatable;
+use core\context;
+use core\context\course;
+use core\context\module;
+use core\exception\coding_exception;
+use core\output\renderer_base;
+use core\url as moodle_url;
+use core\output\renderable;
+use core\output\templatable;
 use stdClass;
 use core_competency\competency;
 use core_competency\competency_framework;
@@ -73,7 +75,7 @@ class migrate_framework_results implements renderable, templatable {
     public function __construct(context $pagecontext, framework_processor $processor, competency_framework $frameworkfrom,
             competency_framework $frameworkto, array $unmappedfrom = array(), array $unmappedto = array()) {
         if (!$processor->has_run()) {
-            throw new \coding_exception('The processor has not run.');
+            throw new coding_exception('The processor has not run.');
         }
         $this->pagecontext = $pagecontext;
         $this->processor = $processor;
@@ -89,7 +91,7 @@ class migrate_framework_results implements renderable, templatable {
      * @param renderer_base $output
      * @return stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         global $DB;
         $data = new stdClass();
 
@@ -138,8 +140,8 @@ class migrate_framework_results implements renderable, templatable {
         $data->errorcount = count($errors);
 
         foreach ($warnings as $warning) {
-            $cmcontext = !empty($warning['cmid']) ? context_module::instance($warning['cmid']) : null;
-            $coursecontext = context_course::instance($warning['courseid']);
+            $cmcontext = !empty($warning['cmid']) ? module::instance($warning['cmid']) : null;
+            $coursecontext = course::instance($warning['courseid']);
             $warning['cm'] = $cmcontext ? $cmcontext->get_context_name() : null;
             $warning['course'] = $coursecontext->get_context_name();
             $warning['competency'] = $DB->get_field(competency::TABLE, 'idnumber', array('id' => $warning['competencyid']));
@@ -147,8 +149,8 @@ class migrate_framework_results implements renderable, templatable {
         }
 
         foreach ($errors as $error) {
-            $cmcontext = !empty($error['cmid']) ? context_module::instance($error['cmid']) : null;
-            $coursecontext = context_course::instance($error['courseid']);
+            $cmcontext = !empty($error['cmid']) ? module::instance($error['cmid']) : null;
+            $coursecontext = course::instance($error['courseid']);
             $error['cm'] = $cmcontext ? $cmcontext->get_context_name() : null;
             $error['course'] = $coursecontext->get_context_name();
             $error['competency'] = $DB->get_field(competency::TABLE, 'idnumber', array('id' => $error['competencyid']));

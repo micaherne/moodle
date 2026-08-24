@@ -25,6 +25,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\output\renderer_base;
+use core\output\templatable;
+
 require_once("HTML/QuickForm/group.php");
 require_once('templatable_form_element.php');
 

@@ -23,6 +23,8 @@
  */
 
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 

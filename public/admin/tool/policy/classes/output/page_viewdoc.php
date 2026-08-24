@@ -25,16 +25,16 @@
 
 namespace tool_policy\output;
 
-use moodle_exception;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
-use context_system;
-use moodle_url;
-use renderable;
-use renderer_base;
-use single_button;
-use templatable;
+use core\context\system;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\single_button;
+use core\output\templatable;
 use tool_policy\api;
 use tool_policy\policy_version;
 
@@ -108,7 +108,7 @@ class page_viewdoc implements renderable, templatable {
         }
 
         if (empty($this->policy)) {
-            throw new \moodle_exception('errorpolicyversionnotfound', 'tool_policy');
+            throw new moodle_exception('errorpolicyversionnotfound', 'tool_policy');
         }
     }
 
@@ -118,7 +118,7 @@ class page_viewdoc implements renderable, templatable {
     protected function prepare_global_page_access() {
         global $CFG, $PAGE, $SITE, $USER;
 
-        $myurl = new moodle_url('/admin/tool/policy/view.php', [
+        $myurl = new url('/admin/tool/policy/view.php', [
             'policyid' => $this->policy->policyid,
             'versionid' => $this->policy->id,
             'returnurl' => $this->returnurl,
@@ -131,9 +131,9 @@ class page_viewdoc implements renderable, templatable {
         if ($this->manage) {
             require_once($CFG->libdir.'/adminlib.php');
             admin_externalpage_setup('tool_policy_managedocs', '', null, $myurl);
-            require_capability('tool/policy:managedocs', context_system::instance());
+            require_capability('tool/policy:managedocs', system::instance());
             $PAGE->navbar->add(format_string($this->policy->name),
-                new moodle_url('/admin/tool/policy/managedocs.php', ['id' => $this->policy->policyid]));
+                new url('/admin/tool/policy/managedocs.php', ['id' => $this->policy->policyid]));
         } else {
             if ($this->policy->status != policy_version::STATUS_ACTIVE) {
                 require_login();
@@ -144,7 +144,7 @@ class page_viewdoc implements renderable, templatable {
             $PAGE->set_url($myurl);
             $PAGE->set_heading($SITE->fullname);
             $PAGE->set_title(get_string('policiesagreements', 'tool_policy'));
-            $PAGE->navbar->add(get_string('policiesagreements', 'tool_policy'), new moodle_url('/admin/tool/policy/index.php'));
+            $PAGE->navbar->add(get_string('policiesagreements', 'tool_policy'), new url('/admin/tool/policy/index.php'));
             $PAGE->navbar->add(format_string($this->policy->name));
         }
 
@@ -163,27 +163,27 @@ class page_viewdoc implements renderable, templatable {
         global $USER;
 
         $data = (object) [
-            'pluginbaseurl' => (new moodle_url('/admin/tool/policy'))->out(false),
-            'returnurl' => $this->returnurl ? (new moodle_url($this->returnurl))->out(false) : null,
+            'pluginbaseurl' => (new url('/admin/tool/policy'))->out(false),
+            'returnurl' => $this->returnurl ? (new url($this->returnurl))->out(false) : null,
             'numpolicy' => $this->numpolicy ? : null,
             'totalpolicies' => $this->totalpolicies ? : null,
         ];
         if ($this->manage && $this->policy->status != policy_version::STATUS_ARCHIVED) {
             $paramsurl = ['policyid' => $this->policy->policyid, 'versionid' => $this->policy->id];
-            $data->editurl = (new moodle_url('/admin/tool/policy/editpolicydoc.php', $paramsurl))->out(false);
+            $data->editurl = (new url('/admin/tool/policy/editpolicydoc.php', $paramsurl))->out(false);
         }
 
         if ($this->policy->agreementstyle == policy_version::AGREEMENTSTYLE_OWNPAGE) {
             if (!api::is_user_version_accepted($USER->id, $this->policy->id)) {
                 unset($data->returnurl);
-                $data->accepturl = (new moodle_url('/admin/tool/policy/index.php', [
+                $data->accepturl = (new url('/admin/tool/policy/index.php', [
                     'listdoc[]' => $this->policy->id,
                     'status'.$this->policy->id => 1,
                     'submit' => 'accept',
                     'sesskey' => sesskey(),
                 ]))->out(false);
                 if ($this->policy->optional == policy_version::AGREEMENT_OPTIONAL) {
-                    $data->declineurl = (new moodle_url('/admin/tool/policy/index.php', [
+                    $data->declineurl = (new url('/admin/tool/policy/index.php', [
                         'listdoc[]' => $this->policy->id,
                         'status'.$this->policy->id => 0,
                         'submit' => 'decline',

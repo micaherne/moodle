@@ -23,10 +23,10 @@
  */
 namespace report_competency\output;
 
-use renderable;
-use renderer_base;
-use templatable;
-use context_course;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\context\course;
 use core_user\external\user_summary_exporter;
 use core_course\external\course_module_summary_exporter;
 use stdClass;
@@ -76,7 +76,7 @@ class user_course_navigation implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
         global $CFG, $DB, $SESSION, $PAGE;
 
-        $context = context_course::instance($this->courseid);
+        $context = course::instance($this->courseid);
 
         $data = new stdClass();
         $data->userid = $this->userid;

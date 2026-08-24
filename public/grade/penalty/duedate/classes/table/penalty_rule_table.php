@@ -16,8 +16,8 @@
 
 namespace gradepenalty_duedate\table;
 
-use context;
-use context_system;
+use core\context;
+use core\context\system;
 use core_table\sql_table;
 
 /**
@@ -73,12 +73,12 @@ class penalty_rule_table extends sql_table {
             // Course context.
             $contextids[] = $this->context->get_parent_context()->id;
             // System context.
-            $contextids[] = context_system::instance()->id;
+            $contextids[] = system::instance()->id;
         } else if ($contextlevel == CONTEXT_COURSE) {
             // Course context.
             $contextids[] = $this->context->id;
             // System context.
-            $contextids[] = context_system::instance()->id;
+            $contextids[] = system::instance()->id;
         } else if ($contextlevel == CONTEXT_SYSTEM) {
             // System context.
             $contextids[] = $this->context->id;

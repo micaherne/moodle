@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\exception\moodle_exception;
+
 require('../config.php');
 require_once($CFG->libdir.'/authlib.php');
 
@@ -29,7 +32,7 @@ $userid = optional_param('u', 0, PARAM_INT);
 $secret = optional_param('s', '', PARAM_RAW);
 
 $PAGE->set_url('/login/unlock_account.php');
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(system::instance());
 
 // Override wanted URL, we do not want to end up here again after login!
 $SESSION->wantsurl = "$CFG->wwwroot/";
@@ -37,7 +40,7 @@ $SESSION->wantsurl = "$CFG->wwwroot/";
 // Do not disclose details about existence or status of user accounts here.
 
 if (!$user = $DB->get_record('user', array('id'=>$userid, 'deleted'=>0, 'suspended'=>0))) {
-    throw new \moodle_exception('lockouterrorunlock', 'admin', get_login_url());
+    throw new moodle_exception('lockouterrorunlock', 'admin', get_login_url());
 }
 
 $usersecret = get_user_preferences('login_lockout_secret', false, $user);
@@ -51,4 +54,4 @@ if ($secret === $usersecret) {
     }
 }
 
-throw new \moodle_exception('lockouterrorunlock', 'admin', get_login_url());
+throw new moodle_exception('lockouterrorunlock', 'admin', get_login_url());

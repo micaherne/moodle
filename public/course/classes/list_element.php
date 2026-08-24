@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context_helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -160,7 +163,7 @@ class core_course_list_element implements IteratorAggregate {
         if ($this->coursecontacts === null) {
             $this->coursecontacts = array();
 
-            $context = context_course::instance($this->id);
+            $context = course::instance($this->id);
 
             $canviewfullnames = has_capability('moodle/site:viewfullnames', $context);
 
@@ -233,7 +236,7 @@ class core_course_list_element implements IteratorAggregate {
             return false;
         }
         $fs = get_file_storage();
-        $context = context_course::instance($this->id);
+        $context = course::instance($this->id);
         return !$fs->is_area_empty($context->id, 'course', 'overviewfiles');
     }
 
@@ -250,7 +253,7 @@ class core_course_list_element implements IteratorAggregate {
         require_once($CFG->libdir. '/filestorage/file_storage.php');
         require_once($CFG->dirroot. '/course/lib.php');
         $fs = get_file_storage();
-        $context = context_course::instance($this->id);
+        $context = course::instance($this->id);
         $files = $fs->get_area_files($context->id, 'course', 'overviewfiles', false, 'filename', false);
         if (count($files)) {
             $overviewfilesoptions = course_overviewfiles_options($this->id);
@@ -424,7 +427,7 @@ class core_course_list_element implements IteratorAggregate {
      * @return context_course
      */
     public function get_context() {
-        return context_course::instance($this->__get('id'));
+        return course::instance($this->__get('id'));
     }
 
     /**

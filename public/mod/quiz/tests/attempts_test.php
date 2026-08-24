@@ -16,6 +16,8 @@
 
 namespace mod_quiz;
 
+use core\context\module;
+use core\exception\moodle_exception;
 use core_question_generator;
 use mod_quiz\task\update_overdue_attempts;
 use mod_quiz_generator;
@@ -460,7 +462,7 @@ final class attempts_test extends \advanced_testcase {
      */
     protected function usage_id(\stdClass $quiz): int {
         $quba = question_engine::make_questions_usage_by_activity('mod_quiz',
-                \context_module::instance($quiz->cmid));
+                module::instance($quiz->cmid));
         $quba->set_preferred_behaviour('deferredfeedback');
         question_engine::save_questions_usage_by_activity($quba);
         return $quba->get_id();
@@ -575,19 +577,19 @@ final class attempts_test extends \advanced_testcase {
         try {
             $result = quiz_create_attempt_handling_errors($attempt->id, 9999);
             $this->fail('Exception expected due to invalid course module id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidcoursemodule', $e->errorcode);
         }
         try {
             quiz_create_attempt_handling_errors(9999, $result->get_cmid());
             $this->fail('Exception expected due to quiz content change.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('attempterrorcontentchange', $e->errorcode);
         }
         try {
             quiz_create_attempt_handling_errors(9999);
             $this->fail('Exception expected due to invalid quiz attempt id.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('attempterrorinvalid', $e->errorcode);
         }
         // Set up as normal user without permission to view preview.
@@ -595,13 +597,13 @@ final class attempts_test extends \advanced_testcase {
         try {
             quiz_create_attempt_handling_errors(9999, $result->get_cmid());
             $this->fail('Exception expected due to quiz content change for user without permission.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('attempterrorcontentchangeforuser', $e->errorcode);
         }
         try {
             quiz_create_attempt_handling_errors($attempt->id, 9999);
             $this->fail('Exception expected due to invalid course module id for user without permission.');
-        } catch (\moodle_exception $e) {
+        } catch (moodle_exception $e) {
             $this->assertEquals('invalidcoursemodule', $e->errorcode);
         }
     }

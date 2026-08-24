@@ -27,6 +27,11 @@
 
 namespace core_availability;
 
+use core\exception\coding_exception;
+use core\plugin_manager;
+use core_course\cm_info;
+use core_course\section_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -50,8 +55,8 @@ abstract class frontend {
      * @param \cm_info $cm Course-module currently being edited (null if none)
      * @param \section_info $section Section currently being edited (null if none)
      */
-    protected function allow_add($course, ?\cm_info $cm = null,
-            ?\section_info $section = null) {
+    protected function allow_add($course, ?cm_info $cm = null,
+            ?section_info $section = null) {
         return true;
     }
 
@@ -78,8 +83,8 @@ abstract class frontend {
      * @param \section_info $section Section currently being edited (null if none)
      * @return array Array of parameters for the JavaScript function
      */
-    protected function get_javascript_init_params($course, ?\cm_info $cm = null,
-            ?\section_info $section = null) {
+    protected function get_javascript_init_params($course, ?cm_info $cm = null,
+            ?section_info $section = null) {
         return array();
     }
 
@@ -99,8 +104,8 @@ abstract class frontend {
      * @param \cm_info $cm Course-module currently being edited (null if none)
      * @param \section_info $section Section currently being edited (null if none)
      */
-    public static function include_all_javascript($course, ?\cm_info $cm = null,
-            ?\section_info $section = null) {
+    public static function include_all_javascript($course, ?cm_info $cm = null,
+            ?section_info $section = null) {
         global $PAGE;
 
         // Prepare array of required YUI modules. It is bad for performance to
@@ -111,7 +116,7 @@ abstract class frontend {
                 'panel', 'moodle-core-notification-dialogue', 'json');
 
         // Work out JS to include for all components.
-        $pluginmanager = \core_plugin_manager::instance();
+        $pluginmanager = plugin_manager::instance();
         $enabled = $pluginmanager->get_enabled_plugins('availability');
         $componentparams = new \stdClass();
         foreach ($enabled as $plugin => $info) {
@@ -180,7 +185,7 @@ abstract class frontend {
         $decoded = json_decode($data['availabilityconditionsjson']);
         if (!$decoded) {
             // This shouldn't be possible.
-            throw new \coding_exception('Invalid JSON from availabilityconditionsjson field');
+            throw new coding_exception('Invalid JSON from availabilityconditionsjson field');
         }
         if (!empty($decoded->errors)) {
             $error = '';

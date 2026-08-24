@@ -18,10 +18,10 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\event;
 
-use coding_exception;
+use core\exception\coding_exception;
 use core\event\base;
 use core_reportbuilder\local\models\report;
-use moodle_url;
+use core\url;
 
 /**
  * Report builder custom report viewed event class.
@@ -103,7 +103,7 @@ class report_viewed extends base {
      *
      * @return moodle_url
      */
-    public function get_url(): moodle_url {
-        return new moodle_url('/reportbuilder/view.php', ['id' => $this->objectid]);
+    public function get_url(): url {
+        return new url('/reportbuilder/view.php', ['id' => $this->objectid]);
     }
 }

@@ -24,7 +24,7 @@ use core_courseformat\output\local\overview\overviewdialog;
 use lesson;
 use core_calendar\output\humandate;
 use core_courseformat\local\overview\overviewitem;
-use cm_info;
+use core_course\cm_info;
 
 /**
  * Class overview

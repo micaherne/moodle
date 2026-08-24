@@ -16,8 +16,8 @@
 
 namespace core_badges;
 
-use context_course;
-use context_system;
+use core\context\course;
+use core\context\system;
 use core_badges\award_selector_base;
 use core_badges\tests\badges_testcase;
 use ReflectionException;
@@ -103,9 +103,9 @@ final class award_selector_base_test extends badges_testcase {
 
         // Create appropriate context.
         if ($contexttype === 'system') {
-            $context = context_system::instance();
+            $context = system::instance();
         } else {
-            $context = context_course::instance($courseid);
+            $context = course::instance($courseid);
         }
 
         $options = [
@@ -122,7 +122,7 @@ final class award_selector_base_test extends badges_testcase {
         // Verify context handling.
         if ($contexttype === 'system') {
             // System context should be converted to frontpage course context.
-            $this->assertInstanceOf(context_course::class, $this->get_protected_property($selector, 'context'));
+            $this->assertInstanceOf(course::class, $this->get_protected_property($selector, 'context'));
             $this->assertEquals(SITEID, $this->get_protected_property($selector, 'context')->instanceid);
         } else {
             // Course context should be preserved.
@@ -153,7 +153,7 @@ final class award_selector_base_test extends badges_testcase {
             'courseid' => $course->id,
         ]);
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $options = [
             'context' => $coursecontext,
             'badgeid' => $badge->id,
@@ -181,7 +181,7 @@ final class award_selector_base_test extends badges_testcase {
             'courseid' => $course->id,
         ]);
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $options = [
             'context' => $coursecontext,
             'badgeid' => $badge->id,
@@ -225,7 +225,7 @@ final class award_selector_base_test extends badges_testcase {
             'courseid' => $course->id,
         ]);
 
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $options = [
             'context' => $coursecontext,
             'badgeid' => $badge->id,

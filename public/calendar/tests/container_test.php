@@ -16,6 +16,7 @@
 
 namespace core_calendar;
 
+use core\exception\coding_exception;
 use core_calendar\local\event\entities\action_event;
 use core_calendar\local\event\entities\event;
 use core_calendar\local\event\entities\event_interface;
@@ -470,7 +471,7 @@ final class container_test extends \advanced_testcase {
         foreach (\core_component::get_plugin_list('mod') as $modname => $unused) {
             try {
                 $generator = $this->getDataGenerator()->get_plugin_generator('mod_'.$modname);
-            } catch (\coding_exception $e) {
+            } catch (coding_exception $e) {
                 // Module generator is not implemented.
                 continue;
             }

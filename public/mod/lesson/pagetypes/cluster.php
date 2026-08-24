@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
+use core\exception\moodle_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
  /** Start of Cluster page */
@@ -71,7 +74,7 @@ class lesson_page_type_cluster extends lesson_page {
     }
     public function add_page_link($previd) {
         global $PAGE, $CFG;
-        $addurl = new moodle_url('/mod/lesson/editpage.php', array('id'=>$PAGE->cm->id, 'pageid'=>$previd, 'sesskey'=>sesskey(), 'qtype'=>LESSON_PAGE_CLUSTER));
+        $addurl = new url('/mod/lesson/editpage.php', array('id'=>$PAGE->cm->id, 'pageid'=>$previd, 'sesskey'=>sesskey(), 'qtype'=>LESSON_PAGE_CLUSTER));
         return array('addurl'=>$addurl, 'type'=>LESSON_PAGE_CLUSTER, 'name'=>get_string('addcluster', 'lesson'));
     }
     public function valid_page_and_view(&$validpages, &$pageviews) {
@@ -156,7 +159,7 @@ class lesson_add_page_form_cluster extends lesson_add_page_form_base {
         if ($pageid == 0) {
             if ($lesson->has_pages()) {
                 if (!$page = $DB->get_record("lesson_pages", array("prevpageid" => 0, "lessonid" => $lesson->id))) {
-                    throw new \moodle_exception('cannotfindpagerecord', 'lesson');
+                    throw new moodle_exception('cannotfindpagerecord', 'lesson');
                 }
             } else {
                 // This is the ONLY page
@@ -165,7 +168,7 @@ class lesson_add_page_form_cluster extends lesson_add_page_form_base {
             }
         } else {
             if (!$page = $DB->get_record("lesson_pages", array("id" => $pageid))) {
-                throw new \moodle_exception('cannotfindpagerecord', 'lesson');
+                throw new moodle_exception('cannotfindpagerecord', 'lesson');
             }
         }
         $newpage = new stdClass;

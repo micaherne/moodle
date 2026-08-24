@@ -24,6 +24,12 @@
 
 namespace core_user\search;
 
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+use core\user as core_user;
+
 require_once($CFG->dirroot . '/user/lib.php');
 
 defined('MOODLE_INTERNAL') || die();
@@ -44,7 +50,7 @@ class user extends \core_search\base {
      * @param \context|null $context Optional context to restrict scope of returned results
      * @return \moodle_recordset|null Recordset (or null if no results)
      */
-    public function get_document_recordset($modifiedfrom = 0, ?\context $context = null) {
+    public function get_document_recordset($modifiedfrom = 0, ?context $context = null) {
         global $DB;
 
         // Prepare query conditions.
@@ -53,7 +59,7 @@ class user extends \core_search\base {
 
         // Handle context types.
         if (!$context) {
-            $context = \context_system::instance();
+            $context = system::instance();
         }
         switch ($context->contextlevel) {
             case CONTEXT_MODULE:
@@ -73,7 +79,7 @@ class user extends \core_search\base {
                 break;
 
             default:
-                throw new \coding_exception('Unexpected contextlevel: ' . $context->contextlevel);
+                throw new coding_exception('Unexpected contextlevel: ' . $context->contextlevel);
         }
 
         return $DB->get_recordset_select('user', $where, $params);
@@ -88,7 +94,7 @@ class user extends \core_search\base {
      */
     public function get_document($record, $options = array()) {
 
-        $context = \context_system::instance();
+        $context = system::instance();
 
         // Prepare associative array with data from DB.
         $doc = \core_search\document_factory::instance($record->id, $this->componentname, $this->areaname);
@@ -124,7 +130,7 @@ class user extends \core_search\base {
      */
     public function get_document_display_title(\core_search\document $doc) {
 
-        $user = \core_user::get_user($doc->get('itemid'));
+        $user = core_user::get_user($doc->get('itemid'));
         return fullname($user);
     }
 
@@ -166,7 +172,7 @@ class user extends \core_search\base {
      * @return \moodle_url
      */
     public function get_context_url(\core_search\document $doc) {
-        return new \moodle_url('/user/profile.php', array('id' => $doc->get('itemid')));
+        return new url('/user/profile.php', array('id' => $doc->get('itemid')));
     }
 
     /**

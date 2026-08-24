@@ -22,6 +22,8 @@
  * @package core_user
  */
 
+use core\url;
+
 require_once('../config.php');
 require_once($CFG->dirroot.'/calendar/lib.php');
 require_once($CFG->dirroot.'/user/editlib.php');
@@ -53,7 +55,7 @@ $user->persistflt = get_user_preferences('calendar_persistflt', 0, $user);
 
 $calendarform->set_data($user);
 
-$redirect = new moodle_url("/user/preferences.php", array('userid' => $user->id));
+$redirect = new url("/user/preferences.php", array('userid' => $user->id));
 if ($calendarform->is_cancelled()) {
     redirect($redirect);
 } else if ($calendarform->is_submitted() && $calendarform->is_validated() && confirm_sesskey()) {

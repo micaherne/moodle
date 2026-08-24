@@ -16,6 +16,7 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
 use core\url;
 
 /**
@@ -71,7 +72,7 @@ class course_overview_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
         if ($this->contextlevel != CONTEXT_COURSE) {
-            throw new \coding_exception('Context level must be CONTEXT_COURSE.');
+            throw new coding_exception('Context level must be CONTEXT_COURSE.');
         }
     }
 }

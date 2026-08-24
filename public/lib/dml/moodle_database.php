@@ -22,6 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\coding_exception;
+use core\test\testing_util;
+use core_cache\cache;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__.'/database_column_info.php');
@@ -2766,7 +2770,7 @@ abstract class moodle_database {
     public function rollback_delegated_transaction(moodle_transaction $transaction, $e) {
         if (!($e instanceof Exception) && !($e instanceof Throwable)) {
             // PHP7 - we catch Throwables in phpunit but can't use that as the type hint in PHP5.
-            $e = new \coding_exception("Must be given an Exception or Throwable object!");
+            $e = new coding_exception("Must be given an Exception or Throwable object!");
         }
         if ($transaction->is_disposed()) {
             throw new dml_transaction_exception('Transactions already disposed', $transaction);

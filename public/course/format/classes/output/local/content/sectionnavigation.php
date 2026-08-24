@@ -24,11 +24,12 @@
 
 namespace core_courseformat\output\local\content;
 
-use context_course;
+use core\context\course;
 use core\output\named_templatable;
+use core\output\renderer_base;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use renderable;
+use core\output\renderable;
 use stdClass;
 
 /**
@@ -68,7 +69,7 @@ class sectionnavigation implements named_templatable, renderable {
      * @param \renderer_base $output typically, the renderer that's calling this function
      * @return stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
         global $USER;
 
         if ($this->data !== null) {
@@ -77,7 +78,7 @@ class sectionnavigation implements named_templatable, renderable {
 
         $format = $this->format;
         $course = $format->get_course();
-        $context = context_course::instance($course->id);
+        $context = course::instance($course->id);
 
         $modinfo = $this->format->get_modinfo();
         $sections = $modinfo->get_section_info_all();

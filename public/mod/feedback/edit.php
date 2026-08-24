@@ -22,13 +22,17 @@
  * @package mod_feedback
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../config.php');
 require_once('lib.php');
 
 $id = required_param('id', PARAM_INT);
 
 if (($formdata = data_submitted()) AND !confirm_sesskey()) {
-    throw new \moodle_exception('invalidsesskey');
+    throw new moodle_exception('invalidsesskey');
 }
 
 $switchitemrequired = optional_param('switchitemrequired', false, PARAM_INT);
@@ -36,12 +40,12 @@ $deleteitem = optional_param('deleteitem', false, PARAM_INT);
 
 list($course, $cm) = get_course_and_cm_from_cmid($id, 'feedback');
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_login($course, false, $cm);
 require_capability('mod/feedback:edititems', $context);
 $feedback = $PAGE->activityrecord;
 $feedbackstructure = new mod_feedback_structure($feedback, $cm);
-$url = new moodle_url('/mod/feedback/edit.php', ['id' => $cm->id]);
+$url = new url('/mod/feedback/edit.php', ['id' => $cm->id]);
 
 if ($switchitemrequired) {
     require_sesskey();

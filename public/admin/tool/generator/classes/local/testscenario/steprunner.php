@@ -18,6 +18,7 @@ namespace tool_generator\local\testscenario;
 
 use behat_base;
 use Behat\Gherkin\Node\StepNode;
+use core\exception\moodle_exception;
 
 /**
  * Class to validate and process a scenario step.
@@ -215,7 +216,7 @@ class steprunner {
                 [$this->generator, $this->method],
                 $this->params
             );
-        } catch (\moodle_exception $exception) {
+        } catch (moodle_exception $exception) {
             $this->error = $exception->getMessage();
             $this->isvalid = false;
             return false;

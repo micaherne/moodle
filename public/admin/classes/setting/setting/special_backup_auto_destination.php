@@ -16,6 +16,8 @@
 
 namespace core_admin\setting\setting;
 
+use core\lang_string;
+
 /**
  * Special setting for backup auto destination.
  *
@@ -28,7 +30,7 @@ class special_backup_auto_destination extends \core_admin\setting\setting\config
      * Calls parent::__construct with specific arguments.
      */
     public function __construct() {
-        parent::__construct('backup/backup_auto_destination', new \lang_string('saveto'), new \lang_string('backupsavetohelp'), '');
+        parent::__construct('backup/backup_auto_destination', new lang_string('saveto'), new lang_string('backupsavetohelp'), '');
     }
 
     /**

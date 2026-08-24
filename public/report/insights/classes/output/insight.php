@@ -24,6 +24,13 @@
 
 namespace report_insights\output;
 
+use core\context;
+use core\exception\coding_exception;
+use core\output\help_icon;
+use core\output\pix_icon;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
 use core_analytics\prediction;
 
 defined('MOODLE_INTERNAL') || die();
@@ -35,7 +42,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2017 David Monllao {@link http://www.davidmonllao.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class insight implements \renderable, \templatable {
+class insight implements renderable, templatable {
 
     /**
      * @var \core_analytics\model
@@ -67,7 +74,7 @@ class insight implements \renderable, \templatable {
      * @return void
      */
     public function __construct(\core_analytics\prediction $prediction, \core_analytics\model $model, $includedetailsaction,
-            \context $context) {
+            context $context) {
 
         $this->prediction = $prediction;
         $this->model = $model;
@@ -81,7 +88,7 @@ class insight implements \renderable, \templatable {
      * @param \renderer_base $output
      * @return \stdClass
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(renderer_base $output) {
         // Get the prediction data.
         $predictiondata = $this->prediction->get_prediction_data();
 
@@ -163,7 +170,7 @@ class insight implements \renderable, \templatable {
             $identifier = $calculation->indicator->get_name()->get_identifier() . 'def';
             $component = $calculation->indicator->get_name()->get_component();
             if (get_string_manager()->string_exists($identifier, $component)) {
-                $obj->outcomehelp = (new \help_icon($identifier, $component))->export_for_template($output);
+                $obj->outcomehelp = (new help_icon($identifier, $component))->export_for_template($output);
             }
             $data->calculations[] = $obj;
         }
@@ -245,12 +252,12 @@ class insight implements \renderable, \templatable {
                 $icon = 'i/warning';
                 break;
             default:
-                throw new \coding_exception('The outcome returned by ' . get_class($calculable) . '::get_calculation_outcome is ' .
+                throw new coding_exception('The outcome returned by ' . get_class($calculable) . '::get_calculation_outcome is ' .
                     'not one of the accepted values. Please use \core_analytics\calculable::OUTCOME_VERY_POSITIVE, ' .
                     '\core_analytics\calculable::OUTCOME_OK, \core_analytics\calculable::OUTCOME_NEGATIVE, ' .
                     '\core_analytics\calculable::OUTCOME_VERY_NEGATIVE or \core_analytics\calculable::OUTCOME_NEUTRAL');
         }
-        $icon = new \pix_icon($icon, $text);
+        $icon = new pix_icon($icon, $text);
         return array($style, $icon->export_for_template($output));
     }
 

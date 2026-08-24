@@ -33,7 +33,11 @@
  * @param ?stdClass $templatecontext Template context
  * @return stdClass|null
  */
-function gradereport_singleview_get_report_link(context_course $context, int $courseid,
+use core\context\course;
+use core\output\html_writer;
+use core\url;
+
+function gradereport_singleview_get_report_link(course $context, int $courseid,
         array $element, grade_plugin_return $gpr, string $mode, ?stdClass $templatecontext): ?stdClass {
 
     $reportstring = get_string('singleviewreport_' . $mode, 'gradereport_singleview');
@@ -48,7 +52,7 @@ function gradereport_singleview_get_report_link(context_course $context, int $co
             if (has_all_capabilities(['gradereport/singleview:view', 'moodle/grade:viewall',
                 'moodle/grade:edit'], $context)) {
 
-                $url = new moodle_url('/grade/report/singleview/index.php', [
+                $url = new url('/grade/report/singleview/index.php', [
                     'id' => $courseid,
                     'item' => 'grade',
                     'itemid' => $element['object']->id
@@ -68,7 +72,7 @@ function gradereport_singleview_get_report_link(context_course $context, int $co
         }
 
         if ($canseesingleview) {
-            $url = new moodle_url('/grade/report/singleview/index.php',
+            $url = new url('/grade/report/singleview/index.php',
                 ['id' => $courseid, 'itemid' => $element['userid'], 'item' => 'user']);
             $gpr->add_url_params($url);
             $templatecontext->reporturl0 = html_writer::link($url, $reportstring,

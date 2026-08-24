@@ -24,15 +24,15 @@
 
 namespace core_courseformat\output\local\content;
 
-use cm_info;
-use context_course;
+use core_course\cm_info;
+use core\context\course;
 use core\output\named_templatable;
 use core_availability\info_module;
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\courseformat_named_templatable;
-use renderable;
-use renderer_base;
-use section_info;
+use core\output\renderable;
+use core\output\renderer_base;
+use core_course\section_info;
 use stdClass;
 
 /**
@@ -305,7 +305,7 @@ class cm implements named_templatable, renderable {
      */
     protected function add_editor_data(stdClass &$data, renderer_base $output): bool {
         $course = $this->format->get_course();
-        $coursecontext = context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $editcaps = [];
         if (has_capability('moodle/course:activityvisibility', $coursecontext)) {
             $editcaps = ['moodle/course:activityvisibility'];

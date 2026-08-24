@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_cache\cache;
+use core_cache\store;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -80,8 +83,8 @@ class core_string_manager_standard implements core_string_manager {
                 'simplekeys' => true,
                 'simpledata' => true
             );
-            $this->cache = cache::make_from_params(cache_store::MODE_REQUEST, 'core', 'string', array(), $options);
-            $this->menucache = cache::make_from_params(cache_store::MODE_REQUEST, 'core', 'langmenu', array(), $options);
+            $this->cache = cache::make_from_params(store::MODE_REQUEST, 'core', 'string', array(), $options);
+            $this->menucache = cache::make_from_params(store::MODE_REQUEST, 'core', 'langmenu', array(), $options);
         }
     }
 

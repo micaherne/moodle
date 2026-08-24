@@ -22,12 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_admin\setting\setting\configcheckbox;
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configcheckbox('mod_h5pactivity/enablesavestate',
+    $settings->add(new configcheckbox('mod_h5pactivity/enablesavestate',
         get_string('enablesavestate', 'mod_h5pactivity'), get_string('enablesavestate_help', 'mod_h5pactivity'), 1));
 
-    $settings->add(new admin_setting_configtext('mod_h5pactivity/savestatefreq',
+    $settings->add(new configtext('mod_h5pactivity/savestatefreq',
         get_string('savestatefreq', 'mod_h5pactivity'), get_string('savestatefreq_help', 'mod_h5pactivity'), 60, PARAM_INT));
 }

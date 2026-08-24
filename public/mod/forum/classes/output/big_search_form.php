@@ -25,12 +25,12 @@
 namespace mod_forum\output;
 defined('MOODLE_INTERNAL') || die();
 
-use html_writer;
-use moodle_url;
-use renderable;
-use renderer_base;
+use core\output\html_writer;
+use core\url;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 
 /**
  * Big search form class.
@@ -74,7 +74,7 @@ class big_search_form implements renderable, templatable {
         $this->tags = [];
         $this->guestuser = !isloggedin() || isguestuser($USER);
         $this->showfullwords = $DB->get_dbfamily() == 'mysql' || $DB->get_dbfamily() == 'postgres';
-        $this->actionurl = new moodle_url('/mod/forum/search.php');
+        $this->actionurl = new url('/mod/forum/search.php');
 
         $forumoptions = ['' => get_string('allforums', 'forum')] + forum_menu_list($course);
         $this->forumoptions = array_map(function($option) use ($forumoptions) {

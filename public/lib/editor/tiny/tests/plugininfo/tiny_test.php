@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace editor_tiny\plugininfo;
 
 use advanced_testcase;
+use core\url;
 
 /**
  * Unit tests for the editor_tiny\tiny plugininfo class.
@@ -45,7 +46,7 @@ final class tiny_test extends advanced_testcase {
      * @covers ::get_manage_url
      */
     public function test_get_manage_url(): void {
-        $this->assertInstanceOf(\moodle_url::class, tiny::get_manage_url());
+        $this->assertInstanceOf(url::class, tiny::get_manage_url());
     }
 
     /**

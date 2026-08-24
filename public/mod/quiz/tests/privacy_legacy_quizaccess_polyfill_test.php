@@ -23,6 +23,9 @@
 
 namespace mod_quiz;
 
+use core\context\module;
+use core\context\system;
+
 /**
  * Unit tests for the privacy legacy polyfill for quiz access rules.
  *
@@ -54,7 +57,7 @@ final class privacy_legacy_quizaccess_polyfill_test extends \advanced_testcase {
      * Test the _delete_quizaccess_for_context shim.
      */
     public function test_delete_quizaccess_for_context(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $quiz = $this->createMock(quiz_settings::class);
 
@@ -71,7 +74,7 @@ final class privacy_legacy_quizaccess_polyfill_test extends \advanced_testcase {
      * Test the _delete_quizaccess_for_user shim.
      */
     public function test_delete_quizaccess_for_user(): void {
-        $context = \context_system::instance();
+        $context = system::instance();
 
         $quiz = $this->createMock(quiz_settings::class);
         $user = (object) [];
@@ -89,7 +92,7 @@ final class privacy_legacy_quizaccess_polyfill_test extends \advanced_testcase {
      * Test the _delete_quizaccess_for_users shim.
      */
     public function test_delete_quizaccess_for_users(): void {
-        $context = $this->createMock(\context_module::class);
+        $context = $this->createMock(module::class);
         $user = (object) [];
         $approveduserlist = new \core_privacy\local\request\approved_userlist($context, 'mod_quiz', [$user]);
 

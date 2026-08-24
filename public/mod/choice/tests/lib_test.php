@@ -25,6 +25,12 @@
  */
 namespace mod_choice;
 
+use core\context\course;
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -54,7 +60,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
         $choice = $this->getDataGenerator()->create_module('choice', array('course' => $course->id));
-        $context = \context_module::instance($choice->cmid);
+        $context = module::instance($choice->cmid);
         $cm = get_coursemodule_from_instance('choice', $choice->id);
 
         // Trigger and capture the event.
@@ -69,7 +75,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_choice\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $url = new \moodle_url('/mod/choice/view.php', array('id' => $cm->id));
+        $url = new url('/mod/choice/view.php', array('id' => $cm->id));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -88,7 +94,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
         $choice = $this->getDataGenerator()->create_module('choice', array('course' => $course->id));
-        $context = \context_module::instance($choice->cmid);
+        $context = module::instance($choice->cmid);
         $cm = get_coursemodule_from_instance('choice', $choice->id);
 
         // Default values are false, user cannot view results.
@@ -155,7 +161,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
         $optionids2 = array_keys($choicewithoptions2->option);
 
         // Make sure we cannot submit options from a different choice instance.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         choice_user_submit_response($optionids2[0], $choice1, $USER->id, $course, $cm);
     }
 
@@ -825,8 +831,8 @@ final class lib_test extends \core_external\tests\externallib_testcase {
             'completion' => 2,
             'completionsubmit' => 0
         ]);
-        $cm1 = \cm_info::create(get_coursemodule_from_instance('choice', $choice1->id));
-        $cm2 = \cm_info::create(get_coursemodule_from_instance('choice', $choice2->id));
+        $cm1 = cm_info::create(get_coursemodule_from_instance('choice', $choice1->id));
+        $cm2 = cm_info::create(get_coursemodule_from_instance('choice', $choice2->id));
 
         // Data for the stdClass input type.
         // This type of input would occur when checking the default completion rules for an activity type, where we don't have
@@ -1338,7 +1344,7 @@ final class lib_test extends \core_external\tests\externallib_testcase {
     public function test_creation_with_no_calendar_capabilities(): void {
         $this->resetAfterTest();
         $course = self::getDataGenerator()->create_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $user = self::getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $roleid = self::getDataGenerator()->create_role();
         self::getDataGenerator()->role_assign($roleid, $user->id, $context->id);

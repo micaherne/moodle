@@ -23,6 +23,8 @@
 
 namespace enrol_database\task;
 
+use core\output\progress_trace\text_progress_trace;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -47,7 +49,7 @@ class sync_enrolments extends \core\task\scheduled_task {
      */
     public function execute() {
 
-        $trace = new \text_progress_trace();
+        $trace = new text_progress_trace();
 
         if (!enrol_is_enabled('database')) {
             $trace->output('Plugin not enabled');

@@ -26,6 +26,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core_cache\helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/group/lib.php');
@@ -742,7 +745,7 @@ class enrol_imsenterprise_plugin extends enrol_plugin {
                                     $groupids[$member->groupname] = $groupid; // Store ID in cache.
                                     $member->groupid = $groupid;
                                     // Invalidate the course group data cache just in case.
-                                    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($ship->courseid));
+                                    helper::invalidate_by_definition('core', 'groupdata', array(), array($ship->courseid));
                                 }
                             }
                             // Add the user-to-group association if it doesn't already exist.
@@ -771,7 +774,7 @@ class enrol_imsenterprise_plugin extends enrol_plugin {
 
                                     if (intval($unenrolsetting) === intval(ENROL_EXT_REMOVED_SUSPENDNOROLES)) {
                                         if (!$context =
-                                            context_course::instance($courseobj->id, IGNORE_MISSING)) {
+                                            course::instance($courseobj->id, IGNORE_MISSING)) {
 
                                             $this->log_line("Unable to process IMS unenrolment request " .
                                                 " because course context not found. User: " .
@@ -1031,7 +1034,7 @@ class enrol_imsenterprise_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/imsenterprise:config', $context);
     }
 
@@ -1042,7 +1045,7 @@ class enrol_imsenterprise_plugin extends enrol_plugin {
      * @return bool
      */
     public function can_hide_show_instance($instance) {
-        $context = context_course::instance($instance->courseid);
+        $context = course::instance($instance->courseid);
         return has_capability('enrol/imsenterprise:config', $context);
     }
 }

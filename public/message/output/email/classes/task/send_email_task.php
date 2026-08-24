@@ -24,6 +24,7 @@
 namespace message_email\task;
 
 use core\task\scheduled_task;
+use core\user;
 use moodle_recordset;
 
 defined('MOODLE_INTERNAL') || die();
@@ -64,7 +65,7 @@ class send_email_task extends scheduled_task {
         $this->maxid = $DB->get_field_sql("SELECT MAX(id) FROM {message_email_messages}");
 
         // We are going to send these emails from 'noreplyaddress'.
-        $noreplyuser = \core_user::get_noreply_user();
+        $noreplyuser = user::get_noreply_user();
 
         // The renderers used for sending emails.
         $htmlrenderer = $PAGE->get_renderer('message_email', 'email', 'htmlemail');

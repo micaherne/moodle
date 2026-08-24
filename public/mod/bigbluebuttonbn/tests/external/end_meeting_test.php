@@ -20,8 +20,8 @@ use core_external\external_api;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\meeting;
 use mod_bigbluebuttonbn\test\testcase_helper_trait;
-use moodle_exception;
-use require_login_exception;
+use core\exception\moodle_exception;
+use core\exception\require_login_exception;
 use core_external\restricted_context_exception;
 
 /**

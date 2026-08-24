@@ -24,6 +24,9 @@
 
 namespace availability_group;
 
+use core\context\course;
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -53,7 +56,7 @@ class condition extends \core_availability\condition {
         } else if (is_int($structure->id)) {
             $this->groupid = $structure->id;
         } else {
-            throw new \coding_exception('Invalid ->id for group condition');
+            throw new coding_exception('Invalid ->id for group condition');
         }
     }
 
@@ -67,7 +70,7 @@ class condition extends \core_availability\condition {
 
     public function is_available($not, \core_availability\info $info, $grabthelot, $userid) {
         $course = $info->get_course();
-        $context = \context_course::instance($course->id);
+        $context = course::instance($course->id);
         $allow = true;
         if (!has_capability('moodle/site:accessallgroups', $context, $userid)) {
             // Get all groups the user belongs to.

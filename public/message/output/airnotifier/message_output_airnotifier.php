@@ -24,6 +24,9 @@
  * @since Moodle 2.7
  */
 
+use core\context\system;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/message/output/lib.php');
@@ -232,7 +235,7 @@ class message_output_airnotifier extends message_output {
     public function config_form($preferences) {
         global $CFG, $OUTPUT, $USER, $PAGE;
 
-        $systemcontext = context_system::instance();
+        $systemcontext = system::instance();
         if (!has_capability('message/airnotifier:managedevice', $systemcontext)) {
             return get_string('nopermissiontomanagedevices', 'message_airnotifier');
         }

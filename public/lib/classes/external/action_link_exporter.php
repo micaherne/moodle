@@ -17,6 +17,7 @@
 namespace core\external;
 
 use core\output\action_link;
+use core\output\renderer_base;
 
 /**
  * Class action_link_exporter
@@ -90,7 +91,7 @@ class action_link_exporter extends exporter {
     }
 
     #[\Override]
-    protected function get_other_values(\renderer_base $output) {
+    protected function get_other_values(renderer_base $output) {
         /** @var action_link $source */
         $source = $this->data;
         $templatedata = $source->export_for_template($output);

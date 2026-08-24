@@ -16,7 +16,7 @@
 
 namespace mod_quiz\output;
 
-use renderable;
+use core\output\renderable;
 
 /**
  * Represents the list of links to other attempts

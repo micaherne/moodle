@@ -18,10 +18,10 @@ declare(strict_types=1);
 
 namespace core_reportbuilder\output;
 
-use renderable;
-use renderer_base;
+use core\output\renderable;
+use core\output\renderer_base;
 use stdClass;
-use templatable;
+use core\output\templatable;
 use core_reportbuilder\system_report as system_report_base;
 use core_reportbuilder\external\system_report_exporter;
 use core_reportbuilder\local\models\report;

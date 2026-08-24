@@ -16,6 +16,8 @@
 
 namespace core_courseformat\local;
 
+use core\context\course;
+use core\exception\moodle_exception;
 use core_courseformat\formatactions;
 use stdClass;
 
@@ -409,7 +411,7 @@ final class sectionactions_test extends \advanced_testcase {
 
         // Create the course with sections.
         $course = $this->getDataGenerator()->create_course(['numsections' => 10], ['createsections' => true]);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $section = get_fast_modinfo($course)->get_section_info(10);
         $sectionrecord = $DB->get_record('course_sections', ['id' => $section->id]);
@@ -561,7 +563,7 @@ final class sectionactions_test extends \advanced_testcase {
         $this->assertNotEquals($value, $section->$fieldname);
 
         if ($expectexception) {
-            $this->expectException(\moodle_exception::class);
+            $this->expectException(moodle_exception::class);
         }
 
         if ($expected === '=') {
@@ -691,7 +693,7 @@ final class sectionactions_test extends \advanced_testcase {
         // Check that the event data is valid.
         $this->assertInstanceOf('\core\event\course_section_updated', $event);
         $data = $event->get_data();
-        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
+        $this->assertEquals(course::instance($course->id), $event->get_context());
         $this->assertEquals($section->id, $data['objectid']);
     }
 

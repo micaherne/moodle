@@ -23,11 +23,12 @@
  */
 namespace tool_templatelibrary;
 
+use core\output\theme_config;
 use core_component;
 use core\output\mustache_template_finder;
-use coding_exception;
-use moodle_exception;
-use required_capability_exception;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\exception\required_capability_exception;
 use stdClass;
 
 /**
@@ -52,7 +53,7 @@ class api {
         if (empty($themename)) {
             $themename = $PAGE->theme->name;
         }
-        $themeconfig = \theme_config::load($themename);
+        $themeconfig = theme_config::load($themename);
 
         $templatedirs = array();
         $results = array();

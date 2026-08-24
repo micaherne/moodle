@@ -18,8 +18,8 @@ declare(strict_types=1);
 
 namespace core\external;
 
-use coding_exception;
-use context_system;
+use core\exception\coding_exception;
+use core\context\system;
 use core\output\dynamic_tabs\base;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -67,7 +67,7 @@ class dynamic_tabs_get_content extends external_api {
 
         $data = @json_decode($jsondata, true);
 
-        $context = context_system::instance();
+        $context = system::instance();
         self::validate_context($context);
 
         // This call is needed to avoid debug messages on webserver log.

@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\user;
+use core\url;
+
 define('NO_DEBUG_DISPLAY', true);
 define('NOMOODLECOOKIE', 1);
 
@@ -42,8 +45,8 @@ if (count($args) == 2) {
     } else {
         $image = 'f2';
     }
-    if ($usercontext = context_user::instance($userid, IGNORE_MISSING)) {
-        $url = moodle_url::make_pluginfile_url($usercontext->id, 'user', 'icon', null, '/', $image);
+    if ($usercontext = user::instance($userid, IGNORE_MISSING)) {
+        $url = url::make_pluginfile_url($usercontext->id, 'user', 'icon', null, '/', $image);
         redirect($url);
     }
 }

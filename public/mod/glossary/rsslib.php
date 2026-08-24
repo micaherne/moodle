@@ -32,7 +32,9 @@
  * @param array    $args    the arguments received in the url
  * @return string the full path to the cached RSS feed directory. Null if there is a problem.
  */
-    function glossary_rss_get_feed($context, $args) {
+    use core\context\module;
+
+function glossary_rss_get_feed($context, $args) {
         global $CFG, $DB, $COURSE, $USER;
 
         $status = true;
@@ -44,7 +46,7 @@
 
         $glossaryid  = clean_param($args[3], PARAM_INT);
         $cm = get_coursemodule_from_instance('glossary', $glossaryid, 0, false, MUST_EXIST);
-        $modcontext = context_module::instance($cm->id);
+        $modcontext = module::instance($cm->id);
 
         if ($COURSE->id == $cm->course) {
             $course = $COURSE;

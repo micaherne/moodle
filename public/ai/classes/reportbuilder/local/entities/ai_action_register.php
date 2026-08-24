@@ -28,7 +28,7 @@ use core_reportbuilder\local\helpers\format;
 use core_reportbuilder\local\report\column;
 use core_reportbuilder\local\report\filter;
 use core\output\help_icon;
-use lang_string;
+use core\lang_string;
 
 /**
  * AI action register entity.

@@ -24,6 +24,7 @@
  */
 namespace core_form\privacy;
 
+use core\context\system;
 use core_form\privacy\provider;
 use core_privacy\local\request\writer;
 
@@ -43,7 +44,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setAdminUser();
 
         provider::export_user_preferences($USER->id);
-        $this->assertFalse(writer::with_context(\context_system::instance())->has_any_data());
+        $this->assertFalse(writer::with_context(system::instance())->has_any_data());
     }
 
     /**
@@ -67,9 +68,9 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Export test users preferences.
         provider::export_user_preferences($user->id);
-        $this->assertTrue(writer::with_context(\context_system::instance())->has_any_data());
+        $this->assertTrue(writer::with_context(system::instance())->has_any_data());
 
-        $prefs = writer::with_context(\context_system::instance())->get_user_preferences('core_form');
+        $prefs = writer::with_context(system::instance())->get_user_preferences('core_form');
         $this->assertNotEmpty($prefs->filemanager_recentviewmode);
         $this->assertNotEmpty($prefs->filemanager_recentviewmode->value);
         $this->assertNotEmpty($prefs->filemanager_recentviewmode->description);

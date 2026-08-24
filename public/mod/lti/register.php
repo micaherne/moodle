@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/mod/lti/locallib.php');
@@ -32,7 +34,7 @@ $tab = optional_param('tab', '', PARAM_ALPHAEXT);
 
 require_login(0, false);
 
-$redirect = new moodle_url('/mod/lti/toolproxies.php', array('tab' => $tab));
+$redirect = new url('/mod/lti/toolproxies.php', array('tab' => $tab));
 $redirect = $redirect->out();
 
 require_sesskey();
@@ -49,7 +51,7 @@ foreach ($toolproxies as $key => $toolproxy) {
     }
 }
 
-$redirect = new moodle_url('/mod/lti/toolproxies.php');
+$redirect = new url('/mod/lti/toolproxies.php');
 if ($duplicate) {
     redirect($redirect,  get_string('duplicateregurl', 'lti'));
 }
@@ -60,7 +62,7 @@ if (empty($profileservice)) {
     redirect($redirect,  get_string('noprofileservice', 'lti'));
 }
 
-$url = new moodle_url('/mod/lti/register.php', array('id' => $id));
+$url = new url('/mod/lti/register.php', array('id' => $id));
 $PAGE->set_url($url);
 
 admin_externalpage_setup('ltitoolproxies');
@@ -77,7 +79,7 @@ echo $OUTPUT->heading(get_string('toolproxyregistration', 'lti'));
 echo $OUTPUT->box_start('generalbox');
 
 // Request the registration request content with an object tag.
-$registration = new moodle_url('/mod/lti/registration.php',
+$registration = new url('/mod/lti/registration.php',
     array('id' => $id, 'sesskey' => sesskey()));
 
 echo "<p id=\"id_warning\" style=\"display: none; color: red; font-weight: bold; margin-top: 1em; padding-top: 1em;\">\n";

@@ -21,7 +21,9 @@
  * @copyright  2025 David Woloszyn <david.woloszyn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class communication_matrix_admin_setting_user_prefix_configtext extends admin_setting_configtext {
+use core_admin\setting\setting\configtext;
+
+class communication_matrix_admin_setting_user_prefix_configtext extends configtext {
 
     #[\Override]
     public function validate($data) {

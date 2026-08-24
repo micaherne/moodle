@@ -28,10 +28,10 @@ use core_reportbuilder\local\helpers\custom_fields;
 use core_reportbuilder\local\helpers\format;
 use core_reportbuilder\local\report\column;
 use core_reportbuilder\local\report\filter;
-use html_writer;
-use lang_string;
+use core\output\html_writer;
+use core\lang_string;
 use stdClass;
-use theme_config;
+use core\output\theme_config;
 
 defined('MOODLE_INTERNAL') || die();
 

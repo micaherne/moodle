@@ -17,8 +17,10 @@
 namespace mod_assign\plugininfo;
 
 use core\plugininfo\base;
-use core_plugin_manager;
-use moodle_url;
+use core\plugin_manager;
+use core\url;
+use core_admin\setting\settingpage\settingpage;
+use core_admin\setting\tree\part_of_admin_tree;
 
 /**
  * Assign submission subplugin info class.
@@ -40,7 +42,7 @@ class assignsubmission extends base {
     public static function get_enabled_plugins() {
         global $DB;
 
-        $plugins = core_plugin_manager::instance()->get_installed_plugins('assignsubmission');
+        $plugins = plugin_manager::instance()->get_installed_plugins('assignsubmission');
         if (!$plugins) {
             return array();
         }
@@ -79,7 +81,7 @@ class assignsubmission extends base {
             $haschanged = true;
 
             add_to_config_log('disabled', $oldvalue, $disabled, $plugin);
-            \core_plugin_manager::reset_caches();
+            plugin_manager::reset_caches();
         }
 
         return $haschanged;
@@ -94,7 +96,7 @@ class assignsubmission extends base {
      * @return moodle_url
      */
     public static function get_manage_url() {
-        return new moodle_url('/mod/assign/adminmanageplugins.php', array('subtype'=>'assignsubmission'));
+        return new url('/mod/assign/adminmanageplugins.php', array('subtype'=>'assignsubmission'));
     }
 
     /**
@@ -123,7 +125,7 @@ class assignsubmission extends base {
      * @param string $parentnodename
      * @param bool $hassiteconfig whether the current user has moodle/site:config capability
      */
-    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
+    public function load_settings(part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
         global $CFG, $USER, $DB, $OUTPUT, $PAGE; // In case settings.php wants to refer to them.
         $ADMIN = $adminroot; // May be used in settings.php.
         $plugininfo = $this; // Also can be used inside settings.php.
@@ -138,7 +140,7 @@ class assignsubmission extends base {
 
         $section = $this->get_settings_section_name();
 
-        $settings = new \admin_settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
+        $settings = new settingpage($section, $this->displayname, 'moodle/site:config', $this->is_enabled() === false);
 
         if ($adminroot->fulltree) {
             $shortsubtype = substr($this->type, strlen('assign'));

@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace core_customfield\event;
 
-use context;
+use core\context;
 use core_customfield\shared;
 
 defined('MOODLE_INTERNAL') || die();

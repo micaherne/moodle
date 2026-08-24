@@ -25,6 +25,7 @@
 namespace core\event;
 
 use core\event\base;
+use core\exception\coding_exception;
 use core_competency\competency;
 
 defined('MOODLE_INTERNAL') || die();
@@ -48,7 +49,7 @@ class competency_updated extends base {
      */
     public static function create_from_competency(competency $competency) {
         if (!$competency->get('id')) {
-            throw new \coding_exception('The competency ID must be set.');
+            throw new coding_exception('The competency ID must be set.');
         }
         $event = static::create(array(
             'contextid' => $competency->get_context()->id,

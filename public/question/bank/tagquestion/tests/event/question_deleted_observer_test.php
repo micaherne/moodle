@@ -16,6 +16,8 @@
 
 namespace qbank_tagquestion\event;
 
+use core\context;
+
 /**
  * Tests for question_deleted_observer
  *
@@ -36,7 +38,7 @@ final class question_deleted_observer_test extends \advanced_testcase {
         $this->resetAfterTest();
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         [, , $qcat, $questions] = $questiongenerator->setup_course_and_questions();
-        $questioncontext = \context::instance_by_id($qcat->contextid);
+        $questioncontext = context::instance_by_id($qcat->contextid);
         $question = reset($questions);
         $tag = random_string();
         \core_tag_tag::add_item_tag('core_question', 'question', $question->id, $questioncontext, $tag);
@@ -56,7 +58,7 @@ final class question_deleted_observer_test extends \advanced_testcase {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $user = $this->getDataGenerator()->create_user();
         [, , $qcat, $questions] = $questiongenerator->setup_course_and_questions();
-        $questioncontext = \context::instance_by_id($qcat->contextid);
+        $questioncontext = context::instance_by_id($qcat->contextid);
         $question = reset($questions);
         $tag = random_string();
         \core_tag_tag::add_item_tag('core_question', 'question', $question->id, $questioncontext, $tag, $user->id);

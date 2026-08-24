@@ -23,6 +23,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -30,7 +34,7 @@ $id    = required_param('id',PARAM_INT);           // forum
 $group = optional_param('group',0,PARAM_INT);      // change of group
 $edit  = optional_param('edit',-1,PARAM_BOOL);     // Turn editing on and off
 
-$url = new moodle_url('/mod/forum/subscribers.php', array('id'=>$id));
+$url = new url('/mod/forum/subscribers.php', array('id'=>$id));
 if ($group !== 0) {
     $url->param('group', $group);
 }
@@ -51,9 +55,9 @@ if (! $cm = get_coursemodule_from_instance('forum', $forum->id, $course->id)) {
 
 require_login($course, false, $cm);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 if (!has_capability('mod/forum:viewsubscribers', $context)) {
-    throw new \moodle_exception('nopermissiontosubscribe', 'forum');
+    throw new moodle_exception('nopermissiontosubscribe', 'forum');
 }
 
 unset($SESSION->fromdiscussion);
@@ -78,20 +82,20 @@ if (data_submitted()) {
     $unsubscribe = (bool)optional_param('unsubscribe', false, PARAM_RAW);
     /** It has to be one or the other, not both or neither */
     if (!($subscribe xor $unsubscribe)) {
-        throw new \moodle_exception('invalidaction');
+        throw new moodle_exception('invalidaction');
     }
     if ($subscribe) {
         $users = $subscriberselector->get_selected_users();
         foreach ($users as $user) {
             if (!\mod_forum\subscriptions::subscribe_user($user->id, $forum)) {
-                throw new \moodle_exception('cannotaddsubscriber', 'forum', '', $user->id);
+                throw new moodle_exception('cannotaddsubscriber', 'forum', '', $user->id);
             }
         }
     } else if ($unsubscribe) {
         $users = $existingselector->get_selected_users();
         foreach ($users as $user) {
             if (!\mod_forum\subscriptions::unsubscribe_user($user->id, $forum)) {
-                throw new \moodle_exception('cannotremovesubscriber', 'forum', '', $user->id);
+                throw new moodle_exception('cannotremovesubscriber', 'forum', '', $user->id);
             }
         }
     }
@@ -143,7 +147,7 @@ echo $OUTPUT->footer();
  * @param array $users the list of users to filter.
  * @return array the filtered list of users.
  */
-function mod_forum_filter_hidden_users(stdClass $cm, context_module $context, array $users) {
+function mod_forum_filter_hidden_users(stdClass $cm, module $context, array $users) {
     if ($cm->visible) {
         return $users;
     } else {

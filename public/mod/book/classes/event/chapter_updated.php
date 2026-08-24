@@ -23,6 +23,9 @@
  */
 
 namespace mod_book\event;
+
+use core\context\module;
+use core\url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -44,7 +47,7 @@ class chapter_updated extends \core\event\base {
      * @param \stdClass $chapter
      * @return chapter_updated
      */
-    public static function create_from_chapter(\stdClass $book, \context_module $context, \stdClass $chapter) {
+    public static function create_from_chapter(\stdClass $book, module $context, \stdClass $chapter) {
         $data = array(
             'context' => $context,
             'objectid' => $chapter->id,
@@ -81,7 +84,7 @@ class chapter_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/book/view.php', array(
+        return new url('/mod/book/view.php', array(
             'id' => $this->contextinstanceid,
             'chapterid' => $this->objectid
         ));

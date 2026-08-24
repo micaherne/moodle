@@ -19,10 +19,10 @@ namespace core_courseformat\output\local\state;
 use core_courseformat\base as course_format;
 use completion_info;
 use core_courseformat\sectiondelegate;
-use renderer_base;
-use section_info;
-use cm_info;
-use renderable;
+use core\output\renderer_base;
+use core_course\section_info;
+use core_course\cm_info;
+use core\output\renderable;
 use stdClass;
 use core_availability\info_module;
 

@@ -17,6 +17,9 @@
 namespace core_communication;
 
 use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use stdClass;
 use stored_file;
 
@@ -55,14 +58,14 @@ class processor {
         $providercomponent = $this->instancedata->provider;
         $providerclass = $this->get_classname_for_provider($providercomponent);
         if (!class_exists($providerclass)) {
-            throw new \moodle_exception('communicationproviderclassnotfound', 'core_communication', '', $providerclass);
+            throw new moodle_exception('communicationproviderclassnotfound', 'core_communication', '', $providerclass);
         }
 
         if (!is_a($providerclass, communication_provider::class, true)) {
             // At the moment we only have one communication provider interface.
             // In the future, we may have others, at which point we will support the newest first and
             // emit a debugging notice for older ones.
-            throw new \moodle_exception('communicationproviderclassinvalid', 'core_communication', '', $providerclass);
+            throw new moodle_exception('communicationproviderclassinvalid', 'core_communication', '', $providerclass);
         }
 
         $this->provider = $providerclass::load_for_instance($this);
@@ -597,7 +600,7 @@ class processor {
      */
     public function requires_form_features(): void {
         if (!$this->supports_form_features()) {
-            throw new \coding_exception('Form features are not supported by the provider ' . get_class($this->provider));
+            throw new coding_exception('Form features are not supported by the provider ' . get_class($this->provider));
         }
     }
 
@@ -615,7 +618,7 @@ class processor {
      */
     public function require_user_features(): void {
         if (!$this->supports_user_features()) {
-            throw new \coding_exception('User features are not supported by the provider ' . get_class($this->provider));
+            throw new coding_exception('User features are not supported by the provider ' . get_class($this->provider));
         }
     }
 
@@ -633,7 +636,7 @@ class processor {
      */
     public function require_api_enabled(): void {
         if (!api::is_available()) {
-            throw new \coding_exception('Communication API is not enabled, please enable it from experimental features');
+            throw new coding_exception('Communication API is not enabled, please enable it from experimental features');
         }
     }
 
@@ -642,7 +645,7 @@ class processor {
      */
     public function require_room_features(): void {
         if (!$this->supports_room_features()) {
-            throw new \coding_exception('room features are not supported by the provider ' . get_class($this->provider));
+            throw new coding_exception('room features are not supported by the provider ' . get_class($this->provider));
         }
     }
 
@@ -651,7 +654,7 @@ class processor {
      */
     public function require_room_user_features(): void {
         if (!$this->supports_room_user_features()) {
-            throw new \coding_exception('room user features are not supported by the provider ' . get_class($this->provider));
+            throw new coding_exception('room user features are not supported by the provider ' . get_class($this->provider));
         }
     }
 
@@ -669,7 +672,7 @@ class processor {
      */
     public function require_sync_provider_features(): void {
         if (!$this->supports_sync_provider_features()) {
-            throw new \coding_exception('sync features are not supported by the provider ' . get_class($this->provider));
+            throw new coding_exception('sync features are not supported by the provider ' . get_class($this->provider));
         }
     }
 
@@ -681,7 +684,7 @@ class processor {
     public function get_avatar(): ?stored_file {
         $fs = get_file_storage();
         $file = $fs->get_file(
-            (\context_system::instance())->id,
+            (system::instance())->id,
             'core_communication',
             'avatar',
             $this->instancedata->id,

@@ -25,6 +25,8 @@
 
 namespace core\event;
 
+use core\context\system;
+
 /**
  * Test for content bank viewed event.
  *
@@ -58,7 +60,7 @@ final class contentbank_content_viewed_test extends \advanced_testcase {
         $this->setAdminUser();
 
         // Save the system context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $contenttype = new \contenttype_testable\contenttype();
 
         // Create a content bank content.

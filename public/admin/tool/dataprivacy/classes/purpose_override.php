@@ -23,6 +23,7 @@
  */
 namespace tool_dataprivacy;
 
+use core_cache\cache;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -89,7 +90,7 @@ class purpose_override extends \core\persistent {
      * @return  array
      */
     public static function get_overrides_for_purpose(purpose $purpose): array {
-        $cache = \cache::make('tool_dataprivacy', 'purpose_overrides');
+        $cache = cache::make('tool_dataprivacy', 'purpose_overrides');
 
         $overrides = [];
         $alldata = $cache->get($purpose->get('id'));
@@ -116,7 +117,7 @@ class purpose_override extends \core\persistent {
      * @return null
      */
     protected function after_create() {
-        $cache = \cache::make('tool_dataprivacy', 'purpose_overrides');
+        $cache = cache::make('tool_dataprivacy', 'purpose_overrides');
         $cache->delete($this->get('purposeid'));
     }
 
@@ -127,7 +128,7 @@ class purpose_override extends \core\persistent {
      * @return null
      */
     protected function after_update($result) {
-        $cache = \cache::make('tool_dataprivacy', 'purpose_overrides');
+        $cache = cache::make('tool_dataprivacy', 'purpose_overrides');
         $cache->delete($this->get('purposeid'));
     }
 
@@ -137,7 +138,7 @@ class purpose_override extends \core\persistent {
      * @return null
      */
     protected function before_delete() {
-        $cache = \cache::make('tool_dataprivacy', 'purpose_overrides');
+        $cache = cache::make('tool_dataprivacy', 'purpose_overrides');
         $cache->delete($this->get('purposeid'));
     }
 }

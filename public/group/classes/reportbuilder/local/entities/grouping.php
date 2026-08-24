@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace core_group\reportbuilder\local\entities;
 
 use core\{context, context_helper};
-use lang_string;
+use core\lang_string;
 use stdClass;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\{date, text};

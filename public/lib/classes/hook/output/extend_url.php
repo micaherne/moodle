@@ -16,7 +16,7 @@
 
 namespace core\hook\output;
 
-use moodle_url;
+use core\url;
 
 /**
  * Allow augmentation of the moodle URL.
@@ -37,7 +37,7 @@ final class extend_url {
      */
     public function __construct(
         /** @var moodle_url The url of the page */
-        private moodle_url $url,
+        private url $url,
     ) {
     }
 
@@ -46,7 +46,7 @@ final class extend_url {
      *
      * @return moodle_url
      */
-    public function get_url(): moodle_url {
+    public function get_url(): url {
         return $this->url;
     }
 

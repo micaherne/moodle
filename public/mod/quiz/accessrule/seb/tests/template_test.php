@@ -16,6 +16,8 @@
 
 namespace quizaccess_seb;
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/test_helper_trait.php');
@@ -164,7 +166,7 @@ final class template_test extends \advanced_testcase {
 
         // Create a quiz.
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $context = \context_module::instance($this->quiz->cmid);
+        $context = module::instance($this->quiz->cmid);
 
         // Check there is no template option (as there aren't any).
         $options = settings_provider::get_requiresafeexambrowser_options($context);
@@ -199,7 +201,7 @@ final class template_test extends \advanced_testcase {
 
         // Create a new quiz.
         $newquiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $context = \context_module::instance($newquiz->cmid);
+        $context = module::instance($newquiz->cmid);
 
         // Check there is no template option (as the template is now disabled).
         $options = settings_provider::get_requiresafeexambrowser_options($context);

@@ -16,6 +16,8 @@
 
 namespace core\hook\navigation;
 
+use core\navigation\navigation_node;
+
 /**
  * Test hook for primary navigation.
  *
@@ -139,7 +141,7 @@ final class primary_extend_test extends \advanced_testcase {
         $firstkey = array_shift($keys);
         /** @var \navigation_node $pokus */
         $pokus = $primarynav->get($firstkey);
-        $this->assertInstanceOf(\navigation_node::class, $pokus);
+        $this->assertInstanceOf(navigation_node::class, $pokus);
         $this->assertSame('Pokus', $pokus->text);
     }
 
@@ -178,7 +180,7 @@ final class primary_extend_test extends \advanced_testcase {
         $firstkey = array_shift($keys);
         /** @var \navigation_node $pokus */
         $pokus = $primarynav->get($firstkey);
-        $this->assertInstanceOf(\navigation_node::class, $pokus);
+        $this->assertInstanceOf(navigation_node::class, $pokus);
         $this->assertSame('Pokus', $pokus->text);
     }
 }

@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace customfield_number;
 
-use context;
+use core\context;
 use MoodleQuickForm;
 
 /**
@@ -98,7 +98,7 @@ abstract class provider_base {
      * @param context|null $context Context
      * @return ?string null if the field should not be displayed or string representation of the field
      */
-    public function prepare_export_value(mixed $value, ?\context $context = null): ?string {
+    public function prepare_export_value(mixed $value, ?context $context = null): ?string {
         if ($value === null) {
             return null;
         }

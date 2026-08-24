@@ -16,6 +16,9 @@
 
 namespace tool_monitor;
 
+use core\context\course;
+use core\context\system;
+
 /**
  * Unit tests for the tool_monitor clean events task.
  * @since 3.2.0
@@ -106,7 +109,7 @@ final class task_check_subscriptions_test extends \advanced_testcase {
         $this->assertEquals(false, \tool_monitor\subscription_manager::subscription_is_active($this->subscription));
 
         // Now, assign the user as a teacher role at system context.
-        $this->getDataGenerator()->role_assign($this->teacherrole->id, $this->user->id, \context_system::instance());
+        $this->getDataGenerator()->role_assign($this->teacherrole->id, $this->user->id, system::instance());
 
         // Run the task.
         $task = new \tool_monitor\task\check_subscriptions();
@@ -209,7 +212,7 @@ final class task_check_subscriptions_test extends \advanced_testcase {
         $this->getDataGenerator()->enrol_user($this->user->id, $this->course->id, $this->teacherrole->id);
 
         // Strip the ability to see hidden courses, so we'll fail the check_subscriptions->user_can_access_course call.
-        $context = \context_course::instance($this->course->id);
+        $context = course::instance($this->course->id);
         assign_capability('moodle/course:viewhiddencourses', CAP_PROHIBIT, $this->teacherrole->id, $context);
 
         // Subscription should be active to start with.
@@ -232,7 +235,7 @@ final class task_check_subscriptions_test extends \advanced_testcase {
      */
     public function test_cm_access(): void {
         // Enrol the user as a student but grant to ability to subscribe. Students cannot view hidden activities.
-        $context = \context_course::instance($this->course->id);
+        $context = course::instance($this->course->id);
         assign_capability('tool/monitor:subscribe', CAP_ALLOW, $this->studentrole->id, $context);
         $this->getDataGenerator()->enrol_user($this->user->id, $this->course->id, $this->studentrole->id);
 

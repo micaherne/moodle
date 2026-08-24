@@ -24,6 +24,11 @@
  */
 
 use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\action_link;
+use core\url;
 
 /**
  * Main hook.
@@ -68,13 +73,13 @@ function tool_mfa_extend_navigation_user_settings(navigation_node $navigation, s
     global $PAGE;
 
     // Only inject if user is on the preferences page.
-    $onpreferencepage = $PAGE->url->compare(new moodle_url('/user/preferences.php'), URL_MATCH_BASE);
+    $onpreferencepage = $PAGE->url->compare(new url('/user/preferences.php'), URL_MATCH_BASE);
     if (!$onpreferencepage) {
         return null;
     }
 
     if (\tool_mfa\manager::is_ready() && \tool_mfa\manager::possible_factor_setup()) {
-        $url = new moodle_url('/admin/tool/mfa/user_preferences.php');
+        $url = new url('/admin/tool/mfa/user_preferences.php');
         $node = navigation_node::create(get_string('preferences:header', 'tool_mfa'), $url,
             navigation_node::TYPE_SETTING);
         $usernode = $navigation->find('useraccount', navigation_node::TYPE_CONTAINER);
@@ -112,12 +117,12 @@ function tool_mfa_after_config(): void {
  * @return array
  */
 function tool_mfa_bulk_user_actions(): array {
-    if (!has_capability('moodle/site:config', context_system::instance())) {
+    if (!has_capability('moodle/site:config', system::instance())) {
         return [];
     }
     return [
         'tool_mfa_reset_factors' => new action_link(
-            new moodle_url('/admin/tool/mfa/reset_factor.php'),
+            new url('/admin/tool/mfa/reset_factor.php'),
             get_string('resetfactor', 'tool_mfa'),
         ),
     ];
@@ -168,7 +173,7 @@ function tool_mfa_output_fragment_factor_action_confirmation_form(
     // Check args are not empty.
     foreach ($args as $key => $arg) {
         if (empty($arg)) {
-            throw new \moodle_exception('missingparam', 'error', '', $key);
+            throw new moodle_exception('missingparam', 'error', '', $key);
         }
     }
 

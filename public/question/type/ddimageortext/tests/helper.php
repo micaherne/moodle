@@ -23,6 +23,8 @@
  */
 
 
+use core\context\user;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -142,7 +144,7 @@ class qtype_ddimageortext_test_helper extends question_test_helper {
         file_prepare_draft_area($bgdraftitemid, null, null, null, null);
         $fs = get_file_storage();
         $filerecord = new stdClass();
-        $filerecord->contextid = context_user::instance($USER->id)->id;
+        $filerecord->contextid = user::instance($USER->id)->id;
         $filerecord->component = 'user';
         $filerecord->filearea = 'draft';
         $filerecord->itemid = $bgdraftitemid;
@@ -266,7 +268,7 @@ class qtype_ddimageortext_test_helper extends question_test_helper {
         file_prepare_draft_area($bgdraftitemid, null, null, null, null);
         $fs = get_file_storage();
         $filerecord = new stdClass();
-        $filerecord->contextid = context_user::instance($USER->id)->id;
+        $filerecord->contextid = user::instance($USER->id)->id;
         $filerecord->component = 'user';
         $filerecord->filearea = 'draft';
         $filerecord->itemid = $bgdraftitemid;

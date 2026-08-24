@@ -16,6 +16,9 @@
 
 namespace core;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+
 /**
  * Class used to encrypt or decrypt data.
  *
@@ -50,7 +53,7 @@ class encryption {
         }
 
         if (self::key_exists($method)) {
-            throw new \moodle_exception('encryption_keyalreadyexists', 'error');
+            throw new moodle_exception('encryption_keyalreadyexists', 'error');
         }
 
         // Don't make it read-only in tests or it will fail to clear for future runs.
@@ -64,7 +67,7 @@ class encryption {
                 $key = sodium_crypto_secretbox_keygen();
                 break;
             default:
-                throw new \coding_exception('Unknown method: ' . $method);
+                throw new coding_exception('Unknown method: ' . $method);
         }
 
         // Store the key, making it readable only by server.
@@ -136,7 +139,7 @@ class encryption {
         }
         $result = @file_get_contents($keyfile);
         if ($result === false) {
-            throw new \moodle_exception('encryption_nokey', 'error');
+            throw new moodle_exception('encryption_nokey', 'error');
         }
         return $result;
     }
@@ -152,7 +155,7 @@ class encryption {
             case self::METHOD_SODIUM:
                 return SODIUM_CRYPTO_SECRETBOX_NONCEBYTES;
             default:
-                throw new \coding_exception('Unknown method: ' . $method);
+                throw new coding_exception('Unknown method: ' . $method);
         }
     }
 
@@ -183,12 +186,12 @@ class encryption {
                     try {
                         $encrypted = sodium_crypto_secretbox($data, $iv, self::get_key($method));
                     } catch (\SodiumException $e) {
-                        throw new \moodle_exception('encryption_encryptfailed', 'error', '', null, $e->getMessage());
+                        throw new moodle_exception('encryption_encryptfailed', 'error', '', null, $e->getMessage());
                     }
                     break;
 
                 default:
-                    throw new \coding_exception('Unknown method: ' . $method);
+                    throw new coding_exception('Unknown method: ' . $method);
             }
 
             // Encrypted data is cipher method plus IV plus encrypted data.
@@ -209,17 +212,17 @@ class encryption {
             if (preg_match('~^(' . self::METHOD_SODIUM . '):~', $data, $matches)) {
                 $method = $matches[1];
             } else {
-                throw new \moodle_exception('encryption_wrongmethod', 'error');
+                throw new moodle_exception('encryption_wrongmethod', 'error');
             }
             $realdata = base64_decode(substr($data, strlen($method) + 1), true);
             if ($realdata === false) {
-                throw new \moodle_exception('encryption_decryptfailed', 'error',
+                throw new moodle_exception('encryption_decryptfailed', 'error',
                         '', null, 'Invalid base64 data');
             }
 
             $ivlength = self::get_iv_length($method);
             if (strlen($realdata) < $ivlength + 1) {
-                throw new \moodle_exception('encryption_decryptfailed', 'error',
+                throw new moodle_exception('encryption_decryptfailed', 'error',
                         '', null, 'Insufficient data');
             }
             $iv = substr($realdata, 0, $ivlength);
@@ -230,17 +233,17 @@ class encryption {
                     try {
                         $decrypted = sodium_crypto_secretbox_open($encrypted, $iv, self::get_key($method));
                     } catch (\SodiumException $e) {
-                        throw new \moodle_exception('encryption_decryptfailed', 'error',
+                        throw new moodle_exception('encryption_decryptfailed', 'error',
                                 '', null, $e->getMessage());
                     }
                     // Sodium returns false if decryption fails because data is invalid.
                     if ($decrypted === false) {
-                        throw new \moodle_exception('encryption_decryptfailed', 'error',
+                        throw new moodle_exception('encryption_decryptfailed', 'error',
                                 '', null, 'Integrity check failed');
                     }
                     break;
                 default:
-                    throw new \coding_exception('Unknown method: ' . $method);
+                    throw new coding_exception('Unknown method: ' . $method);
             }
 
             return $decrypted;

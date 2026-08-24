@@ -16,7 +16,8 @@
 
 namespace core_grades\external;
 
-use coding_exception;
+use core\context\course;
+use core\exception\coding_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
@@ -24,11 +25,11 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
 use core_external\restricted_context_exception;
-use core_user;
+use core\user;
 use core_user_external;
-use invalid_parameter_exception;
-use moodle_exception;
-use user_picture;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
+use core\output\user_picture;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -84,7 +85,7 @@ class get_gradable_users extends external_api {
         );
 
         $warnings = [];
-        $coursecontext = \context_course::instance($params['courseid']);
+        $coursecontext = course::instance($params['courseid']);
         parent::validate_context($coursecontext);
 
         require_capability('moodle/site:viewuseridentity', $coursecontext);
@@ -92,7 +93,7 @@ class get_gradable_users extends external_api {
         $course = $DB->get_record('course', ['id' => $params['courseid']]);
 
         if ($params['groupid'] && !groups_group_visible($params['groupid'], $course)) {
-            throw new \moodle_exception('cannotaccessgroup', 'core_grades');
+            throw new moodle_exception('cannotaccessgroup', 'core_grades');
         }
 
         $onlyactive = $onlyactive || !has_capability('moodle/course:viewsuspendedusers', $coursecontext);
@@ -100,7 +101,7 @@ class get_gradable_users extends external_api {
         $users = get_gradable_users($course->id, $params['groupid'], $onlyactive);
         $users = array_map(function ($user) use ($PAGE) {
             $user->fullname = fullname($user);
-            $user->initials = core_user::get_initials($user);
+            $user->initials = user::get_initials($user);
             $userpicture = new user_picture($user);
             $userpicture->size = 1;
             $user->profileimageurlsmall = $userpicture->get_url($PAGE)->out(false);

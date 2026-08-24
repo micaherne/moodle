@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -56,7 +58,7 @@ class tag_collection_updated extends base {
     public static function create_from_record($tagcoll) {
         $event = self::create(array(
             'objectid' => $tagcoll->id,
-            'context' => \context_system::instance(),
+            'context' => system::instance(),
         ));
         $event->add_record_snapshot('tag_coll', $tagcoll);
         return $event;

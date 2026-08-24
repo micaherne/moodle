@@ -23,7 +23,9 @@
  */
 namespace core_calendar\local\event\forms;
 
-use context_system;
+use core\context;
+use core\context\system;
+use core\exception\moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -45,7 +47,7 @@ class create extends \moodleform {
      * @param \context $context A Moodle context
      * @return array
      */
-    public static function build_editor_options(\context $context) {
+    public static function build_editor_options(context $context) {
         global $CFG;
 
         return [
@@ -71,7 +73,7 @@ class create extends \moodleform {
         $eventtypes = $this->_customdata['eventtypes'];
 
         if (in_array(true, $eventtypes, true) === false) {
-            throw new \moodle_exception('nopermissiontoupdatecalendar');
+            throw new moodle_exception('nopermissiontoupdatecalendar');
         }
 
         $mform->setDisableShortforms();

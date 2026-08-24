@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\lang_string;
+use core_admin\setting\setting\configexecutable;
+use core_admin\setting\setting\configselect;
+use core_admin\setting\setting\configtext;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
@@ -40,7 +45,7 @@ if ($ADMIN->fulltree) {
             'commandline', $runningmethodchoice));
 
     // Path to ClamAV scanning utility (used in command line running method).
-    $settings->add(new admin_setting_configexecutable('antivirus_clamav/pathtoclam',
+    $settings->add(new configexecutable('antivirus_clamav/pathtoclam',
             new lang_string('pathtoclam', 'antivirus_clamav'), new lang_string('pathtoclamdesc', 'antivirus_clamav'), ''));
 
     // Path to ClamAV unix socket (used in unix socket running method).
@@ -54,7 +59,7 @@ if ($ADMIN->fulltree) {
             new lang_string('tcpsockethostdesc', 'antivirus_clamav'), '', PARAM_HOST));
 
     // Port to reach ClamAV tcp socket (used in tcp socket running method).
-    $settings->add(new admin_setting_configtext('antivirus_clamav/tcpsocketport',
+    $settings->add(new configtext('antivirus_clamav/tcpsocketport',
             new lang_string('tcpsocketport', 'antivirus_clamav'),
             new lang_string('tcpsocketportdesc', 'antivirus_clamav'), 3310, PARAM_INT));
 
@@ -64,13 +69,13 @@ if ($ADMIN->fulltree) {
         'actlikevirus' => new lang_string('configclamactlikevirus', 'antivirus_clamav'),
         'tryagain' => new lang_string('configclamtryagain', 'antivirus_clamav')
     );
-    $settings->add(new admin_setting_configselect('antivirus_clamav/clamfailureonupload',
+    $settings->add(new configselect('antivirus_clamav/clamfailureonupload',
             new lang_string('clamfailureonupload', 'antivirus_clamav'),
             new lang_string('configclamfailureonupload', 'antivirus_clamav'), 'tryagain', $options));
 
     // Number of attempts clamav will try when there is error during a scanning process.
     $options = array(1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5);
-    $settings->add(new admin_setting_configselect('antivirus_clamav/tries',
+    $settings->add(new configselect('antivirus_clamav/tries',
         new lang_string('tries', 'antivirus_clamav'),
         new lang_string('tries_desc', 'antivirus_clamav'), 1, $options));
 }

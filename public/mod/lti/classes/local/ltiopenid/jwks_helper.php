@@ -23,6 +23,7 @@
  */
 namespace mod_lti\local\ltiopenid;
 
+use core\exception\moodle_exception;
 use Firebase\JWT\JWT;
 
 /**
@@ -75,7 +76,7 @@ class jwks_helper {
 
         // Avoid passing null values to base64_encode.
         if (!isset($details['rsa']['e']) || !isset($details['rsa']['n'])) {
-            throw new \moodle_exception('Error: essential openssl keys not set');
+            throw new moodle_exception('Error: essential openssl keys not set');
         }
 
         $jwk = array();
@@ -109,7 +110,7 @@ class jwks_helper {
         $jwtparts = explode('.', $jwt);
         $jwtheader = json_decode(JWT::urlsafeB64Decode($jwtparts[0]), true);
         if (!isset($jwtheader['kid'])) {
-            throw new \moodle_exception('Error: kid must be provided in JWT header.');
+            throw new moodle_exception('Error: kid must be provided in JWT header.');
         }
 
         foreach ($jwks['keys'] as $index => $key) {
@@ -126,7 +127,7 @@ class jwks_helper {
             // The header alg must match the key type (family) specified in the JWK's kty.
             if (!isset(static::$ltisupportedalgs[$jwtheader['alg']]) ||
                     static::$ltisupportedalgs[$jwtheader['alg']] != $key['kty']) {
-                throw new \moodle_exception('Error: Alg specified in the JWT header is incompatible with the JWK key type');
+                throw new moodle_exception('Error: Alg specified in the JWT header is incompatible with the JWK key type');
             }
 
             $jwks['keys'][$index]['alg'] = $jwtheader['alg'];

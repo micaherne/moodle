@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -96,10 +99,10 @@ class award_criteria_competency extends award_criteria {
         $courseid = 0;
 
         if ($badge->type == BADGE_TYPE_SITE) {
-            $context = context_system::instance();
+            $context = system::instance();
             $courseid = SITEID;
         } else if ($badge->type == BADGE_TYPE_COURSE) {
-            $context = context_course::instance($badge->courseid);
+            $context = course::instance($badge->courseid);
             $courseid = $badge->courseid;
         }
         if ($pluginsfunction = get_plugins_with_function('competency_picker')) {

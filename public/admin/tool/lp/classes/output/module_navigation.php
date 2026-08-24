@@ -25,10 +25,10 @@ namespace tool_lp\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use renderable;
-use renderer_base;
-use templatable;
-use context_course;
+use core\output\renderable;
+use core\output\renderer_base;
+use core\output\templatable;
+use core\context\course;
 use core_course\external\course_module_summary_exporter;
 use stdClass;
 
@@ -71,7 +71,7 @@ class module_navigation implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
 
-        $context = context_course::instance($this->courseid);
+        $context = course::instance($this->courseid);
 
         $data = new stdClass();
         $data->courseid = $this->courseid;

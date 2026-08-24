@@ -16,6 +16,7 @@
 
 namespace core_sms;
 
+use core\exception\coding_exception;
 use Generator;
 use stdClass;
 use core\url;
@@ -73,7 +74,7 @@ class manager {
         );
 
         if ($issensitive && $async) {
-            throw new \coding_exception('Sensitive messages cannot be sent asynchronously');
+            throw new coding_exception('Sensitive messages cannot be sent asynchronously');
         }
 
         return $this->send_message(
@@ -317,7 +318,7 @@ class manager {
         ?stdClass $config = null,
     ): gateway {
         if (!class_exists($classname) || !is_a($classname, gateway::class, true)) {
-            throw new \coding_exception("Gateway class not valid: {$classname}");
+            throw new coding_exception("Gateway class not valid: {$classname}");
         }
         $gateway = new $classname(
             enabled: $enabled,

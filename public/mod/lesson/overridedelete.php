@@ -23,6 +23,10 @@
  */
 
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\url;
+
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot.'/mod/lesson/lib.php');
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
@@ -32,17 +36,17 @@ $overrideid = required_param('id', PARAM_INT);
 $confirm = optional_param('confirm', false, PARAM_BOOL);
 
 if (! $override = $DB->get_record('lesson_overrides', array('id' => $overrideid))) {
-    throw new \moodle_exception('invalidoverrideid', 'lesson');
+    throw new moodle_exception('invalidoverrideid', 'lesson');
 }
 
 $lesson = new lesson($DB->get_record('lesson', array('id' => $override->lessonid), '*', MUST_EXIST));
 
 if (! $cm = get_coursemodule_from_instance("lesson", $lesson->id, $lesson->course)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 
 require_login($course, false, $cm);
 
@@ -51,17 +55,17 @@ require_capability('mod/lesson:manageoverrides', $context);
 
 if ($override->groupid) {
     if (!groups_group_visible($override->groupid, $course, $cm)) {
-        throw new \moodle_exception('invalidoverrideid', 'lesson');
+        throw new moodle_exception('invalidoverrideid', 'lesson');
     }
 } else {
     if (!groups_user_groups_visible($course, $override->userid, $cm)) {
-        throw new \moodle_exception('invalidoverrideid', 'lesson');
+        throw new moodle_exception('invalidoverrideid', 'lesson');
     }
 }
 
-$url = new moodle_url('/mod/lesson/overridedelete.php', array('id' => $override->id));
-$confirmurl = new moodle_url($url, array('id' => $override->id, 'confirm' => 1));
-$cancelurl = new moodle_url('/mod/lesson/overrides.php', array('cmid' => $cm->id));
+$url = new url('/mod/lesson/overridedelete.php', array('id' => $override->id));
+$confirmurl = new url($url, array('id' => $override->id, 'confirm' => 1));
+$cancelurl = new url('/mod/lesson/overrides.php', array('cmid' => $cm->id));
 
 if (!empty($override->userid)) {
     $cancelurl->param('mode', 'user');

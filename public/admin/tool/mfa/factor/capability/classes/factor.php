@@ -16,6 +16,7 @@
 
 namespace factor_capability;
 
+use core\context\system;
 use stdClass;
 use tool_mfa\local\factor\object_factor_base;
 
@@ -78,7 +79,7 @@ class factor extends object_factor_base {
         $adminpass = (bool) get_config('factor_capability', 'adminpasses');
 
         // Do anything check is controlled from factor config.
-        if (!has_capability('factor/capability:cannotpassfactor', \context_system::instance(), $USER, $adminpass)) {
+        if (!has_capability('factor/capability:cannotpassfactor', system::instance(), $USER, $adminpass)) {
             return \tool_mfa\plugininfo\factor::STATE_PASS;
         } else {
             return \tool_mfa\plugininfo\factor::STATE_NEUTRAL;

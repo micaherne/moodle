@@ -21,6 +21,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/wiki/lib.php');
 require_once($CFG->dirroot . '/mod/wiki/locallib.php');
@@ -34,24 +37,24 @@ $subwikiid = optional_param('subwikiid', 0, PARAM_INT);
 $userid = optional_param('uid', 0, PARAM_INT);
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new \moodle_exception('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 if (!$cm = get_coursemodule_from_id('wiki', $cmid)) {
-    throw new \moodle_exception('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 require_login($course, true, $cm);
 
 // Checking wiki instance
 if (!$wiki = wiki_get_wiki($cm->instance)) {
-    throw new \moodle_exception('incorrectwikiid', 'wiki');
+    throw new moodle_exception('incorrectwikiid', 'wiki');
 }
 
 if ($subwikiid) {
     // Subwiki id is specified.
     $subwiki = wiki_get_subwiki($subwikiid);
     if (!$subwiki || $subwiki->wikiid != $wiki->id) {
-        throw new \moodle_exception('incorrectsubwikiid', 'wiki');
+        throw new moodle_exception('incorrectsubwikiid', 'wiki');
     }
 } else {
     // Getting current group id
@@ -66,13 +69,13 @@ if ($subwikiid) {
     if (!$subwiki = wiki_get_subwiki_by_group($cm->instance, $gid, $userid)) {
         // Subwiki does not exist yet, redirect to the view page (which will redirect to create page if allowed).
         $params = array('wid' => $wiki->id, 'group' => $gid, 'uid' => $userid, 'title' => $wiki->firstpagetitle);
-        $url = new moodle_url('/mod/wiki/view.php', $params);
+        $url = new url('/mod/wiki/view.php', $params);
         redirect($url);
     }
 }
 
 if ($subwiki && !wiki_user_can_view($subwiki, $wiki)) {
-    throw new \moodle_exception('cannotviewpage', 'wiki');
+    throw new moodle_exception('cannotviewpage', 'wiki');
 }
 
 $wikipage = new page_wiki_search($wiki, $subwiki, $cm);

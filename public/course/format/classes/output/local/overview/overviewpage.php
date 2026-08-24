@@ -19,6 +19,7 @@ namespace core_courseformat\output\local\overview;
 use core\context\course as context_course;
 use core\output\named_templatable;
 use core\output\renderable;
+use core\output\renderer_base;
 use core\url;
 use core_course\output\activity_icon;
 use core_collator;
@@ -66,7 +67,7 @@ class overviewpage implements renderable, named_templatable {
     }
 
     #[\Override]
-    public function export_for_template(\renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
         $modfullnames = $this->get_course_activities_overview_list();
 
         $elements = [];
@@ -131,7 +132,7 @@ class overviewpage implements renderable, named_templatable {
      * @return stdClass The exported data for the activity overview section.
      */
     private function export_activity_overview_section_data(
-        \renderer_base $output,
+        renderer_base $output,
         string $modname,
         string $modfullname
     ): stdClass {
@@ -151,7 +152,7 @@ class overviewpage implements renderable, named_templatable {
      * @param string $modname The name of the module for which the icon is being generated.
      * @return string The HTML string for the activity overview icon.
      */
-    private function get_activity_overview_icon(\renderer_base $output, string $modname): string {
+    private function get_activity_overview_icon(renderer_base $output, string $modname): string {
         // Resource is a generic term for all modules with MOD_ARCHETYPE_RESOURCE.
         // We group all of them under the mod_page icon.
         if ($modname === 'resource') {
@@ -193,7 +194,7 @@ class overviewpage implements renderable, named_templatable {
      * @param \renderer_base $renderer The renderer requesting the template name
      * @return string
      */
-    public function get_template_name(\renderer_base $renderer): string {
+    public function get_template_name(renderer_base $renderer): string {
         return 'core_courseformat/local/overview/overviewpage';
     }
 }

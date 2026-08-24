@@ -22,6 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\exception\moodle_exception;
+use core_cache\cache;
+use core_cache\helper;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/grade_object.php');
@@ -369,7 +374,7 @@ class grade_category extends grade_object {
     public function insert($source = null, $isbulkupdate = false) {
 
         if (empty($this->courseid)) {
-            throw new \moodle_exception('cannotinsertgrade');
+            throw new moodle_exception('cannotinsertgrade');
         }
 
         if (empty($this->parent)) {
@@ -2342,13 +2347,13 @@ class grade_category extends grade_object {
         // For a course category, we return the course name if the fullname is set to '?' in the DB (empty in the category edit form)
         if (empty($this->parent) && $this->fullname == '?') {
             $course = $DB->get_record('course', array('id'=> $this->courseid));
-            return format_string($course->fullname, false, ['context' => context_course::instance($this->courseid),
+            return format_string($course->fullname, false, ['context' => course::instance($this->courseid),
                 'escape' => $escape]);
 
         } else {
             // Grade categories can't be set up at system context (unlike scales and outcomes)
             // We therefore must have a courseid, and don't need to handle system contexts when filtering.
-            return format_string($this->fullname, false, ['context' => context_course::instance($this->courseid),
+            return format_string($this->fullname, false, ['context' => course::instance($this->courseid),
                 'escape' => $escape]);
         }
     }
@@ -2393,11 +2398,11 @@ class grade_category extends grade_object {
         }
 
         if ($parentid == $this->id) {
-            throw new \moodle_exception('cannotassignselfasparent');
+            throw new moodle_exception('cannotassignselfasparent');
         }
 
         if (empty($this->parent) and $this->is_course_category()) {
-            throw new \moodle_exception('cannothaveparentcate');
+            throw new moodle_exception('cannothaveparentcate');
         }
 
         // find parent and check course id
@@ -2799,6 +2804,6 @@ class grade_category extends grade_object {
      * @return void
      */
     public static function clean_record_set() {
-        cache_helper::purge_by_event('changesingradecategories');
+        helper::purge_by_event('changesingradecategories');
     }
 }

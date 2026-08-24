@@ -16,12 +16,12 @@
 
 namespace mod_bigbluebuttonbn\completion;
 
-use cm_info;
+use core_course\cm_info;
 use core_completion\activity_custom_completion;
 use mod_bigbluebuttonbn\extension;
 use mod_bigbluebuttonbn\instance;
 use mod_bigbluebuttonbn\logger;
-use moodle_exception;
+use core\exception\moodle_exception;
 use stdClass;
 
 /**

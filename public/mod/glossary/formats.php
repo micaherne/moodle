@@ -2,6 +2,10 @@
 
 /// This file allows to manage the default behaviour of the display formats
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+use core\url;
+
 require_once("../../config.php");
 require_once($CFG->libdir.'/adminlib.php');
 require_once("lib.php");
@@ -9,7 +13,7 @@ require_once("lib.php");
 $id   = required_param('id', PARAM_INT);
 $mode = optional_param('mode', '', PARAM_ALPHANUMEXT);
 
-$url = new moodle_url('/mod/glossary/formats.php', array('id'=>$id));
+$url = new url('/mod/glossary/formats.php', array('id'=>$id));
 if ($mode !== '') {
     $url->param('mode', $mode);
 }
@@ -18,7 +22,7 @@ $PAGE->set_url($url);
 admin_externalpage_setup('managemodules'); // this is hacky, tehre should be a special hidden page for it
 
 if ( !$displayformat = $DB->get_record("glossary_formats", array("id"=>$id))) {
-    throw new \moodle_exception('invalidglossaryformat', 'glossary');
+    throw new moodle_exception('invalidglossaryformat', 'glossary');
 }
 
 $form = data_submitted();

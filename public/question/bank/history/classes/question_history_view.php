@@ -18,7 +18,7 @@ namespace qbank_history;
 
 use core_question\local\bank\question_edit_contexts;
 use core_question\local\bank\view;
-use moodle_url;
+use core\url;
 use stdClass;
 
 /**
@@ -57,7 +57,7 @@ class question_history_view extends view {
      */
     public function __construct(
         question_edit_contexts $contexts,
-        moodle_url $pageurl,
+        url $pageurl,
         stdClass $course,
         ?stdClass $cm = null,
         array $params = [],
@@ -69,7 +69,7 @@ class question_history_view extends view {
 
         // The extra params can come straight from a web service request, so the entry id must be cleaned here.
         $this->entryid = clean_param($extraparams['entryid'] ?? 0, PARAM_INT);
-        $this->basereturnurl = new \moodle_url($extraparams['returnurl']);
+        $this->basereturnurl = new url($extraparams['returnurl']);
         parent::__construct($contexts, $pageurl, $course, $cm, $params, $extraparams);
     }
 

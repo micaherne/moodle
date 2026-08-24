@@ -22,6 +22,18 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use \core_badges\badge;
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\context\user as context_user;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\theme_config;
+use core\url;
+use core\user as core_user;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -333,7 +345,7 @@ function file_get_unused_draft_itemid() {
 
     if (isguestuser() or !isloggedin()) {
         // guests and not-logged-in users can not be allowed to upload anything!!!!!!
-        throw new \moodle_exception('noguest');
+        throw new moodle_exception('noguest');
     }
 
     $contextid = context_user::instance($USER->id)->id;
@@ -770,7 +782,7 @@ function file_get_drafarea_files($draftitemid, $filepath = '/') {
                 } else {
                     $item->type = 'file';
                 }
-                $itemurl = moodle_url::make_draftfile_url($draftitemid, $item->filepath, $item->filename);
+                $itemurl = url::make_draftfile_url($draftitemid, $item->filepath, $item->filename);
                 $item->url = $itemurl->out();
                 $item->icon = $OUTPUT->image_url(file_file_icon($file))->out(false);
                 $item->thumbnail = $OUTPUT->image_url(file_file_icon($file))->out(false);
@@ -2021,7 +2033,7 @@ function get_mimetype_description($obj, $capitalise=false) {
         // context because it is possible that the page context might not have
         // been defined yet.
         $result = format_string($customdescription, true,
-                array('context' => context_system::instance()));
+                array('context' => system::instance()));
     } else if (get_string_manager()->string_exists($safemimetype, 'mimetypes')) {
         $result = get_string($safemimetype, 'mimetypes', (object)$a);
     } else if (get_string_manager()->string_exists($safemimetypestr, 'mimetypes')) {
@@ -2124,7 +2136,7 @@ function send_file_not_found() {
     }
 
     send_header_404();
-    throw new \moodle_exception('filenotfound', 'error',
+    throw new moodle_exception('filenotfound', 'error',
         $CFG->wwwroot.'/course/view.php?id='.$COURSE->id); // This is not displayed on IIS?
 }
 /**
@@ -2367,7 +2379,7 @@ function send_temp_file($path, $filename, $pathisstring=false) {
     if (!$pathisstring) {
         if (!file_exists($path)) {
             send_header_404();
-            throw new \moodle_exception('filenotfound', 'error', $CFG->wwwroot.'/');
+            throw new moodle_exception('filenotfound', 'error', $CFG->wwwroot.'/');
         }
         // executed after normal finish or abort
         \core\shutdown_manager::register_function('send_temp_file_finished', [$path]);
@@ -2602,7 +2614,7 @@ function send_file($path, $filename, $lifetime = null , $filter=0, $pathisstring
         if ($mimetype == 'text/html' || $mimetype == 'application/xhtml+xml' || file_is_svg_image_from_mimetype($mimetype)) {
             $options = new stdClass();
             $options->noclean = true;
-            $options->context = context_course::instance($COURSE->id);
+            $options->context = course::instance($COURSE->id);
 
             if (is_object($path)) {
                 $text = $path->get_content();
@@ -2619,7 +2631,7 @@ function send_file($path, $filename, $lifetime = null , $filter=0, $pathisstring
             $options = new stdClass();
             $options->newlines = false;
             $options->noclean = true;
-            $options->context = context_course::instance($COURSE->id);
+            $options->context = course::instance($COURSE->id);
 
             if (is_object($path)) {
                 $text = htmlentities($path->get_content(), ENT_QUOTES, 'UTF-8');
@@ -4448,16 +4460,16 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
     global $DB, $CFG, $USER, $OUTPUT;
     // relative path must start with '/'
     if (!$relativepath) {
-        throw new \moodle_exception('invalidargorconf');
+        throw new moodle_exception('invalidargorconf');
     } else if ($relativepath[0] != '/') {
-        throw new \moodle_exception('pathdoesnotstartslash');
+        throw new moodle_exception('pathdoesnotstartslash');
     }
 
     // extract relative path components
     $args = explode('/', ltrim($relativepath, '/'));
 
     if (count($args) < 3) { // always at least context, component and filearea
-        throw new \moodle_exception('invalidarguments');
+        throw new moodle_exception('invalidarguments');
     }
 
     $contextid = (int)array_shift($args);
@@ -4481,7 +4493,7 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
         }
 
         if (empty($CFG->enableblogs)) {
-            throw new \moodle_exception('siteblogdisable', 'blog');
+            throw new moodle_exception('siteblogdisable', 'blog');
         }
 
         $entryid = (int)array_shift($args);
@@ -4491,7 +4503,7 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
         if ($CFG->bloglevel < BLOG_GLOBAL_LEVEL) {
             require_login();
             if (isguestuser()) {
-                throw new \moodle_exception('noguest');
+                throw new moodle_exception('noguest');
             }
             if ($CFG->bloglevel == BLOG_USER_LEVEL) {
                 if ($USER->id != $entry->userid) {
@@ -4566,7 +4578,7 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
             $iscurrentuser = $USER->id == $grade->userid;
 
             if (!$iscurrentuser) {
-                $coursecontext = context_course::instance($course->id);
+                $coursecontext = course::instance($course->id);
                 if (!has_capability('moodle/grade:viewall', $coursecontext)) {
                     send_file_not_found();
                 }

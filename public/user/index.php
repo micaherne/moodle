@@ -30,6 +30,14 @@ require_once($CFG->libdir.'/tablelib.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->dirroot.'/enrol/locallib.php');
 
+use core\context;
+use core\context\course;
+use core\context\system;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+use core\plugin_manager;
+use core\url;
 use core_table\local\filter\filter;
 use core_table\local\filter\integer_filter;
 use core_table\local\filter\string_filter;
@@ -55,12 +63,12 @@ $PAGE->set_url('/user/index.php', array(
 if ($contextid) {
     $context = context::instance_by_id($contextid, MUST_EXIST);
     if ($context->contextlevel != CONTEXT_COURSE) {
-        throw new \moodle_exception('invalidcontext');
+        throw new moodle_exception('invalidcontext');
     }
     $course = $DB->get_record('course', array('id' => $context->instanceid), '*', MUST_EXIST);
 } else {
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-    $context = context_course::instance($course->id, MUST_EXIST);
+    $context = course::instance($course->id, MUST_EXIST);
 }
 // Not needed anymore.
 unset($contextid);
@@ -68,10 +76,10 @@ unset($courseid);
 
 require_login($course);
 
-$systemcontext = context_system::instance();
+$systemcontext = system::instance();
 $isfrontpage = ($course->id == SITEID);
 
-$frontpagectx = context_course::instance(SITEID);
+$frontpagectx = course::instance(SITEID);
 
 if ($isfrontpage) {
     $PAGE->set_pagelayout('admin');
@@ -232,11 +240,11 @@ if (!empty($CFG->enablenotes) && has_capability('moodle/notes:manage', $context)
 $params = ['operation' => 'download_participants'];
 
 $downloadoptions = [];
-$formats = core_plugin_manager::instance()->get_plugins_of_type('dataformat');
+$formats = plugin_manager::instance()->get_plugins_of_type('dataformat');
 foreach ($formats as $format) {
     if ($format->is_enabled()) {
         $params = ['operation' => 'download_participants', 'dataformat' => $format->name];
-        $url = new moodle_url('bulkchange.php', $params);
+        $url = new url('bulkchange.php', $params);
         $downloadoptions[$url->out(false)] = get_string('dataformat', $format->component);
     }
 }
@@ -259,7 +267,7 @@ if ($context->id != $frontpagectx->id) {
         $pluginoptions = [];
         foreach ($bulkoperations as $key => $bulkoperation) {
             $params = ['plugin' => $plugin->get_name(), 'operation' => $key];
-            $url = new moodle_url('bulkchange.php', $params);
+            $url = new url('bulkchange.php', $params);
             $pluginoptions[$url->out(false)] = $bulkoperation->get_title();
         }
         if (!empty($pluginoptions)) {

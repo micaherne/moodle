@@ -16,6 +16,7 @@
 
 namespace mod_data\external;
 
+use core\exception\moodle_exception;
 use core\notification;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -92,7 +93,7 @@ class delete_saved_preset extends external_api {
                     ];
                     notification::error(get_string('cannotdeletepreset', 'mod_data'));
                 }
-            } catch (\moodle_exception $e) {
+            } catch (moodle_exception $e) {
                 // The saved preset has not been deleted.
                 $warnings[] = [
                     'item' => $presetname,

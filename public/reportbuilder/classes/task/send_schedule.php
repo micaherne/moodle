@@ -20,11 +20,11 @@ namespace core_reportbuilder\task;
 
 use core\{clock, di};
 use core\task\adhoc_task;
-use core_user;
+use core\user;
 use core_reportbuilder\local\schedules\base;
 use core_reportbuilder\local\helpers\schedule as helper;
 use core_reportbuilder\local\models\schedule;
-use moodle_exception;
+use core\exception\moodle_exception;
 
 /**
  * Ad-hoc task for sending a single report schedule
@@ -74,8 +74,8 @@ class send_schedule extends adhoc_task {
 
         // Get the schedule creator, ensure it's an active account.
         try {
-            $schedulecreator = core_user::get_user($schedule->get('usercreated'), '*', MUST_EXIST);
-            core_user::require_active_user($schedulecreator);
+            $schedulecreator = user::get_user($schedule->get('usercreated'), '*', MUST_EXIST);
+            user::require_active_user($schedulecreator);
         } catch (moodle_exception $exception) {
             $this->log('Invalid schedule creator: ' . $exception->getMessage(), 0);
             return;

@@ -16,6 +16,9 @@
 
 namespace core\analytics;
 
+use core\context\course;
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../../../analytics/tests/fixtures/test_target_shortname.php');
@@ -59,7 +62,7 @@ final class indicators_test extends \advanced_testcase {
             'enddate' => mktime(0, 0, 0, 10, 24, 2016)
         );
         $course = $this->getDataGenerator()->create_course($params);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $this->getDataGenerator()->enrol_user($user1->id, $course->id);
 
         $indicator = new \core\analytics\indicator\any_access_after_end();
@@ -91,7 +94,7 @@ final class indicators_test extends \advanced_testcase {
         );
         // Resetting $course var.
         $course = $this->getDataGenerator()->create_course($params);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $this->getDataGenerator()->enrol_user($user1->id, $course->id);
 
         $indicator = new \core\analytics\indicator\any_access_before_start();
@@ -118,7 +121,7 @@ final class indicators_test extends \advanced_testcase {
 
         // Test any course access.
         $course = $this->getDataGenerator()->create_course($params);
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $this->getDataGenerator()->enrol_user($user1->id, $course->id);
 
         $indicator = new \core\analytics\indicator\any_course_access();
@@ -170,16 +173,16 @@ final class indicators_test extends \advanced_testcase {
         $this->assertEquals($indicator::get_min_value(), $values[$user1->id][0]);
 
         \logstore_standard\event\unittest_executed::create(
-            array('context' => \context_course::instance($course->id), 'userid' => $user1->id))->trigger();
+            array('context' => course::instance($course->id), 'userid' => $user1->id))->trigger();
         // Max value if logs are found before the end time.
         list($values, $unused) = $indicator->calculate($sampleids, 'notrelevanthere', false, time() + 10);
         $this->assertEquals($indicator::get_max_value(), $values[$user1->id][0]);
 
         // Test any write action.
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         $course2 = $this->getDataGenerator()->create_course();
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext2 = course::instance($course2->id);
         $this->getDataGenerator()->enrol_user($user1->id, $course2->id);
 
         $indicator = new \core\analytics\indicator\any_write_action();
@@ -230,11 +233,11 @@ final class indicators_test extends \advanced_testcase {
 
         // Test any write action in the course.
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
         $activity1 = $this->getDataGenerator()->create_module('forum', array('course' => $course1->id));
-        $activity1context = \context_module::instance($activity1->cmid);
+        $activity1context = module::instance($activity1->cmid);
         $course2 = $this->getDataGenerator()->create_course();
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext2 = course::instance($course2->id);
         $this->getDataGenerator()->enrol_user($user1->id, $course2->id);
 
         $indicator = new \core\analytics\indicator\any_write_action_in_course();
@@ -285,7 +288,7 @@ final class indicators_test extends \advanced_testcase {
 
         // Test read actions.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $this->getDataGenerator()->enrol_user($user1->id, $course->id);
 
         $indicator = new \core\analytics\indicator\read_actions();

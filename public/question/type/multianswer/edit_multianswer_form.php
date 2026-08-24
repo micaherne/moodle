@@ -24,6 +24,9 @@
  */
 
 
+use core\exception\moodle_exception;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/question/type/numerical/questiontype.php');
@@ -283,7 +286,7 @@ class qtype_multianswer_edit_form extends question_edit_form {
                             case 'subquestion_replacement':
                                 continue 2;
                             default:
-                                throw new \moodle_exception('unknownquestiontype', 'question', '',
+                                throw new moodle_exception('unknownquestiontype', 'question', '',
                                         $wrapped->qtype);
                         }
                         $separator = '';

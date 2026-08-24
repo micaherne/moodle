@@ -16,8 +16,9 @@
 
 namespace core_course;
 
-use context_user;
-use context_course;
+use core\context\user;
+use core\context\course;
+use core_cache\cache;
 use ReflectionMethod;
 use core_cache\definition;
 use core_course\cache\course_image;
@@ -62,7 +63,7 @@ final class course_image_cache_test extends \advanced_testcase {
             $filerecord = [
                 'component' => 'user',
                 'filearea' => 'draft',
-                'contextid' => context_user::instance($USER->id)->id, 'itemid' => $draftid,
+                'contextid' => user::instance($USER->id)->id, 'itemid' => $draftid,
                 'filename' => $filename, 'filepath' => '/'
             ];
             $fs = get_file_storage();
@@ -79,7 +80,7 @@ final class course_image_cache_test extends \advanced_testcase {
      * @return string
      */
     protected function build_expected_course_image_url(\stdClass $course, string $filename): string {
-        $contextid = context_course::instance($course->id)->id;
+        $contextid = course::instance($course->id)->id;
         return 'https://www.example.com/moodle/pluginfile.php/' . $contextid. '/course/overviewfiles/' . $filename;
     }
 
@@ -89,7 +90,7 @@ final class course_image_cache_test extends \advanced_testcase {
     public function test_getting_data_if_course_is_not_exist(): void {
         $this->expectException('dml_missing_record_exception');
         $this->expectExceptionMessageMatches("/Can't find data record in database table course./");
-        $this->assertFalse(\cache::make('core', 'course_image')->get(999));
+        $this->assertFalse(cache::make('core', 'course_image')->get(999));
     }
 
     /**

@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\context\module;
+use core\context\user;
+use core\exception\coding_exception;
+use core\navigation\navigation_node;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/backup/util/interfaces/checksumable.class.php');
@@ -266,19 +273,19 @@ abstract class backup_helper {
         $itemid    = 0;
         switch ($backuptype) {
             case backup::TYPE_1ACTIVITY:
-                $ctxid     = context_module::instance($id)->id;
+                $ctxid     = module::instance($id)->id;
                 $component = 'backup';
                 $filearea  = 'activity';
                 $itemid    = 0;
                 break;
             case backup::TYPE_1SECTION:
-                $ctxid     = context_course::instance($courseid)->id;
+                $ctxid     = course::instance($courseid)->id;
                 $component = 'backup';
                 $filearea  = 'section';
                 $itemid    = $id;
                 break;
             case backup::TYPE_1COURSE:
-                $ctxid     = context_course::instance($courseid)->id;
+                $ctxid     = course::instance($courseid)->id;
                 $component = 'backup';
                 $filearea  = 'course';
                 $itemid    = 0;
@@ -327,7 +334,7 @@ abstract class backup_helper {
         // file area. Maintenance of such area is responsibility of
         // the user via corresponding file manager frontend
         if (($backupmode == backup::MODE_GENERAL  || $backupmode == backup::MODE_ASYNC) && (!$hasusers || $isannon)) {
-            $ctxid     = context_user::instance($userid)->id;
+            $ctxid     = user::instance($userid)->id;
             $component = 'user';
             $filearea  = 'backup';
             $itemid    = 0;
@@ -384,7 +391,7 @@ abstract class backup_helper {
     public static function print_coursereuse_selector(string $current): void {
         global $OUTPUT, $PAGE;
 
-        if ($coursereusenode = $PAGE->settingsnav->find('coursereuse', \navigation_node::TYPE_CONTAINER)) {
+        if ($coursereusenode = $PAGE->settingsnav->find('coursereuse', navigation_node::TYPE_CONTAINER)) {
 
             $menuarray = \core\navigation\views\secondary::create_menu_element([$coursereusenode]);
             if (empty($menuarray)) {
@@ -418,12 +425,12 @@ abstract class backup_helper {
 
             $selectmenu = new \core\output\select_menu('coursereusetype', $menuarray, $activeurl, true);
             $selectmenu->set_label(get_string('coursereusenavigationmenu'), ['class' => 'visually-hidden']);
-            $options = \html_writer::tag(
+            $options = html_writer::tag(
                 'div',
                 $OUTPUT->render_from_template('core/tertiary_navigation_selector', $selectmenu->export_for_template($OUTPUT)),
                 ['class' => 'row pb-3']
             );
-            echo \html_writer::tag(
+            echo html_writer::tag(
                 'div',
                 $options,
                 ['class' => 'container-fluid tertiary-navigation full-width-bottom-border', 'id' => 'tertiary-navigation']);

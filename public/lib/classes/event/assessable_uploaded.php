@@ -24,6 +24,8 @@
 
 namespace core\event;
 
+use core\exception\coding_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,11 +71,11 @@ abstract class assessable_uploaded extends base {
     protected function validate_data() {
         parent::validate_data();
         if ($this->contextlevel != CONTEXT_MODULE) {
-            throw new \coding_exception('Context level must be CONTEXT_MODULE.');
+            throw new coding_exception('Context level must be CONTEXT_MODULE.');
         } else if (!isset($this->other['pathnamehashes']) || !is_array($this->other['pathnamehashes'])) {
-            throw new \coding_exception('The \'pathnamehashes\' value must be set in other and must be an array.');
+            throw new coding_exception('The \'pathnamehashes\' value must be set in other and must be an array.');
         } else if (!isset($this->other['content']) || !is_string($this->other['content'])) {
-            throw new \coding_exception('The \'content\' value must be set in other and must be a string.');
+            throw new coding_exception('The \'content\' value must be set in other and must be a string.');
         }
     }
 

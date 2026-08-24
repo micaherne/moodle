@@ -30,6 +30,9 @@ global $CFG;
 require_once($CFG->dirroot . '/analytics/tests/classes/mlbackend_helper_trait.php');
 require_once($CFG->libdir . '/filelib.php');
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\url;
 use core_analytics\tests\mlbackend_helper_trait;
 
 /**
@@ -147,7 +150,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
      */
     protected function is_webserver_ready() {
         if (empty($this->pathtopython)) {
-            $settingurl = new \moodle_url('/admin/settings.php', array('section' => 'systempaths'));
+            $settingurl = new url('/admin/settings.php', array('section' => 'systempaths'));
             return get_string('pythonpathnotdefined', 'mlbackend_python', $settingurl->out());
         }
 
@@ -254,7 +257,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
         }
 
         if (!$resultobj = json_decode($result)) {
-            throw new \moodle_exception('errorpredictwrongformat', 'analytics', '', json_last_error_msg());
+            throw new moodle_exception('errorpredictwrongformat', 'analytics', '', json_last_error_msg());
         }
 
         if ($resultobj->status != 0) {
@@ -291,7 +294,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
         }
 
         if (!$resultobj = json_decode($result)) {
-            throw new \moodle_exception('errorpredictwrongformat', 'analytics', '', json_last_error_msg());
+            throw new moodle_exception('errorpredictwrongformat', 'analytics', '', json_last_error_msg());
         }
 
         if ($resultobj->status != 0) {
@@ -330,7 +333,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
 
             list($result, $exitcode) = $this->exec_command('evaluation', $params, 'errornopredictresults');
             if (!$resultobj = json_decode($result)) {
-                throw new \moodle_exception('errorpredictwrongformat', 'analytics', '', json_last_error_msg());
+                throw new moodle_exception('errorpredictwrongformat', 'analytics', '', json_last_error_msg());
             }
 
         } else {
@@ -348,7 +351,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
             list($result, $httpcode) = $this->server_request($url, 'post', $requestparams);
 
             if (!$resultobj = json_decode($result)) {
-                throw new \moodle_exception('errorpredictwrongformat', 'analytics', '', json_last_error_msg());
+                throw new moodle_exception('errorpredictwrongformat', 'analytics', '', json_last_error_msg());
             }
 
             // We need an extra request to get the resources generated during the evaluation process.
@@ -366,14 +369,14 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
 
             $rundir = $outputdir . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . $resultobj->runid;
             if (!mkdir($rundir, $CFG->directorypermissions, true)) {
-                throw new \moodle_exception('errorexportmodelresult', 'analytics');
+                throw new moodle_exception('errorexportmodelresult', 'analytics');
             }
 
             $zip = new \zip_packer();
             $success = $zip->extract_to_pathname($evaluationzippath, $rundir, null, null, true);
             if (!$success) {
                 $a = 'The evaluation files can not be exported to ' . $rundir;
-                throw new \moodle_exception('errorpredictionsprocessor', 'analytics', '', $a);
+                throw new moodle_exception('errorpredictionsprocessor', 'analytics', '', $a);
             }
 
             $resultobj->dir = $rundir;
@@ -405,7 +408,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
                 'errorexportmodelresult');
 
             if ($exitcode != 0) {
-                throw new \moodle_exception('errorexportmodelresult', 'analytics');
+                throw new moodle_exception('errorexportmodelresult', 'analytics');
             }
 
         } else {
@@ -422,7 +425,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
             $zip = new \zip_packer();
             $success = $zip->extract_to_pathname($exportzippath, $exportdir, null, null, true);
             if (!$success) {
-                throw new \moodle_exception('errorexportmodelresult', 'analytics');
+                throw new moodle_exception('errorexportmodelresult', 'analytics');
             }
         }
 
@@ -446,7 +449,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
                 'errorimportmodelresult');
 
             if ($exitcode != 0) {
-                throw new \moodle_exception('errorimportmodelresult', 'analytics');
+                throw new moodle_exception('errorimportmodelresult', 'analytics');
             }
 
         } else {
@@ -456,7 +459,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
             $importzipfile = $this->zip_dir($importdir);
             if (!$importzipfile) {
                 // There was an error zipping the directory.
-                throw new \moodle_exception('errorimportmodelresult', 'analytics');
+                throw new moodle_exception('errorimportmodelresult', 'analytics');
             }
 
             $requestparams = ['uniqueid' => $uniqueid, 'dirhash' => $this->hash_dir($modeldir),
@@ -478,7 +481,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
      * @return \stdClass
      */
     public function train_regression($uniqueid, \stored_file $dataset, $outputdir) {
-        throw new \coding_exception('This predictor does not support regression yet.');
+        throw new coding_exception('This predictor does not support regression yet.');
     }
 
     /**
@@ -491,7 +494,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
      * @return void
      */
     public function estimate($uniqueid, \stored_file $dataset, $outputdir) {
-        throw new \coding_exception('This predictor does not support regression yet.');
+        throw new coding_exception('This predictor does not support regression yet.');
     }
 
     /**
@@ -508,7 +511,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
      */
     public function evaluate_regression($uniqueid, $maxdeviation, $niterations, \stored_file $dataset,
             $outputdir, $trainedmodeldir) {
-        throw new \coding_exception('This predictor does not support regression yet.');
+        throw new coding_exception('This predictor does not support regression yet.');
     }
 
     /**
@@ -582,7 +585,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
         $result = exec($cmd, $output, $exitcode);
 
         if (!$result) {
-            throw new \moodle_exception($errorlangstr, 'analytics');
+            throw new moodle_exception($errorlangstr, 'analytics');
         }
 
         return [$result, $exitcode];
@@ -629,7 +632,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
             $url .= '/' . $path;
         }
 
-        return new \moodle_url($url);
+        return new url($url);
     }
 
     /**
@@ -644,7 +647,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
     protected function server_request($url, string $method, array $requestparams, ?array $options = null) {
 
         if ($method !== 'post' && $method !== 'get' && $method !== 'download_one') {
-            throw new \coding_exception('Incorrect request method provided. Only "get", "post" and "download_one"
+            throw new coding_exception('Incorrect request method provided. Only "get", "post" and "download_one"
                 actions are available.');
         }
 
@@ -657,7 +660,7 @@ class processor implements  \core_analytics\classifier, \core_analytics\regresso
         $responsebody = $curl->{$method}($url, $requestparams, $options);
 
         if ($curl->info['http_code'] !== 200) {
-            throw new \moodle_exception('errorserver', 'mlbackend_python', '',
+            throw new moodle_exception('errorserver', 'mlbackend_python', '',
                 $this->server_error_str($curl->info['http_code'], $responsebody));
         }
 

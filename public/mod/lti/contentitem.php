@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\url;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/lti/lib.php');
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
@@ -45,7 +48,7 @@ if ($config->lti_ltiversion === LTI_VERSION_1P3) {
 // Check access and capabilities.
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 require_login($course);
-$context = context_course::instance($courseid);
+$context = course::instance($courseid);
 require_capability('moodle/course:manageactivities', $context);
 require_capability('mod/lti:addcoursetool', $context);
 
@@ -55,7 +58,7 @@ $returnurlparams = [
     'id' => $id,
     'sesskey' => sesskey()
 ];
-$returnurl = new \moodle_url('/mod/lti/contentitem_return.php', $returnurlparams);
+$returnurl = new url('/mod/lti/contentitem_return.php', $returnurlparams);
 
 // Prepare the request.
 $request = lti_build_content_item_selection_request($id, $course, $returnurl, $title, $text, [], []);

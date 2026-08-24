@@ -18,6 +18,8 @@ namespace core\check\access;
 
 use core\check\check;
 use core\check\result;
+use core\output\action_link;
+use core\url;
 
 /**
  * Verifies sanity of default user role.
@@ -44,13 +46,13 @@ class defaultuserrole extends check {
      *
      * @return \action_link|null
      */
-    public function get_action_link(): ?\action_link {
+    public function get_action_link(): ?action_link {
         global $CFG, $DB;
 
         $defaultrole = $DB->get_record('role', ['id' => $CFG->defaultuserroleid]);
 
-        return new \action_link(
-            new \moodle_url('/admin/roles/define.php', ['action' => 'view', 'roleid' => $defaultrole->id]),
+        return new action_link(
+            new url('/admin/roles/define.php', ['action' => 'view', 'roleid' => $defaultrole->id]),
             get_string('definitionofrolex', 'core_role', role_get_name($defaultrole))
         );
     }

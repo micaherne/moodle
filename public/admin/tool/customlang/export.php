@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\system;
+use core\url;
+
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot.'/'.$CFG->admin.'/tool/customlang/locallib.php');
 require_once($CFG->libdir.'/adminlib.php');
@@ -30,12 +33,12 @@ require_once($CFG->libdir.'/adminlib.php');
 global $PAGE, $CFG;
 
 require_login(SITEID, false);
-require_capability('tool/customlang:export', context_system::instance());
+require_capability('tool/customlang:export', system::instance());
 
 $lng = required_param('lng', PARAM_LANG);
 
 admin_externalpage_setup('toolcustomlang', '', null,
-    new moodle_url('/admin/tool/customlang/import.php', ['lng' => $lng]));
+    new url('/admin/tool/customlang/import.php', ['lng' => $lng]));
 
 $form = new \tool_customlang\form\export(null, ['lng' => $lng]);
 

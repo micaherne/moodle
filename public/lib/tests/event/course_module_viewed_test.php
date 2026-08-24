@@ -17,10 +17,10 @@
 namespace core\event;
 
 use advanced_testcase;
-use coding_exception;
-use context_module;
+use core\exception\coding_exception;
+use core\context\module;
 use stdClass;
-use moodle_url;
+use core\url;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/../fixtures/event_fixtures.php');
@@ -47,7 +47,7 @@ final class course_module_viewed_test extends advanced_testcase {
         $record->course = $course->id;
         $feed = $this->getDataGenerator()->create_module('feedback', $record);
         $cm = get_coursemodule_from_instance('feedback', $feed->id);
-        $context = context_module::instance($cm->id);
+        $context = module::instance($cm->id);
 
         // Trigger the page view event.
         $sink = $this->redirectEvents();
@@ -62,7 +62,7 @@ final class course_module_viewed_test extends advanced_testcase {
         $sink->close();
 
         $this->assertSame('feedback', $event->objecttable);
-        $url = new moodle_url('/mod/feedback/view.php', array('id' => $cm->id));
+        $url = new url('/mod/feedback/view.php', array('id' => $cm->id));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
 

@@ -16,6 +16,7 @@
 
 namespace core_admin\reportbuilder\local\systemreports;
 
+use core\output\html_writer;
 use core_admin\reportbuilder\local\filters\courserole;
 use core\context\system;
 use core_cohort\reportbuilder\local\entities\cohort;
@@ -29,9 +30,9 @@ use core_reportbuilder\local\report\filter;
 use core_reportbuilder\system_report;
 use core_role\reportbuilder\local\entities\role;
 use core_user\fields;
-use lang_string;
-use moodle_url;
-use pix_icon;
+use core\lang_string;
+use core\url;
+use core\output\pix_icon;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -67,7 +68,7 @@ class users extends system_report {
             {$entityuseralias}.suspended, {$entityuseralias}.username, " . implode(', ', $fullnamefields));
 
         if ($this->get_parameter('withcheckboxes', false, PARAM_BOOL)) {
-            $canviewfullnames = has_capability('moodle/site:viewfullnames', \context_system::instance());
+            $canviewfullnames = has_capability('moodle/site:viewfullnames', system::instance());
             $this->set_checkbox_toggleall(static function (\stdClass $row) use ($canviewfullnames): array {
                 return [$row->id, fullname($row, $canviewfullnames)];
             });
@@ -155,14 +156,14 @@ class users extends system_report {
                 ->add_fields("{$entityuseralias}.suspended, {$entityuseralias}.confirmed")
                 ->add_callback(static function (string $fullname, \stdClass $row): string {
                     if ($row->suspended) {
-                        $fullname .= ' ' . \html_writer::tag(
+                        $fullname .= ' ' . html_writer::tag(
                             'span',
                             get_string('suspended', 'auth'),
                             ['class' => 'badge text-bg-warning ms-1']
                         );
                     }
                     if (!$row->confirmed) {
-                        $fullname .= ' ' . \html_writer::tag(
+                        $fullname .= ' ' . html_writer::tag(
                             'span',
                             get_string('confirmationpending', 'admin'),
                             ['class' => 'badge text-bg-danger ms-1']
@@ -177,7 +178,7 @@ class users extends system_report {
                 ->add_fields("{$entityuseralias}.suspended")
                 ->add_callback(static function (string $email, \stdClass $row): string {
                     if ($row->suspended) {
-                        $email = \html_writer::tag('del', $email);
+                        $email = html_writer::tag('del', $email);
                     }
                     return $email;
                 });
@@ -277,7 +278,7 @@ class users extends system_report {
 
         // Action to edit users.
         $this->add_action((new action(
-            new moodle_url('/user/editadvanced.php', ['id' => ':id', 'course' => get_site()->id]),
+            new url('/user/editadvanced.php', ['id' => ':id', 'course' => get_site()->id]),
             new pix_icon('t/edit', ''),
             [],
             false,
@@ -288,7 +289,7 @@ class users extends system_report {
 
         // Action to suspend users (non mnet remote users).
         $this->add_action((new action(
-            new moodle_url('/admin/user.php', ['suspend' => ':id', 'sesskey' => sesskey()]),
+            new url('/admin/user.php', ['suspend' => ':id', 'sesskey' => sesskey()]),
             new pix_icon('t/show', ''),
             [],
             false,
@@ -300,7 +301,7 @@ class users extends system_report {
 
         // Action to unsuspend users (non mnet remote users).
         $this->add_action((new action(
-            new moodle_url('/admin/user.php', ['unsuspend' => ':id', 'sesskey' => sesskey()]),
+            new url('/admin/user.php', ['unsuspend' => ':id', 'sesskey' => sesskey()]),
             new pix_icon('t/hide', ''),
             [],
             false,
@@ -312,7 +313,7 @@ class users extends system_report {
 
         // Action to unlock users (non mnet remote users).
         $this->add_action((new action(
-            new moodle_url('/admin/user.php', ['unlock' => ':id', 'sesskey' => sesskey()]),
+            new url('/admin/user.php', ['unlock' => ':id', 'sesskey' => sesskey()]),
             new pix_icon('t/unlock', ''),
             [],
             false,
@@ -324,7 +325,7 @@ class users extends system_report {
 
         // Action to suspend users (mnet remote users).
         $this->add_action((new action(
-            new moodle_url('/admin/user.php', ['acl' => ':id', 'sesskey' => sesskey(), 'accessctrl' => 'deny']),
+            new url('/admin/user.php', ['acl' => ':id', 'sesskey' => sesskey(), 'accessctrl' => 'deny']),
             new pix_icon('t/show', ''),
             [],
             false,
@@ -346,7 +347,7 @@ class users extends system_report {
 
         // Action to unsuspend users (mnet remote users).
         $this->add_action((new action(
-            new moodle_url('/admin/user.php', ['acl' => ':id', 'sesskey' => sesskey(), 'accessctrl' => 'allow']),
+            new url('/admin/user.php', ['acl' => ':id', 'sesskey' => sesskey(), 'accessctrl' => 'allow']),
             new pix_icon('t/hide', ''),
             [],
             false,
@@ -368,7 +369,7 @@ class users extends system_report {
 
         // Action to delete users.
         $this->add_action((new action(
-            new moodle_url('/admin/user.php', ['delete' => ':id', 'sesskey' => sesskey()]),
+            new url('/admin/user.php', ['delete' => ':id', 'sesskey' => sesskey()]),
             new pix_icon('t/delete', ''),
             [
                 'class' => 'text-danger',
@@ -390,7 +391,7 @@ class users extends system_report {
                 fullname($row, true),
             ]);
 
-            $row->deleteurl = (new moodle_url('/admin/user.php', [
+            $row->deleteurl = (new url('/admin/user.php', [
                 'delete' => $row->id,
                 'confirm' => md5($row->id),
                 'sesskey' => sesskey(),
@@ -404,7 +405,7 @@ class users extends system_report {
 
         // Action to confirm users.
         $this->add_action((new action(
-            new moodle_url('/admin/user.php', ['confirmuser' => ':id', 'sesskey' => sesskey()]),
+            new url('/admin/user.php', ['confirmuser' => ':id', 'sesskey' => sesskey()]),
             new pix_icon('t/check', ''),
             [],
             false,
@@ -415,7 +416,7 @@ class users extends system_report {
 
         // Action to resend email.
         $this->add_action((new action(
-            new moodle_url('/admin/user.php', ['resendemail' => ':id', 'sesskey' => sesskey()]),
+            new url('/admin/user.php', ['resendemail' => ':id', 'sesskey' => sesskey()]),
             new pix_icon('t/email', ''),
             [],
             false,

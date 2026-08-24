@@ -26,6 +26,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+
 require_once(__DIR__ . '/../config.php');
 require_once(__DIR__ . '/../lib/filelib.php');
 require_once(__DIR__.'/lib.php');
@@ -55,7 +57,7 @@ if (file_exists($CFG->dirroot.'/repository/'.$type.'/lib.php')) {
     $classname = 'repository_' . $type;
     $repo = new $classname($repo_id, $repository->contextid, array('type'=>$type));
 } else {
-    throw new \moodle_exception('invalidplugin', 'repository', $type);
+    throw new moodle_exception('invalidplugin', 'repository', $type);
 }
 
 // post callback

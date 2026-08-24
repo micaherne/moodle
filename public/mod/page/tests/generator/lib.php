@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -65,7 +67,7 @@ class mod_page_generator extends testing_module_generator {
             $instance,
             $record,
             'page',
-            \context_module::instance($instance->cmid),
+            module::instance($instance->cmid),
             'mod_page',
             'content',
             0

@@ -26,6 +26,7 @@ namespace gradingform_guide\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core\context;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\transform;
 use \core_privacy\local\request\writer;
@@ -73,7 +74,7 @@ class provider implements
      * @param  int $instanceid The instance ID to export data for.
      * @param  array $subcontext The directory to export this data to.
      */
-    public static function export_gradingform_instance_data(\context $context, int $instanceid, array $subcontext) {
+    public static function export_gradingform_instance_data(context $context, int $instanceid, array $subcontext) {
         global $DB;
         // Get records from the provided params.
         $params = ['instanceid' => $instanceid];

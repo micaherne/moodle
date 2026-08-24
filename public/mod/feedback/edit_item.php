@@ -22,6 +22,11 @@
  * @package mod_feedback
  */
 
+use core\context\module;
+use core\exception\moodle_exception;
+use core\navigation\navigation_node;
+use core\url;
+
 require_once("../../config.php");
 require_once("lib.php");
 
@@ -34,21 +39,21 @@ if (!$itemid) {
 if ($itemid) {
     $item = $DB->get_record('feedback_item', array('id' => $itemid), '*', MUST_EXIST);
     list($course, $cm) = get_course_and_cm_from_instance($item->feedback, 'feedback');
-    $url = new moodle_url('/mod/feedback/edit_item.php', array('id' => $itemid));
+    $url = new url('/mod/feedback/edit_item.php', array('id' => $itemid));
     $typ = $item->typ;
 } else {
     $item = null;
     list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'feedback');
-    $url = new moodle_url('/mod/feedback/edit_item.php', array('cmid' => $cm->id, 'typ' => $typ));
+    $url = new url('/mod/feedback/edit_item.php', array('cmid' => $cm->id, 'typ' => $typ));
     $item = (object)['id' => null, 'position' => -1, 'typ' => $typ, 'options' => ''];
 }
 
 require_login($course, true, $cm);
-$context = context_module::instance($cm->id);
+$context = module::instance($cm->id);
 require_capability('mod/feedback:edititems', $context);
 $feedback = $PAGE->activityrecord;
 
-$editurl = new moodle_url('/mod/feedback/edit.php', array('id' => $cm->id));
+$editurl = new url('/mod/feedback/edit.php', array('id' => $cm->id));
 
 $PAGE->set_url($url);
 $PAGE->set_show_navigation_footer(false);
@@ -67,7 +72,7 @@ if (!$item->id && $typ === 'pagebreak') {
 
 //get the existing item or create it
 if (!$typ) {
-    throw new \moodle_exception('typemissing', 'feedback', $editurl->out(false));
+    throw new moodle_exception('typemissing', 'feedback', $editurl->out(false));
 }
 
 $itemobj = feedback_get_item_class($typ);
@@ -89,7 +94,7 @@ if ($itemobj->get_data()) {
 $strfeedbacks = get_string("modulenameplural", "feedback");
 $strfeedback  = get_string("modulename", "feedback");
 
-navigation_node::override_active_url(new moodle_url('/mod/feedback/edit.php',
+navigation_node::override_active_url(new url('/mod/feedback/edit.php',
         array('id' => $cm->id, 'do_show' => 'edit')));
 if ($item->id) {
     $PAGE->navbar->add(get_string('edit_item', 'feedback'));

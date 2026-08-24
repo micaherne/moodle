@@ -16,6 +16,7 @@
 
 namespace core\oauth2\server\repository;
 
+use core\context\system;
 use core\oauth2\server\entity\client_entity;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -54,7 +55,7 @@ final class granted_scopes_repository_test extends \advanced_testcase {
             (object) [
                 'clientidentifier' => $clientidentifier,
                 'name' => 'Test Client',
-                'ownercontext' => \context_system::instance()->id,
+                'ownercontext' => system::instance()->id,
                 'status' => client_entity::STATUS_ACTIVE,
                 'isconfidential' => 1,
                 'timecreated' => time(),
@@ -147,7 +148,7 @@ final class granted_scopes_repository_test extends \advanced_testcase {
             (object) [
                 'clientidentifier' => $clientidentifier,
                 'name' => 'Test Client',
-                'ownercontext' => \context_system::instance()->id,
+                'ownercontext' => system::instance()->id,
                 'status' => client_entity::STATUS_ACTIVE,
                 'isconfidential' => 1,
                 'timecreated' => time(),
@@ -233,7 +234,7 @@ final class granted_scopes_repository_test extends \advanced_testcase {
             (object) [
                 'clientidentifier' => $clientidentifier,
                 'name' => 'Test Client',
-                'ownercontext' => \context_system::instance()->id,
+                'ownercontext' => system::instance()->id,
                 'status' => client_entity::STATUS_ACTIVE,
                 'isconfidential' => 1,
                 'timecreated' => time(),

@@ -23,6 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\module;
+use core\url;
+use core_course\cached_cm_info;
+use core_course\cm_info;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -270,7 +275,7 @@ function url_export_contents($cm, $baseurl) {
     global $CFG, $DB;
     require_once("$CFG->dirroot/mod/url/locallib.php");
     $contents = array();
-    $context = context_module::instance($cm->id);
+    $context = module::instance($cm->id);
 
     $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
     $urlrecord = $DB->get_record('url', array('id'=>$cm->instance), '*', MUST_EXIST);
@@ -407,7 +412,7 @@ function mod_url_core_calendar_provide_event_action(calendar_event $event,
 
     return $factory->create_instance(
         get_string('view'),
-        new \moodle_url('/mod/url/view.php', ['id' => $cm->id]),
+        new url('/mod/url/view.php', ['id' => $cm->id]),
         1,
         true
     );

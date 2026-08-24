@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -29,7 +31,7 @@ $id = optional_param('id', 0, PARAM_INT);
 $delete = optional_param('delete', false, PARAM_BOOL);
 $restore = optional_param('restore', false, PARAM_BOOL);
 
-$pageurl = new moodle_url('/payment/manage_account.php');
+$pageurl = new url('/payment/manage_account.php');
 admin_externalpage_setup('paymentaccounts', '', [], $pageurl);
 
 $enabledplugins = \core\plugininfo\paygw::get_enabled_plugins();
@@ -39,11 +41,11 @@ require_capability('moodle/payment:manageaccounts', $account->get_context());
 
 if ($delete && !$account->get('archived') && confirm_sesskey()) {
     \core_payment\helper::delete_payment_account($account);
-    redirect(new moodle_url('/payment/accounts.php'));
+    redirect(new url('/payment/accounts.php'));
 }
 if ($restore && $account->get('archived') && confirm_sesskey()) {
     \core_payment\helper::restore_payment_account($account);
-    redirect(new moodle_url('/payment/accounts.php'));
+    redirect(new url('/payment/accounts.php'));
 }
 
 $PAGE->set_secondary_active_tab('siteadminnode');
@@ -59,10 +61,10 @@ $PAGE->set_heading($id ? format_string($account->get('name')) : get_string('crea
 $form = new \core_payment\form\account($pageurl->out(false), ['persistent' => $account]);
 
 if ($form->is_cancelled()) {
-    redirect(new moodle_url('/payment/accounts.php'));
+    redirect(new url('/payment/accounts.php'));
 } else if ($data = $form->get_data()) {
     \core_payment\helper::save_payment_account($data);
-    redirect(new moodle_url('/payment/accounts.php'));
+    redirect(new url('/payment/accounts.php'));
 }
 
 echo $OUTPUT->header();

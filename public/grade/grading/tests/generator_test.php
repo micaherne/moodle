@@ -26,7 +26,8 @@
 namespace core_grading;
 
 use advanced_testcase;
-use context_module;
+use core\context\module;
+use core\test\testing_util;
 use gradingform_controller;
 use gradingform_rubric_controller;
 
@@ -47,14 +48,14 @@ final class generator_test extends advanced_testcase {
         $this->resetAfterTest(true);
 
         // Fetch generators.
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
         $gradinggenerator = $generator->get_plugin_generator('core_grading');
 
         // Create items required for testing.
         $course = $generator->create_course();
         $module = $generator->create_module('assign', ['course' => $course]);
         $user = $generator->create_user();
-        $context = context_module::instance($module->cmid);
+        $context = module::instance($module->cmid);
 
         // The assignment module has an itemumber 0 which is an advanced grading area called 'submissions'.
         $component = 'mod_assign';

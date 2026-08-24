@@ -22,6 +22,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\coursecat;
+use core\exception\moodle_exception;
+use core\output\html_writer;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
@@ -48,7 +52,7 @@ class core_course_deletecategory_form extends moodleform {
         $mform = $this->_form;
         $this->coursecat = $this->_customdata;
 
-        $categorycontext = context_coursecat::instance($this->coursecat->id);
+        $categorycontext = coursecat::instance($this->coursecat->id);
         $categoryname = $this->coursecat->get_formatted_name();
 
         // Check permissions, to see if it OK to give the option to delete
@@ -67,7 +71,7 @@ class core_course_deletecategory_form extends moodleform {
             $options[1] = get_string('deleteallcannotundo');
         }
         if (empty($options)) {
-            throw new \moodle_exception('youcannotdeletecategory', 'error', 'index.php', $categoryname);
+            throw new moodle_exception('youcannotdeletecategory', 'error', 'index.php', $categoryname);
         }
 
         // Now build the form.

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\context\system;
 use core_comment\comment_exception;
 
 /**
@@ -82,7 +83,7 @@ function qbank_comment_preview_display($question, $courseid): string {
             && core\plugininfo\qbank::is_plugin_enabled('qbank_comment')) {
         \core_comment\manager::init($PAGE);
         $args = new \stdClass;
-        $args->contextid = context_system::instance()->id; // Static data to bypass comment sql as context is not needed.
+        $args->contextid = system::instance()->id; // Static data to bypass comment sql as context is not needed.
         $args->courseid  = $courseid;
         $args->area      = 'question';
         $args->itemid    = $question->id;

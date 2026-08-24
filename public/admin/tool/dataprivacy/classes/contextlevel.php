@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace tool_dataprivacy;
+
+use core_cache\cache;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -69,7 +71,7 @@ class contextlevel extends \core\persistent {
     public static function get_record_by_contextlevel($contextlevel, $exception = true) {
         global $DB;
 
-        $cache = \cache::make('tool_dataprivacy', 'contextlevel');
+        $cache = cache::make('tool_dataprivacy', 'contextlevel');
         if ($data = $cache->get($contextlevel)) {
             return new static(0, $data);
         }
@@ -113,7 +115,7 @@ class contextlevel extends \core\persistent {
      * @return null
      */
     protected function after_create() {
-        $cache = \cache::make('tool_dataprivacy', 'contextlevel');
+        $cache = cache::make('tool_dataprivacy', 'contextlevel');
         $cache->set($this->get('contextlevel'), $this->to_record());
     }
 
@@ -124,7 +126,7 @@ class contextlevel extends \core\persistent {
      * @return null
      */
     protected function after_update($result) {
-        $cache = \cache::make('tool_dataprivacy', 'contextlevel');
+        $cache = cache::make('tool_dataprivacy', 'contextlevel');
         $cache->set($this->get('contextlevel'), $this->to_record());
     }
 
@@ -134,7 +136,7 @@ class contextlevel extends \core\persistent {
      * @return null
      */
     protected function before_delete() {
-        $cache = \cache::make('tool_dataprivacy', 'contextlevel');
+        $cache = cache::make('tool_dataprivacy', 'contextlevel');
         $cache->delete($this->get('contextlevel'));
     }
 }

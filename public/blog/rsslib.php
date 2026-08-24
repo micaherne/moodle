@@ -22,6 +22,9 @@
  * @copyright  2010 Andrew Davis
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context\course;
+use core\context\system;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/rsslib.php');
@@ -117,7 +120,7 @@ function blog_rss_add_http_header($context, $title, $filtertype, $filterselect =
 function blog_rss_get_params($filters) {
     $thingid = $rsscontext = $filtertype = null;
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
 
     if (!$filters) {
         $thingid = SITEID;
@@ -162,7 +165,7 @@ function blog_rss_get_feed($context, $args) {
         }
     }
 
-    $sitecontext = context_system::instance();
+    $sitecontext = system::instance();
     if (!has_capability('moodle/blog:view', $sitecontext)) {
         return null;
     }
@@ -240,10 +243,10 @@ function blog_rss_get_feed($context, $args) {
             break;
         case 'course':
             $info = $DB->get_field('course', 'fullname', array('id' => $id));
-            $info = format_string($info, true, array('context' => context_course::instance($id)));
+            $info = format_string($info, true, array('context' => course::instance($id)));
             break;
         case 'site':
-            $info = format_string($SITE->fullname, true, array('context' => context_course::instance(SITEID)));
+            $info = format_string($SITE->fullname, true, array('context' => course::instance(SITEID)));
             break;
         case 'group':
             $group = groups_get_group($id);

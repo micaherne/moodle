@@ -16,6 +16,7 @@
 
 namespace tiny_premium\form;
 
+use core\output\html_writer;
 use moodleform;
 
 /**
@@ -62,7 +63,7 @@ class tiny_premium_settings_form extends moodleform {
         }
 
         $mform->addElement('header', 'serversidesettingssheader', get_string('serverside:service', 'tiny_premium'));
-        $settingshelp = \html_writer::tag('p', get_string('serverside:desc', 'tiny_premium', $pluginname));
+        $settingshelp = html_writer::tag('p', get_string('serverside:desc', 'tiny_premium', $pluginname));
         $mform->addElement('html', $settingshelp);
 
         $radiogroup = [

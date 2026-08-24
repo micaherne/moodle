@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\url;
+
 require_once($CFG->dirroot.'/backup/util/xml/parser/processors/grouped_parser_processor.class.php');
 
 /**
@@ -72,7 +74,7 @@ class restore_structure_parser_processor extends grouped_parser_processor {
             }
 
             // We have to remove trailing slashes, otherwise file URLs will be restored with an extra slash.
-            $basefileurl = rtrim(moodle_url::make_legacyfile_url($this->courseid, null)->out(true), $slash);
+            $basefileurl = rtrim(url::make_legacyfile_url($this->courseid, null)->out(true), $slash);
             // Decode file.php calls.
             $search = array ("$@FILEPHP@$");
             $replace = array($basefileurl);

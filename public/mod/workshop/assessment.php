@@ -34,6 +34,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\moodle_exception;
+use core\url;
+
 require(__DIR__.'/../../config.php');
 require_once(__DIR__.'/locallib.php');
 
@@ -46,7 +49,7 @@ $cm         = get_coursemodule_from_instance('workshop', $workshop->id, $course-
 
 require_login($course, false, $cm);
 if (isguestuser()) {
-    throw new \moodle_exception('guestsarenotallowed');
+    throw new moodle_exception('guestsarenotallowed');
 }
 $workshop = new workshop($workshop, $cm, $course);
 
@@ -81,7 +84,7 @@ if ($assessmenteditable) {
     list($assessed, $notice) = $workshop->check_examples_assessed_before_assessment($assessment->reviewerid);
     if (!$assessed) {
         echo $output->header();
-        notice(get_string($notice, 'workshop'), new moodle_url('/mod/workshop/view.php', array('id' => $cm->id)));
+        notice(get_string($notice, 'workshop'), new url('/mod/workshop/view.php', array('id' => $cm->id)));
         echo $output->footer();
         exit;
     }

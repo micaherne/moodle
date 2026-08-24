@@ -22,6 +22,11 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context\course;
+use core\output\html_writer;
+use core\url;
+use core_table\output\html_table;
+
 require(__DIR__.'/../../config.php');
 
 require_once(__DIR__.'/lib.php');
@@ -31,7 +36,7 @@ $id = required_param('id', PARAM_INT);
 $course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
 require_course_login($course);
 
-$coursecontext = context_course::instance($course->id);
+$coursecontext = course::instance($course->id);
 $event = \mod_subsection\event\course_module_instance_list_viewed::create(['context' => $coursecontext]);
 $event->add_record_snapshot('course', $course);
 $event->trigger();
@@ -69,12 +74,12 @@ if ($course->format == 'weeks') {
 foreach ($subsections as $subsection) {
     if (!$subsection->visible) {
         $link = html_writer::link(
-            new moodle_url('/mod/subsection/view.php', ['id' => $subsection->coursemodule]),
+            new url('/mod/subsection/view.php', ['id' => $subsection->coursemodule]),
             format_string($subsection->name, true),
             ['class' => 'dimmed']);
     } else {
         $link = html_writer::link(
-            new moodle_url('/mod/subsection/view.php', ['id' => $subsection->coursemodule]),
+            new url('/mod/subsection/view.php', ['id' => $subsection->coursemodule]),
             format_string($subsection->name, true));
     }
 

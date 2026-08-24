@@ -25,6 +25,13 @@
 
 namespace core_blog\event;
 
+use core\context\course;
+use core\context\module;
+use core\context\system;
+use core\context\user;
+use core\exception\coding_exception;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -126,11 +133,11 @@ final class events_test extends \advanced_testcase {
         $events = $sink->get_events();
         $sink->close();
         $event = reset($events);
-        $sitecontext = \context_system::instance();
+        $sitecontext = system::instance();
 
         // Validate event data.
         $this->assertInstanceOf('\core\event\blog_entry_created', $event);
-        $url = new \moodle_url('/blog/index.php', array('entryid' => $event->objectid));
+        $url = new url('/blog/index.php', array('entryid' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEquals($sitecontext->id, $event->contextid);
         $this->assertEquals($blog->id, $event->objectid);
@@ -148,7 +155,7 @@ final class events_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $this->resetAfterTest();
-        $sitecontext = \context_system::instance();
+        $sitecontext = system::instance();
 
         // Edit a blog entry as Admin.
         $blog = new \blog_entry($this->postid);
@@ -161,7 +168,7 @@ final class events_test extends \advanced_testcase {
 
         // Validate event data.
         $this->assertInstanceOf('\core\event\blog_entry_updated', $event);
-        $url = new \moodle_url('/blog/index.php', array('entryid' => $event->objectid));
+        $url = new url('/blog/index.php', array('entryid' => $event->objectid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEquals($sitecontext->id, $event->contextid);
         $this->assertEquals($blog->id, $event->objectid);
@@ -179,7 +186,7 @@ final class events_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $this->resetAfterTest();
-        $sitecontext = \context_system::instance();
+        $sitecontext = system::instance();
 
         // Delete a user blog entry as Admin.
         $blog = new \blog_entry($this->postid);
@@ -210,9 +217,9 @@ final class events_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $this->resetAfterTest();
-        $sitecontext = \context_system::instance();
-        $coursecontext = \context_course::instance($this->courseid);
-        $contextmodule = \context_module::instance($this->cmid);
+        $sitecontext = system::instance();
+        $coursecontext = course::instance($this->courseid);
+        $contextmodule = module::instance($this->cmid);
 
         // Add blog associations with a course.
         $blog = new \blog_entry($this->postid);
@@ -255,9 +262,9 @@ final class events_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $this->resetAfterTest();
-        $sitecontext = \context_system::instance();
-        $coursecontext = \context_course::instance($this->courseid);
-        $contextmodule = \context_module::instance($this->cmid);
+        $sitecontext = system::instance();
+        $coursecontext = course::instance($this->courseid);
+        $contextmodule = module::instance($this->cmid);
 
         // Add blog associations with a course.
         $blog = new \blog_entry($this->postid);
@@ -270,7 +277,7 @@ final class events_test extends \advanced_testcase {
         // Validate event data.
         $this->assertInstanceOf('\core\event\blog_association_created', $event);
         $this->assertEquals($sitecontext->id, $event->contextid);
-        $url = new \moodle_url('/blog/index.php', array('entryid' => $event->other['blogid']));
+        $url = new url('/blog/index.php', array('entryid' => $event->other['blogid']));
         $this->assertEquals($url, $event->get_url());
         $this->assertEquals($blog->id, $event->other['blogid']);
         $this->assertEquals($this->courseid, $event->other['associateid']);
@@ -309,7 +316,7 @@ final class events_test extends \advanced_testcase {
                 'objectid' => 3,
                 'relateduserid' => 2,
                 'other' => array('associateid' => 2 , 'blogid' => 3, 'subject' => 'blog subject')));
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'associatetype\' value must be set in other and be a valid type.', $e->getMessage());
         }
         try {
@@ -318,7 +325,7 @@ final class events_test extends \advanced_testcase {
                 'objectid' => 3,
                 'relateduserid' => 2,
                 'other' => array('associateid' => 2 , 'blogid' => 3, 'associatetype' => 'random', 'subject' => 'blog subject')));
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'associatetype\' value must be set in other and be a valid type.', $e->getMessage());
         }
         // Make sure associateid validations work.
@@ -328,7 +335,7 @@ final class events_test extends \advanced_testcase {
                 'objectid' => 3,
                 'relateduserid' => 2,
                 'other' => array('blogid' => 3, 'associatetype' => 'course', 'subject' => 'blog subject')));
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'associateid\' value must be set in other.', $e->getMessage());
         }
         // Make sure blogid validations work.
@@ -338,7 +345,7 @@ final class events_test extends \advanced_testcase {
                 'objectid' => 3,
                 'relateduserid' => 2,
                 'other' => array('associateid' => 3, 'associatetype' => 'course', 'subject' => 'blog subject')));
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'blogid\' value must be set in other.', $e->getMessage());
         }
         // Make sure blogid validations work.
@@ -348,7 +355,7 @@ final class events_test extends \advanced_testcase {
                 'objectid' => 3,
                 'relateduserid' => 2,
                 'other' => array('blogid' => 3, 'associateid' => 3, 'associatetype' => 'course')));
-        } catch (\coding_exception $e) {
+        } catch (coding_exception $e) {
             $this->assertStringContainsString('The \'subject\' value must be set in other.', $e->getMessage());
         }
     }
@@ -373,7 +380,7 @@ final class events_test extends \advanced_testcase {
         $sink->close();
 
         // Validate event data.
-        $url = new \moodle_url('/blog/index.php', $other);
+        $url = new url('/blog/index.php', $other);
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -386,7 +393,7 @@ final class events_test extends \advanced_testcase {
 
         $this->setAdminUser();
 
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
 
         $cmt = new \stdClass();
         $cmt->context = $context;
@@ -408,7 +415,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\core\event\blog_comment_created', $event);
         $this->assertEquals($context, $event->get_context());
         $this->assertEquals($this->postid, $event->other['itemid']);
-        $url = new \moodle_url('/blog/index.php', array('entryid' => $this->postid));
+        $url = new url('/blog/index.php', array('entryid' => $this->postid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -421,7 +428,7 @@ final class events_test extends \advanced_testcase {
 
         $this->setAdminUser();
 
-        $context = \context_user::instance($USER->id);
+        $context = user::instance($USER->id);
 
         $cmt = new \stdClass();
         $cmt->context = $context;
@@ -444,7 +451,7 @@ final class events_test extends \advanced_testcase {
         $this->assertInstanceOf('\core\event\blog_comment_deleted', $event);
         $this->assertEquals($context, $event->get_context());
         $this->assertEquals($this->postid, $event->other['itemid']);
-        $url = new \moodle_url('/blog/index.php', array('entryid' => $this->postid));
+        $url = new url('/blog/index.php', array('entryid' => $this->postid));
         $this->assertEquals($url, $event->get_url());
         $this->assertEventContextNotUsed($event);
     }
@@ -459,7 +466,7 @@ final class events_test extends \advanced_testcase {
 
         // Trigger an event: external blog added.
         $eventparams = array(
-            'context' => $context = \context_system::instance(),
+            'context' => $context = system::instance(),
             'objectid' => 1001,
             'other' => array('url' => 'http://moodle.org')
         );
@@ -488,7 +495,7 @@ final class events_test extends \advanced_testcase {
 
         // Trigger an event: external blog updated.
         $eventparams = array(
-            'context' => $context = \context_system::instance(),
+            'context' => $context = system::instance(),
             'objectid' => 1001,
             'other' => array('url' => 'http://moodle.org')
         );
@@ -517,7 +524,7 @@ final class events_test extends \advanced_testcase {
 
         // Trigger an event: external blog removed.
         $eventparams = array(
-            'context' => $context = \context_system::instance(),
+            'context' => $context = system::instance(),
             'objectid' => 1001,
         );
 
@@ -544,7 +551,7 @@ final class events_test extends \advanced_testcase {
 
         // Trigger an event: external blogs viewed.
         $eventparams = array(
-            'context' => $context = \context_system::instance(),
+            'context' => $context = system::instance(),
         );
 
         $event = \core\event\blog_external_viewed::create($eventparams);

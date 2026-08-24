@@ -16,6 +16,10 @@
 
 namespace core_user;
 
+use core\exception\coding_exception;
+use core\output\pix_icon;
+use core\url;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . "/user/tests/fixtures/myprofile_fixtures.php");
@@ -34,14 +38,14 @@ final class myprofile_test extends \advanced_testcase {
      */
     public function test_node__construct(): void {
         $node = new \core_user\output\myprofile\node('parentcat', 'nodename',
-                'nodetitle', 'after', 'www.google.com', 'description', new \pix_icon('i/course', ''), 'class1 class2');
+                'nodetitle', 'after', 'www.google.com', 'description', new pix_icon('i/course', ''), 'class1 class2');
         $this->assertSame('parentcat', $node->parentcat);
         $this->assertSame('nodename', $node->name);
         $this->assertSame('nodetitle', $node->title);
         $this->assertSame('after', $node->after);
-        $url = new \moodle_url('www.google.com');
+        $url = new url('www.google.com');
         $this->assertEquals($url, $node->url);
-        $this->assertEquals(new \pix_icon('i/course', ''), $node->icon);
+        $this->assertEquals(new pix_icon('i/course', ''), $node->icon);
         $this->assertSame('class1 class2', $node->classes);
     }
 
@@ -93,7 +97,7 @@ final class myprofile_test extends \advanced_testcase {
         $category->add_node($node2);
         $category->add_node($node1);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $category->validate_after_order();
 
     }
@@ -110,7 +114,7 @@ final class myprofile_test extends \advanced_testcase {
         $category->add_node($node2);
         $category->add_node($node1);
 
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $category->validate_after_order();
 
     }
@@ -206,7 +210,7 @@ final class myprofile_test extends \advanced_testcase {
         // Add a node with invalid 'after' and make sure an exception is thrown.
         $node7 = new \core_user\output\myprofile\node('category', 'node7', 'nodetitle', 'noderandom');
         $category->add_node($node7);
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $category->sort_nodes();
     }
 
@@ -262,7 +266,7 @@ final class myprofile_test extends \advanced_testcase {
         $this->assertEquals($node1, $node);
 
         // Can't add node with same name.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $tree->add_node($node1);
     }
 
@@ -278,7 +282,7 @@ final class myprofile_test extends \advanced_testcase {
         $this->assertEquals($category1, $category);
 
         // Can't add node with same name.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $tree->add_category($category1);
     }
 
@@ -365,7 +369,7 @@ final class myprofile_test extends \advanced_testcase {
         $this->assertEquals($category6, $category);
 
         // Can't add category with same name.
-        $this->expectException(\coding_exception::class);
+        $this->expectException(coding_exception::class);
         $tree->add_category($category1);
     }
 }

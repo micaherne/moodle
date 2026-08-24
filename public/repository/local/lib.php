@@ -22,6 +22,11 @@
  * @copyright  2010 Dongsheng Cai {@link http://dongsheng.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core\context;
+use core\context\system;
+use core\exception\coding_exception;
+use core\url;
+
 require_once($CFG->dirroot . '/repository/lib.php');
 
 /**
@@ -70,7 +75,7 @@ class repository_local extends repository {
             $context = $this->context->get_course_context(false);
         }
         if (empty($context)) {
-            $context = context_system::instance();
+            $context = system::instance();
         }
 
         // prepare list of allowed extensions: $extensions is either string '*'
@@ -179,7 +184,7 @@ class repository_local extends repository {
         } else if ($fileinfo instanceof file_info_context_coursecat) {
             // This is a course category. For non-admins we do not display categories
             return empty($CFG->navshowmycoursecategories) &&
-                            !has_capability('moodle/course:update', context_system::instance());
+                            !has_capability('moodle/course:update', system::instance());
         } else {
             $params = $fileinfo->get_params();
             if (strlen($params['filearea']) &&
@@ -231,7 +236,7 @@ class repository_local extends repository {
             $node['icon'] = $OUTPUT->image_url(file_file_icon($fileinfo))->out(false);
             if ($imageinfo = $fileinfo->get_imageinfo()) {
                 // what a beautiful picture, isn't it
-                $fileurl = new moodle_url($fileinfo->get_url());
+                $fileurl = new url($fileinfo->get_url());
                 $node['realthumbnail'] = $fileurl->out(false, array('preview' => 'thumb', 'oid' => $fileinfo->get_timemodified()));
                 $node['realicon'] = $fileurl->out(false, array('preview' => 'tinyicon', 'oid' => $fileinfo->get_timemodified()));
                 $node['image_width'] = $imageinfo['width'];

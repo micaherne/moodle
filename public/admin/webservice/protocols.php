@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\plugin_manager;
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/tablelib.php');
@@ -50,7 +52,7 @@ if (!confirm_sesskey()) {
 }
 
 $enabled = ($action == 'enable');
-$class = \core_plugin_manager::resolve_plugininfo_class('webservice');
+$class = plugin_manager::resolve_plugininfo_class('webservice');
 $class::enable_plugin($webservice, $enabled);
 
 redirect($returnurl);

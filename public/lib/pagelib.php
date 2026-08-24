@@ -25,12 +25,30 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\context;
+use core\context\course;
+use core\context\coursecat;
+use core\context\module;
+use core\context\system;
+use core\exception\coding_exception;
 use core\exception\moodle_exception;
+use core\navigation\global_navigation;
+use core\navigation\navbar;
+use core\navigation\navigation_node;
+use core\navigation\settings_navigation;
 use core\navigation\views\primary;
 use core\navigation\views\secondary;
 use core\navigation\output\primary as primaryoutput;
+use core\output\action_link;
 use core\output\activity_header;
+use core\output\pix_icon;
+use core\output\requirements\fragment_requirements_manager;
+use core\output\requirements\page_requirements_manager;
+use core\output\theme_config;
 use core\output\xhtml_container_stack;
+use core\url;
+use core_course\cm_info;
+use core_filters\filter_manager;
 
 /**
  * $PAGE is a central store of information about the current page we are
@@ -611,7 +629,7 @@ class moodle_page {
                     .'to call require_login() or $PAGE->set_context(). The page may not display '
                     .'correctly as a result');
             }
-            $this->_context = context_system::instance();
+            $this->_context = system::instance();
         }
         return $this->_context;
     }
@@ -717,11 +735,11 @@ class moodle_page {
         global $FULLME;
         if (is_null($this->_url)) {
             debugging('This page did not call $PAGE->set_url(...). Using '.s($FULLME), DEBUG_DEVELOPER);
-            $this->_url = new moodle_url($FULLME);
+            $this->_url = new url($FULLME);
             // Make sure the guessed URL cannot lead to dangerous redirects.
             $this->_url->remove_params('sesskey');
         }
-        return new moodle_url($this->_url); // Return a clone for safety.
+        return new url($this->_url); // Return a clone for safety.
     }
 
     /**
@@ -1203,7 +1221,7 @@ class moodle_page {
         }
 
         if (!$this->_context) {
-            $this->set_context(context_course::instance($this->_course->id));
+            $this->set_context(course::instance($this->_course->id));
         }
 
         // Notify course format that this page is set for the course.
@@ -1227,7 +1245,7 @@ class moodle_page {
             // Extremely ugly hack which sets context to some value in order to prevent warnings,
             // use only for core error handling!!!!
             if (!$this->_context) {
-                $this->_context = context_system::instance();
+                $this->_context = system::instance();
             }
             return;
         }
@@ -1285,7 +1303,7 @@ class moodle_page {
         // Unfortunately the context setting is a mess.
         // Let's try to work around some common block problems and show some debug messages.
         if (empty($this->_context) or $this->_context->contextlevel != CONTEXT_BLOCK) {
-            $context = context_module::instance($cm->id);
+            $context = module::instance($cm->id);
             $this->set_context($context);
         }
 
@@ -1501,7 +1519,7 @@ class moodle_page {
         $this->ensure_theme_not_set();
         $this->set_course($SITE);
         $this->load_category($categoryid);
-        $this->set_context(context_coursecat::instance($categoryid));
+        $this->set_context(coursecat::instance($categoryid));
     }
 
     /**
@@ -1542,7 +1560,7 @@ class moodle_page {
             }
         }
 
-        $this->_url = new moodle_url($url, $params);
+        $this->_url = new url($url, $params);
 
         $fullurl = $this->_url->out_omit_querystring();
         if (strpos($fullurl, "$CFG->wwwroot/") !== 0) {
@@ -1723,7 +1741,7 @@ class moodle_page {
         if (!$this->user_is_editing()) {
             return null;
         }
-        $url = new moodle_url($this->url);
+        $url = new url($this->url);
         $url->set_anchor(null);
         $data = [
             'contextid' => $this->context->id,
@@ -1795,7 +1813,7 @@ class moodle_page {
         } else if (array_key_exists('courseid', $data)) {
             $page->set_course(get_course($data['courseid']));
         }
-        $page->set_url(new moodle_url($data['url']));
+        $page->set_url(new url($data['url']));
         $keys = ['pagelayout', 'pagetype', 'subpage'];
         foreach ($keys as $key) {
             if (array_key_exists($key, $data)) {

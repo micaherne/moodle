@@ -16,6 +16,12 @@
 
 namespace core_message;
 
+use core\context\course;
+use core\context\system;
+use core\context\user;
+use core\context_helper;
+use core\exception\moodle_exception;
+use core\output\user_picture;
 use core_message\tests\helper as testhelper;
 
 /**
@@ -237,7 +243,7 @@ final class api_test extends \advanced_testcase {
         }
 
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
 
         // Enrol a few users in the same course, but leave them as non-contacts.
         $this->setAdminUser();
@@ -496,7 +502,7 @@ final class api_test extends \advanced_testcase {
 
         // Grant the authenticated user role the capability 'user:viewdetails' at site context.
         $authenticatedrole = $DB->get_record('role', ['shortname' => 'user'], '*', MUST_EXIST);
-        assign_capability('moodle/user:viewdetails', CAP_ALLOW, $authenticatedrole->id, \context_system::instance());
+        assign_capability('moodle/user:viewdetails', CAP_ALLOW, $authenticatedrole->id, system::instance());
 
         // Perform a search with $CFG->messagingallusers disabled.
         set_config('messagingallusers', 0);
@@ -825,7 +831,7 @@ final class api_test extends \advanced_testcase {
         $convoids = [];
         $convoids[] = api::get_conversation_between_users([$user1->id, $user2->id]);
         $convoids[] = api::get_conversation_between_users([$user1->id, $user3->id]);
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
         $service = \core_favourites\service_factory::get_service_for_user_context($user1context);
         foreach ($convoids as $convoid) {
             $service->create_favourite('core_message', 'message_conversations', $convoid, $user1context);
@@ -887,7 +893,7 @@ final class api_test extends \advanced_testcase {
         $convoids[] = api::get_conversation_between_users([$user1->id, $user2->id]);
         $convoids[] = api::get_conversation_between_users([$user1->id, $user3->id]);
         $convoids[] = api::get_conversation_between_users([$user1->id, $user4->id]);
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
         $service = \core_favourites\service_factory::get_service_for_user_context($user1context);
         foreach ($convoids as $convoid) {
             $service->create_favourite('core_message', 'message_conversations', $convoid, $user1context);
@@ -931,7 +937,7 @@ final class api_test extends \advanced_testcase {
         $convoids = [];
         $convoids[] = api::get_conversation_between_users([$user1->id, $user2->id]);
         $convoids[] = api::get_conversation_between_users([$user1->id, $user3->id]);
-        $user1context = \context_user::instance($user1->id);
+        $user1context = user::instance($user1->id);
         $service = \core_favourites\service_factory::get_service_for_user_context($user1context);
         foreach ($convoids as $convoid) {
             $service->create_favourite('core_message', 'message_conversations', $convoid, $user1context);
@@ -1001,7 +1007,7 @@ final class api_test extends \advanced_testcase {
         // Create some users.
         $user1 = self::getDataGenerator()->create_user();
         // Try to favourite a non-existent conversation.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         api::set_favourite_conversation(0, $user1->id);
     }
 
@@ -1030,7 +1036,7 @@ final class api_test extends \advanced_testcase {
 
         // Try to favourite the first conversation as user 3, who is not a member.
         $conversationid1 = api::get_conversation_between_users([$user1->id, $user2->id]);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         api::set_favourite_conversation($conversationid1, $user3->id);
     }
 
@@ -1075,7 +1081,7 @@ final class api_test extends \advanced_testcase {
         $this->assertCount(1, api::get_conversations($user1->id, 0, 20, null, true));
 
         // Try to favourite the same conversation again as user 1.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         api::unset_favourite_conversation($conversationid1, $user1->id);
     }
 
@@ -1098,7 +1104,7 @@ final class api_test extends \advanced_testcase {
 
         // Now try to unfavourite the conversation as user 1.
         $conversationid1 = api::get_conversation_between_users([$user1->id, $user2->id]);
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         api::unset_favourite_conversation($conversationid1, $user1->id);
     }
 
@@ -1112,7 +1118,7 @@ final class api_test extends \advanced_testcase {
         $user1 = self::getDataGenerator()->create_user();
 
         // Now try to unfavourite the conversation as user 1.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         api::unset_favourite_conversation(0, $user1->id);
     }
 
@@ -1492,7 +1498,7 @@ final class api_test extends \advanced_testcase {
         $this->assertCount(4, $conversations);
 
         // Verify an exception is thrown if an unrecognized type is specified.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         $conversations = api::get_conversations($user1->id, 0, 20, 0);
     }
 
@@ -1598,7 +1604,7 @@ final class api_test extends \advanced_testcase {
         delete_user($user2);
         // This is to confirm an exception is not thrown when a user AND the user context is deleted.
         // We no longer delete the user context, but historically we did.
-        \context_helper::delete_instance(CONTEXT_USER, $user2->id);
+        context_helper::delete_instance(CONTEXT_USER, $user2->id);
         $conversations = api::get_conversations($user1->id);
         // Consider there's a self-conversation (the last one).
         $this->assertCount(7, $conversations);
@@ -3217,7 +3223,7 @@ final class api_test extends \advanced_testcase {
         unassign_capability(
             'moodle/site:sendmessage',
             $roleids['user'],
-            \context_system::instance()
+            system::instance()
         );
 
         // Check that we can not post a message without the capability.
@@ -3372,7 +3378,7 @@ final class api_test extends \advanced_testcase {
         $this->assertFalse(api::can_send_message($user1->id, $teacher1->id));
 
         // Remove the messageanyuser capability from the course1 for teachers.
-        $coursecontext = \context_course::instance($course1->id);
+        $coursecontext = course::instance($course1->id);
         $teacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
         assign_capability('moodle/site:messageanyuser', CAP_PROHIBIT, $teacherrole->id, $coursecontext->id);
         $coursecontext->mark_dirty();
@@ -3409,7 +3415,7 @@ final class api_test extends \advanced_testcase {
         $user2 = self::getDataGenerator()->create_user();
 
         $authenticateduserrole = $DB->get_record('role', ['shortname' => 'user']);
-        assign_capability('moodle/site:messageanyuser', CAP_ALLOW, $authenticateduserrole->id, \context_system::instance(), true);
+        assign_capability('moodle/site:messageanyuser', CAP_ALLOW, $authenticateduserrole->id, system::instance(), true);
 
         $this->assertTrue(api::can_send_message($user2->id, $user1->id, true));
     }
@@ -3427,7 +3433,7 @@ final class api_test extends \advanced_testcase {
         $user2 = self::getDataGenerator()->create_user();
 
         $authenticateduserrole = $DB->get_record('role', ['shortname' => 'user']);
-        assign_capability('moodle/site:readallmessages', CAP_ALLOW, $authenticateduserrole->id, \context_system::instance(), true);
+        assign_capability('moodle/site:readallmessages', CAP_ALLOW, $authenticateduserrole->id, system::instance(), true);
 
         $this->assertTrue(api::can_send_message($user2->id, $user1->id, true));
     }
@@ -3473,7 +3479,7 @@ final class api_test extends \advanced_testcase {
             'moodle/site:messageanyuser',
             CAP_ALLOW,
             $editingteacherrole->id,
-            \context_course::instance($course->id),
+            course::instance($course->id),
             true
         );
 
@@ -3575,7 +3581,7 @@ final class api_test extends \advanced_testcase {
 
         // Remove the capability to send a message.
         $roleids = $DB->get_records_menu('role', null, '', 'shortname, id');
-        unassign_capability('moodle/site:sendmessage', $roleids['user'], \context_system::instance());
+        unassign_capability('moodle/site:sendmessage', $roleids['user'], system::instance());
 
         // Verify that a user cannot send a message to either an individual or a group conversation.
         $this->assertFalse(api::can_send_message_to_conversation($user1->id, $ic1->id));
@@ -3626,7 +3632,7 @@ final class api_test extends \advanced_testcase {
         $this->assertTrue(api::can_send_message_to_conversation($user1->id, $gc1->id));
 
         // Assign the 'messageanyuser' capability to user1 at system context.
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $authenticateduser = $DB->get_record('role', ['shortname' => 'user']);
         assign_capability('moodle/site:messageanyuser', CAP_ALLOW, $authenticateduser->id, $systemcontext->id);
 
@@ -4694,7 +4700,7 @@ final class api_test extends \advanced_testcase {
         $this->assertCount(1, $requests);
 
         $request = reset($requests);
-        $userpicture = new \user_picture($user2);
+        $userpicture = new user_picture($user2);
         $profileimageurl = $userpicture->get_url($PAGE)->out(false);
 
         $this->assertEquals($user2->id, $request->id);
@@ -5134,7 +5140,7 @@ final class api_test extends \advanced_testcase {
         $teacher = self::getDataGenerator()->create_user();
         $course = self::getDataGenerator()->create_course();
 
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
 
         $this->getDataGenerator()->enrol_user($student->id, $course->id);
         $this->getDataGenerator()->enrol_user($teacher->id, $course->id, 'editingteacher');
@@ -5725,7 +5731,7 @@ final class api_test extends \advanced_testcase {
         $this->assertObjectHasProperty('notificationsendericonurl', $customdata);
         $this->assertEquals($groupimageurl, $customdata->notificationiconurl);
         $this->assertEquals($group->name, $customdata->conversationname);
-        $userpicture = new \user_picture($user1);
+        $userpicture = new user_picture($user1);
         $userpicture->size = 1; // Use f1 size.
         $this->assertEquals($userpicture->get_url($PAGE)->out(false), $customdata->notificationsendericonurl);
     }
@@ -5740,7 +5746,7 @@ final class api_test extends \advanced_testcase {
         [$user1, $user2, $user3, $user4, $ic1, $ic2, $ic3,
             $gc1, $gc2, $gc3, $gc4, $gc5, $gc6] = $this->create_conversation_test_data();
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         api::send_message_to_conversation($user1->id, 0, 'test', FORMAT_MOODLE);
     }
 
@@ -5761,7 +5767,7 @@ final class api_test extends \advanced_testcase {
         $this->getDataGenerator()->enrol_user($user3->id, $course->id);
         $this->getDataGenerator()->enrol_user($user4->id, $course->id);
 
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         api::send_message_to_conversation($user3->id, $ic1->id, 'test', FORMAT_MOODLE);
     }
 
@@ -5789,7 +5795,7 @@ final class api_test extends \advanced_testcase {
         $this->assertNotEmpty(api::send_message_to_conversation($user1->id, $gc2->id, 'Hey guys', FORMAT_PLAIN));
 
         // User 2 cannot send a message to the conversation with user 1.
-        $this->expectException(\moodle_exception::class);
+        $this->expectException(moodle_exception::class);
         api::send_message_to_conversation($user2->id, $ic1->id, 'test', FORMAT_MOODLE);
     }
 
@@ -6329,7 +6335,7 @@ final class api_test extends \advanced_testcase {
 
         $deleteuser = !is_null($deletemessagesuser) ? $users[$deletemessagesuser] : null;
         $arguments[0] = $users[$arguments[0]]->id;
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $conversations = [];
         $messageids = [];
 
@@ -6361,7 +6367,7 @@ final class api_test extends \advanced_testcase {
 
             foreach ($config['favourites'] as $userfromindex) {
                 $userfrom = $users[$userfromindex];
-                $usercontext = \context_user::instance($userfrom->id);
+                $usercontext = user::instance($userfrom->id);
                 $ufservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
                 $ufservice->create_favourite('core_message', 'message_conversations', $conversation->id, $systemcontext);
             }
@@ -6462,7 +6468,7 @@ final class api_test extends \advanced_testcase {
         $deleteuser = !is_null($deletemessagesuser) ? $users[$deletemessagesuser] : null;
         $this->setUser($users[$arguments[0]]);
         $arguments[0] = $users[$arguments[0]]->id;
-        $systemcontext = \context_system::instance();
+        $systemcontext = system::instance();
         $conversations = [];
         $messageids = [];
 
@@ -6483,7 +6489,7 @@ final class api_test extends \advanced_testcase {
 
             foreach ($config['favourites'] as $userfromindex) {
                 $userfrom = $users[$userfromindex];
-                $usercontext = \context_user::instance($userfrom->id);
+                $usercontext = user::instance($userfrom->id);
                 $ufservice = \core_favourites\service_factory::get_service_for_user_context($usercontext);
                 $ufservice->create_favourite('core_message', 'message_conversations', $conversation->id, $systemcontext);
             }
@@ -6524,7 +6530,7 @@ final class api_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
+        $coursecontext1 = course::instance($course1->id);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -6617,14 +6623,14 @@ final class api_test extends \advanced_testcase {
         $this->assertEquals(1, $DB->count_records('messages', ['id' => $g2m4]));
 
         // Confirm favourites were deleted for both users.
-        $user1service = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($user1->id));
+        $user1service = \core_favourites\service_factory::get_service_for_user_context(user::instance($user1->id));
         $this->assertFalse($user1service->favourite_exists(
             'core_message',
             'message_conversations',
             $groupconversation1->id,
             $coursecontext1
         ));
-        $user2service = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($user1->id));
+        $user2service = \core_favourites\service_factory::get_service_for_user_context(user::instance($user1->id));
         $this->assertFalse($user2service->favourite_exists(
             'core_message',
             'message_conversations',
@@ -6645,7 +6651,7 @@ final class api_test extends \advanced_testcase {
 
         // Allow Teacher can delete messages for all.
         $editingteacher = $DB->get_record('role', ['shortname' => 'editingteacher']);
-        assign_capability('moodle/site:deleteanymessage', CAP_ALLOW, $editingteacher->id, \context_system::instance());
+        assign_capability('moodle/site:deleteanymessage', CAP_ALLOW, $editingteacher->id, system::instance());
 
         // Set as the first user.
         $this->setUser($teacher);
@@ -6816,7 +6822,7 @@ final class api_test extends \advanced_testcase {
 
         // Create a course and enrol the users.
         $course = $this->getDataGenerator()->create_course();
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = course::instance($course->id);
         $this->getDataGenerator()->enrol_user($teacher->id, $course->id, 'editingteacher');
         $this->getDataGenerator()->enrol_user($student1->id, $course->id, 'student');
         $this->getDataGenerator()->enrol_user($student2->id, $course->id, 'student');
@@ -6836,7 +6842,7 @@ final class api_test extends \advanced_testcase {
             'core_group',
             'groups',
             $group1->id,
-            \context_course::instance($course->id)->id
+            course::instance($course->id)->id
         );
 
         // Create and individual conversation.

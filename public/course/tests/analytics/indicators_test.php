@@ -16,6 +16,7 @@
 
 namespace core_course\analytics;
 
+use core\context\course;
 use core_analytics\tests\mlbackend_helper_trait;
 
 defined('MOODLE_INTERNAL') || die();
@@ -48,8 +49,8 @@ final class indicators_test extends \advanced_testcase {
 
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
-        $coursecontext1 = \context_course::instance($course1->id);
-        $coursecontext2 = \context_course::instance($course2->id);
+        $coursecontext1 = course::instance($course1->id);
+        $coursecontext2 = course::instance($course2->id);
 
         $user = $this->getDataGenerator()->create_user();
 

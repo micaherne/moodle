@@ -16,6 +16,8 @@
 
 namespace enrol_fee\task;
 
+use core\output\progress_trace\text_progress_trace;
+
 /**
  * Process expirations task.
  *
@@ -38,7 +40,7 @@ class process_expirations extends \core\task\scheduled_task {
      */
     public function execute() {
         $enrol = enrol_get_plugin('fee');
-        $trace = new \text_progress_trace();
+        $trace = new text_progress_trace();
         $enrol->process_expirations($trace);
     }
 }

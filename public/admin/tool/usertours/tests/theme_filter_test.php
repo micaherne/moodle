@@ -16,6 +16,8 @@
 
 namespace tool_usertours;
 
+use core\context\system;
+
 /**
  * Tests for theme filter.
  *
@@ -87,6 +89,6 @@ final class theme_filter_test extends \advanced_testcase {
         $PAGE->theme->name = $currenttheme;
 
         // Note: The theme filter does not use the context.
-        $this->assertEquals($expected, $filtername::filter_matches($tour, \context_system::instance()));
+        $this->assertEquals($expected, $filtername::filter_matches($tour, system::instance()));
     }
 }
